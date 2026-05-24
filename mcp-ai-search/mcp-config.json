@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "mcp-ai-search": {
+      "command": "node",
+      "args": ["/workspace/mcp-ai-search/src/index.js"],
+      "env": {}
+    }
+  }
+}

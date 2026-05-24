@@ -1,0 +1,16 @@
+{
+  "name": "douyin-tool",
+  "version": "1.0.0",
+  "description": "抖音兼容工具 - SDK接入与页面切换",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "node server.js",
+    "build": "node build.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "axios": "^1.7.0"
+  },
+  "devDependencies": {}
+}

@@ -1,0 +1,20 @@
+{
+  "name": "mcp-ai-search",
+  "version": "1.0.0",
+  "description": "MCP AI 多功能检索工具 - Model Context Protocol Server",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "mcp-ai-search": "./src/index.js"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "node --test src/tests/"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1"
+  },
+  "keywords": ["mcp", "ai", "search", "model-context-protocol"],
+  "license": "MIT"
+}
