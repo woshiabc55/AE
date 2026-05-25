@@ -23,7 +23,13 @@ export default function SheetTabs() {
   }
 
   return (
-    <div className="flex items-end gap-0.5 px-2 pt-1 bg-[#f0f4f0] border-t border-[#d4d4d4] overflow-x-auto">
+    <div
+      className="flex items-end gap-0.5 px-2 pt-1 overflow-x-auto"
+      style={{
+        background: 'var(--bg-surface)',
+        borderTop: '1px solid var(--border-subtle)',
+      }}
+    >
       {workbook.sheets.map((sheet, index) => {
         const isActive = index === workbook.activeSheetIndex
         const isEditing = editingId === sheet.id
@@ -31,11 +37,23 @@ export default function SheetTabs() {
         return (
           <div
             key={sheet.id}
-            className={`group flex items-center gap-1 px-3 py-1.5 text-xs rounded-t-md cursor-pointer transition-all select-none ${
-              isActive
-                ? 'bg-white text-[#1B4332] font-semibold border-t-2 border-[#52B788] shadow-sm'
-                : 'bg-[#e8ede8] text-[#666] hover:bg-[#dce8dc] border-t-2 border-transparent'
-            }`}
+            className="group flex items-center gap-1 px-3 py-1.5 text-xs rounded-t-md cursor-pointer transition-all select-none"
+            style={{
+              background: isActive ? 'var(--bg-elevated)' : 'transparent',
+              color: isActive ? 'var(--accent-sheet)' : 'var(--text-muted)',
+              fontWeight: isActive ? 600 : 400,
+              borderTop: isActive ? '2px solid var(--accent-sheet)' : '2px solid transparent',
+            }}
+            onMouseEnter={(e) => {
+              if (!isActive) {
+                e.currentTarget.style.background = 'var(--bg-overlay)'
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isActive) {
+                e.currentTarget.style.background = 'transparent'
+              }
+            }}
             onClick={() => setActiveSheet(index)}
             onDoubleClick={(e) => {
               e.stopPropagation()
@@ -60,7 +78,12 @@ export default function SheetTabs() {
                     if (e.key === 'Escape') setEditingId(null)
                   }}
                   onBlur={() => handleRename(sheet.id)}
-                  className="w-20 text-xs bg-white border border-[#52B788] rounded px-1 py-0 focus:outline-none"
+                  className="w-20 text-xs rounded px-1 py-0 focus:outline-none"
+                  style={{
+                    background: 'var(--bg-elevated)',
+                    border: '1px solid var(--accent-sheet)',
+                    color: 'var(--text-primary)',
+                  }}
                   onClick={(e) => e.stopPropagation()}
                 />
                 <button
@@ -68,7 +91,7 @@ export default function SheetTabs() {
                     e.stopPropagation()
                     handleRename(sheet.id)
                   }}
-                  className="text-[#52B788] hover:text-[#1B4332]"
+                  style={{ color: 'var(--accent-sheet)' }}
                 >
                   <Check size={12} />
                 </button>
@@ -82,7 +105,14 @@ export default function SheetTabs() {
                       e.stopPropagation()
                       deleteSheet(sheet.id)
                     }}
-                    className="opacity-0 group-hover:opacity-100 text-[#999] hover:text-[#c0392b] transition-all ml-1"
+                    className="opacity-0 group-hover:opacity-100 transition-all ml-1"
+                    style={{ color: 'var(--text-muted)' }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = '#ff6b6b'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = 'var(--text-muted)'
+                    }}
                     title="删除工作表"
                   >
                     <X size={12} />
@@ -95,7 +125,14 @@ export default function SheetTabs() {
                       setEditingId(sheet.id)
                       setEditName(sheet.name)
                     }}
-                    className="opacity-0 group-hover:opacity-100 text-[#999] hover:text-[#1B4332] transition-all"
+                    className="opacity-0 group-hover:opacity-100 transition-all"
+                    style={{ color: 'var(--text-muted)' }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = 'var(--accent-sheet)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = 'var(--text-muted)'
+                    }}
                     title="重命名"
                   >
                     <Pencil size={10} />
@@ -108,7 +145,14 @@ export default function SheetTabs() {
       })}
       <button
         onClick={addSheet}
-        className="flex items-center gap-1 px-2 py-1.5 text-xs text-[#52B788] hover:text-[#1B4332] hover:bg-[#e8f5e9] rounded-t-md transition-colors"
+        className="flex items-center gap-1 px-2 py-1.5 text-xs rounded-t-md transition-colors"
+        style={{ color: 'var(--accent-sheet)' }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = 'var(--bg-overlay)'
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'transparent'
+        }}
         title="新建工作表"
       >
         <Plus size={14} />

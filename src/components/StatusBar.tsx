@@ -5,7 +5,14 @@ export default function StatusBar() {
 
   if (!selection) {
     return (
-      <div className="flex items-center justify-end px-3 py-1 bg-[#1B4332] text-[#b7e4c7] text-xs border-t border-[#14532d]">
+      <div
+        className="flex items-center justify-end px-3 py-1 text-xs"
+        style={{
+          background: 'var(--accent-sheet-dim)',
+          color: '#a8e6c0',
+          borderTop: '1px solid var(--accent-sheet-dim)',
+        }}
+      >
         <span>就绪</span>
       </div>
     )
@@ -20,7 +27,14 @@ export default function StatusBar() {
 
   if (isSingleCell) {
     return (
-      <div className="flex items-center justify-end px-3 py-1 bg-[#1B4332] text-[#b7e4c7] text-xs border-t border-[#14532d]">
+      <div
+        className="flex items-center justify-end px-3 py-1 text-xs"
+        style={{
+          background: 'var(--accent-sheet-dim)',
+          color: '#a8e6c0',
+          borderTop: '1px solid var(--accent-sheet-dim)',
+        }}
+      >
         <span>就绪</span>
       </div>
     )
@@ -42,7 +56,14 @@ export default function StatusBar() {
   const count = (maxRow - minRow + 1) * (maxCol - minCol + 1)
 
   return (
-    <div className="flex items-center justify-end gap-4 px-3 py-1 bg-[#1B4332] text-[#b7e4c7] text-xs border-t border-[#14532d]">
+    <div
+      className="flex items-center justify-end gap-4 px-3 py-1 text-xs"
+      style={{
+        background: 'var(--accent-sheet-dim)',
+        color: '#a8e6c0',
+        borderTop: '1px solid var(--accent-sheet-dim)',
+      }}
+    >
       <span>求和: <strong className="text-white">{values.length > 0 ? sum.toFixed(2) : '—'}</strong></span>
       <span>平均值: <strong className="text-white">{values.length > 0 ? avg.toFixed(2) : '—'}</strong></span>
       <span>计数: <strong className="text-white">{count}</strong></span>

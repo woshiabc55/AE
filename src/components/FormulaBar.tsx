@@ -13,12 +13,30 @@ export default function FormulaBar() {
       : ''
 
   return (
-    <div className="flex items-center px-3 py-1 border-b border-[#d4d4d4] bg-[#f8faf8] gap-2">
-      <div className="w-16 text-center text-xs font-mono text-[#1B4332] bg-[#e8f5e9] rounded px-2 py-0.5 border border-[#b7e4c7] font-semibold shrink-0">
+    <div
+      className="flex items-center px-3 py-1 gap-2"
+      style={{
+        background: 'var(--bg-surface)',
+        borderBottom: '1px solid var(--border-subtle)',
+      }}
+    >
+      <div
+        className="w-16 text-center text-xs font-mono rounded px-2 py-0.5 font-semibold shrink-0"
+        style={{
+          color: 'var(--accent-sheet)',
+          background: 'var(--accent-sheet-dim)33',
+          border: '1px solid var(--accent-sheet-dim)44',
+        }}
+      >
         {cellRef || '—'}
       </div>
-      <div className="text-[#999] text-sm">|</div>
-      <div className="text-xs text-[#52B788] font-mono shrink-0">fx</div>
+      <div style={{ color: 'var(--border-default)' }} className="text-sm">|</div>
+      <div
+        className="text-xs font-mono shrink-0"
+        style={{ color: 'var(--accent-sheet)' }}
+      >
+        fx
+      </div>
       <input
         type="text"
         value={displayValue}
@@ -37,7 +55,18 @@ export default function FormulaBar() {
             stopEditing()
           }
         }}
-        className="flex-1 text-sm font-mono bg-white border border-[#d4d4d4] rounded px-2 py-0.5 focus:outline-none focus:border-[#52B788] focus:ring-1 focus:ring-[#52B788]/30 transition-colors"
+        className="flex-1 text-sm font-mono rounded px-2 py-0.5 transition-colors"
+        style={{
+          background: 'var(--bg-elevated)',
+          border: '1px solid var(--border-subtle)',
+          color: 'var(--text-primary)',
+        }}
+        onFocus={(e) => {
+          e.currentTarget.style.border = '1px solid var(--accent-sheet)'
+        }}
+        onBlur={(e) => {
+          e.currentTarget.style.border = '1px solid var(--border-subtle)'
+        }}
         placeholder="输入内容或公式（以 = 开头）"
       />
     </div>

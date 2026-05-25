@@ -41,21 +41,35 @@ function BlockItem({ block, index }: { block: DocBlock; index: number }) {
     [block.id, updateBlockContent]
   )
 
-  const getBlockStyle = (): string => {
-    const base = 'outline-none min-h-[1.5em] w-full'
+  const getBlockStyle = (): React.CSSProperties => {
+    const base: React.CSSProperties = {
+      outline: 'none',
+      minHeight: '1.5em',
+      width: '100%',
+    }
     switch (block.type) {
       case 'heading1':
-        return `${base} text-2xl font-bold`
+        return { ...base, fontSize: '1.5rem', lineHeight: '2rem', fontWeight: 700 }
       case 'heading2':
-        return `${base} text-xl font-bold`
+        return { ...base, fontSize: '1.25rem', lineHeight: '1.75rem', fontWeight: 700 }
       case 'heading3':
-        return `${base} text-lg font-semibold`
+        return { ...base, fontSize: '1.125rem', lineHeight: '1.75rem', fontWeight: 600 }
       case 'bullet':
-        return `${base} pl-6 relative before:content-['•'] before:absolute before:left-2 before:top-0`
+        return { ...base, paddingLeft: 24, position: 'relative' }
       case 'numbered':
-        return `${base} pl-6 relative before:content-['${index + 1}.'] before:absolute before:left-0 before:top-0 before:text-[#999]`
+        return {
+          ...base,
+          paddingLeft: 24,
+          position: 'relative',
+        }
       case 'quote':
-        return `${base} pl-4 border-l-3 border-[#1E40AF] text-[#555] italic`
+        return {
+          ...base,
+          paddingLeft: 16,
+          borderLeft: '3px solid var(--accent-doc)',
+          fontStyle: 'italic',
+          color: 'var(--text-secondary)',
+        }
       default:
         return base
     }
@@ -71,23 +85,66 @@ function BlockItem({ block, index }: { block: DocBlock; index: number }) {
       .filter(Boolean)
       .join(' ') || 'none',
     textAlign: block.format.align,
-    color: block.format.color || '#2D3436',
+    color: block.format.color || 'var(--text-primary)',
     backgroundColor: block.format.highlight || 'transparent',
   }
 
+  const bulletMarker = block.type === 'bullet' ? (
+    <span
+      style={{
+        position: 'absolute',
+        left: 8,
+        top: 0,
+        color: 'var(--text-muted)',
+        pointerEvents: 'none',
+      }}
+    >
+      •
+    </span>
+  ) : null
+
+  const numberedMarker = block.type === 'numbered' ? (
+    <span
+      style={{
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        color: 'var(--text-muted)',
+        pointerEvents: 'none',
+      }}
+    >
+      {index + 1}.
+    </span>
+  ) : null
+
   return (
     <div
-      className={`group relative py-1 px-2 rounded-md transition-colors ${
-        isActive ? 'bg-[#EFF6FF]/60' : 'hover:bg-[#f8faf8]'
-      }`}
+      className="group relative py-1 px-2 rounded-md transition-colors"
+      style={{
+        background: isActive
+          ? 'rgba(108, 156, 255, 0.04)'
+          : undefined,
+        cursor: 'text',
+      }}
+      onMouseEnter={(e) => {
+        if (!isActive) {
+          e.currentTarget.style.background = 'var(--bg-elevated)'
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!isActive) {
+          e.currentTarget.style.background = 'transparent'
+        }
+      }}
       onClick={() => setActiveBlock(block.id)}
     >
+      {bulletMarker}
+      {numberedMarker}
       <div
         ref={ref}
         contentEditable
         suppressContentEditableWarning
-        className={getBlockStyle()}
-        style={formatStyle}
+        style={{ ...getBlockStyle(), ...formatStyle }}
         onInput={handleInput}
         onKeyDown={handleKeyDown}
         onFocus={() => setActiveBlock(block.id)}
@@ -113,11 +170,22 @@ export default function DocEditor() {
   const { document, getWordCount } = useDocumentStore()
 
   return (
-    <div className="flex-1 overflow-auto bg-[#f0f4f0]">
+    <div
+      className="flex-1 overflow-auto"
+      style={{ background: 'var(--bg-base)' }}
+    >
       <div className="max-w-[780px] mx-auto my-8">
-        <div className="bg-white shadow-lg rounded-lg min-h-[900px] p-12 border border-[#e5e5e5]">
+        <div
+          className="rounded-xl min-h-[900px] p-12"
+          style={{
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border-subtle)',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.2), 0 1px 4px rgba(0,0,0,0.1)',
+          }}
+        >
           <div
-            className="text-3xl font-bold text-[#2D3436] mb-6 outline-none"
+            className="font-display text-3xl font-bold mb-6 outline-none"
+            style={{ color: 'var(--text-primary)' }}
             contentEditable
             suppressContentEditableWarning
             onBlur={(e) => {
@@ -128,15 +196,26 @@ export default function DocEditor() {
           >
             {document.name}
           </div>
-          <div className="border-b border-[#f0f0f0] mb-6" />
+          <div
+            style={{
+              borderBottom: '1px solid var(--border-subtle)',
+              marginBottom: 24,
+            }}
+          />
           {document.blocks.map((block, i) => (
             <BlockItem key={block.id} block={block} index={i} />
           ))}
         </div>
       </div>
-      <div className="sticky bottom-0 bg-[#1E40AF] text-[#bfdbfe] text-xs py-1.5 px-4 flex justify-end gap-4">
-        <span>字数: <strong className="text-white">{getWordCount()}</strong></span>
-        <span>段落: <strong className="text-white">{document.blocks.length}</strong></span>
+      <div
+        className="sticky bottom-0 text-xs py-1.5 px-4 flex justify-end gap-4"
+        style={{
+          background: 'var(--accent-doc-dim)',
+          color: 'rgba(255,255,255,0.7)',
+        }}
+      >
+        <span>字数: <strong style={{ color: '#fff' }}>{getWordCount()}</strong></span>
+        <span>段落: <strong style={{ color: '#fff' }}>{document.blocks.length}</strong></span>
       </div>
     </div>
   )

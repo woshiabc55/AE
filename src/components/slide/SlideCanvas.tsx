@@ -62,14 +62,21 @@ function SlideElementView({
   if (element.type === 'shape') {
     return (
       <div
-        className={`absolute cursor-move ${isSelected ? 'ring-2 ring-[#9F1239] ring-offset-1' : ''}`}
+        className={`absolute cursor-move ${
+          isSelected
+            ? 'ring-2 ring-offset-1'
+            : ''
+        }`}
         style={{
           left: element.x,
           top: element.y,
           width: element.width,
           height: element.height,
-          backgroundColor: element.format.bgColor || '#52B788',
+          backgroundColor: element.format.bgColor || 'var(--accent-sheet)',
           borderRadius: element.format.borderRadius,
+          ...(isSelected
+            ? { ringColor: 'var(--accent-slide)', '--tw-ring-color': 'var(--accent-slide)' } as React.CSSProperties
+            : {}),
         }}
         onMouseDown={handleMouseDown}
         onClick={(e) => e.stopPropagation()}
@@ -79,7 +86,11 @@ function SlideElementView({
 
   return (
     <div
-      className={`absolute cursor-move ${isSelected ? 'ring-2 ring-[#9F1239] ring-offset-1' : 'hover:ring-1 hover:ring-[#9F1239]/30'}`}
+      className={`absolute cursor-move ${
+        isSelected
+          ? 'ring-2 ring-offset-1'
+          : 'hover:ring-1'
+      }`}
       style={{
         left: element.x,
         top: element.y,
@@ -97,7 +108,9 @@ function SlideElementView({
         alignItems: 'center',
         padding: '4px 8px',
         userSelect: 'none',
-      }}
+        '--tw-ring-color': isSelected ? 'var(--accent-slide)' : 'var(--accent-slide)',
+        opacity: isSelected ? 1 : undefined,
+      } as React.CSSProperties}
       onMouseDown={handleMouseDown}
       onDoubleClick={handleDoubleClick}
       onClick={(e) => e.stopPropagation()}
@@ -136,15 +149,25 @@ export default function SlideCanvas() {
 
   return (
     <div
-      className="flex-1 overflow-auto bg-[#e8ede8] flex items-center justify-center p-8"
+      className="flex-1 overflow-auto flex items-center justify-center p-8"
+      style={{
+        background: `
+          radial-gradient(ellipse at 50% 40%, rgba(255,126,179,0.04) 0%, transparent 60%),
+          var(--bg-base)
+        `,
+      }}
       onClick={() => selectElement(null)}
     >
       <div
-        className="relative shadow-2xl rounded-lg overflow-hidden"
+        className="relative rounded-xl overflow-hidden"
         style={{
           width: 740,
           height: 463,
           backgroundColor: slide.background,
+          boxShadow: `
+            0 4px 24px rgba(0,0,0,0.4),
+            0 0 60px var(--glow-slide)
+          `,
         }}
       >
         {slide.elements.map((el) => (

@@ -174,7 +174,8 @@ export default function Spreadsheet() {
 
   return (
     <div
-      className="flex-1 overflow-auto relative bg-white"
+      className="flex-1 overflow-auto relative"
+      style={{ background: 'var(--bg-base)' }}
       ref={tableRef}
       onKeyDown={handleKeyDown}
       tabIndex={0}
@@ -182,19 +183,44 @@ export default function Spreadsheet() {
       <table className="border-collapse w-max">
         <thead>
           <tr>
-            <th className="sticky top-0 left-0 z-30 w-12 min-w-12 h-7 bg-[#1B4332] text-white text-xs border border-[#14532d] font-semibold" />
+            <th
+              className="sticky top-0 left-0 z-30 w-12 min-w-12 h-7 text-white text-xs font-semibold"
+              style={{
+                background: 'linear-gradient(180deg, var(--accent-sheet-dim), #1a3a28)',
+                border: '1px solid var(--accent-sheet-dim)44',
+              }}
+            />
             {Array.from({ length: sheet.colCount }, (_, c) => (
               <th
                 key={c}
-                className="sticky top-0 z-20 min-w-[100px] h-7 bg-[#1B4332] text-white text-xs border border-[#14532d] font-semibold px-2 select-none"
+                className="sticky top-0 z-20 min-w-[100px] h-7 text-white text-xs font-semibold px-2 select-none"
+                style={{
+                  background: 'linear-gradient(180deg, var(--accent-sheet-dim), #1a3a28)',
+                  border: '1px solid var(--accent-sheet-dim)44',
+                }}
               >
                 {colLabel(c)}
               </th>
             ))}
-            <th className="sticky top-0 z-20 w-8 min-w-8 h-7 bg-[#1B4332] border border-[#14532d]">
+            <th
+              className="sticky top-0 z-20 w-8 min-w-8 h-7"
+              style={{
+                background: 'linear-gradient(180deg, var(--accent-sheet-dim), #1a3a28)',
+                border: '1px solid var(--accent-sheet-dim)44',
+              }}
+            >
               <button
                 onClick={() => useWorkbookStore.getState().addColumn()}
-                className="w-full h-full flex items-center justify-center text-[#52B788] hover:text-white transition-colors"
+                className="w-full h-full flex items-center justify-center transition-colors"
+                style={{ color: 'var(--accent-sheet)' }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = 'white'
+                  e.currentTarget.style.background = 'var(--bg-overlay)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = 'var(--accent-sheet)'
+                  e.currentTarget.style.background = 'transparent'
+                }}
                 title="添加列"
               >
                 <Plus size={14} />
@@ -205,7 +231,14 @@ export default function Spreadsheet() {
         <tbody>
           {Array.from({ length: sheet.rowCount }, (_, r) => (
             <tr key={r}>
-              <td className="sticky left-0 z-10 w-12 min-w-12 h-7 bg-[#e8f5e9] text-[#1B4332] text-xs border border-[#d4d4d4] text-center font-mono font-semibold select-none">
+              <td
+                className="sticky left-0 z-10 w-12 min-w-12 h-7 text-xs text-center font-mono font-semibold select-none"
+                style={{
+                  background: 'var(--bg-surface)',
+                  color: 'var(--text-muted)',
+                  border: '1px solid var(--border-subtle)',
+                }}
+              >
                 {r + 1}
               </td>
               {Array.from({ length: sheet.colCount }, (_, c) => {
@@ -219,19 +252,18 @@ export default function Spreadsheet() {
                 return (
                   <td
                     key={c}
-                    className={`h-7 border border-[#e5e5e5] px-1 relative text-sm font-mono ${
-                      active
-                        ? 'outline outline-2 outline-[#52B788] outline-offset-[-1px] z-10'
-                        : selected
-                          ? 'bg-[#e8f5e9]/60'
-                          : ''
-                    }`}
+                    className="h-7 px-1 relative text-sm font-mono"
                     style={{
-                      backgroundColor: fmt.bgColor || (selected ? undefined : undefined),
-                      color: fmt.textColor || '#2D3436',
+                      border: '1px solid var(--border-subtle)',
+                      color: fmt.textColor || 'var(--text-primary)',
                       fontWeight: fmt.bold ? 'bold' : 'normal',
                       fontStyle: fmt.italic ? 'italic' : 'normal',
                       textAlign: fmt.align,
+                      backgroundColor: fmt.bgColor || (selected ? 'var(--accent-sheet)0D' : undefined),
+                      outline: active ? '2px solid var(--accent-sheet)' : undefined,
+                      outlineOffset: active ? '-1px' : undefined,
+                      zIndex: active ? 10 : undefined,
+                      boxShadow: active ? '0 0 8px var(--glow-sheet)' : undefined,
                     }}
                     onMouseDown={(e) => handleMouseDown(r, c, e)}
                     onMouseMove={(e) => handleMouseMove(r, c, e)}
@@ -244,9 +276,10 @@ export default function Spreadsheet() {
                         type="text"
                         value={editingValue}
                         onChange={(e) => setEditingValue(e.target.value)}
-                        className="absolute inset-0 w-full h-full px-1 bg-white border-none outline-none text-sm font-mono z-20"
+                        className="absolute inset-0 w-full h-full px-1 border-none outline-none text-sm font-mono z-20"
                         style={{
-                          color: fmt.textColor || '#2D3436',
+                          background: 'var(--bg-elevated)',
+                          color: fmt.textColor || 'var(--text-primary)',
                           fontWeight: fmt.bold ? 'bold' : 'normal',
                           fontStyle: fmt.italic ? 'italic' : 'normal',
                           textAlign: fmt.align,
@@ -260,31 +293,68 @@ export default function Spreadsheet() {
                   </td>
                 )
               })}
-              <td className="w-8 min-w-8 h-7 border border-[#e5e5e5] bg-[#fafaf5]" />
+              <td
+                className="w-8 min-w-8 h-7"
+                style={{
+                  border: '1px solid var(--border-subtle)',
+                  background: 'var(--bg-surface)',
+                }}
+              />
             </tr>
           ))}
           <tr>
-            <td className="sticky left-0 z-10 w-12 min-w-12 h-7 bg-[#e8f5e9] border border-[#d4d4d4]">
+            <td
+              className="sticky left-0 z-10 w-12 min-w-8 h-7"
+              style={{
+                background: 'var(--bg-surface)',
+                border: '1px solid var(--border-subtle)',
+              }}
+            >
               <button
                 onClick={() => useWorkbookStore.getState().addRow()}
-                className="w-full h-full flex items-center justify-center text-[#52B788] hover:text-[#1B4332] transition-colors"
+                className="w-full h-full flex items-center justify-center transition-colors"
+                style={{ color: 'var(--accent-sheet)' }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = 'white'
+                  e.currentTarget.style.background = 'var(--bg-overlay)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = 'var(--accent-sheet)'
+                  e.currentTarget.style.background = 'transparent'
+                }}
                 title="添加行"
               >
                 <Plus size={14} />
               </button>
             </td>
-            <td colSpan={sheet.colCount + 1} className="h-7 bg-[#fafaf5]" />
+            <td
+              colSpan={sheet.colCount + 1}
+              className="h-7"
+              style={{ background: 'var(--bg-surface)' }}
+            />
           </tr>
         </tbody>
       </table>
 
       {contextMenu && (
         <div
-          className="fixed bg-white rounded-lg shadow-xl border border-[#e0e0e0] py-1 z-50 min-w-[160px]"
-          style={{ left: contextMenu.x, top: contextMenu.y }}
+          className="fixed rounded-lg shadow-xl py-1 z-50 min-w-[160px]"
+          style={{
+            background: 'var(--bg-elevated)',
+            border: '1px solid var(--border-subtle)',
+            left: contextMenu.x,
+            top: contextMenu.y,
+          }}
         >
           <button
-            className="w-full text-left px-3 py-1.5 text-sm hover:bg-[#e8f5e9] text-[#2D3436] flex items-center gap-2"
+            className="w-full text-left px-3 py-1.5 text-sm flex items-center gap-2 transition-colors"
+            style={{ color: 'var(--text-primary)' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'var(--bg-overlay)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'transparent'
+            }}
             onClick={() => {
               insertRow(contextMenu.row)
               setContextMenu(null)
@@ -293,7 +363,14 @@ export default function Spreadsheet() {
             <Plus size={14} /> 在上方插入行
           </button>
           <button
-            className="w-full text-left px-3 py-1.5 text-sm hover:bg-[#e8f5e9] text-[#2D3436] flex items-center gap-2"
+            className="w-full text-left px-3 py-1.5 text-sm flex items-center gap-2 transition-colors"
+            style={{ color: 'var(--text-primary)' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'var(--bg-overlay)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'transparent'
+            }}
             onClick={() => {
               insertColumn(contextMenu.col)
               setContextMenu(null)
@@ -301,9 +378,16 @@ export default function Spreadsheet() {
           >
             <Plus size={14} /> 在左侧插入列
           </button>
-          <div className="border-t border-[#eee] my-1" />
+          <div style={{ borderTop: '1px solid var(--border-subtle)', margin: '4px 0' }} />
           <button
-            className="w-full text-left px-3 py-1.5 text-sm hover:bg-[#fde8e8] text-[#c0392b] flex items-center gap-2"
+            className="w-full text-left px-3 py-1.5 text-sm flex items-center gap-2 transition-colors"
+            style={{ color: '#ff6b6b' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = '#ff6b6b15'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'transparent'
+            }}
             onClick={() => {
               deleteRow(contextMenu.row)
               setContextMenu(null)
@@ -312,7 +396,14 @@ export default function Spreadsheet() {
             <Minus size={14} /> 删除此行
           </button>
           <button
-            className="w-full text-left px-3 py-1.5 text-sm hover:bg-[#fde8e8] text-[#c0392b] flex items-center gap-2"
+            className="w-full text-left px-3 py-1.5 text-sm flex items-center gap-2 transition-colors"
+            style={{ color: '#ff6b6b' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = '#ff6b6b15'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'transparent'
+            }}
             onClick={() => {
               deleteColumn(contextMenu.col)
               setContextMenu(null)

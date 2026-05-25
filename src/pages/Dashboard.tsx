@@ -6,7 +6,7 @@ import {
   Presentation,
   Plus,
   Clock,
-  Sparkles,
+  ArrowRight,
 } from 'lucide-react'
 
 const APPS: {
@@ -14,40 +14,40 @@ const APPS: {
   name: string
   desc: string
   icon: typeof FileText
-  color: string
-  bg: string
+  accent: string
+  accentDim: string
+  glow: string
   path: string
-  gradient: string
 }[] = [
   {
     type: 'doc',
     name: 'TabDoc',
     desc: '文档编辑器',
     icon: FileText,
-    color: '#1E40AF',
-    bg: '#DBEAFE',
+    accent: 'var(--accent-doc)',
+    accentDim: 'var(--accent-doc-dim)',
+    glow: 'var(--glow-doc)',
     path: '/doc',
-    gradient: 'from-blue-600 to-indigo-700',
   },
   {
     type: 'sheet',
     name: 'TabSheet',
     desc: '电子表格',
     icon: Table2,
-    color: '#1B4332',
-    bg: '#DCFCE7',
+    accent: 'var(--accent-sheet)',
+    accentDim: 'var(--accent-sheet-dim)',
+    glow: 'var(--glow-sheet)',
     path: '/sheet',
-    gradient: 'from-emerald-600 to-teal-700',
   },
   {
     type: 'slide',
     name: 'TabSlide',
     desc: '演示文稿',
     icon: Presentation,
-    color: '#9F1239',
-    bg: '#FCE7F3',
+    accent: 'var(--accent-slide)',
+    accentDim: 'var(--accent-slide-dim)',
+    glow: 'var(--glow-slide)',
     path: '/slide',
-    gradient: 'from-rose-600 to-pink-700',
   },
 ]
 
@@ -60,6 +60,14 @@ const TEMPLATES = [
   { name: '产品介绍', type: 'slide' as AppType },
 ]
 
+const RECENT_FILES = [
+  { name: '项目周报', type: 'doc' as AppType, time: '今天 14:30' },
+  { name: '财务报表 Q4', type: 'sheet' as AppType, time: '今天 10:15' },
+  { name: '产品发布会', type: 'slide' as AppType, time: '昨天 16:45' },
+  { name: '需求文档 v2', type: 'doc' as AppType, time: '昨天 09:20' },
+  { name: '数据分析', type: 'sheet' as AppType, time: '3天前' },
+]
+
 export default function Dashboard() {
   const navigate = useNavigate()
 
@@ -69,51 +77,84 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAF5]">
-      <header className="bg-[#1B4332] text-white px-8 py-5 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#52B788] to-[#2D6A4F] flex items-center justify-center shadow-lg">
-            <Sparkles size={20} className="text-white" />
+    <div className="h-full overflow-auto noise-bg" style={{ background: 'var(--bg-base)' }}>
+      <div className="relative z-10 max-w-5xl mx-auto px-8 py-10">
+        <section className="mb-14 animate-fade-up">
+          <div className="flex items-baseline gap-4 mb-2">
+            <h1
+              className="font-display text-4xl font-bold tracking-tight"
+              style={{ color: 'var(--text-primary)' }}
+            >
+              TabOffice
+            </h1>
+            <span
+              className="text-xs font-mono tracking-widest uppercase"
+              style={{ color: 'var(--text-muted)' }}
+            >
+              Suite
+            </span>
           </div>
-          <div>
-            <h1 className="text-lg font-bold tracking-wide">TabOffice</h1>
-            <p className="text-[10px] text-[#b7e4c7] tracking-widest uppercase">Productivity Suite</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <span className="text-xs text-[#b7e4c7]">轻量办公，即刻开始</span>
-        </div>
-      </header>
+          <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+            轻量办公，即刻开始
+          </p>
+        </section>
 
-      <main className="max-w-6xl mx-auto px-8 py-10">
-        <section className="mb-12">
-          <div className="flex items-center gap-2 mb-6">
-            <Plus size={18} className="text-[#1B4332]" />
-            <h2 className="text-lg font-bold text-[#1B4332]">新建</h2>
+        <section className="mb-14">
+          <div className="flex items-center gap-2 mb-5">
+            <Plus size={14} style={{ color: 'var(--text-muted)' }} />
+            <h2
+              className="text-xs font-mono tracking-widest uppercase"
+              style={{ color: 'var(--text-muted)' }}
+            >
+              新建
+            </h2>
           </div>
-          <div className="grid grid-cols-3 gap-6">
-            {APPS.map((app) => {
+          <div className="grid grid-cols-3 gap-4">
+            {APPS.map((app, i) => {
               const Icon = app.icon
               return (
                 <button
                   key={app.type}
                   onClick={() => goToApp(app.type)}
-                  className="group relative overflow-hidden rounded-2xl bg-white border border-[#e5e5e5] p-6 text-left transition-all duration-300 hover:shadow-xl hover:shadow-[#1B4332]/8 hover:-translate-y-1 hover:border-[#52B788]/30"
+                  className="group relative overflow-hidden rounded-xl p-6 text-left transition-all duration-300 animate-fade-up"
+                  style={{
+                    background: 'var(--bg-surface)',
+                    border: '1px solid var(--border-subtle)',
+                    animationDelay: `${i * 80}ms`,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = `${app.accentDim}88`
+                    e.currentTarget.style.transform = 'translateY(-2px)'
+                    e.currentTarget.style.boxShadow = `0 8px 32px ${app.glow}`
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--border-subtle)'
+                    e.currentTarget.style.transform = 'translateY(0)'
+                    e.currentTarget.style.boxShadow = 'none'
+                  }}
                 >
                   <div
-                    className={`absolute inset-0 bg-gradient-to-br ${app.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}
-                  />
-                  <div
-                    className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110"
-                    style={{ backgroundColor: app.bg }}
-                  >
-                    <Icon size={28} style={{ color: app.color }} />
-                  </div>
-                  <h3 className="text-base font-bold text-[#2D3436] mb-1">{app.name}</h3>
-                  <p className="text-sm text-[#999]">{app.desc}</p>
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-b-2xl"
+                    className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110"
                     style={{
-                      backgroundImage: `linear-gradient(to right, ${app.color}, ${app.color}88)`,
+                      background: `linear-gradient(135deg, ${app.accentDim}44, ${app.accent}22)`,
+                      border: `1px solid ${app.accentDim}44`,
+                    }}
+                  >
+                    <Icon size={24} style={{ color: app.accent }} />
+                  </div>
+                  <h3
+                    className="font-display text-base font-bold mb-1"
+                    style={{ color: 'var(--text-primary)' }}
+                  >
+                    {app.name}
+                  </h3>
+                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                    {app.desc}
+                  </p>
+                  <div
+                    className="absolute bottom-0 left-0 right-0 h-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    style={{
+                      background: `linear-gradient(to right, transparent, ${app.accent}, transparent)`,
                     }}
                   />
                 </button>
@@ -122,12 +163,17 @@ export default function Dashboard() {
           </div>
         </section>
 
-        <section className="mb-12">
-          <div className="flex items-center gap-2 mb-6">
-            <Sparkles size={18} className="text-[#1B4332]" />
-            <h2 className="text-lg font-bold text-[#1B4332]">快速开始</h2>
+        <section className="mb-14">
+          <div className="flex items-center gap-2 mb-5">
+            <ArrowRight size={14} style={{ color: 'var(--text-muted)' }} />
+            <h2
+              className="text-xs font-mono tracking-widest uppercase"
+              style={{ color: 'var(--text-muted)' }}
+            >
+              快速开始
+            </h2>
           </div>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-3">
             {TEMPLATES.map((tpl, i) => {
               const app = APPS.find((a) => a.type === tpl.type)!
               const Icon = app.icon
@@ -135,15 +181,33 @@ export default function Dashboard() {
                 <button
                   key={i}
                   onClick={() => goToApp(tpl.type)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white border border-[#e5e5e5] hover:border-[#52B788]/40 hover:bg-[#f0fdf4] transition-all duration-200 group"
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group animate-fade-up"
+                  style={{
+                    background: 'var(--bg-surface)',
+                    border: '1px solid var(--border-subtle)',
+                    animationDelay: `${300 + i * 60}ms`,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = `${app.accentDim}66`
+                    e.currentTarget.style.background = 'var(--bg-elevated)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--border-subtle)'
+                    e.currentTarget.style.background = 'var(--bg-surface)'
+                  }}
                 >
                   <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: app.bg }}
+                    className="w-7 h-7 rounded-md flex items-center justify-center shrink-0"
+                    style={{
+                      background: `${app.accentDim}22`,
+                    }}
                   >
-                    <Icon size={16} style={{ color: app.color }} />
+                    <Icon size={14} style={{ color: app.accent }} />
                   </div>
-                  <span className="text-sm text-[#2D3436] group-hover:text-[#1B4332] font-medium">
+                  <span
+                    className="text-sm font-medium group-hover:translate-x-0.5 transition-transform"
+                    style={{ color: 'var(--text-secondary)' }}
+                  >
                     {tpl.name}
                   </span>
                 </button>
@@ -153,59 +217,83 @@ export default function Dashboard() {
         </section>
 
         <section>
-          <div className="flex items-center gap-2 mb-6">
-            <Clock size={18} className="text-[#1B4332]" />
-            <h2 className="text-lg font-bold text-[#1B4332]">最近文件</h2>
+          <div className="flex items-center gap-2 mb-5">
+            <Clock size={14} style={{ color: 'var(--text-muted)' }} />
+            <h2
+              className="text-xs font-mono tracking-widest uppercase"
+              style={{ color: 'var(--text-muted)' }}
+            >
+              最近文件
+            </h2>
           </div>
-          <div className="rounded-2xl bg-white border border-[#e5e5e5] overflow-hidden">
-            <div className="px-6 py-4 border-b border-[#f0f0f0] flex items-center text-xs text-[#999] font-medium">
+          <div
+            className="rounded-xl overflow-hidden"
+            style={{
+              background: 'var(--bg-surface)',
+              border: '1px solid var(--border-subtle)',
+            }}
+          >
+            <div
+              className="px-5 py-3 flex items-center text-[10px] font-mono tracking-wider uppercase"
+              style={{ borderBottom: '1px solid var(--border-subtle)', color: 'var(--text-muted)' }}
+            >
               <span className="flex-1">文件名</span>
-              <span className="w-24 text-center">类型</span>
-              <span className="w-32 text-right">最近打开</span>
+              <span className="w-20 text-center">类型</span>
+              <span className="w-28 text-right">最近打开</span>
             </div>
-            {[
-              { name: '项目周报', type: 'doc' as AppType, time: '今天 14:30' },
-              { name: '财务报表 Q4', type: 'sheet' as AppType, time: '今天 10:15' },
-              { name: '产品发布会', type: 'slide' as AppType, time: '昨天 16:45' },
-              { name: '需求文档 v2', type: 'doc' as AppType, time: '昨天 09:20' },
-              { name: '数据分析', type: 'sheet' as AppType, time: '3天前' },
-            ].map((file, i) => {
+            {RECENT_FILES.map((file, i) => {
               const app = APPS.find((a) => a.type === file.type)!
               const Icon = app.icon
               return (
                 <button
                   key={i}
                   onClick={() => goToApp(file.type)}
-                  className="w-full px-6 py-3 flex items-center hover:bg-[#f0fdf4] transition-colors duration-150 group"
+                  className="w-full px-5 py-2.5 flex items-center transition-all duration-150 group"
+                  style={{
+                    borderBottom: i < RECENT_FILES.length - 1 ? '1px solid var(--border-subtle)' : 'none',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'var(--bg-elevated)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent'
+                  }}
                 >
                   <span className="flex-1 flex items-center gap-3">
                     <div
-                      className="w-7 h-7 rounded-md flex items-center justify-center shrink-0"
-                      style={{ backgroundColor: app.bg }}
+                      className="w-6 h-6 rounded-md flex items-center justify-center shrink-0"
+                      style={{ background: `${app.accentDim}22` }}
                     >
-                      <Icon size={14} style={{ color: app.color }} />
+                      <Icon size={12} style={{ color: app.accent }} />
                     </div>
-                    <span className="text-sm text-[#2D3436] group-hover:text-[#1B4332] font-medium">
+                    <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
                       {file.name}
                     </span>
                   </span>
                   <span
-                    className="w-24 text-center text-xs font-medium px-2 py-0.5 rounded-full"
-                    style={{ backgroundColor: app.bg, color: app.color }}
+                    className="w-20 text-center text-[10px] font-mono px-2 py-0.5 rounded-full"
+                    style={{
+                      background: `${app.accentDim}22`,
+                      color: app.accent,
+                    }}
                   >
                     {app.desc}
                   </span>
-                  <span className="w-32 text-right text-xs text-[#999]">{file.time}</span>
+                  <span className="w-28 text-right text-xs font-mono" style={{ color: 'var(--text-muted)' }}>
+                    {file.time}
+                  </span>
                 </button>
               )
             })}
           </div>
         </section>
-      </main>
 
-      <footer className="text-center py-6 text-xs text-[#bbb]">
-        TabOffice Suite · 轻量级在线办公工具
-      </footer>
+        <footer className="mt-16 mb-8 text-center">
+          <span className="text-[10px] font-mono tracking-widest" style={{ color: 'var(--text-muted)' }}>
+            TABOFFICE · PRODUCTIVITY SUITE
+          </span>
+        </footer>
+      </div>
     </div>
   )
 }
