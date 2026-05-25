@@ -780,6 +780,257 @@ header {
   pointer-events: none;
   z-index: 1;
 }
+
+/* Physics Panel */
+.physics-section {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.physics-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.physics-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.physics-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-2);
+  width: 70px;
+  flex-shrink: 0;
+}
+
+.physics-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--bg-4);
+  outline: none;
+}
+
+.physics-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--gold);
+  cursor: pointer;
+  box-shadow: 0 0 8px var(--gold-dim);
+}
+
+.physics-value {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-1);
+  width: 50px;
+  text-align: right;
+}
+
+.physics-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  background: var(--bg-4);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s;
+  flex-shrink: 0;
+}
+
+.toggle-switch.active { background: var(--accent); }
+
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: white;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s;
+}
+
+.toggle-switch.active::after { transform: translateX(16px); }
+
+.toggle-label {
+  font-size: 12px;
+  color: var(--text-1);
+}
+
+.physics-preset-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.physics-preset-btn {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-3);
+  color: var(--text-1);
+  cursor: pointer;
+  font-size: 11px;
+  font-family: var(--sans);
+  font-weight: 500;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.physics-preset-btn:hover { background: var(--bg-4); color: var(--text-0); border-color: var(--gold); }
+.physics-preset-btn.active { background: var(--gold-dim); color: var(--gold); border-color: var(--gold); }
+
+.physics-bone-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.physics-bone-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-bottom: 1px solid rgba(42,54,80,0.3);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.physics-bone-item:hover { background: var(--bg-2); }
+.physics-bone-item.active { background: var(--gold-dim); }
+
+.physics-bone-item .bone-name {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-1);
+  flex: 1;
+}
+
+.physics-bone-item .physics-tag {
+  font-size: 9px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+.physics-tag.active { background: var(--accent-dim); color: var(--accent); }
+.physics-tag.inactive { background: var(--bg-4); color: var(--text-3); }
+
+/* Conversion Table */
+.conv-table-wrap {
+  overflow-x: auto;
+  padding: 0 14px 14px;
+}
+
+.conv-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+.conv-table th {
+  padding: 6px 8px;
+  text-align: left;
+  color: var(--text-2);
+  border-bottom: 1px solid var(--border-light);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 9px;
+  position: sticky;
+  top: 0;
+  background: var(--bg-1);
+}
+
+.conv-table td {
+  padding: 5px 8px;
+  color: var(--text-1);
+  border-bottom: 1px solid rgba(42,54,80,0.3);
+}
+
+.conv-table tr:hover td { background: var(--bg-2); }
+
+.conv-table .val-accent { color: var(--accent); }
+.conv-table .val-warn { color: var(--warn); }
+.conv-table .val-info { color: var(--info); }
+.conv-table .val-purple { color: var(--purple); }
+.conv-table .val-gold { color: var(--gold); }
+
+.conv-table input {
+  width: 50px;
+  padding: 2px 4px;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text-0);
+  font-family: var(--mono);
+  font-size: 10px;
+  text-align: center;
+  outline: none;
+}
+
+.conv-table input:focus { border-color: var(--accent); }
+
+.conv-category {
+  font-weight: 600;
+  color: var(--gold);
+  background: var(--gold-dim);
+  padding: 4px 8px !important;
+  font-size: 10px;
+}
+
+/* Physics debug overlay */
+.physics-debug {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  padding: 8px 12px;
+  background: rgba(10,14,23,0.85);
+  backdrop-filter: blur(8px);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-2);
+  z-index: 5;
+  pointer-events: none;
+  display: none;
+}
+
+.physics-debug.visible { display: block; }
+
+.physics-debug .debug-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 2px;
+}
+
+.physics-debug .debug-val { color: var(--gold); }
 </style>
 </head>
 <body>
@@ -848,6 +1099,12 @@ header {
       <div class="drop-title">拖放 VRM 文件到此处</div>
       <div class="drop-sub">或 <span id="browseLink">浏览文件</span> 选择 .vrm 模型</div>
     </div>
+    <div class="physics-debug" id="physicsDebug">
+      <div class="debug-row"><span>物理状态</span><span class="debug-val" id="dbgPhysState">停止</span></div>
+      <div class="debug-row"><span>活跃骨骼</span><span class="debug-val" id="dbgActiveBones">0</span></div>
+      <div class="debug-row"><span>总能量</span><span class="debug-val" id="dbgTotalEnergy">0.000</span></div>
+      <div class="debug-row"><span>最大速度</span><span class="debug-val" id="dbgMaxVelocity">0.000</span></div>
+    </div>
   </div>
 
   <!-- Right Panel - Remapping & Properties -->
@@ -855,6 +1112,8 @@ header {
     <div class="tab-bar">
       <button class="tab-btn active" data-tab="remap">重映射</button>
       <button class="tab-btn" data-tab="pose">姿态</button>
+      <button class="tab-btn" data-tab="physics">物理</button>
+      <button class="tab-btn" data-tab="convtable">转换表</button>
       <button class="tab-btn" data-tab="props">属性</button>
     </div>
 
@@ -920,6 +1179,109 @@ header {
       <div id="propsContent" style="padding:14px">
         <div style="color:var(--text-3);font-size:13px;text-align:center;padding:40px 0">加载 VRM 模型后显示属性</div>
       </div>
+    </div>
+
+    <!-- Physics Tab -->
+    <div class="tab-content" id="tab-physics">
+      <div class="panel-header">
+        <span>软体骨骼物理</span>
+        <div class="toggle-switch" id="physicsToggle" title="启用/禁用物理模拟"></div>
+      </div>
+      <div class="physics-section">
+        <div class="physics-section-title">
+          <span>全局参数</span>
+          <span style="font-size:10px;color:var(--gold);font-family:var(--mono)" id="physicsStatus">已停止</span>
+        </div>
+        <div class="physics-row">
+          <span class="physics-label">重力</span>
+          <input type="range" class="physics-slider" id="physGravity" min="0" max="20" step="0.1" value="9.8">
+          <span class="physics-value" id="physGravityVal">9.8</span>
+        </div>
+        <div class="physics-row">
+          <span class="physics-label">时间步长</span>
+          <input type="range" class="physics-slider" id="physTimeStep" min="0.001" max="0.033" step="0.001" value="0.016">
+          <span class="physics-value" id="physTimeStepVal">0.016</span>
+        </div>
+        <div class="physics-row">
+          <span class="physics-label">迭代次数</span>
+          <input type="range" class="physics-slider" id="physIterations" min="1" max="20" step="1" value="5">
+          <span class="physics-value" id="physIterationsVal">5</span>
+        </div>
+      </div>
+      <div class="physics-section">
+        <div class="physics-section-title">
+          <span>骨骼弹簧参数</span>
+        </div>
+        <div class="physics-row">
+          <span class="physics-label">刚度</span>
+          <input type="range" class="physics-slider" id="physStiffness" min="0" max="1" step="0.01" value="0.5">
+          <span class="physics-value" id="physStiffnessVal">0.50</span>
+        </div>
+        <div class="physics-row">
+          <span class="physics-label">阻尼</span>
+          <input type="range" class="physics-slider" id="physDamping" min="0" max="1" step="0.01" value="0.3">
+          <span class="physics-value" id="physDampingVal">0.30</span>
+        </div>
+        <div class="physics-row">
+          <span class="physics-label">质量</span>
+          <input type="range" class="physics-slider" id="physMass" min="0.01" max="5" step="0.01" value="1.0">
+          <span class="physics-value" id="physMassVal">1.00</span>
+        </div>
+        <div class="physics-row">
+          <span class="physics-label">角度限制</span>
+          <input type="range" class="physics-slider" id="physAngleLimit" min="0" max="180" step="1" value="45">
+          <span class="physics-value" id="physAngleLimitVal">45°</span>
+        </div>
+      </div>
+      <div class="physics-section">
+        <div class="physics-section-title">
+          <span>外力</span>
+        </div>
+        <div class="physics-row">
+          <span class="physics-label">风力 X</span>
+          <input type="range" class="physics-slider" id="physWindX" min="-5" max="5" step="0.1" value="0">
+          <span class="physics-value" id="physWindXVal">0.0</span>
+        </div>
+        <div class="physics-row">
+          <span class="physics-label">风力 Y</span>
+          <input type="range" class="physics-slider" id="physWindY" min="-5" max="5" step="0.1" value="0">
+          <span class="physics-value" id="physWindYVal">0.0</span>
+        </div>
+        <div class="physics-row">
+          <span class="physics-label">风力 Z</span>
+          <input type="range" class="physics-slider" id="physWindZ" min="-5" max="5" step="0.1" value="0">
+          <span class="physics-value" id="physWindZVal">0.0</span>
+        </div>
+      </div>
+      <div class="physics-section">
+        <div class="physics-section-title">
+          <span>预设材质</span>
+        </div>
+        <div class="physics-preset-grid">
+          <button class="physics-preset-btn active" data-preset="default">默认</button>
+          <button class="physics-preset-btn" data-preset="rubber">橡胶</button>
+          <button class="physics-preset-btn" data-preset="cloth">布料</button>
+          <button class="physics-preset-btn" data-preset="jelly">果冻</button>
+          <button class="physics-preset-btn" data-preset="metal">金属</button>
+          <button class="physics-preset-btn" data-preset="hair">头发</button>
+        </div>
+      </div>
+      <div class="physics-section">
+        <div class="physics-section-title">
+          <span>启用物理的骨骼</span>
+          <span class="badge" id="physicsBoneCount">0</span>
+        </div>
+        <div class="physics-bone-list" id="physicsBoneList"></div>
+      </div>
+    </div>
+
+    <!-- Conversion Table Tab -->
+    <div class="tab-content" id="tab-convtable">
+      <div class="panel-header">
+        <span>数字转换表格</span>
+        <button class="btn" id="btnExportConv" style="font-size:10px;padding:3px 8px">导出</button>
+      </div>
+      <div class="conv-table-wrap" id="convTableWrap"></div>
     </div>
   </div>
 
@@ -1064,6 +1426,195 @@ const VRM_HUMANOID_BONES = [
   ]},
 ];
 
+class SoftBodyPhysics {
+  constructor() {
+    this.enabled = false;
+    this.gravity = 9.8;
+    this.timeStep = 0.016;
+    this.iterations = 5;
+    this.stiffness = 0.5;
+    this.damping = 0.3;
+    this.mass = 1.0;
+    this.angleLimit = 45;
+    this.wind = { x: 0, y: 0, z: 0 };
+    this.boneStates = {};
+    this.physicsBones = new Set();
+  }
+
+  registerBone(boneName, bone) {
+    this.boneStates[boneName] = {
+      bone,
+      restRotation: { x: bone.rotation.x, y: bone.rotation.y, z: bone.rotation.z },
+      velocity: { x: 0, y: 0, z: 0 },
+      angularVelocity: { x: 0, y: 0, z: 0 },
+      currentRotation: { x: bone.rotation.x, y: bone.rotation.y, z: bone.rotation.z },
+      mass: this.mass,
+      stiffness: this.stiffness,
+      damping: this.damping,
+      angleLimit: this.angleLimit,
+    };
+  }
+
+  unregisterBone(boneName) {
+    delete this.boneStates[boneName];
+    this.physicsBones.delete(boneName);
+  }
+
+  enableBone(boneName) {
+    if (this.boneStates[boneName]) {
+      this.physicsBones.add(boneName);
+      const state = this.boneStates[boneName];
+      state.velocity = { x: 0, y: 0, z: 0 };
+      state.angularVelocity = { x: 0, y: 0, z: 0 };
+      state.currentRotation = { x: state.bone.rotation.x, y: state.bone.rotation.y, z: state.bone.rotation.z };
+    }
+  }
+
+  disableBone(boneName) {
+    this.physicsBones.delete(boneName);
+    const state = this.boneStates[boneName];
+    if (state) {
+      state.bone.rotation.set(state.restRotation.x, state.restRotation.y, state.restRotation.z);
+    }
+  }
+
+  applyPreset(preset) {
+    const presets = {
+      default: { stiffness: 0.5, damping: 0.3, mass: 1.0, angleLimit: 45 },
+      rubber: { stiffness: 0.2, damping: 0.1, mass: 0.8, angleLimit: 90 },
+      cloth: { stiffness: 0.05, damping: 0.02, mass: 0.3, angleLimit: 120 },
+      jelly: { stiffness: 0.1, damping: 0.05, mass: 1.5, angleLimit: 60 },
+      metal: { stiffness: 0.95, damping: 0.8, mass: 3.0, angleLimit: 10 },
+      hair: { stiffness: 0.15, damping: 0.08, mass: 0.2, angleLimit: 80 },
+    };
+    const p = presets[preset] || presets.default;
+    this.stiffness = p.stiffness;
+    this.damping = p.damping;
+    this.mass = p.mass;
+    this.angleLimit = p.angleLimit;
+    Object.values(this.boneStates).forEach(s => {
+      s.stiffness = p.stiffness;
+      s.damping = p.damping;
+      s.mass = p.mass;
+      s.angleLimit = p.angleLimit;
+    });
+    return p;
+  }
+
+  step(delta) {
+    if (!this.enabled || this.physicsBones.size === 0) return;
+
+    const dt = Math.min(delta, this.timeStep);
+    const g = this.gravity;
+    const windForce = this.wind;
+
+    for (const boneName of this.physicsBones) {
+      const state = this.boneStates[boneName];
+      if (!state) continue;
+
+      const bone = state.bone;
+      const rest = state.restRotation;
+      const cur = state.currentRotation;
+      const vel = state.angularVelocity;
+
+      const springForceX = -state.stiffness * (cur.x - rest.x);
+      const springForceY = -state.stiffness * (cur.y - rest.y);
+      const springForceZ = -state.stiffness * (cur.z - rest.z);
+
+      const dampForceX = -state.damping * vel.x;
+      const dampForceY = -state.damping * vel.y;
+      const dampForceZ = -state.damping * vel.z;
+
+      const gravityTorqueX = (g * state.mass * 0.01) * Math.cos(cur.x);
+      const gravityTorqueY = 0;
+      const gravityTorqueZ = (g * state.mass * 0.01) * Math.sin(cur.z) * 0.3;
+
+      const windTorqueX = windForce.x * 0.02 * state.mass;
+      const windTorqueY = windForce.y * 0.02 * state.mass;
+      const windTorqueZ = windForce.z * 0.02 * state.mass;
+
+      const totalForceX = springForceX + dampForceX + gravityTorqueX + windTorqueX;
+      const totalForceY = springForceY + dampForceY + gravityTorqueY + windTorqueY;
+      const totalForceZ = springForceZ + dampForceZ + gravityTorqueZ + windTorqueZ;
+
+      const invMass = 1.0 / Math.max(0.01, state.mass);
+      vel.x += totalForceX * invMass * dt;
+      vel.y += totalForceY * invMass * dt;
+      vel.z += totalForceZ * invMass * dt;
+
+      cur.x += vel.x * dt;
+      cur.y += vel.y * dt;
+      cur.z += vel.z * dt;
+
+      const limitRad = THREE.MathUtils.degToRad(state.angleLimit);
+      cur.x = THREE.MathUtils.clamp(cur.x, rest.x - limitRad, rest.x + limitRad);
+      cur.y = THREE.MathUtils.clamp(cur.y, rest.y - limitRad, rest.y + limitRad);
+      cur.z = THREE.MathUtils.clamp(cur.z, rest.z - limitRad, rest.z + limitRad);
+
+      bone.rotation.x = cur.x;
+      bone.rotation.y = cur.y;
+      bone.rotation.z = cur.z;
+    }
+  }
+
+  getStats() {
+    let totalEnergy = 0;
+    let maxVel = 0;
+    let active = 0;
+    for (const boneName of this.physicsBones) {
+      const state = this.boneStates[boneName];
+      if (!state) continue;
+      active++;
+      const v = state.angularVelocity;
+      const speed = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+      maxVel = Math.max(maxVel, speed);
+      const cur = state.currentRotation;
+      const rest = state.restRotation;
+      const dx = cur.x - rest.x, dy = cur.y - rest.y, dz = cur.z - rest.z;
+      totalEnergy += 0.5 * state.mass * speed * speed + 0.5 * state.stiffness * (dx*dx + dy*dy + dz*dz);
+    }
+    return { active, totalEnergy, maxVelocity: maxVel };
+  }
+
+  reset() {
+    for (const boneName of this.physicsBones) {
+      const state = this.boneStates[boneName];
+      if (!state) continue;
+      state.currentRotation = { ...state.restRotation };
+      state.angularVelocity = { x: 0, y: 0, z: 0 };
+      state.velocity = { x: 0, y: 0, z: 0 };
+      state.bone.rotation.set(state.restRotation.x, state.restRotation.y, state.restRotation.z);
+    }
+  }
+}
+
+const PHYSICS_CONVERSION_TABLE = [
+  { category: '弹簧-阻尼', rows: [
+    { param: '刚度 (k)', unit: 'N/m', range: '0 ~ 1', vrmRange: '0.0 ~ 1.0', formula: 'k_vrm = k_real / k_max', description: '弹簧恢复力系数' },
+    { param: '阻尼 (c)', unit: 'Ns/m', range: '0 ~ 1', vrmRange: '0.0 ~ 1.0', formula: 'c_vrm = c_real / c_max', description: '速度衰减系数' },
+    { param: '质量 (m)', unit: 'kg', range: '0.01 ~ 5', vrmRange: '0.01 ~ 5.0', formula: 'm_vrm = m_real / scale', description: '骨骼等效质量' },
+    { param: '角度限制', unit: '°', range: '0 ~ 180', vrmRange: '0 ~ 180', formula: 'θ_vrm = θ_real', description: '最大旋转偏移角' },
+  ]},
+  { category: '重力与外力', rows: [
+    { param: '重力 (g)', unit: 'm/s²', range: '0 ~ 20', vrmRange: '0.0 ~ 20.0', formula: 'g_vrm = g_real', description: '重力加速度' },
+    { param: '风力 (Fw)', unit: 'N', range: '-5 ~ 5', vrmRange: '-5.0 ~ 5.0', formula: 'Fw_vrm = Fw_real * 0.02', description: '外部风力矢量' },
+    { param: '时间步长 (dt)', unit: 's', range: '0.001 ~ 0.033', vrmRange: '0.001 ~ 0.033', formula: 'dt_vrm = dt_real', description: '物理模拟步长' },
+  ]},
+  { category: '数值转换', rows: [
+    { param: '角速度 (ω)', unit: 'rad/s', range: '--', vrmRange: '--', formula: 'ω_vrm = Δθ / dt', description: '旋转角速度' },
+    { param: '动能 (Ek)', unit: 'J', range: '--', vrmRange: '--', formula: 'Ek = 0.5 * m * ω²', description: '运动能量' },
+    { param: '势能 (Ep)', unit: 'J', range: '--', vrmRange: '--', formula: 'Ep = 0.5 * k * Δθ²', description: '弹性势能' },
+    { param: '总能量 (E)', unit: 'J', range: '--', vrmRange: '--', formula: 'E = Ek + Ep', description: '系统总能量' },
+  ]},
+  { category: '材质预设映射', rows: [
+    { param: '橡胶', k: '0.20', c: '0.10', m: '0.80', θ: '90°', description: '高弹性低阻尼' },
+    { param: '布料', k: '0.05', c: '0.02', m: '0.30', θ: '120°', description: '极软高自由度' },
+    { param: '果冻', k: '0.10', c: '0.05', m: '1.50', θ: '60°', description: '柔软有惯性' },
+    { param: '金属', k: '0.95', c: '0.80', m: '3.00', θ: '10°', description: '高刚度高阻尼' },
+    { param: '头发', k: '0.15', c: '0.08', m: '0.20', θ: '80°', description: '轻质链式' },
+  ]},
+];
+
 class VRMBoneStudio {
   constructor() {
     this.scene = null;
@@ -1089,15 +1640,18 @@ class VRMBoneStudio {
     this.fpsTime = 0;
     this.fpsValue = 0;
     this.clock = new THREE.Clock();
+    this.physics = new SoftBodyPhysics();
     this.init();
   }
 
   init() {
     this.setupThree();
     this.setupUI();
+    this.setupPhysicsUI();
     this.buildBoneTree();
     this.buildRemapList();
     this.buildTimeline();
+    this.buildConversionTable();
     this.animate();
   }
 
@@ -1259,6 +1813,170 @@ class VRMBoneStudio {
     });
   }
 
+  setupPhysicsUI() {
+    document.getElementById('physicsToggle').addEventListener('click', () => {
+      this.physics.enabled = !this.physics.enabled;
+      document.getElementById('physicsToggle').classList.toggle('active', this.physics.enabled);
+      document.getElementById('physicsStatus').textContent = this.physics.enabled ? '运行中' : '已停止';
+      document.getElementById('physicsStatus').style.color = this.physics.enabled ? 'var(--accent)' : 'var(--gold)';
+      document.getElementById('physicsDebug').classList.toggle('visible', this.physics.enabled);
+      if (this.physics.enabled) {
+        this.toast('物理模拟已启用', 'success');
+      } else {
+        this.physics.reset();
+        this.toast('物理模拟已停止', 'info');
+      }
+    });
+
+    const physSliders = [
+      { id: 'physGravity', prop: 'gravity', valId: 'physGravityVal', fmt: v => v.toFixed(1) },
+      { id: 'physTimeStep', prop: 'timeStep', valId: 'physTimeStepVal', fmt: v => v.toFixed(3) },
+      { id: 'physIterations', prop: 'iterations', valId: 'physIterationsVal', fmt: v => v.toFixed(0) },
+      { id: 'physStiffness', prop: 'stiffness', valId: 'physStiffnessVal', fmt: v => v.toFixed(2) },
+      { id: 'physDamping', prop: 'damping', valId: 'physDampingVal', fmt: v => v.toFixed(2) },
+      { id: 'physMass', prop: 'mass', valId: 'physMassVal', fmt: v => v.toFixed(2) },
+      { id: 'physAngleLimit', prop: 'angleLimit', valId: 'physAngleLimitVal', fmt: v => v.toFixed(0) + '°' },
+    ];
+
+    physSliders.forEach(({ id, prop, valId, fmt }) => {
+      document.getElementById(id).addEventListener('input', (e) => {
+        const v = parseFloat(e.target.value);
+        this.physics[prop] = v;
+        document.getElementById(valId).textContent = fmt(v);
+        Object.values(this.physics.boneStates).forEach(s => {
+          if (['stiffness', 'damping', 'mass', 'angleLimit'].includes(prop)) {
+            s[prop] = v;
+          }
+        });
+      });
+    });
+
+    ['physWindX', 'physWindY', 'physWindZ'].forEach((id, i) => {
+      const axis = ['x', 'y', 'z'][i];
+      document.getElementById(id).addEventListener('input', (e) => {
+        this.physics.wind[axis] = parseFloat(e.target.value);
+        document.getElementById(id + 'Val').textContent = parseFloat(e.target.value).toFixed(1);
+      });
+    });
+
+    document.querySelectorAll('.physics-preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.physics-preset-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const preset = btn.dataset.preset;
+        const p = this.physics.applyPreset(preset);
+
+        document.getElementById('physStiffness').value = p.stiffness;
+        document.getElementById('physStiffnessVal').textContent = p.stiffness.toFixed(2);
+        document.getElementById('physDamping').value = p.damping;
+        document.getElementById('physDampingVal').textContent = p.damping.toFixed(2);
+        document.getElementById('physMass').value = p.mass;
+        document.getElementById('physMassVal').textContent = p.mass.toFixed(2);
+        document.getElementById('physAngleLimit').value = p.angleLimit;
+        document.getElementById('physAngleLimitVal').textContent = p.angleLimit + '°';
+
+        this.toast(`已应用 ${btn.textContent} 预设`, 'info');
+      });
+    });
+
+    document.getElementById('btnExportConv').addEventListener('click', () => this.exportConversionTable());
+  }
+
+  buildPhysicsBoneList() {
+    const list = document.getElementById('physicsBoneList');
+    list.innerHTML = '';
+
+    const softBones = ['head', 'neck', 'leftShoulder', 'rightShoulder', 'leftUpperArm', 'rightUpperArm', 'leftLowerArm', 'rightLowerArm', 'leftHand', 'rightHand', 'leftUpperLeg', 'rightUpperLeg', 'leftLowerLeg', 'rightLowerLeg', 'leftFoot', 'rightFoot', 'jaw', 'spine', 'chest', 'upperChest'];
+
+    softBones.forEach(boneName => {
+      const bone = this.bones[boneName];
+      if (!bone) return;
+
+      const isActive = this.physics.physicsBones.has(boneName);
+      const item = document.createElement('div');
+      item.className = `physics-bone-item ${isActive ? 'active' : ''}`;
+      item.innerHTML = `
+        <span class="bone-name">${boneName}</span>
+        <span class="physics-tag ${isActive ? 'active' : 'inactive'}">${isActive ? '启用' : '停用'}</span>
+      `;
+      item.addEventListener('click', () => {
+        if (this.physics.physicsBones.has(boneName)) {
+          this.physics.disableBone(boneName);
+        } else {
+          this.physics.enableBone(boneName);
+        }
+        this.buildPhysicsBoneList();
+      });
+      list.appendChild(item);
+    });
+
+    document.getElementById('physicsBoneCount').textContent = this.physics.physicsBones.size;
+  }
+
+  buildConversionTable() {
+    const wrap = document.getElementById('convTableWrap');
+    let html = '<table class="conv-table">';
+
+    html += '<thead><tr>';
+    html += '<th>参数</th><th>单位</th><th>物理范围</th><th>VRM范围</th><th>转换公式</th><th>说明</th>';
+    html += '</tr></thead><tbody>';
+
+    PHYSICS_CONVERSION_TABLE.forEach(cat => {
+      html += `<tr><td colspan="6" class="conv-category">${cat.category}</td></tr>`;
+      cat.rows.forEach(row => {
+        if (cat.category === '材质预设映射') {
+          html += `<tr>`;
+          html += `<td class="val-gold">${row.param}</td>`;
+          html += `<td>k=<span class="val-accent">${row.k}</span></td>`;
+          html += `<td>c=<span class="val-info">${row.c}</span></td>`;
+          html += `<td>m=<span class="val-purple">${row.m}</span></td>`;
+          html += `<td>θ=<span class="val-warn">${row.θ}</span></td>`;
+          html += `<td>${row.description}</td>`;
+          html += `</tr>`;
+        } else {
+          html += `<tr>`;
+          html += `<td class="val-accent">${row.param}</td>`;
+          html += `<td>${row.unit}</td>`;
+          html += `<td class="val-info">${row.range}</td>`;
+          html += `<td class="val-purple">${row.vrmRange}</td>`;
+          html += `<td class="val-gold">${row.formula}</td>`;
+          html += `<td>${row.description}</td>`;
+          html += `</tr>`;
+        }
+      });
+    });
+
+    html += '</tbody></table>';
+    wrap.innerHTML = html;
+  }
+
+  exportConversionTable() {
+    const data = {
+      version: '1.0',
+      timestamp: new Date().toISOString(),
+      physicsConfig: {
+        gravity: this.physics.gravity,
+        timeStep: this.physics.timeStep,
+        iterations: this.physics.iterations,
+        stiffness: this.physics.stiffness,
+        damping: this.physics.damping,
+        mass: this.physics.mass,
+        angleLimit: this.physics.angleLimit,
+        wind: this.physics.wind,
+        enabledBones: [...this.physics.physicsBones],
+      },
+      conversionTable: PHYSICS_CONVERSION_TABLE,
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'vrm_physics_config.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    this.toast('物理配置已导出！', 'success');
+  }
+
   async loadVRM(file) {
     this.toast('正在加载 VRM 模型...', 'info');
     document.getElementById('vpInfo').textContent = '加载中...';
@@ -1306,6 +2024,11 @@ class VRMBoneStudio {
         this.buildBoneHelpers();
         this.buildExpressionSliders(vrm);
         this.showProperties(vrm, file);
+
+        Object.entries(this.bones).forEach(([name, bone]) => {
+          this.physics.registerBone(name, bone);
+        });
+        this.buildPhysicsBoneList();
 
         this.toast('VRM 模型加载成功！', 'success');
         URL.revokeObjectURL(url);
@@ -1841,6 +2564,17 @@ class VRMBoneStudio {
       timestamp: new Date().toISOString(),
       boneMapping: this.boneMapping,
       keyframes: this.keyframes,
+      physicsConfig: {
+        gravity: this.physics.gravity,
+        timeStep: this.physics.timeStep,
+        iterations: this.physics.iterations,
+        stiffness: this.physics.stiffness,
+        damping: this.physics.damping,
+        mass: this.physics.mass,
+        angleLimit: this.physics.angleLimit,
+        wind: this.physics.wind,
+        enabledBones: [...this.physics.physicsBones],
+      },
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -1856,12 +2590,19 @@ class VRMBoneStudio {
     this.boneMapping = {};
     this.keyframes = {};
     this.selectedBone = null;
+    this.physics.reset();
+    this.physics.enabled = false;
+    document.getElementById('physicsToggle').classList.remove('active');
+    document.getElementById('physicsStatus').textContent = '已停止';
+    document.getElementById('physicsStatus').style.color = 'var(--gold)';
+    document.getElementById('physicsDebug').classList.remove('visible');
     if (this.vrmModel) {
       Object.values(this.bones).forEach(b => b.rotation.set(0, 0, 0));
     }
     this.buildBoneTree();
     this.buildRemapList();
     this.renderKeyframes();
+    this.buildPhysicsBoneList();
     this.toast('已重置所有数据', 'info');
   }
 
@@ -1891,6 +2632,16 @@ class VRMBoneStudio {
 
     if (this.vrmModel) {
       this.vrmModel.update(delta);
+    }
+
+    this.physics.step(delta);
+
+    if (this.physics.enabled) {
+      const stats = this.physics.getStats();
+      document.getElementById('dbgPhysState').textContent = '运行';
+      document.getElementById('dbgActiveBones').textContent = stats.active;
+      document.getElementById('dbgTotalEnergy').textContent = stats.totalEnergy.toFixed(3);
+      document.getElementById('dbgMaxVelocity').textContent = stats.maxVelocity.toFixed(3);
     }
 
     this.renderer.render(this.scene, this.camera);
