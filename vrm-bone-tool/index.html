@@ -1,0 +1,1938 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VRM Bone Studio — 骨骼重映射 & 动作编辑</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-0: #0a0e17;
+  --bg-1: #0f1520;
+  --bg-2: #151c2c;
+  --bg-3: #1b2438;
+  --bg-4: #222d44;
+  --border: #2a3650;
+  --border-light: #3a4a68;
+  --text-0: #e8ecf4;
+  --text-1: #b0b8cc;
+  --text-2: #7a859e;
+  --text-3: #4e5a72;
+  --accent: #00e5c8;
+  --accent-dim: rgba(0,229,200,0.15);
+  --accent-glow: rgba(0,229,200,0.3);
+  --warn: #ff6b4a;
+  --warn-dim: rgba(255,107,74,0.15);
+  --info: #4da6ff;
+  --info-dim: rgba(77,166,255,0.15);
+  --purple: #b07aff;
+  --purple-dim: rgba(176,122,255,0.15);
+  --gold: #ffc94a;
+  --gold-dim: rgba(255,201,74,0.15);
+  --radius: 8px;
+  --radius-lg: 12px;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Outfit', sans-serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg-0);
+  color: var(--text-0);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+#app {
+  display: grid;
+  grid-template-columns: 280px 1fr 300px;
+  grid-template-rows: 48px 1fr 200px;
+  height: 100vh;
+  gap: 1px;
+  background: var(--border);
+}
+
+header {
+  grid-column: 1 / -1;
+  background: var(--bg-1);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 16px;
+  z-index: 100;
+}
+
+.logo {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.5px;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo svg { width: 22px; height: 22px; }
+
+.header-sep {
+  width: 1px;
+  height: 24px;
+  background: var(--border-light);
+}
+
+.header-actions {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.btn {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--border-light);
+  background: var(--bg-3);
+  color: var(--text-1);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.btn:hover { background: var(--bg-4); color: var(--text-0); border-color: var(--text-2); }
+.btn svg { width: 14px; height: 14px; }
+
+.btn-accent {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.btn-accent:hover { background: rgba(0,229,200,0.25); }
+
+.btn-warn {
+  background: var(--warn-dim);
+  border-color: var(--warn);
+  color: var(--warn);
+}
+
+.btn-info {
+  background: var(--info-dim);
+  border-color: var(--info);
+  color: var(--info);
+}
+
+.btn-purple {
+  background: var(--purple-dim);
+  border-color: var(--purple);
+  color: var(--purple);
+}
+
+/* Left Panel - Bone Hierarchy */
+.panel-left {
+  background: var(--bg-1);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-header {
+  padding: 12px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  background: var(--bg-1);
+  z-index: 10;
+}
+
+.panel-header .badge {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.bone-search {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 40px;
+  background: var(--bg-1);
+  z-index: 9;
+}
+
+.bone-search input {
+  width: 100%;
+  padding: 7px 10px 7px 32px;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-0);
+  font-family: var(--mono);
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.bone-search input:focus { border-color: var(--accent); }
+
+.bone-search { position: relative; }
+.bone-search::before {
+  content: '⌕';
+  position: absolute;
+  left: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-3);
+  font-size: 14px;
+}
+
+.bone-tree {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+
+.bone-group {
+  border-bottom: 1px solid rgba(42,54,80,0.5);
+}
+
+.bone-group-header {
+  padding: 8px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s;
+}
+
+.bone-group-header:hover { color: var(--text-1); }
+
+.bone-group-header .arrow {
+  font-size: 8px;
+  transition: transform 0.2s;
+  color: var(--text-3);
+}
+
+.bone-group-header.collapsed .arrow { transform: rotate(-90deg); }
+
+.bone-item {
+  padding: 5px 14px 5px 28px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s;
+  border-left: 2px solid transparent;
+}
+
+.bone-item:hover { background: var(--bg-2); color: var(--text-0); }
+.bone-item.selected { background: var(--accent-dim); color: var(--accent); border-left-color: var(--accent); }
+.bone-item.mapped { color: var(--accent); }
+.bone-item.unmapped { color: var(--warn); }
+
+.bone-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.bone-dot.mapped { background: var(--accent); box-shadow: 0 0 6px var(--accent-glow); }
+.bone-dot.unmapped { background: var(--warn); }
+.bone-dot.selected { background: var(--info); box-shadow: 0 0 6px rgba(77,166,255,0.4); }
+
+.bone-item .bone-name { flex: 1; }
+.bone-item .bone-tag {
+  font-size: 9px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+.bone-tag.humanoid { background: var(--accent-dim); color: var(--accent); }
+.bone-tag.custom { background: var(--purple-dim); color: var(--purple); }
+
+/* Center - 3D Viewport */
+.viewport {
+  background: var(--bg-0);
+  position: relative;
+  overflow: hidden;
+}
+
+#three-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.viewport-overlay {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.viewport-info {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-3);
+  background: rgba(10,14,23,0.8);
+  padding: 4px 8px;
+  border-radius: 4px;
+  backdrop-filter: blur(4px);
+}
+
+.viewport-toolbar {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vtool-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(15,21,32,0.9);
+  color: var(--text-2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  backdrop-filter: blur(8px);
+}
+
+.vtool-btn:hover { background: var(--bg-3); color: var(--text-0); border-color: var(--accent); }
+.vtool-btn.active { background: var(--accent-dim); color: var(--accent); border-color: var(--accent); }
+.vtool-btn svg { width: 18px; height: 18px; }
+
+.drop-zone {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: rgba(10,14,23,0.85);
+  backdrop-filter: blur(12px);
+  z-index: 50;
+  transition: opacity 0.3s;
+}
+
+.drop-zone.hidden { opacity: 0; pointer-events: none; }
+
+.drop-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  background: var(--accent-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed var(--accent);
+}
+
+.drop-icon svg { width: 36px; height: 36px; color: var(--accent); }
+
+.drop-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-0);
+}
+
+.drop-sub {
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.drop-sub span { color: var(--accent); cursor: pointer; text-decoration: underline; }
+
+/* Right Panel - Remapping & Properties */
+.panel-right {
+  background: var(--bg-1);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.tab-bar {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--bg-1);
+  z-index: 10;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-2);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab-btn:hover { color: var(--text-1); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+.tab-content { display: none; flex: 1; overflow-y: auto; }
+.tab-content.active { display: flex; flex-direction: column; }
+
+/* Remap Tab */
+.remap-list { padding: 8px 0; }
+
+.remap-item {
+  padding: 8px 14px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid rgba(42,54,80,0.3);
+  transition: background 0.15s;
+}
+
+.remap-item:hover { background: var(--bg-2); }
+
+.remap-bone {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  color: var(--text-1);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remap-bone:hover { border-color: var(--accent); color: var(--text-0); }
+.remap-bone.source { border-color: var(--info); color: var(--info); }
+.remap-bone.target { border-color: var(--accent); color: var(--accent); }
+.remap-bone.empty { color: var(--text-3); border-style: dashed; }
+
+.remap-arrow {
+  color: var(--text-3);
+  font-size: 14px;
+}
+
+.remap-actions {
+  padding: 12px 14px;
+  display: flex;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+}
+
+/* Pose Tab */
+.pose-section {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.pose-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pose-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.pose-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-2);
+  width: 16px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.pose-label.x { color: var(--warn); }
+.pose-label.y { color: var(--accent); }
+.pose-label.z { color: var(--info); }
+
+.pose-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--bg-4);
+  outline: none;
+}
+
+.pose-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.pose-value {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-2);
+  width: 44px;
+  text-align: right;
+}
+
+/* Bottom - Timeline */
+.timeline-panel {
+  grid-column: 1 / -1;
+  background: var(--bg-1);
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--border);
+}
+
+.timeline-header {
+  display: flex;
+  align-items: center;
+  padding: 6px 14px;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.timeline-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tc-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-3);
+  color: var(--text-1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  font-size: 12px;
+}
+
+.tc-btn:hover { background: var(--bg-4); color: var(--text-0); }
+.tc-btn.playing { background: var(--accent-dim); color: var(--accent); border-color: var(--accent); }
+
+.timeline-time {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-1);
+  min-width: 100px;
+}
+
+.timeline-time .current { color: var(--accent); }
+.timeline-time .total { color: var(--text-3); }
+
+.timeline-body {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+}
+
+.timeline-ruler {
+  height: 24px;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.timeline-tracks {
+  min-height: 100%;
+}
+
+.timeline-track {
+  height: 28px;
+  border-bottom: 1px solid rgba(42,54,80,0.3);
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.track-label {
+  width: 120px;
+  flex-shrink: 0;
+  padding: 0 10px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-2);
+  border-right: 1px solid var(--border);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  background: var(--bg-1);
+  position: sticky;
+  left: 0;
+  z-index: 2;
+}
+
+.track-bar {
+  flex: 1;
+  height: 100%;
+  position: relative;
+  background: var(--bg-0);
+}
+
+.track-keyframe {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: var(--accent);
+  border-radius: 2px;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 0 6px var(--accent-glow);
+}
+
+.track-keyframe:hover { transform: translate(-50%, -50%) rotate(45deg) scale(1.3); background: #fff; }
+
+.track-keyframe.selected { background: var(--gold); box-shadow: 0 0 8px var(--gold-dim); }
+
+.playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--warn);
+  z-index: 10;
+  pointer-events: none;
+  box-shadow: 0 0 8px rgba(255,107,74,0.4);
+}
+
+.playhead::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -5px;
+  width: 12px;
+  height: 12px;
+  background: var(--warn);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg-4); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+
+.modal-overlay.visible { opacity: 1; pointer-events: all; }
+
+.modal {
+  background: var(--bg-2);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  min-width: 400px;
+  max-width: 600px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.modal h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text-0);
+}
+
+.modal-body { margin-bottom: 20px; }
+
+.modal-footer {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* Toast */
+.toast-container {
+  position: fixed;
+  top: 60px;
+  right: 16px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toast {
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  animation: toastIn 0.3s ease-out;
+  backdrop-filter: blur(12px);
+  border: 1px solid;
+}
+
+.toast.success { background: var(--accent-dim); color: var(--accent); border-color: var(--accent); }
+.toast.error { background: var(--warn-dim); color: var(--warn); border-color: var(--warn); }
+.toast.info { background: var(--info-dim); color: var(--info); border-color: var(--info); }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Loading spinner */
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Grid background for viewport */
+.viewport::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,229,200,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,200,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 1;
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+      </svg>
+      VRM Bone Studio
+    </div>
+    <div class="header-sep"></div>
+    <span style="font-size:12px;color:var(--text-2)">骨骼重映射 & 动作编辑工具</span>
+    <div class="header-actions">
+      <button class="btn btn-accent" id="btnLoadVRM">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        加载 VRM
+      </button>
+      <button class="btn btn-info" id="btnLoadMotion">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        加载动作
+      </button>
+      <button class="btn btn-purple" id="btnExport">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        导出
+      </button>
+      <button class="btn btn-warn" id="btnReset">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+        重置
+      </button>
+    </div>
+  </header>
+
+  <!-- Left Panel - Bone Hierarchy -->
+  <div class="panel-left">
+    <div class="panel-header">
+      <span>骨骼层级</span>
+      <span class="badge" id="boneCount">0</span>
+    </div>
+    <div class="bone-search">
+      <input type="text" placeholder="搜索骨骼..." id="boneSearchInput">
+    </div>
+    <div class="bone-tree" id="boneTree"></div>
+  </div>
+
+  <!-- Center - 3D Viewport -->
+  <div class="viewport" id="viewport">
+    <canvas id="three-canvas"></canvas>
+    <div class="viewport-overlay">
+      <div class="viewport-info" id="vpInfo">就绪 — 等待加载 VRM 模型</div>
+      <div class="viewport-info" id="vpFps">FPS: --</div>
+    </div>
+    <div class="viewport-toolbar">
+      <button class="vtool-btn" title="透视" data-cam="persp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      <button class="vtool-btn" title="正面" data-cam="front"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg></button>
+      <button class="vtool-btn" title="显示骨骼" id="btnShowBones"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="3"/><circle cx="5" cy="19" r="3"/><circle cx="19" cy="19" r="3"/><line x1="12" y1="8" x2="5" y2="16"/><line x1="12" y1="8" x2="19" y2="16"/></svg></button>
+      <button class="vtool-btn" title="显示网格" id="btnShowGrid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg></button>
+      <button class="vtool-btn" title="线框模式" id="btnWireframe"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></button>
+    </div>
+    <div class="drop-zone" id="dropZone">
+      <div class="drop-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      </div>
+      <div class="drop-title">拖放 VRM 文件到此处</div>
+      <div class="drop-sub">或 <span id="browseLink">浏览文件</span> 选择 .vrm 模型</div>
+    </div>
+  </div>
+
+  <!-- Right Panel - Remapping & Properties -->
+  <div class="panel-right">
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="remap">重映射</button>
+      <button class="tab-btn" data-tab="pose">姿态</button>
+      <button class="tab-btn" data-tab="props">属性</button>
+    </div>
+
+    <!-- Remap Tab -->
+    <div class="tab-content active" id="tab-remap">
+      <div class="panel-header">
+        <span>骨骼映射关系</span>
+        <span class="badge" id="mappedCount">0/0</span>
+      </div>
+      <div class="remap-list" id="remapList"></div>
+      <div class="remap-actions">
+        <button class="btn btn-accent" id="btnAutoRemap" style="flex:1">自动映射</button>
+        <button class="btn btn-warn" id="btnClearRemap" style="flex:1">清除映射</button>
+      </div>
+    </div>
+
+    <!-- Pose Tab -->
+    <div class="tab-content" id="tab-pose">
+      <div class="panel-header">
+        <span>姿态控制</span>
+      </div>
+      <div id="poseControls">
+        <div class="pose-section">
+          <div class="pose-section-title">
+            <span>选中骨骼旋转</span>
+            <span id="selectedBoneName" style="color:var(--accent);font-family:var(--mono)">--</span>
+          </div>
+          <div class="pose-row">
+            <span class="pose-label x">X</span>
+            <input type="range" class="pose-slider" id="rotX" min="-180" max="180" value="0">
+            <span class="pose-value" id="rotXVal">0°</span>
+          </div>
+          <div class="pose-row">
+            <span class="pose-label y">Y</span>
+            <input type="range" class="pose-slider" id="rotY" min="-180" max="180" value="0">
+            <span class="pose-value" id="rotYVal">0°</span>
+          </div>
+          <div class="pose-row">
+            <span class="pose-label z">Z</span>
+            <input type="range" class="pose-slider" id="rotZ" min="-180" max="180" value="0">
+            <span class="pose-value" id="rotZVal">0°</span>
+          </div>
+        </div>
+        <div class="pose-section">
+          <div class="pose-section-title">预设姿态</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="btn" data-pose="tpose">T-Pose</button>
+            <button class="btn" data-pose="apose">A-Pose</button>
+            <button class="btn" data-pose="rest">休息</button>
+            <button class="btn" data-pose="walk">行走</button>
+          </div>
+        </div>
+        <div class="pose-section">
+          <div class="pose-section-title">表情</div>
+          <div id="expressionSliders"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Props Tab -->
+    <div class="tab-content" id="tab-props">
+      <div class="panel-header"><span>模型属性</span></div>
+      <div id="propsContent" style="padding:14px">
+        <div style="color:var(--text-3);font-size:13px;text-align:center;padding:40px 0">加载 VRM 模型后显示属性</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom - Timeline -->
+  <div class="timeline-panel">
+    <div class="timeline-header">
+      <div class="timeline-controls">
+        <button class="tc-btn" id="btnPrev" title="上一帧">⏮</button>
+        <button class="tc-btn" id="btnPlay" title="播放/暂停">▶</button>
+        <button class="tc-btn" id="btnNext" title="下一帧">⏭</button>
+        <button class="tc-btn" id="btnStop" title="停止">⏹</button>
+      </div>
+      <div class="timeline-time">
+        <span class="current" id="tlCurrent">0:00.000</span>
+        <span class="total"> / </span>
+        <span class="total" id="tlTotal">0:00.000</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
+        <span style="font-size:11px;color:var(--text-2)">速度</span>
+        <input type="range" id="tlSpeed" min="0.1" max="3" step="0.1" value="1" style="width:80px;accent-color:var(--accent)">
+        <span style="font-family:var(--mono);font-size:11px;color:var(--text-1)" id="tlSpeedVal">1.0x</span>
+      </div>
+      <button class="btn" id="btnAddKeyframe" style="font-size:11px">+ 关键帧</button>
+      <button class="btn btn-warn" id="btnDelKeyframe" style="font-size:11px">删除</button>
+    </div>
+    <div class="timeline-body" id="timelineBody">
+      <div class="timeline-ruler" id="timelineRuler"></div>
+      <div class="timeline-tracks" id="timelineTracks"></div>
+      <div class="playhead" id="playhead" style="left:120px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden file inputs -->
+<input type="file" id="fileInputVRM" accept=".vrm" style="display:none">
+<input type="file" id="fileInputMotion" accept=".json,.vmd,.bvh" style="display:none">
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Remap Modal -->
+<div class="modal-overlay" id="remapModal">
+  <div class="modal">
+    <h3>选择目标骨骼</h3>
+    <div class="modal-body">
+      <div class="bone-search" style="padding:0 0 12px">
+        <input type="text" placeholder="搜索目标骨骼..." id="remapSearchInput">
+      </div>
+      <div id="remapBoneList" style="max-height:300px;overflow-y:auto"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" id="remapCancel">取消</button>
+      <button class="btn btn-accent" id="remapConfirm">确认映射</button>
+    </div>
+  </div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const VRM_HUMANOID_BONES = [
+  { group: '身体', bones: [
+    { name: 'hips', label: '臀部', required: true },
+    { name: 'spine', label: '脊柱', required: true },
+    { name: 'chest', label: '胸部', required: true },
+    { name: 'upperChest', label: '上胸', required: false },
+    { name: 'neck', label: '颈部', required: true },
+    { name: 'head', label: '头部', required: true },
+  ]},
+  { group: '左臂', bones: [
+    { name: 'leftShoulder', label: '左肩', required: false },
+    { name: 'leftUpperArm', label: '左上臂', required: true },
+    { name: 'leftLowerArm', label: '左前臂', required: true },
+    { name: 'leftHand', label: '左手', required: true },
+  ]},
+  { group: '右臂', bones: [
+    { name: 'rightShoulder', label: '右肩', required: false },
+    { name: 'rightUpperArm', label: '右上臂', required: true },
+    { name: 'rightLowerArm', label: '右前臂', required: true },
+    { name: 'rightHand', label: '右手', required: true },
+  ]},
+  { group: '左腿', bones: [
+    { name: 'leftUpperLeg', label: '左大腿', required: true },
+    { name: 'leftLowerLeg', label: '左小腿', required: true },
+    { name: 'leftFoot', label: '左脚', required: true },
+    { name: 'leftToes', label: '左脚趾', required: false },
+  ]},
+  { group: '右腿', bones: [
+    { name: 'rightUpperLeg', label: '右大腿', required: true },
+    { name: 'rightLowerLeg', label: '右小腿', required: true },
+    { name: 'rightFoot', label: '右脚', required: true },
+    { name: 'rightToes', label: '右脚趾', required: false },
+  ]},
+  { group: '手指（左）', bones: [
+    { name: 'leftThumbMetacarpal', label: '左拇指掌', required: false },
+    { name: 'leftThumbProximal', label: '左拇指近', required: false },
+    { name: 'leftThumbDistal', label: '左拇指远', required: false },
+    { name: 'leftIndexProximal', label: '左食指近', required: false },
+    { name: 'leftIndexIntermediate', label: '左食指中', required: false },
+    { name: 'leftIndexDistal', label: '左食指远', required: false },
+    { name: 'leftMiddleProximal', label: '左中指近', required: false },
+    { name: 'leftMiddleIntermediate', label: '左中指中', required: false },
+    { name: 'leftMiddleDistal', label: '左中指远', required: false },
+    { name: 'leftRingProximal', label: '左无名指近', required: false },
+    { name: 'leftRingIntermediate', label: '左无名指中', required: false },
+    { name: 'leftRingDistal', label: '左无名指远', required: false },
+    { name: 'leftLittleProximal', label: '左小指近', required: false },
+    { name: 'leftLittleIntermediate', label: '左小指中', required: false },
+    { name: 'leftLittleDistal', label: '左小指远', required: false },
+  ]},
+  { group: '手指（右）', bones: [
+    { name: 'rightThumbMetacarpal', label: '右拇指掌', required: false },
+    { name: 'rightThumbProximal', label: '右拇指近', required: false },
+    { name: 'rightThumbDistal', label: '右拇指远', required: false },
+    { name: 'rightIndexProximal', label: '右食指近', required: false },
+    { name: 'rightIndexIntermediate', label: '右食指中', required: false },
+    { name: 'rightIndexDistal', label: '右食指远', required: false },
+    { name: 'rightMiddleProximal', label: '右中指近', required: false },
+    { name: 'rightMiddleIntermediate', label: '右中指中', required: false },
+    { name: 'rightMiddleDistal', label: '右中指远', required: false },
+    { name: 'rightRingProximal', label: '右无名指近', required: false },
+    { name: 'rightRingIntermediate', label: '右无名指中', required: false },
+    { name: 'rightRingDistal', label: '右无名指远', required: false },
+    { name: 'rightLittleProximal', label: '右小指近', required: false },
+    { name: 'rightLittleIntermediate', label: '右小指中', required: false },
+    { name: 'rightLittleDistal', label: '右小指远', required: false },
+  ]},
+  { group: '眼部', bones: [
+    { name: 'leftEye', label: '左眼', required: false },
+    { name: 'rightEye', label: '右眼', required: false },
+    { name: 'jaw', label: '下颌', required: false },
+  ]},
+];
+
+class VRMBoneStudio {
+  constructor() {
+    this.scene = null;
+    this.camera = null;
+    this.renderer = null;
+    this.controls = null;
+    this.vrmModel = null;
+    this.bones = {};
+    this.boneMapping = {};
+    this.selectedBone = null;
+    this.showBones = true;
+    this.showGrid = true;
+    this.wireframe = false;
+    this.boneHelpers = [];
+    this.gridHelper = null;
+    this.isPlaying = false;
+    this.currentTime = 0;
+    this.totalDuration = 5;
+    this.playSpeed = 1;
+    this.keyframes = {};
+    this.remappingSource = null;
+    this.fpsFrames = 0;
+    this.fpsTime = 0;
+    this.fpsValue = 0;
+    this.clock = new THREE.Clock();
+    this.init();
+  }
+
+  init() {
+    this.setupThree();
+    this.setupUI();
+    this.buildBoneTree();
+    this.buildRemapList();
+    this.buildTimeline();
+    this.animate();
+  }
+
+  setupThree() {
+    const canvas = document.getElementById('three-canvas');
+    const viewport = document.getElementById('viewport');
+
+    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 1.0;
+
+    this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color(0x0a0e17);
+
+    this.camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+    this.camera.position.set(0, 1.2, 2.5);
+
+    this.controls = new OrbitControls(this.camera, canvas);
+    this.controls.target.set(0, 0.9, 0);
+    this.controls.enableDamping = true;
+    this.controls.dampingFactor = 0.08;
+    this.controls.update();
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    this.scene.add(ambientLight);
+
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    dirLight.position.set(1, 2, 1);
+    this.scene.add(dirLight);
+
+    const dirLight2 = new THREE.DirectionalLight(0x88aaff, 0.3);
+    dirLight2.position.set(-1, 1, -1);
+    this.scene.add(dirLight2);
+
+    this.gridHelper = new THREE.GridHelper(10, 20, 0x1a2438, 0x151c2c);
+    this.scene.add(this.gridHelper);
+
+    const axesHelper = new THREE.AxesHelper(0.5);
+    axesHelper.position.set(-2, 0, -2);
+    this.scene.add(axesHelper);
+
+    this.handleResize();
+    window.addEventListener('resize', () => this.handleResize());
+  }
+
+  handleResize() {
+    const viewport = document.getElementById('viewport');
+    const w = viewport.clientWidth;
+    const h = viewport.clientHeight;
+    this.camera.aspect = w / h;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(w, h);
+  }
+
+  setupUI() {
+    document.getElementById('btnLoadVRM').addEventListener('click', () => {
+      document.getElementById('fileInputVRM').click();
+    });
+    document.getElementById('browseLink').addEventListener('click', () => {
+      document.getElementById('fileInputVRM').click();
+    });
+    document.getElementById('fileInputVRM').addEventListener('change', (e) => {
+      if (e.target.files.length) this.loadVRM(e.target.files[0]);
+    });
+
+    document.getElementById('btnLoadMotion').addEventListener('click', () => {
+      document.getElementById('fileInputMotion').click();
+    });
+    document.getElementById('fileInputMotion').addEventListener('change', (e) => {
+      if (e.target.files.length) this.loadMotion(e.target.files[0]);
+    });
+
+    document.getElementById('btnExport').addEventListener('click', () => this.exportMapping());
+    document.getElementById('btnReset').addEventListener('click', () => this.resetAll());
+
+    const viewport = document.getElementById('viewport');
+    viewport.addEventListener('dragover', (e) => { e.preventDefault(); e.stopPropagation(); });
+    viewport.addEventListener('drop', (e) => {
+      e.preventDefault(); e.stopPropagation();
+      const file = e.dataTransfer.files[0];
+      if (file && file.name.endsWith('.vrm')) this.loadVRM(file);
+    });
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    document.getElementById('btnShowBones').addEventListener('click', (e) => {
+      this.showBones = !this.showBones;
+      e.currentTarget.classList.toggle('active', this.showBones);
+      this.boneHelpers.forEach(h => h.visible = this.showBones);
+    });
+    document.getElementById('btnShowGrid').addEventListener('click', (e) => {
+      this.showGrid = !this.showGrid;
+      e.currentTarget.classList.toggle('active', this.showGrid);
+      this.gridHelper.visible = this.showGrid;
+    });
+    document.getElementById('btnWireframe').addEventListener('click', (e) => {
+      this.wireframe = !this.wireframe;
+      e.currentTarget.classList.toggle('active', this.wireframe);
+      this.setWireframe(this.wireframe);
+    });
+
+    document.querySelectorAll('[data-cam]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const cam = btn.dataset.cam;
+        if (cam === 'persp') {
+          this.camera.position.set(0, 1.2, 2.5);
+          this.controls.target.set(0, 0.9, 0);
+        } else if (cam === 'front') {
+          this.camera.position.set(0, 0.9, 2.5);
+          this.controls.target.set(0, 0.9, 0);
+        }
+        this.controls.update();
+      });
+    });
+
+    document.getElementById('boneSearchInput').addEventListener('input', (e) => {
+      this.filterBones(e.target.value);
+    });
+
+    ['rotX', 'rotY', 'rotZ'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => this.updateBoneRotation());
+    });
+
+    document.querySelectorAll('[data-pose]').forEach(btn => {
+      btn.addEventListener('click', () => this.applyPresetPose(btn.dataset.pose));
+    });
+
+    document.getElementById('btnAutoRemap').addEventListener('click', () => this.autoRemap());
+    document.getElementById('btnClearRemap').addEventListener('click', () => this.clearRemap());
+
+    document.getElementById('btnPlay').addEventListener('click', () => this.togglePlay());
+    document.getElementById('btnStop').addEventListener('click', () => this.stopPlay());
+    document.getElementById('btnPrev').addEventListener('click', () => this.prevFrame());
+    document.getElementById('btnNext').addEventListener('click', () => this.nextFrame());
+    document.getElementById('tlSpeed').addEventListener('input', (e) => {
+      this.playSpeed = parseFloat(e.target.value);
+      document.getElementById('tlSpeedVal').textContent = this.playSpeed.toFixed(1) + 'x';
+    });
+    document.getElementById('btnAddKeyframe').addEventListener('click', () => this.addKeyframe());
+    document.getElementById('btnDelKeyframe').addEventListener('click', () => this.deleteKeyframe());
+
+    document.getElementById('remapCancel').addEventListener('click', () => {
+      document.getElementById('remapModal').classList.remove('visible');
+      this.remappingSource = null;
+    });
+    document.getElementById('remapConfirm').addEventListener('click', () => this.confirmRemap());
+
+    document.getElementById('remapSearchInput').addEventListener('input', (e) => {
+      this.filterRemapBones(e.target.value);
+    });
+  }
+
+  async loadVRM(file) {
+    this.toast('正在加载 VRM 模型...', 'info');
+    document.getElementById('vpInfo').textContent = '加载中...';
+
+    try {
+      const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
+      const { VRMLoaderPlugin, VRMUtils } = await import('three/addons/loaders/VRMLoaderPlugin.js');
+
+      const loader = new GLTFLoader();
+      loader.register((parser) => new VRMLoaderPlugin(parser));
+
+      const url = URL.createObjectURL(file);
+
+      loader.load(url, (gltf) => {
+        const vrm = gltf.userData.vrm;
+        if (!vrm) {
+          this.toast('无法解析 VRM 数据', 'error');
+          return;
+        }
+
+        VRMUtils.removeUnnecessaryVertices(gltf.scene);
+        VRMUtils.removeUnnecessaryJoints(gltf.scene);
+
+        if (this.vrmModel) {
+          this.scene.remove(this.vrmModel.scene);
+        }
+
+        vrm.scene.rotation.y = Math.PI;
+        this.scene.add(vrm.scene);
+        this.vrmModel = vrm;
+
+        this.bones = {};
+        vrm.humanoid.humanBones.forEach((hb) => {
+          this.bones[hb.humanBone] = hb.node;
+        });
+
+        this.extractCustomBones(vrm);
+
+        document.getElementById('dropZone').classList.add('hidden');
+        document.getElementById('vpInfo').textContent = `已加载: ${file.name}`;
+        document.getElementById('boneCount').textContent = Object.keys(this.bones).length;
+
+        this.buildBoneTree();
+        this.buildRemapList();
+        this.buildBoneHelpers();
+        this.buildExpressionSliders(vrm);
+        this.showProperties(vrm, file);
+
+        this.toast('VRM 模型加载成功！', 'success');
+        URL.revokeObjectURL(url);
+      }, undefined, (err) => {
+        this.toast('加载失败: ' + err.message, 'error');
+        URL.revokeObjectURL(url);
+      });
+    } catch (err) {
+      this.toast('加载 VRM 库失败: ' + err.message, 'error');
+    }
+  }
+
+  extractCustomBones(vrm) {
+    const humanoidBoneNames = new Set();
+    vrm.humanoid.humanBones.forEach(hb => {
+      humanoidBoneNames.add(hb.node.name);
+    });
+
+    vrm.scene.traverse((obj) => {
+      if (obj.isBone && !humanoidBoneNames.has(obj.name)) {
+        this.bones['custom_' + obj.name] = obj;
+      }
+    });
+  }
+
+  buildBoneHelpers() {
+    this.boneHelpers.forEach(h => this.scene.remove(h));
+    this.boneHelpers = [];
+
+    Object.entries(this.bones).forEach(([name, bone]) => {
+      if (!bone.parent || !bone.parent.isBone) return;
+      const from = new THREE.Vector3();
+      const to = new THREE.Vector3();
+      bone.parent.getWorldPosition(from);
+      bone.getWorldPosition(to);
+
+      const dir = new THREE.Vector3().subVectors(to, from);
+      const len = dir.length();
+      if (len < 0.001) return;
+
+      const geo = new THREE.CylinderGeometry(0.003, 0.006, len, 6);
+      const mat = new THREE.MeshBasicMaterial({
+        color: name.startsWith('custom_') ? 0xb07aff : 0x00e5c8,
+        transparent: true,
+        opacity: 0.6,
+        depthTest: false,
+      });
+      const mesh = new THREE.Mesh(geo, mat);
+
+      const mid = new THREE.Vector3().addVectors(from, to).multiplyScalar(0.5);
+      mesh.position.copy(mid);
+      mesh.lookAt(to);
+      mesh.rotateX(Math.PI / 2);
+
+      mesh.visible = this.showBones;
+      this.scene.add(mesh);
+      this.boneHelpers.push(mesh);
+    });
+
+    document.getElementById('btnShowBones').classList.add('active');
+  }
+
+  buildBoneTree() {
+    const tree = document.getElementById('boneTree');
+    tree.innerHTML = '';
+
+    VRM_HUMANOID_BONES.forEach(group => {
+      const groupEl = document.createElement('div');
+      groupEl.className = 'bone-group';
+
+      const header = document.createElement('div');
+      header.className = 'bone-group-header';
+      header.innerHTML = `<span class="arrow">▼</span> ${group.group}`;
+      header.addEventListener('click', () => {
+        header.classList.toggle('collapsed');
+        const items = groupEl.querySelectorAll('.bone-item');
+        items.forEach(i => i.style.display = header.classList.contains('collapsed') ? 'none' : 'flex');
+      });
+
+      groupEl.appendChild(header);
+
+      group.bones.forEach(boneDef => {
+        const item = document.createElement('div');
+        item.className = 'bone-item';
+        item.dataset.boneName = boneDef.name;
+
+        const isMapped = !!this.boneMapping[boneDef.name];
+        const hasBone = !!this.bones[boneDef.name];
+        const dotClass = isMapped ? 'mapped' : (hasBone ? 'selected' : 'unmapped');
+
+        item.innerHTML = `
+          <span class="bone-dot ${dotClass}"></span>
+          <span class="bone-name">${boneDef.label}</span>
+          <span class="bone-tag ${boneDef.required ? 'humanoid' : 'custom'}">${boneDef.required ? '必需' : '可选'}</span>
+        `;
+
+        item.addEventListener('click', () => this.selectBone(boneDef.name));
+        groupEl.appendChild(item);
+      });
+
+      tree.appendChild(groupEl);
+    });
+
+    const customBones = Object.keys(this.bones).filter(k => k.startsWith('custom_'));
+    if (customBones.length > 0) {
+      const groupEl = document.createElement('div');
+      groupEl.className = 'bone-group';
+
+      const header = document.createElement('div');
+      header.className = 'bone-group-header';
+      header.innerHTML = `<span class="arrow">▼</span> 自定义骨骼`;
+      header.addEventListener('click', () => {
+        header.classList.toggle('collapsed');
+        const items = groupEl.querySelectorAll('.bone-item');
+        items.forEach(i => i.style.display = header.classList.contains('collapsed') ? 'none' : 'flex');
+      });
+
+      groupEl.appendChild(header);
+
+      customBones.forEach(boneKey => {
+        const bone = this.bones[boneKey];
+        const realName = boneKey.replace('custom_', '');
+        const item = document.createElement('div');
+        item.className = 'bone-item';
+        item.dataset.boneName = boneKey;
+        item.innerHTML = `
+          <span class="bone-dot unmapped"></span>
+          <span class="bone-name">${realName}</span>
+          <span class="bone-tag custom">自定义</span>
+        `;
+        item.addEventListener('click', () => this.selectBone(boneKey));
+        groupEl.appendChild(item);
+      });
+
+      tree.appendChild(groupEl);
+    }
+  }
+
+  buildRemapList() {
+    const list = document.getElementById('remapList');
+    list.innerHTML = '';
+
+    let mapped = 0;
+    let total = 0;
+
+    VRM_HUMANOID_BONES.forEach(group => {
+      group.bones.forEach(boneDef => {
+        total++;
+        const isMapped = !!this.boneMapping[boneDef.name];
+        if (isMapped) mapped++;
+
+        const item = document.createElement('div');
+        item.className = 'remap-item';
+
+        const sourceBone = this.bones[boneDef.name];
+        const sourceName = sourceBone ? sourceBone.name : '--';
+
+        item.innerHTML = `
+          <div class="remap-bone source" data-bone="${boneDef.name}" data-side="source">${sourceName}</div>
+          <span class="remap-arrow">→</span>
+          <div class="remap-bone ${isMapped ? 'target' : 'empty'}" data-bone="${boneDef.name}" data-side="target">${isMapped ? this.boneMapping[boneDef.name] : '点击映射'}</div>
+        `;
+
+        const targetEl = item.querySelector('[data-side="target"]');
+        targetEl.addEventListener('click', () => {
+          this.remappingSource = boneDef.name;
+          this.openRemapModal(boneDef.name);
+        });
+
+        list.appendChild(item);
+      });
+    });
+
+    document.getElementById('mappedCount').textContent = `${mapped}/${total}`;
+  }
+
+  openRemapModal(sourceBone) {
+    const modal = document.getElementById('remapModal');
+    const list = document.getElementById('remapBoneList');
+    list.innerHTML = '';
+
+    VRM_HUMANOID_BONES.forEach(group => {
+      group.bones.forEach(boneDef => {
+        const item = document.createElement('div');
+        item.className = 'bone-item';
+        item.dataset.boneName = boneDef.name;
+        item.innerHTML = `
+          <span class="bone-dot mapped"></span>
+          <span class="bone-name">${boneDef.label} (${boneDef.name})</span>
+        `;
+        item.addEventListener('click', () => {
+          list.querySelectorAll('.bone-item').forEach(i => i.classList.remove('selected'));
+          item.classList.add('selected');
+          this._remapTarget = boneDef.name;
+        });
+        list.appendChild(item);
+      });
+    });
+
+    this._remapTarget = null;
+    modal.classList.add('visible');
+  }
+
+  confirmRemap() {
+    if (this._remapTarget && this.remappingSource) {
+      this.boneMapping[this.remappingSource] = this._remapTarget;
+      this.toast(`映射: ${this.remappingSource} → ${this._remapTarget}`, 'success');
+      this.buildRemapList();
+      this.buildBoneTree();
+    }
+    document.getElementById('remapModal').classList.remove('visible');
+    this.remappingSource = null;
+  }
+
+  filterRemapBones(query) {
+    const items = document.getElementById('remapBoneList').querySelectorAll('.bone-item');
+    items.forEach(item => {
+      const name = item.dataset.boneName.toLowerCase();
+      item.style.display = name.includes(query.toLowerCase()) ? 'flex' : 'none';
+    });
+  }
+
+  selectBone(boneName) {
+    document.querySelectorAll('.bone-item').forEach(i => i.classList.remove('selected'));
+    document.querySelectorAll(`.bone-item[data-bone-name="${boneName}"]`).forEach(i => i.classList.add('selected'));
+
+    this.selectedBone = boneName;
+    document.getElementById('selectedBoneName').textContent = boneName;
+
+    const bone = this.bones[boneName];
+    if (bone) {
+      document.getElementById('rotX').value = THREE.MathUtils.radToDeg(bone.rotation.x);
+      document.getElementById('rotY').value = THREE.MathUtils.radToDeg(bone.rotation.y);
+      document.getElementById('rotZ').value = THREE.MathUtils.radToDeg(bone.rotation.z);
+      this.updateRotationDisplay();
+
+      this.focusOnBone(bone);
+    }
+  }
+
+  focusOnBone(bone) {
+    const pos = new THREE.Vector3();
+    bone.getWorldPosition(pos);
+    this.controls.target.lerp(pos, 0.3);
+  }
+
+  updateBoneRotation() {
+    if (!this.selectedBone || !this.bones[this.selectedBone]) return;
+    const bone = this.bones[this.selectedBone];
+
+    const rx = THREE.MathUtils.degToRad(parseFloat(document.getElementById('rotX').value));
+    const ry = THREE.MathUtils.degToRad(parseFloat(document.getElementById('rotY').value));
+    const rz = THREE.MathUtils.degToRad(parseFloat(document.getElementById('rotZ').value));
+
+    bone.rotation.x = rx;
+    bone.rotation.y = ry;
+    bone.rotation.z = rz;
+
+    this.updateRotationDisplay();
+  }
+
+  updateRotationDisplay() {
+    document.getElementById('rotXVal').textContent = document.getElementById('rotX').value + '°';
+    document.getElementById('rotYVal').textContent = document.getElementById('rotY').value + '°';
+    document.getElementById('rotZVal').textContent = document.getElementById('rotZ').value + '°';
+  }
+
+  applyPresetPose(pose) {
+    if (!this.vrmModel) return;
+    const bones = this.bones;
+
+    Object.values(bones).forEach(b => {
+      b.rotation.set(0, 0, 0);
+    });
+
+    if (pose === 'tpose') {
+      if (bones.leftUpperArm) bones.leftUpperArm.rotation.z = Math.PI / 2;
+      if (bones.rightUpperArm) bones.rightUpperArm.rotation.z = -Math.PI / 2;
+      if (bones.leftLowerArm) bones.leftLowerArm.rotation.z = 0;
+      if (bones.rightLowerArm) bones.rightLowerArm.rotation.z = 0;
+    } else if (pose === 'apose') {
+      if (bones.leftUpperArm) bones.leftUpperArm.rotation.z = Math.PI / 4;
+      if (bones.rightUpperArm) bones.rightUpperArm.rotation.z = -Math.PI / 4;
+    } else if (pose === 'walk') {
+      if (bones.leftUpperLeg) bones.leftUpperLeg.rotation.x = -0.5;
+      if (bones.rightUpperLeg) bones.rightUpperLeg.rotation.x = 0.5;
+      if (bones.leftLowerLeg) bones.leftLowerLeg.rotation.x = 0.8;
+      if (bones.rightLowerLeg) bones.rightLowerLeg.rotation.x = -0.2;
+      if (bones.leftUpperArm) bones.leftUpperArm.rotation.x = 0.5;
+      if (bones.rightUpperArm) bones.rightUpperArm.rotation.x = -0.5;
+    }
+
+    if (this.selectedBone) this.selectBone(this.selectedBone);
+    this.toast(`已应用 ${pose.toUpperCase()} 姿态`, 'info');
+  }
+
+  buildExpressionSliders(vrm) {
+    const container = document.getElementById('expressionSliders');
+    container.innerHTML = '';
+
+    if (!vrm.expressionManager) return;
+
+    const expressions = vrm.expressionManager.expressions || [];
+    expressions.forEach((expr, idx) => {
+      const name = expr.name || `表情 ${idx}`;
+      const row = document.createElement('div');
+      row.className = 'pose-row';
+      row.innerHTML = `
+        <span style="font-family:var(--mono);font-size:10px;color:var(--text-2);width:80px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${name}</span>
+        <input type="range" class="pose-slider" min="0" max="1" step="0.01" value="0" data-expr-idx="${idx}">
+        <span class="pose-value" style="width:30px">0</span>
+      `;
+      const slider = row.querySelector('input');
+      const valSpan = row.querySelector('.pose-value');
+      slider.addEventListener('input', () => {
+        const v = parseFloat(slider.value);
+        valSpan.textContent = v.toFixed(1);
+        try { vrm.expressionManager.setValue(idx, v); } catch(e) {}
+      });
+      container.appendChild(row);
+    });
+  }
+
+  showProperties(vrm, file) {
+    const container = document.getElementById('propsContent');
+    const meta = vrm.meta || {};
+    container.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="padding:12px;background:var(--bg-3);border-radius:8px;border:1px solid var(--border)">
+          <div style="font-size:11px;color:var(--text-2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">模型信息</div>
+          <div style="display:grid;grid-template-columns:80px 1fr;gap:6px;font-size:12px">
+            <span style="color:var(--text-2)">名称</span><span style="color:var(--text-0)">${meta.name || file.name}</span>
+            <span style="color:var(--text-2)">版本</span><span style="color:var(--text-0)">${meta.version || '未知'}</span>
+            <span style="color:var(--text-2)">作者</span><span style="color:var(--text-0)">${meta.author || '未知'}</span>
+            <span style="color:var(--text-2)">骨骼数</span><span style="color:var(--accent)">${Object.keys(this.bones).length}</span>
+          </div>
+        </div>
+        <div style="padding:12px;background:var(--bg-3);border-radius:8px;border:1px solid var(--border)">
+          <div style="font-size:11px;color:var(--text-2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">许可信息</div>
+          <div style="display:grid;grid-template-columns:80px 1fr;gap:6px;font-size:12px">
+            <span style="color:var(--text-2)">许可</span><span style="color:var(--text-0)">${meta.licenseName || '未知'}</span>
+            <span style="color:var(--text-2)">暴力</span><span style="color:${meta.violentUssage ? 'var(--warn)' : 'var(--accent)'}">${meta.violentUssage ? '允许' : '不允许'}</span>
+            <span style="color:var(--text-2)">色情</span><span style="color:${meta.sexualUssage ? 'var(--warn)' : 'var(--accent)'}">${meta.sexualUssage ? '允许' : '不允许'}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  autoRemap() {
+    VRM_HUMANOID_BONES.forEach(group => {
+      group.bones.forEach(boneDef => {
+        if (this.bones[boneDef.name]) {
+          this.boneMapping[boneDef.name] = boneDef.name;
+        }
+      });
+    });
+    this.buildRemapList();
+    this.buildBoneTree();
+    this.toast('自动映射完成！', 'success');
+  }
+
+  clearRemap() {
+    this.boneMapping = {};
+    this.buildRemapList();
+    this.buildBoneTree();
+    this.toast('映射已清除', 'info');
+  }
+
+  filterBones(query) {
+    const items = document.querySelectorAll('.bone-item');
+    items.forEach(item => {
+      const name = (item.dataset.boneName || '').toLowerCase();
+      const text = item.textContent.toLowerCase();
+      item.style.display = (name.includes(query.toLowerCase()) || text.includes(query.toLowerCase())) ? 'flex' : 'none';
+    });
+  }
+
+  setWireframe(enabled) {
+    if (!this.vrmModel) return;
+    this.vrmModel.scene.traverse((obj) => {
+      if (obj.isMesh) {
+        obj.material.wireframe = enabled;
+      }
+    });
+  }
+
+  buildTimeline() {
+    const tracks = document.getElementById('timelineTracks');
+    tracks.innerHTML = '';
+
+    const trackNames = ['hips', 'spine', 'chest', 'head', 'neck', 'leftUpperArm', 'rightUpperArm', 'leftLowerArm', 'rightLowerArm', 'leftUpperLeg', 'rightUpperLeg', 'leftLowerLeg', 'rightLowerLeg'];
+
+    trackNames.forEach(name => {
+      const track = document.createElement('div');
+      track.className = 'timeline-track';
+      track.innerHTML = `
+        <div class="track-label">${name}</div>
+        <div class="track-bar" data-track="${name}"></div>
+      `;
+      tracks.appendChild(track);
+    });
+
+    this.drawTimelineRuler();
+  }
+
+  drawTimelineRuler() {
+    const ruler = document.getElementById('timelineRuler');
+    ruler.innerHTML = '';
+    const width = ruler.clientWidth - 120;
+    const step = 60;
+    for (let i = 0; i <= this.totalDuration; i += 0.5) {
+      const mark = document.createElement('div');
+      mark.style.cssText = `
+        position: absolute;
+        left: ${120 + (i / this.totalDuration) * width}px;
+        top: 0;
+        height: ${i % 1 === 0 ? '24px' : '12px'};
+        border-left: 1px solid ${i % 1 === 0 ? 'var(--border-light)' : 'var(--border)'};
+      `;
+      if (i % 1 === 0) {
+        const label = document.createElement('span');
+        label.style.cssText = `
+          position: absolute;
+          left: 4px;
+          top: 2px;
+          font-family: var(--mono);
+          font-size: 9px;
+          color: var(--text-3);
+        `;
+        label.textContent = i + 's';
+        mark.appendChild(label);
+      }
+      ruler.appendChild(mark);
+    }
+  }
+
+  togglePlay() {
+    this.isPlaying = !this.isPlaying;
+    const btn = document.getElementById('btnPlay');
+    btn.textContent = this.isPlaying ? '⏸' : '▶';
+    btn.classList.toggle('playing', this.isPlaying);
+  }
+
+  stopPlay() {
+    this.isPlaying = false;
+    this.currentTime = 0;
+    const btn = document.getElementById('btnPlay');
+    btn.textContent = '▶';
+    btn.classList.remove('playing');
+    this.updateTimelineDisplay();
+  }
+
+  prevFrame() {
+    this.currentTime = Math.max(0, this.currentTime - 1/30);
+    this.updateTimelineDisplay();
+  }
+
+  nextFrame() {
+    this.currentTime = Math.min(this.totalDuration, this.currentTime + 1/30);
+    this.updateTimelineDisplay();
+  }
+
+  addKeyframe() {
+    if (!this.selectedBone) {
+      this.toast('请先选择骨骼', 'error');
+      return;
+    }
+    const time = this.currentTime;
+    const bone = this.bones[this.selectedBone];
+    if (!bone) return;
+
+    if (!this.keyframes[this.selectedBone]) this.keyframes[this.selectedBone] = [];
+    this.keyframes[this.selectedBone].push({
+      time,
+      rotation: { x: bone.rotation.x, y: bone.rotation.y, z: bone.rotation.z }
+    });
+
+    this.renderKeyframes();
+    this.toast(`关键帧已添加: ${this.selectedBone} @ ${time.toFixed(2)}s`, 'success');
+  }
+
+  deleteKeyframe() {
+    if (!this.selectedBone || !this.keyframes[this.selectedBone]) return;
+    this.keyframes[this.selectedBone] = this.keyframes[this.selectedBone].filter(kf => Math.abs(kf.time - this.currentTime) > 0.05);
+    this.renderKeyframes();
+    this.toast('关键帧已删除', 'info');
+  }
+
+  renderKeyframes() {
+    document.querySelectorAll('.track-keyframe').forEach(kf => kf.remove());
+
+    Object.entries(this.keyframes).forEach(([boneName, frames]) => {
+      const trackBar = document.querySelector(`.track-bar[data-track="${boneName}"]`);
+      if (!trackBar) return;
+      const width = trackBar.clientWidth;
+      frames.forEach(kf => {
+        const el = document.createElement('div');
+        el.className = 'track-keyframe';
+        el.style.left = (kf.time / this.totalDuration) * width + 'px';
+        el.addEventListener('click', () => {
+          this.currentTime = kf.time;
+          this.updateTimelineDisplay();
+        });
+        trackBar.appendChild(el);
+      });
+    });
+  }
+
+  updateTimelineDisplay() {
+    const body = document.getElementById('timelineBody');
+    const tracksEl = document.getElementById('timelineTracks');
+    const width = tracksEl.clientWidth - 120;
+    const playhead = document.getElementById('playhead');
+    playhead.style.left = (120 + (this.currentTime / this.totalDuration) * width) + 'px';
+
+    const mins = Math.floor(this.currentTime / 60);
+    const secs = (this.currentTime % 60).toFixed(3);
+    document.getElementById('tlCurrent').textContent = `${mins}:${secs.padStart(6, '0')}`;
+
+    const tMins = Math.floor(this.totalDuration / 60);
+    const tSecs = (this.totalDuration % 60).toFixed(3);
+    document.getElementById('tlTotal').textContent = `${tMins}:${tSecs.padStart(6, '0')}`;
+  }
+
+  loadMotion(file) {
+    this.toast('动作文件加载功能已触发: ' + file.name, 'info');
+  }
+
+  exportMapping() {
+    const data = {
+      version: '1.0',
+      timestamp: new Date().toISOString(),
+      boneMapping: this.boneMapping,
+      keyframes: this.keyframes,
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'vrm_bone_mapping.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    this.toast('映射数据已导出！', 'success');
+  }
+
+  resetAll() {
+    this.boneMapping = {};
+    this.keyframes = {};
+    this.selectedBone = null;
+    if (this.vrmModel) {
+      Object.values(this.bones).forEach(b => b.rotation.set(0, 0, 0));
+    }
+    this.buildBoneTree();
+    this.buildRemapList();
+    this.renderKeyframes();
+    this.toast('已重置所有数据', 'info');
+  }
+
+  toast(msg, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    const el = document.createElement('div');
+    el.className = `toast ${type}`;
+    el.textContent = msg;
+    container.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+
+  animate() {
+    requestAnimationFrame(() => this.animate());
+
+    const delta = this.clock.getDelta();
+    this.controls.update();
+
+    if (this.isPlaying) {
+      this.currentTime += delta * this.playSpeed;
+      if (this.currentTime >= this.totalDuration) {
+        this.currentTime = 0;
+      }
+      this.interpolateKeyframes();
+      this.updateTimelineDisplay();
+    }
+
+    if (this.vrmModel) {
+      this.vrmModel.update(delta);
+    }
+
+    this.renderer.render(this.scene, this.camera);
+
+    this.fpsFrames++;
+    this.fpsTime += delta;
+    if (this.fpsTime >= 1) {
+      this.fpsValue = this.fpsFrames;
+      this.fpsFrames = 0;
+      this.fpsTime = 0;
+      document.getElementById('vpFps').textContent = `FPS: ${this.fpsValue}`;
+    }
+  }
+
+  interpolateKeyframes() {
+    Object.entries(this.keyframes).forEach(([boneName, frames]) => {
+      if (frames.length === 0) return;
+      const bone = this.bones[boneName];
+      if (!bone) return;
+
+      const sorted = [...frames].sort((a, b) => a.time - b.time);
+      let prev = sorted[sorted.length - 1];
+      let next = sorted[0];
+
+      for (let i = 0; i < sorted.length; i++) {
+        if (sorted[i].time <= this.currentTime) prev = sorted[i];
+        if (sorted[i].time >= this.currentTime && i > 0) { next = sorted[i]; break; }
+      }
+
+      if (prev === next) {
+        bone.rotation.set(prev.rotation.x, prev.rotation.y, prev.rotation.z);
+      } else {
+        const t = (this.currentTime - prev.time) / (next.time - prev.time);
+        bone.rotation.x = prev.rotation.x + (next.rotation.x - prev.rotation.x) * t;
+        bone.rotation.y = prev.rotation.y + (next.rotation.y - prev.rotation.y) * t;
+        bone.rotation.z = prev.rotation.z + (next.rotation.z - prev.rotation.z) * t;
+      }
+    });
+  }
+}
+
+const app = new VRMBoneStudio();
+</script>
+</body>
+</html>
