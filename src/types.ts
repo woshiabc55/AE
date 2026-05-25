@@ -105,3 +105,150 @@ export function createDefaultWorkbook(): WorkbookData {
     updatedAt: Date.now(),
   }
 }
+
+export interface DocBlock {
+  id: string
+  type: 'paragraph' | 'heading1' | 'heading2' | 'heading3' | 'bullet' | 'numbered' | 'quote'
+  content: string
+  format: DocBlockFormat
+}
+
+export interface DocBlockFormat {
+  bold: boolean
+  italic: boolean
+  underline: boolean
+  strikethrough: boolean
+  align: 'left' | 'center' | 'right'
+  color: string | null
+  highlight: string | null
+}
+
+export const DEFAULT_BLOCK_FORMAT: DocBlockFormat = {
+  bold: false,
+  italic: false,
+  underline: false,
+  strikethrough: false,
+  align: 'left',
+  color: null,
+  highlight: null,
+}
+
+export interface DocumentData {
+  id: string
+  name: string
+  blocks: DocBlock[]
+  createdAt: number
+  updatedAt: number
+}
+
+export function createDefaultDocument(): DocumentData {
+  return {
+    id: crypto.randomUUID(),
+    name: '未命名文档',
+    blocks: [
+      {
+        id: crypto.randomUUID(),
+        type: 'paragraph',
+        content: '',
+        format: { ...DEFAULT_BLOCK_FORMAT },
+      },
+    ],
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+  }
+}
+
+export interface SlideElement {
+  id: string
+  type: 'text' | 'shape'
+  x: number
+  y: number
+  width: number
+  height: number
+  content: string
+  format: SlideElementFormat
+}
+
+export interface SlideElementFormat {
+  fontSize: number
+  bold: boolean
+  italic: boolean
+  color: string
+  align: 'left' | 'center' | 'right'
+  bgColor: string | null
+  borderRadius: number
+}
+
+export const DEFAULT_SLIDE_ELEMENT_FORMAT: SlideElementFormat = {
+  fontSize: 18,
+  bold: false,
+  italic: false,
+  color: '#2D3436',
+  align: 'center',
+  bgColor: null,
+  borderRadius: 0,
+}
+
+export interface SlideData {
+  id: string
+  background: string
+  elements: SlideElement[]
+}
+
+export interface PresentationData {
+  id: string
+  name: string
+  slides: SlideData[]
+  activeSlideIndex: number
+  createdAt: number
+  updatedAt: number
+}
+
+export function createDefaultSlide(): SlideData {
+  return {
+    id: crypto.randomUUID(),
+    background: '#ffffff',
+    elements: [
+      {
+        id: crypto.randomUUID(),
+        type: 'text',
+        x: 60,
+        y: 80,
+        width: 620,
+        height: 60,
+        content: '点击输入标题',
+        format: { ...DEFAULT_SLIDE_ELEMENT_FORMAT, fontSize: 36, bold: true },
+      },
+      {
+        id: crypto.randomUUID(),
+        type: 'text',
+        x: 60,
+        y: 180,
+        width: 620,
+        height: 40,
+        content: '点击输入副标题',
+        format: { ...DEFAULT_SLIDE_ELEMENT_FORMAT, fontSize: 20, color: '#636e72' },
+      },
+    ],
+  }
+}
+
+export function createDefaultPresentation(): PresentationData {
+  return {
+    id: crypto.randomUUID(),
+    name: '未命名演示文稿',
+    slides: [createDefaultSlide()],
+    activeSlideIndex: 0,
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+  }
+}
+
+export type AppType = 'doc' | 'sheet' | 'slide'
+
+export interface RecentFile {
+  id: string
+  name: string
+  type: AppType
+  updatedAt: number
+}
