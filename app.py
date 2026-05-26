@@ -38,17 +38,20 @@ class ProxyRootMiddleware(BaseHTTPMiddleware):
             html = body.decode("utf-8")
             html = re.sub(
                 r'"root"\s*:\s*"http://localhost:\d+"',
-                '"root":""',
+                '"root":location.origin',
                 html,
             )
             html = html.replace(
                 'http://localhost:7860/gradio_api/',
                 '/gradio_api/',
             )
+            new_body = html.encode("utf-8")
+            headers = dict(response.headers)
+            headers["content-length"] = str(len(new_body))
             return Response(
-                content=html,
+                content=new_body,
                 status_code=response.status_code,
-                headers=dict(response.headers),
+                headers=headers,
                 media_type="text/html",
             )
         return response
