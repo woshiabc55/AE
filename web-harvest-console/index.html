@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebHarvest — 大规模采集统一控制台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-0:#050810;--bg-1:#0a0f1a;--bg-2:#0f1628;--bg-3:#162040;--bg-4:#1e2d52;
+  --border:#1a2744;--border-light:#253660;
+  --text-0:#eaf0ff;--text-1:#a8b8d8;--text-2:#6b7fa0;--text-3:#3d5070;
+  --scrapy:#ff6b35;--scrapy-dim:rgba(255,107,53,0.12);--scrapy-glow:rgba(255,107,53,0.35);
+  --playwright:#2dd4bf;--playwright-dim:rgba(45,212,191,0.12);--playwright-glow:rgba(45,212,191,0.35);
+  --skyvern:#a78bfa;--skyvern-dim:rgba(167,139,250,0.12);--skyvern-glow:rgba(167,139,250,0.35);
+  --green:#34d399;--green-dim:rgba(52,211,153,0.12);
+  --red:#f87171;--red-dim:rgba(248,113,113,0.12);
+  --yellow:#fbbf24;--yellow-dim:rgba(251,191,36,0.12);
+  --mono:'Fira Code',monospace;--sans:'Manrope',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--bg-0);color:var(--text-0);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 900px 600px at 5% 15%,rgba(255,107,53,0.03),transparent),radial-gradient(ellipse 700px 500px at 50% 50%,rgba(45,212,191,0.03),transparent),radial-gradient(ellipse 600px 400px at 95% 85%,rgba(167,139,250,0.03),transparent);pointer-events:none;z-index:0}
+.app{position:relative;z-index:1;display:flex;flex-direction:column;height:100vh}
+
+header{padding:14px 24px;display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--border);background:rgba(10,15,26,0.85);backdrop-filter:blur(12px);flex-shrink:0}
+.logo{font-family:var(--mono);font-weight:700;font-size:16px;letter-spacing:-0.5px;display:flex;align-items:center;gap:8px}
+.logo-icon{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,var(--scrapy),var(--playwright),var(--skyvern));display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;font-weight:700}
+.logo span{background:linear-gradient(90deg,var(--scrapy),var(--playwright),var(--skyvern));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header-sep{width:1px;height:24px;background:var(--border-light)}
+.header-info{font-family:var(--mono);font-size:11px;color:var(--text-3)}
+.header-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.hdr-btn{padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--bg-3);color:var(--text-1);font-family:var(--sans);font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
+.hdr-btn:hover{background:var(--bg-4);color:var(--text-0);border-color:var(--border-light)}
+.hdr-btn.primary{background:var(--playwright-dim);border-color:var(--playwright);color:var(--playwright)}
+
+.main-layout{display:grid;grid-template-columns:260px 1fr 320px;flex:1;overflow:hidden}
+
+.sidebar{background:var(--bg-1);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto}
+.sidebar-section{padding:16px;border-bottom:1px solid var(--border)}
+.sidebar-title{font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px}
+
+.engine-card{padding:12px;border-radius:8px;border:1px solid var(--border);background:var(--bg-2);margin-bottom:8px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.engine-card:hover{border-color:var(--border-light);background:var(--bg-3)}
+.engine-card.active{border-color:var(--engine-color)}
+.engine-card.active::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--engine-color)}
+.engine-card .ec-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.engine-card .ec-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.engine-card .ec-name{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--text-0)}
+.engine-card .ec-tag{font-size:9px;padding:2px 6px;border-radius:3px;font-weight:600;margin-left:auto}
+.engine-card .ec-desc{font-size:11px;color:var(--text-2);line-height:1.4}
+.engine-card .ec-stats{display:flex;gap:12px;margin-top:8px}
+.engine-card .ec-stat{font-family:var(--mono);font-size:10px;color:var(--text-3)}
+.engine-card .ec-stat b{color:var(--text-1)}
+
+.task-list{display:flex;flex-direction:column;gap:4px}
+.task-item{padding:8px 10px;border-radius:6px;background:var(--bg-2);border:1px solid transparent;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:8px}
+.task-item:hover{background:var(--bg-3);border-color:var(--border)}
+.task-item.active{background:var(--bg-3);border-color:var(--playwright)}
+.task-item .ti-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.task-item .ti-name{font-family:var(--mono);font-size:11px;color:var(--text-1);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.task-item .ti-status{font-size:9px;padding:1px 6px;border-radius:3px;font-weight:600}
+.ti-status.running{background:var(--green-dim);color:var(--green)}
+.ti-status.queued{background:var(--yellow-dim);color:var(--yellow)}
+.ti-status.failed{background:var(--red-dim);color:var(--red)}
+.ti-status.done{background:rgba(52,211,153,0.08);color:var(--text-3)}
+
+.center-panel{display:flex;flex-direction:column;overflow:hidden}
+.center-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-shrink:0;background:var(--bg-1)}
+.ch-engine{font-family:var(--mono);font-size:13px;font-weight:600;padding:4px 10px;border-radius:4px}
+.ch-title{font-size:16px;font-weight:700;flex:1}
+.ch-actions{display:flex;gap:6px}
+.ch-btn{padding:6px 12px;border-radius:6px;border:1px solid var(--border);background:var(--bg-3);color:var(--text-1);font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:4px}
+.ch-btn:hover{background:var(--bg-4);color:var(--text-0)}
+.ch-btn.run{background:var(--green-dim);border-color:var(--green);color:var(--green)}
+.ch-btn.stop{background:var(--red-dim);border-color:var(--red);color:var(--red)}
+
+.center-body{flex:1;overflow-y:auto;padding:20px}
+.config-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.config-section{background:var(--bg-1);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.config-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.config-title{font-size:12px;font-weight:600;color:var(--text-1);text-transform:uppercase;letter-spacing:.5px}
+.config-body{padding:14px 16px}
+.cfg-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.cfg-label{font-family:var(--mono);font-size:11px;color:var(--text-2);width:90px;flex-shrink:0}
+.cfg-input{flex:1;padding:6px 10px;background:var(--bg-3);border:1px solid var(--border);border-radius:6px;color:var(--text-0);font-family:var(--mono);font-size:11px;outline:none;transition:border-color .2s}
+.cfg-input:focus{border-color:var(--playwright)}
+textarea.cfg-input{min-height:80px;resize:vertical;line-height:1.5}
+.cfg-select{flex:1;padding:6px 10px;background:var(--bg-3);border:1px solid var(--border);border-radius:6px;color:var(--text-0);font-family:var(--mono);font-size:11px;outline:none;cursor:pointer}
+.cfg-toggle{width:36px;height:20px;border-radius:10px;background:var(--bg-4);cursor:pointer;position:relative;transition:background .3s;flex-shrink:0}
+.cfg-toggle.on{background:var(--green)}
+.cfg-toggle::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:2px;left:2px;transition:transform .3s}
+.cfg-toggle.on::after{transform:translateX(16px)}
+.cfg-range{flex:1;-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;background:var(--bg-4);outline:none}
+.cfg-range::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--playwright);cursor:pointer}
+.cfg-val{font-family:var(--mono);font-size:11px;color:var(--text-1);width:40px;text-align:right}
+
+.log-panel{background:var(--bg-1);border-top:1px solid var(--border);flex-shrink:0;max-height:200px;overflow-y:auto;padding:10px 16px;font-family:var(--mono);font-size:11px;line-height:1.7}
+.log-line{display:flex;gap:8px}
+.log-time{color:var(--text-3);flex-shrink:0}
+.log-engine{flex-shrink:0;font-weight:600}
+.log-engine.scrapy{color:var(--scrapy)}
+.log-engine.playwright{color:var(--playwright)}
+.log-engine.skyvern{color:var(--skyvern)}
+.log-msg{color:var(--text-1);word-break:break-all}
+.log-msg.ok{color:var(--green)}
+.log-msg.err{color:var(--red)}
+.log-msg.warn{color:var(--yellow)}
+
+.right-panel{background:var(--bg-1);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto}
+.rp-section{padding:16px;border-bottom:1px solid var(--border)}
+.rp-title{font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px}
+
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat-card{padding:10px;border-radius:6px;background:var(--bg-2);border:1px solid var(--border)}
+.stat-card .sc-label{font-size:10px;color:var(--text-3);margin-bottom:4px}
+.stat-card .sc-value{font-family:var(--mono);font-size:18px;font-weight:700}
+.stat-card .sc-value.scrapy{color:var(--scrapy)}
+.stat-card .sc-value.playwright{color:var(--playwright)}
+.stat-card .sc-value.skyvern{color:var(--skyvern)}
+.stat-card .sc-value.green{color:var(--green)}
+
+.result-list{display:flex;flex-direction:column;gap:6px;max-height:300px;overflow-y:auto}
+.result-item{padding:8px 10px;border-radius:6px;background:var(--bg-2);border:1px solid var(--border);font-family:var(--mono);font-size:10px}
+.result-item .ri-url{color:var(--playwright);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.result-item .ri-data{color:var(--text-2);display:flex;gap:8px}
+.result-item .ri-data span{color:var(--text-1)}
+
+.chart-area{width:100%;height:140px}
+.chart-area canvas{width:100%;height:100%}
+
+.cluster-nodes{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.cluster-node{padding:8px;border-radius:6px;background:var(--bg-2);border:1px solid var(--border);text-align:center}
+.cluster-node .cn-name{font-family:var(--mono);font-size:10px;color:var(--text-2);margin-bottom:4px}
+.cluster-node .cn-bar{height:3px;border-radius:2px;background:var(--bg-4);overflow:hidden}
+.cluster-node .cn-fill{height:100%;border-radius:2px;transition:width .5s}
+
+@media(max-width:1100px){.main-layout{grid-template-columns:1fr}.sidebar,.right-panel{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo"><div class="logo-icon">W</div><span>WebHarvest</span></div>
+    <div class="header-sep"></div>
+    <span class="header-info">大规模采集统一控制台 v1.0</span>
+    <div class="header-right">
+      <button class="hdr-btn" id="btnNewTask">+ 新任务</button>
+      <button class="hdr-btn primary" id="btnRunAll">▶ 全部运行</button>
+    </div>
+  </header>
+
+  <div class="main-layout">
+    <div class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-title">采集引擎</div>
+        <div class="engine-card active" data-engine="scrapy" style="--engine-color:var(--scrapy)">
+          <div class="ec-header">
+            <div class="ec-dot" style="background:var(--scrapy);box-shadow:0 0 6px var(--scrapy-glow)"></div>
+            <span class="ec-name">Scrapy</span>
+            <span class="ec-tag" style="background:var(--scrapy-dim);color:var(--scrapy)">分布式</span>
+          </div>
+          <div class="ec-desc">大规模静态数据采集，Twisted 异步引擎，2400 req/min</div>
+          <div class="ec-stats"><span class="ec-stat">节点 <b>8</b></span><span class="ec-stat">任务 <b>12</b></span><span class="ec-stat">页面 <b>2.4M</b></span></div>
+        </div>
+        <div class="engine-card" data-engine="playwright" style="--engine-color:var(--playwright)">
+          <div class="ec-header">
+            <div class="ec-dot" style="background:var(--playwright);box-shadow:0 0 6px var(--playwright-glow)"></div>
+            <span class="ec-name">Playwright + Crawlee</span>
+            <span class="ec-tag" style="background:var(--playwright-dim);color:var(--playwright)">JS渲染</span>
+          </div>
+          <div class="ec-desc">JS 重度渲染页面，多浏览器支持，自动等待与指纹伪装</div>
+          <div class="ec-stats"><span class="ec-stat">节点 <b>4</b></span><span class="ec-stat">任务 <b>6</b></span><span class="ec-stat">页面 <b>890K</b></span></div>
+        </div>
+        <div class="engine-card" data-engine="skyvern" style="--engine-color:var(--skyvern)">
+          <div class="ec-header">
+            <div class="ec-dot" style="background:var(--skyvern);box-shadow:0 0 6px var(--skyvern-glow)"></div>
+            <span class="ec-name">Skyvern / Stagehand</span>
+            <span class="ec-tag" style="background:var(--skyvern-dim);color:var(--skyvern)">AI</span>
+          </div>
+          <div class="ec-desc">LLM+CV 自适应自动化，无选择器，CAPTCHA/2FA 原生支持</div>
+          <div class="ec-stats"><span class="ec-stat">节点 <b>2</b></span><span class="ec-stat">任务 <b>3</b></span><span class="ec-stat">页面 <b>156K</b></span></div>
+        </div>
+      </div>
+      <div class="sidebar-section" style="flex:1;overflow-y:auto">
+        <div class="sidebar-title">任务队列</div>
+        <div class="task-list" id="taskList"></div>
+      </div>
+    </div>
+
+    <div class="center-panel">
+      <div class="center-header">
+        <span class="ch-engine" id="chEngine" style="background:var(--scrapy-dim);color:var(--scrapy)">SCRAPY</span>
+        <span class="ch-title" id="chTitle">电商价格采集 — 分布式</span>
+        <div class="ch-actions">
+          <button class="ch-btn run" id="btnRun">▶ 运行</button>
+          <button class="ch-btn stop" id="btnStop" style="display:none">■ 停止</button>
+          <button class="ch-btn" id="btnExport">↓ 导出</button>
+        </div>
+      </div>
+      <div class="center-body" id="centerBody"></div>
+      <div class="log-panel" id="logPanel"></div>
+    </div>
+
+    <div class="right-panel">
+      <div class="rp-section">
+        <div class="rp-title">实时统计</div>
+        <div class="stat-grid">
+          <div class="stat-card"><div class="sc-label">总页面</div><div class="sc-value green" id="statPages">3,446K</div></div>
+          <div class="stat-card"><div class="sc-label">成功率</div><div class="sc-value green" id="statRate">97.2%</div></div>
+          <div class="stat-card"><div class="sc-label">吞吐量</div><div class="sc-value playwright" id="statThroughput">2.4K/m</div></div>
+          <div class="stat-card"><div class="sc-label">活跃任务</div><div class="sc-value scrapy" id="statActive">5</div></div>
+        </div>
+      </div>
+      <div class="rp-section">
+        <div class="rp-title">引擎吞吐趋势</div>
+        <div class="chart-area"><canvas id="throughputChart"></canvas></div>
+      </div>
+      <div class="rp-section">
+        <div class="rp-title">集群节点</div>
+        <div class="cluster-nodes" id="clusterNodes"></div>
+      </div>
+      <div class="rp-section" style="flex:1;overflow-y:auto">
+        <div class="rp-title">最近采集结果</div>
+        <div class="result-list" id="resultList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const ENGINES = {
+  scrapy: {
+    name: 'Scrapy', color: 'scrapy', label: 'SCRAPY',
+    config: [
+      { type:'section', title:'爬虫配置' },
+      { key:'spider_name', label:'Spider名称', type:'input', value:'ecommerce_spider' },
+      { key:'start_urls', label:'起始URLs', type:'textarea', value:'https://example.com/products\nhttps://example.com/categories' },
+      { key:'concurrent', label:'并发数', type:'range', min:1, max:500, value:100 },
+      { key:'download_delay', label:'下载延迟(s)', type:'range', min:0, max:5, step:0.1, value:0.5 },
+      { type:'section', title:'分布式集群' },
+      { key:'distributed', label:'分布式模式', type:'toggle', value:true },
+      { key:'redis_url', label:'Redis URL', type:'input', value:'redis://localhost:6379/0' },
+      { key:'node_count', label:'工作节点', type:'range', min:1, max:32, value:8 },
+      { key:'auto_throttle', label:'自动限速', type:'toggle', value:true },
+      { type:'section', title:'数据处理' },
+      { key:'pipeline', label:'数据管道', type:'select', options:['JSON文件','CSV导出','MySQL','MongoDB','Elasticsearch'], value:'MongoDB' },
+      { key:'dedup', label:'去重策略', type:'select', options:['URL去重','内容指纹','RPS指纹'], value:'URL去重' },
+      { key:'retry', label:'重试次数', type:'range', min:0, max:10, value:3 },
+      { key:'robotstxt', label:'遵守robots.txt', type:'toggle', value:true },
+    ],
+    tasks: [
+      { name:'电商价格采集', status:'running', engine:'scrapy' },
+      { name:'新闻聚合爬取', status:'running', engine:'scrapy' },
+      { name:'学术论文索引', status:'queued', engine:'scrapy' },
+      { name:'房产数据采集', status:'done', engine:'scrapy' },
+    ],
+  },
+  playwright: {
+    name: 'Playwright + Crawlee', color: 'playwright', label: 'PLAYWRIGHT',
+    config: [
+      { type:'section', title:'浏览器配置' },
+      { key:'browser', label:'浏览器引擎', type:'select', options:['Chromium','Firefox','WebKit'], value:'Chromium' },
+      { key:'headless', label:'无头模式', type:'toggle', value:true },
+      { key:'max_pages', label:'最大页面数', type:'range', min:1, max:50, value:10 },
+      { key:'viewport', label:'视口大小', type:'select', options:['1920×1080','1366×768','1280×720','375×812'], value:'1920×1080' },
+      { type:'section', title:'Crawlee 配置' },
+      { key:'crawler_type', label:'爬虫类型', type:'select', options:['PlaywrightCrawler','PuppeteerCrawler','CheerioCrawler','HttpCrawler'], value:'PlaywrightCrawler' },
+      { key:'max_requests', label:'最大请求数', type:'range', min:10, max:10000, value:1000 },
+      { key:'auto_retry', label:'自动重试', type:'toggle', value:true },
+      { key:'proxy_rotation', label:'代理轮换', type:'toggle', value:true },
+      { type:'section', title:'反检测' },
+      { key:'stealth', label:'Stealth 模式', type:'toggle', value:true },
+      { key:'fingerprint', label:'浏览器指纹', type:'toggle', value:true },
+      { key:'user_agent', label:'User-Agent', type:'input', value:'auto-rotate' },
+      { key:'wait_strategy', label:'等待策略', type:'select', options:['networkidle','domcontentloaded','load','commit'], value:'networkidle' },
+    ],
+    tasks: [
+      { name:'SPA应用数据提取', status:'running', engine:'playwright' },
+      { name:'动态表单提交', status:'running', engine:'playwright' },
+      { name:'截图归档任务', status:'queued', engine:'playwright' },
+    ],
+  },
+  skyvern: {
+    name: 'Skyvern / Stagehand', color: 'skyvern', label: 'SKYVERN',
+    config: [
+      { type:'section', title:'AI 引擎' },
+      { key:'llm_provider', label:'LLM 提供商', type:'select', options:['OpenAI GPT-4o','Claude 3.5','Gemini Pro','本地模型'], value:'OpenAI GPT-4o' },
+      { key:'workflow', label:'工作流描述', type:'textarea', value:'登录供应商门户，下载最近30天的发票PDF，提取金额和日期' },
+      { key:'output_schema', label:'输出Schema', type:'textarea', value:'{\n  "invoice_number": "string",\n  "amount": "number",\n  "date": "string"\n}' },
+      { type:'section', title:'自动化配置' },
+      { key:'captcha', label:'CAPTCHA 解决', type:'toggle', value:true },
+      { key:'twofa', label:'2FA 支持', type:'toggle', value:true },
+      { key:'proxy', label:'代理网络', type:'select', options:['住宅代理','数据中心代理','无代理'], value:'住宅代理' },
+      { key:'max_steps', label:'最大步骤', type:'range', min:5, max:100, value:30 },
+      { type:'section', title:'Stagehand' },
+      { key:'stagehand_mode', label:'模式', type:'select', options:['agent() — 全自主','act() — 单步操作','extract() — 数据提取','observe() — 页面观察'], value:'agent() — 全自主' },
+      { key:'session_recording', label:'会话录制', type:'toggle', value:true },
+      { key:'explain', label:'可解释AI', type:'toggle', value:true },
+    ],
+    tasks: [
+      { name:'发票自动下载', status:'running', engine:'skyvern' },
+      { name:'供应商表单填写', status:'queued', engine:'skyvern' },
+      { name:'合规检查自动化', status:'queued', engine:'skyvern' },
+    ],
+  },
+};
+
+let activeEngine = 'scrapy';
+let activeTask = null;
+let isRunning = false;
+let logInterval = null;
+
+function init() {
+  renderEngineCards();
+  renderTaskList();
+  renderConfig();
+  renderClusterNodes();
+  renderResults();
+  drawChart();
+  setupEvents();
+}
+
+function renderEngineCards() {
+  document.querySelectorAll('.engine-card').forEach(card => {
+    card.classList.toggle('active', card.dataset.engine === activeEngine);
+  });
+}
+
+function renderTaskList() {
+  const list = document.getElementById('taskList');
+  const engine = ENGINES[activeEngine];
+  list.innerHTML = '';
+  engine.tasks.forEach((t, i) => {
+    const item = document.createElement('div');
+    item.className = `task-item ${activeTask === i ? 'active' : ''}`;
+    const dotColor = t.status === 'running' ? 'var(--green)' : t.status === 'queued' ? 'var(--yellow)' : t.status === 'failed' ? 'var(--red)' : 'var(--text-3)';
+    item.innerHTML = `<div class="ti-dot" style="background:${dotColor}"></div><span class="ti-name">${t.name}</span><span class="ti-status ${t.status}">${t.status === 'running' ? '运行' : t.status === 'queued' ? '排队' : t.status === 'failed' ? '失败' : '完成'}</span>`;
+    item.addEventListener('click', () => { activeTask = i; renderTaskList(); document.getElementById('chTitle').textContent = t.name; });
+    list.appendChild(item);
+  });
+}
+
+function renderConfig() {
+  const body = document.getElementById('centerBody');
+  const engine = ENGINES[activeEngine];
+  const colorVar = `var(--${engine.color})`;
+  const colorDimVar = `var(--${engine.color}-dim)`;
+
+  document.getElementById('chEngine').textContent = engine.label;
+  document.getElementById('chEngine').style.background = colorDimVar;
+  document.getElementById('chEngine').style.color = colorVar;
+
+  let html = '<div class="config-grid">';
+  let col = 0;
+
+  engine.config.forEach(item => {
+    if (item.type === 'section') {
+      if (col > 0) html += '</div></div>';
+      html += `<div class="config-section"><div class="config-header"><span class="config-title">${item.title}</span></div><div class="config-body">`;
+      col = 1;
+      return;
+    }
+
+    html += '<div class="cfg-row">';
+    html += `<span class="cfg-label">${item.label}</span>`;
+
+    if (item.type === 'input') {
+      html += `<input class="cfg-input" data-key="${item.key}" value="${item.value}">`;
+    } else if (item.type === 'textarea') {
+      html += `<textarea class="cfg-input" data-key="${item.key}">${item.value}</textarea>`;
+    } else if (item.type === 'select') {
+      html += `<select class="cfg-select" data-key="${item.key}">`;
+      item.options.forEach(o => { html += `<option ${o === item.value ? 'selected' : ''}>${o}</option>`; });
+      html += '</select>';
+    } else if (item.type === 'toggle') {
+      html += `<div class="cfg-toggle ${item.value ? 'on' : ''}" data-key="${item.key}"></div>`;
+    } else if (item.type === 'range') {
+      html += `<input class="cfg-range" type="range" data-key="${item.key}" min="${item.min || 0}" max="${item.max || 100}" step="${item.step || 1}" value="${item.value}">`;
+      html += `<span class="cfg-val" data-val="${item.key}">${item.value}</span>`;
+    }
+
+    html += '</div>';
+  });
+
+  if (col > 0) html += '</div></div>';
+  html += '</div>';
+  body.innerHTML = html;
+
+  body.querySelectorAll('.cfg-toggle').forEach(tog => {
+    tog.addEventListener('click', () => tog.classList.toggle('on'));
+  });
+  body.querySelectorAll('.cfg-range').forEach(range => {
+    range.addEventListener('input', () => {
+      body.querySelector(`[data-val="${range.dataset.key}"]`).textContent = range.value;
+    });
+  });
+}
+
+function renderClusterNodes() {
+  const container = document.getElementById('clusterNodes');
+  const nodes = [];
+  for (let i = 0; i < 9; i++) {
+    const load = 20 + Math.floor(Math.random() * 70);
+    const color = load < 50 ? 'var(--green)' : load < 80 ? 'var(--yellow)' : 'var(--red)';
+    nodes.push({ name: `node-${String(i+1).padStart(2,'0')}`, load, color });
+  }
+  container.innerHTML = nodes.map(n => `
+    <div class="cluster-node">
+      <div class="cn-name">${n.name}</div>
+      <div class="cn-bar"><div class="cn-fill" style="width:${n.load}%;background:${n.color}"></div></div>
+    </div>
+  `).join('');
+}
+
+function renderResults() {
+  const list = document.getElementById('resultList');
+  const sampleResults = [
+    { url:'https://store.example.com/product/1234', data:{ 价格:'¥299', 库存:'有货' } },
+    { url:'https://news.example.com/article/5678', data:{ 标题:'AI行业报告', 日期:'2025-05-24' } },
+    { url:'https://portal.example.com/invoice/9012', data:{ 金额:'$1,240', 状态:'已下载' } },
+    { url:'https://api.example.com/data/3456', data:{ 记录数:'1,247', 格式:'JSON' } },
+    { url:'https://scrape.example.com/page/7890', data:{ 页面:'23/100', 耗时:'2.3s' } },
+  ];
+  list.innerHTML = sampleResults.map(r => `
+    <div class="result-item">
+      <div class="ri-url">${r.url}</div>
+      <div class="ri-data">${Object.entries(r.data).map(([k,v]) => `${k}:<span>${v}</span>`).join(' · ')}</div>
+    </div>
+  `).join('');
+}
+
+function drawChart() {
+  const canvas = document.getElementById('throughputChart');
+  const ctx = canvas.getContext('2d');
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = rect.width * 2;
+  canvas.height = 280;
+  ctx.scale(2, 2);
+  const w = rect.width, h = 140;
+  const pad = { top:8, right:8, bottom:16, left:36 };
+  const cw = w - pad.left - pad.right, ch = h - pad.top - pad.bottom;
+
+  ctx.clearRect(0, 0, w, h);
+
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.top + (ch / 4) * i;
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(w - pad.right, y);
+    ctx.strokeStyle = 'rgba(26,39,68,0.6)'; ctx.lineWidth = 1; ctx.stroke();
+    ctx.fillStyle = '#3d5070'; ctx.font = '9px Fira Code'; ctx.textAlign = 'right';
+    ctx.fillText((4000 - i * 1000) + '', pad.left - 4, y + 3);
+  }
+
+  const series = [
+    { data: [], color: '#ff6b35' },
+    { data: [], color: '#2dd4bf' },
+    { data: [], color: '#a78bfa' },
+  ];
+  const pts = 40;
+  for (let i = 0; i < pts; i++) {
+    series[0].data.push(2400 + Math.sin(i * 0.2) * 600 + Math.random() * 300);
+    series[1].data.push(800 + Math.cos(i * 0.15) * 300 + Math.random() * 200);
+    series[2].data.push(200 + Math.sin(i * 0.3 + 1) * 100 + Math.random() * 80);
+  }
+
+  series.forEach(s => {
+    ctx.beginPath();
+    s.data.forEach((v, i) => {
+      const x = pad.left + (i / (pts - 1)) * cw;
+      const y = pad.top + ch - (v / 4000) * ch;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.strokeStyle = s.color; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.lineTo(pad.left + cw, pad.top + ch);
+    ctx.lineTo(pad.left, pad.top + ch);
+    ctx.closePath();
+    const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + ch);
+    grad.addColorStop(0, s.color + '18');
+    grad.addColorStop(1, 'transparent');
+    ctx.fillStyle = grad; ctx.fill();
+  });
+}
+
+function addLog(engine, msg, type = '') {
+  const panel = document.getElementById('logPanel');
+  const now = new Date();
+  const time = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+  const line = document.createElement('div');
+  line.className = 'log-line';
+  line.innerHTML = `<span class="log-time">${time}</span><span class="log-engine ${engine}">[${engine.toUpperCase()}]</span><span class="log-msg ${type}">${msg}</span>`;
+  panel.appendChild(line);
+  panel.scrollTop = panel.scrollHeight;
+}
+
+function setupEvents() {
+  document.querySelectorAll('.engine-card').forEach(card => {
+    card.addEventListener('click', () => {
+      activeEngine = card.dataset.engine;
+      activeTask = 0;
+      renderEngineCards();
+      renderTaskList();
+      renderConfig();
+      const engine = ENGINES[activeEngine];
+      document.getElementById('chTitle').textContent = engine.tasks[0]?.name || '新任务';
+    });
+  });
+
+  document.getElementById('btnRun').addEventListener('click', () => startTask());
+  document.getElementById('btnStop').addEventListener('click', () => stopTask());
+  document.getElementById('btnExport').addEventListener('click', () => exportConfig());
+  document.getElementById('btnRunAll').addEventListener('click', () => runAll());
+  document.getElementById('btnNewTask').addEventListener('click', () => newTask());
+}
+
+function startTask() {
+  if (isRunning) return;
+  isRunning = true;
+  document.getElementById('btnRun').style.display = 'none';
+  document.getElementById('btnStop').style.display = 'flex';
+  addLog(activeEngine, '任务启动中...', 'ok');
+
+  const messages = {
+    scrapy: [
+      '连接 Redis 集群 redis://localhost:6379/0',
+      '初始化 8 个工作节点',
+      'Spider ecommerce_spider 已加载',
+      '起始 URL 队列: 2 条',
+      '自动限速已启用, 目标: 2400 req/min',
+      '开始爬取... 并发=100, 延迟=0.5s',
+      '已采集 1,000 页面 | 成功率 98.1%',
+      '已采集 5,000 页面 | 成功率 97.8%',
+      'URL 去重: 跳过 342 重复请求',
+      'MongoDB 管道: 已写入 4,658 条记录',
+    ],
+    playwright: [
+      '启动 Chromium 无头浏览器',
+      'Stealth 模式已启用',
+      '浏览器指纹自动轮换',
+      'Crawlee PlaywrightCrawler 初始化',
+      '代理轮换: 住宅代理池已连接',
+      '等待策略: networkidle',
+      '渲染 SPA 页面: https://app.example.com',
+      '提取动态内容: 23 个数据点',
+      '截图已保存: page_001.png',
+      '会话完成: 10 页面已处理',
+    ],
+    skyvern: [
+      'LLM 引擎: OpenAI GPT-4o 已连接',
+      '解析工作流: "登录供应商门户，下载发票..."',
+      '启动浏览器代理: 住宅代理 (US)',
+      'CAPTCHA 检测: 未发现',
+      'AI 识别登录表单字段',
+      '自动填写用户名和密码',
+      '2FA: 检测到 TOTP 验证，自动处理',
+      '导航至发票列表页面',
+      'AI 识别下载按钮，点击下载 PDF',
+      '提取数据: invoice_number=INV-2025-042, amount=$1,240.00',
+    ],
+  };
+
+  const msgs = messages[activeEngine] || messages.scrapy;
+  let i = 0;
+  logInterval = setInterval(() => {
+    if (i >= msgs.length) {
+      addLog(activeEngine, '任务完成 ✓', 'ok');
+      stopTask();
+      return;
+    }
+    addLog(activeEngine, msgs[i], i % 3 === 0 ? 'ok' : '');
+    i++;
+  }, 1200);
+}
+
+function stopTask() {
+  isRunning = false;
+  if (logInterval) { clearInterval(logInterval); logInterval = null; }
+  document.getElementById('btnRun').style.display = 'flex';
+  document.getElementById('btnStop').style.display = 'none';
+  addLog(activeEngine, '任务已停止', 'warn');
+}
+
+function exportConfig() {
+  const engine = ENGINES[activeEngine];
+  const config = {};
+  document.querySelectorAll('.cfg-input, .cfg-select').forEach(el => {
+    if (el.dataset.key) config[el.dataset.key] = el.value;
+  });
+  document.querySelectorAll('.cfg-toggle').forEach(el => {
+    if (el.dataset.key) config[el.dataset.key] = el.classList.contains('on');
+  });
+  document.querySelectorAll('.cfg-range').forEach(el => {
+    if (el.dataset.key) config[el.dataset.key] = parseFloat(el.value);
+  });
+  const blob = new Blob([JSON.stringify({ engine: activeEngine, config, timestamp: new Date().toISOString() }, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `webharvest_${activeEngine}_config.json`; a.click();
+  URL.revokeObjectURL(url);
+  addLog(activeEngine, '配置已导出', 'ok');
+}
+
+function runAll() {
+  addLog('scrapy', '全部引擎启动...', 'ok');
+  addLog('playwright', '全部引擎启动...', 'ok');
+  addLog('skyvern', '全部引擎启动...', 'ok');
+}
+
+function newTask() {
+  const name = `新任务 ${Date.now() % 10000}`;
+  ENGINES[activeEngine].tasks.push({ name, status: 'queued', engine: activeEngine });
+  activeTask = ENGINES[activeEngine].tasks.length - 1;
+  renderTaskList();
+  document.getElementById('chTitle').textContent = name;
+  addLog(activeEngine, `新任务已创建: ${name}`, 'ok');
+}
+
+init();
+
+window.addEventListener('resize', () => { drawChart(); });
+</script>
+</body>
+</html>
