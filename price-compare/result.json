@@ -1,0 +1,741 @@
+{
+  "keyword": "手机",
+  "total": 30,
+  "products": [
+    {
+      "name": "中兴 手机 Max",
+      "price": 1129.8,
+      "sales": 336300,
+      "store_name": "品牌优选店",
+      "store_rating": 4.7,
+      "platform": "拼多多",
+      "url": "https://mobile.yangkeduo.com/goods.html?goods_id=278d89117f",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 1454.05,
+      "discount": 0.78,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "67096a8bb53d"
+    },
+    {
+      "name": "魅族 手机 Ultra",
+      "price": 1162.4,
+      "sales": 413004,
+      "store_name": "工厂直销店",
+      "store_rating": 4.5,
+      "platform": "拼多多",
+      "url": "https://mobile.yangkeduo.com/goods.html?goods_id=143b5d55fb",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 1565.24,
+      "discount": 0.74,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "de4a7dd18c19"
+    },
+    {
+      "name": "realme 手机 Plus",
+      "price": 1578.81,
+      "sales": 15724,
+      "store_name": "品牌特卖店",
+      "store_rating": 4.6,
+      "platform": "拼多多",
+      "url": "https://mobile.yangkeduo.com/goods.html?goods_id=14918d8039",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 2248.53,
+      "discount": 0.7,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "9c32f9753cad"
+    },
+    {
+      "name": "vivo 手机 标准版",
+      "price": 1683.68,
+      "sales": 288035,
+      "store_name": "拼团旗舰店",
+      "store_rating": 4.6,
+      "platform": "拼多多",
+      "url": "https://mobile.yangkeduo.com/goods.html?goods_id=37fd9afec5",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 1864.77,
+      "discount": 0.9,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "3d2210c0d65b"
+    },
+    {
+      "name": "OPPO 手机 百亿补贴版",
+      "price": 1936.74,
+      "sales": 71310,
+      "store_name": "品牌官方旗舰店",
+      "store_rating": 4.7,
+      "platform": "拼多多",
+      "url": "https://mobile.yangkeduo.com/goods.html?goods_id=7e4758c908",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 2435.88,
+      "discount": 0.8,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "9ccae55dbe6f"
+    },
+    {
+      "name": "realme 手机 SE",
+      "price": 1977.65,
+      "sales": 423771,
+      "store_name": "品牌特卖店",
+      "store_rating": 4.6,
+      "platform": "拼多多",
+      "url": "https://mobile.yangkeduo.com/goods.html?goods_id=811c939b5a",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 2460.45,
+      "discount": 0.8,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "4959cf089716"
+    },
+    {
+      "name": "OPPO 手机 标准版",
+      "price": 2011.34,
+      "sales": 126197,
+      "store_name": "金牌卖家店",
+      "store_rating": 4.6,
+      "platform": "淘宝",
+      "url": "https://item.taobao.com/item.htm?id=aed3c082fd",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 2222.54,
+      "discount": 0.9,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "e56bd88ca0df"
+    },
+    {
+      "name": "中兴 手机 高配版",
+      "price": 2076.1,
+      "sales": 196771,
+      "store_name": "品牌官方旗舰店",
+      "store_rating": 4.7,
+      "platform": "拼多多",
+      "url": "https://mobile.yangkeduo.com/goods.html?goods_id=f0d8c2c09f",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 2390.61,
+      "discount": 0.87,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "62c973553cfe"
+    },
+    {
+      "name": "realme 手机 SE",
+      "price": 2178.33,
+      "sales": 69208,
+      "store_name": "京东数码专营店",
+      "store_rating": 4.7,
+      "platform": "京东",
+      "url": "https://item.jd.com/475fdbc713.html",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 2478.01,
+      "discount": 0.88,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "3d8df6735b61"
+    },
+    {
+      "name": "三星 手机 Lite",
+      "price": 2222.08,
+      "sales": 266726,
+      "store_name": "品牌授权专卖店",
+      "store_rating": 4.7,
+      "platform": "淘宝",
+      "url": "https://item.taobao.com/item.htm?id=456d0f0110",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 2390.65,
+      "discount": 0.93,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "ca94c792f122"
+    },
+    {
+      "name": "三星 手机 标准版",
+      "price": 2226.16,
+      "sales": 17665,
+      "store_name": "京东品牌授权店",
+      "store_rating": 4.6,
+      "platform": "京东",
+      "url": "https://item.jd.com/5c190bc526.html",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 2499.7,
+      "discount": 0.89,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "752108e0d790"
+    },
+    {
+      "name": "一加 手机 SE",
+      "price": 2318.7,
+      "sales": 91660,
+      "store_name": "拼团旗舰店",
+      "store_rating": 4.6,
+      "platform": "拼多多",
+      "url": "https://mobile.yangkeduo.com/goods.html?goods_id=c7a6bdc85b",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 2636.08,
+      "discount": 0.88,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "d5b5d8e3bcb8"
+    },
+    {
+      "name": "荣耀 手机 Plus",
+      "price": 2329.93,
+      "sales": 7162,
+      "store_name": "品牌优选店",
+      "store_rating": 4.7,
+      "platform": "拼多多",
+      "url": "https://mobile.yangkeduo.com/goods.html?goods_id=f058a28a00",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 2890.78,
+      "discount": 0.81,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "1e83865316b2"
+    },
+    {
+      "name": "小米 手机 标准版",
+      "price": 2344.35,
+      "sales": 385638,
+      "store_name": "百亿补贴店",
+      "store_rating": 4.8,
+      "platform": "拼多多",
+      "url": "https://mobile.yangkeduo.com/goods.html?goods_id=409de44d6c",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 3088.01,
+      "discount": 0.76,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "5cf5c31f489f"
+    },
+    {
+      "name": "苹果 手机 标准版",
+      "price": 2459.04,
+      "sales": 36508,
+      "store_name": "品牌优选店",
+      "store_rating": 4.7,
+      "platform": "拼多多",
+      "url": "https://mobile.yangkeduo.com/goods.html?goods_id=b1a6e4a677",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 3220.61,
+      "discount": 0.76,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "8ef8d8b8fe5b"
+    },
+    {
+      "name": "realme 手机 Max",
+      "price": 2466.25,
+      "sales": 163944,
+      "store_name": "品牌授权专卖店",
+      "store_rating": 4.7,
+      "platform": "淘宝",
+      "url": "https://item.taobao.com/item.htm?id=617aeb17df",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 3075.51,
+      "discount": 0.8,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "a6a17de06458"
+    },
+    {
+      "name": "realme 手机 旗舰版",
+      "price": 2506.67,
+      "sales": 153405,
+      "store_name": "京东家电旗舰店",
+      "store_rating": 4.8,
+      "platform": "京东",
+      "url": "https://item.jd.com/57cdf62340.html",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 2835.42,
+      "discount": 0.88,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "29c26881465d"
+    },
+    {
+      "name": "小米 手机 SE",
+      "price": 2533.99,
+      "sales": 147745,
+      "store_name": "京东手机旗舰店",
+      "store_rating": 4.9,
+      "platform": "京东",
+      "url": "https://item.jd.com/ffd569b2ee.html",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 3285.72,
+      "discount": 0.77,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "772b71603709"
+    },
+    {
+      "name": "一加 手机 旗舰版",
+      "price": 2598.8,
+      "sales": 185228,
+      "store_name": "京东官方旗舰店",
+      "store_rating": 4.8,
+      "platform": "京东",
+      "url": "https://item.jd.com/49073a5c42.html",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 3347.3,
+      "discount": 0.78,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "b76923b90e2d"
+    },
+    {
+      "name": "小米 手机 Plus",
+      "price": 2621.25,
+      "sales": 82602,
+      "store_name": "金牌卖家店",
+      "store_rating": 4.6,
+      "platform": "淘宝",
+      "url": "https://item.taobao.com/item.htm?id=f716d14f67",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 2856.58,
+      "discount": 0.92,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "61b74b443d9f"
+    },
+    {
+      "name": "华为 手机 Ultra",
+      "price": 2718.9,
+      "sales": 168692,
+      "store_name": "京东自营旗舰店",
+      "store_rating": 4.9,
+      "platform": "京东",
+      "url": "https://item.jd.com/d32abd8555.html",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 3133.87,
+      "discount": 0.87,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "c1fafcc02f45"
+    },
+    {
+      "name": "realme 手机 标准版",
+      "price": 2745.62,
+      "sales": 195595,
+      "store_name": "京东家电旗舰店",
+      "store_rating": 4.8,
+      "platform": "京东",
+      "url": "https://item.jd.com/95c83ad34f.html",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 3322.21,
+      "discount": 0.83,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "f4efb3b9e60c"
+    },
+    {
+      "name": "一加 手机 Ultra",
+      "price": 2750.72,
+      "sales": 215815,
+      "store_name": "淘宝优选店",
+      "store_rating": 4.5,
+      "platform": "淘宝",
+      "url": "https://item.taobao.com/item.htm?id=fdc3ad7da8",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 2962.97,
+      "discount": 0.93,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "051d7131426a"
+    },
+    {
+      "name": "realme 手机 SE",
+      "price": 2822.93,
+      "sales": 26856,
+      "store_name": "天猫旗舰店",
+      "store_rating": 4.9,
+      "platform": "淘宝",
+      "url": "https://item.taobao.com/item.htm?id=fc2dfd10e6",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 3494.65,
+      "discount": 0.81,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "985b70351878"
+    },
+    {
+      "name": "联想 手机 Max",
+      "price": 2833.19,
+      "sales": 84162,
+      "store_name": "品牌授权专卖店",
+      "store_rating": 4.7,
+      "platform": "淘宝",
+      "url": "https://item.taobao.com/item.htm?id=dfd334aa01",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 3650.74,
+      "discount": 0.78,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "3cfefaef2b82"
+    },
+    {
+      "name": "荣耀 手机 Max",
+      "price": 2999.79,
+      "sales": 9609,
+      "store_name": "金牌卖家店",
+      "store_rating": 4.6,
+      "platform": "淘宝",
+      "url": "https://item.taobao.com/item.htm?id=7533c304fd",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 3827.67,
+      "discount": 0.78,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "df6ae3ee7a46"
+    },
+    {
+      "name": "OPPO 手机 旗舰版",
+      "price": 3041.87,
+      "sales": 221611,
+      "store_name": "天猫旗舰店",
+      "store_rating": 4.9,
+      "platform": "淘宝",
+      "url": "https://item.taobao.com/item.htm?id=4c5a00c586",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 4051.84,
+      "discount": 0.75,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "0eb836aef840"
+    },
+    {
+      "name": "三星 手机 青春版",
+      "price": 3600.33,
+      "sales": 176114,
+      "store_name": "京东品牌授权店",
+      "store_rating": 4.6,
+      "platform": "京东",
+      "url": "https://item.jd.com/fd46a5853a.html",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 4555.19,
+      "discount": 0.79,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "582a2a58bf6f"
+    },
+    {
+      "name": "三星 手机 Ultra",
+      "price": 3881.83,
+      "sales": 41946,
+      "store_name": "京东官方旗舰店",
+      "store_rating": 4.8,
+      "platform": "京东",
+      "url": "https://item.jd.com/ff23fee405.html",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 4229.97,
+      "discount": 0.92,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "c269555ac957"
+    },
+    {
+      "name": "三星 手机 标准版",
+      "price": 3898.47,
+      "sales": 163719,
+      "store_name": "京东手机旗舰店",
+      "store_rating": 4.9,
+      "platform": "京东",
+      "url": "https://item.jd.com/529efc0d47.html",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 5011.14,
+      "discount": 0.78,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "f291c02f2ab1"
+    }
+  ],
+  "comparison": {
+    "拼多多": {
+      "count": 11,
+      "avg_price": 1908.84,
+      "min_price": 1129.8,
+      "max_price": 2459.04,
+      "avg_sales": 205989,
+      "avg_rating": 4.7,
+      "best_value": {
+        "name": "中兴 手机 Max",
+        "price": 1129.8,
+        "sales": 336300,
+        "store_name": "品牌优选店",
+        "store_rating": 4.7,
+        "platform": "拼多多",
+        "url": "https://mobile.yangkeduo.com/goods.html?goods_id=278d89117f",
+        "keyword": "手机",
+        "image_url": "",
+        "original_price": 1454.05,
+        "discount": 0.78,
+        "collected_at": "2026-05-26 03:25:19",
+        "product_id": "67096a8bb53d"
+      }
+    },
+    "淘宝": {
+      "count": 9,
+      "avg_price": 2641.05,
+      "min_price": 2011.34,
+      "max_price": 3041.87,
+      "avg_sales": 133058,
+      "avg_rating": 4.7,
+      "best_value": {
+        "name": "OPPO 手机 标准版",
+        "price": 2011.34,
+        "sales": 126197,
+        "store_name": "金牌卖家店",
+        "store_rating": 4.6,
+        "platform": "淘宝",
+        "url": "https://item.taobao.com/item.htm?id=aed3c082fd",
+        "keyword": "手机",
+        "image_url": "",
+        "original_price": 2222.54,
+        "discount": 0.9,
+        "collected_at": "2026-05-26 03:25:19",
+        "product_id": "e56bd88ca0df"
+      }
+    },
+    "京东": {
+      "count": 10,
+      "avg_price": 2888.91,
+      "min_price": 2178.33,
+      "max_price": 3898.47,
+      "avg_sales": 131932,
+      "avg_rating": 4.8,
+      "best_value": {
+        "name": "realme 手机 SE",
+        "price": 2178.33,
+        "sales": 69208,
+        "store_name": "京东数码专营店",
+        "store_rating": 4.7,
+        "platform": "京东",
+        "url": "https://item.jd.com/475fdbc713.html",
+        "keyword": "手机",
+        "image_url": "",
+        "original_price": 2478.01,
+        "discount": 0.88,
+        "collected_at": "2026-05-26 03:25:19",
+        "product_id": "3d8df6735b61"
+      }
+    }
+  },
+  "recommendations": [
+    {
+      "name": "魅族 手机 Ultra",
+      "price": 1162.4,
+      "sales": 413004,
+      "store_name": "工厂直销店",
+      "store_rating": 4.5,
+      "platform": "拼多多",
+      "url": "https://mobile.yangkeduo.com/goods.html?goods_id=143b5d55fb",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 1565.24,
+      "discount": 0.74,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "de4a7dd18c19",
+      "value_score": 0.858,
+      "price_score": 0.988,
+      "sales_score": 0.974,
+      "recommend_tag": "🏆 性价比之王"
+    },
+    {
+      "name": "中兴 手机 Max",
+      "price": 1129.8,
+      "sales": 336300,
+      "store_name": "品牌优选店",
+      "store_rating": 4.7,
+      "platform": "拼多多",
+      "url": "https://mobile.yangkeduo.com/goods.html?goods_id=278d89117f",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 1454.05,
+      "discount": 0.78,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "67096a8bb53d",
+      "value_score": 0.819,
+      "price_score": 1.0,
+      "sales_score": 0.79,
+      "recommend_tag": "🏆 性价比之王"
+    },
+    {
+      "name": "realme 手机 SE",
+      "price": 1977.65,
+      "sales": 423771,
+      "store_name": "品牌特卖店",
+      "store_rating": 4.6,
+      "platform": "拼多多",
+      "url": "https://mobile.yangkeduo.com/goods.html?goods_id=811c939b5a",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 2460.45,
+      "discount": 0.8,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "4959cf089716",
+      "value_score": 0.742,
+      "price_score": 0.694,
+      "sales_score": 1.0,
+      "recommend_tag": "🔥 爆款热销"
+    },
+    {
+      "name": "vivo 手机 标准版",
+      "price": 1683.68,
+      "sales": 288035,
+      "store_name": "拼团旗舰店",
+      "store_rating": 4.6,
+      "platform": "拼多多",
+      "url": "https://mobile.yangkeduo.com/goods.html?goods_id=37fd9afec5",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 1864.77,
+      "discount": 0.9,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "3d2210c0d65b",
+      "value_score": 0.688,
+      "price_score": 0.8,
+      "sales_score": 0.674,
+      "recommend_tag": "🔥 爆款热销"
+    },
+    {
+      "name": "小米 手机 标准版",
+      "price": 2344.35,
+      "sales": 385638,
+      "store_name": "百亿补贴店",
+      "store_rating": 4.8,
+      "platform": "拼多多",
+      "url": "https://mobile.yangkeduo.com/goods.html?goods_id=409de44d6c",
+      "keyword": "手机",
+      "image_url": "",
+      "original_price": 3088.01,
+      "discount": 0.76,
+      "collected_at": "2026-05-26 03:25:19",
+      "product_id": "5cf5c31f489f",
+      "value_score": 0.68,
+      "price_score": 0.561,
+      "sales_score": 0.908,
+      "recommend_tag": "🔥 爆款热销"
+    }
+  ],
+  "price_trend": {
+    "拼多多": [
+      {
+        "range": "1130.0-1396.0",
+        "count": 2,
+        "avg_price": 1146.1
+      },
+      {
+        "range": "1396.0-1661.0",
+        "count": 1,
+        "avg_price": 1578.81
+      },
+      {
+        "range": "1661.0-1927.0",
+        "count": 1,
+        "avg_price": 1683.68
+      },
+      {
+        "range": "1927.0-2193.0",
+        "count": 3,
+        "avg_price": 1996.83
+      },
+      {
+        "range": "2193.0-2459.0",
+        "count": 4,
+        "avg_price": 2363.01
+      }
+    ],
+    "淘宝": [
+      {
+        "range": "2011.0-2217.0",
+        "count": 1,
+        "avg_price": 2011.34
+      },
+      {
+        "range": "2217.0-2424.0",
+        "count": 1,
+        "avg_price": 2222.08
+      },
+      {
+        "range": "2424.0-2630.0",
+        "count": 2,
+        "avg_price": 2543.75
+      },
+      {
+        "range": "2630.0-2836.0",
+        "count": 3,
+        "avg_price": 2802.28
+      },
+      {
+        "range": "2836.0-3042.0",
+        "count": 2,
+        "avg_price": 3020.83
+      }
+    ],
+    "京东": [
+      {
+        "range": "2178.0-2522.0",
+        "count": 3,
+        "avg_price": 2303.72
+      },
+      {
+        "range": "2522.0-2866.0",
+        "count": 4,
+        "avg_price": 2649.33
+      },
+      {
+        "range": "2866.0-3210.0",
+        "count": 0,
+        "avg_price": 0
+      },
+      {
+        "range": "3210.0-3554.0",
+        "count": 0,
+        "avg_price": 0
+      },
+      {
+        "range": "3554.0-3898.0",
+        "count": 3,
+        "avg_price": 3793.54
+      }
+    ]
+  },
+  "price_distribution": [
+    {
+      "range": "¥1130.0-1476.0",
+      "count": 2
+    },
+    {
+      "range": "¥1476.0-1822.0",
+      "count": 2
+    },
+    {
+      "range": "¥1822.0-2168.0",
+      "count": 4
+    },
+    {
+      "range": "¥2168.0-2514.0",
+      "count": 9
+    },
+    {
+      "range": "¥2514.0-2860.0",
+      "count": 8
+    },
+    {
+      "range": "¥2860.0-3206.0",
+      "count": 2
+    },
+    {
+      "range": "¥3206.0-3552.0",
+      "count": 0
+    },
+    {
+      "range": "¥3552.0-3898.0",
+      "count": 3
+    }
+  ]
+}
