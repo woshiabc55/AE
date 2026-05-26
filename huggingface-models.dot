@@ -1,0 +1,313 @@
+digraph HuggingFaceModels {
+    rankdir=TB;
+    bgcolor="#0A1628";
+    fontname="VT323";
+    node [fontname="VT323" fontsize=14 style="filled" penwidth=2];
+    edge [fontname="VT323" fontsize=10 color="#003F87" penwidth=1.5];
+
+    subgraph cluster_root {
+        label="HuggingFace 标准模型生态";
+        fontname="Press Start 2P";
+        fontsize=20;
+        fontcolor="#FFD100";
+        style="dashed";
+        color="#FFD100";
+        penwidth=3;
+
+        subgraph cluster_nlp {
+            label="NLP 自然语言处理 (58.1%)";
+            fontname="Press Start 2P";
+            fontsize=14;
+            fontcolor="#00D4AA";
+            style="filled";
+            color="#003F87";
+            fillcolor="#001133";
+
+            subgraph cluster_encoder {
+                label="文本编码器 (45%+)";
+                fontcolor="#0099FF";
+                fontsize=12;
+                style="filled";
+                color="#0055BB";
+                fillcolor="#000d22";
+
+                bert [label="BERT\n(google/bert-base-uncased)\n110M | Apache-2.0" fillcolor="#003F87" fontcolor="#FFD100" shape=box];
+                bert_large [label="BERT-Large\n(google/bert-large-uncased)\n340M | Apache-2.0" fillcolor="#003F87" fontcolor="#FFD100" shape=box];
+                bert_cased [label="BERT-Cased\n(google/bert-base-cased)\n110M | Apache-2.0" fillcolor="#003F87" fontcolor="#FFD100" shape=box];
+                distilbert [label="DistilBERT\n(distilbert-base-uncased)\n66M | Apache-2.0" fillcolor="#0055BB" fontcolor="#FFD100" shape=box];
+                roberta [label="RoBERTa\n(FacebookAI/roberta-large)\n355M | MIT" fillcolor="#0055BB" fontcolor="#FFD100" shape=box];
+                roberta_base [label="RoBERTa-Base\n(FacebookAI/roberta-base)\n125M | MIT" fillcolor="#0055BB" fontcolor="#FFD100" shape=box];
+                electra [label="ELECTRA\n(google/electra-base-discriminator)\n110M | Apache-2.0" fillcolor="#003F87" fontcolor="#FFD100" shape=box];
+                albert [label="ALBERT\n(albert-base-v2)\n12M | Apache-2.0" fillcolor="#0055BB" fontcolor="#FFD100" shape=box];
+                minilm [label="MiniLM-L6\n(sentence-transformers/all-MiniLM-L6-v2)\n22M | Apache-2.0" fillcolor="#0077DD" fontcolor="#FFD100" shape=box];
+                mpnet [label="MPNet\n(microsoft/mpnet-base)\n110M | MIT" fillcolor="#0055BB" fontcolor="#FFD100" shape=box];
+                deberta [label="DeBERTa\n(microsoft/deberta-v3-base)\n86M | MIT" fillcolor="#0055BB" fontcolor="#FFD100" shape=box];
+                xlm_roberta [label="XLM-RoBERTa\n(FacebookAI/xlm-roberta-base)\n270M | MIT" fillcolor="#0055BB" fontcolor="#FFD100" shape=box];
+            }
+
+            subgraph cluster_decoder {
+                label="文本解码器 / LLM (9.5%)";
+                fontcolor="#CE1126";
+                fontsize=12;
+                style="filled";
+                color="#CE1126";
+                fillcolor="#1a0008";
+
+                gpt2 [label="GPT-2\n(openai-community/gpt2)\n124M | MIT" fillcolor="#8B0000" fontcolor="#FFD100" shape=box];
+                llama [label="LLaMA 3.1\n(meta-llama/Llama-3.1-8B)\n8B | Llama3.1" fillcolor="#8B0000" fontcolor="#FFD100" shape=box];
+                llama70b [label="LLaMA 3.1-70B\n(meta-llama/Llama-3.1-70B)\n70B | Llama3.1" fillcolor="#8B0000" fontcolor="#FFD100" shape=box];
+                qwen [label="Qwen2.5\n(Qwen/Qwen2.5-7B)\n7B | Apache-2.0" fillcolor="#8B0000" fontcolor="#FFD100" shape=box];
+                qwen3 [label="Qwen3\n(Qwen/Qwen3-8B)\n8B | Apache-2.0" fillcolor="#8B0000" fontcolor="#FFD100" shape=box];
+                deepseek [label="DeepSeek-V3\n(deepseek-ai/DeepSeek-V3)\n671B | MIT" fillcolor="#8B0000" fontcolor="#FFD100" shape=box];
+                mistral [label="Mistral-7B\n(mistralai/Mistral-7B-v0.3)\n7B | Apache-2.0" fillcolor="#8B0000" fontcolor="#FFD100" shape=box];
+                phi [label="Phi-4\n(microsoft/phi-4)\n14B | MIT" fillcolor="#8B0000" fontcolor="#FFD100" shape=box];
+                gemma [label="Gemma 2\n(google/gemma-2-9b)\n9B | Gemma" fillcolor="#8B0000" fontcolor="#FFD100" shape=box];
+                glm [label="GLM-4\n(THUDM/glm-4-9b)\n9B | Apache-2.0" fillcolor="#8B0000" fontcolor="#FFD100" shape=box];
+                mimo [label="MiMo-V2-Flash\n(Xiaomi/MiMo-V2-Flash)\n309B | MIT" fillcolor="#8B0000" fontcolor="#FFD100" shape=box];
+            }
+
+            subgraph cluster_encdec {
+                label="编码器-解码器 (3%)";
+                fontcolor="#FFD100";
+                fontsize=12;
+                style="filled";
+                color="#FFD100";
+                fillcolor="#1a1500";
+
+                t5 [label="T5\n(google-t5/t5-base)\n220M | Apache-2.0" fillcolor="#665500" fontcolor="#FFD100" shape=box];
+                t5_small [label="T5-Small\n(google-t5/t5-small)\n60M | Apache-2.0" fillcolor="#665500" fontcolor="#FFD100" shape=box];
+                bart [label="BART\n(FacebookAI/bart-large)\n400M | MIT" fillcolor="#665500" fontcolor="#FFD100" shape=box];
+                mbart [label="mBART\n(FacebookAI/mbart-large-50)\n580M | MIT" fillcolor="#665500" fontcolor="#FFD100" shape=box];
+                flan_t5 [label="Flan-T5\n(google/flan-t5-base)\n220M | Apache-2.0" fillcolor="#665500" fontcolor="#FFD100" shape=box];
+            }
+        }
+
+        subgraph cluster_cv {
+            label="计算机视觉 CV (21.2%)";
+            fontname="Press Start 2P";
+            fontsize=14;
+            fontcolor="#00D4AA";
+            style="filled";
+            color="#00D4AA";
+            fillcolor="#001a11";
+
+            subgraph cluster_classification {
+                label="图像分类";
+                fontcolor="#00BBFF";
+                fontsize=12;
+                style="filled";
+                color="#0099FF";
+                fillcolor="#000d1a";
+
+                vit [label="ViT\n(google/vit-base-patch16-224)\n86M | Apache-2.0" fillcolor="#003F87" fontcolor="#FFD100" shape=box];
+                mobilenet [label="MobileNetV3\n(google/mobilenet_v3_small)\n2.5M | Apache-2.0" fillcolor="#0055BB" fontcolor="#FFD100" shape=box];
+                resnet [label="ResNet-50\n(microsoft/resnet-50)\n25M | MIT" fillcolor="#003F87" fontcolor="#FFD100" shape=box];
+                efficientnet [label="EfficientNet\n(google/efficientnet-b0)\n5.3M | Apache-2.0" fillcolor="#0055BB" fontcolor="#FFD100" shape=box];
+                convnext [label="ConvNeXt\n(facebook/convnext-tiny)\n28M | Apache-2.0" fillcolor="#0055BB" fontcolor="#FFD100" shape=box];
+                swin [label="Swin Transformer\n(microsoft/swin-base-patch4-window7)\n88M | Apache-2.0" fillcolor="#003F87" fontcolor="#FFD100" shape=box];
+            }
+
+            subgraph cluster_detection {
+                label="目标检测 / 分割";
+                fontcolor="#FF6B6B";
+                fontsize=12;
+                style="filled";
+                color="#FF6B6B";
+                fillcolor="#1a0808";
+
+                detr [label="DETR\n(facebook/detr-resnet-50)\n41M | Apache-2.0" fillcolor="#8B0000" fontcolor="#FFD100" shape=box];
+                yolos [label="YOLOS\n(hustvl/yolos-small)\n24M | Apache-2.0" fillcolor="#8B0000" fontcolor="#FFD100" shape=box];
+                sam [label="SAM\n(facebook/sam-vit-huge)\n636M | Apache-2.0" fillcolor="#8B0000" fontcolor="#FFD100" shape=box];
+                mask2former [label="Mask2Former\n(facebook/mask2former-swin)\n200M+ | Apache-2.0" fillcolor="#8B0000" fontcolor="#FFD100" shape=box];
+                nsfw [label="NSFW Detection\n(Falconsai/nsfw_image_detection)\n~25M | Apache-2.0" fillcolor="#8B0000" fontcolor="#FFD100" shape=box];
+            }
+
+            subgraph cluster_generation_cv {
+                label="图像生成";
+                fontcolor="#FFD100";
+                fontsize=12;
+                style="filled";
+                color="#FFD100";
+                fillcolor="#1a1500";
+
+                sdxl [label="Stable Diffusion XL\n(stabilityai/stable-diffusion-xl-base)\n3.5B | OpenRAIL" fillcolor="#665500" fontcolor="#FFD100" shape=box];
+                sd35 [label="Stable Diffusion 3.5\n(stabilityai/stable-diffusion-3.5)\n8B | StabilityAI" fillcolor="#665500" fontcolor="#FFD100" shape=box];
+                flux [label="FLUX.1\n(black-forest-labs/FLUX.1-dev)\n12B | FLUX.1" fillcolor="#665500" fontcolor="#FFD100" shape=box];
+                sd15 [label="SD 1.5\n(runwayml/stable-diffusion-v1-5)\n860M | CreativeML" fillcolor="#665500" fontcolor="#FFD100" shape=box];
+            }
+        }
+
+        subgraph cluster_audio {
+            label="音频 Audio (15.1%)";
+            fontname="Press Start 2P";
+            fontsize=14;
+            fontcolor="#00D4AA";
+            style="filled";
+            color="#CE1126";
+            fillcolor="#1a000d";
+
+            subgraph cluster_asr {
+                label="语音识别 ASR";
+                fontcolor="#0099FF";
+                fontsize=12;
+                style="filled";
+                color="#0055BB";
+                fillcolor="#000d22";
+
+                whisper [label="Whisper\n(openai/whisper-large-v3)\n1.5B | MIT" fillcolor="#003F87" fontcolor="#FFD100" shape=box];
+                whisper_small [label="Whisper-Small\n(openai/whisper-small)\n244M | MIT" fillcolor="#0055BB" fontcolor="#FFD100" shape=box];
+                wav2vec2 [label="Wav2Vec2\n(facebook/wav2vec2-base)\n95M | Apache-2.0" fillcolor="#003F87" fontcolor="#FFD100" shape=box];
+                hubert [label="HuBERT\n(facebook/hubert-base-ls960)\n95M | Apache-2.0" fillcolor="#0055BB" fontcolor="#FFD100" shape=box];
+            }
+
+            subgraph cluster_audio_cls {
+                label="音频分类 / 处理";
+                fontcolor="#FF6B6B";
+                fontsize=12;
+                style="filled";
+                color="#FF6B6B";
+                fillcolor="#1a0808";
+
+                clap [label="CLAP\n(laion/clap-htsat-unfused)\n~150M | Apache-2.0" fillcolor="#8B0000" fontcolor="#FFD100" shape=box];
+                pyannote [label="Pyannote-Segmentation\n(pyannote/segmentation-3.0)\n~50M | MIT" fillcolor="#8B0000" fontcolor="#FFD100" shape=box];
+                musicgen [label="MusicGen\n(facebook/musicgen-small)\n300M | MIT" fillcolor="#8B0000" fontcolor="#FFD100" shape=box];
+                bark [label="Bark\n(suno/bark)\n~1B | MIT" fillcolor="#8B0000" fontcolor="#FFD100" shape=box];
+            }
+        }
+
+        subgraph cluster_multimodal {
+            label="多模态 Multimodal (3.3%)";
+            fontname="Press Start 2P";
+            fontsize=14;
+            fontcolor="#00D4AA";
+            style="filled";
+            color="#FFD100";
+            fillcolor="#1a1100";
+
+            subgraph cluster_vl {
+                label="视觉语言";
+                fontcolor="#0099FF";
+                fontsize=12;
+                style="filled";
+                color="#0055BB";
+                fillcolor="#000d22";
+
+                clip [label="CLIP\n(openai/clip-vit-base-patch32)\n150M | MIT" fillcolor="#003F87" fontcolor="#FFD100" shape=box];
+                blip [label="BLIP-2\n(Salesforce/blip2-opt-2.7b)\n3.4B | BSD-3" fillcolor="#0055BB" fontcolor="#FFD100" shape=box];
+                llava [label="LLaVA\n(llava-hf/llava-1.5-7b)\n7B | Apache-2.0" fillcolor="#0055BB" fontcolor="#FFD100" shape=box];
+                qwen_vl [label="Qwen2.5-VL\n(Qwen/Qwen2.5-VL-7B)\n7B | Apache-2.0" fillcolor="#0055BB" fontcolor="#FFD100" shape=box];
+                internvl [label="InternVL2\n(OpenGVLab/InternVL2-8B)\n8B | MIT" fillcolor="#0055BB" fontcolor="#FFD100" shape=box];
+                cogvlm [label="CogVLM2\n(THUDM/cogvlm2-19b)\n19B | Apache-2.0" fillcolor="#0055BB" fontcolor="#FFD100" shape=box];
+            }
+
+            subgraph cluster_video {
+                label="视频生成";
+                fontcolor="#CE1126";
+                fontsize=12;
+                style="filled";
+                color="#CE1126";
+                fillcolor="#1a0008";
+
+                cogvideox [label="CogVideoX\n(THUDM/cogvideox-5b)\n5B | Apache-2.0" fillcolor="#8B0000" fontcolor="#FFD100" shape=box];
+                svd [label="SVD\n(stabilityai/stable-video-diffusion)\n1.5B | StabilityAI" fillcolor="#8B0000" fontcolor="#FFD100" shape=box];
+                hunyuan_video [label="HunyuanVideo\n(tencent/HunyuanVideo)\n13B | Tencent" fillcolor="#8B0000" fontcolor="#FFD100" shape=box];
+            }
+
+            subgraph cluster_3d {
+                label="3D 生成";
+                fontcolor="#FFD100";
+                fontsize=12;
+                style="filled";
+                color="#FFD100";
+                fillcolor="#1a1500";
+
+                shap_e [label="Shap-E\n(openai/shap-e)\n~300M | MIT" fillcolor="#665500" fontcolor="#FFD100" shape=box];
+                point_e [label="Point-E\n(openai/point-e)\n~300M | MIT" fillcolor="#665500" fontcolor="#FFD100" shape=box];
+                sf3d [label="SF3D\n(stabilityai/stable-fast-3d)\n~500M | StabilityAI" fillcolor="#665500" fontcolor="#FFD100" shape=box];
+            }
+        }
+
+        subgraph cluster_timeseries {
+            label="时间序列 Time Series (1.7%)";
+            fontname="Press Start 2P";
+            fontsize=14;
+            fontcolor="#00D4AA";
+            style="filled";
+            color="#00D4AA";
+            fillcolor="#001a11";
+
+            chronos [label="Chronos\n(amazon/chronos-t5-base)\n200M | Apache-2.0" fillcolor="#003F87" fontcolor="#FFD100" shape=box];
+            timesfm [label="TimesFM\n(google/timesfm-1.0-200m)\n200M | Apache-2.0" fillcolor="#0055BB" fontcolor="#FFD100" shape=box];
+            moirai [label="Moirai\n(Salesforce/moirai-1.0-R)\n200M | Apache-2.0" fillcolor="#0055BB" fontcolor="#FFD100" shape=box];
+            patch_tst [label="PatchTST\n(ibm/patchtst)\n~5M | Apache-2.0" fillcolor="#003F87" fontcolor="#FFD100" shape=box];
+        }
+
+        subgraph cluster_embedding {
+            label="嵌入模型 Embedding";
+            fontname="Press Start 2P";
+            fontsize=14;
+            fontcolor="#00D4AA";
+            style="filled";
+            color="#00D4AA";
+            fillcolor="#001a11";
+
+            e5 [label="E5\n(intfloat/e5-base)\n110M | MIT" fillcolor="#003F87" fontcolor="#FFD100" shape=box];
+            bge [label="BGE\n(BAAI/bge-base-en)\n110M | MIT" fillcolor="#0055BB" fontcolor="#FFD100" shape=box];
+            gte [label="GTE\n(Alibaba-NLP/gte-base)\n110M | Apache-2.0" fillcolor="#0055BB" fontcolor="#FFD100" shape=box];
+            jina [label="Jina-Embeddings\n(jinaai/jina-embeddings-v3)\n570M | CC-BY-4.0" fillcolor="#003F87" fontcolor="#FFD100" shape=box];
+            nomic [label="Nomic-Embed\n(nomic-ai/nomic-embed-text)\n137M | Apache-2.0" fillcolor="#0055BB" fontcolor="#FFD100" shape=box];
+        }
+    }
+
+    bert -> distilbert [label="蒸馏" color="#FFD100" style=dashed];
+    bert -> roberta [label="改进" color="#00D4AA"];
+    bert -> electra [label="替代预训练" color="#00D4AA"];
+    bert -> albert [label="参数共享" color="#00D4AA"];
+    bert -> deberta [label="解耦注意力" color="#00D4AA"];
+    roberta -> xlm_roberta [label="多语言" color="#0099FF"];
+    bert -> minilm [label="蒸馏" color="#FFD100" style=dashed];
+    mpnet -> minilm [label="蒸馏" color="#FFD100" style=dashed];
+    bert -> t5 [label="扩展为Enc-Dec" color="#FF6B6B"];
+    t5 -> flan_t5 [label="指令微调" color="#FFD100"];
+    t5 -> t5_small [label="缩小" color="#0099FF"];
+    bart -> mbart [label="多语言" color="#0099FF"];
+    gpt2 -> llama [label="扩展+RLHF" color="#CE1126"];
+    llama -> qwen [label="竞品" color="#CE1126" style=dotted];
+    llama -> mistral [label="竞品" color="#CE1126" style=dotted];
+    llama -> gemma [label="竞品" color="#CE1126" style=dotted];
+    qwen -> qwen3 [label="升级" color="#FFD100"];
+    qwen -> deepseek [label="竞品" color="#CE1126" style=dotted];
+    qwen -> glm [label="竞品" color="#CE1126" style=dotted];
+    deepseek -> mimo [label="竞品" color="#CE1126" style=dotted];
+    whisper -> whisper_small [label="缩小" color="#0099FF"];
+    wav2vec2 -> hubert [label="改进" color="#00D4AA"];
+    vit -> swin [label="改进" color="#00D4AA"];
+    vit -> convnext [label="结合CNN" color="#00D4AA"];
+    resnet -> detr [label="Transformer化" color="#CE1126"];
+    resnet -> efficientnet [label="效率优化" color="#00D4AA"];
+    resnet -> mobilenet [label="移动端" color="#0099FF"];
+    detr -> mask2former [label="统一分割" color="#FFD100"];
+    sd15 -> sdxl [label="升级" color="#FFD100"];
+    sdxl -> sd35 [label="升级" color="#FFD100"];
+    sdxl -> flux [label="竞品" color="#CE1126" style=dotted];
+    clip -> blip [label="视觉语言" color="#00D4AA"];
+    clip -> llava [label="视觉语言" color="#00D4AA"];
+    clip -> qwen_vl [label="视觉语言" color="#00D4AA"];
+    blip -> internvl [label="竞品" color="#CE1126" style=dotted];
+    llava -> cogvlm [label="竞品" color="#CE1126" style=dotted];
+    minilm -> e5 [label="嵌入" color="#00D4AA"];
+    minilm -> bge [label="嵌入" color="#00D4AA"];
+    minilm -> gte [label="嵌入" color="#00D4AA"];
+    minilm -> jina [label="嵌入" color="#00D4AA"];
+    minilm -> nomic [label="嵌入" color="#00D4AA"];
+    sd35 -> svd [label="视频" color="#FFD100"];
+    sdxl -> cogvideox [label="视频" color="#FFD100"];
+    qwen_vl -> hunyuan_video [label="视频生成" color="#FFD100"];
+    clap -> musicgen [label="音频生成" color="#FFD100"];
+    wav2vec2 -> pyannote [label="分割" color="#00D4AA"];
+    t5 -> chronos [label="时序" color="#00D4AA"];
+    t5 -> timesfm [label="时序" color="#00D4AA"];
+    sam -> sf3d [label="3D" color="#FFD100"];
+    point_e -> shap_e [label="升级" color="#FFD100"];
+    phi -> glm [label="竞品" color="#CE1126" style=dotted];
+}
