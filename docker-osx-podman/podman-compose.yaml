@@ -1,0 +1,22 @@
+[macos-vm]
+# macOS 虚拟机配置文件
+# 修改后运行: podman-compose up -d
+
+image = "sickcodes/docker-osx:ventura"
+container_name = "macos-vm"
+
+# 端口映射
+# SSH 端口
+publish = ["50922:10022", "5999:5999"]
+
+# KVM 设备（如果可用）
+# devices = ["/dev/kvm"]
+
+# 环境变量
+[macos-vm.env]
+RAM = "8G"
+SMP = "4"
+EXTRA = "-usb -device usb-kbd -device usb-mouse"
+
+# 数据卷
+# volumes = ["./macos-data/macos.qcow2:/image"]
