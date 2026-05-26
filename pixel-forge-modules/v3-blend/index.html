@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pixel Forge v3 — 多效果图层混合</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0c14;
+  --bg2: #12121e;
+  --bg3: #1a1a2e;
+  --fg: #e0e0e8;
+  --muted: #6a6a8a;
+  --accent: #00ff88;
+  --accent2: #ff3366;
+  --accent3: #44ddff;
+  --layer1: #ff6b6b;
+  --layer2: #4ecdc4;
+  --layer3: #ffe66d;
+  --layer4: #a29bfe;
+  --layer5: #fd79a8;
+  --border: #2a2a3e;
+  --card: #16162a;
+  --radius: 6px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Share Tech Mono', monospace;
+  background: var(--bg);
+  color: var(--fg);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+.app {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  grid-template-rows: 48px 1fr 160px;
+  height: 100vh;
+  gap: 0;
+}
+
+.topbar {
+  grid-column: 1 / -1;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 16px;
+  z-index: 10;
+}
+
+.topbar .logo {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 11px;
+  color: var(--accent);
+  text-shadow: 0 0 10px var(--accent);
+  white-space: nowrap;
+}
+
+.topbar .logo span {
+  color: var(--accent2);
+  text-shadow: 0 0 10px var(--accent2);
+}
+
+.topbar .sep {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+}
+
+.topbar .controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.btn {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--fg);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 8px rgba(0,255,136,0.2);
+}
+
+.btn.active {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+.btn.danger:hover {
+  border-color: var(--accent2);
+  color: var(--accent2);
+  box-shadow: 0 0 8px rgba(255,51,102,0.2);
+}
+
+.left-panel {
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.panel-header {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 9px;
+  padding: 12px 14px;
+  color: var(--accent3);
+  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-header .icon {
+  font-size: 12px;
+}
+
+.layer-stack {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.layer-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  border-left: 3px solid var(--border);
+}
+
+.layer-card:hover {
+  border-color: var(--accent);
+  border-left-color: inherit;
+}
+
+.layer-card.active {
+  border-color: var(--accent);
+  background: rgba(0,255,136,0.05);
+  box-shadow: 0 0 12px rgba(0,255,136,0.1);
+}
+
+.layer-card.dragging {
+  opacity: 0.4;
+  transform: scale(0.96);
+}
+
+.layer-card.drag-over {
+  border-top: 2px solid var(--accent);
+}
+
+.layer-card-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.layer-color-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.layer-name {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 8px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.layer-eye {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  border-radius: 3px;
+  transition: all 0.15s;
+  color: var(--accent);
+  background: transparent;
+  border: none;
+}
+
+.layer-eye:hover {
+  background: rgba(0,255,136,0.1);
+}
+
+.layer-eye.hidden {
+  color: var(--muted);
+  opacity: 0.4;
+}
+
+.layer-card-bottom {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.layer-opacity-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+}
+
+.layer-opacity-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+}
+
+.layer-opacity-val {
+  font-size: 9px;
+  color: var(--muted);
+  min-width: 28px;
+  text-align: right;
+}
+
+.blend-pill {
+  font-size: 8px;
+  padding: 2px 6px;
+  border-radius: 8px;
+  background: rgba(68,221,255,0.15);
+  color: var(--accent3);
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s;
+}
+
+.blend-pill:hover {
+  border-color: var(--accent3);
+}
+
+.blend-select {
+  position: absolute;
+  right: 10px;
+  top: 30px;
+  background: var(--bg3);
+  border: 1px solid var(--accent3);
+  border-radius: var(--radius);
+  padding: 4px;
+  z-index: 100;
+  display: none;
+  min-width: 120px;
+}
+
+.blend-select.show {
+  display: block;
+}
+
+.blend-option {
+  font-size: 10px;
+  padding: 4px 8px;
+  cursor: pointer;
+  border-radius: 3px;
+  color: var(--fg);
+}
+
+.blend-option:hover {
+  background: rgba(68,221,255,0.15);
+  color: var(--accent3);
+}
+
+.layer-params {
+  border-top: 1px solid var(--border);
+  padding: 10px 14px;
+  max-height: 260px;
+  overflow-y: auto;
+  background: var(--bg2);
+}
+
+.layer-params .panel-header {
+  border-bottom: none;
+  padding: 0 0 8px 0;
+}
+
+.param-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.param-label {
+  font-size: 10px;
+  color: var(--muted);
+  min-width: 80px;
+}
+
+.param-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+}
+
+.param-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(0,255,136,0.4);
+}
+
+.param-value {
+  font-size: 10px;
+  color: var(--accent);
+  min-width: 36px;
+  text-align: right;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.canvas-area {
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.canvas-area canvas {
+  max-width: 95%;
+  max-height: 95%;
+  image-rendering: pixelated;
+  border: 1px solid var(--border);
+  box-shadow: 0 0 30px rgba(0,255,136,0.05);
+}
+
+.canvas-area .fps {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 10px;
+  color: var(--muted);
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.canvas-area .loading {
+  position: absolute;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  color: var(--accent);
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.composite-preview {
+  grid-column: 1 / -1;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 8px 14px;
+  gap: 10px;
+  overflow-x: auto;
+}
+
+.composite-preview .panel-header {
+  border-bottom: none;
+  padding: 0;
+  writing-mode: vertical-lr;
+  text-orientation: mixed;
+  font-size: 8px;
+  flex-shrink: 0;
+}
+
+.preview-thumb {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.preview-thumb canvas {
+  width: 100px;
+  height: 100px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  image-rendering: pixelated;
+  background: #000;
+}
+
+.preview-thumb .thumb-label {
+  font-size: 8px;
+  font-family: 'Press Start 2P', cursive;
+  color: var(--muted);
+}
+
+.preview-thumb.final canvas {
+  border-color: var(--accent);
+  box-shadow: 0 0 12px rgba(0,255,136,0.2);
+  width: 120px;
+  height: 120px;
+}
+
+.preview-thumb.final .thumb-label {
+  color: var(--accent);
+}
+
+.preview-sep {
+  width: 1px;
+  height: 100px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+.mini-preview {
+  width: 32px;
+  height: 32px;
+  border-radius: 3px;
+  image-rendering: pixelated;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.layer-card .mini-preview {
+  margin-left: auto;
+}
+
+.drop-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 11px;
+  margin: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.drop-zone:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--bg3);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 10px 20px;
+  border-radius: var(--radius);
+  font-size: 11px;
+  z-index: 1000;
+  transition: transform 0.3s ease;
+  pointer-events: none;
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+.wave-type-select {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  background: var(--bg3);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 2px 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+.wave-type-select:focus {
+  border-color: var(--accent);
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="topbar">
+    <div class="logo">PIXEL<span>FORGE</span> v3</div>
+    <div class="sep"></div>
+    <div class="controls">
+      <button class="btn" id="btnPlay">▶ 播放</button>
+      <button class="btn" id="btnPause">⏸ 暂停</button>
+      <button class="btn" id="btnReset">↺ 重置</button>
+      <div class="sep"></div>
+      <button class="btn" id="btnLoadImg">📂 加载图片</button>
+      <button class="btn" id="btnSampleImg">🖼 示例图片</button>
+      <input type="file" id="fileInput" accept="image/*" style="display:none">
+    </div>
+  </div>
+
+  <div class="left-panel">
+    <div class="panel-header"><span class="icon">☰</span> 图层堆栈</div>
+    <div class="layer-stack" id="layerStack"></div>
+    <div class="layer-params" id="layerParams">
+      <div class="panel-header"><span class="icon">⚡</span> 图层参数</div>
+      <div id="paramContent" style="color:var(--muted);font-size:10px;padding:8px 0;">选择一个图层查看参数</div>
+    </div>
+  </div>
+
+  <div class="canvas-area" id="canvasArea">
+    <canvas id="mainCanvas"></canvas>
+    <div class="fps" id="fpsDisplay">0 FPS</div>
+    <div class="loading" id="loadingText" style="display:none;">加载中...</div>
+  </div>
+
+  <div class="composite-preview" id="compositePreview">
+    <div class="panel-header">合成预览</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const EventBus = {
+  _listeners: {},
+  on(event, fn) {
+    if (!this._listeners[event]) this._listeners[event] = [];
+    this._listeners[event].push(fn);
+    return () => this.off(event, fn);
+  },
+  off(event, fn) {
+    if (!this._listeners[event]) return;
+    this._listeners[event] = this._listeners[event].filter(f => f !== fn);
+  },
+  emit(event, data) {
+    if (!this._listeners[event]) return;
+    this._listeners[event].forEach(fn => { try { fn(data); } catch(e) { console.error(e); } });
+  }
+};
+
+const BLEND_MODES = ['normal','multiply','screen','overlay','difference','color-dodge','exclusion'];
+const BLEND_CSS_MAP = {
+  'normal': 'source-over',
+  'multiply': 'multiply',
+  'screen': 'screen',
+  'overlay': 'overlay',
+  'difference': 'difference',
+  'color-dodge': 'color-dodge',
+  'exclusion': 'exclusion'
+};
+
+const LAYER_COLORS = {
+  pixelate: 'var(--layer1)',
+  ionize: 'var(--layer2)',
+  wave: 'var(--layer3)',
+  glitch: 'var(--layer4)',
+  chromatic: 'var(--layer5)'
+};
+
+const LAYER_NAMES = {
+  pixelate: '像素化',
+  ionize: '离子散射',
+  wave: '波浪',
+  glitch: '故障',
+  chromatic: '色差'
+};
+
+class Compositor {
+  constructor(width, height) {
+    this.width = width;
+    this.height = height;
+    this.layers = [];
+    this.canvas = document.createElement('canvas');
+    this.canvas.width = width;
+    this.canvas.height = height;
+    this.ctx = this.canvas.getContext('2d');
+  }
+
+  addLayer(layer) {
+    this.layers.push(layer);
+    this.sortLayers();
+  }
+
+  removeLayer(id) {
+    this.layers = this.layers.filter(l => l.id !== id);
+  }
+
+  sortLayers() {
+    this.layers.sort((a, b) => a.order - b.order);
+  }
+
+  composite(time) {
+    this.ctx.clearRect(0, 0, this.width, this.height);
+
+    for (const layer of this.layers) {
+      if (!layer.visible) continue;
+      layer.render(time);
+      this.ctx.save();
+      this.ctx.globalAlpha = layer.opacity;
+      this.ctx.globalCompositeOperation = BLEND_CSS_MAP[layer.blendMode] || 'source-over';
+      this.ctx.drawImage(layer.canvas, 0, 0);
+      this.ctx.restore();
+    }
+
+    EventBus.emit('compositor:rendered', { time });
+    return this.canvas;
+  }
+
+  getLayerById(id) {
+    return this.layers.find(l => l.id === id);
+  }
+
+  reorderLayers(orderMap) {
+    for (const layer of this.layers) {
+      if (orderMap[layer.id] !== undefined) {
+        layer.order = orderMap[layer.id];
+      }
+    }
+    this.sortLayers();
+  }
+}
+
+class BaseLayer {
+  constructor(type, width, height) {
+    this.id = type + '_' + Date.now() + '_' + Math.random().toString(36).substr(2,5);
+    this.type = type;
+    this.name = LAYER_NAMES[type] || type;
+    this.color = LAYER_COLORS[type] || 'var(--muted)';
+    this.width = width;
+    this.height = height;
+    this.canvas = document.createElement('canvas');
+    this.canvas.width = width;
+    this.canvas.height = height;
+    this.ctx = this.canvas.getContext('2d');
+    this.opacity = 1;
+    this.blendMode = 'normal';
+    this.visible = true;
+    this.order = 0;
+    this.params = {};
+  }
+
+  render(time) {}
+  reset() {}
+
+  setParam(key, value) {
+    this.params[key] = value;
+  }
+
+  getParam(key) {
+    return this.params[key];
+  }
+}
+
+class PixelateLayer extends BaseLayer {
+  constructor(width, height) {
+    super('pixelate', width, height);
+    this.params = { pixelSize: 8, gridShow: false };
+    this.order = 0;
+  }
+
+  render(time) {
+    const { pixelSize, gridShow } = this.params;
+    const ps = Math.max(2, Math.round(pixelSize));
+    this.ctx.clearRect(0, 0, this.width, this.height);
+
+    if (!this.sourceData) return;
+
+    const src = this.sourceData;
+    const sw = src.width;
+    const sh = src.height;
+
+    for (let y = 0; y < sh; y += ps) {
+      for (let x = 0; x < sw; x += ps) {
+        let r = 0, g = 0, b = 0, count = 0;
+        for (let dy = 0; dy < ps && y + dy < sh; dy++) {
+          for (let dx = 0; dx < ps && x + dx < sw; dx++) {
+            const idx = ((y + dy) * sw + (x + dx)) * 4;
+            r += src.data[idx];
+            g += src.data[idx + 1];
+            b += src.data[idx + 2];
+            count++;
+          }
+        }
+        r = Math.round(r / count);
+        g = Math.round(g / count);
+        b = Math.round(b / count);
+        this.ctx.fillStyle = `rgb(${r},${g},${b})`;
+        this.ctx.fillRect(x, y, ps, ps);
+      }
+    }
+
+    if (gridShow) {
+      this.ctx.strokeStyle = 'rgba(0,255,136,0.15)';
+      this.ctx.lineWidth = 0.5;
+      for (let x = 0; x < sw; x += ps) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(x, 0);
+        this.ctx.lineTo(x, sh);
+        this.ctx.stroke();
+      }
+      for (let y = 0; y < sh; y += ps) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(0, y);
+        this.ctx.lineTo(sw, y);
+        this.ctx.stroke();
+      }
+    }
+  }
+}
+
+class IonizeLayer extends BaseLayer {
+  constructor(width, height) {
+    super('ionize', width, height);
+    this.params = { pixelSize: 4, speed: 2, spread: 30, gravity: 0.5, fade: 0.95 };
+    this.order = 1;
+    this.particles = [];
+    this.initialized = false;
+  }
+
+  initParticles() {
+    if (!this.sourceData) return;
+    this.particles = [];
+    const src = this.sourceData;
+    const ps = Math.max(2, Math.round(this.params.pixelSize));
+    for (let y = 0; y < src.height; y += ps) {
+      for (let x = 0; x < src.width; x += ps) {
+        const idx = (y * src.width + x) * 4;
+        this.particles.push({
+          ox: x, oy: y,
+          x: x, y: y,
+          vx: 0, vy: 0,
+          r: src.data[idx], g: src.data[idx+1], b: src.data[idx+2],
+          life: 1
+        });
+      }
+    }
+    this.initialized = true;
+  }
+
+  reset() {
+    this.initialized = false;
+    this.particles = [];
+  }
+
+  render(time) {
+    if (!this.sourceData) return;
+    const { speed, spread, gravity, fade } = this.params;
+    const ps = Math.max(2, Math.round(this.params.pixelSize));
+
+    if (!this.initialized) this.initParticles();
+
+    this.ctx.clearRect(0, 0, this.width, this.height);
+
+    const t = time * 0.001 * speed;
+
+    for (const p of this.particles) {
+      const dx = p.ox - p.x;
+      const dy = p.oy - p.y;
+      p.vx += dx * gravity * 0.01;
+      p.vy += dy * gravity * 0.01;
+      p.vx += (Math.random() - 0.5) * spread * 0.1;
+      p.vy += (Math.random() - 0.5) * spread * 0.1;
+      p.vx *= fade;
+      p.vy *= fade;
+      p.x += p.vx * 0.5;
+      p.y += p.vy * 0.5;
+      p.life = Math.max(0.3, 1 - Math.sqrt((p.x - p.ox) ** 2 + (p.y - p.oy) ** 2) / (spread * 3));
+
+      this.ctx.fillStyle = `rgba(${p.r},${p.g},${p.b},${p.life})`;
+      this.ctx.fillRect(Math.round(p.x), Math.round(p.y), ps, ps);
+    }
+  }
+}
+
+class WaveLayer extends BaseLayer {
+  constructor(width, height) {
+    super('wave', width, height);
+    this.params = { amplitude: 10, frequency: 0.05, speed: 2, waveType: 'sine', lineWidth: 2, gap: 4 };
+    this.order = 2;
+  }
+
+  render(time) {
+    if (!this.sourceData) return;
+    const { amplitude, frequency, speed, waveType, lineWidth, gap } = this.params;
+    const src = this.sourceData;
+    this.ctx.clearRect(0, 0, this.width, this.height);
+
+    const t = time * 0.001 * speed;
+    const lw = Math.max(1, Math.round(lineWidth));
+    const g = Math.max(1, Math.round(gap));
+
+    for (let y = 0; y < this.height; y += g + lw) {
+      this.ctx.beginPath();
+      this.ctx.lineWidth = lw;
+
+      for (let x = 0; x <= this.width; x += 1) {
+        let offset = 0;
+        const phase = x * frequency + t;
+        switch (waveType) {
+          case 'sine': offset = Math.sin(phase) * amplitude; break;
+          case 'cosine': offset = Math.cos(phase) * amplitude; break;
+          case 'sawtooth': offset = ((phase % (Math.PI * 2)) / Math.PI - 1) * amplitude; break;
+          case 'triangle': offset = Math.abs(((phase % (Math.PI * 2)) / Math.PI) - 1) * 2 * amplitude - amplitude; break;
+          default: offset = Math.sin(phase) * amplitude;
+        }
+
+        const srcY = Math.round(y + offset);
+        if (srcY >= 0 && srcY < src.height) {
+          const idx = (srcY * src.width + x) * 4;
+          const r = src.data[idx], g2 = src.data[idx+1], b = src.data[idx+2];
+          this.ctx.strokeStyle = `rgb(${r},${g2},${b})`;
+        }
+
+        if (x === 0) {
+          this.ctx.moveTo(x, y + offset);
+        } else {
+          this.ctx.lineTo(x, y + offset);
+        }
+      }
+
+      const midIdx = (Math.min(Math.round(y), src.height - 1) * src.width + Math.round(this.width / 2)) * 4;
+      if (midIdx >= 0 && midIdx < src.data.length - 3) {
+        this.ctx.strokeStyle = `rgb(${src.data[midIdx]},${src.data[midIdx+1]},${src.data[midIdx+2]})`;
+      }
+      this.ctx.stroke();
+    }
+  }
+}
+
+class GlitchLayer extends BaseLayer {
+  constructor(width, height) {
+    super('glitch', width, height);
+    this.params = { sliceCount: 8, shiftAmount: 20, rgbShift: 5, scanlines: true };
+    this.order = 3;
+    this.lastGlitch = 0;
+    this.slices = [];
+  }
+
+  reset() {
+    this.lastGlitch = 0;
+    this.slices = [];
+  }
+
+  render(time) {
+    if (!this.sourceData) return;
+    const { sliceCount, shiftAmount, rgbShift, scanlines } = this.params;
+    this.ctx.clearRect(0, 0, this.width, this.height);
+
+    if (time - this.lastGlitch > 80 + Math.random() * 200) {
+      this.lastGlitch = time;
+      this.slices = [];
+      const sh = this.height / sliceCount;
+      for (let i = 0; i < sliceCount; i++) {
+        this.slices.push({
+          y: i * sh,
+          h: sh + Math.random() * 4,
+          shift: (Math.random() - 0.5) * shiftAmount * 2,
+          active: Math.random() > 0.3
+        });
+      }
+    }
+
+    const srcCanvas = document.createElement('canvas');
+    srcCanvas.width = this.width;
+    srcCanvas.height = this.height;
+    const srcCtx = srcCanvas.getContext('2d');
+    srcCtx.putImageData(this.sourceData, 0, 0);
+
+    for (const slice of this.slices) {
+      if (!slice.active) continue;
+      this.ctx.drawImage(srcCanvas,
+        0, slice.y, this.width, slice.h,
+        slice.shift, slice.y, this.width, slice.h
+      );
+    }
+
+    if (rgbShift > 0) {
+      const imgData = this.ctx.getImageData(0, 0, this.width, this.height);
+      const data = imgData.data;
+      const shift = Math.round(rgbShift);
+      const tempData = new Uint8ClampedArray(data);
+
+      for (let y = 0; y < this.height; y++) {
+        for (let x = 0; x < this.width; x++) {
+          const idx = (y * this.width + x) * 4;
+          const rIdx = (y * this.width + Math.min(this.width - 1, x + shift)) * 4;
+          const bIdx = (y * this.width + Math.max(0, x - shift)) * 4;
+          data[idx] = tempData[rIdx];
+          data[idx + 2] = tempData[bIdx + 2];
+        }
+      }
+      this.ctx.putImageData(imgData, 0, 0);
+    }
+
+    if (scanlines) {
+      this.ctx.fillStyle = 'rgba(0,0,0,0.08)';
+      for (let y = 0; y < this.height; y += 2) {
+        this.ctx.fillRect(0, y, this.width, 1);
+      }
+    }
+  }
+}
+
+class ChromaticLayer extends BaseLayer {
+  constructor(width, height) {
+    super('chromatic', width, height);
+    this.params = { redOffsetX: 3, redOffsetY: 0, greenOffsetX: 0, greenOffsetY: 0, blueOffsetX: -3, blueOffsetY: 0, intensity: 1 };
+    this.order = 4;
+  }
+
+  render(time) {
+    if (!this.sourceData) return;
+    const { redOffsetX, redOffsetY, greenOffsetX, greenOffsetY, blueOffsetX, blueOffsetY, intensity } = this.params;
+    this.ctx.clearRect(0, 0, this.width, this.height);
+
+    const srcCanvas = document.createElement('canvas');
+    srcCanvas.width = this.width;
+    srcCanvas.height = this.height;
+    const srcCtx = srcCanvas.getContext('2d');
+    srcCtx.putImageData(this.sourceData, 0, 0);
+
+    const redCanvas = document.createElement('canvas');
+    redCanvas.width = this.width;
+    redCanvas.height = this.height;
+    const redCtx = redCanvas.getContext('2d');
+    redCtx.drawImage(srcCanvas, 0, 0);
+    const redData = redCtx.getImageData(0, 0, this.width, this.height);
+    for (let i = 0; i < redData.data.length; i += 4) {
+      redData.data[i + 1] = 0;
+      redData.data[i + 2] = 0;
+      redData.data[i + 3] = Math.round(redData.data[i + 3] * intensity);
+    }
+    redCtx.putImageData(redData, 0, 0);
+
+    const greenCanvas = document.createElement('canvas');
+    greenCanvas.width = this.width;
+    greenCanvas.height = this.height;
+    const greenCtx = greenCanvas.getContext('2d');
+    greenCtx.drawImage(srcCanvas, 0, 0);
+    const greenData = greenCtx.getImageData(0, 0, this.width, this.height);
+    for (let i = 0; i < greenData.data.length; i += 4) {
+      greenData.data[i] = 0;
+      greenData.data[i + 2] = 0;
+      greenData.data[i + 3] = Math.round(greenData.data[i + 3] * intensity);
+    }
+    greenCtx.putImageData(greenData, 0, 0);
+
+    const blueCanvas = document.createElement('canvas');
+    blueCanvas.width = this.width;
+    blueCanvas.height = this.height;
+    const blueCtx = blueCanvas.getContext('2d');
+    blueCtx.drawImage(srcCanvas, 0, 0);
+    const blueData = blueCtx.getImageData(0, 0, this.width, this.height);
+    for (let i = 0; i < blueData.data.length; i += 4) {
+      blueData.data[i] = 0;
+      blueData.data[i + 1] = 0;
+      blueData.data[i + 3] = Math.round(blueData.data[i + 3] * intensity);
+    }
+    blueCtx.putImageData(blueData, 0, 0);
+
+    this.ctx.globalCompositeOperation = 'source-over';
+    this.ctx.drawImage(redCanvas, redOffsetX, redOffsetY);
+    this.ctx.globalCompositeOperation = 'lighter';
+    this.ctx.drawImage(greenCanvas, greenOffsetX, greenOffsetY);
+    this.ctx.globalCompositeOperation = 'lighter';
+    this.ctx.drawImage(blueCanvas, blueOffsetX, blueOffsetY);
+    this.ctx.globalCompositeOperation = 'source-over';
+  }
+}
+
+class CoreModule {
+  constructor() {
+    this.canvas = document.getElementById('mainCanvas');
+    this.ctx = this.canvas.getContext('2d');
+    this.image = null;
+    this.imageData = null;
+    this.playing = false;
+    this.startTime = 0;
+    this.animId = null;
+    this.fps = 0;
+    this.frameCount = 0;
+    this.lastFpsTime = 0;
+    this.compositor = null;
+
+    this.setupCanvas();
+    this.bindEvents();
+    this.loadSampleImage();
+  }
+
+  setupCanvas() {
+    const area = document.getElementById('canvasArea');
+    const w = Math.min(512, area.clientWidth - 40);
+    const h = Math.min(512, area.clientHeight - 40);
+    this.canvas.width = 512;
+    this.canvas.height = 512;
+    this.compositor = new Compositor(512, 512);
+  }
+
+  bindEvents() {
+    document.getElementById('btnPlay').addEventListener('click', () => this.play());
+    document.getElementById('btnPause').addEventListener('click', () => this.pause());
+    document.getElementById('btnReset').addEventListener('click', () => this.reset());
+    document.getElementById('btnLoadImg').addEventListener('click', () => document.getElementById('fileInput').click());
+    document.getElementById('btnSampleImg').addEventListener('click', () => this.loadSampleImage());
+    document.getElementById('fileInput').addEventListener('change', (e) => this.handleFile(e));
+  }
+
+  loadImage(src) {
+    document.getElementById('loadingText').style.display = 'block';
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      this.image = img;
+      this.processImage();
+      document.getElementById('loadingText').style.display = 'none';
+      showToast('图片加载成功');
+      EventBus.emit('core:imageLoaded', { image: img });
+    };
+    img.onerror = () => {
+      document.getElementById('loadingText').style.display = 'none';
+      showToast('图片加载失败，使用默认图案');
+      this.createDefaultPattern();
+      EventBus.emit('core:imageLoaded', { image: this.image });
+    };
+    img.src = src;
+  }
+
+  loadSampleImage() {
+    this.loadImage('https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=pixel%20art%20portrait%20of%20a%20cyberpunk%20warrior%20neon%20colors%20detailed%20retro%20game%20character&image_size=square');
+  }
+
+  handleFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => this.loadImage(ev.target.result);
+    reader.readAsDataURL(file);
+  }
+
+  processImage() {
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = 512;
+    tempCanvas.height = 512;
+    const tempCtx = tempCanvas.getContext('2d');
+    tempCtx.drawImage(this.image, 0, 0, 512, 512);
+    this.imageData = tempCtx.getImageData(0, 0, 512, 512);
+
+    for (const layer of this.compositor.layers) {
+      layer.sourceData = this.imageData;
+      if (layer.reset) layer.reset();
+    }
+
+    if (!this.playing) {
+      this.renderFrame(0);
+    }
+  }
+
+  createDefaultPattern() {
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = 512;
+    tempCanvas.height = 512;
+    const tempCtx = tempCanvas.getContext('2d');
+
+    const grad = tempCtx.createLinearGradient(0, 0, 512, 512);
+    grad.addColorStop(0, '#ff6b6b');
+    grad.addColorStop(0.25, '#4ecdc4');
+    grad.addColorStop(0.5, '#ffe66d');
+    grad.addColorStop(0.75, '#a29bfe');
+    grad.addColorStop(1, '#fd79a8');
+    tempCtx.fillStyle = grad;
+    tempCtx.fillRect(0, 0, 512, 512);
+
+    tempCtx.fillStyle = '#0c0c14';
+    tempCtx.font = 'bold 48px "Press Start 2P", monospace';
+    tempCtx.textAlign = 'center';
+    tempCtx.textBaseline = 'middle';
+    tempCtx.fillText('PIXEL', 256, 220);
+    tempCtx.fillText('FORGE', 256, 290);
+
+    this.image = tempCanvas;
+    this.imageData = tempCtx.getImageData(0, 0, 512, 512);
+
+    for (const layer of this.compositor.layers) {
+      layer.sourceData = this.imageData;
+    }
+  }
+
+  play() {
+    if (this.playing) return;
+    this.playing = true;
+    if (!this.startTime) this.startTime = performance.now();
+    this.lastFpsTime = performance.now();
+    this.frameCount = 0;
+    document.getElementById('btnPlay').classList.add('active');
+    document.getElementById('btnPause').classList.remove('active');
+    this.animate();
+  }
+
+  pause() {
+    this.playing = false;
+    if (this.animId) cancelAnimationFrame(this.animId);
+    document.getElementById('btnPlay').classList.remove('active');
+    document.getElementById('btnPause').classList.add('active');
+  }
+
+  reset() {
+    this.pause();
+    this.startTime = 0;
+    for (const layer of this.compositor.layers) {
+      if (layer.reset) layer.reset();
+    }
+    this.renderFrame(0);
+    document.getElementById('btnPause').classList.remove('active');
+  }
+
+  animate() {
+    if (!this.playing) return;
+    const now = performance.now();
+    const time = now - this.startTime;
+    this.renderFrame(time);
+
+    this.frameCount++;
+    if (now - this.lastFpsTime >= 1000) {
+      this.fps = this.frameCount;
+      this.frameCount = 0;
+      this.lastFpsTime = now;
+      document.getElementById('fpsDisplay').textContent = this.fps + ' FPS';
+    }
+
+    this.animId = requestAnimationFrame(() => this.animate());
+  }
+
+  renderFrame(time) {
+    if (!this.imageData) return;
+    const result = this.compositor.composite(time);
+    this.ctx.clearRect(0, 0, 512, 512);
+    this.ctx.drawImage(result, 0, 0);
+  }
+}
+
+class LayerPanel {
+  constructor(core) {
+    this.core = core;
+    this.activeLayerId = null;
+    this.dragLayerId = null;
+    this.container = document.getElementById('layerStack');
+    this.paramContent = document.getElementById('paramContent');
+    this.blendSelectOpen = null;
+
+    this.initDefaultLayers();
+    this.bindEvents();
+    this.render();
+  }
+
+  initDefaultLayers() {
+    const layers = [
+      new PixelateLayer(512, 512),
+      new IonizeLayer(512, 512),
+      new WaveLayer(512, 512),
+      new GlitchLayer(512, 512),
+      new ChromaticLayer(512, 512)
+    ];
+
+    layers.forEach((layer, i) => {
+      layer.order = i;
+      if (this.core.imageData) layer.sourceData = this.core.imageData;
+      this.core.compositor.addLayer(layer);
+    });
+
+    if (layers.length > 0) {
+      this.activeLayerId = layers[0].id;
+    }
+  }
+
+  bindEvents() {
+    EventBus.on('core:imageLoaded', () => {
+      this.render();
+    });
+  }
+
+  render() {
+    this.container.innerHTML = '';
+    const layers = [...this.core.compositor.layers].reverse();
+
+    for (const layer of layers) {
+      const card = document.createElement('div');
+      card.className = 'layer-card' + (layer.id === this.activeLayerId ? ' active' : '');
+      card.style.borderLeftColor = this.resolveColor(layer.color);
+      card.dataset.layerId = layer.id;
+      card.draggable = true;
+
+      card.innerHTML = `
+        <div class="layer-card-top">
+          <div class="layer-color-dot" style="background:${this.resolveColor(layer.color)}"></div>
+          <div class="layer-name">${layer.name}</div>
+          <canvas class="mini-preview" width="32" height="32"></canvas>
+          <button class="layer-eye ${layer.visible ? '' : 'hidden'}" data-action="toggleVisibility">👁</button>
+        </div>
+        <div class="layer-card-bottom">
+          <input type="range" class="layer-opacity-slider" min="0" max="100" value="${Math.round(layer.opacity * 100)}" data-action="opacity">
+          <span class="layer-opacity-val">${Math.round(layer.opacity * 100)}%</span>
+          <span class="blend-pill" data-action="blendMode">${layer.blendMode}</span>
+        </div>
+        <div class="blend-select" data-blend-select="${layer.id}">
+          ${BLEND_MODES.map(m => `<div class="blend-option" data-blend="${m}">${m}</div>`).join('')}
+        </div>
+      `;
+
+      card.addEventListener('click', (e) => {
+        if (e.target.dataset.action === 'toggleVisibility' || e.target.closest('[data-action="toggleVisibility"]')) return;
+        if (e.target.dataset.action === 'blendMode' || e.target.closest('[data-action="blendMode"]')) return;
+        if (e.target.classList.contains('layer-opacity-slider')) return;
+        this.activeLayerId = layer.id;
+        this.render();
+        this.renderParams();
+      });
+
+      const eyeBtn = card.querySelector('.layer-eye');
+      eyeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        layer.visible = !layer.visible;
+        this.render();
+      });
+
+      const opacitySlider = card.querySelector('.layer-opacity-slider');
+      opacitySlider.addEventListener('input', (e) => {
+        e.stopPropagation();
+        layer.opacity = parseInt(e.target.value) / 100;
+        card.querySelector('.layer-opacity-val').textContent = e.target.value + '%';
+      });
+      opacitySlider.addEventListener('click', (e) => e.stopPropagation());
+
+      const blendPill = card.querySelector('.blend-pill');
+      const blendSelect = card.querySelector('.blend-select');
+      blendPill.addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.querySelectorAll('.blend-select.show').forEach(el => el.classList.remove('show'));
+        blendSelect.classList.toggle('show');
+      });
+
+      blendSelect.querySelectorAll('.blend-option').forEach(opt => {
+        opt.addEventListener('click', (e) => {
+          e.stopPropagation();
+          layer.blendMode = opt.dataset.blend;
+          blendSelect.classList.remove('show');
+          this.render();
+        });
+      });
+
+      card.addEventListener('dragstart', (e) => {
+        this.dragLayerId = layer.id;
+        card.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+      });
+
+      card.addEventListener('dragend', () => {
+        card.classList.remove('dragging');
+        this.dragLayerId = null;
+        document.querySelectorAll('.layer-card.drag-over').forEach(el => el.classList.remove('drag-over'));
+      });
+
+      card.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        card.classList.add('drag-over');
+      });
+
+      card.addEventListener('dragleave', () => {
+        card.classList.remove('drag-over');
+      });
+
+      card.addEventListener('drop', (e) => {
+        e.preventDefault();
+        card.classList.remove('drag-over');
+        if (!this.dragLayerId || this.dragLayerId === layer.id) return;
+
+        const allLayers = this.core.compositor.layers;
+        const dragLayer = allLayers.find(l => l.id === this.dragLayerId);
+        const dropLayer = layer;
+
+        const dragOrder = dragLayer.order;
+        dragLayer.order = dropLayer.order;
+        dropLayer.order = dragOrder;
+
+        this.core.compositor.sortLayers();
+        this.render();
+      });
+
+      this.container.appendChild(card);
+
+      this.updateMiniPreview(layer, card.querySelector('.mini-preview'));
+    }
+
+    this.renderParams();
+  }
+
+  updateMiniPreview(layer, canvas) {
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, 32, 32);
+    ctx.drawImage(layer.canvas, 0, 0, 32, 32);
+  }
+
+  renderParams() {
+    const layer = this.core.compositor.getLayerById(this.activeLayerId);
+    if (!layer) {
+      this.paramContent.innerHTML = '<div style="color:var(--muted);font-size:10px;padding:8px 0;">选择一个图层查看参数</div>';
+      return;
+    }
+
+    const paramDefs = this.getParamDefs(layer.type);
+    let html = `<div style="margin-bottom:8px;font-family:'Press Start 2P',cursive;font-size:8px;color:${this.resolveColor(layer.color)}">${layer.name}</div>`;
+
+    for (const def of paramDefs) {
+      const val = layer.getParam(def.key);
+      if (def.type === 'range') {
+        html += `
+          <div class="param-row">
+            <span class="param-label">${def.label}</span>
+            <input type="range" class="param-slider" min="${def.min}" max="${def.max}" step="${def.step || 1}" value="${val}" data-param="${def.key}">
+            <span class="param-value" data-param-val="${def.key}">${val}</span>
+          </div>
+        `;
+      } else if (def.type === 'select') {
+        html += `
+          <div class="param-row">
+            <span class="param-label">${def.label}</span>
+            <select class="wave-type-select" data-param="${def.key}">
+              ${def.options.map(o => `<option value="${o}" ${o === val ? 'selected' : ''}>${o}</option>`).join('')}
+            </select>
+          </div>
+        `;
+      } else if (def.type === 'checkbox') {
+        html += `
+          <div class="param-row">
+            <span class="param-label">${def.label}</span>
+            <input type="checkbox" ${val ? 'checked' : ''} data-param="${def.key}" style="accent-color:var(--accent)">
+          </div>
+        `;
+      }
+    }
+
+    this.paramContent.innerHTML = html;
+
+    this.paramContent.querySelectorAll('.param-slider').forEach(slider => {
+      slider.addEventListener('input', (e) => {
+        const key = e.target.dataset.param;
+        const val = parseFloat(e.target.value);
+        layer.setParam(key, val);
+        this.paramContent.querySelector(`[data-param-val="${key}"]`).textContent = val;
+      });
+    });
+
+    this.paramContent.querySelectorAll('.wave-type-select').forEach(select => {
+      select.addEventListener('change', (e) => {
+        layer.setParam(e.target.dataset.param, e.target.value);
+      });
+    });
+
+    this.paramContent.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener('change', (e) => {
+        layer.setParam(e.target.dataset.param, e.target.checked);
+      });
+    });
+  }
+
+  getParamDefs(type) {
+    switch (type) {
+      case 'pixelate':
+        return [
+          { key: 'pixelSize', label: '像素大小', type: 'range', min: 2, max: 32, step: 1 },
+          { key: 'gridShow', label: '显示网格', type: 'checkbox' }
+        ];
+      case 'ionize':
+        return [
+          { key: 'pixelSize', label: '粒子大小', type: 'range', min: 1, max: 8, step: 1 },
+          { key: 'speed', label: '速度', type: 'range', min: 0.1, max: 10, step: 0.1 },
+          { key: 'spread', label: '扩散', type: 'range', min: 1, max: 100, step: 1 },
+          { key: 'gravity', label: '引力', type: 'range', min: 0, max: 2, step: 0.05 },
+          { key: 'fade', label: '衰减', type: 'range', min: 0.8, max: 1, step: 0.01 }
+        ];
+      case 'wave':
+        return [
+          { key: 'amplitude', label: '振幅', type: 'range', min: 1, max: 50, step: 1 },
+          { key: 'frequency', label: '频率', type: 'range', min: 0.01, max: 0.2, step: 0.005 },
+          { key: 'speed', label: '速度', type: 'range', min: 0.1, max: 10, step: 0.1 },
+          { key: 'waveType', label: '波形', type: 'select', options: ['sine', 'cosine', 'sawtooth', 'triangle'] },
+          { key: 'lineWidth', label: '线宽', type: 'range', min: 1, max: 8, step: 1 },
+          { key: 'gap', label: '间距', type: 'range', min: 1, max: 20, step: 1 }
+        ];
+      case 'glitch':
+        return [
+          { key: 'sliceCount', label: '切片数', type: 'range', min: 2, max: 30, step: 1 },
+          { key: 'shiftAmount', label: '偏移量', type: 'range', min: 1, max: 80, step: 1 },
+          { key: 'rgbShift', label: 'RGB偏移', type: 'range', min: 0, max: 20, step: 1 },
+          { key: 'scanlines', label: '扫描线', type: 'checkbox' }
+        ];
+      case 'chromatic':
+        return [
+          { key: 'redOffsetX', label: 'R偏移X', type: 'range', min: -20, max: 20, step: 1 },
+          { key: 'redOffsetY', label: 'R偏移Y', type: 'range', min: -20, max: 20, step: 1 },
+          { key: 'greenOffsetX', label: 'G偏移X', type: 'range', min: -20, max: 20, step: 1 },
+          { key: 'greenOffsetY', label: 'G偏移Y', type: 'range', min: -20, max: 20, step: 1 },
+          { key: 'blueOffsetX', label: 'B偏移X', type: 'range', min: -20, max: 20, step: 1 },
+          { key: 'blueOffsetY', label: 'B偏移Y', type: 'range', min: -20, max: 20, step: 1 },
+          { key: 'intensity', label: '强度', type: 'range', min: 0, max: 1, step: 0.05 }
+        ];
+      default:
+        return [];
+    }
+  }
+
+  resolveColor(color) {
+    const map = {
+      'var(--layer1)': '#ff6b6b',
+      'var(--layer2)': '#4ecdc4',
+      'var(--layer3)': '#ffe66d',
+      'var(--layer4)': '#a29bfe',
+      'var(--layer5)': '#fd79a8',
+      'var(--muted)': '#6a6a8a',
+      'var(--accent)': '#00ff88'
+    };
+    return map[color] || color;
+  }
+}
+
+class CompositePreviewPanel {
+  constructor(core) {
+    this.core = core;
+    this.container = document.getElementById('compositePreview');
+    this.thumbnails = {};
+    this.finalThumb = null;
+
+    EventBus.on('compositor:rendered', () => this.update());
+  }
+
+  build() {
+    const header = this.container.querySelector('.panel-header');
+    this.container.innerHTML = '';
+    this.container.appendChild(header);
+
+    const layers = this.core.compositor.layers;
+    for (const layer of layers) {
+      const thumb = document.createElement('div');
+      thumb.className = 'preview-thumb';
+      thumb.innerHTML = `
+        <canvas width="100" height="100"></canvas>
+        <span class="thumb-label">${layer.name}</span>
+      `;
+      this.container.appendChild(thumb);
+      this.thumbnails[layer.id] = thumb.querySelector('canvas');
+    }
+
+    const sep = document.createElement('div');
+    sep.className = 'preview-sep';
+    this.container.appendChild(sep);
+
+    const finalThumb = document.createElement('div');
+    finalThumb.className = 'preview-thumb final';
+    finalThumb.innerHTML = `
+      <canvas width="120" height="120"></canvas>
+      <span class="thumb-label">合成结果</span>
+    `;
+    this.container.appendChild(finalThumb);
+    this.finalThumb = finalThumb.querySelector('canvas');
+  }
+
+  update() {
+    const layers = this.core.compositor.layers;
+    for (const layer of layers) {
+      const canvas = this.thumbnails[layer.id];
+      if (!canvas) continue;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, 100, 100);
+      if (layer.visible) {
+        ctx.drawImage(layer.canvas, 0, 0, 100, 100);
+      } else {
+        ctx.fillStyle = 'rgba(20,20,30,0.8)';
+        ctx.fillRect(0, 0, 100, 100);
+        ctx.fillStyle = '#6a6a8a';
+        ctx.font = '8px "Press Start 2P"';
+        ctx.textAlign = 'center';
+        ctx.fillText('OFF', 50, 54);
+      }
+    }
+
+    if (this.finalThumb) {
+      const ctx = this.finalThumb.getContext('2d');
+      ctx.clearRect(0, 0, 120, 120);
+      ctx.drawImage(this.core.compositor.canvas, 0, 0, 120, 120);
+    }
+  }
+}
+
+class UIModule {
+  constructor(core) {
+    this.core = core;
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.blend-pill') && !e.target.closest('.blend-select')) {
+        document.querySelectorAll('.blend-select.show').forEach(el => el.classList.remove('show'));
+      }
+    });
+  }
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+let core, layerPanel, compositePreview, uiModule;
+
+function init() {
+  core = new CoreModule();
+  layerPanel = new LayerPanel(core);
+  compositePreview = new CompositePreviewPanel(core);
+  uiModule = new UIModule(core);
+
+  compositePreview.build();
+
+  EventBus.on('core:imageLoaded', () => {
+    compositePreview.build();
+  });
+
+  core.play();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pixel Forge v5 - 插件系统</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0e14;
+  --bg2: #13141c;
+  --bg3: #1a1b26;
+  --fg: #a9b1d6;
+  --fg2: #787c99;
+  --accent: #00ff88;
+  --accent2: #ff3366;
+  --accent3: #44ddff;
+  --code-bg: #1a1b26;
+  --code-fg: #a9b1d6;
+  --border: #2a2b3d;
+  --card: #161722;
+  --success: #00ff88;
+  --warning: #ffcc00;
+  --error: #ff3366;
+  --radius: 6px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); color:var(--fg); font-family:'Share Tech Mono',monospace; font-size:13px; }
+::-webkit-scrollbar { width:6px; height:6px; }
+::-webkit-scrollbar-track { background:var(--bg2); }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+::-webkit-scrollbar-thumb:hover { background:var(--fg2); }
+#app { display:flex; flex-direction:column; width:100%; height:100%; }
+
+#tab-bar {
+  display:flex; align-items:center; height:42px; min-height:42px;
+  background:var(--bg2); border-bottom:1px solid var(--border); padding:0 12px; gap:8px;
+  user-select:none;
+}
+.logo {
+  font-family:'Press Start 2P',monospace; font-size:11px; color:var(--accent);
+  text-shadow:0 0 10px var(--accent); margin-right:20px; white-space:nowrap;
+  letter-spacing:1px;
+}
+.logo span { color:var(--accent2); }
+.tabs { display:flex; gap:2px; }
+.tab-btn {
+  background:transparent; border:none; color:var(--fg2); font-family:'Share Tech Mono',monospace;
+  font-size:12px; padding:8px 16px; cursor:pointer; border-bottom:2px solid transparent;
+  transition:all .2s;
+}
+.tab-btn:hover { color:var(--fg); }
+.tab-btn.active { color:var(--accent); border-bottom-color:var(--accent); }
+.tab-btn .tab-icon { margin-right:6px; }
+
+#main-area { flex:1; display:flex; overflow:hidden; position:relative; }
+
+.view { display:none; flex:1; overflow:hidden; }
+.view.active { display:flex; }
+
+#canvas-view { flex-direction:row; }
+#plugins-view { flex-direction:column; overflow-y:auto; padding:16px; }
+#editor-view { flex-direction:column; }
+
+#plugin-browser {
+  width:240px; min-width:240px; background:var(--bg2); border-right:1px solid var(--border);
+  display:flex; flex-direction:column; overflow:hidden;
+}
+.panel-title {
+  font-family:'Press Start 2P',monospace; font-size:9px; color:var(--accent3);
+  padding:12px 12px 8px; text-transform:uppercase; letter-spacing:1px;
+  border-bottom:1px solid var(--border);
+}
+.plugin-list { flex:1; overflow-y:auto; padding:6px; }
+.plugin-card {
+  background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+  padding:10px; margin-bottom:6px; cursor:pointer; transition:all .2s;
+  position:relative;
+}
+.plugin-card:hover { border-color:var(--accent); }
+.plugin-card.active-plugin { border-color:var(--accent); box-shadow:0 0 8px rgba(0,255,136,.15); }
+.plugin-card-header { display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+.status-dot {
+  width:8px; height:8px; border-radius:50%; background:var(--fg2); flex-shrink:0;
+  transition:background .3s;
+}
+.status-dot.active { background:var(--accent); box-shadow:0 0 6px var(--accent); }
+.plugin-card-name {
+  font-size:11px; font-weight:600; color:var(--fg); flex:1;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.plugin-card-desc { font-size:10px; color:var(--fg2); line-height:1.4; }
+.plugin-card-deps { font-size:9px; color:var(--accent3); margin-top:4px; }
+
+#canvas-area {
+  flex:1; display:flex; align-items:center; justify-content:center;
+  background:var(--bg); position:relative; overflow:hidden;
+}
+#canvas-area::before {
+  content:''; position:absolute; inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,136,.02) 2px,rgba(0,255,136,.02) 4px);
+  pointer-events:none; z-index:1;
+}
+#main-canvas {
+  max-width:90%; max-height:90%; image-rendering:pixelated;
+  border:1px solid var(--border); position:relative; z-index:2;
+  box-shadow:0 0 30px rgba(0,255,136,.08);
+}
+.canvas-loading {
+  position:absolute; z-index:3; color:var(--accent); font-size:12px;
+  font-family:'Press Start 2P',monospace; animation:pulse 1.5s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+#param-panel {
+  width:260px; min-width:260px; background:var(--bg2); border-left:1px solid var(--border);
+  display:flex; flex-direction:column; overflow:hidden;
+}
+.param-list { flex:1; overflow-y:auto; padding:10px; }
+.param-group { margin-bottom:14px; }
+.param-group-title {
+  font-family:'Press Start 2P',monospace; font-size:8px; color:var(--accent);
+  margin-bottom:8px; padding-bottom:4px; border-bottom:1px solid var(--border);
+}
+.param-item { margin-bottom:10px; }
+.param-label { font-size:11px; color:var(--fg2); margin-bottom:4px; display:flex; justify-content:space-between; }
+.param-value { color:var(--accent3); font-family:'Fira Code',monospace; font-size:11px; }
+.param-item input[type="range"] {
+  width:100%; height:4px; -webkit-appearance:none; background:var(--border);
+  border-radius:2px; outline:none;
+}
+.param-item input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance:none; width:14px; height:14px; border-radius:50%;
+  background:var(--accent); cursor:pointer; box-shadow:0 0 6px var(--accent);
+}
+.param-item input[type="color"] {
+  width:100%; height:28px; border:1px solid var(--border); border-radius:var(--radius);
+  background:var(--bg); cursor:pointer;
+}
+.param-item select {
+  width:100%; padding:4px 8px; background:var(--bg); color:var(--fg);
+  border:1px solid var(--border); border-radius:var(--radius); font-family:inherit;
+  font-size:11px;
+}
+.param-item input[type="checkbox"] {
+  accent-color:var(--accent); width:16px; height:16px; cursor:pointer;
+}
+.no-params { color:var(--fg2); font-size:11px; text-align:center; padding:20px; }
+
+#bottom-panel {
+  height:220px; min-height:34px; background:var(--bg2); border-top:1px solid var(--border);
+  display:flex; flex-direction:column; transition:height .3s;
+}
+#bottom-panel.collapsed { height:34px; min-height:34px; }
+.bottom-header {
+  display:flex; align-items:center; padding:0 12px; cursor:pointer;
+  border-bottom:1px solid var(--border); user-select:none; min-height:34px;
+  background:var(--bg2);
+}
+.bottom-header-title {
+  font-family:'Press Start 2P',monospace; font-size:8px; color:var(--warning);
+  margin-right:16px;
+}
+.bottom-tabs { display:flex; gap:0; flex:1; }
+.bottom-tab {
+  background:transparent; border:none; color:var(--fg2); font-family:'Share Tech Mono',monospace;
+  font-size:11px; padding:8px 14px; cursor:pointer; border-bottom:2px solid transparent;
+  transition:all .2s;
+}
+.bottom-tab:hover { color:var(--fg); }
+.bottom-tab.active { color:var(--accent3); border-bottom-color:var(--accent3); }
+.bottom-toggle { color:var(--fg2); font-size:10px; margin-left:auto; }
+.bottom-content { flex:1; overflow:hidden; display:flex; flex-direction:column; }
+.bottom-pane { display:none; flex:1; overflow:hidden; }
+.bottom-pane.active { display:flex; flex-direction:column; }
+#console-pane .console-body { flex:1; overflow-y:auto; padding:6px 12px; font-family:'Fira Code',monospace; font-size:11px; }
+.console-line { margin-bottom:2px; line-height:1.5; }
+.console-line .timestamp { color:var(--fg2); margin-right:8px; }
+.console-line.lifecycle { color:var(--accent3); }
+.console-line.log { color:var(--fg); }
+.console-line.error { color:var(--error); }
+.console-line.warn { color:var(--warning); }
+.console-line .event-tag {
+  display:inline-block; padding:1px 5px; border-radius:3px; font-size:9px;
+  margin-right:6px; font-family:'Share Tech Mono',monospace;
+}
+.console-line .event-tag.install { background:rgba(0,255,136,.15); color:var(--accent); }
+.console-line .event-tag.init { background:rgba(68,221,255,.15); color:var(--accent3); }
+.console-line .event-tag.activate { background:rgba(0,255,136,.15); color:var(--accent); }
+.console-line .event-tag.deactivate { background:rgba(255,204,0,.15); color:var(--warning); }
+.console-line .event-tag.uninstall { background:rgba(255,51,102,.15); color:var(--error); }
+#editor-pane { flex-direction:column; }
+.mini-editor-toolbar {
+  display:flex; align-items:center; padding:4px 8px; gap:6px;
+  border-bottom:1px solid var(--border); background:var(--bg);
+  flex-shrink:0;
+}
+.mini-editor-toolbar select, .mini-editor-toolbar input {
+  background:var(--bg2); color:var(--fg); border:1px solid var(--border);
+  border-radius:3px; padding:2px 6px; font-family:inherit; font-size:10px;
+}
+.mini-editor-toolbar input { flex:1; min-width:80px; }
+.mini-editor-body { flex:1; display:flex; overflow:hidden; }
+.mini-line-numbers {
+  width:36px; min-width:36px; background:var(--bg); color:var(--fg2);
+  font-family:'Fira Code',monospace; font-size:11px; line-height:1.5;
+  padding:6px 4px; text-align:right; overflow:hidden; user-select:none;
+  border-right:1px solid var(--border);
+}
+.mini-code-textarea {
+  flex:1; background:var(--code-bg); color:var(--code-fg); border:none; outline:none;
+  font-family:'Fira Code',monospace; font-size:11px; line-height:1.5;
+  padding:6px 8px; resize:none; tab-size:2; white-space:pre; overflow:auto;
+}
+.mini-code-textarea::selection { background:rgba(0,255,136,.2); }
+.console-toolbar {
+  display:flex; align-items:center; padding:2px 8px; gap:6px;
+  border-bottom:1px solid var(--border); flex-shrink:0;
+}
+
+#plugins-view .plugins-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:12px; width:100%;
+}
+.plugins-detail-card {
+  background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+  padding:16px; position:relative;
+}
+.plugins-detail-card .card-top { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.plugins-detail-card .card-icon { font-size:20px; }
+.plugins-detail-card .card-info { flex:1; }
+.plugins-detail-card .card-name { font-size:13px; font-weight:600; color:var(--fg); }
+.plugins-detail-card .card-author { font-size:10px; color:var(--fg2); }
+.plugins-detail-card .card-desc { font-size:11px; color:var(--fg2); line-height:1.5; margin-bottom:10px; }
+.plugins-detail-card .card-actions { display:flex; gap:6px; }
+.plugins-detail-card .card-deps { font-size:10px; color:var(--accent3); margin-top:8px; }
+
+.btn {
+  padding:5px 12px; border:1px solid var(--border); border-radius:var(--radius);
+  background:var(--bg); color:var(--fg); font-family:inherit; font-size:11px;
+  cursor:pointer; transition:all .2s; display:inline-flex; align-items:center; gap:4px;
+}
+.btn:hover { border-color:var(--accent); color:var(--accent); }
+.btn.primary { background:var(--accent); color:var(--bg); border-color:var(--accent); font-weight:600; }
+.btn.primary:hover { background:#00cc6e; box-shadow:0 0 10px rgba(0,255,136,.3); }
+.btn.danger { border-color:var(--error); color:var(--error); }
+.btn.danger:hover { background:rgba(255,51,102,.15); }
+.btn.sm { padding:3px 8px; font-size:10px; }
+.btn.toggle-active { background:rgba(0,255,136,.15); border-color:var(--accent); color:var(--accent); }
+
+#editor-view { display:none; flex-direction:column; }
+#editor-view.active { display:flex; }
+.editor-toolbar {
+  display:flex; align-items:center; padding:8px 12px; gap:8px;
+  border-bottom:1px solid var(--border); background:var(--bg2);
+}
+.editor-toolbar select, .editor-toolbar input {
+  background:var(--bg); color:var(--fg); border:1px solid var(--border);
+  border-radius:var(--radius); padding:4px 8px; font-family:inherit; font-size:11px;
+}
+.editor-toolbar input { flex:1; }
+.editor-wrapper { flex:1; display:flex; overflow:hidden; position:relative; }
+.line-numbers {
+  width:44px; min-width:44px; background:var(--bg); color:var(--fg2);
+  font-family:'Fira Code',monospace; font-size:12px; line-height:1.6;
+  padding:10px 8px; text-align:right; overflow:hidden; user-select:none;
+  border-right:1px solid var(--border);
+}
+.code-textarea {
+  flex:1; background:var(--code-bg); color:var(--code-fg); border:none; outline:none;
+  font-family:'Fira Code',monospace; font-size:12px; line-height:1.6;
+  padding:10px 12px; resize:none; tab-size:2; white-space:pre;
+  overflow:auto;
+}
+.code-textarea::selection { background:rgba(0,255,136,.2); }
+
+.toast-container { position:fixed; top:52px; right:16px; z-index:9999; display:flex; flex-direction:column; gap:8px; }
+.toast {
+  padding:10px 16px; border-radius:var(--radius); font-size:11px; min-width:200px;
+  animation:toastIn .3s ease; box-shadow:0 4px 12px rgba(0,0,0,.4);
+  border:1px solid var(--border); background:var(--card); color:var(--fg);
+}
+.toast.success { border-color:var(--accent); color:var(--accent); }
+.toast.error { border-color:var(--error); color:var(--error); }
+.toast.info { border-color:var(--accent3); color:var(--accent3); }
+@keyframes toastIn { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
+
+.anim-controls {
+  position:absolute; bottom:12px; left:50%; transform:translateX(-50%); z-index:5;
+  display:flex; gap:6px; background:rgba(13,14,20,.85); padding:6px 10px;
+  border-radius:var(--radius); border:1px solid var(--border);
+}
+.anim-btn {
+  background:transparent; border:1px solid var(--border); color:var(--fg);
+  width:30px; height:30px; border-radius:4px; cursor:pointer; font-size:14px;
+  display:flex; align-items:center; justify-content:center; transition:all .2s;
+}
+.anim-btn:hover { border-color:var(--accent); color:var(--accent); }
+.anim-btn.active { background:var(--accent); color:var(--bg); border-color:var(--accent); }
+
+.section-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:8px 12px; border-bottom:1px solid var(--border);
+}
+.section-header-title {
+  font-family:'Press Start 2P',monospace; font-size:9px; color:var(--accent3);
+}
+.clear-btn {
+  background:transparent; border:none; color:var(--fg2); font-size:10px;
+  cursor:pointer; font-family:inherit;
+}
+.clear-btn:hover { color:var(--error); }
+
+.empty-state { text-align:center; padding:30px; color:var(--fg2); font-size:11px; }
+.empty-state .empty-icon { font-size:28px; margin-bottom:10px; opacity:.4; }
+
+@media (max-width:900px) {
+  #plugin-browser { width:180px; min-width:180px; }
+  #param-panel { width:200px; min-width:200px; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="tab-bar">
+    <div class="logo">PIXEL<span>FORGE</span> v5</div>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="canvas"><span class="tab-icon">▣</span>Canvas</button>
+      <button class="tab-btn" data-tab="plugins"><span class="tab-icon">⚙</span>Plugins</button>
+      <button class="tab-btn" data-tab="editor"><span class="tab-icon">⟨/⟩</span>Editor</button>
+    </div>
+  </header>
+
+  <div id="main-area">
+    <div id="canvas-view" class="view active">
+      <aside id="plugin-browser">
+        <div class="panel-title">插件浏览器</div>
+        <div class="plugin-list" id="plugin-list"></div>
+      </aside>
+      <div id="canvas-area">
+        <div class="canvas-loading" id="canvas-loading">加载中...</div>
+        <canvas id="main-canvas" width="512" height="512"></canvas>
+        <div class="anim-controls">
+          <button class="anim-btn" id="btn-play" title="播放/暂停">▶</button>
+          <button class="anim-btn" id="btn-reset" title="重置">↺</button>
+        </div>
+      </div>
+      <aside id="param-panel">
+        <div class="panel-title">参数面板</div>
+        <div class="param-list" id="param-list">
+          <div class="no-params">请激活一个插件</div>
+        </div>
+      </aside>
+    </div>
+
+    <div id="plugins-view" class="view">
+      <div class="plugins-grid" id="plugins-grid"></div>
+    </div>
+
+    <div id="editor-view" class="view">
+      <div class="editor-toolbar">
+        <select id="template-select">
+          <option value="blank">空白模板</option>
+          <option value="mosaic-spin">马赛克旋转</option>
+          <option value="rain-drops">雨滴涟漪</option>
+        </select>
+        <input type="text" id="plugin-id-input" placeholder="插件ID (如: my-effect)" />
+        <button class="btn primary" id="btn-install-plugin">安装插件</button>
+        <button class="btn" id="btn-validate">验证代码</button>
+      </div>
+      <div class="editor-wrapper">
+        <div class="line-numbers" id="line-numbers">1</div>
+        <textarea class="code-textarea" id="code-editor" spellcheck="false"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div id="bottom-panel">
+    <div class="bottom-header" id="bottom-header">
+      <span class="bottom-header-title">PIXEL FORGE</span>
+      <div class="bottom-tabs">
+        <button class="bottom-tab active" data-btab="editor">编辑器</button>
+        <button class="bottom-tab" data-btab="console">控制台</button>
+      </div>
+      <span class="bottom-toggle" id="bottom-toggle">▼</span>
+    </div>
+    <div class="bottom-content">
+      <div class="bottom-pane active" id="editor-pane">
+        <div class="mini-editor-toolbar">
+          <select id="mini-template-select">
+            <option value="blank">空白模板</option>
+            <option value="mosaic-spin">马赛克旋转</option>
+            <option value="rain-drops">雨滴涟漪</option>
+          </select>
+          <input type="text" id="mini-plugin-id" placeholder="插件ID" />
+          <button class="btn sm primary" id="mini-btn-install">安装插件</button>
+        </div>
+        <div class="mini-editor-body">
+          <div class="mini-line-numbers" id="mini-line-numbers">1</div>
+          <textarea class="mini-code-textarea" id="mini-code-editor" spellcheck="false"></textarea>
+        </div>
+      </div>
+      <div class="bottom-pane" id="console-pane">
+        <div class="console-toolbar">
+          <button class="btn sm" id="btn-clear-console">清空</button>
+        </div>
+        <div class="console-body" id="console-body"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+(function() {
+
+class EventBus {
+  constructor() {
+    this._listeners = {};
+    this._interceptors = [];
+  }
+  on(event, fn) {
+    if (!this._listeners[event]) this._listeners[event] = [];
+    this._listeners[event].push(fn);
+    return () => this.off(event, fn);
+  }
+  off(event, fn) {
+    if (!this._listeners[event]) return;
+    this._listeners[event] = this._listeners[event].filter(f => f !== fn);
+  }
+  once(event, fn) {
+    const wrapper = (...args) => { fn(...args); this.off(event, wrapper); };
+    this.on(event, wrapper);
+  }
+  emit(event, data) {
+    for (const interceptor of this._interceptors) {
+      const result = interceptor(event, data);
+      if (result === false) return;
+    }
+    const keys = [event];
+    const parts = event.split(':');
+    for (let i = parts.length - 1; i > 0; i--) {
+      keys.push(parts.slice(0, i).join(':') + ':*');
+    }
+    keys.push('*');
+    for (const key of keys) {
+      if (this._listeners[key]) {
+        for (const fn of this._listeners[key]) {
+          try { fn(data, event); } catch(e) { console.error('EventBus error:', e); }
+        }
+      }
+    }
+  }
+  intercept(handler) {
+    this._interceptors.push(handler);
+    return () => {
+      this._interceptors = this._interceptors.filter(h => h !== handler);
+    };
+  }
+}
+
+class PluginManager {
+  constructor(bus) {
+    this.bus = bus;
+    this._plugins = new Map();
+    this._states = new Map();
+    this._paramValues = new Map();
+    this._pluginStateData = new Map();
+    this._activeOrder = [];
+  }
+  register(def) {
+    if (!def || !def.id) throw new Error('插件必须包含id');
+    if (this._plugins.has(def.id) && !def._isUpdate) {
+      throw new Error('插件ID已存在: ' + def.id);
+    }
+    const plugin = {
+      id: def.id,
+      name: def.name || def.id,
+      description: def.description || '',
+      author: def.author || '未知',
+      dependencies: def.dependencies || [],
+      params: def.params || {},
+      render: def.render || null,
+      _install: def.install || null,
+      _init: def.init || null,
+      _activate: def.activate || null,
+      _deactivate: def.deactivate || null,
+      _uninstall: def.uninstall || null,
+    };
+    this._plugins.set(def.id, plugin);
+    this._states.set(def.id, 'installed');
+    if (!this._paramValues.has(def.id)) {
+      const vals = {};
+      for (const [k, p] of Object.entries(plugin.params)) {
+        vals[k] = p.default !== undefined ? p.default : (p.min || 0);
+      }
+      this._paramValues.set(def.id, vals);
+    }
+    this._pluginStateData.set(def.id, {});
+    this.bus.emit('plugin:install', { id: def.id, plugin });
+    this._callLifecycle(def.id, '_install');
+    this._states.set(def.id, 'initialized');
+    this.bus.emit('plugin:init', { id: def.id });
+    this._callLifecycle(def.id, '_init');
+    return plugin;
+  }
+  _callLifecycle(pluginId, method) {
+    const plugin = this._plugins.get(pluginId);
+    if (!plugin || !plugin[method]) return;
+    const api = this._createAPI(pluginId);
+    try { plugin[method](api); } catch(e) {
+      this.bus.emit('plugin:error', { id: pluginId, error: e.message, method });
+    }
+  }
+  _createAPI(pluginId) {
+    const self = this;
+    return {
+      bus: this.bus,
+      get canvas() { return document.getElementById('main-canvas'); },
+      getSourceData() { return self._getSourceData(); },
+      registerParam(key, def) {
+        const plugin = self._plugins.get(pluginId);
+        if (plugin) { plugin.params[key] = def; }
+        const vals = self._paramValues.get(pluginId);
+        if (vals && vals[key] === undefined) {
+          vals[key] = def.default !== undefined ? def.default : (def.min || 0);
+        }
+      },
+      getParam(key) {
+        const vals = self._paramValues.get(pluginId);
+        return vals ? vals[key] : undefined;
+      },
+      getState() { return self._pluginStateData.get(pluginId); },
+      setState(data) { self._pluginStateData.set(pluginId, data); },
+      log(...args) {
+        self.bus.emit('plugin:log', { id: pluginId, args });
+      }
+    };
+  }
+  _getSourceData() {
+    return coreModule ? coreModule.sourceData : null;
+  }
+  unregister(pluginId) {
+    if (!this._plugins.has(pluginId)) return;
+    if (this._states.get(pluginId) === 'active') this.deactivate(pluginId);
+    this._callLifecycle(pluginId, '_uninstall');
+    this._plugins.delete(pluginId);
+    this._states.delete(pluginId);
+    this._paramValues.delete(pluginId);
+    this._pluginStateData.delete(pluginId);
+    this._activeOrder = this._activeOrder.filter(id => id !== pluginId);
+    this.bus.emit('plugin:uninstall', { id: pluginId });
+  }
+  activate(pluginId) {
+    if (!this._plugins.has(pluginId)) return;
+    const plugin = this._plugins.get(pluginId);
+    for (const dep of plugin.dependencies) {
+      if (!this._plugins.has(dep)) {
+        this.bus.emit('plugin:error', { id: pluginId, error: '缺少依赖: ' + dep });
+        return;
+      }
+      if (this._states.get(dep) !== 'active') this.activate(dep);
+    }
+    if (this._states.get(pluginId) === 'active') return;
+    this._states.set(pluginId, 'active');
+    this._activeOrder.push(pluginId);
+    this._callLifecycle(pluginId, '_activate');
+    this.bus.emit('plugin:activate', { id: pluginId });
+  }
+  deactivate(pluginId) {
+    if (!this._plugins.has(pluginId)) return;
+    if (this._states.get(pluginId) !== 'active') return;
+    this._states.set(pluginId, 'inactive');
+    this._activeOrder = this._activeOrder.filter(id => id !== pluginId);
+    this._callLifecycle(pluginId, '_deactivate');
+    this.bus.emit('plugin:deactivate', { id: pluginId });
+  }
+  toggle(pluginId) {
+    if (this._states.get(pluginId) === 'active') this.deactivate(pluginId);
+    else this.activate(pluginId);
+  }
+  getPlugin(pluginId) { return this._plugins.get(pluginId); }
+  listPlugins() { return Array.from(this._plugins.values()); }
+  isActive(pluginId) { return this._states.get(pluginId) === 'active'; }
+  getParamValues(pluginId) { return this._paramValues.get(pluginId) || {}; }
+  setParamValue(pluginId, key, value) {
+    const vals = this._paramValues.get(pluginId);
+    if (vals) { vals[key] = value; this.bus.emit('plugin:param', { id: pluginId, key, value }); }
+  }
+  getActivePlugins() {
+    return this._activeOrder.map(id => this._plugins.get(id)).filter(Boolean);
+  }
+  getPluginState(pluginId) { return this._pluginStateData.get(pluginId); }
+}
+
+let coreModule = null;
+
+class CoreModule {
+  constructor(bus, pluginManager) {
+    this.bus = bus;
+    this.pm = pluginManager;
+    this.canvas = document.getElementById('main-canvas');
+    this.ctx = this.canvas.getContext('2d');
+    this.sourceImage = null;
+    this.sourceData = null;
+    this.offCanvas = document.createElement('canvas');
+    this.offCtx = this.offCanvas.getContext('2d');
+    this.animating = false;
+    this.startTime = 0;
+    this.animId = null;
+  }
+  init() {
+    this.loadImage('https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=pixel%20art%20portrait%20of%20a%20cyberpunk%20warrior%20neon%20colors%20detailed%20retro%20game%20character&image_size=square');
+  }
+  loadImage(url) {
+    const loading = document.getElementById('canvas-loading');
+    if (loading) loading.style.display = 'block';
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      this.sourceImage = img;
+      const size = 512;
+      this.canvas.width = size;
+      this.canvas.height = size;
+      this.offCanvas.width = size;
+      this.offCanvas.height = size;
+      this.offCtx.drawImage(img, 0, 0, size, size);
+      this.sourceData = this.offCtx.getImageData(0, 0, size, size);
+      this.ctx.drawImage(img, 0, 0, size, size);
+      if (loading) loading.style.display = 'none';
+      this.bus.emit('source:loaded', { width: size, height: size });
+    };
+    img.onerror = () => {
+      this._generateFallback();
+      if (loading) loading.style.display = 'none';
+    };
+    img.src = url;
+  }
+  _generateFallback() {
+    const size = 512;
+    this.canvas.width = size;
+    this.canvas.height = size;
+    this.offCanvas.width = size;
+    this.offCanvas.height = size;
+    const ctx = this.offCtx;
+    for (let y = 0; y < size; y += 8) {
+      for (let x = 0; x < size; x += 8) {
+        const h = (x + y) / size * 360;
+        ctx.fillStyle = `hsl(${h},70%,50%)`;
+        ctx.fillRect(x, y, 8, 8);
+      }
+    }
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 32px "Press Start 2P"';
+    ctx.textAlign = 'center';
+    ctx.fillText('PIXEL FORGE', size/2, size/2 - 20);
+    ctx.font = '14px "Press Start 2P"';
+    ctx.fillText('v5', size/2, size/2 + 20);
+    this.sourceData = this.offCtx.getImageData(0, 0, size, size);
+    this.ctx.drawImage(this.offCanvas, 0, 0);
+    this.sourceImage = this.offCanvas;
+  }
+  startAnimation() {
+    if (this.animating) return;
+    this.animating = true;
+    this.startTime = performance.now();
+    this._animate();
+    document.getElementById('btn-play').textContent = '⏸';
+    document.getElementById('btn-play').classList.add('active');
+  }
+  stopAnimation() {
+    this.animating = false;
+    if (this.animId) cancelAnimationFrame(this.animId);
+    this.animId = null;
+    document.getElementById('btn-play').textContent = '▶';
+    document.getElementById('btn-play').classList.remove('active');
+  }
+  resetAnimation() {
+    this.stopAnimation();
+    this.startTime = 0;
+    if (this.sourceImage) {
+      this.ctx.drawImage(this.sourceImage, 0, 0, this.canvas.width, this.canvas.height);
+    }
+    this.pm.getActivePlugins().forEach(p => {
+      this.pm._pluginStateData.set(p.id, {});
+    });
+  }
+  _animate() {
+    if (!this.animating) return;
+    const time = (performance.now() - this.startTime) / 1000;
+    this.render(time);
+    this.animId = requestAnimationFrame(() => this._animate());
+  }
+  render(time) {
+    const ctx = this.ctx;
+    const w = this.canvas.width;
+    const h = this.canvas.height;
+    const activePlugins = this.pm.getActivePlugins();
+    if (activePlugins.length === 0) {
+      if (this.sourceImage) ctx.drawImage(this.sourceImage, 0, 0, w, h);
+      return;
+    }
+    ctx.clearRect(0, 0, w, h);
+    for (const plugin of activePlugins) {
+      if (!plugin.render) continue;
+      const params = this.pm.getParamValues(plugin.id);
+      const state = this.pm.getPluginState(plugin.id);
+      try {
+        plugin.render(ctx, this.sourceData, time, params, state);
+      } catch(e) {
+        this.bus.emit('plugin:error', { id: plugin.id, error: e.message, method: 'render' });
+      }
+    }
+  }
+}
+
+const TEMPLATES = {
+  blank: `PixelForge.registerPlugin({
+  id: 'custom-effect',
+  name: '自定义效果',
+  description: '一个自定义像素效果',
+  author: '匿名',
+  dependencies: [],
+  params: {
+    intensity: { label: '强度', type: 'range', min: 1, max: 50, default: 10 }
+  },
+  install(api) {
+    api.log('插件已安装');
+  },
+  activate(api) {
+    api.log('插件已激活');
+  },
+  deactivate(api) {
+    api.log('插件已停用');
+  },
+  render(ctx, sourceData, time, params, state) {
+    const w = ctx.canvas.width;
+    const h = ctx.canvas.height;
+    if (!sourceData) return;
+    const data = sourceData.data;
+    const size = Math.max(2, Math.round(params.intensity));
+    for (let y = 0; y < h; y += size) {
+      for (let x = 0; x < w; x += size) {
+        const i = (y * w + x) * 4;
+        const r = data[i], g = data[i+1], b = data[i+2];
+        const bright = (r + g + b) / 3;
+        const offset = Math.sin(time * 2 + bright * 0.05) * 3;
+        ctx.fillStyle = \`rgb(\${r},\${g},\${b})\`;
+        ctx.fillRect(x + offset, y, size, size);
+      }
+    }
+  }
+});`,
+  'mosaic-spin': `PixelForge.registerPlugin({
+  id: 'mosaic-spin',
+  name: '马赛克旋转',
+  description: '像素块围绕自身中心旋转',
+  author: 'PixelForge',
+  dependencies: [],
+  params: {
+    blockSize: { label: '块大小', type: 'range', min: 4, max: 32, default: 12 },
+    speed: { label: '旋转速度', type: 'range', min: 1, max: 100, default: 30 },
+    waveFactor: { label: '波浪系数', type: 'range', min: 0, max: 50, default: 10 }
+  },
+  activate(api) {
+    api.setState({ initialized: true });
+    api.log('马赛克旋转已激活');
+  },
+  render(ctx, sourceData, time, params, state) {
+    const w = ctx.canvas.width;
+    const h = ctx.canvas.height;
+    if (!sourceData) return;
+    const data = sourceData.data;
+    const size = params.blockSize;
+    const spd = params.speed * 0.01;
+    const wave = params.waveFactor * 0.01;
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = '#0d0e14';
+    ctx.fillRect(0, 0, w, h);
+    for (let y = 0; y < h; y += size) {
+      for (let x = 0; x < w; x += size) {
+        const cx = Math.min(x + size / 2, w - 1);
+        const cy = Math.min(y + size / 2, h - 1);
+        const i = (Math.floor(cy) * w + Math.floor(cx)) * 4;
+        const r = data[i], g = data[i+1], b = data[i+2];
+        const angle = time * spd + (x + y) * wave;
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(angle);
+        ctx.fillStyle = \`rgb(\${r},\${g},\${b})\`;
+        ctx.fillRect(-size/2, -size/2, size, size);
+        ctx.restore();
+      }
+    }
+  }
+});`,
+  'rain-drops': `PixelForge.registerPlugin({
+  id: 'rain-drops',
+  name: '雨滴涟漪',
+  description: '随机位置产生圆形涟漪扭曲',
+  author: 'PixelForge',
+  dependencies: [],
+  params: {
+    dropCount: { label: '雨滴数量', type: 'range', min: 1, max: 20, default: 5 },
+    rippleSpeed: { label: '涟漪速度', type: 'range', min: 1, max: 100, default: 40 },
+    rippleSize: { label: '涟漪大小', type: 'range', min: 10, max: 150, default: 60 },
+    distortion: { label: '扭曲强度', type: 'range', min: 1, max: 30, default: 8 }
+  },
+  activate(api) {
+    const drops = [];
+    for (let i = 0; i < 20; i++) {
+      drops.push({
+        x: Math.random(), y: Math.random(),
+        birth: -Math.random() * 5, active: false
+      });
+    }
+    api.setState({ drops });
+    api.log('雨滴涟漪已激活');
+  },
+  render(ctx, sourceData, time, params, state) {
+    const w = ctx.canvas.width;
+    const h = ctx.canvas.height;
+    if (!sourceData) return;
+    const data = sourceData.data;
+    const count = params.dropCount;
+    const speed = params.rippleSpeed * 0.02;
+    const maxR = params.rippleSize;
+    const distort = params.distortion;
+    if (!state.drops) return;
+    for (let i = 0; i < state.drops.length; i++) {
+      const d = state.drops[i];
+      if (!d.active && i < count) {
+        d.active = true;
+        d.birth = time;
+        d.x = Math.random();
+        d.y = Math.random();
+      }
+      if (d.active && i >= count) {
+        d.active = false;
+      }
+    }
+    const output = ctx.createImageData(w, h);
+    const out = output.data;
+    for (let py = 0; py < h; py++) {
+      for (let px = 0; px < w; px++) {
+        let dx = 0, dy = 0;
+        for (const drop of state.drops) {
+          if (!drop.active) continue;
+          const age = time - drop.birth;
+          const radius = age * speed * 60;
+          if (radius > maxR * 2) {
+            drop.birth = time;
+            drop.x = Math.random();
+            drop.y = Math.random();
+            continue;
+          }
+          const ddx = px - drop.x * w;
+          const ddy = py - drop.y * h;
+          const dist = Math.sqrt(ddx * ddx + ddy * ddy);
+          const ringDist = Math.abs(dist - radius);
+          if (ringDist < 15) {
+            const factor = (1 - ringDist / 15) * distort * Math.exp(-age * 0.5);
+            const angle = Math.atan2(ddy, ddx);
+            dx += Math.cos(angle) * factor;
+            dy += Math.sin(angle) * factor;
+          }
+        }
+        let sx = Math.round(px + dx);
+        let sy = Math.round(py + dy);
+        sx = Math.max(0, Math.min(w - 1, sx));
+        sy = Math.max(0, Math.min(h - 1, sy));
+        const si = (sy * w + sx) * 4;
+        const di = (py * w + px) * 4;
+        out[di] = data[si];
+        out[di+1] = data[si+1];
+        out[di+2] = data[si+2];
+        out[di+3] = data[si+3];
+      }
+    }
+    ctx.putImageData(output, 0, 0);
+  }
+});`
+};
+
+const builtinPlugins = [
+  {
+    id: 'pixelate', name: '像素化', description: '将图像像素化为方块', author: 'PixelForge',
+    dependencies: [],
+    params: {
+      pixelSize: { label: '像素大小', type: 'range', min: 2, max: 40, default: 8 },
+      gridShow: { label: '显示网格', type: 'checkbox', default: false }
+    },
+    render(ctx, sourceData, time, params, state) {
+      const w = ctx.canvas.width, h = ctx.canvas.height;
+      if (!sourceData) return;
+      const data = sourceData.data;
+      const size = Math.max(2, Math.round(params.pixelSize));
+      ctx.clearRect(0, 0, w, h);
+      for (let y = 0; y < h; y += size) {
+        for (let x = 0; x < w; x += size) {
+          let rSum=0, gSum=0, bSum=0, count=0;
+          for (let dy=0; dy<size && y+dy<h; dy++) {
+            for (let dx=0; dx<size && x+dx<w; dx++) {
+              const i = ((y+dy)*w+(x+dx))*4;
+              rSum += data[i]; gSum += data[i+1]; bSum += data[i+2]; count++;
+            }
+          }
+          const r=Math.round(rSum/count), g=Math.round(gSum/count), b=Math.round(bSum/count);
+          ctx.fillStyle = `rgb(${r},${g},${b})`;
+          ctx.fillRect(x, y, size, size);
+          if (params.gridShow) {
+            ctx.strokeStyle = 'rgba(0,255,136,0.15)';
+            ctx.lineWidth = 0.5;
+            ctx.strokeRect(x, y, size, size);
+          }
+        }
+      }
+    }
+  },
+  {
+    id: 'ionize', name: '离子化', description: '像素粒子散射效果', author: 'PixelForge',
+    dependencies: [],
+    params: {
+      pixelSize: { label: '粒子大小', type: 'range', min: 2, max: 16, default: 4 },
+      speed: { label: '速度', type: 'range', min: 1, max: 100, default: 30 },
+      spread: { label: '扩散', type: 'range', min: 1, max: 100, default: 50 },
+      gravity: { label: '重力', type: 'range', min: 0, max: 100, default: 20 },
+      fade: { label: '衰减', type: 'range', min: 1, max: 100, default: 30 }
+    },
+    activate(api) {
+      api.setState({ particles: null, lastInit: null });
+      api.log('离子化效果已激活');
+    },
+    deactivate(api) {
+      api.setState({ particles: null, lastInit: null });
+    },
+    render(ctx, sourceData, time, params, state) {
+      const w = ctx.canvas.width, h = ctx.canvas.height;
+      if (!sourceData) return;
+      const data = sourceData.data;
+      const size = Math.max(2, Math.round(params.pixelSize));
+      const spd = params.speed * 0.02;
+      const spr = params.spread * 0.1;
+      const grav = params.gravity * 0.005;
+      const fd = params.fade * 0.003;
+      if (!state.particles || state.lastInit !== size) {
+        state.particles = [];
+        state.lastInit = size;
+        for (let y = 0; y < h; y += size) {
+          for (let x = 0; x < w; x += size) {
+            const i = (y * w + x) * 4;
+            const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
+            if (a < 10) continue;
+            state.particles.push({
+              ox: x, oy: y, x, y,
+              vx: (Math.random() - 0.5) * spr,
+              vy: (Math.random() - 0.5) * spr,
+              r, g, b, life: 1, size
+            });
+          }
+        }
+      }
+      ctx.clearRect(0, 0, w, h);
+      for (const p of state.particles) {
+        p.vy += grav;
+        p.x += p.vx * spd;
+        p.y += p.vy * spd;
+        p.life -= fd;
+        if (p.life <= 0 || p.x < -50 || p.x > w+50 || p.y > h+50) {
+          p.x = p.ox; p.y = p.oy;
+          p.vx = (Math.random() - 0.5) * spr;
+          p.vy = (Math.random() - 0.5) * spr;
+          p.life = 1;
+        }
+        ctx.fillStyle = `rgba(${p.r},${p.g},${p.b},${Math.max(0, p.life)})`;
+        ctx.fillRect(p.x, p.y, p.size, p.size);
+      }
+    }
+  },
+  {
+    id: 'wave', name: '波浪', description: '基于线条的波浪扭曲效果', author: 'PixelForge',
+    dependencies: [],
+    params: {
+      amplitude: { label: '振幅', type: 'range', min: 1, max: 60, default: 15 },
+      frequency: { label: '频率', type: 'range', min: 1, max: 50, default: 10 },
+      speed: { label: '速度', type: 'range', min: 1, max: 100, default: 30 },
+      waveType: { label: '波形', type: 'select', options: ['sine','square','sawtooth','triangle'], default: 'sine' },
+      lineWidth: { label: '线宽', type: 'range', min: 1, max: 8, default: 2 },
+      gap: { label: '间隔', type: 'range', min: 0, max: 10, default: 2 }
+    },
+    render(ctx, sourceData, time, params, state) {
+      const w = ctx.canvas.width, h = ctx.canvas.height;
+      if (!sourceData) return;
+      const data = sourceData.data;
+      const amp = params.amplitude;
+      const freq = params.frequency * 0.01;
+      const spd = params.speed * 0.05;
+      const lw = Math.max(1, Math.round(params.lineWidth));
+      const gap = Math.round(params.gap);
+      const step = lw + gap;
+      function waveFn(x, t) {
+        const v = x * freq + t * spd;
+        switch(params.waveType) {
+          case 'square': return Math.sign(Math.sin(v)) * amp;
+          case 'sawtooth': return ((v / Math.PI % 2) - 1) * amp;
+          case 'triangle': return Math.asin(Math.sin(v)) * amp * 2 / Math.PI;
+          default: return Math.sin(v) * amp;
+        }
+      }
+      ctx.clearRect(0, 0, w, h);
+      for (let y = 0; y < h; y += step) {
+        for (let x = 0; x < w; x++) {
+          const dy = waveFn(x, time);
+          let sy = Math.round(y + dy);
+          sy = Math.max(0, Math.min(h - 1, sy));
+          const si = (sy * w + x) * 4;
+          const r = data[si], g = data[si+1], b = data[si+2];
+          ctx.fillStyle = `rgb(${r},${g},${b})`;
+          ctx.fillRect(x, y, 1, lw);
+        }
+      }
+    }
+  },
+  {
+    id: 'glitch', name: '故障', description: '数字故障效果，含切片偏移和RGB分离', author: 'PixelForge',
+    dependencies: [],
+    params: {
+      sliceCount: { label: '切片数', type: 'range', min: 2, max: 30, default: 8 },
+      shiftAmount: { label: '偏移量', type: 'range', min: 1, max: 80, default: 20 },
+      rgbShift: { label: 'RGB偏移', type: 'range', min: 0, max: 30, default: 5 },
+      scanlines: { label: '扫描线', type: 'checkbox', default: true }
+    },
+    render(ctx, sourceData, time, params, state) {
+      const w = ctx.canvas.width, h = ctx.canvas.height;
+      if (!sourceData) return;
+      const data = sourceData.data;
+      const output = ctx.createImageData(w, h);
+      const out = output.data;
+      const rgbOff = Math.round(params.rgbShift);
+      const glitchPhase = Math.floor(time * 3);
+      const sliceH = Math.max(4, Math.floor(h / params.sliceCount));
+      for (let y = 0; y < h; y++) {
+        const sliceIdx = Math.floor(y / sliceH);
+        const hash = ((sliceIdx * 7 + glitchPhase * 13) % 17) / 17;
+        const shift = hash > 0.4 ? Math.round((hash - 0.5) * 2 * params.shiftAmount) : 0;
+        for (let x = 0; x < w; x++) {
+          const di = (y * w + x) * 4;
+          let sxR = x - shift - rgbOff;
+          let sxG = x - shift;
+          let sxB = x - shift + rgbOff;
+          sxR = Math.max(0, Math.min(w-1, sxR));
+          sxG = Math.max(0, Math.min(w-1, sxG));
+          sxB = Math.max(0, Math.min(w-1, sxB));
+          out[di]   = data[(y * w + sxR) * 4];
+          out[di+1] = data[(y * w + sxG) * 4 + 1];
+          out[di+2] = data[(y * w + sxB) * 4 + 2];
+          out[di+3] = 255;
+        }
+      }
+      if (params.scanlines) {
+        for (let y = 0; y < h; y += 3) {
+          for (let x = 0; x < w; x++) {
+            const i = (y * w + x) * 4;
+            out[i]   = Math.round(out[i] * 0.7);
+            out[i+1] = Math.round(out[i+1] * 0.7);
+            out[i+2] = Math.round(out[i+2] * 0.7);
+          }
+        }
+      }
+      ctx.putImageData(output, 0, 0);
+    }
+  },
+  {
+    id: 'chromatic', name: '色差', description: 'RGB通道分离偏移效果', author: 'PixelForge',
+    dependencies: [],
+    params: {
+      redOffsetX: { label: '红色偏移X', type: 'range', min: -30, max: 30, default: -5 },
+      greenOffsetX: { label: '绿色偏移X', type: 'range', min: -30, max: 30, default: 0 },
+      blueOffsetX: { label: '蓝色偏移X', type: 'range', min: -30, max: 30, default: 5 },
+      intensity: { label: '强度', type: 'range', min: 0, max: 100, default: 80 }
+    },
+    render(ctx, sourceData, time, params, state) {
+      const w = ctx.canvas.width, h = ctx.canvas.height;
+      if (!sourceData) return;
+      const data = sourceData.data;
+      const output = ctx.createImageData(w, h);
+      const out = output.data;
+      const int = params.intensity / 100;
+      const rOff = Math.round(params.redOffsetX * int);
+      const gOff = Math.round(params.greenOffsetX * int);
+      const bOff = Math.round(params.blueOffsetX * int);
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          const di = (y * w + x) * 4;
+          const sxR = Math.max(0, Math.min(w-1, x + rOff));
+          const sxG = Math.max(0, Math.min(w-1, x + gOff));
+          const sxB = Math.max(0, Math.min(w-1, x + bOff));
+          out[di]   = data[(y * w + sxR) * 4];
+          out[di+1] = data[(y * w + sxG) * 4 + 1];
+          out[di+2] = data[(y * w + sxB) * 4 + 2];
+          out[di+3] = 255;
+        }
+      }
+      ctx.putImageData(output, 0, 0);
+    }
+  }
+];
+
+class PluginConsole {
+  constructor(bus) {
+    this.bus = bus;
+    this.body = document.getElementById('console-body');
+    this.panel = document.getElementById('bottom-panel');
+    this.maxLines = 200;
+    this.lineCount = 0;
+    this._bindEvents();
+    this._subscribe();
+  }
+  _bindEvents() {
+    document.getElementById('bottom-header').addEventListener('click', (e) => {
+      if (e.target.closest('.bottom-tab')) return;
+      this.panel.classList.toggle('collapsed');
+      const toggle = document.getElementById('bottom-toggle');
+      toggle.textContent = this.panel.classList.contains('collapsed') ? '▲' : '▼';
+    });
+    document.querySelectorAll('.bottom-tab').forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.querySelectorAll('.bottom-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        document.querySelectorAll('.bottom-pane').forEach(p => p.classList.remove('active'));
+        document.getElementById(tab.dataset.btab + '-pane').classList.add('active');
+      });
+    });
+    document.getElementById('btn-clear-console').addEventListener('click', () => this.clear());
+  }
+  _subscribe() {
+    this.bus.on('plugin:*', (data, event) => {
+      const type = event.split(':')[1];
+      if (['install','init','activate','deactivate','uninstall'].includes(type)) {
+        this._addLine(type, `插件 ${data.id} → ${type}`, type);
+      }
+    });
+    this.bus.on('plugin:log', (data) => {
+      const msg = data.args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ');
+      this._addLine('log', `[${data.id}] ${msg}`, 'log');
+    });
+    this.bus.on('plugin:error', (data) => {
+      this._addLine('error', `[${data.id}] 错误 (${data.method || ''}): ${data.error}`, 'error');
+    });
+  }
+  _addLine(type, text, tag) {
+    const line = document.createElement('div');
+    line.className = `console-line ${type}`;
+    const now = new Date();
+    const ts = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+    let tagHtml = '';
+    if (['install','init','activate','deactivate','uninstall'].includes(tag)) {
+      tagHtml = `<span class="event-tag ${tag}">${tag.toUpperCase()}</span>`;
+    }
+    line.innerHTML = `<span class="timestamp">${ts}</span>${tagHtml}${this._escapeHtml(text)}`;
+    this.body.appendChild(line);
+    this.lineCount++;
+    while (this.lineCount > this.maxLines) {
+      this.body.removeChild(this.body.firstChild);
+      this.lineCount--;
+    }
+    this.body.scrollTop = this.body.scrollHeight;
+  }
+  _escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  clear() {
+    this.body.innerHTML = '';
+    this.lineCount = 0;
+  }
+}
+
+class ToastManager {
+  constructor() {
+    this.container = document.getElementById('toast-container');
+  }
+  show(message, type='info', duration=3000) {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    this.container.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transition = 'opacity .3s';
+      setTimeout(() => toast.remove(), 300);
+    }, duration);
+  }
+}
+
+class App {
+  constructor() {
+    this.bus = new EventBus();
+    this.pm = new PluginManager(this.bus);
+    this.toast = new ToastManager();
+    this.coreModule = null;
+    this.pluginConsole = null;
+  }
+  init() {
+    this.coreModule = new CoreModule(this.bus, this.pm);
+    coreModule = this.coreModule;
+    this.pluginConsole = new PluginConsole(this.bus);
+    this._registerBuiltinPlugins();
+    this._setupTabs();
+    this._setupEditor();
+    this._setupMiniEditor();
+    this._setupAnimControls();
+    this._setupBusListeners();
+    this.coreModule.init();
+    this._renderPluginBrowser();
+    this._renderPluginsGrid();
+    this._loadTemplate('blank');
+  }
+  _registerBuiltinPlugins() {
+    for (const def of builtinPlugins) {
+      this.pm.register(def);
+    }
+  }
+  _setupTabs() {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const tab = btn.dataset.tab;
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById(tab + '-view').classList.add('active');
+        if (tab === 'plugins') this._renderPluginsGrid();
+      });
+    });
+  }
+  _setupEditor() {
+    const editor = document.getElementById('code-editor');
+    const lineNums = document.getElementById('line-numbers');
+    const templateSelect = document.getElementById('template-select');
+    const idInput = document.getElementById('plugin-id-input');
+    editor.addEventListener('input', () => this._updateLineNumbers());
+    editor.addEventListener('scroll', () => {
+      lineNums.scrollTop = editor.scrollTop;
+    });
+    editor.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const start = editor.selectionStart;
+        const end = editor.selectionEnd;
+        editor.value = editor.value.substring(0, start) + '  ' + editor.value.substring(end);
+        editor.selectionStart = editor.selectionEnd = start + 2;
+        this._updateLineNumbers();
+      }
+    });
+    templateSelect.addEventListener('change', () => {
+      this._loadTemplate(templateSelect.value);
+    });
+    document.getElementById('btn-install-plugin').addEventListener('click', () => {
+      this._installPluginFromEditor();
+    });
+    document.getElementById('btn-validate').addEventListener('click', () => {
+      this._validateCode();
+    });
+  }
+  _setupMiniEditor() {
+    const editor = document.getElementById('mini-code-editor');
+    const lineNums = document.getElementById('mini-line-numbers');
+    const templateSelect = document.getElementById('mini-template-select');
+    editor.addEventListener('input', () => this._updateMiniLineNumbers());
+    editor.addEventListener('scroll', () => { lineNums.scrollTop = editor.scrollTop; });
+    editor.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const start = editor.selectionStart;
+        const end = editor.selectionEnd;
+        editor.value = editor.value.substring(0, start) + '  ' + editor.value.substring(end);
+        editor.selectionStart = editor.selectionEnd = start + 2;
+        this._updateMiniLineNumbers();
+      }
+    });
+    templateSelect.addEventListener('change', () => {
+      this._loadMiniTemplate(templateSelect.value);
+    });
+    document.getElementById('mini-btn-install').addEventListener('click', () => {
+      this._installPluginFromMiniEditor();
+    });
+    this._loadMiniTemplate('blank');
+  }
+  _loadMiniTemplate(name) {
+    const code = TEMPLATES[name] || TEMPLATES.blank;
+    document.getElementById('mini-code-editor').value = code;
+    this._updateMiniLineNumbers();
+    const idMatch = code.match(/id:\s*'([^']+)'/);
+    if (idMatch) document.getElementById('mini-plugin-id').value = idMatch[1];
+  }
+  _updateMiniLineNumbers() {
+    const editor = document.getElementById('mini-code-editor');
+    const lines = editor.value.split('\n').length;
+    const nums = [];
+    for (let i = 1; i <= lines; i++) nums.push(i);
+    document.getElementById('mini-line-numbers').textContent = nums.join('\n');
+  }
+  _installPluginFromMiniEditor() {
+    const code = document.getElementById('mini-code-editor').value.trim();
+    if (!code) { this.toast.show('代码不能为空', 'error'); return; }
+    const existingId = document.getElementById('mini-plugin-id').value.trim();
+    if (existingId && this.pm._plugins.has(existingId)) {
+      this.pm.unregister(existingId);
+    }
+    try {
+      const fn = new Function('PixelForge', code);
+      fn(window.PixelForge);
+      this.toast.show('插件安装成功！', 'success');
+      this._renderPluginBrowser();
+      this._renderPluginsGrid();
+    } catch(e) {
+      this.toast.show('安装失败: ' + e.message, 'error');
+      this.bus.emit('plugin:error', { id: 'editor', error: e.message, method: 'install' });
+    }
+  }
+  _loadTemplate(name) {
+    const code = TEMPLATES[name] || TEMPLATES.blank;
+    document.getElementById('code-editor').value = code;
+    this._updateLineNumbers();
+    const idMatch = code.match(/id:\s*'([^']+)'/);
+    if (idMatch) {
+      document.getElementById('plugin-id-input').value = idMatch[1];
+    }
+  }
+  _updateLineNumbers() {
+    const editor = document.getElementById('code-editor');
+    const lines = editor.value.split('\n').length;
+    const nums = [];
+    for (let i = 1; i <= lines; i++) nums.push(i);
+    document.getElementById('line-numbers').textContent = nums.join('\n');
+  }
+  _installPluginFromEditor() {
+    const code = document.getElementById('code-editor').value.trim();
+    if (!code) {
+      this.toast.show('代码不能为空', 'error');
+      return;
+    }
+    const existingId = document.getElementById('plugin-id-input').value.trim();
+    if (existingId && this.pm._plugins.has(existingId)) {
+      this.pm.unregister(existingId);
+    }
+    try {
+      const fn = new Function('PixelForge', code);
+      fn(window.PixelForge);
+      this.toast.show('插件安装成功！', 'success');
+      this._renderPluginBrowser();
+      this._renderPluginsGrid();
+    } catch(e) {
+      this.toast.show('安装失败: ' + e.message, 'error');
+      this.bus.emit('plugin:error', { id: 'editor', error: e.message, method: 'install' });
+    }
+  }
+  _validateCode() {
+    const code = document.getElementById('code-editor').value.trim();
+    if (!code) { this.toast.show('代码为空', 'error'); return; }
+    try {
+      new Function('PixelForge', code);
+      this.toast.show('语法验证通过', 'success');
+    } catch(e) {
+      this.toast.show('语法错误: ' + e.message, 'error');
+    }
+  }
+  _setupAnimControls() {
+    document.getElementById('btn-play').addEventListener('click', () => {
+      if (this.coreModule.animating) this.coreModule.stopAnimation();
+      else this.coreModule.startAnimation();
+    });
+    document.getElementById('btn-reset').addEventListener('click', () => {
+      this.coreModule.resetAnimation();
+    });
+  }
+  _setupBusListeners() {
+    this.bus.on('plugin:activate', () => {
+      this._renderPluginBrowser();
+      this._renderPluginsGrid();
+      if (!this.coreModule.animating && this.coreModule.sourceData) {
+        this.coreModule.startAnimation();
+      }
+    });
+    this.bus.on('plugin:deactivate', () => {
+      this._renderPluginBrowser();
+      this._renderPluginsGrid();
+      if (this.pm.getActivePlugins().length === 0) {
+        this.coreModule.stopAnimation();
+        if (this.coreModule.sourceImage) {
+          this.coreModule.ctx.drawImage(this.coreModule.sourceImage, 0, 0, this.coreModule.canvas.width, this.coreModule.canvas.height);
+        }
+      }
+    });
+    this.bus.on('plugin:install', () => { this._renderPluginBrowser(); this._renderPluginsGrid(); });
+    this.bus.on('plugin:uninstall', () => { this._renderPluginBrowser(); this._renderPluginsGrid(); });
+    this.bus.on('plugin:param', () => {});
+    this.bus.on('source:loaded', () => {
+      const active = this.pm.getActivePlugins();
+      if (active.length > 0 && !this.coreModule.animating) {
+        this.coreModule.startAnimation();
+      }
+    });
+  }
+  _renderPluginBrowser() {
+    const list = document.getElementById('plugin-list');
+    const plugins = this.pm.listPlugins();
+    if (plugins.length === 0) {
+      list.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div>暂无插件</div>';
+      return;
+    }
+    list.innerHTML = plugins.map(p => {
+      const active = this.pm.isActive(p.id);
+      const deps = p.dependencies.length > 0 ? `<div class="plugin-card-deps">依赖: ${p.dependencies.join(', ')}</div>` : '';
+      return `<div class="plugin-card ${active ? 'active-plugin' : ''}" data-id="${p.id}">
+        <div class="plugin-card-header">
+          <span class="status-dot ${active ? 'active' : ''}"></span>
+          <span class="plugin-card-name">${this._escapeHtml(p.name)}</span>
+        </div>
+        <div class="plugin-card-desc">${this._escapeHtml(p.description)}</div>
+        ${deps}
+      </div>`;
+    }).join('');
+    list.querySelectorAll('.plugin-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const id = card.dataset.id;
+        this.pm.toggle(id);
+      });
+    });
+    this._renderParamPanel();
+  }
+  _renderParamPanel() {
+    const container = document.getElementById('param-list');
+    const activePlugins = this.pm.getActivePlugins();
+    if (activePlugins.length === 0) {
+      container.innerHTML = '<div class="no-params">请激活一个插件</div>';
+      return;
+    }
+    container.innerHTML = activePlugins.map(p => {
+      const vals = this.pm.getParamValues(p.id);
+      const paramsHtml = Object.entries(p.params).map(([key, def]) => {
+        return this._renderParam(p.id, key, def, vals[key]);
+      }).join('');
+      return `<div class="param-group">
+        <div class="param-group-title">${this._escapeHtml(p.name)}</div>
+        ${paramsHtml}
+      </div>`;
+    }).join('');
+    container.querySelectorAll('input[type="range"]').forEach(input => {
+      input.addEventListener('input', (e) => {
+        const pluginId = e.target.dataset.plugin;
+        const key = e.target.dataset.key;
+        const val = parseFloat(e.target.value);
+        this.pm.setParamValue(pluginId, key, val);
+        const valSpan = e.target.parentElement.querySelector('.param-value');
+        if (valSpan) valSpan.textContent = val;
+      });
+    });
+    container.querySelectorAll('input[type="checkbox"]').forEach(input => {
+      input.addEventListener('change', (e) => {
+        const pluginId = e.target.dataset.plugin;
+        const key = e.target.dataset.key;
+        this.pm.setParamValue(pluginId, key, e.target.checked);
+      });
+    });
+    container.querySelectorAll('select').forEach(sel => {
+      sel.addEventListener('change', (e) => {
+        const pluginId = e.target.dataset.plugin;
+        const key = e.target.dataset.key;
+        this.pm.setParamValue(pluginId, key, e.target.value);
+      });
+    });
+  }
+  _renderParam(pluginId, key, def, value) {
+    if (value === undefined) value = def.default !== undefined ? def.default : (def.min || 0);
+    const label = def.label || key;
+    switch(def.type) {
+      case 'range':
+        return `<div class="param-item">
+          <div class="param-label"><span>${this._escapeHtml(label)}</span><span class="param-value">${value}</span></div>
+          <input type="range" min="${def.min}" max="${def.max}" value="${value}" step="${def.step||1}" data-plugin="${pluginId}" data-key="${key}" />
+        </div>`;
+      case 'checkbox':
+        return `<div class="param-item">
+          <div class="param-label"><span>${this._escapeHtml(label)}</span><input type="checkbox" ${value?'checked':''} data-plugin="${pluginId}" data-key="${key}" /></div>
+        </div>`;
+      case 'select':
+        const opts = (def.options||[]).map(o => `<option value="${o}" ${o===value?'selected':''}>${o}</option>`).join('');
+        return `<div class="param-item">
+          <div class="param-label"><span>${this._escapeHtml(label)}</span></div>
+          <select data-plugin="${pluginId}" data-key="${key}">${opts}</select>
+        </div>`;
+      case 'color':
+        return `<div class="param-item">
+          <div class="param-label"><span>${this._escapeHtml(label)}</span></div>
+          <input type="color" value="${value}" data-plugin="${pluginId}" data-key="${key}" />
+        </div>`;
+      default:
+        return '';
+    }
+  }
+  _renderPluginsGrid() {
+    const grid = document.getElementById('plugins-grid');
+    const plugins = this.pm.listPlugins();
+    if (plugins.length === 0) {
+      grid.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div>暂无已注册插件</div>';
+      return;
+    }
+    grid.innerHTML = plugins.map(p => {
+      const active = this.pm.isActive(p.id);
+      const deps = p.dependencies.length > 0 ? `<div class="card-deps">依赖: ${p.dependencies.join(', ')}</div>` : '';
+      const paramCount = Object.keys(p.params).length;
+      return `<div class="plugins-detail-card">
+        <div class="card-top">
+          <span class="status-dot ${active?'active':''}"></span>
+          <div class="card-info">
+            <div class="card-name">${this._escapeHtml(p.name)}</div>
+            <div class="card-author">by ${this._escapeHtml(p.author)} · ${paramCount} 参数</div>
+          </div>
+        </div>
+        <div class="card-desc">${this._escapeHtml(p.description)}</div>
+        <div class="card-actions">
+          <button class="btn sm ${active?'toggle-active':''}" data-action="toggle" data-id="${p.id}">${active?'停用':'激活'}</button>
+          <button class="btn sm" data-action="settings" data-id="${p.id}">设置</button>
+          <button class="btn sm danger" data-action="delete" data-id="${p.id}">删除</button>
+        </div>
+        ${deps}
+      </div>`;
+    }).join('');
+    grid.querySelectorAll('[data-action]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.dataset.id;
+        const action = btn.dataset.action;
+        switch(action) {
+          case 'toggle':
+            this.pm.toggle(id);
+            this._renderPluginsGrid();
+            this._renderPluginBrowser();
+            break;
+          case 'settings':
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('.tab-btn[data-tab="canvas"]').classList.add('active');
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById('canvas-view').classList.add('active');
+            if (!this.pm.isActive(id)) this.pm.activate(id);
+            this._renderPluginBrowser();
+            break;
+          case 'delete':
+            if (confirm('确定删除插件 ' + id + '?')) {
+              this.pm.unregister(id);
+              this.toast.show('插件已删除: ' + id, 'info');
+            }
+            break;
+        }
+      });
+    });
+  }
+  _escapeHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+}
+
+window.PixelForge = {
+  _pendingRegister: null,
+  registerPlugin(def) {
+    const bus = window._pfApp ? window._pfApp.bus : null;
+    const pm = window._pfApp ? window._pfApp.pm : null;
+    if (pm) {
+      const existing = pm.getPlugin(def.id);
+      if (existing) {
+        def._isUpdate = true;
+        pm.unregister(def.id);
+      }
+      pm.register(def);
+      if (window._pfApp) {
+        window._pfApp._renderPluginBrowser();
+        window._pfApp._renderPluginsGrid();
+      }
+    }
+  }
+};
+
+window.addEventListener('DOMContentLoaded', () => {
+  const app = new App();
+  window._pfApp = app;
+  app.init();
+});
+
+})();
+</script>
+</body>
+</html>

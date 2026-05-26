@@ -1,0 +1,1849 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pixel Forge v4 — 交互式调制系统</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0b10;
+  --bg2: #12131a;
+  --bg3: #1a1b24;
+  --bg4: #22232e;
+  --accent: #00ff88;
+  --accent2: #ff3366;
+  --accent3: #44ddff;
+  --mod1: #ff6b6b;
+  --mod2: #4ecdc4;
+  --mod3: #ffe66d;
+  --text: #e0e0e0;
+  --text2: #888;
+  --border: #2a2b36;
+  --font-pixel: 'Press Start 2P', monospace;
+  --font-mono: 'Share Tech Mono', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+#app {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  grid-template-rows: 1fr 260px;
+  height: 100vh;
+  gap: 0;
+}
+
+.left-panel {
+  grid-row: 1 / 3;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--bg4) var(--bg2);
+}
+
+.left-panel::-webkit-scrollbar { width: 4px; }
+.left-panel::-webkit-scrollbar-track { background: var(--bg2); }
+.left-panel::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 2px; }
+
+.center-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  position: relative;
+  overflow: hidden;
+}
+
+.center-area::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(0,255,136,0.03) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 50%, rgba(255,51,102,0.03) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.canvas-wrap {
+  position: relative;
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  box-shadow: 0 0 30px rgba(0,255,136,0.05), inset 0 0 30px rgba(0,0,0,0.3);
+}
+
+.canvas-wrap canvas {
+  display: block;
+  image-rendering: pixelated;
+}
+
+.canvas-label {
+  position: absolute;
+  top: -22px;
+  left: 0;
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  color: var(--accent);
+  letter-spacing: 1px;
+}
+
+.bottom-panel {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  overflow: hidden;
+}
+
+.patch-panel {
+  border-right: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.monitor-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.panel-title {
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  letter-spacing: 1px;
+  padding: 8px 12px;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-title .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.module-section {
+  border-bottom: 1px solid var(--border);
+  padding: 0;
+}
+
+.module-header {
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  padding: 8px 10px;
+  background: var(--bg3);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+  transition: background 0.2s;
+}
+
+.module-header:hover { background: var(--bg4); }
+
+.module-header .indicator {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  transition: background 0.3s;
+}
+
+.module-header .indicator.off { background: var(--text2); }
+
+.module-header .arrow {
+  margin-left: auto;
+  font-size: 8px;
+  transition: transform 0.2s;
+  color: var(--text2);
+}
+
+.module-header .arrow.collapsed { transform: rotate(-90deg); }
+
+.module-body {
+  padding: 6px 10px 10px;
+  overflow: hidden;
+  transition: max-height 0.3s, padding 0.3s;
+}
+
+.module-body.collapsed {
+  max-height: 0 !important;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.param-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  position: relative;
+}
+
+.param-label {
+  font-size: 9px;
+  color: var(--text2);
+  min-width: 70px;
+  white-space: nowrap;
+}
+
+.param-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: var(--bg4);
+  border-radius: 2px;
+  outline: none;
+  position: relative;
+}
+
+.param-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid var(--bg);
+  transition: box-shadow 0.2s;
+}
+
+.param-slider::-moz-range-thumb {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid var(--bg);
+}
+
+.param-slider.modulated {
+  animation: modGlow 1s ease-in-out infinite;
+}
+
+@keyframes modGlow {
+  0%, 100% { box-shadow: 0 0 4px rgba(0,255,136,0.3); }
+  50% { box-shadow: 0 0 12px rgba(0,255,136,0.8); }
+}
+
+.param-value {
+  font-size: 9px;
+  color: var(--accent3);
+  min-width: 36px;
+  text-align: right;
+  font-family: var(--font-mono);
+}
+
+.link-btn {
+  width: 18px; height: 18px;
+  border: 1px solid var(--border);
+  background: var(--bg4);
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  color: var(--text2);
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.link-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.link-btn.active {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+.link-btn.source-selected {
+  background: var(--mod1);
+  color: var(--bg);
+  border-color: var(--mod1);
+  animation: linkPulse 0.8s ease-in-out infinite;
+}
+
+@keyframes linkPulse {
+  0%, 100% { box-shadow: 0 0 4px rgba(255,107,107,0.4); }
+  50% { box-shadow: 0 0 10px rgba(255,107,107,0.9); }
+}
+
+.controls-bar {
+  padding: 8px 10px;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.ctrl-btn {
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  background: var(--bg4);
+  color: var(--text);
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+
+.ctrl-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.ctrl-btn.active {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+.ctrl-btn.danger:hover {
+  border-color: var(--accent2);
+  color: var(--accent2);
+}
+
+.ctrl-btn.playing {
+  background: var(--accent2);
+  color: #fff;
+  border-color: var(--accent2);
+}
+
+.link-mode-indicator {
+  font-family: var(--font-pixel);
+  font-size: 6px;
+  padding: 3px 8px;
+  background: rgba(255,107,107,0.15);
+  border: 1px solid var(--mod1);
+  color: var(--mod1);
+  border-radius: 3px;
+  display: none;
+  animation: linkPulse 1s ease-in-out infinite;
+}
+
+.link-mode-indicator.visible { display: inline-block; }
+
+.patch-content {
+  display: flex;
+  height: calc(100% - 30px);
+  position: relative;
+}
+
+.patch-sources, .patch-targets {
+  width: 140px;
+  overflow-y: auto;
+  padding: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--bg4) var(--bg2);
+}
+
+.patch-sources { border-right: 1px dashed var(--border); }
+.patch-targets { border-left: 1px dashed var(--border); margin-left: auto; }
+
+.patch-svg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.patch-svg path {
+  fill: none;
+  stroke-width: 2;
+  pointer-events: stroke;
+  cursor: pointer;
+}
+
+.patch-svg path:hover {
+  stroke-width: 3;
+  filter: brightness(1.5);
+}
+
+.patch-svg .flow-dot {
+  fill: #fff;
+  r: 3;
+}
+
+.patch-node {
+  font-size: 8px;
+  padding: 3px 6px;
+  margin: 2px 0;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.patch-node .port {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  border: 1px solid var(--text2);
+  flex-shrink: 0;
+}
+
+.patch-sources .patch-node .port { background: var(--mod2); border-color: var(--mod2); }
+.patch-targets .patch-node .port { background: var(--mod3); border-color: var(--mod3); }
+
+.patch-node:hover {
+  border-color: var(--accent);
+  background: var(--bg4);
+}
+
+.patch-node.selected {
+  border-color: var(--mod1);
+  background: rgba(255,107,107,0.1);
+}
+
+.patch-node.modulated {
+  border-color: var(--accent);
+  background: rgba(0,255,136,0.05);
+}
+
+.patch-group-label {
+  font-family: var(--font-pixel);
+  font-size: 6px;
+  color: var(--text2);
+  padding: 4px 6px 2px;
+  letter-spacing: 0.5px;
+}
+
+.monitor-canvas {
+  width: 100%;
+  height: calc(100% - 30px);
+}
+
+.transform-editor {
+  position: absolute;
+  background: var(--bg3);
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  padding: 10px;
+  z-index: 100;
+  min-width: 200px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  display: none;
+}
+
+.transform-editor.visible { display: block; }
+
+.transform-editor h4 {
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.transform-editor label {
+  font-size: 9px;
+  color: var(--text2);
+  display: block;
+  margin-bottom: 2px;
+}
+
+.transform-editor select, .transform-editor input {
+  width: 100%;
+  background: var(--bg4);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 3px 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  border-radius: 2px;
+  margin-bottom: 6px;
+}
+
+.transform-editor select:focus, .transform-editor input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.transform-editor .te-btns {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.status-bar {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-pixel);
+  font-size: 6px;
+  color: var(--text2);
+  background: rgba(10,11,16,0.8);
+  padding: 4px 12px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  z-index: 10;
+  letter-spacing: 0.5px;
+}
+
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10,11,16,0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  color: var(--accent);
+  letter-spacing: 1px;
+}
+
+.loading-overlay .spinner {
+  width: 20px; height: 20px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-right: 10px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.select-wrap {
+  position: relative;
+}
+
+.select-wrap select {
+  width: 100%;
+  background: var(--bg4);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 3px 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  border-radius: 2px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.patch-center-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-pixel);
+  font-size: 6px;
+  color: var(--text2);
+  opacity: 0.3;
+  pointer-events: none;
+  text-align: center;
+  line-height: 1.8;
+}
+
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  padding: 8px 14px;
+  background: var(--bg3);
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  color: var(--accent);
+  z-index: 1000;
+  animation: toastIn 0.3s ease, toastOut 0.3s ease 2s forwards;
+  pointer-events: none;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes toastOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.mod-count {
+  font-family: var(--font-pixel);
+  font-size: 6px;
+  color: var(--mod2);
+  margin-left: auto;
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="left-panel">
+    <div class="controls-bar">
+      <button class="ctrl-btn" id="btnPlay">▶ PLAY</button>
+      <button class="ctrl-btn" id="btnReset">↺ RESET</button>
+      <button class="ctrl-btn" id="btnLinkMode">⬡ LINK</button>
+      <button class="ctrl-btn" id="btnPreset">⚡ PRESET</button>
+      <button class="ctrl-btn danger" id="btnClearMods">✕ CLEAR</button>
+      <span class="link-mode-indicator" id="linkIndicator">LINK MODE</span>
+    </div>
+    <div id="moduleParams"></div>
+  </div>
+
+  <div class="center-area">
+    <div class="canvas-wrap" id="canvasWrap">
+      <span class="canvas-label">PIXEL FORGE v4 // MODULATION</span>
+      <canvas id="mainCanvas" width="400" height="400"></canvas>
+    </div>
+    <div class="status-bar" id="statusBar">READY — LOAD IMAGE TO BEGIN</div>
+    <div class="loading-overlay" id="loadingOverlay" style="display:none;">
+      <div class="spinner"></div>
+      <span>LOADING IMAGE...</span>
+    </div>
+  </div>
+
+  <div class="bottom-panel">
+    <div class="patch-panel">
+      <div class="panel-title">
+        <span class="dot" style="background:var(--mod2)"></span>
+        MODULATION PATCH
+        <span class="mod-count" id="modCount">0 links</span>
+      </div>
+      <div class="patch-content" id="patchContent">
+        <div class="patch-sources" id="patchSources"></div>
+        <div class="patch-center-label">CLICK SOURCE<br>→ CLICK TARGET<br>TO LINK</div>
+        <svg class="patch-svg" id="patchSvg"></svg>
+        <div class="patch-targets" id="patchTargets"></div>
+      </div>
+      <div class="transform-editor" id="transformEditor">
+        <h4>TRANSFORM</h4>
+        <label>Type</label>
+        <select id="teType">
+          <option value="linear">Linear (scale + offset)</option>
+          <option value="sine">Sine</option>
+          <option value="square">Square</option>
+          <option value="smoothstep">Smoothstep</option>
+          <option value="invert">Invert</option>
+        </select>
+        <label>Scale</label>
+        <input type="number" id="teScale" value="1" step="0.1">
+        <label>Offset</label>
+        <input type="number" id="teOffset" value="0" step="0.1">
+        <div class="te-btns">
+          <button class="ctrl-btn" id="teApply">APPLY</button>
+          <button class="ctrl-btn danger" id="teDelete">DELETE</button>
+          <button class="ctrl-btn" id="teCancel">CANCEL</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="monitor-panel">
+      <div class="panel-title">
+        <span class="dot" style="background:var(--accent3)"></span>
+        调制监视器
+      </div>
+      <canvas class="monitor-canvas" id="monitorCanvas"></canvas>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+
+const COLORS = {
+  accent: '#00ff88', accent2: '#ff3366', accent3: '#44ddff',
+  mod1: '#ff6b6b', mod2: '#4ecdc4', mod3: '#ffe66d',
+  bg: '#0a0b10', bg2: '#12131a', bg3: '#1a1b24', bg4: '#22232e',
+  text: '#e0e0e0', text2: '#888', border: '#2a2b36'
+};
+
+const MOD_COLORS = ['#ff6b6b','#4ecdc4','#ffe66d','#ff3366','#44ddff','#00ff88','#c084fc','#fb923c'];
+
+function showToast(msg) {
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); }, 2500);
+}
+
+function updateModCount(count) {
+  const el = document.getElementById('modCount');
+  if (el) el.textContent = count + ' link' + (count !== 1 ? 's' : '');
+}
+
+class EventBus {
+  constructor() { this._listeners = {}; }
+  on(event, fn) {
+    if (!this._listeners[event]) this._listeners[event] = [];
+    this._listeners[event].push(fn);
+    return () => this.off(event, fn);
+  }
+  off(event, fn) {
+    if (!this._listeners[event]) return;
+    this._listeners[event] = this._listeners[event].filter(f => f !== fn);
+  }
+  emit(event, data) {
+    if (!this._listeners[event]) return;
+    this._listeners[event].forEach(fn => { try { fn(data); } catch(e) { console.error(e); } });
+  }
+}
+
+class ModulationEngine {
+  constructor(bus) {
+    this.bus = bus;
+    this.modulations = [];
+    this._idCounter = 0;
+    this._colorIndex = 0;
+  }
+
+  addModulation(sourceModule, sourceParam, targetModule, targetParam, transform) {
+    const id = ++this._idCounter;
+    const color = MOD_COLORS[this._colorIndex++ % MOD_COLORS.length];
+    const mod = {
+      id,
+      source: { module: sourceModule, param: sourceParam },
+      target: { module: targetModule, param: targetParam },
+      transform: transform || { type: 'linear', scale: 1, offset: 0 },
+      color,
+      active: true
+    };
+    this.modulations.push(mod);
+    this.bus.emit('modulation:added', mod);
+    this.bus.emit('modulation:changed', this.getModulationsFor(targetModule, targetParam));
+    updateModCount(this.modulations.length);
+    showToast(`LINKED: ${sourceModule}.${sourceParam} → ${targetModule}.${targetParam}`);
+    return mod;
+  }
+
+  removeModulation(id) {
+    const idx = this.modulations.findIndex(m => m.id === id);
+    if (idx === -1) return;
+    const mod = this.modulations[idx];
+    this.modulations.splice(idx, 1);
+    this.bus.emit('modulation:removed', mod);
+    this.bus.emit('modulation:changed', this.getModulationsFor(mod.target.module, mod.target.param));
+    updateModCount(this.modulations.length);
+  }
+
+  updateModulation(id, transform) {
+    const mod = this.modulations.find(m => m.id === id);
+    if (!mod) return;
+    mod.transform = { ...transform };
+    this.bus.emit('modulation:updated', mod);
+  }
+
+  getModulationsFor(moduleName, paramName) {
+    return this.modulations.filter(m =>
+      m.target.module === moduleName && m.target.param === paramName
+    );
+  }
+
+  getModulationsForModule(moduleName) {
+    return this.modulations.filter(m =>
+      m.source.module === moduleName || m.target.module === moduleName
+    );
+  }
+
+  applyTransform(value, transform) {
+    const { type, scale, offset } = transform;
+    let v = value;
+    switch (type) {
+      case 'linear':
+        v = value * scale + offset;
+        break;
+      case 'sine':
+        v = Math.sin(value * scale) * scale + offset;
+        break;
+      case 'square':
+        v = (Math.sin(value * scale) >= 0 ? 1 : -1) * Math.abs(scale) + offset;
+        break;
+      case 'smoothstep':
+        const t = Math.max(0, Math.min(1, value * scale));
+        v = t * t * (3 - 2 * t) * scale + offset;
+        break;
+      case 'invert':
+        v = -value * scale + offset;
+        break;
+    }
+    return v;
+  }
+
+  apply(modules) {
+    const applied = [];
+    for (const mod of this.modulations) {
+      if (!mod.active) continue;
+      const srcModule = modules[mod.source.module];
+      const tgtModule = modules[mod.target.module];
+      if (!srcModule || !tgtModule) continue;
+      const sourceValue = srcModule.getParam(mod.source.param);
+      if (sourceValue === undefined) continue;
+      const transformedValue = this.applyTransform(sourceValue, mod.transform);
+      tgtModule.setParam(mod.target.param, transformedValue, true);
+      applied.push({
+        id: mod.id,
+        source: mod.source,
+        target: mod.target,
+        sourceValue,
+        transformedValue,
+        transform: mod.transform,
+        color: mod.color
+      });
+    }
+    if (applied.length > 0) {
+      this.bus.emit('modulation:applied', applied);
+    }
+    return applied;
+  }
+}
+
+class CoreModule {
+  constructor(bus) {
+    this.bus = bus;
+    this.canvas = document.getElementById('mainCanvas');
+    this.ctx = this.canvas.getContext('2d', { willReadFrequently: true });
+    this.width = 400;
+    this.height = 400;
+    this.image = null;
+    this.imageData = null;
+    this.playing = false;
+    this.time = 0;
+    this.frameId = null;
+    this.modules = {};
+    this.modulationEngine = null;
+  }
+
+  loadImage(src) {
+    document.getElementById('loadingOverlay').style.display = 'flex';
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      this.canvas.width = this.width;
+      this.canvas.height = this.height;
+      this.ctx.drawImage(img, 0, 0, this.width, this.height);
+      this.image = img;
+      this.imageData = this.ctx.getImageData(0, 0, this.width, this.height);
+      document.getElementById('loadingOverlay').style.display = 'none';
+      this.bus.emit('image:loaded', { width: this.width, height: this.height });
+      this.updateStatus('IMAGE LOADED — READY');
+    };
+    img.onerror = () => {
+      document.getElementById('loadingOverlay').style.display = 'none';
+      this.updateStatus('IMAGE LOAD FAILED — RETRYING...');
+      setTimeout(() => this.loadImage(src), 2000);
+    };
+    img.src = src;
+  }
+
+  updateStatus(msg) {
+    document.getElementById('statusBar').textContent = msg;
+  }
+
+  play() {
+    if (this.playing) return;
+    this.playing = true;
+    document.getElementById('btnPlay').textContent = '■ STOP';
+    document.getElementById('btnPlay').classList.add('playing');
+    this.updateStatus('PLAYING — MODULATION ACTIVE');
+    this.animate();
+  }
+
+  stop() {
+    this.playing = false;
+    if (this.frameId) cancelAnimationFrame(this.frameId);
+    this.frameId = null;
+    document.getElementById('btnPlay').textContent = '▶ PLAY';
+    document.getElementById('btnPlay').classList.remove('playing');
+    this.updateStatus('STOPPED');
+  }
+
+  reset() {
+    this.stop();
+    this.time = 0;
+    if (this.image) {
+      this.ctx.drawImage(this.image, 0, 0, this.width, this.height);
+    }
+    Object.values(this.modules).forEach(m => {
+      if (m.reset) m.reset();
+    });
+    this.bus.emit('core:reset');
+    this.updateStatus('RESET — READY');
+  }
+
+  animate() {
+    if (!this.playing) return;
+    this.time += 1 / 60;
+    if (this.image) {
+      this.ctx.drawImage(this.image, 0, 0, this.width, this.height);
+      this.imageData = this.ctx.getImageData(0, 0, this.width, this.height);
+    }
+    this.modulationEngine.apply(this.modules);
+    const layerOrder = ['pixelate','ionize','wave','glitch','chromatic'];
+    for (const name of layerOrder) {
+      const mod = this.modules[name];
+      if (mod && mod.enabled) {
+        mod.process(this.imageData, this.time);
+      }
+    }
+    if (this.imageData) {
+      this.ctx.putImageData(this.imageData, 0, 0);
+    }
+    this.bus.emit('frame:rendered', { time: this.time });
+    this.frameId = requestAnimationFrame(() => this.animate());
+  }
+}
+
+class PixelateModule {
+  constructor(bus) {
+    this.bus = bus;
+    this.name = 'pixelate';
+    this.enabled = false;
+    this.params = {
+      pixelSize: { value: 8, min: 2, max: 40, step: 1, label: 'Pixel Size' },
+      gridShow: { value: 0, min: 0, max: 1, step: 1, label: 'Grid Show' }
+    };
+  }
+
+  getParam(key) { return this.params[key]?.value; }
+  setParam(key, val, fromMod) {
+    if (this.params[key]) {
+      this.params[key].value = Math.max(this.params[key].min, Math.min(this.params[key].max, val));
+      if (!fromMod) this.bus.emit('param:changed', { module: this.name, param: key, value: this.params[key].value });
+    }
+  }
+  reset() {
+    this.params.pixelSize.value = 8;
+    this.params.gridShow.value = 0;
+  }
+
+  process(imageData, time) {
+    const d = imageData.data;
+    const w = imageData.width;
+    const h = imageData.height;
+    const ps = Math.max(2, Math.round(this.params.pixelSize.value));
+    for (let y = 0; y < h; y += ps) {
+      for (let x = 0; x < w; x += ps) {
+        let r = 0, g = 0, b = 0, count = 0;
+        for (let dy = 0; dy < ps && y + dy < h; dy++) {
+          for (let dx = 0; dx < ps && x + dx < w; dx++) {
+            const i = ((y + dy) * w + (x + dx)) * 4;
+            r += d[i]; g += d[i+1]; b += d[i+2]; count++;
+          }
+        }
+        r = Math.round(r / count); g = Math.round(g / count); b = Math.round(b / count);
+        for (let dy = 0; dy < ps && y + dy < h; dy++) {
+          for (let dx = 0; dx < ps && x + dx < w; dx++) {
+            const i = ((y + dy) * w + (x + dx)) * 4;
+            d[i] = r; d[i+1] = g; d[i+2] = b;
+            if (this.params.gridShow.value > 0 && (dx === 0 || dy === 0)) {
+              d[i] = Math.min(255, r + 30); d[i+1] = Math.min(255, g + 30); d[i+2] = Math.min(255, b + 30);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+class IonizeModule {
+  constructor(bus) {
+    this.bus = bus;
+    this.name = 'ionize';
+    this.enabled = false;
+    this.params = {
+      pixelSize: { value: 4, min: 1, max: 20, step: 1, label: 'Pixel Size' },
+      speed: { value: 2, min: 0.1, max: 10, step: 0.1, label: 'Speed' },
+      spread: { value: 3, min: 0, max: 20, step: 0.5, label: 'Spread' },
+      gravity: { value: 0, min: -5, max: 5, step: 0.1, label: 'Gravity' },
+      fade: { value: 0.8, min: 0, max: 1, step: 0.05, label: 'Fade' }
+    };
+    this._particles = [];
+  }
+
+  getParam(key) { return this.params[key]?.value; }
+  setParam(key, val, fromMod) {
+    if (this.params[key]) {
+      this.params[key].value = Math.max(this.params[key].min, Math.min(this.params[key].max, val));
+      if (!fromMod) this.bus.emit('param:changed', { module: this.name, param: key, value: this.params[key].value });
+    }
+  }
+  reset() {
+    this.params.pixelSize.value = 4; this.params.speed.value = 2;
+    this.params.spread.value = 3; this.params.gravity.value = 0; this.params.fade.value = 0.8;
+    this._particles = [];
+  }
+
+  process(imageData, time) {
+    const d = imageData.data;
+    const w = imageData.width;
+    const h = imageData.height;
+    const ps = Math.max(1, Math.round(this.params.pixelSize.value));
+    const spd = this.params.speed.value;
+    const spread = this.params.spread.value;
+    const grav = this.params.gravity.value;
+    const fade = this.params.fade.value;
+
+    if (Math.random() < 0.3) {
+      const sx = Math.floor(Math.random() * w);
+      const sy = Math.floor(Math.random() * h);
+      const i = (sy * w + sx) * 4;
+      this._particles.push({
+        x: sx, y: sy, vx: (Math.random() - 0.5) * spread, vy: (Math.random() - 0.5) * spread - spd,
+        r: d[i], g: d[i+1], b: d[i+2], life: 1
+      });
+    }
+
+    const newP = [];
+    for (const p of this._particles) {
+      p.vy += grav * 0.01;
+      p.x += p.vx * spd * 0.5;
+      p.y += p.vy * spd * 0.5;
+      p.life -= (1 - fade) * 0.02;
+      if (p.life > 0 && p.x >= 0 && p.x < w && p.y >= 0 && p.y < h) {
+        const px = Math.floor(p.x);
+        const py = Math.floor(p.y);
+        const i = (py * w + px) * 4;
+        d[i] = Math.min(255, d[i] + p.r * p.life * 0.5);
+        d[i+1] = Math.min(255, d[i+1] + p.g * p.life * 0.5);
+        d[i+2] = Math.min(255, d[i+2] + p.b * p.life * 0.5);
+        newP.push(p);
+      }
+    }
+    this._particles = newP.slice(-500);
+  }
+}
+
+class WaveModule {
+  constructor(bus) {
+    this.bus = bus;
+    this.name = 'wave';
+    this.enabled = false;
+    this.params = {
+      amplitude: { value: 10, min: 0, max: 50, step: 1, label: 'Amplitude' },
+      frequency: { value: 0.05, min: 0.01, max: 0.2, step: 0.005, label: 'Frequency' },
+      speed: { value: 2, min: 0, max: 10, step: 0.1, label: 'Speed' },
+      waveType: { value: 0, min: 0, max: 2, step: 1, label: 'Wave Type' },
+      lineWidth: { value: 2, min: 1, max: 10, step: 1, label: 'Line Width' },
+      gap: { value: 4, min: 1, max: 20, step: 1, label: 'Gap' }
+    };
+  }
+
+  getParam(key) { return this.params[key]?.value; }
+  setParam(key, val, fromMod) {
+    if (this.params[key]) {
+      this.params[key].value = Math.max(this.params[key].min, Math.min(this.params[key].max, val));
+      if (!fromMod) this.bus.emit('param:changed', { module: this.name, param: key, value: this.params[key].value });
+    }
+  }
+  reset() {
+    this.params.amplitude.value = 10; this.params.frequency.value = 0.05;
+    this.params.speed.value = 2; this.params.waveType.value = 0;
+    this.params.lineWidth.value = 2; this.params.gap.value = 4;
+  }
+
+  process(imageData, time) {
+    const d = imageData.data;
+    const w = imageData.width;
+    const h = imageData.height;
+    const amp = this.params.amplitude.value;
+    const freq = this.params.frequency.value;
+    const spd = this.params.speed.value;
+    const wt = Math.round(this.params.waveType.value);
+    const lw = Math.max(1, Math.round(this.params.lineWidth.value));
+    const gap = Math.max(1, Math.round(this.params.gap.value));
+    const orig = new Uint8ClampedArray(d);
+
+    for (let y = 0; y < h; y++) {
+      if (y % gap !== 0) continue;
+      for (let x = 0; x < w; x++) {
+        let offset = 0;
+        const phase = x * freq + time * spd;
+        switch (wt) {
+          case 0: offset = Math.sin(phase) * amp; break;
+          case 1: offset = (Math.sin(phase) >= 0 ? 1 : -1) * amp; break;
+          case 2: offset = (2 * Math.abs(2 * (phase / (2*Math.PI) - Math.floor(phase / (2*Math.PI) + 0.5))) - 1) * amp; break;
+        }
+        const srcY = Math.round(y + offset);
+        for (let dy = 0; dy < lw && y + dy < h; dy++) {
+          const sy = Math.min(h - 1, Math.max(0, srcY + dy));
+          const di = ((y + dy) * w + x) * 4;
+          const si = (sy * w + x) * 4;
+          d[di] = orig[si]; d[di+1] = orig[si+1]; d[di+2] = orig[si+2];
+        }
+      }
+    }
+  }
+}
+
+class GlitchModule {
+  constructor(bus) {
+    this.bus = bus;
+    this.name = 'glitch';
+    this.enabled = false;
+    this.params = {
+      sliceCount: { value: 5, min: 1, max: 20, step: 1, label: 'Slice Count' },
+      shiftAmount: { value: 20, min: 0, max: 100, step: 1, label: 'Shift Amount' },
+      rgbShift: { value: 5, min: 0, max: 30, step: 1, label: 'RGB Shift' },
+      scanlines: { value: 0, min: 0, max: 1, step: 1, label: 'Scanlines' }
+    };
+  }
+
+  getParam(key) { return this.params[key]?.value; }
+  setParam(key, val, fromMod) {
+    if (this.params[key]) {
+      this.params[key].value = Math.max(this.params[key].min, Math.min(this.params[key].max, val));
+      if (!fromMod) this.bus.emit('param:changed', { module: this.name, param: key, value: this.params[key].value });
+    }
+  }
+  reset() {
+    this.params.sliceCount.value = 5; this.params.shiftAmount.value = 20;
+    this.params.rgbShift.value = 5; this.params.scanlines.value = 0;
+  }
+
+  process(imageData, time) {
+    const d = imageData.data;
+    const w = imageData.width;
+    const h = imageData.height;
+    const slices = Math.round(this.params.sliceCount.value);
+    const shift = this.params.shiftAmount.value;
+    const rgb = Math.round(this.params.rgbShift.value);
+    const orig = new Uint8ClampedArray(d);
+
+    if (Math.random() < 0.15) {
+      for (let s = 0; s < slices; s++) {
+        const y0 = Math.floor(Math.random() * h);
+        const sliceH = Math.floor(Math.random() * 20) + 2;
+        const dx = Math.floor((Math.random() - 0.5) * shift * 2);
+        for (let y = y0; y < Math.min(h, y0 + sliceH); y++) {
+          for (let x = 0; x < w; x++) {
+            const sx = Math.min(w - 1, Math.max(0, x + dx));
+            const di = (y * w + x) * 4;
+            const si = (y * w + sx) * 4;
+            d[di] = orig[si]; d[di+1] = orig[si+1]; d[di+2] = orig[si+2];
+          }
+        }
+      }
+    }
+
+    if (rgb > 0) {
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          const i = (y * w + x) * 4;
+          const rx = Math.min(w - 1, Math.max(0, x + rgb));
+          const ri = (y * w + rx) * 4;
+          d[i] = orig[ri];
+        }
+      }
+    }
+
+    if (this.params.scanlines.value > 0) {
+      for (let y = 0; y < h; y += 2) {
+        for (let x = 0; x < w; x++) {
+          const i = (y * w + x) * 4;
+          d[i] = d[i] * 0.7; d[i+1] = d[i+1] * 0.7; d[i+2] = d[i+2] * 0.7;
+        }
+      }
+    }
+  }
+}
+
+class ChromaticModule {
+  constructor(bus) {
+    this.bus = bus;
+    this.name = 'chromatic';
+    this.enabled = false;
+    this.params = {
+      redOffsetX: { value: 3, min: -20, max: 20, step: 1, label: 'Red Offset X' },
+      greenOffsetX: { value: 0, min: -20, max: 20, step: 1, label: 'Green Offset X' },
+      blueOffsetX: { value: -3, min: -20, max: 20, step: 1, label: 'Blue Offset X' },
+      intensity: { value: 1, min: 0, max: 2, step: 0.05, label: 'Intensity' }
+    };
+  }
+
+  getParam(key) { return this.params[key]?.value; }
+  setParam(key, val, fromMod) {
+    if (this.params[key]) {
+      this.params[key].value = Math.max(this.params[key].min, Math.min(this.params[key].max, val));
+      if (!fromMod) this.bus.emit('param:changed', { module: this.name, param: key, value: this.params[key].value });
+    }
+  }
+  reset() {
+    this.params.redOffsetX.value = 3; this.params.greenOffsetX.value = 0;
+    this.params.blueOffsetX.value = -3; this.params.intensity.value = 1;
+  }
+
+  process(imageData, time) {
+    const d = imageData.data;
+    const w = imageData.width;
+    const h = imageData.height;
+    const rOff = Math.round(this.params.redOffsetX.value);
+    const gOff = Math.round(this.params.greenOffsetX.value);
+    const bOff = Math.round(this.params.blueOffsetX.value);
+    const inten = this.params.intensity.value;
+    const orig = new Uint8ClampedArray(d);
+
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const i = (y * w + x) * 4;
+        const rx = Math.min(w - 1, Math.max(0, x + rOff));
+        const gx = Math.min(w - 1, Math.max(0, x + gOff));
+        const bx = Math.min(w - 1, Math.max(0, x + bOff));
+        const ri = (y * w + rx) * 4;
+        const gi = (y * w + gx) * 4;
+        const bi = (y * w + bx) * 4;
+        d[i]   = Math.round(orig[ri] * inten);
+        d[i+1] = Math.round(orig[gi+1] * inten);
+        d[i+2] = Math.round(orig[bi+2] * inten);
+      }
+    }
+  }
+}
+
+class UIModule {
+  constructor(bus, core, modulationEngine) {
+    this.bus = bus;
+    this.core = core;
+    this.modEngine = modulationEngine;
+    this.linkMode = false;
+    this.linkSource = null;
+    this.container = document.getElementById('moduleParams');
+    this._sliderUpdaters = {};
+    this._buildUI();
+    this._bindControls();
+  }
+
+  _buildUI() {
+    const modules = [
+      { name: 'pixelate', label: 'PIXELATE', color: COLORS.accent, module: this.core.modules.pixelate },
+      { name: 'ionize', label: 'IONIZE', color: COLORS.mod1, module: this.core.modules.ionize },
+      { name: 'wave', label: 'WAVE', color: COLORS.accent3, module: this.core.modules.wave },
+      { name: 'glitch', label: 'GLITCH', color: COLORS.accent2, module: this.core.modules.glitch },
+      { name: 'chromatic', label: 'CHROMATIC', color: COLORS.mod2, module: this.core.modules.chromatic }
+    ];
+
+    for (const { name, label, color, module: mod } of modules) {
+      const section = document.createElement('div');
+      section.className = 'module-section';
+      section.dataset.module = name;
+
+      const header = document.createElement('div');
+      header.className = 'module-header';
+      header.innerHTML = `<span class="indicator ${mod.enabled ? '' : 'off'}" style="background:${mod.enabled ? color : ''}"></span>${label}<span class="arrow">▼</span>`;
+      header.addEventListener('click', () => {
+        mod.enabled = !mod.enabled;
+        header.querySelector('.indicator').classList.toggle('off', !mod.enabled);
+        header.querySelector('.indicator').style.background = mod.enabled ? color : '';
+        this.bus.emit('module:toggled', { name, enabled: mod.enabled });
+      });
+
+      const body = document.createElement('div');
+      body.className = 'module-body';
+
+      for (const [paramKey, param] of Object.entries(mod.params)) {
+        const row = document.createElement('div');
+        row.className = 'param-row';
+
+        const lbl = document.createElement('span');
+        lbl.className = 'param-label';
+        lbl.textContent = param.label;
+
+        const slider = document.createElement('input');
+        slider.type = 'range';
+        slider.className = 'param-slider';
+        slider.min = param.min;
+        slider.max = param.max;
+        slider.step = param.step;
+        slider.value = param.value;
+        slider.dataset.module = name;
+        slider.dataset.param = paramKey;
+
+        const val = document.createElement('span');
+        val.className = 'param-value';
+        val.textContent = this._formatVal(param.value);
+
+        const linkBtn = document.createElement('button');
+        linkBtn.className = 'link-btn';
+        linkBtn.textContent = '⬡';
+        linkBtn.dataset.module = name;
+        linkBtn.dataset.param = paramKey;
+        linkBtn.title = 'Link parameter';
+
+        slider.addEventListener('input', () => {
+          const v = parseFloat(slider.value);
+          mod.setParam(paramKey, v);
+          val.textContent = this._formatVal(v);
+          this.bus.emit('param:changed', { module: name, param: paramKey, value: v });
+        });
+
+        linkBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this._handleLinkClick(name, paramKey, linkBtn);
+        });
+
+        row.append(lbl, slider, val, linkBtn);
+        body.appendChild(row);
+      }
+
+      section.append(header, body);
+      this.container.appendChild(section);
+    }
+
+    this.bus.on('modulation:changed', (mods) => {
+      this._updateSliderStates();
+    });
+
+    this.bus.on('modulation:applied', (applied) => {
+      for (const a of applied) {
+        this._updateSliderValue(a.target.module, a.target.param, a.transformedValue);
+      }
+    });
+
+    this.bus.on('core:reset', () => {
+      this._resetAllUI();
+    });
+  }
+
+  _formatVal(v) {
+    if (Number.isInteger(v)) return v.toString();
+    return v.toFixed(2);
+  }
+
+  _updateSliderValue(moduleName, paramName, value) {
+    const slider = this.container.querySelector(`.param-slider[data-module="${moduleName}"][data-param="${paramName}"]`);
+    const valSpan = slider?.parentElement?.querySelector('.param-value');
+    if (slider) {
+      slider.value = value;
+    }
+    if (valSpan) {
+      valSpan.textContent = this._formatVal(value);
+    }
+  }
+
+  _updateSliderStates() {
+    const sliders = this.container.querySelectorAll('.param-slider');
+    sliders.forEach(s => {
+      const mods = this.modEngine.getModulationsFor(s.dataset.module, s.dataset.param);
+      s.classList.toggle('modulated', mods.length > 0);
+    });
+    const linkBtns = this.container.querySelectorAll('.link-btn');
+    linkBtns.forEach(b => {
+      const mods = this.modEngine.getModulationsFor(b.dataset.module, b.dataset.param);
+      b.classList.toggle('active', mods.length > 0);
+    });
+  }
+
+  _handleLinkClick(moduleName, paramKey, btn) {
+    if (!this.linkMode) return;
+    if (!this.linkSource) {
+      this.linkSource = { module: moduleName, param: paramKey };
+      btn.classList.add('source-selected');
+      document.querySelectorAll('.link-btn').forEach(b => {
+        if (b !== btn && b.dataset.module !== moduleName) {
+          b.style.opacity = '0.5';
+        }
+      });
+    } else {
+      if (this.linkSource.module === moduleName && this.linkSource.param === paramKey) {
+        this._clearLinkSelection();
+        return;
+      }
+      const mod = this.modEngine.addModulation(
+        this.linkSource.module, this.linkSource.param,
+        moduleName, paramKey,
+        { type: 'linear', scale: 1, offset: 0 }
+      );
+      this._clearLinkSelection();
+      this.bus.emit('modulation:created', mod);
+    }
+  }
+
+  _clearLinkSelection() {
+    this.linkSource = null;
+    document.querySelectorAll('.link-btn').forEach(b => {
+      b.classList.remove('source-selected');
+      b.style.opacity = '';
+    });
+  }
+
+  _bindControls() {
+    document.getElementById('btnPlay').addEventListener('click', () => {
+      if (this.core.playing) this.core.stop();
+      else this.core.play();
+    });
+    document.getElementById('btnReset').addEventListener('click', () => {
+      this.core.reset();
+    });
+    document.getElementById('btnLinkMode').addEventListener('click', () => {
+      this.linkMode = !this.linkMode;
+      document.getElementById('btnLinkMode').classList.toggle('active', this.linkMode);
+      document.getElementById('linkIndicator').classList.toggle('visible', this.linkMode);
+      if (!this.linkMode) this._clearLinkSelection();
+    });
+
+    document.getElementById('btnPreset').addEventListener('click', () => {
+      this._loadPreset();
+    });
+
+    document.getElementById('btnClearMods').addEventListener('click', () => {
+      const ids = this.modEngine.modulations.map(m => m.id);
+      ids.forEach(id => this.modEngine.removeModulation(id));
+    });
+  }
+
+  _loadPreset() {
+    const ids = this.modEngine.modulations.map(m => m.id);
+    ids.forEach(id => this.modEngine.removeModulation(id));
+
+    this.core.modules.wave.enabled = true;
+    this.core.modules.chromatic.enabled = true;
+    this.core.modules.ionize.enabled = true;
+
+    this.modEngine.addModulation('wave', 'amplitude', 'ionize', 'speed', { type: 'linear', scale: 0.5, offset: 0 });
+    this.modEngine.addModulation('wave', 'frequency', 'chromatic', 'intensity', { type: 'sine', scale: 1, offset: 1 });
+    this.modEngine.addModulation('ionize', 'spread', 'glitch', 'shiftAmount', { type: 'linear', scale: 3, offset: 0 });
+
+    this.core.modules.glitch.enabled = true;
+
+    this._updateAllModuleHeaders();
+    this._resetAllUI();
+    showToast('PRESET LOADED: WAVE→IONIZE→GLITCH→CHROMATIC');
+  }
+
+  _updateAllModuleHeaders() {
+    const modules = [
+      { name: 'pixelate', color: COLORS.accent, module: this.core.modules.pixelate },
+      { name: 'ionize', color: COLORS.mod1, module: this.core.modules.ionize },
+      { name: 'wave', color: COLORS.accent3, module: this.core.modules.wave },
+      { name: 'glitch', color: COLORS.accent2, module: this.core.modules.glitch },
+      { name: 'chromatic', color: COLORS.mod2, module: this.core.modules.chromatic }
+    ];
+    for (const { name, color, module: mod } of modules) {
+      const section = this.container.querySelector(`.module-section[data-module="${name}"]`);
+      if (!section) continue;
+      const indicator = section.querySelector('.indicator');
+      if (indicator) {
+        indicator.classList.toggle('off', !mod.enabled);
+        indicator.style.background = mod.enabled ? color : '';
+      }
+    }
+  }
+
+  _resetAllUI() {
+    const modules = this.core.modules;
+    for (const [name, mod] of Object.entries(modules)) {
+      if (!mod.params) continue;
+      for (const [key, param] of Object.entries(mod.params)) {
+        const slider = this.container.querySelector(`.param-slider[data-module="${name}"][data-param="${key}"]`);
+        const valSpan = slider?.parentElement?.querySelector('.param-value');
+        if (slider) slider.value = param.value;
+        if (valSpan) valSpan.textContent = this._formatVal(param.value);
+      }
+    }
+  }
+}
+
+class ModulationEditor {
+  constructor(bus, core, modulationEngine) {
+    this.bus = bus;
+    this.core = core;
+    this.modEngine = modulationEngine;
+    this.sourcesEl = document.getElementById('patchSources');
+    this.targetsEl = document.getElementById('patchTargets');
+    this.svgEl = document.getElementById('patchSvg');
+    this.editorEl = document.getElementById('transformEditor');
+    this.editingModId = null;
+    this._buildNodes();
+    this._bindEvents();
+  }
+
+  _buildNodes() {
+    this.sourcesEl.innerHTML = '';
+    this.targetsEl.innerHTML = '';
+    const modules = this.core.modules;
+    for (const [name, mod] of Object.entries(modules)) {
+      if (!mod.params) continue;
+      const srcGroup = document.createElement('div');
+      srcGroup.className = 'patch-group-label';
+      srcGroup.textContent = name.toUpperCase();
+      this.sourcesEl.appendChild(srcGroup);
+
+      const tgtGroup = document.createElement('div');
+      tgtGroup.className = 'patch-group-label';
+      tgtGroup.textContent = name.toUpperCase();
+      this.targetsEl.appendChild(tgtGroup);
+
+      for (const key of Object.keys(mod.params)) {
+        const srcNode = document.createElement('div');
+        srcNode.className = 'patch-node';
+        srcNode.dataset.module = name;
+        srcNode.dataset.param = key;
+        srcNode.dataset.side = 'source';
+        srcNode.innerHTML = `<span class="port"></span>${key}`;
+        this.sourcesEl.appendChild(srcNode);
+
+        const tgtNode = document.createElement('div');
+        tgtNode.className = 'patch-node';
+        tgtNode.dataset.module = name;
+        tgtNode.dataset.param = key;
+        tgtNode.dataset.side = 'target';
+        tgtNode.innerHTML = `${key}<span class="port"></span>`;
+        this.targetsEl.appendChild(tgtNode);
+      }
+    }
+  }
+
+  _bindEvents() {
+    this.bus.on('modulation:added', () => { setTimeout(() => this._drawConnections(), 30); });
+    this.bus.on('modulation:removed', () => { setTimeout(() => this._drawConnections(), 30); });
+    this.bus.on('modulation:updated', () => { setTimeout(() => this._drawConnections(), 30); });
+    this.bus.on('frame:rendered', () => this._animateFlow());
+
+    this.sourcesEl.addEventListener('click', (e) => {
+      const node = e.target.closest('.patch-node');
+      if (!node) return;
+      this._startLink(node.dataset.module, node.dataset.param, 'source');
+    });
+
+    this.targetsEl.addEventListener('click', (e) => {
+      const node = e.target.closest('.patch-node');
+      if (!node) return;
+      this._startLink(node.dataset.module, node.dataset.param, 'target');
+    });
+
+    document.getElementById('teApply').addEventListener('click', () => {
+      if (this.editingModId == null) return;
+      this.modEngine.updateModulation(this.editingModId, {
+        type: document.getElementById('teType').value,
+        scale: parseFloat(document.getElementById('teScale').value) || 1,
+        offset: parseFloat(document.getElementById('teOffset').value) || 0
+      });
+      this.editorEl.classList.remove('visible');
+      this.editingModId = null;
+    });
+
+    document.getElementById('teDelete').addEventListener('click', () => {
+      if (this.editingModId != null) {
+        this.modEngine.removeModulation(this.editingModId);
+      }
+      this.editorEl.classList.remove('visible');
+      this.editingModId = null;
+    });
+
+    document.getElementById('teCancel').addEventListener('click', () => {
+      this.editorEl.classList.remove('visible');
+      this.editingModId = null;
+    });
+
+    this.bus.on('modulation:changed', () => this._updateNodeStates());
+  }
+
+  _linkSource = null;
+
+  _startLink(module, param, side) {
+    if (!this._linkSource) {
+      this._linkSource = { module, param, side };
+      this._highlightNode(module, param, side, true);
+    } else {
+      let src, tgt;
+      if (this._linkSource.side === 'source') {
+        src = this._linkSource;
+        tgt = { module, param };
+      } else {
+        src = { module, param };
+        tgt = { module: this._linkSource.module, param: this._linkSource.param };
+      }
+      if (src.module === tgt.module && src.param === tgt.param) {
+        this._clearHighlight();
+        this._linkSource = null;
+        return;
+      }
+      this.modEngine.addModulation(src.module, src.param, tgt.module, tgt.param, { type: 'linear', scale: 1, offset: 0 });
+      this._clearHighlight();
+      this._linkSource = null;
+    }
+  }
+
+  _highlightNode(module, param, side, on) {
+    const container = side === 'source' ? this.sourcesEl : this.targetsEl;
+    const node = container.querySelector(`.patch-node[data-module="${module}"][data-param="${param}"]`);
+    if (node) node.classList.toggle('selected', on);
+  }
+
+  _clearHighlight() {
+    this.sourcesEl.querySelectorAll('.patch-node.selected').forEach(n => n.classList.remove('selected'));
+    this.targetsEl.querySelectorAll('.patch-node.selected').forEach(n => n.classList.remove('selected'));
+  }
+
+  _updateNodeStates() {
+    this.sourcesEl.querySelectorAll('.patch-node').forEach(n => n.classList.remove('modulated'));
+    this.targetsEl.querySelectorAll('.patch-node').forEach(n => n.classList.remove('modulated'));
+    for (const mod of this.modEngine.modulations) {
+      const srcNode = this.sourcesEl.querySelector(`.patch-node[data-module="${mod.source.module}"][data-param="${mod.source.param}"]`);
+      const tgtNode = this.targetsEl.querySelector(`.patch-node[data-module="${mod.target.module}"][data-param="${mod.target.param}"]`);
+      if (srcNode) srcNode.classList.add('modulated');
+      if (tgtNode) tgtNode.classList.add('modulated');
+    }
+  }
+
+  _drawConnections() {
+    while (this.svgEl.firstChild) this.svgEl.removeChild(this.svgEl.firstChild);
+    const svgRect = this.svgEl.getBoundingClientRect();
+    const patchRect = document.getElementById('patchContent').getBoundingClientRect();
+
+    for (const mod of this.modEngine.modulations) {
+      const srcNode = this.sourcesEl.querySelector(`.patch-node[data-module="${mod.source.module}"][data-param="${mod.source.param}"]`);
+      const tgtNode = this.targetsEl.querySelector(`.patch-node[data-module="${mod.target.module}"][data-param="${mod.target.param}"]`);
+      if (!srcNode || !tgtNode) continue;
+
+      const srcRect = srcNode.getBoundingClientRect();
+      const tgtRect = tgtNode.getBoundingClientRect();
+
+      const x1 = srcRect.right - patchRect.left;
+      const y1 = srcRect.top + srcRect.height / 2 - patchRect.top;
+      const x2 = tgtRect.left - patchRect.left;
+      const y2 = tgtRect.top + tgtRect.height / 2 - patchRect.top;
+
+      const midX = (x1 + x2) / 2;
+
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', `M${x1},${y1} C${midX},${y1} ${midX},${y2} ${x2},${y2}`);
+      path.setAttribute('stroke', mod.color);
+      path.setAttribute('data-mod-id', mod.id);
+      path.style.pointerEvents = 'stroke';
+      path.style.cursor = 'pointer';
+
+      path.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this._openTransformEditor(mod, path);
+      });
+
+      this.svgEl.appendChild(path);
+
+      const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      label.setAttribute('x', midX);
+      label.setAttribute('y', (y1 + y2) / 2 - 6);
+      label.setAttribute('text-anchor', 'middle');
+      label.setAttribute('fill', mod.color);
+      label.setAttribute('font-size', '8');
+      label.setAttribute('font-family', 'Share Tech Mono, monospace');
+      label.textContent = mod.transform.type;
+      label.style.pointerEvents = 'none';
+      this.svgEl.appendChild(label);
+    }
+
+    this._updateNodeStates();
+  }
+
+  _openTransformEditor(mod, pathEl) {
+    this.editingModId = mod.id;
+    document.getElementById('teType').value = mod.transform.type;
+    document.getElementById('teScale').value = mod.transform.scale;
+    document.getElementById('teOffset').value = mod.transform.offset;
+
+    const pathRect = pathEl.getBoundingClientRect();
+    const patchRect = document.getElementById('patchContent').getBoundingClientRect();
+    this.editorEl.style.left = (pathRect.left - patchRect.left + pathRect.width / 2 - 100) + 'px';
+    this.editorEl.style.top = (pathRect.top - patchRect.top - 140) + 'px';
+    this.editorEl.classList.add('visible');
+  }
+
+  _flowOffset = 0;
+  _animateFlow() {
+    this._flowOffset = (this._flowOffset + 0.5) % 20;
+    const dots = this.svgEl.querySelectorAll('.flow-dot');
+    dots.forEach(d => d.remove());
+
+    for (const mod of this.modEngine.modulations) {
+      const pathEl = this.svgEl.querySelector(`path[data-mod-id="${mod.id}"]`);
+      if (!pathEl) continue;
+      try {
+        const len = pathEl.getTotalLength();
+        for (let i = 0; i < 3; i++) {
+          const pos = ((this._flowOffset + i * 7) % len);
+          const pt = pathEl.getPointAtLength(pos);
+          const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          dot.setAttribute('cx', pt.x);
+          dot.setAttribute('cy', pt.y);
+          dot.setAttribute('r', '2');
+          dot.setAttribute('fill', mod.color);
+          dot.setAttribute('opacity', '0.8');
+          dot.classList.add('flow-dot');
+          dot.style.pointerEvents = 'none';
+          this.svgEl.appendChild(dot);
+        }
+      } catch(e) {}
+    }
+  }
+}
+
+class ModulationMonitor {
+  constructor(bus, modulationEngine) {
+    this.bus = bus;
+    this.modEngine = modulationEngine;
+    this.canvas = document.getElementById('monitorCanvas');
+    this.ctx = this.canvas.getContext('2d');
+    this.history = {};
+    this.maxHistory = 200;
+    this._resize();
+    window.addEventListener('resize', () => this._resize());
+    this.bus.on('modulation:applied', (applied) => {
+      for (const a of applied) {
+        const key = `${a.source.module}.${a.source.param}→${a.target.module}.${a.target.param}`;
+        if (!this.history[key]) {
+          this.history[key] = { color: a.color, sourceVal: [], targetVal: [], label: key };
+        }
+        this.history[key].sourceVal.push(a.sourceValue);
+        this.history[key].targetVal.push(a.transformedValue);
+        if (this.history[key].sourceVal.length > this.maxHistory) {
+          this.history[key].sourceVal.shift();
+          this.history[key].targetVal.shift();
+        }
+      }
+    });
+    this.bus.on('modulation:removed', (mod) => {
+      const key = `${mod.source.module}.${mod.source.param}→${mod.target.module}.${mod.target.param}`;
+      delete this.history[key];
+    });
+    this.bus.on('frame:rendered', () => this._draw());
+  }
+
+  _resize() {
+    const parent = this.canvas.parentElement;
+    this.canvas.width = parent.clientWidth;
+    this.canvas.height = parent.clientHeight - 30;
+  }
+
+  _draw() {
+    const ctx = this.ctx;
+    const w = this.canvas.width;
+    const h = this.canvas.height;
+    if (w <= 0 || h <= 0) return;
+
+    ctx.fillStyle = '#0a0b10';
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+    ctx.lineWidth = 1;
+    for (let y = 0; y < h; y += 20) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+    }
+    for (let x = 0; x < w; x += 20) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+    }
+
+    const entries = Object.entries(this.history);
+    if (entries.length === 0) {
+      ctx.fillStyle = '#555';
+      ctx.font = '10px "Share Tech Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('NO MODULATIONS — LINK PARAMS TO SEE OSCILLOSCOPE', w / 2, h / 2);
+      return;
+    }
+
+    const rowH = Math.min(60, h / entries.length);
+    entries.forEach(([key, data], idx) => {
+      const y0 = idx * rowH;
+      const midY = y0 + rowH / 2;
+
+      ctx.fillStyle = data.color;
+      ctx.globalAlpha = 0.3;
+      ctx.font = '7px "Press Start 2P", monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText(data.label.substring(0, 25), 4, y0 + 10);
+      ctx.globalAlpha = 1;
+
+      const vals = data.targetVal;
+      if (vals.length < 2) return;
+
+      let minV = Infinity, maxV = -Infinity;
+      for (const v of vals) { minV = Math.min(minV, v); maxV = Math.max(maxV, v); }
+      const range = maxV - minV || 1;
+
+      ctx.beginPath();
+      ctx.strokeStyle = data.color;
+      ctx.lineWidth = 1.5;
+      for (let i = 0; i < vals.length; i++) {
+        const x = (i / this.maxHistory) * w;
+        const y = midY + rowH / 2 - 4 - ((vals[i] - minV) / range) * (rowH - 16);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      ctx.strokeStyle = data.color;
+      ctx.globalAlpha = 0.2;
+      ctx.lineWidth = 1;
+      const srcVals = data.sourceVal;
+      let smin = Infinity, smax = -Infinity;
+      for (const v of srcVals) { smin = Math.min(smin, v); smax = Math.max(smax, v); }
+      const srange = smax - smin || 1;
+      ctx.beginPath();
+      for (let i = 0; i < srcVals.length; i++) {
+        const x = (i / this.maxHistory) * w;
+        const y = midY + rowH / 2 - 4 - ((srcVals[i] - smin) / srange) * (rowH - 16);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    });
+  }
+}
+
+function init() {
+  const bus = new EventBus();
+  const core = new CoreModule(bus);
+  const modEngine = new ModulationEngine(bus);
+  core.modulationEngine = modEngine;
+
+  core.modules = {
+    pixelate: new PixelateModule(bus),
+    ionize: new IonizeModule(bus),
+    wave: new WaveModule(bus),
+    glitch: new GlitchModule(bus),
+    chromatic: new ChromaticModule(bus)
+  };
+
+  const ui = new UIModule(bus, core, modEngine);
+  const editor = new ModulationEditor(bus, core, modEngine);
+  const monitor = new ModulationMonitor(bus, modEngine);
+
+  const imgUrl = 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=pixel%20art%20portrait%20of%20a%20cyberpunk%20warrior%20neon%20colors%20detailed%20retro%20game%20character&image_size=square';
+  core.loadImage(imgUrl);
+
+  window.addEventListener('resize', () => {
+    setTimeout(() => editor._drawConnections(), 100);
+  });
+
+  setTimeout(() => {
+    monitor._resize();
+    editor._drawConnections();
+  }, 200);
+}
+
+document.addEventListener('DOMContentLoaded', init);
+
+})();
+</script>
+</body>
+</html>
