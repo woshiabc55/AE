@@ -6,6 +6,7 @@ export default function GameCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<GameEngine | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const initDoneRef = useRef(false);
 
   const wave = useGameStore((s) => s.wave);
   const belize = useGameStore((s) => s.belize);
@@ -14,11 +15,8 @@ export default function GameCanvas() {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    if (engineRef.current) {
-      engineRef.current.stop();
-    }
+    if (!canvas || initDoneRef.current) return;
+    initDoneRef.current = true;
 
     const engine = new GameEngine(canvas, {
       pixelSize: renderer.pixelSize,
@@ -38,12 +36,15 @@ export default function GameCanvas() {
     };
 
     window.addEventListener('resize', handleResize);
+
+    const currentEngine = engine;
     return () => {
       window.removeEventListener('resize', handleResize);
-      engineRef.current?.stop();
+      currentEngine.stop();
       engineRef.current = null;
+      initDoneRef.current = false;
     };
-  }, []);
+  }, [renderer.pixelSize, renderer.targetFps, wave, belize, setCurrentFps]);
 
   useEffect(() => {
     if (engineRef.current) {
