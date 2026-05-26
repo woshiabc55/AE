@@ -1,4 +1,10 @@
+import re
+import uvicorn
 import gradio as gr
+from fastapi import FastAPI
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
+from starlette.responses import Response
 
 
 def greet(name):
@@ -18,4 +24,40 @@ with gr.Blocks(title="空白应用") as demo:
 
     gr.Markdown("---\n*基于 Gradio 构建 · 浏览器独立运行*")
 
-demo.launch(server_name="0.0.0.0", server_port=7860)
+demo.queue()
+
+
+class ProxyRootMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response: Response = await call_next(request)
+        ct = response.headers.get("content-type", "")
+        if "text/html" in ct:
+            body = b""
+            async for chunk in response.body_iterator:
+                body += chunk
+            html = body.decode("utf-8")
+            html = re.sub(
+                r'"root"\s*:\s*"http://localhost:\d+"',
+                '"root":""',
+                html,
+            )
+            html = html.replace(
+                'http://localhost:7860/gradio_api/',
+                '/gradio_api/',
+            )
+            return Response(
+                content=html,
+                status_code=response.status_code,
+                headers=dict(response.headers),
+                media_type="text/html",
+            )
+        return response
+
+
+app = FastAPI()
+app.add_middleware(ProxyRootMiddleware)
+gr.mount_gradio_app(app, demo, path="/")
+
+uvicorn.Server(
+    uvicorn.Config(app, host="0.0.0.0", port=7860, log_level="info")
+).run()
