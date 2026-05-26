@@ -1,0 +1,69 @@
+app:
+  name: Electron AI Framework
+  version: 1.0.0
+  logLevel: info
+  debug: false
+
+backend:
+  port: 8765
+  host: localhost
+  corsEnabled: true
+  maxRequestSize: 10485760
+
+ai:
+  defaultModelDir: ./models
+  defaultDatasetDir: ./datasets
+  maxConcurrentTrainings: 2
+  autoSaveCheckpoints: true
+  checkpointInterval: 1
+  maxCheckpoints: 5
+
+training:
+  defaults:
+    epochs: 10
+    learningRate: 0.001
+    batchSize: 32
+    optimizer: adam
+    lossFunction: crossEntropy
+  earlyStopping:
+    enabled: true
+    patience: 5
+    minDelta: 0.0001
+  scheduler:
+    enabled: false
+    type: step
+    params:
+      stepSize: 10
+      gamma: 0.1
+
+logging:
+  level: info
+  transports:
+    - console
+    - file
+  file:
+    path: ./logs
+    maxSize: 10485760
+    maxFiles: 5
+  remote:
+    enabled: false
+    endpoint: ""
+
+plugins:
+  dir: ./plugins
+  autoLoad: true
+  sandbox:
+    enabled: true
+    maxMemory: 134217728
+    maxCpuTime: 30000
+
+window:
+  defaultWidth: 1280
+  defaultHeight: 800
+  minWidth: 960
+  minHeight: 600
+  rememberState: true
+
+modules:
+  lazyLoad: true
+  maxConcurrentLoads: 4
