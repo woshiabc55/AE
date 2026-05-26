@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LinguaVerse × Hermes — 多语种沉浸学习 & AI工具智搜</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;700&family=Noto+Sans+KR:wght@300;400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg-deep:#0a0e1a;
+--bg-surface:#111827;
+--bg-card:#1a2236;
+--bg-card-hover:#1f2a42;
+--accent-cyan:#00e5ff;
+--accent-amber:#ffb300;
+--accent-violet:#a855f7;
+--accent-rose:#f43f5e;
+--accent-emerald:#10b981;
+--text-primary:#e8ecf4;
+--text-secondary:#8b95a8;
+--text-muted:#4b5563;
+--border-subtle:rgba(255,255,255,.06);
+--glow-cyan:0 0 30px rgba(0,229,255,.15);
+--glow-amber:0 0 30px rgba(255,179,0,.15);
+--radius-sm:8px;
+--radius-md:14px;
+--radius-lg:22px;
+--radius-xl:32px;
+--font-display:'Orbitron',sans-serif;
+--font-body:'Noto Sans SC','Noto Sans JP','Noto Sans KR',sans-serif;
+--font-mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--accent-cyan) var(--bg-deep)}
+body{font-family:var(--font-body);background:var(--bg-deep);color:var(--text-primary);overflow-x:hidden;line-height:1.6}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg-deep)}
+::-webkit-scrollbar-thumb{background:var(--accent-cyan);border-radius:3px}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 40px;height:72px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,14,26,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-subtle);transition:all .3s}
+nav.scrolled{height:60px;background:rgba(10,14,26,.95)}
+.nav-brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+.nav-brand-icon{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent-cyan),var(--accent-violet));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:900;font-size:18px;color:var(--bg-deep)}
+.nav-brand-text{font-family:var(--font-display);font-size:20px;font-weight:700;background:linear-gradient(135deg,var(--accent-cyan),var(--accent-violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-links{display:flex;gap:8px;align-items:center}
+.nav-link{padding:8px 20px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;color:var(--text-secondary);cursor:pointer;transition:all .25s;border:none;background:none;position:relative}
+.nav-link:hover,.nav-link.active{color:var(--accent-cyan);background:rgba(0,229,255,.08)}
+.nav-link.active::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:20px;height:2px;background:var(--accent-cyan);border-radius:1px}
+.nav-cta{padding:8px 24px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;color:var(--bg-deep);background:linear-gradient(135deg,var(--accent-cyan),#00b8d4);border:none;cursor:pointer;transition:all .25s}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:var(--glow-cyan)}
+
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:120px 60px 80px}
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-bg canvas{width:100%;height:100%}
+.hero-gradient{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 50%,rgba(0,229,255,.08),transparent),radial-gradient(ellipse 60% 50% at 80% 30%,rgba(168,85,247,.06),transparent),radial-gradient(ellipse 50% 40% at 50% 80%,rgba(255,179,0,.04),transparent)}
+.hero-content{position:relative;z-index:2;max-width:1400px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.hero-left{display:flex;flex-direction:column;gap:32px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:100px;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2);font-size:13px;color:var(--accent-cyan);width:fit-content}
+.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--accent-cyan);animation:pulse-dot 2s infinite}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.3}}
+.hero-title{font-family:var(--font-display);font-size:clamp(36px,5vw,64px);font-weight:900;line-height:1.1;letter-spacing:-1px}
+.hero-title .line1{display:block;color:var(--text-primary)}
+.hero-title .line2{display:block;background:linear-gradient(135deg,var(--accent-cyan),var(--accent-violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-title .line3{display:block;background:linear-gradient(135deg,var(--accent-amber),var(--accent-rose));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-desc{font-size:18px;color:var(--text-secondary);line-height:1.8;max-width:520px}
+.hero-actions{display:flex;gap:16px;flex-wrap:wrap}
+.btn-primary{padding:14px 36px;border-radius:var(--radius-md);font-size:16px;font-weight:600;color:var(--bg-deep);background:linear-gradient(135deg,var(--accent-cyan),#00b8d4);border:none;cursor:pointer;transition:all .3s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,229,255,.3)}
+.btn-secondary{padding:14px 36px;border-radius:var(--radius-md);font-size:16px;font-weight:600;color:var(--text-primary);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);cursor:pointer;transition:all .3s;display:inline-flex;align-items:center;gap:8px}
+.btn-secondary:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2)}
+.hero-right{position:relative;display:flex;justify-content:center;align-items:center}
+.hero-globe{width:420px;height:420px;position:relative}
+.globe-ring{position:absolute;border-radius:50%;border:1px solid rgba(0,229,255,.15);animation:spin-slow 20s linear infinite}
+.globe-ring:nth-child(1){inset:0;animation-duration:25s}
+.globe-ring:nth-child(2){inset:30px;animation-duration:20s;animation-direction:reverse;border-color:rgba(168,85,247,.15)}
+.globe-ring:nth-child(3){inset:60px;animation-duration:30s;border-color:rgba(255,179,0,.1)}
+.globe-ring:nth-child(4){inset:90px;animation-duration:15s;border-color:rgba(16,185,129,.1);animation-direction:reverse}
+@keyframes spin-slow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.globe-center{position:absolute;inset:120px;border-radius:50%;background:radial-gradient(circle,rgba(0,229,255,.12),rgba(168,85,247,.06),transparent);display:flex;align-items:center;justify-content:center}
+.globe-center-text{font-family:var(--font-display);font-size:48px;font-weight:900;background:linear-gradient(135deg,var(--accent-cyan),var(--accent-violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.lang-orb{position:absolute;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;cursor:pointer;transition:all .3s;z-index:3}
+.lang-orb:hover{transform:scale(1.15)}
+.lang-orb.en{top:10%;left:15%;background:rgba(0,229,255,.15);border:1px solid rgba(0,229,255,.3);color:var(--accent-cyan);animation:float-1 4s ease-in-out infinite}
+.lang-orb.ja{top:25%;right:5%;background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.3);color:var(--accent-violet);animation:float-2 5s ease-in-out infinite}
+.lang-orb.ko{bottom:20%;right:15%;background:rgba(255,179,0,.15);border:1px solid rgba(255,179,0,.3);color:var(--accent-amber);animation:float-3 4.5s ease-in-out infinite}
+.lang-orb.fr{bottom:10%;left:20%;background:rgba(244,63,94,.15);border:1px solid rgba(244,63,94,.3);color:var(--accent-rose);animation:float-1 5.5s ease-in-out infinite}
+.lang-orb.de{top:55%;left:0%;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);color:var(--accent-emerald);animation:float-2 3.8s ease-in-out infinite}
+@keyframes float-1{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes float-2{0%,100%{transform:translateY(0) translateX(0)}50%{transform:translateY(-8px) translateX(6px)}}
+@keyframes float-3{0%,100%{transform:translateY(0) translateX(0)}50%{transform:translateY(-10px) translateX(-5px)}}
+
+.section{padding:100px 60px;position:relative}
+.section-header{text-align:center;margin-bottom:64px}
+.section-tag{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:100px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:2px;margin-bottom:20px}
+.section-tag.cyan{background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2);color:var(--accent-cyan)}
+.section-tag.amber{background:rgba(255,179,0,.08);border:1px solid rgba(255,179,0,.2);color:var(--accent-amber)}
+.section-tag.violet{background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.2);color:var(--accent-violet)}
+.section-title{font-family:var(--font-display);font-size:clamp(28px,3.5vw,48px);font-weight:900;line-height:1.2;margin-bottom:16px}
+.section-subtitle{font-size:17px;color:var(--text-secondary);max-width:600px;margin:0 auto}
+
+.lang-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;max-width:1200px;margin:0 auto}
+.lang-card{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:36px;cursor:pointer;transition:all .4s;position:relative;overflow:hidden}
+.lang-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--radius-lg) var(--radius-lg) 0 0;opacity:0;transition:opacity .4s}
+.lang-card:hover{transform:translateY(-6px);border-color:rgba(255,255,255,.1);background:var(--bg-card-hover)}
+.lang-card:hover::before{opacity:1}
+.lang-card.en::before{background:linear-gradient(90deg,var(--accent-cyan),#00b8d4)}
+.lang-card.ja::before{background:linear-gradient(90deg,var(--accent-violet),#c084fc)}
+.lang-card.ko::before{background:linear-gradient(90deg,var(--accent-amber),#f59e0b)}
+.lang-card-icon{width:64px;height:64px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:24px}
+.lang-card.en .lang-card-icon{background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.2)}
+.lang-card.ja .lang-card-icon{background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.2)}
+.lang-card.ko .lang-card-icon{background:rgba(255,179,0,.1);border:1px solid rgba(255,179,0,.2)}
+.lang-card-name{font-family:var(--font-display);font-size:22px;font-weight:700;margin-bottom:4px}
+.lang-card-native{font-size:14px;color:var(--text-secondary);margin-bottom:20px}
+.lang-card-stats{display:flex;gap:20px;margin-bottom:20px}
+.lang-stat{display:flex;flex-direction:column;gap:2px}
+.lang-stat-value{font-family:var(--font-mono);font-size:18px;font-weight:700;color:var(--accent-cyan)}
+.lang-card.ja .lang-stat-value{color:var(--accent-violet)}
+.lang-card.ko .lang-stat-value{color:var(--accent-amber)}
+.lang-stat-label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
+.lang-card-tags{display:flex;gap:8px;flex-wrap:wrap}
+.lang-tag{padding:4px 12px;border-radius:100px;font-size:11px;background:rgba(255,255,255,.05);color:var(--text-secondary);border:1px solid var(--border-subtle)}
+
+.immersive-section{background:linear-gradient(180deg,var(--bg-deep),#0d1225,var(--bg-deep))}
+.immersive-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;max-width:1200px;margin:0 auto;align-items:start}
+.immersive-feature{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:40px;transition:all .4s;position:relative}
+.immersive-feature:hover{border-color:rgba(255,255,255,.1);transform:translateY(-4px)}
+.immersive-feature-icon{width:52px;height:52px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:24px}
+.immersive-feature-title{font-family:var(--font-display);font-size:18px;font-weight:700;margin-bottom:12px}
+.immersive-feature-desc{font-size:14px;color:var(--text-secondary);line-height:1.8}
+.immersive-demo{grid-column:1/-1;background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden}
+.demo-header{display:flex;align-items:center;justify-content:space-between;padding:20px 28px;border-bottom:1px solid var(--border-subtle)}
+.demo-header-title{font-family:var(--font-display);font-size:14px;font-weight:700;color:var(--accent-cyan)}
+.demo-tabs{display:flex;gap:4px}
+.demo-tab{padding:6px 16px;border-radius:var(--radius-sm);font-size:12px;font-weight:500;border:none;cursor:pointer;transition:all .25s;background:transparent;color:var(--text-secondary)}
+.demo-tab.active{background:rgba(0,229,255,.1);color:var(--accent-cyan)}
+.demo-body{padding:32px;min-height:320px;display:flex;gap:32px}
+.demo-chat{flex:1;display:flex;flex-direction:column;gap:16px}
+.chat-msg{display:flex;gap:12px;align-items:flex-start;animation:msg-in .4s ease-out}
+@keyframes msg-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.chat-avatar{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.chat-avatar.ai{background:linear-gradient(135deg,var(--accent-cyan),var(--accent-violet))}
+.chat-avatar.user{background:rgba(255,255,255,.1)}
+.chat-bubble{padding:14px 18px;border-radius:var(--radius-md);font-size:14px;line-height:1.7;max-width:80%}
+.chat-bubble.ai{background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.1)}
+.chat-bubble.user{background:rgba(255,255,255,.05);border:1px solid var(--border-subtle);margin-left:auto}
+.chat-input-area{display:flex;gap:12px;margin-top:auto;padding-top:16px;border-top:1px solid var(--border-subtle)}
+.chat-input{flex:1;padding:12px 18px;border-radius:var(--radius-md);background:rgba(255,255,255,.05);border:1px solid var(--border-subtle);color:var(--text-primary);font-size:14px;font-family:var(--font-body);outline:none;transition:border-color .3s}
+.chat-input:focus{border-color:var(--accent-cyan)}
+.chat-send{padding:12px 24px;border-radius:var(--radius-md);background:var(--accent-cyan);color:var(--bg-deep);font-weight:600;font-size:14px;border:none;cursor:pointer;transition:all .25s}
+.chat-send:hover{background:#33ecff}
+.demo-sidebar{width:260px;display:flex;flex-direction:column;gap:16px}
+.sidebar-card{padding:16px;border-radius:var(--radius-md);background:rgba(255,255,255,.03);border:1px solid var(--border-subtle)}
+.sidebar-card-title{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:10px}
+.vocab-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border-subtle)}
+.vocab-item:last-child{border-bottom:none}
+.vocab-word{font-weight:600;font-size:14px}
+.vocab-trans{font-size:12px;color:var(--text-secondary)}
+.progress-bar{height:6px;border-radius:3px;background:rgba(255,255,255,.06);overflow:hidden;margin-top:8px}
+.progress-fill{height:100%;border-radius:3px;transition:width 1s ease-out}
+
+.hermes-section{background:linear-gradient(180deg,var(--bg-deep),#0f0a1e,var(--bg-deep))}
+.hermes-header{display:flex;align-items:center;gap:16px;margin-bottom:48px;justify-content:center}
+.hermes-icon{width:56px;height:56px;border-radius:var(--radius-md);background:linear-gradient(135deg,var(--accent-amber),#f59e0b);display:flex;align-items:center;justify-content:center;font-size:28px}
+.hermes-controls{display:flex;gap:16px;margin-bottom:36px;flex-wrap:wrap;justify-content:center;align-items:center}
+.hermes-search{position:relative;flex:1;max-width:400px}
+.hermes-search input{width:100%;padding:12px 18px 12px 44px;border-radius:var(--radius-md);background:rgba(255,255,255,.05);border:1px solid var(--border-subtle);color:var(--text-primary);font-size:14px;font-family:var(--font-body);outline:none;transition:all .3s}
+.hermes-search input:focus{border-color:var(--accent-amber);box-shadow:0 0 0 3px rgba(255,179,0,.1)}
+.hermes-search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:16px}
+.filter-group{display:flex;gap:6px}
+.filter-btn{padding:8px 18px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;border:1px solid var(--border-subtle);background:transparent;color:var(--text-secondary);cursor:pointer;transition:all .25s}
+.filter-btn:hover{border-color:rgba(255,255,255,.15);color:var(--text-primary)}
+.filter-btn.active{background:rgba(255,179,0,.1);border-color:rgba(255,179,0,.3);color:var(--accent-amber)}
+.hermes-stats{display:flex;gap:32px;justify-content:center;margin-bottom:40px}
+.hermes-stat{text-align:center}
+.hermes-stat-value{font-family:var(--font-display);font-size:32px;font-weight:900;background:linear-gradient(135deg,var(--accent-amber),var(--accent-rose));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hermes-stat-label{font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:24px;max-width:1200px;margin:0 auto}
+.tool-card{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:28px;transition:all .4s;position:relative;overflow:hidden}
+.tool-card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.12);background:var(--bg-card-hover)}
+.tool-card-header{display:flex;align-items:flex-start;gap:16px;margin-bottom:18px}
+.tool-card-logo{width:48px;height:48px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.tool-card-info{flex:1;min-width:0}
+.tool-card-name{font-family:var(--font-display);font-size:16px;font-weight:700;margin-bottom:2px}
+.tool-card-vendor{font-size:12px;color:var(--text-muted)}
+.tool-card-desc{font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:16px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tool-card-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tool-tag{padding:3px 10px;border-radius:100px;font-size:11px;font-weight:500}
+.tool-tag.framework{background:rgba(168,85,247,.1);color:var(--accent-violet);border:1px solid rgba(168,85,247,.2)}
+.tool-tag.application{background:rgba(0,229,255,.1);color:var(--accent-cyan);border:1px solid rgba(0,229,255,.2)}
+.tool-tag.model{background:rgba(255,179,0,.1);color:var(--accent-amber);border:1px solid rgba(255,179,0,.2)}
+.tool-tag.tool{background:rgba(16,185,129,.1);color:var(--accent-emerald);border:1px solid rgba(16,185,129,.2)}
+.tool-tag.platform{background:rgba(244,63,94,.1);color:var(--accent-rose);border:1px solid rgba(244,63,94,.2)}
+.tool-card-footer{display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px solid var(--border-subtle)}
+.tool-source{font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:4px}
+.tool-action{padding:6px 16px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;border:1px solid rgba(255,179,0,.3);background:rgba(255,179,0,.08);color:var(--accent-amber);cursor:pointer;transition:all .25s}
+.tool-action:hover{background:rgba(255,179,0,.15)}
+.tool-hot{position:absolute;top:16px;right:16px;padding:3px 10px;border-radius:100px;font-size:10px;font-weight:700;background:rgba(244,63,94,.15);color:var(--accent-rose);border:1px solid rgba(244,63,94,.3);text-transform:uppercase;letter-spacing:1px}
+
+.agent-panel{max-width:1200px;margin:48px auto 0;background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden}
+.agent-header{display:flex;align-items:center;justify-content:space-between;padding:24px 28px;border-bottom:1px solid var(--border-subtle)}
+.agent-header-left{display:flex;align-items:center;gap:12px}
+.agent-status{width:10px;height:10px;border-radius:50%;background:var(--accent-emerald);animation:pulse-dot 2s infinite}
+.agent-title{font-family:var(--font-display);font-size:14px;font-weight:700}
+.agent-body{padding:28px;display:flex;gap:24px}
+.agent-log{flex:1;display:flex;flex-direction:column;gap:10px;max-height:300px;overflow-y:auto}
+.agent-log-entry{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-radius:var(--radius-sm);background:rgba(255,255,255,.02);font-size:13px;animation:log-in .3s ease-out}
+@keyframes log-in{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+.agent-log-time{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);white-space:nowrap;min-width:60px}
+.agent-log-msg{color:var(--text-secondary);line-height:1.5}
+.agent-log-msg strong{color:var(--accent-amber)}
+.agent-viz{width:300px;display:flex;flex-direction:column;gap:16px}
+.viz-chart{padding:16px;border-radius:var(--radius-md);background:rgba(255,255,255,.02);border:1px solid var(--border-subtle)}
+.viz-chart-title{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:12px}
+.viz-bar{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.viz-bar-label{font-size:12px;color:var(--text-secondary);width:60px;text-align:right}
+.viz-bar-track{flex:1;height:8px;border-radius:4px;background:rgba(255,255,255,.06);overflow:hidden}
+.viz-bar-fill{height:100%;border-radius:4px;transition:width 1s ease-out}
+.viz-bar-value{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);width:30px}
+
+footer{padding:60px;text-align:center;border-top:1px solid var(--border-subtle)}
+footer p{font-size:13px;color:var(--text-muted)}
+footer .footer-brand{font-family:var(--font-display);font-weight:700;background:linear-gradient(135deg,var(--accent-cyan),var(--accent-violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+.reveal{opacity:0;transform:translateY(30px);transition:all .7s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}
+.reveal-delay-4{transition-delay:.4s}
+
+@media(max-width:1024px){
+.hero-content{grid-template-columns:1fr;gap:40px;text-align:center}
+.hero-desc{margin:0 auto}
+.hero-actions{justify-content:center}
+.hero-right{display:none}
+.lang-cards{grid-template-columns:1fr}
+.immersive-grid{grid-template-columns:1fr}
+.demo-body{flex-direction:column}
+.demo-sidebar{width:100%}
+.section{padding:60px 24px}
+.hero{padding:100px 24px 60px}
+nav{padding:0 20px}
+.tools-grid{grid-template-columns:1fr}
+.agent-body{flex-direction:column}
+.agent-viz{width:100%}
+}
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <a class="nav-brand" href="#">
+    <div class="nav-brand-icon">L×</div>
+    <span class="nav-brand-text">LinguaVerse</span>
+  </a>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="scrollToSection('hero')">首页</button>
+    <button class="nav-link" onclick="scrollToSection('languages')">语种课程</button>
+    <button class="nav-link" onclick="scrollToSection('immersive')">沉浸体验</button>
+    <button class="nav-link" onclick="scrollToSection('hermes')">Hermes Agent</button>
+    <button class="nav-cta">开始学习</button>
+  </div>
+</nav>
+
+<section class="hero" id="hero">
+  <div class="hero-bg">
+    <canvas id="particleCanvas"></canvas>
+    <div class="hero-gradient"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-left">
+      <div class="hero-badge"><span class="hero-badge-dot"></span> 2026 全新沉浸式学习引擎</div>
+      <h1 class="hero-title">
+        <span class="line1">跨越语言</span>
+        <span class="line2">连接世界</span>
+        <span class="line3">× Hermes 智搜</span>
+      </h1>
+      <p class="hero-desc">融合 AI 对话、文化沉浸、实时语音纠错的下一代多语种学习平台。搭载 Hermes Agent 智能搜集引擎，实时追踪全球展会前沿 AI 工具。</p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="scrollToSection('languages')">探索语种 →</button>
+        <button class="btn-secondary" onclick="scrollToSection('hermes')">Hermes Agent →</button>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-globe">
+        <div class="globe-ring"></div>
+        <div class="globe-ring"></div>
+        <div class="globe-ring"></div>
+        <div class="globe-ring"></div>
+        <div class="globe-center"><span class="globe-center-text">🌍</span></div>
+        <div class="lang-orb en">EN</div>
+        <div class="lang-orb ja">日</div>
+        <div class="lang-orb ko">한</div>
+        <div class="lang-orb fr">FR</div>
+        <div class="lang-orb de">DE</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="languages">
+  <div class="section-header reveal">
+    <div class="section-tag cyan">◆ 多语种课程</div>
+    <h2 class="section-title">选择你的语言旅程</h2>
+    <p class="section-subtitle">从主流语言到小众语种，AI 驱动的个性化学习路径为你量身定制</p>
+  </div>
+  <div class="lang-cards">
+    <div class="lang-card en reveal reveal-delay-1" onclick="startLearning('en')">
+      <div class="lang-card-icon">🇬🇧</div>
+      <div class="lang-card-name">English</div>
+      <div class="lang-card-native">英语 · 15.8亿使用者</div>
+      <div class="lang-card-stats">
+        <div class="lang-stat"><span class="lang-stat-value">128</span><span class="lang-stat-label">课程</span></div>
+        <div class="lang-stat"><span class="lang-stat-value">2.4K</span><span class="lang-stat-label">词汇</span></div>
+        <div class="lang-stat"><span class="lang-stat-value">AI</span><span class="lang-stat-label">口语</span></div>
+      </div>
+      <div class="lang-card-tags">
+        <span class="lang-tag">商务英语</span>
+        <span class="lang-tag">雅思备考</span>
+        <span class="lang-tag">日常会话</span>
+      </div>
+    </div>
+    <div class="lang-card ja reveal reveal-delay-2" onclick="startLearning('ja')">
+      <div class="lang-card-icon">🇯🇵</div>
+      <div class="lang-card-name">日本語</div>
+      <div class="lang-card-native">日语 · 1.27亿使用者</div>
+      <div class="lang-card-stats">
+        <div class="lang-stat"><span class="lang-stat-value">96</span><span class="lang-stat-label">课程</span></div>
+        <div class="lang-stat"><span class="lang-stat-value">1.8K</span><span class="lang-stat-label">词汇</span></div>
+        <div class="lang-stat"><span class="lang-stat-value">AI</span><span class="lang-stat-label">口语</span></div>
+      </div>
+      <div class="lang-card-tags">
+        <span class="lang-tag">JLPT备考</span>
+        <span class="lang-tag">动漫日语</span>
+        <span class="lang-tag">敬语训练</span>
+      </div>
+    </div>
+    <div class="lang-card ko reveal reveal-delay-3" onclick="startLearning('ko')">
+      <div class="lang-card-icon">🇰🇷</div>
+      <div class="lang-card-name">한국어</div>
+      <div class="lang-card-native">韩语 · 7720万使用者</div>
+      <div class="lang-card-stats">
+        <div class="lang-stat"><span class="lang-stat-value">84</span><span class="lang-stat-label">课程</span></div>
+        <div class="lang-stat"><span class="lang-stat-value">1.5K</span><span class="lang-stat-label">词汇</span></div>
+        <div class="lang-stat"><span class="lang-stat-value">AI</span><span class="lang-stat-label">口语</span></div>
+      </div>
+      <div class="lang-card-tags">
+        <span class="lang-tag">TOPIK备考</span>
+        <span class="lang-tag">韩剧韩语</span>
+        <span class="lang-tag">职场韩语</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section immersive-section" id="immersive">
+  <div class="section-header reveal">
+    <div class="section-tag violet">◆ 沉浸式引擎</div>
+    <h2 class="section-title">身临其境的语言世界</h2>
+    <p class="section-subtitle">AI 对话伙伴 · 场景模拟 · 实时纠音 · 文化沉浸</p>
+  </div>
+  <div class="immersive-grid">
+    <div class="immersive-feature reveal reveal-delay-1">
+      <div class="immersive-feature-icon" style="background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.2)">🎙️</div>
+      <div class="immersive-feature-title">AI 语音对话</div>
+      <div class="immersive-feature-desc">与 AI 导师进行自然对话练习，支持实时语音识别和发音纠正。模拟真实场景：点餐、问路、商务谈判，让每一次开口都有反馈。</div>
+    </div>
+    <div class="immersive-feature reveal reveal-delay-2">
+      <div class="immersive-feature-icon" style="background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.2)">🎭</div>
+      <div class="immersive-feature-title">场景沉浸模拟</div>
+      <div class="immersive-feature-desc">走进东京居酒屋、首尔咖啡厅、伦敦地铁……沉浸式场景还原真实语境，配合文化知识讲解，让语言学习不再脱离语境。</div>
+    </div>
+    <div class="immersive-feature reveal reveal-delay-3">
+      <div class="immersive-feature-icon" style="background:rgba(255,179,0,.1);border:1px solid rgba(255,179,0,.2)">🧠</div>
+      <div class="immersive-feature-title">自适应学习路径</div>
+      <div class="immersive-feature-desc">基于遗忘曲线和知识图谱的智能复习系统，精准定位薄弱环节，动态调整学习节奏，用最少时间达成最大记忆留存。</div>
+    </div>
+    <div class="immersive-feature reveal reveal-delay-4">
+      <div class="immersive-feature-icon" style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2)">📊</div>
+      <div class="immersive-feature-title">多维度进度追踪</div>
+      <div class="immersive-feature-desc">听说读写四维能力雷达图，词汇量增长曲线，学习时长热力图，让每一步成长可视化、可量化、可回顾。</div>
+    </div>
+    <div class="immersive-demo reveal">
+      <div class="demo-header">
+        <span class="demo-header-title">◈ AI 对话演示</span>
+        <div class="demo-tabs">
+          <button class="demo-tab active" onclick="switchDemoLang('en')">English</button>
+          <button class="demo-tab" onclick="switchDemoLang('ja')">日本語</button>
+          <button class="demo-tab" onclick="switchDemoLang('ko')">한국어</button>
+        </div>
+      </div>
+      <div class="demo-body">
+        <div class="demo-chat" id="demoChat"></div>
+        <div class="demo-sidebar">
+          <div class="sidebar-card">
+            <div class="sidebar-card-title">当前词汇</div>
+            <div id="vocabList"></div>
+          </div>
+          <div class="sidebar-card">
+            <div class="sidebar-card-title">学习进度</div>
+            <div id="progressList"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section hermes-section" id="hermes">
+  <div class="section-header reveal">
+    <div class="section-tag amber">⚡ Hermes Agent</div>
+    <h2 class="section-title">5月展会 AI 工具智搜</h2>
+    <p class="section-subtitle">Hermes 智能体实时搜集、分类、追踪全球展会前沿 AI 工具与框架</p>
+  </div>
+  <div class="hermes-stats reveal">
+    <div class="hermes-stat"><div class="hermes-stat-value" id="statTools">0</div><div class="hermes-stat-label">AI 工具</div></div>
+    <div class="hermes-stat"><div class="hermes-stat-value" id="statExpos">0</div><div class="hermes-stat-label">覆盖展会</div></div>
+    <div class="hermes-stat"><div class="hermes-stat-value" id="statCategories">0</div><div class="hermes-stat-label">分类标签</div></div>
+    <div class="hermes-stat"><div class="hermes-stat-value" id="statUpdated">0h</div><div class="hermes-stat-label">更新频率</div></div>
+  </div>
+  <div class="hermes-controls reveal">
+    <div class="hermes-search">
+      <span class="hermes-search-icon">🔍</span>
+      <input type="text" placeholder="搜索 AI 工具、框架、模型…" id="hermesSearch" oninput="filterTools()">
+    </div>
+    <div class="filter-group">
+      <button class="filter-btn active" onclick="setFilter('all',this)">全部</button>
+      <button class="filter-btn" onclick="setFilter('framework',this)">框架</button>
+      <button class="filter-btn" onclick="setFilter('model',this)">模型</button>
+      <button class="filter-btn" onclick="setFilter('application',this)">应用</button>
+      <button class="filter-btn" onclick="setFilter('tool',this)">工具</button>
+      <button class="filter-btn" onclick="setFilter('platform',this)">平台</button>
+    </div>
+  </div>
+  <div class="tools-grid" id="toolsGrid"></div>
+  <div class="agent-panel reveal">
+    <div class="agent-header">
+      <div class="agent-header-left">
+        <span class="agent-status"></span>
+        <span class="agent-title">Hermes Agent 实时日志</span>
+      </div>
+      <button class="filter-btn" onclick="runHermesAgent()" style="font-size:12px">▶ 重新扫描</button>
+    </div>
+    <div class="agent-body">
+      <div class="agent-log" id="agentLog"></div>
+      <div class="agent-viz">
+        <div class="viz-chart">
+          <div class="viz-chart-title">分类分布</div>
+          <div id="categoryChart"></div>
+        </div>
+        <div class="viz-chart">
+          <div class="viz-chart-title">展会来源</div>
+          <div id="expoChart"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 <span class="footer-brand">LinguaVerse × Hermes</span> — 多语种沉浸学习 & AI 工具智搜平台</p>
+</footer>
+
+<script>
+const aiTools = [
+  {name:"LangChain v0.3",vendor:"LangChain Inc.",desc:"构建 LLM 应用的编排框架，支持链式调用、Agent、RAG 等模式，新增多模态支持和流式工具调用",category:"framework",tags:["Agent","RAG","多模态"],expo:"Google I/O 2026",hot:true,color:"#a855f7"},
+  {name:"LlamaIndex 0.12",vendor:"LlamaIndex",desc:"数据框架，将私有数据与 LLM 连接，支持高级检索策略、知识图谱构建和自动索引管理",category:"framework",tags:["RAG","索引","知识图谱"],expo:"Microsoft Build 2026",hot:true,color:"#a855f7"},
+  {name:"CrewAI Enterprise",vendor:"CrewAI",desc:"多 Agent 协作框架，支持角色定义、任务委派和工具共享，企业版新增安全沙箱和审计日志",category:"framework",tags:["多Agent","协作","企业级"],expo:"AI Summit NY",hot:false,color:"#a855f7"},
+  {name:"AutoGen Studio 2.0",vendor:"Microsoft Research",desc:"可视化多 Agent 对话框架，拖拽式构建 Agent 工作流，支持人类介入和代码执行沙箱",category:"framework",tags:["多Agent","可视化","工作流"],expo:"Microsoft Build 2026",hot:true,color:"#a855f7"},
+  {name:"Dify 1.0",vendor:"LangGenius",desc:"开源 LLM 应用开发平台，可视化编排 Prompt、RAG 和 Agent，一键部署为 API 或 WebApp",category:"platform",tags:["低代码","RAG","开源"],expo:"Google I/O 2026",hot:true,color:"#f43f5e"},
+  {name:"GPT-5 Turbo",vendor:"OpenAI",desc:"新一代多模态大模型，推理能力大幅提升，支持 128K 上下文和原生工具调用，延迟降低 60%",category:"model",tags:["多模态","推理","128K"],expo:"OpenAI DevDay",hot:true,color:"#ffb300"},
+  {name:"Claude Opus 4",vendor:"Anthropic",desc:"旗舰级推理模型，200K 超长上下文，深度分析和代码生成能力业界领先，支持扩展思考",category:"model",tags:["推理","200K","安全对齐"],expo:"Google I/O 2026",hot:true,color:"#ffb300"},
+  {name:"Gemini Ultra 2",vendor:"Google DeepMind",desc:"Google 最强多模态模型，原生支持音视频理解，1M 上下文窗口，与 Google 生态深度集成",category:"model",tags:["多模态","1M上下文","音视频"],expo:"Google I/O 2026",hot:true,color:"#ffb300"},
+  {name:"Llama 4 Maverick",vendor:"Meta AI",desc:"开源混合专家模型，400B 总参数/17B 激活，多语言能力显著增强，支持 128 种语言",category:"model",tags:["开源","MoE","多语言"],expo:"Meta AI Day",hot:false,color:"#ffb300"},
+  {name:"Mistral Large 3",vendor:"Mistral AI",desc:"欧洲旗舰模型，函数调用和 JSON 模式原生支持，多语言能力突出，合规性设计",category:"model",tags:["函数调用","合规","多语言"],expo:"VivaTech 2026",hot:false,color:"#ffb300"},
+  {name:"Cursor Pro",vendor:"Cursor Inc.",desc:"AI 原生代码编辑器，深度集成代码库理解、多文件编辑和终端操作，Pro 版支持自定义模型",category:"tool",tags:["编码","IDE","多文件"],expo:"Microsoft Build 2026",hot:true,color:"#10b981"},
+  {name:"v0 by Vercel",vendor:"Vercel",desc:"AI 驱动的 UI 生成工具，从自然语言描述生成生产级前端代码，支持 React/Next.js/Svelte",category:"tool",tags:["前端","UI生成","低代码"],expo:"Google I/O 2026",hot:false,color:"#10b981"},
+  {name:"Bolt.new",vendor:"StackBlitz",desc:"全栈 AI 开发环境，浏览器内即时运行，支持任意框架和 NPM 包，一键部署到云端",category:"tool",tags:["全栈","浏览器","部署"],expo:"AI Summit NY",hot:false,color:"#10b981"},
+  {name:"Replit Agent",vendor:"Replit",desc:"AI 全栈开发 Agent，从需求描述到部署上线全流程自动化，支持多语言和数据库集成",category:"tool",tags:["全栈","自动化","部署"],expo:"Google I/O 2026",hot:true,color:"#10b981"},
+  {name:"Midjourney v7",vendor:"Midjourney",desc:"AI 图像生成工具，v7 版本在真实感和细节表现上大幅提升，支持风格参考和角色一致性",category:"application",tags:["图像生成","设计","创意"],expo:"AWE 2026",hot:true,color:"#00e5ff"},
+  {name:"Sora Pro",vendor:"OpenAI",desc:"AI 视频生成模型，支持文本到视频、图片到视频，最长 2 分钟，4K 分辨率输出",category:"application",tags:["视频生成","4K","创意"],expo:"OpenAI DevDay",hot:true,color:"#00e5ff"},
+  {name:"Suno v5",vendor:"Suno AI",desc:"AI 音乐创作平台，支持歌词生成、多风格混搭和完整歌曲制作，v5 新增人声克隆功能",category:"application",tags:["音乐","创作","人声"],expo:"VivaTech 2026",hot:false,color:"#00e5ff"},
+  {name:"NotebookLM",vendor:"Google",desc:"AI 研究助手，上传文档自动生成摘要、问答和播客，支持多源知识整合和引用追踪",category:"application",tags:["研究","文档","播客"],expo:"Google I/O 2026",hot:false,color:"#00e5ff"},
+  {name:"Coze 2.0",vendor:"字节跳动",desc:"AI Bot 构建平台，可视化工作流编排，插件市场丰富，支持多模型切换和知识库管理",category:"platform",tags:["Bot构建","插件","工作流"],expo:"VivaTech 2026",hot:true,color:"#f43f5e"},
+  {name:"Flowise AI",vendor:"Flowise",desc:"开源拖拽式 LLM 编排工具，可视化构建 RAG 管道和 Agent，支持自定义节点和 API 导出",category:"platform",tags:["开源","可视化","RAG"],expo:"AI Summit NY",hot:false,color:"#f43f5e"},
+  {name:"Hugging Face Spaces",vendor:"Hugging Face",desc:"ML 模型托管和演示平台，一键部署 Gradio/Streamlit 应用，社区驱动的模型生态",category:"platform",tags:["托管","开源","社区"],expo:"VivaTech 2026",hot:false,color:"#f43f5e"},
+  {name:"Windsurf",vendor:"Codeium",desc:"AI 编程 IDE，Cascade 流式编辑支持多文件上下文感知，深度代码库理解和智能补全",category:"tool",tags:["IDE","编码","上下文"],expo:"Microsoft Build 2026",hot:true,color:"#10b981"},
+  {name:"Qwen3 Max",vendor:"阿里云",desc:"通义千问旗舰模型，中文能力业界领先，支持 128K 上下文和原生函数调用",category:"model",tags:["中文","128K","函数调用"],expo:"VivaTech 2026",hot:false,color:"#ffb300"},
+  {name:"DeepSeek R2",vendor:"DeepSeek",desc:"深度推理模型，MoE 架构高效推理，数学和代码能力突出，开源权重可用",category:"model",tags:["推理","开源","数学"],expo:"AI Summit NY",hot:true,color:"#ffb300"},
+];
+
+let currentFilter = 'all';
+let currentDemoLang = 'en';
+
+const demoData = {
+  en: {
+    messages: [
+      {role:'ai',text:'Hello! I\'m your AI English tutor. Today let\'s practice ordering food at a restaurant. 🍽️'},
+      {role:'user',text:'I would like to order a steak, please.'},
+      {role:'ai',text:'Great start! You can make it more natural: "I\'d like to order the steak, please." Notice the contraction "I\'d" and the article "the" before steak. How would you like it cooked?'},
+    ],
+    vocab: [
+      {word:'I\'d like',trans:'我想要（缩写）'},
+      {word:'medium rare',trans:'三分熟'},
+      {word:'recommend',trans:'推荐'},
+      {word:'bill/check',trans:'账单'},
+    ],
+    progress: [
+      {label:'听力',value:72,color:'var(--accent-cyan)'},
+      {label:'口语',value:58,color:'var(--accent-violet)'},
+      {label:'阅读',value:85,color:'var(--accent-amber)'},
+      {label:'写作',value:64,color:'var(--accent-emerald)'},
+    ]
+  },
+  ja: {
+    messages: [
+      {role:'ai',text:'こんにちは！AI日本語チューターです。今日は居酒屋で注文する練習をしましょう。🍺'},
+      {role:'user',text:'すみません、ビールをください。'},
+      {role:'ai',text:'いいですね！より自然な言い方：「すみません、ビールお願いします。」「お願いします」は丁寧でよく使いますよ。何から注文しますか？'},
+    ],
+    vocab: [
+      {word:'お願いします',trans:'拜托了/请'},
+      {word:'おすすめ',trans:'推荐'},
+      {word:'お会計',trans:'结账'},
+      {word:'乾杯',trans:'干杯'},
+    ],
+    progress: [
+      {label:'聴解',value:65,color:'var(--accent-cyan)'},
+      {label:'会話',value:48,color:'var(--accent-violet)'},
+      {label:'読解',value:78,color:'var(--accent-amber)'},
+      {label:'作文',value:55,color:'var(--accent-emerald)'},
+    ]
+  },
+  ko: {
+    messages: [
+      {role:'ai',text:'안녕하세요! AI 한국어 튜터입니다. 오늘은 카페에서 주문하는 연습을 해볼까요? ☕'},
+      {role:'user',text:'아메리카노 하나 주세요.'},
+      {role:'ai',text:'잘했어요! 더 정중하게 말하려면: "아메리카노 한 잔 주세요." 커피는 잔으로 세요. "한 잔"이 더 자연스럽습니다!'},
+    ],
+    vocab: [
+      {word:'한 잔',trans:'一杯'},
+      {word:'추천',trans:'推荐'},
+      {word:'계산',trans:'结账'},
+      {word:'포장',trans:'打包'},
+    ],
+    progress: [
+      {label:'듣기',value:60,color:'var(--accent-cyan)'},
+      {label:'말하기',value:45,color:'var(--accent-violet)'},
+      {label:'읽기',value:72,color:'var(--accent-amber)'},
+      {label:'쓰기',value:50,color:'var(--accent-emerald)'},
+    ]
+  }
+};
+
+function scrollToSection(id) {
+  document.getElementById(id).scrollIntoView({behavior:'smooth'});
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+function startLearning(lang) {
+  scrollToSection('immersive');
+  switchDemoLang(lang);
+}
+
+function switchDemoLang(lang) {
+  currentDemoLang = lang;
+  document.querySelectorAll('.demo-tab').forEach(t => t.classList.remove('active'));
+  event?.target?.classList.add('active');
+  if (!event?.target) {
+    document.querySelectorAll('.demo-tab').forEach(t => {
+      if (t.textContent.toLowerCase().includes(lang === 'en' ? 'eng' : lang === 'ja' ? '日' : '한')) t.classList.add('active');
+    });
+  }
+  renderDemo();
+}
+
+function renderDemo() {
+  const data = demoData[currentDemoLang];
+  const chat = document.getElementById('demoChat');
+  chat.innerHTML = data.messages.map(m => `
+    <div class="chat-msg">
+      <div class="chat-avatar ${m.role}">${m.role === 'ai' ? 'AI' : '你'}</div>
+      <div class="chat-bubble ${m.role}">${m.text}</div>
+    </div>
+  `).join('');
+  
+  document.getElementById('vocabList').innerHTML = data.vocab.map(v => `
+    <div class="vocab-item"><span class="vocab-word">${v.word}</span><span class="vocab-trans">${v.trans}</span></div>
+  `).join('');
+  
+  document.getElementById('progressList').innerHTML = data.progress.map(p => `
+    <div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+        <span>${p.label}</span><span style="color:${p.color}">${p.value}%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${p.value}%;background:${p.color}"></div></div>
+    </div>
+  `).join('');
+}
+
+function renderTools() {
+  const grid = document.getElementById('toolsGrid');
+  const search = document.getElementById('hermesSearch').value.toLowerCase();
+  const filtered = aiTools.filter(t => {
+    const matchFilter = currentFilter === 'all' || t.category === currentFilter;
+    const matchSearch = !search || t.name.toLowerCase().includes(search) || t.desc.toLowerCase().includes(search) || t.tags.some(tag => tag.toLowerCase().includes(search)) || t.vendor.toLowerCase().includes(search);
+    return matchFilter && matchSearch;
+  });
+  grid.innerHTML = filtered.map(t => `
+    <div class="tool-card reveal visible">
+      ${t.hot ? '<div class="tool-hot">HOT</div>' : ''}
+      <div class="tool-card-header">
+        <div class="tool-card-logo" style="background:${t.color}15;border:1px solid ${t.color}30">${t.name.charAt(0)}</div>
+        <div class="tool-card-info">
+          <div class="tool-card-name">${t.name}</div>
+          <div class="tool-card-vendor">${t.vendor}</div>
+        </div>
+      </div>
+      <div class="tool-card-desc">${t.desc}</div>
+      <div class="tool-card-meta">
+        <span class="tool-tag ${t.category}">${{framework:'框架',model:'模型',application:'应用',tool:'工具',platform:'平台'}[t.category]}</span>
+        ${t.tags.map(tag => `<span class="tool-tag" style="background:rgba(255,255,255,.04);color:var(--text-secondary);border:1px solid var(--border-subtle)">${tag}</span>`).join('')}
+      </div>
+      <div class="tool-card-footer">
+        <span class="tool-source">📍 ${t.expo}</span>
+        <button class="tool-action" onclick="viewToolDetail('${t.name}')">查看详情</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function setFilter(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTools();
+}
+
+function filterTools() { renderTools(); }
+
+function viewToolDetail(name) {
+  const tool = aiTools.find(t => t.name === name);
+  if (!tool) return;
+  const chat = document.getElementById('demoChat');
+  const msgHtml = `
+    <div class="chat-msg">
+      <div class="chat-avatar ai">AI</div>
+      <div class="chat-bubble ai">
+        <strong>${tool.name}</strong> by ${tool.vendor}<br><br>${tool.desc}<br><br>
+        📍 来源展会：${tool.expo}<br>🏷️ 分类：${{framework:'框架',model:'模型',application:'应用',tool:'工具',platform:'平台'}[tool.category]}<br>📌 标签：${tool.tags.join(' / ')}
+      </div>
+    </div>
+  `;
+  chat.insertAdjacentHTML('beforeend', msgHtml);
+}
+
+function animateStats() {
+  const targets = {statTools: aiTools.length, statExpos: 6, statCategories: 5, statUpdated: 2};
+  Object.entries(targets).forEach(([id, target]) => {
+    const el = document.getElementById(id);
+    let current = 0;
+    const step = Math.max(1, Math.floor(target / 30));
+    const interval = setInterval(() => {
+      current = Math.min(current + step, target);
+      el.textContent = id === 'statUpdated' ? current + 'h' : current;
+      if (current >= target) clearInterval(interval);
+    }, 40);
+  });
+}
+
+function renderCharts() {
+  const categories = {};
+  aiTools.forEach(t => { categories[t.category] = (categories[t.category] || 0) + 1; });
+  const total = aiTools.length;
+  const catNames = {framework:'框架',model:'模型',application:'应用',tool:'工具',platform:'平台'};
+  const catColors = {framework:'var(--accent-violet)',model:'var(--accent-amber)',application:'var(--accent-cyan)',tool:'var(--accent-emerald)',platform:'var(--accent-rose)'};
+  
+  document.getElementById('categoryChart').innerHTML = Object.entries(categories).map(([k,v]) => `
+    <div class="viz-bar">
+      <span class="viz-bar-label">${catNames[k]}</span>
+      <div class="viz-bar-track"><div class="viz-bar-fill" style="width:${(v/total*100).toFixed(0)}%;background:${catColors[k]}"></div></div>
+      <span class="viz-bar-value">${v}</span>
+    </div>
+  `).join('');
+  
+  const expos = {};
+  aiTools.forEach(t => { expos[t.expo] = (expos[t.expo] || 0) + 1; });
+  const expoColors = ['#00e5ff','#a855f7','#ffb300','#10b981','#f43f5e','#6366f1'];
+  
+  document.getElementById('expoChart').innerHTML = Object.entries(expos).map(([k,v], i) => `
+    <div class="viz-bar">
+      <span class="viz-bar-label" style="width:120px;font-size:10px">${k.replace(' 2026','')}</span>
+      <div class="viz-bar-track"><div class="viz-bar-fill" style="width:${(v/total*100).toFixed(0)}%;background:${expoColors[i % expoColors.length]}"></div></div>
+      <span class="viz-bar-value">${v}</span>
+    </div>
+  `).join('');
+}
+
+const agentLogs = [
+  {time:'09:00',msg:'Hermes Agent 启动，开始扫描 <strong>Google I/O 2026</strong> 展会数据…'},
+  {time:'09:02',msg:'发现 <strong>Gemini Ultra 2</strong> — 多模态模型，1M 上下文窗口'},
+  {time:'09:05',msg:'发现 <strong>LangChain v0.3</strong> — Agent 编排框架更新'},
+  {time:'09:08',msg:'扫描 <strong>Microsoft Build 2026</strong>，识别 6 款新工具…'},
+  {time:'09:12',msg:'发现 <strong>AutoGen Studio 2.0</strong> — 可视化多 Agent 框架'},
+  {time:'09:15',msg:'发现 <strong>Claude Opus 4</strong> — 200K 推理模型'},
+  {time:'09:20',msg:'扫描 <strong>VivaTech 2026</strong>，识别 4 款新工具…'},
+  {time:'09:25',msg:'发现 <strong>Coze 2.0</strong> — Bot 构建平台重大更新'},
+  {time:'09:30',msg:'扫描 <strong>OpenAI DevDay</strong>，识别 3 款新工具…'},
+  {time:'09:35',msg:'发现 <strong>GPT-5 Turbo</strong> — 推理能力大幅提升'},
+  {time:'09:38',msg:'发现 <strong>Sora Pro</strong> — 4K 视频生成'},
+  {time:'09:42',msg:'扫描 <strong>AI Summit NY</strong>，识别 4 款新工具…'},
+  {time:'09:48',msg:'扫描 <strong>AWE 2026</strong>，识别 2 款新工具…'},
+  {time:'09:55',msg:'✅ 扫描完成！共搜集 <strong>${aiTools.length}</strong> 款 AI 工具，覆盖 <strong>6</strong> 场展会'},
+];
+
+function renderAgentLogs() {
+  const log = document.getElementById('agentLog');
+  log.innerHTML = agentLogs.map(l => `
+    <div class="agent-log-entry">
+      <span class="agent-log-time">${l.time}</span>
+      <span class="agent-log-msg">${l.msg.replace('${aiTools.length}', aiTools.length)}</span>
+    </div>
+  `).join('');
+  log.scrollTop = log.scrollHeight;
+}
+
+function runHermesAgent() {
+  const log = document.getElementById('agentLog');
+  log.innerHTML = '';
+  const now = new Date();
+  agentLogs.forEach((l, i) => {
+    setTimeout(() => {
+      const entry = document.createElement('div');
+      entry.className = 'agent-log-entry';
+      const h = String(now.getHours()).padStart(2,'0');
+      const m = String(now.getMinutes() + i).padStart(2,'0');
+      entry.innerHTML = `<span class="agent-log-time">${h}:${m}</span><span class="agent-log-msg">${l.msg.replace('${aiTools.length}', aiTools.length)}</span>`;
+      log.appendChild(entry);
+      log.scrollTop = log.scrollHeight;
+    }, i * 300);
+  });
+}
+
+const canvas = document.getElementById('particleCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function initParticles() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  particles = [];
+  const count = Math.floor((canvas.width * canvas.height) / 12000);
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      r: Math.random() * 1.5 + 0.5,
+      o: Math.random() * 0.3 + 0.1
+    });
+  }
+}
+
+function drawParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    if (p.x < 0) p.x = canvas.width;
+    if (p.x > canvas.width) p.x = 0;
+    if (p.y < 0) p.y = canvas.height;
+    if (p.y > canvas.height) p.y = 0;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(0,229,255,${p.o})`;
+    ctx.fill();
+  });
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 120) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(0,229,255,${0.06 * (1 - dist / 120)})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(drawParticles);
+}
+
+window.addEventListener('resize', initParticles);
+initParticles();
+drawParticles();
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, {threshold: 0.1, rootMargin: '0px 0px -40px 0px'});
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('navbar');
+  if (window.scrollY > 50) nav.classList.add('scrolled');
+  else nav.classList.remove('scrolled');
+});
+
+renderDemo();
+renderTools();
+renderCharts();
+renderAgentLogs();
+
+setTimeout(animateStats, 500);
+</script>
+</body>
+</html>

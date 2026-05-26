@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rust Desktop App - 虚拟沙箱环境</title>
+<link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+<nav id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon">⚙</div>
+    <span class="brand-text">RustApp</span>
+  </div>
+  <ul class="nav-menu">
+    <li class="nav-item active" data-page="dashboard">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">仪表盘</span>
+    </li>
+    <li class="nav-item" data-page="sandbox">
+      <span class="nav-icon">🛡</span>
+      <span class="nav-label">沙箱管理</span>
+    </li>
+    <li class="nav-item" data-page="modules">
+      <span class="nav-icon">📦</span>
+      <span class="nav-label">模块管理</span>
+    </li>
+    <li class="nav-item" data-page="terminal">
+      <span class="nav-icon">💻</span>
+      <span class="nav-label">终端</span>
+    </li>
+    <li class="nav-item" data-page="settings">
+      <span class="nav-icon">⚙️</span>
+      <span class="nav-label">设置</span>
+    </li>
+  </ul>
+</nav>
+
+<main id="main-content">
+  <div id="page-dashboard" class="page active">
+    <div class="page-header">
+      <h1>仪表盘</h1>
+      <p class="page-desc">系统概览与资源监控</p>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(0,229,255,.1);color:#00e5ff">🛡</div>
+        <div class="stat-info">
+          <div class="stat-value" id="stat-sandboxes">0</div>
+          <div class="stat-label">活跃沙箱</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(168,85,247,.1);color:#a855f7">📦</div>
+        <div class="stat-info">
+          <div class="stat-value" id="stat-modules">4</div>
+          <div class="stat-label">已注册模块</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(255,179,0,.1);color:#ffb300">💾</div>
+        <div class="stat-info">
+          <div class="stat-value" id="stat-memory">--</div>
+          <div class="stat-label">可用内存</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(16,185,129,.1);color:#10b981">🖥</div>
+        <div class="stat-info">
+          <div class="stat-value" id="stat-cpu">--</div>
+          <div class="stat-label">CPU 核心数</div>
+        </div>
+      </div>
+    </div>
+    <div class="dashboard-section">
+      <h2>系统信息</h2>
+      <div id="system-info" class="info-grid"></div>
+    </div>
+  </div>
+
+  <div id="page-sandbox" class="page">
+    <div class="page-header">
+      <h1>沙箱管理</h1>
+      <p class="page-desc">创建、管理和监控虚拟沙箱环境</p>
+    </div>
+    <div class="sandbox-toolbar">
+      <button class="btn btn-primary" id="btn-create-sandbox">+ 创建沙箱</button>
+      <button class="btn btn-secondary" id="btn-refresh-sandboxes">刷新列表</button>
+    </div>
+    <div id="sandbox-list" class="sandbox-grid"></div>
+    <div id="create-sandbox-form" class="form-panel hidden">
+      <h3>创建新沙箱</h3>
+      <div class="form-group">
+        <label>名称</label>
+        <input type="text" id="sandbox-name" placeholder="my-sandbox">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>内存限制 (MB)</label>
+          <input type="number" id="sandbox-memory" value="256" min="64" max="4096">
+        </div>
+        <div class="form-group">
+          <label>CPU 时间限制 (ms)</label>
+          <input type="number" id="sandbox-cpu" value="5000" min="100">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="sandbox-network"> 启用网络访问
+        </label>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" id="btn-confirm-create">确认创建</button>
+        <button class="btn btn-secondary" id="btn-cancel-create">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-modules" class="page">
+    <div class="page-header">
+      <h1>模块管理</h1>
+      <p class="page-desc">加载、卸载和管理应用模块</p>
+    </div>
+    <div id="module-list" class="module-grid"></div>
+  </div>
+
+  <div id="page-terminal" class="page">
+    <div class="page-header">
+      <h1>沙箱终端</h1>
+      <p class="page-desc">在沙箱环境中执行代码</p>
+    </div>
+    <div class="terminal-container">
+      <div class="terminal-toolbar">
+        <select id="terminal-sandbox-select">
+          <option value="">选择沙箱...</option>
+        </select>
+        <select id="terminal-language">
+          <option value="javascript">JavaScript</option>
+          <option value="wasm">WebAssembly</option>
+        </select>
+        <button class="btn btn-primary btn-sm" id="btn-execute">执行</button>
+      </div>
+      <div class="terminal-editor">
+        <textarea id="code-editor" placeholder="// 在此输入代码...&#10;console.log('Hello from sandbox!');"></textarea>
+      </div>
+      <div class="terminal-output">
+        <div class="output-header">输出</div>
+        <pre id="terminal-output"></pre>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-settings" class="page">
+    <div class="page-header">
+      <h1>设置</h1>
+      <p class="page-desc">应用配置与偏好</p>
+    </div>
+    <div class="settings-section">
+      <h3>沙箱默认配置</h3>
+      <div class="form-group">
+        <label>默认内存限制 (MB)</label>
+        <input type="number" id="default-memory" value="256">
+      </div>
+      <div class="form-group">
+        <label>默认 CPU 时间限制 (ms)</label>
+        <input type="number" id="default-cpu" value="5000">
+      </div>
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="default-network"> 默认启用网络
+        </label>
+      </div>
+      <button class="btn btn-primary" id="btn-save-settings">保存设置</button>
+    </div>
+  </div>
+</main>
+
+<div id="toast-container"></div>
+
+<script src="scripts/app.js"></script>
+</body>
+</html>

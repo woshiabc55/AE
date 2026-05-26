@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PromptCurator — 提示词策展 · 全向模块 · 语言标记</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-0:#0c0c14;--bg-1:#12121e;--bg-2:#1a1a2e;--bg-3:#22223a;--bg-4:#2c2c48;
+  --border:#2a2a44;--border-light:#3a3a5c;
+  --text-0:#f0eeff;--text-1:#b8b4d4;--text-2:#7a76a0;--text-3:#4e4a6e;
+  --accent:#e0a0ff;--accent-dim:rgba(224,160,255,0.1);--accent-glow:rgba(224,160,255,0.3);
+  --teal:#5eead4;--teal-dim:rgba(94,234,212,0.1);
+  --amber:#fbbf24;--amber-dim:rgba(251,191,36,0.1);
+  --rose:#fb7185;--rose-dim:rgba(251,113,133,0.1);
+  --blue:#60a5fa;--blue-dim:rgba(96,165,250,0.1);
+  --green:#4ade80;--green-dim:rgba(74,222,128,0.1);
+  --mono:'Space Mono',monospace;--sans:'Sora',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--bg-0);color:var(--text-0);min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 800px 500px at 20% 30%,rgba(224,160,255,0.04),transparent),radial-gradient(ellipse 600px 400px at 80% 70%,rgba(94,234,212,0.03),transparent);pointer-events:none;z-index:0}
+.app{position:relative;z-index:1}
+
+header{padding:14px 24px;display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--border);background:rgba(18,18,30,0.9);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100}
+.logo{font-family:var(--mono);font-weight:700;font-size:15px;color:var(--accent);display:flex;align-items:center;gap:8px}
+.logo svg{width:22px;height:22px}
+.header-tabs{display:flex;gap:2px;margin-left:24px}
+.htab{padding:7px 16px;font-family:var(--mono);font-size:11px;color:var(--text-2);background:none;border:none;border-radius:6px;cursor:pointer;transition:all .2s;font-weight:500}
+.htab:hover{color:var(--text-0);background:var(--bg-3)}
+.htab.active{color:var(--accent);background:var(--accent-dim)}
+.header-right{margin-left:auto;display:flex;gap:8px}
+.hbtn{padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--bg-3);color:var(--text-1);font-family:var(--sans);font-size:12px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
+.hbtn:hover{background:var(--bg-4);color:var(--text-0);border-color:var(--border-light)}
+.hbtn.primary{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+
+.tab-content{display:none;padding:24px}
+.tab-content.active{display:block}
+
+/* Prompt Editor */
+.prompt-layout{display:grid;grid-template-columns:1fr 360px;gap:20px}
+.prompt-editor{background:var(--bg-1);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.pe-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.pe-header .pe-title{font-size:13px;font-weight:600;color:var(--text-1);flex:1}
+.pe-header .pe-actions{display:flex;gap:4px}
+.pe-btn{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--bg-3);color:var(--text-2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .15s}
+.pe-btn:hover{background:var(--bg-4);color:var(--text-0)}
+.pe-body{flex:1;padding:0}
+.pe-textarea{width:100%;min-height:400px;padding:16px;background:transparent;border:none;color:var(--text-0);font-family:var(--mono);font-size:13px;line-height:1.8;outline:none;resize:vertical}
+.pe-textarea::placeholder{color:var(--text-3)}
+.pe-footer{padding:8px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:10px;color:var(--text-3)}
+
+/* Module Panel */
+.module-panel{display:flex;flex-direction:column;gap:12px}
+.mp-section{background:var(--bg-1);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.mp-header{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.mp-title{font-size:11px;font-weight:700;color:var(--text-2);text-transform:uppercase;letter-spacing:1px}
+.mp-body{padding:10px 14px}
+
+.module-chips{display:flex;flex-wrap:wrap;gap:6px}
+.module-chip{padding:5px 10px;border-radius:6px;font-family:var(--mono);font-size:10px;cursor:pointer;transition:all .2s;border:1px solid var(--border);background:var(--bg-2);color:var(--text-1);display:flex;align-items:center;gap:4px}
+.module-chip:hover{border-color:var(--border-light);background:var(--bg-3)}
+.module-chip.active{border-color:var(--accent);background:var(--accent-dim);color:var(--accent)}
+.module-chip .mc-dot{width:5px;height:5px;border-radius:50%}
+
+.lang-tag{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:4px;font-family:var(--mono);font-size:10px;font-weight:600;cursor:pointer;transition:all .15s;border:1px solid transparent}
+.lang-tag:hover{opacity:.85}
+.lang-tag.active{box-shadow:0 0 8px rgba(224,160,255,0.2)}
+.lang-tag .lt-code{opacity:.7}
+
+.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.metric-item{padding:8px 10px;border-radius:6px;background:var(--bg-2);border:1px solid var(--border)}
+.metric-item .mi-label{font-size:9px;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.metric-item .mi-value{font-family:var(--mono);font-size:14px;font-weight:700}
+
+/* Curation Format Tab */
+.curation-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.curation-card{background:var(--bg-1);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.cc-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.cc-title{font-size:14px;font-weight:700}
+.cc-body{padding:18px}
+
+.format-block{margin-bottom:16px}
+.format-block .fb-label{font-family:var(--mono);font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.format-block .fb-content{padding:10px 14px;background:var(--bg-2);border:1px solid var(--border);border-radius:8px;font-family:var(--mono);font-size:12px;color:var(--text-1);line-height:1.6;white-space:pre-wrap}
+.format-block .fb-content .hl-tag{color:var(--teal);font-weight:600}
+.format-block .fb-content .hl-key{color:var(--amber)}
+.format-block .fb-content .hl-val{color:var(--accent)}
+.format-block .fb-content .hl-str{color:var(--green)}
+.format-block .fb-content .hl-comment{color:var(--text-3);font-style:italic}
+
+.schema-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11px}
+.schema-table th{padding:8px 10px;text-align:left;color:var(--text-3);border-bottom:1px solid var(--border-light);font-size:9px;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.schema-table td{padding:6px 10px;color:var(--text-1);border-bottom:1px solid rgba(42,42,68,0.5)}
+.schema-table tr:hover td{background:var(--bg-2)}
+
+/* Output Metrics Tab */
+.metrics-layout{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.metrics-card{background:var(--bg-1);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.mcard-header{padding:14px 18px;border-bottom:1px solid var(--border)}
+.mcard-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px}
+.mcard-title .mct-dot{width:8px;height:8px;border-radius:50%}
+.mcard-body{padding:16px}
+
+.metric-bar-group{display:flex;flex-direction:column;gap:10px}
+.mbar{display:flex;align-items:center;gap:8px}
+.mbar-label{font-family:var(--mono);font-size:10px;color:var(--text-2);width:80px;flex-shrink:0}
+.mbar-track{flex:1;height:6px;border-radius:3px;background:var(--bg-4);overflow:hidden}
+.mbar-fill{height:100%;border-radius:3px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.mbar-val{font-family:var(--mono);font-size:10px;color:var(--text-1);width:36px;text-align:right}
+
+.radar-chart{width:200px;height:200px;margin:0 auto}
+.radar-chart canvas{width:100%;height:100%}
+
+.score-big{text-align:center;padding:20px 0}
+.score-big .sb-value{font-family:var(--mono);font-size:48px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.score-big .sb-label{font-size:12px;color:var(--text-2);margin-top:4px}
+
+/* Language Markers Tab */
+.lang-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.lang-editor{background:var(--bg-1);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.le-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.le-title{font-size:14px;font-weight:700}
+.le-body{padding:18px}
+
+.lang-matrix{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.lang-cell{padding:10px;border-radius:8px;background:var(--bg-2);border:1px solid var(--border);text-align:center;cursor:pointer;transition:all .2s;position:relative}
+.lang-cell:hover{border-color:var(--border-light);background:var(--bg-3)}
+.lang-cell.active{border-color:var(--accent);background:var(--accent-dim)}
+.lang-cell .lc-flag{font-size:24px;margin-bottom:4px}
+.lang-cell .lc-name{font-size:11px;font-weight:600;color:var(--text-0)}
+.lang-cell .lc-code{font-family:var(--mono);font-size:9px;color:var(--text-3)}
+.lang-cell .lc-check{position:absolute;top:6px;right:6px;width:14px;height:14px;border-radius:50%;background:var(--accent);color:var(--bg-0);font-size:8px;display:none;align-items:center;justify-content:center;font-weight:700}
+.lang-cell.active .lc-check{display:flex}
+
+.marker-list{display:flex;flex-direction:column;gap:6px;max-height:400px;overflow-y:auto}
+.marker-item{padding:8px 12px;border-radius:6px;background:var(--bg-2);border:1px solid var(--border);display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px}
+.marker-item .mk-lang{color:var(--teal);font-weight:600;min-width:40px}
+.marker-item .mk-pattern{color:var(--amber);flex:1}
+.marker-item .mk-type{font-size:9px;padding:2px 6px;border-radius:3px;font-weight:600}
+.mk-type.struct{background:var(--blue-dim);color:var(--blue)}
+.mk-type.semantic{background:var(--accent-dim);color:var(--accent)}
+.mk-type.pragmatic{background:var(--green-dim);color:var(--green)}
+.mk-type.phonetic{background:var(--rose-dim);color:var(--rose)}
+
+@media(max-width:900px){.prompt-layout,.curation-layout,.lang-layout{grid-template-columns:1fr}.metrics-layout{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      PromptCurator
+    </div>
+    <div class="header-tabs">
+      <button class="htab active" data-tab="editor">提示词编辑</button>
+      <button class="htab" data-tab="curation">策展格式</button>
+      <button class="htab" data-tab="metrics">输出指标</button>
+      <button class="htab" data-tab="langmark">语言标记</button>
+    </div>
+    <div class="header-right">
+      <button class="hbtn" id="btnImport">导入</button>
+      <button class="hbtn primary" id="btnExport">导出方案</button>
+    </div>
+  </header>
+
+  <!-- Tab: Prompt Editor -->
+  <div class="tab-content active" id="tab-editor">
+    <div class="prompt-layout">
+      <div class="prompt-editor">
+        <div class="pe-header">
+          <span class="pe-title">提示词编辑器</span>
+          <div class="pe-actions">
+            <button class="pe-btn" title="格式化" id="btnFormat">{ }</button>
+            <button class="pe-btn" title="模板" id="btnTemplate">T</button>
+            <button class="pe-btn" title="清空" id="btnClear">✕</button>
+          </div>
+        </div>
+        <div class="pe-body">
+          <textarea class="pe-textarea" id="promptInput" placeholder="在此输入或组装提示词...&#10;&#10;使用左侧模块快速插入全向模块&#10;使用 @语言代码 插入语言标记&#10;使用 {{变量}} 插入变量槽位"></textarea>
+        </div>
+        <div class="pe-footer">
+          <span id="charCount">0 字符</span>
+          <span id="tokenEst">~0 tokens</span>
+          <span id="moduleCount">0 模块</span>
+          <span id="langCount">0 语言标记</span>
+        </div>
+      </div>
+
+      <div class="module-panel">
+        <div class="mp-section">
+          <div class="mp-header"><span class="mp-title">全向模块</span></div>
+          <div class="mp-body">
+            <div class="module-chips" id="moduleChips"></div>
+          </div>
+        </div>
+        <div class="mp-section">
+          <div class="mp-header"><span class="mp-title">语言标记</span></div>
+          <div class="mp-body">
+            <div class="module-chips" id="langChips"></div>
+          </div>
+        </div>
+        <div class="mp-section">
+          <div class="mp-header"><span class="mp-title">实时指标</span></div>
+          <div class="mp-body">
+            <div class="metric-grid" id="liveMetrics"></div>
+          </div>
+        </div>
+        <div class="mp-section">
+          <div class="mp-header"><span class="mp-title">智能建议</span></div>
+          <div class="mp-body" id="suggestions" style="font-size:12px;color:var(--text-2);line-height:1.6"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Curation Format -->
+  <div class="tab-content" id="tab-curation">
+    <div class="curation-layout">
+      <div class="curation-card">
+        <div class="cc-header"><span class="cc-title">策展格式规范</span></div>
+        <div class="cc-body" id="curationFormat"></div>
+      </div>
+      <div class="curation-card">
+        <div class="cc-header"><span class="cc-title">Schema 定义</span></div>
+        <div class="cc-body" id="schemaDef"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Output Metrics -->
+  <div class="tab-content" id="tab-metrics">
+    <div class="metrics-layout" id="metricsPanel"></div>
+  </div>
+
+  <!-- Tab: Language Markers -->
+  <div class="tab-content" id="tab-langmark">
+    <div class="lang-layout">
+      <div class="lang-editor">
+        <div class="le-header"><span class="le-title">语言选择矩阵</span></div>
+        <div class="le-body">
+          <div class="lang-matrix" id="langMatrix"></div>
+        </div>
+      </div>
+      <div class="lang-editor">
+        <div class="le-header"><span class="le-title">标记规则</span></div>
+        <div class="le-body">
+          <div class="marker-list" id="markerList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const MODULES = [
+  { id:'role', label:'角色定义', color:'var(--accent)', template:'[ROLE] 你是一位{{领域}}专家，擅长{{技能}}。' },
+  { id:'context', label:'上下文', color:'var(--teal)', template:'[CONTEXT] 背景：{{背景描述}}。当前场景：{{场景}}。' },
+  { id:'task', label:'任务指令', color:'var(--amber)', template:'[TASK] 请完成以下任务：{{任务描述}}。' },
+  { id:'constraint', label:'约束条件', color:'var(--rose)', template:'[CONSTRAINT] 必须遵守：{{约束列表}}。' },
+  { id:'format', label:'输出格式', color:'var(--blue)', template:'[FORMAT] 输出格式：{{格式规范}}。' },
+  { id:'example', label:'示例', color:'var(--green)', template:'[EXAMPLE] 示例：\n输入：{{示例输入}}\n输出：{{示例输出}}' },
+  { id:'chain', label:'思维链', color:'var(--accent)', template:'[CHAIN_OF_THOUGHT] 请逐步推理：\n1. {{步骤1}}\n2. {{步骤2}}\n3. {{步骤3}}' },
+  { id:'guard', label:'安全护栏', color:'var(--rose)', template:'[GUARDRAIL] 禁止输出：{{禁止内容}}。安全边界：{{边界定义}}。' },
+  { id:'meta', label:'元指令', color:'var(--teal)', template:'[META] 如果任务不明确，请询问澄清问题。优先级：{{优先级}}。' },
+  { id:'feedback', label:'反馈循环', color:'var(--amber)', template:'[FEEDBACK] 自检清单：{{检查项}}。如不满足请修正后重新输出。' },
+  { id:'multilang', label:'多语言', color:'var(--blue)', template:'[MULTILINGUAL] @{{lang_code}} 请用{{语言名称}}输出。' },
+  { id:'adapter', label:'适配器', color:'var(--green)', template:'[ADAPTER] 目标模型：{{模型名称}}。适配策略：{{策略}}。' },
+];
+
+const LANGUAGES = [
+  { code:'zh', name:'中文', flag:'🇨🇳' },
+  { code:'en', name:'English', flag:'🇺🇸' },
+  { code:'ja', name:'日本語', flag:'🇯🇵' },
+  { code:'ko', name:'한국어', flag:'🇰🇷' },
+  { code:'fr', name:'Français', flag:'🇫🇷' },
+  { code:'de', name:'Deutsch', flag:'🇩🇪' },
+  { code:'es', name:'Español', flag:'🇪🇸' },
+  { code:'pt', name:'Português', flag:'🇧🇷' },
+  { code:'ru', name:'Русский', flag:'🇷🇺' },
+  { code:'ar', name:'العربية', flag:'🇸🇦' },
+  { code:'hi', name:'हिन्दी', flag:'🇮🇳' },
+  { code:'th', name:'ไทย', flag:'🇹🇭' },
+  { code:'vi', name:'Tiếng Việt', flag:'🇻🇳' },
+  { code:'it', name:'Italiano', flag:'🇮🇹' },
+  { code:'nl', name:'Nederlands', flag:'🇳🇱' },
+  { code:'tr', name:'Türkçe', flag:'🇹🇷' },
+];
+
+const MARKER_RULES = [
+  { lang:'zh', pattern:'@zh / [中文]', type:'struct', desc:'中文结构标记' },
+  { lang:'en', pattern:'@en / [EN]', type:'struct', desc:'英文结构标记' },
+  { lang:'ja', pattern:'@ja / [日本語]', type:'struct', desc:'日语结构标记' },
+  { lang:'ko', pattern:'@ko / [한국어]', type:'struct', desc:'韩语结构标记' },
+  { lang:'any', pattern:'{{变量名}}', type:'semantic', desc:'变量槽位' },
+  { lang:'any', pattern:'[MODULE]', type:'pragmatic', desc:'模块指令标记' },
+  { lang:'any', pattern:'<!-- 注释 -->', type:'pragmatic', desc:'注释标记' },
+  { lang:'zh', pattern:'[正式/口语/学术]', type:'semantic', desc:'语域标记' },
+  { lang:'en', pattern:'[formal/casual/academic]', type:'semantic', desc:'Register marker' },
+  { lang:'any', pattern:'[tone:XX]', type:'phonetic', desc:'语气标记' },
+  { lang:'any', pattern:'[level:A1-C2]', type:'semantic', desc:'语言水平标记' },
+  { lang:'any', pattern:'[domain:XX]', type:'pragmatic', desc:'领域标记' },
+];
+
+let activeModules = new Set();
+let activeLangs = new Set(['zh', 'en']);
+
+function init() {
+  renderModuleChips();
+  renderLangChips();
+  renderLiveMetrics();
+  renderSuggestions();
+  renderCurationFormat();
+  renderSchemaDef();
+  renderMetricsPanel();
+  renderLangMatrix();
+  renderMarkerList();
+  setupEvents();
+  updateStats();
+}
+
+function renderModuleChips() {
+  const container = document.getElementById('moduleChips');
+  container.innerHTML = MODULES.map(m => `
+    <div class="module-chip ${activeModules.has(m.id)?'active':''}" data-module="${m.id}">
+      <span class="mc-dot" style="background:${m.color}"></span>${m.label}
+    </div>
+  `).join('');
+  container.querySelectorAll('.module-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const id = chip.dataset.module;
+      if (activeModules.has(id)) { activeModules.delete(id); } else { activeModules.add(id); }
+      renderModuleChips();
+      insertModule(id);
+      updateStats();
+    });
+  });
+}
+
+function insertModule(id) {
+  const mod = MODULES.find(m => m.id === id);
+  if (!mod) return;
+  const textarea = document.getElementById('promptInput');
+  const pos = textarea.selectionStart;
+  const text = textarea.value;
+  const insert = `\n${mod.template}\n`;
+  textarea.value = text.slice(0, pos) + insert + text.slice(pos);
+  textarea.focus();
+  textarea.setSelectionRange(pos + insert.length, pos + insert.length);
+  updateStats();
+}
+
+function renderLangChips() {
+  const container = document.getElementById('langChips');
+  container.innerHTML = LANGUAGES.slice(0, 8).map(l => `
+    <div class="module-chip ${activeLangs.has(l.code)?'active':''}" data-lang="${l.code}" style="${activeLangs.has(l.code)?`border-color:var(--teal);background:var(--teal-dim);color:var(--teal)`:''}">
+      ${l.flag} ${l.code}
+    </div>
+  `).join('');
+  container.querySelectorAll('.module-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const code = chip.dataset.lang;
+      if (activeLangs.has(code)) { activeLangs.delete(code); } else { activeLangs.add(code); }
+      renderLangChips();
+      const lang = LANGUAGES.find(l => l.code === code);
+      if (lang && activeLangs.has(code)) {
+        const textarea = document.getElementById('promptInput');
+        const pos = textarea.selectionStart;
+        const insert = `@${code} `;
+        textarea.value = textarea.value.slice(0, pos) + insert + textarea.value.slice(pos);
+        textarea.focus();
+      }
+      updateStats();
+    });
+  });
+}
+
+function renderLiveMetrics() {
+  const container = document.getElementById('liveMetrics');
+  const text = document.getElementById('promptInput').value;
+  const chars = text.length;
+  const tokens = Math.round(chars / 3.5);
+  const modules = (text.match(/\[([A-Z_]+)\]/g) || []).length;
+  const vars = (text.match(/\{\{[^}]+\}\}/g) || []).length;
+  const langs = (text.match(/@[a-z]{2}/g) || []).length;
+  const completeness = Math.min(100, Math.round((modules * 15 + vars * 10 + langs * 10 + (chars > 50 ? 20 : 0))));
+
+  container.innerHTML = `
+    <div class="metric-item"><div class="mi-label">字符数</div><div class="mi-value" style="color:var(--text-0)">${chars}</div></div>
+    <div class="metric-item"><div class="mi-label">Token 估算</div><div class="mi-value" style="color:var(--teal)">~${tokens}</div></div>
+    <div class="metric-item"><div class="mi-label">模块数</div><div class="mi-value" style="color:var(--accent)">${modules}</div></div>
+    <div class="metric-item"><div class="mi-label">变量槽</div><div class="mi-value" style="color:var(--amber)">${vars}</div></div>
+    <div class="metric-item"><div class="mi-label">语言标记</div><div class="mi-value" style="color:var(--blue)">${langs}</div></div>
+    <div class="metric-item"><div class="mi-label">完整度</div><div class="mi-value" style="color:${completeness>70?'var(--green)':completeness>40?'var(--amber)':'var(--rose)'}">${completeness}%</div></div>
+  `;
+}
+
+function renderSuggestions() {
+  const text = document.getElementById('promptInput').value;
+  const suggestions = [];
+  if (!text.match(/\[ROLE\]|\[角色/i)) suggestions.push('💡 建议添加 [ROLE] 角色定义模块');
+  if (!text.match(/\[TASK\]|\[任务/i)) suggestions.push('💡 建议添加 [TASK] 任务指令模块');
+  if (!text.match(/\[FORMAT\]|\[格式/i)) suggestions.push('💡 建议添加 [FORMAT] 输出格式模块');
+  if (!text.match(/\{\{[^}]+\}\}/)) suggestions.push('💡 建议使用 {{变量}} 槽位提高复用性');
+  if (!text.match(/@[a-z]{2}/)) suggestions.push('💡 建议使用 @语言代码 标记输出语言');
+  if (text.length < 50) suggestions.push('💡 提示词过短，建议扩展上下文');
+  if (suggestions.length === 0) suggestions.push('✅ 提示词结构完整，可以导出方案');
+  document.getElementById('suggestions').innerHTML = suggestions.map(s => `<div style="margin-bottom:4px">${s}</div>`).join('');
+}
+
+function updateStats() {
+  const text = document.getElementById('promptInput').value;
+  document.getElementById('charCount').textContent = text.length + ' 字符';
+  document.getElementById('tokenEst').textContent = '~' + Math.round(text.length / 3.5) + ' tokens';
+  document.getElementById('moduleCount').textContent = (text.match(/\[([A-Z_]+)\]/g) || []).length + ' 模块';
+  document.getElementById('langCount').textContent = (text.match(/@[a-z]{2}/g) || []).length + ' 语言标记';
+  renderLiveMetrics();
+  renderSuggestions();
+}
+
+function renderCurationFormat() {
+  const container = document.getElementById('curationFormat');
+  container.innerHTML = `
+    <div class="format-block">
+      <div class="fb-label">策展格式 v1.0</div>
+      <div class="fb-content"><span class="hl-comment"><!-- 软件策展格式规范 --></span>
+<span class="hl-tag">[CURATION]</span>
+<span class="hl-key">version</span>: <span class="hl-val">"1.0"</span>
+<span class="hl-key">id</span>: <span class="hl-str">"{{curation_id}}"</span>
+<span class="hl-key">timestamp</span>: <span class="hl-str">"{{ISO_8601}}"</span>
+
+<span class="hl-tag">[METADATA]</span>
+<span class="hl-key">title</span>: <span class="hl-str">"{{策展标题}}"</span>
+<span class="hl-key">author</span>: <span class="hl-str">"{{作者}}"</span>
+<span class="hl-key">domain</span>: <span class="hl-str">"{{领域}}"</span>
+<span class="hl-key">languages</span>: [<span class="hl-str">"@zh"</span>, <span class="hl-str">"@en"</span>, <span class="hl-str">"@ja"</span>]
+
+<span class="hl-tag">[PROMPT]</span>
+<span class="hl-key">template</span>: <span class="hl-str">"{{提示词模板}}"</span>
+<span class="hl-key">modules</span>: [<span class="hl-val">ROLE</span>, <span class="hl-val">CONTEXT</span>, <span class="hl-val">TASK</span>]
+<span class="hl-key">variables</span>: {<span class="hl-str">"{{key}}"</span>: <span class="hl-str">"{{desc}}"</span>}
+<span class="hl-key">lang_markers</span>: [<span class="hl-str">"@zh"</span>]
+
+<span class="hl-tag">[OUTPUT]</span>
+<span class="hl-key">format</span>: <span class="hl-str">"{{JSON|Markdown|Text}}"</span>
+<span class="hl-key">schema</span>: <span class="hl-str">"{{输出Schema}}"</span>
+<span class="hl-key">metrics</span>: {<span class="hl-str">"quality"</span>: <span class="hl-val">0.95</span>}
+
+<span class="hl-tag">[GUARDRAIL]</span>
+<span class="hl-key">safety</span>: <span class="hl-str">"{{安全边界}}"</span>
+<span class="hl-key">max_tokens</span>: <span class="hl-val">4096</span>
+<span class="hl-key">temperature</span>: <span class="hl-val">0.7</span></div>
+    </div>
+    <div class="format-block">
+      <div class="fb-label">模块类型枚举</div>
+      <div class="fb-content"><span class="hl-tag">ROLE</span>       <span class="hl-comment">// 角色定义</span>
+<span class="hl-tag">CONTEXT</span>    <span class="hl-comment">// 上下文背景</span>
+<span class="hl-tag">TASK</span>       <span class="hl-comment">// 任务指令</span>
+<span class="hl-tag">CONSTRAINT</span> <span class="hl-comment">// 约束条件</span>
+<span class="hl-tag">FORMAT</span>     <span class="hl-comment">// 输出格式</span>
+<span class="hl-tag">EXAMPLE</span>    <span class="hl-comment">// 示例</span>
+<span class="hl-tag">CHAIN</span>      <span class="hl-comment">// 思维链</span>
+<span class="hl-tag">GUARD</span>      <span class="hl-comment">// 安全护栏</span>
+<span class="hl-tag">META</span>       <span class="hl-comment">// 元指令</span>
+<span class="hl-tag">FEEDBACK</span>   <span class="hl-comment">// 反馈循环</span>
+<span class="hl-tag">MULTILINGUAL</span> <span class="hl-comment">// 多语言</span>
+<span class="hl-tag">ADAPTER</span>    <span class="hl-comment">// 模型适配</span></div>
+    </div>
+  `;
+}
+
+function renderSchemaDef() {
+  const container = document.getElementById('schemaDef');
+  container.innerHTML = `
+    <table class="schema-table">
+      <thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td style="color:var(--accent)">curation_id</td><td>string</td><td style="color:var(--green)">是</td><td>策展唯一标识</td></tr>
+        <tr><td style="color:var(--accent)">version</td><td>string</td><td style="color:var(--green)">是</td><td>格式版本号</td></tr>
+        <tr><td style="color:var(--accent)">timestamp</td><td>ISO8601</td><td style="color:var(--green)">是</td><td>创建时间</td></tr>
+        <tr><td style="color:var(--teal)">title</td><td>string</td><td style="color:var(--green)">是</td><td>策展标题</td></tr>
+        <tr><td style="color:var(--teal)">author</td><td>string</td><td>否</td><td>作者</td></tr>
+        <tr><td style="color:var(--teal)">domain</td><td>enum</td><td style="color:var(--green)">是</td><td>领域分类</td></tr>
+        <tr><td style="color:var(--teal)">languages</td><td>string[]</td><td style="color:var(--green)">是</td><td>支持语言代码列表</td></tr>
+        <tr><td style="color:var(--amber)">template</td><td>string</td><td style="color:var(--green)">是</td><td>提示词模板文本</td></tr>
+        <tr><td style="color:var(--amber)">modules</td><td>enum[]</td><td style="color:var(--green)">是</td><td>使用的模块类型</td></tr>
+        <tr><td style="color:var(--amber)">variables</td><td>object</td><td>否</td><td>变量定义映射</td></tr>
+        <tr><td style="color:var(--amber)">lang_markers</td><td>string[]</td><td>否</td><td>语言标记列表</td></tr>
+        <tr><td style="color:var(--blue)">format</td><td>enum</td><td style="color:var(--green)">是</td><td>输出格式类型</td></tr>
+        <tr><td style="color:var(--blue)">schema</td><td>object</td><td>否</td><td>输出 JSON Schema</td></tr>
+        <tr><td style="color:var(--blue)">metrics</td><td>object</td><td>否</td><td>输出质量指标</td></tr>
+        <tr><td style="color:var(--rose)">safety</td><td>string</td><td style="color:var(--green)">是</td><td>安全边界定义</td></tr>
+        <tr><td style="color:var(--rose)">max_tokens</td><td>integer</td><td>否</td><td>最大 Token 数</td></tr>
+        <tr><td style="color:var(--rose)">temperature</td><td>float</td><td>否</td><td>温度参数</td></tr>
+      </tbody>
+    </table>
+  `;
+}
+
+function renderMetricsPanel() {
+  const container = document.getElementById('metricsPanel');
+  const metricsData = [
+    { title:'质量指标', color:'var(--accent)', bars:[
+      { label:'相关性', value:92, color:'var(--accent)' },
+      { label:'准确性', value:88, color:'var(--teal)' },
+      { label:'完整性', value:85, color:'var(--amber)' },
+      { label:'一致性', value:90, color:'var(--blue)' },
+      { label:'安全性', value:95, color:'var(--green)' },
+    ]},
+    { title:'效率指标', color:'var(--teal)', bars:[
+      { label:'Token效率', value:78, color:'var(--teal)' },
+      { label:'响应速度', value:85, color:'var(--accent)' },
+      { label:'模块复用', value:70, color:'var(--amber)' },
+      { label:'多语言覆盖', value:65, color:'var(--blue)' },
+      { label:'适配兼容', value:82, color:'var(--green)' },
+    ]},
+    { title:'综合评分', color:'var(--amber)', score:87, radar:true },
+  ];
+
+  container.innerHTML = metricsData.map(m => `
+    <div class="metrics-card">
+      <div class="mcard-header"><span class="mcard-title"><span class="mct-dot" style="background:${m.color}"></span>${m.title}</span></div>
+      <div class="mcard-body">
+        ${m.radar ? `
+          <div class="score-big"><div class="sb-value">${m.score}</div><div class="sb-label">综合评分 / 100</div></div>
+          <div class="radar-chart"><canvas id="radarCanvas"></canvas></div>
+        ` : `
+          <div class="metric-bar-group">
+            ${m.bars.map(b => `
+              <div class="mbar">
+                <span class="mbar-label">${b.label}</span>
+                <div class="mbar-track"><div class="mbar-fill" style="width:${b.value}%;background:${b.color}"></div></div>
+                <span class="mbar-val">${b.value}</span>
+              </div>
+            `).join('')}
+          </div>
+        `}
+      </div>
+    </div>
+  `).join('');
+
+  setTimeout(() => drawRadar(), 100);
+}
+
+function drawRadar() {
+  const canvas = document.getElementById('radarCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = 400;
+  canvas.height = 400;
+  const cx = 200, cy = 200, r = 140;
+  const labels = ['相关性','准确性','完整性','一致性','安全性','效率'];
+  const values = [92, 88, 85, 90, 95, 78];
+  const n = labels.length;
+
+  for (let ring = 1; ring <= 4; ring++) {
+    ctx.beginPath();
+    for (let i = 0; i <= n; i++) {
+      const angle = (Math.PI * 2 / n) * i - Math.PI / 2;
+      const rr = r * (ring / 4);
+      const x = cx + Math.cos(angle) * rr;
+      const y = cy + Math.sin(angle) * rr;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = 'rgba(42,42,68,0.6)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  for (let i = 0; i < n; i++) {
+    const angle = (Math.PI * 2 / n) * i - Math.PI / 2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + Math.cos(angle) * r, cy + Math.sin(angle) * r);
+    ctx.strokeStyle = 'rgba(42,42,68,0.4)';
+    ctx.stroke();
+
+    const lx = cx + Math.cos(angle) * (r + 18);
+    const ly = cy + Math.sin(angle) * (r + 18);
+    ctx.fillStyle = '#7a76a0';
+    ctx.font = '11px Sora';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(labels[i], lx, ly);
+  }
+
+  ctx.beginPath();
+  values.forEach((v, i) => {
+    const angle = (Math.PI * 2 / n) * i - Math.PI / 2;
+    const rr = r * (v / 100);
+    const x = cx + Math.cos(angle) * rr;
+    const y = cy + Math.sin(angle) * rr;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(224,160,255,0.15)';
+  ctx.fill();
+  ctx.strokeStyle = '#e0a0ff';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  values.forEach((v, i) => {
+    const angle = (Math.PI * 2 / n) * i - Math.PI / 2;
+    const rr = r * (v / 100);
+    const x = cx + Math.cos(angle) * rr;
+    const y = cy + Math.sin(angle) * rr;
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = '#e0a0ff';
+    ctx.fill();
+  });
+}
+
+function renderLangMatrix() {
+  const container = document.getElementById('langMatrix');
+  container.innerHTML = LANGUAGES.map(l => `
+    <div class="lang-cell ${activeLangs.has(l.code)?'active':''}" data-lang="${l.code}">
+      <div class="lc-check">✓</div>
+      <div class="lc-flag">${l.flag}</div>
+      <div class="lc-name">${l.name}</div>
+      <div class="lc-code">${l.code}</div>
+    </div>
+  `).join('');
+  container.querySelectorAll('.lang-cell').forEach(cell => {
+    cell.addEventListener('click', () => {
+      const code = cell.dataset.lang;
+      if (activeLangs.has(code)) activeLangs.delete(code); else activeLangs.add(code);
+      renderLangMatrix();
+      renderLangChips();
+    });
+  });
+}
+
+function renderMarkerList() {
+  const container = document.getElementById('markerList');
+  container.innerHTML = MARKER_RULES.map(m => `
+    <div class="marker-item">
+      <span class="mk-lang">${m.lang}</span>
+      <span class="mk-pattern">${m.pattern}</span>
+      <span class="mk-type ${m.type}">${m.type}</span>
+    </div>
+  `).join('');
+}
+
+function setupEvents() {
+  document.querySelectorAll('.htab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.htab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+      if (tab.dataset.tab === 'metrics') setTimeout(() => drawRadar(), 100);
+    });
+  });
+
+  document.getElementById('promptInput').addEventListener('input', updateStats);
+
+  document.getElementById('btnFormat').addEventListener('click', () => {
+    const textarea = document.getElementById('promptInput');
+    let text = textarea.value;
+    text = text.replace(/\n{3,}/g, '\n\n');
+    text = text.trim();
+    textarea.value = text;
+    updateStats();
+  });
+
+  document.getElementById('btnTemplate').addEventListener('click', () => {
+    const textarea = document.getElementById('promptInput');
+    textarea.value = `[ROLE] 你是一位{{领域}}专家，擅长{{技能}}。
+
+[CONTEXT] 背景：{{背景描述}}。当前场景：{{场景}}。
+
+[TASK] 请完成以下任务：{{任务描述}}。
+
+[FORMAT] 输出格式：{{格式规范}}。
+
+[CONSTRAINT] 必须遵守：{{约束列表}}。
+
+[MULTILINGUAL] @zh 请用中文输出。@en Please output in English.
+
+[GUARDRAIL] 禁止输出：{{禁止内容}}。安全边界：{{边界定义}}。
+
+[FEEDBACK] 自检清单：{{检查项}}。如不满足请修正后重新输出。`;
+    updateStats();
+  });
+
+  document.getElementById('btnClear').addEventListener('click', () => {
+    document.getElementById('promptInput').value = '';
+    activeModules.clear();
+    renderModuleChips();
+    updateStats();
+  });
+
+  document.getElementById('btnExport').addEventListener('click', () => {
+    const text = document.getElementById('promptInput').value;
+    const modules = [...activeModules];
+    const langs = [...activeLangs];
+    const data = {
+      curation: { version:'1.0', id:`cur_${Date.now()}`, timestamp:new Date().toISOString() },
+      metadata: { title:'导出方案', languages:langs.map(l => `@${l}`) },
+      prompt: { template:text, modules, variables:extractVars(text), lang_markers:langs.map(l => `@${l}`) },
+      output: { format:'JSON', metrics:{ quality:87 } },
+      guardrail: { safety:'default', max_tokens:4096, temperature:0.7 },
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `prompt_curation_${Date.now()}.json`; a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('btnImport').addEventListener('click', () => {
+    const input = document.createElement('input');
+    input.type = 'file'; input.accept = '.json';
+    input.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try {
+          const data = JSON.parse(ev.target.result);
+          if (data.prompt?.template) {
+            document.getElementById('promptInput').value = data.prompt.template;
+            if (data.prompt.modules) { activeModules.clear(); data.prompt.modules.forEach(m => activeModules.add(m)); renderModuleChips(); }
+            if (data.prompt.lang_markers) { activeLangs.clear(); data.prompt.lang_markers.forEach(l => activeLangs.add(l.replace('@',''))); renderLangChips(); renderLangMatrix(); }
+            updateStats();
+          }
+        } catch(err) { alert('导入失败: ' + err.message); }
+      };
+      reader.readAsText(file);
+    });
+    input.click();
+  });
+}
+
+function extractVars(text) {
+  const matches = text.match(/\{\{([^}]+)\}\}/g) || [];
+  const vars = {};
+  matches.forEach(m => { const key = m.replace(/\{\{|\}\}/g, ''); vars[key] = `{{${key}的描述}}`; });
+  return vars;
+}
+
+init();
+</script>
+</body>
+</html>
