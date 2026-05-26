@@ -497,6 +497,241 @@ main { padding: 20px 24px; }
   main { padding: 12px; }
   .gauge-row { grid-template-columns: 1fr; }
 }
+
+.dev-toolbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+.dev-toolbar.collapsed { transform: translateY(calc(100% - 36px)); }
+
+.dev-toolbar-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: #0d1117;
+  border-top: 1px solid var(--border-light);
+  cursor: pointer;
+  user-select: none;
+}
+
+.dev-toolbar-header .dt-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--cyan);
+  letter-spacing: 0.5px;
+}
+
+.dev-toolbar-header .dt-tabs {
+  display: flex;
+  gap: 2px;
+  margin-left: 16px;
+}
+
+.dt-tab {
+  padding: 4px 12px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-2);
+  background: none;
+  border: none;
+  border-radius: 4px 4px 0 0;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.dt-tab:hover { color: var(--text-0); background: var(--bg-3); }
+.dt-tab.active { color: var(--cyan); background: var(--bg-2); }
+
+.dev-toolbar-header .dt-toggle {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--text-3);
+  font-family: var(--mono);
+}
+
+.dev-toolbar-body {
+  background: #0d1117;
+  border-top: 1px solid var(--border);
+  display: flex;
+  min-height: 260px;
+  max-height: 400px;
+}
+
+.dt-panel { display: none; flex: 1; overflow: hidden; }
+.dt-panel.active { display: flex; flex-direction: column; }
+
+.dt-terminal {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.dt-terminal .term-line {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.dt-terminal .term-prompt { color: var(--cyan); white-space: nowrap; }
+.dt-terminal .term-output { color: var(--text-1); word-break: break-all; }
+.dt-terminal .term-output.error { color: var(--red); }
+.dt-terminal .term-output.success { color: var(--green); }
+.dt-terminal .term-output.warn { color: var(--orange); }
+.dt-terminal .term-output.info { color: var(--purple); }
+
+.dt-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-top: 1px solid var(--border);
+  background: rgba(0,0,0,0.3);
+}
+
+.dt-input-row .term-prompt { color: var(--cyan); font-family: var(--mono); font-size: 12px; white-space: nowrap; }
+
+.dt-input {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text-0);
+  font-family: var(--mono);
+  font-size: 12px;
+  outline: none;
+  caret-color: var(--cyan);
+}
+
+.dt-inspector {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+.dt-inspector .insp-section {
+  margin-bottom: 12px;
+}
+
+.dt-inspector .insp-title {
+  font-size: 10px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.dt-inspector .insp-row {
+  display: flex;
+  gap: 8px;
+  padding: 3px 0;
+  color: var(--text-1);
+}
+
+.dt-inspector .insp-key { color: var(--purple); min-width: 100px; }
+.dt-inspector .insp-val { color: var(--green); word-break: break-all; }
+
+.dt-inspector .insp-styles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px 16px;
+}
+
+.dt-inject-canvas-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.dt-inject-canvas {
+  flex: 1;
+  cursor: crosshair;
+  display: block;
+}
+
+.dt-inject-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-top: 1px solid var(--border);
+  background: rgba(0,0,0,0.3);
+}
+
+.dt-inject-toolbar .inject-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-3);
+}
+
+.dt-inject-toolbar .inject-stat {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--orange);
+}
+
+.dt-inject-toolbar .inject-btn {
+  padding: 3px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--bg-3);
+  color: var(--text-1);
+  font-family: var(--mono);
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.dt-inject-toolbar .inject-btn:hover { background: var(--bg-4); color: var(--cyan); border-color: var(--cyan); }
+.dt-inject-toolbar .inject-btn.active { background: var(--red-dim); color: var(--red); border-color: var(--red); }
+
+.inspect-highlight {
+  outline: 2px solid var(--cyan) !important;
+  outline-offset: 2px;
+  background-color: rgba(0,212,255,0.05) !important;
+}
+
+.inject-pulse {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--red);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10000;
+  animation: injectPulse 0.8s ease-out forwards;
+}
+
+@keyframes injectPulse {
+  0% { transform: scale(0.5); opacity: 0.8; }
+  100% { transform: scale(4); opacity: 0; }
+}
+
+.inject-marker {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 8px rgba(255,71,87,0.6);
+  pointer-events: none;
+  z-index: 10000;
+  transform: translate(-50%, -50%);
+}
 </style>
 </head>
 <body>
@@ -587,6 +822,47 @@ main { padding: 20px 24px; }
       </div>
     </div>
   </main>
+</div>
+
+<div class="dev-toolbar collapsed" id="devToolbar">
+  <div class="dev-toolbar-header" id="dtHeader">
+    <span class="dt-title">DEV TOOLS</span>
+    <div class="dt-tabs">
+      <button class="dt-tab active" data-dtab="terminal">终端</button>
+      <button class="dt-tab" data-dtab="inject">注入画布</button>
+      <button class="dt-tab" data-dtab="inspector">检查器</button>
+    </div>
+    <span class="dt-toggle">▼ 展开</span>
+  </div>
+  <div class="dev-toolbar-body">
+    <div class="dt-panel active" id="dtab-terminal">
+      <div class="dt-terminal" id="termOutput"></div>
+      <div class="dt-input-row">
+        <span class="term-prompt">C-001 $</span>
+        <input type="text" class="dt-input" id="termInput" placeholder="输入命令... (help 查看帮助)" autocomplete="off">
+      </div>
+    </div>
+    <div class="dt-panel" id="dtab-inject">
+      <div class="dt-inject-canvas-wrap">
+        <canvas class="dt-inject-canvas" id="injectCanvas"></canvas>
+        <div class="dt-inject-toolbar">
+          <span class="inject-label">注入模式</span>
+          <button class="inject-btn" id="injectModeBtn" data-mode="point">点注入</button>
+          <button class="inject-btn" id="injectAreaBtn" data-mode="area">区域注入</button>
+          <button class="inject-btn" id="injectScanBtn" data-mode="scan">扫描</button>
+          <span class="inject-stat" id="injectCount">0 次注入</span>
+          <button class="inject-btn" id="injectClearBtn">清除</button>
+        </div>
+      </div>
+    </div>
+    <div class="dt-panel" id="dtab-inspector">
+      <div class="dt-inspector" id="inspectorContent">
+        <div class="insp-section">
+          <div class="insp-title">悬停页面元素查看属性</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -915,6 +1191,538 @@ setInterval(() => {
   });
   renderMetrics();
 }, 5000);
+
+// ====== DEV TOOLS ======
+const DevTools = {
+  toolbar: document.getElementById('devToolbar'),
+  header: document.getElementById('dtHeader'),
+  expanded: false,
+  activeTab: 'terminal',
+  injectMode: 'point',
+  injectCount: 0,
+  injectMarkers: [],
+  injectPoints: [],
+  scanAnim: null,
+  inspectEnabled: false,
+  lastHovered: null,
+  cmdHistory: [],
+  cmdIndex: -1,
+
+  init() {
+    this.header.addEventListener('click', (e) => {
+      if (e.target.closest('.dt-tab')) return;
+      this.toggle();
+    });
+
+    document.querySelectorAll('.dt-tab').forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.querySelectorAll('.dt-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.dt-panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        this.activeTab = tab.dataset.dtab;
+        document.getElementById('dtab-' + this.activeTab).classList.add('active');
+        if (this.activeTab === 'inject') this.resizeInjectCanvas();
+        if (this.activeTab === 'inspector') this.enableInspector();
+        else this.disableInspector();
+      });
+    });
+
+    this.setupTerminal();
+    this.setupInjection();
+    this.setupInspector();
+    this.termLog('系统', '开发者工具已初始化', 'info');
+    this.termLog('系统', '输入 help 查看可用命令', 'info');
+  },
+
+  toggle() {
+    this.expanded = !this.expanded;
+    this.toolbar.classList.toggle('collapsed', !this.expanded);
+    this.header.querySelector('.dt-toggle').textContent = this.expanded ? '▲ 收起' : '▼ 展开';
+    if (this.expanded && this.activeTab === 'inject') {
+      setTimeout(() => this.resizeInjectCanvas(), 350);
+    }
+    if (!this.expanded) this.disableInspector();
+  },
+
+  // ===== TERMINAL =====
+  setupTerminal() {
+    const input = document.getElementById('termInput');
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const cmd = input.value.trim();
+        if (cmd) {
+          this.cmdHistory.push(cmd);
+          this.cmdIndex = this.cmdHistory.length;
+          this.termLog('C-001 $', cmd);
+          this.execCommand(cmd);
+          input.value = '';
+        }
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (this.cmdIndex > 0) {
+          this.cmdIndex--;
+          input.value = this.cmdHistory[this.cmdIndex];
+        }
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (this.cmdIndex < this.cmdHistory.length - 1) {
+          this.cmdIndex++;
+          input.value = this.cmdHistory[this.cmdIndex];
+        } else {
+          this.cmdIndex = this.cmdHistory.length;
+          input.value = '';
+        }
+      }
+    });
+  },
+
+  termLog(prompt, text, type = '') {
+    const out = document.getElementById('termOutput');
+    const line = document.createElement('div');
+    line.className = 'term-line';
+    line.innerHTML = `<span class="term-prompt">${prompt}</span><span class="term-output ${type}">${text}</span>`;
+    out.appendChild(line);
+    out.scrollTop = out.scrollHeight;
+  },
+
+  execCommand(cmd) {
+    const parts = cmd.split(/\s+/);
+    const c = parts[0].toLowerCase();
+    const args = parts.slice(1);
+
+    const commands = {
+      help: () => {
+        this.termLog('系统', '可用命令:', 'info');
+        this.termLog('', '  help          显示帮助', 'info');
+        this.termLog('', '  status        集群状态概览', 'info');
+        this.termLog('', '  nodes         列出节点', 'info');
+        this.termLog('', '  services      列出服务', 'info');
+        this.termLog('', '  inject <node> 注入目标节点', 'warn');
+        this.termLog('', '  scan          扫描集群漏洞', 'info');
+        this.termLog('', '  metrics       查看指标', 'info');
+        this.termLog('', '  set <key> <val> 修改数据', 'info');
+        this.termLog('', '  alert <msg>   触发告警', 'warn');
+        this.termLog('', '  clear         清屏', 'info');
+        this.termLog('', '  reload        重新渲染', 'info');
+        this.termLog('', '  eval <code>   执行JS代码', 'warn');
+      },
+      status: () => {
+        const online = CLUSTER_DATA.nodes.filter(n => n.status !== 'critical').length;
+        this.termLog('系统', `集群: PROD-CN-EAST | 节点: ${online}/${CLUSTER_DATA.nodes.length} 健康 | 告警: ${CLUSTER_DATA.alerts.length}`, 'success');
+      },
+      nodes: () => {
+        CLUSTER_DATA.nodes.forEach(n => {
+          const tag = n.status === 'healthy' ? 'success' : n.status === 'warning' ? 'warn' : 'error';
+          this.termLog('', `  ${n.name}  CPU:${n.cpu}%  MEM:${n.mem}%  [${n.status.toUpperCase()}]`, tag);
+        });
+      },
+      services: () => {
+        CLUSTER_DATA.services.forEach(s => {
+          const tag = s.status === 'running' ? 'success' : 'error';
+          this.termLog('', `  ${s.name}  ×${s.instances}  CPU:${s.cpu}  MEM:${s.mem}  [${s.status.toUpperCase()}]`, tag);
+        });
+      },
+      inject: () => {
+        const target = args[0];
+        if (!target) {
+          this.termLog('错误', '用法: inject <node-name>', 'error');
+          return;
+        }
+        const node = CLUSTER_DATA.nodes.find(n => n.name === target);
+        if (!node) {
+          this.termLog('错误', `节点 ${target} 不存在`, 'error');
+          return;
+        }
+        this.termLog('注入', `正在注入 ${target}...`, 'warn');
+        setTimeout(() => {
+          node.cpu = Math.min(100, node.cpu + 15 + Math.floor(Math.random() * 10));
+          node.mem = Math.min(100, node.mem + 10 + Math.floor(Math.random() * 8));
+          node.status = node.cpu > 90 ? 'critical' : node.cpu > 80 ? 'warning' : 'healthy';
+          this.termLog('注入', `${target} 注入成功! CPU:${node.cpu}% MEM:${node.mem}%`, 'success');
+          renderNodes();
+        }, 800);
+      },
+      scan: () => {
+        this.termLog('扫描', '开始集群漏洞扫描...', 'info');
+        const vulns = CLUSTER_DATA.nodes.filter(n => n.cpu > 80);
+        let i = 0;
+        const scanInterval = setInterval(() => {
+          if (i >= vulns.length) {
+            clearInterval(scanInterval);
+            this.termLog('扫描', `扫描完成. 发现 ${vulns.length} 个高风险节点`, vulns.length > 0 ? 'warn' : 'success');
+            return;
+          }
+          this.termLog('扫描', `  发现: ${vulns[i].name} CPU=${vulns[i].cpu}% MEM=${vulns[i].mem}%`, 'warn');
+          i++;
+        }, 400);
+      },
+      metrics: () => {
+        CLUSTER_DATA.metrics.forEach(m => {
+          this.termLog('', `  ${m.label}: ${m.value}${m.unit} (${m.change})`, 'info');
+        });
+      },
+      set: () => {
+        const key = args[0];
+        const val = args[1];
+        if (!key || val === undefined) {
+          this.termLog('错误', '用法: set <key> <value>', 'error');
+          return;
+        }
+        try {
+          const obj = key.split('.').reduce((o, k) => o && o[k], window);
+          if (key.startsWith('CLUSTER_DATA.')) {
+            const path = key.replace('CLUSTER_DATA.', '').split('.');
+            let target = CLUSTER_DATA;
+            for (let i = 0; i < path.length - 1; i++) target = target[path[i]];
+            const lastKey = path[path.length - 1];
+            target[lastKey] = isNaN(val) ? val : parseFloat(val);
+            this.termLog('设置', `${key} = ${val}`, 'success');
+            init();
+          } else {
+            this.termLog('错误', '只能修改 CLUSTER_DATA.* 下的数据', 'error');
+          }
+        } catch (e) {
+          this.termLog('错误', e.message, 'error');
+        }
+      },
+      alert: () => {
+        const msg = args.join(' ') || '手动触发告警';
+        CLUSTER_DATA.alerts.unshift({ severity: 'warning', title: '手动告警', desc: msg, time: 'now' });
+        this.termLog('告警', `已触发: ${msg}`, 'warn');
+        renderAlerts();
+      },
+      clear: () => {
+        document.getElementById('termOutput').innerHTML = '';
+      },
+      reload: () => {
+        init();
+        this.termLog('系统', '页面已重新渲染', 'success');
+      },
+      eval: () => {
+        const code = args.join(' ');
+        try {
+          const result = eval(code);
+          this.termLog('返回', String(result), 'success');
+        } catch (e) {
+          this.termLog('错误', e.message, 'error');
+        }
+      },
+    };
+
+    if (commands[c]) {
+      commands[c]();
+    } else {
+      this.termLog('错误', `未知命令: ${c}. 输入 help 查看帮助`, 'error');
+    }
+  },
+
+  // ===== INJECTION CANVAS =====
+  setupInjection() {
+    const canvas = document.getElementById('injectCanvas');
+    const ctx = canvas.getContext('2d');
+
+    document.getElementById('injectModeBtn').addEventListener('click', () => {
+      this.injectMode = 'point';
+      this.updateInjectBtns();
+    });
+    document.getElementById('injectAreaBtn').addEventListener('click', () => {
+      this.injectMode = 'area';
+      this.updateInjectBtns();
+    });
+    document.getElementById('injectScanBtn').addEventListener('click', () => {
+      this.injectMode = 'scan';
+      this.updateInjectBtns();
+      this.runScanAnimation();
+    });
+    document.getElementById('injectClearBtn').addEventListener('click', () => {
+      this.injectPoints = [];
+      this.injectMarkers.forEach(m => m.remove());
+      this.injectMarkers = [];
+      this.injectCount = 0;
+      document.getElementById('injectCount').textContent = '0 次注入';
+      this.drawInjectCanvas();
+    });
+
+    canvas.addEventListener('click', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      if (this.injectMode === 'point') {
+        this.injectPoints.push({ x, y, type: 'point', time: Date.now() });
+        this.injectCount++;
+        this.showInjectPulse(e.clientX, e.clientY);
+        this.termLog('注入', `点注入 @ (${Math.round(x)}, ${Math.round(y)})`, 'warn');
+      } else if (this.injectMode === 'area') {
+        this.injectPoints.push({ x, y, type: 'area', radius: 30 + Math.random() * 20, time: Date.now() });
+        this.injectCount++;
+        this.showInjectPulse(e.clientX, e.clientY);
+        this.termLog('注入', `区域注入 @ (${Math.round(x)}, ${Math.round(y)}) r=${Math.round(this.injectPoints[this.injectPoints.length-1].radius)}`, 'warn');
+      }
+
+      document.getElementById('injectCount').textContent = this.injectCount + ' 次注入';
+      this.drawInjectCanvas();
+    });
+
+    this.resizeInjectCanvas();
+  },
+
+  updateInjectBtns() {
+    document.getElementById('injectModeBtn').classList.toggle('active', this.injectMode === 'point');
+    document.getElementById('injectAreaBtn').classList.toggle('active', this.injectMode === 'area');
+    document.getElementById('injectScanBtn').classList.toggle('active', this.injectMode === 'scan');
+  },
+
+  resizeInjectCanvas() {
+    const canvas = document.getElementById('injectCanvas');
+    const wrap = canvas.parentElement;
+    canvas.width = wrap.clientWidth * 2;
+    canvas.height = (wrap.clientHeight - 36) * 2;
+    canvas.style.width = wrap.clientWidth + 'px';
+    canvas.style.height = (wrap.clientHeight - 36) + 'px';
+    this.drawInjectCanvas();
+  },
+
+  drawInjectCanvas() {
+    const canvas = document.getElementById('injectCanvas');
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width, h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+
+    ctx.fillStyle = '#060a10';
+    ctx.fillRect(0, 0, w, h);
+
+    const gridSize = 30;
+    ctx.strokeStyle = 'rgba(30,45,66,0.4)';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < w; x += gridSize) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+    }
+    for (let y = 0; y < h; y += gridSize) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+    }
+
+    const nodePositions = [
+      { name: 'node-01', x: 0.15, y: 0.2 }, { name: 'node-02', x: 0.35, y: 0.15 },
+      { name: 'node-03', x: 0.55, y: 0.2 }, { name: 'node-04', x: 0.75, y: 0.15 },
+      { name: 'node-05', x: 0.15, y: 0.5 }, { name: 'node-06', x: 0.35, y: 0.45 },
+      { name: 'node-07', x: 0.55, y: 0.5 }, { name: 'node-08', x: 0.75, y: 0.45 },
+      { name: 'node-09', x: 0.15, y: 0.8 }, { name: 'node-10', x: 0.35, y: 0.75 },
+      { name: 'node-11', x: 0.55, y: 0.8 }, { name: 'node-12', x: 0.75, y: 0.75 },
+    ];
+
+    nodePositions.forEach(np => {
+      const node = CLUSTER_DATA.nodes.find(n => n.name === np.name);
+      if (!node) return;
+      const nx = np.x * w, ny = np.y * h;
+      const colors = { healthy: '#00ff88', warning: '#ffa502', critical: '#ff4757' };
+      const color = colors[node.status];
+
+      ctx.beginPath();
+      ctx.arc(nx, ny, 16, 0, Math.PI * 2);
+      ctx.fillStyle = color + '30';
+      ctx.fill();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.fillStyle = '#f0f4f8';
+      ctx.font = '16px IBM Plex Mono';
+      ctx.textAlign = 'center';
+      ctx.fillText(np.name.replace('node-', 'N'), nx, ny + 5);
+
+      ctx.fillStyle = color;
+      ctx.font = '12px IBM Plex Mono';
+      ctx.fillText(`${node.cpu}%`, nx, ny + 28);
+    });
+
+    nodePositions.forEach((np, i) => {
+      if (i < nodePositions.length - 1) {
+        const next = nodePositions[i + 1];
+        if (Math.abs(np.y - next.y) < 0.1 || Math.abs(np.x - next.x) < 0.1) {
+          ctx.beginPath();
+          ctx.moveTo(np.x * w, np.y * h);
+          ctx.lineTo(next.x * w, next.y * h);
+          ctx.strokeStyle = 'rgba(0,212,255,0.15)';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+    });
+
+    this.injectPoints.forEach(p => {
+      const age = (Date.now() - p.time) / 1000;
+      const alpha = Math.max(0.3, 1 - age * 0.05);
+
+      if (p.type === 'point') {
+        ctx.beginPath();
+        ctx.arc(p.x * 2, p.y * 2, 6, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,71,87,${alpha})`;
+        ctx.fill();
+        ctx.strokeStyle = `rgba(255,71,87,${alpha * 0.5})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(p.x * 2, p.y * 2, 14, 0, Math.PI * 2);
+        ctx.stroke();
+      } else if (p.type === 'area') {
+        ctx.beginPath();
+        ctx.arc(p.x * 2, p.y * 2, p.radius * 2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,71,87,${alpha * 0.15})`;
+        ctx.fill();
+        ctx.strokeStyle = `rgba(255,71,87,${alpha * 0.6})`;
+        ctx.lineWidth = 2;
+        ctx.setLineDash([6, 4]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      } else if (p.type === 'scan') {
+        ctx.beginPath();
+        ctx.arc(p.x * 2, p.y * 2, p.radius * 2, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(0,212,255,${alpha * 0.5})`;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+    });
+  },
+
+  showInjectPulse(clientX, clientY) {
+    const pulse = document.createElement('div');
+    pulse.className = 'inject-pulse';
+    pulse.style.left = (clientX - 10) + 'px';
+    pulse.style.top = (clientY - 10) + 'px';
+    document.body.appendChild(pulse);
+    setTimeout(() => pulse.remove(), 800);
+
+    const marker = document.createElement('div');
+    marker.className = 'inject-marker';
+    marker.style.left = clientX + 'px';
+    marker.style.top = clientY + 'px';
+    document.body.appendChild(marker);
+    this.injectMarkers.push(marker);
+  },
+
+  runScanAnimation() {
+    const canvas = document.getElementById('injectCanvas');
+    const w = canvas.width / 2, h = canvas.height / 2;
+    let scanY = 0;
+    if (this.scanAnim) cancelAnimationFrame(this.scanAnim);
+
+    const scan = () => {
+      scanY += 3;
+      if (scanY > h) {
+        this.termLog('扫描', '画布扫描完成', 'success');
+        return;
+      }
+      this.injectPoints.push({ x: w / 2, y: scanY, type: 'scan', radius: w * 0.6, time: Date.now() });
+      this.drawInjectCanvas();
+      this.scanAnim = requestAnimationFrame(scan);
+    };
+    this.termLog('扫描', '开始画布扫描...', 'info');
+    scan();
+  },
+
+  // ===== INSPECTOR =====
+  setupInspector() {
+    document.addEventListener('mouseover', (e) => {
+      if (!this.inspectEnabled) return;
+      if (e.target.closest('.dev-toolbar')) return;
+      if (this.lastHovered && this.lastHovered !== e.target) {
+        this.lastHovered.classList.remove('inspect-highlight');
+      }
+      e.target.classList.add('inspect-highlight');
+      this.lastHovered = e.target;
+      this.updateInspector(e.target);
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!this.inspectEnabled) return;
+      if (e.target.closest('.dev-toolbar')) return;
+      e.preventDefault();
+      e.stopPropagation();
+      this.updateInspector(e.target, true);
+    }, true);
+  },
+
+  enableInspector() {
+    this.inspectEnabled = true;
+    document.body.style.cursor = 'crosshair';
+  },
+
+  disableInspector() {
+    this.inspectEnabled = false;
+    document.body.style.cursor = '';
+    if (this.lastHovered) {
+      this.lastHovered.classList.remove('inspect-highlight');
+      this.lastHovered = null;
+    }
+  },
+
+  updateInspector(el, pinned = false) {
+    const content = document.getElementById('inspectorContent');
+    const styles = window.getComputedStyle(el);
+    const rect = el.getBoundingClientRect();
+
+    let html = '';
+
+    html += '<div class="insp-section">';
+    html += `<div class="insp-title">${pinned ? '📌 已固定' : '悬停中'}</div>`;
+    html += `<div class="insp-row"><span class="insp-key">标签</span><span class="insp-val">&lt;${el.tagName.toLowerCase()}&gt;</span></div>`;
+    if (el.id) html += `<div class="insp-row"><span class="insp-key">ID</span><span class="insp-val">#${el.id}</span></div>`;
+    if (el.className && typeof el.className === 'string') {
+      html += `<div class="insp-row"><span class="insp-key">Class</span><span class="insp-val">.${el.className.split(' ').join('.')}</span></div>`;
+    }
+    html += `<div class="insp-row"><span class="insp-key">尺寸</span><span class="insp-val">${Math.round(rect.width)}×${Math.round(rect.height)}</span></div>`;
+    html += `<div class="insp-row"><span class="insp-key">位置</span><span class="insp-val">x:${Math.round(rect.x)} y:${Math.round(rect.y)}</span></div>`;
+    html += '</div>';
+
+    html += '<div class="insp-section">';
+    html += '<div class="insp-title">样式</div>';
+    html += '<div class="insp-styles">';
+    const styleProps = [
+      ['display', styles.display], ['color', styles.color],
+      ['background', styles.backgroundColor], ['font-size', styles.fontSize],
+      ['font-family', styles.fontFamily.split(',')[0]], ['padding', styles.padding],
+      ['margin', styles.margin], ['border', styles.borderRadius],
+      ['opacity', styles.opacity], ['overflow', styles.overflow],
+      ['position', styles.position], ['z-index', styles.zIndex],
+    ];
+    styleProps.forEach(([k, v]) => {
+      html += `<div class="insp-row"><span class="insp-key">${k}</span><span class="insp-val">${v}</span></div>`;
+    });
+    html += '</div></div>';
+
+    if (el.children.length > 0) {
+      html += '<div class="insp-section">';
+      html += `<div class="insp-title">子元素 (${el.children.length})</div>`;
+      Array.from(el.children).slice(0, 8).forEach(child => {
+        html += `<div class="insp-row"><span class="insp-key">&lt;${child.tagName.toLowerCase()}&gt;</span><span class="insp-val">${child.id ? '#' + child.id : child.className ? '.' + child.className.split(' ')[0] : ''}</span></div>`;
+      });
+      if (el.children.length > 8) {
+        html += `<div class="insp-row"><span class="insp-key">...</span><span class="insp-val">+${el.children.length - 8} 更多</span></div>`;
+      }
+      html += '</div>';
+    }
+
+    const attrs = [];
+    for (const attr of el.attributes) {
+      if (!['class', 'id', 'style'].includes(attr.name)) {
+        attrs.push(attr);
+      }
+    }
+    if (attrs.length > 0) {
+      html += '<div class="insp-section">';
+      html += '<div class="insp-title">属性</div>';
+      attrs.slice(0, 6).forEach(attr => {
+        html += `<div class="insp-row"><span class="insp-key">${attr.name}</span><span class="insp-val">${attr.value.substring(0, 50)}</span></div>`;
+      });
+      html += '</div>';
+    }
+
+    content.innerHTML = html;
+  },
+};
+
+DevTools.init();
 </script>
 </body>
 </html>
