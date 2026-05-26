@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { ColorBlock, ExtractedFrame, UploadedFile, SkillItem } from '@/types'
+import type { ColorBlock, ExtractedFrame, UploadedFile, SkillItem, Entry, EntryState } from '@/types'
 
 interface AppState {
   uploadedFiles: UploadedFile[]
@@ -10,6 +10,9 @@ interface AppState {
   captureFrequency: number
   scriptCode: string
   skillsQuery: string
+  entries: Entry[]
+  emitEntryParticles: boolean
+  emitCodeDiff: boolean
 
   addUploadedFile: (file: UploadedFile) => void
   removeUploadedFile: (id: string) => void
@@ -21,6 +24,12 @@ interface AppState {
   setCaptureFrequency: (freq: number) => void
   setScriptCode: (code: string) => void
   setSkillsQuery: (query: string) => void
+  addEntry: (entry: Omit<Entry, 'id'>) => void
+  removeEntry: (id: string) => void
+  updateEntryState: (id: string, state: EntryState) => void
+  updateEntryPosition: (id: string, x: number, y: number) => void
+  setEmitEntryParticles: (v: boolean) => void
+  setEmitCodeDiff: (v: boolean) => void
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -32,6 +41,16 @@ export const useAppStore = create<AppState>((set) => ({
   captureFrequency: 2,
   scriptCode: `// C3 创意脚本 - PID语言\n// 从图片提取色块并可视化\n\nfunction extractColors(imageData, numColors = 8) {\n  const pixels = imageData.data;\n  const colorMap = {};\n  \n  for (let i = 0; i < pixels.length; i += 4) {\n    const r = Math.round(pixels[i] / 32) * 32;\n    const g = Math.round(pixels[i+1] / 32) * 32;\n    const b = Math.round(pixels[i+2] / 32) * 32;\n    const key = \`\${r},\${g},\${b}\`;\n    colorMap[key] = (colorMap[key] || 0) + 1;\n  }\n  \n  return Object.entries(colorMap)\n    .sort((a, b) => b[1] - a[1])\n    .slice(0, numColors)\n    .map(([key, count]) => {\n      const [r, g, b] = key.split(',').map(Number);\n      return { rgb: [r, g, b], count };\n    });\n}\n\nconsole.log("C3 脚本已加载");`,
   skillsQuery: '',
+  entries: [
+    { id: 'e1', text: 'extractColors', state: 'idle' as EntryState, color: '#00ff88', x: 20, y: 20, particleCount: 30 },
+    { id: 'e2', text: 'syncVideo', state: 'idle' as EntryState, color: '#ff0066', x: 20, y: 60, particleCount: 25 },
+    { id: 'e3', text: 'overclock', state: 'idle' as EntryState, color: '#00ccff', x: 20, y: 100, particleCount: 35 },
+    { id: 'e4', text: 'gradientMesh', state: 'idle' as EntryState, color: '#ffaa00', x: 20, y: 140, particleCount: 20 },
+    { id: 'e5', text: 'colorPulse', state: 'idle' as EntryState, color: '#ff44cc', x: 20, y: 180, particleCount: 28 },
+    { id: 'e6', text: 'frameDiff', state: 'idle' as EntryState, color: '#44ffcc', x: 20, y: 220, particleCount: 22 },
+  ],
+  emitEntryParticles: true,
+  emitCodeDiff: true,
 
   addUploadedFile: (file) =>
     set((state) => ({ uploadedFiles: [...state.uploadedFiles, file] })),
@@ -58,6 +77,28 @@ export const useAppStore = create<AppState>((set) => ({
   setScriptCode: (code) => set({ scriptCode: code }),
 
   setSkillsQuery: (query) => set({ skillsQuery: query }),
+
+  addEntry: (entry) =>
+    set((state) => ({
+      entries: [...state.entries, { ...entry, id: `e-${Date.now()}-${Math.random().toString(36).slice(2, 6)}` }],
+    })),
+
+  removeEntry: (id) =>
+    set((state) => ({ entries: state.entries.filter((e) => e.id !== id) })),
+
+  updateEntryState: (id, newState) =>
+    set((state) => ({
+      entries: state.entries.map((e) => (e.id === id ? { ...e, state: newState } : e)),
+    })),
+
+  updateEntryPosition: (id, x, y) =>
+    set((state) => ({
+      entries: state.entries.map((e) => (e.id === id ? { ...e, x, y } : e)),
+    })),
+
+  setEmitEntryParticles: (v) => set({ emitEntryParticles: v }),
+
+  setEmitCodeDiff: (v) => set({ emitCodeDiff: v }),
 }))
 
 export const SKILLS_DATA: SkillItem[] = [

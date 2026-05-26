@@ -26,3 +26,30 @@ export interface UploadedFile {
   url: string
   file: File
 }
+
+export type EntryState = 'idle' | 'active' | 'particle'
+
+export interface Entry {
+  id: string
+  text: string
+  state: EntryState
+  color: string
+  x: number
+  y: number
+  particleCount: number
+}
+
+export interface Particle {
+  id: string
+  x: number
+  y: number
+  vx: number
+  vy: number
+  life: number
+  maxLife: number
+  size: number
+  color: string
+  alpha: number
+  entryId: string
+  char: string
+}
