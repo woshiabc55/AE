@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PIXEL FORGE — 像素风图像动画工坊</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap');
+
+:root {
+  --bg: #0a0a0f;
+  --bg2: #12121c;
+  --fg: #e0ffe0;
+  --fg-dim: #5a7a5a;
+  --accent: #00ff88;
+  --accent2: #ff3366;
+  --accent3: #44ddff;
+  --card: #16162288;
+  --border: #2a3a2a;
+  --glow: 0 0 12px rgba(0,255,136,0.3);
+  --glow2: 0 0 12px rgba(255,51,102,0.3);
+  --scanline: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.15) 2px,
+    rgba(0,0,0,0.15) 4px
+  );
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Share Tech Mono', monospace;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: var(--scanline);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.6) 100%);
+  pointer-events: none;
+  z-index: 9998;
+}
+
+.app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 20px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+header h1 {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 28px;
+  color: var(--accent);
+  text-shadow: 0 0 20px rgba(0,255,136,0.5), 0 0 40px rgba(0,255,136,0.2);
+  letter-spacing: 4px;
+  margin-bottom: 8px;
+  animation: titlePulse 3s ease-in-out infinite;
+}
+
+header .subtitle {
+  font-size: 13px;
+  color: var(--fg-dim);
+  letter-spacing: 6px;
+  text-transform: uppercase;
+}
+
+@keyframes titlePulse {
+  0%,100% { text-shadow: 0 0 20px rgba(0,255,136,0.5), 0 0 40px rgba(0,255,136,0.2); }
+  50% { text-shadow: 0 0 30px rgba(0,255,136,0.8), 0 0 60px rgba(0,255,136,0.4); }
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 800px) {
+  .workspace { grid-template-columns: 1fr; }
+}
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 16px;
+  position: relative;
+  backdrop-filter: blur(8px);
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: -1px; right: -1px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  border-radius: 4px 4px 0 0;
+}
+
+.panel-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  color: var(--accent);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  letter-spacing: 2px;
+}
+
+.upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: 4px;
+  padding: 28px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.upload-zone:hover {
+  border-color: var(--accent);
+  background: rgba(0,255,136,0.03);
+}
+
+.upload-zone.has-image {
+  padding: 8px;
+  border-style: solid;
+  border-color: var(--accent);
+}
+
+.upload-zone .icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.upload-zone .hint {
+  font-size: 11px;
+  color: var(--fg-dim);
+  line-height: 1.6;
+}
+
+.upload-zone img {
+  max-width: 100%;
+  max-height: 160px;
+  image-rendering: pixelated;
+  border-radius: 2px;
+}
+
+.upload-zone input { display: none; }
+
+.effect-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.effect-tab {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--fg-dim);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  padding: 10px 12px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.effect-tab:hover {
+  border-color: var(--accent);
+  color: var(--fg);
+}
+
+.effect-tab.active {
+  background: rgba(0,255,136,0.1);
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: var(--glow);
+}
+
+.effect-tab .tab-icon {
+  font-size: 14px;
+  width: 20px;
+  text-align: center;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.control-group label {
+  display: block;
+  font-size: 10px;
+  color: var(--fg-dim);
+  margin-bottom: 6px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.control-group .value-display {
+  float: right;
+  color: var(--accent);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  background: var(--accent);
+  border-radius: 2px;
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(0,255,136,0.4);
+}
+
+.btn-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.btn {
+  flex: 1;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  padding: 10px 8px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn-primary {
+  background: rgba(0,255,136,0.15);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.btn-primary:hover {
+  background: rgba(0,255,136,0.3);
+  box-shadow: var(--glow);
+}
+
+.btn-danger {
+  background: rgba(255,51,102,0.1);
+  color: var(--accent2);
+  border-color: var(--accent2);
+}
+
+.btn-danger:hover {
+  background: rgba(255,51,102,0.2);
+  box-shadow: var(--glow2);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--fg-dim);
+}
+
+.btn-secondary:hover {
+  color: var(--fg);
+  border-color: var(--fg-dim);
+}
+
+.canvas-area {
+  position: relative;
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.canvas-area::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: -1px; right: -1px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent2), var(--accent3), var(--accent));
+  border-radius: 4px 4px 0 0;
+}
+
+.canvas-area canvas {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  max-width: 100%;
+  max-height: 70vh;
+}
+
+.canvas-placeholder {
+  text-align: center;
+  color: var(--fg-dim);
+  padding: 40px;
+}
+
+.canvas-placeholder .big-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  display: block;
+  opacity: 0.4;
+}
+
+.canvas-placeholder p {
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.status-bar {
+  margin-top: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  color: var(--fg-dim);
+  padding: 8px 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+
+.status-bar .fps {
+  color: var(--accent);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+}
+
+.status-bar .info {
+  color: var(--fg-dim);
+}
+
+.effect-params {
+  min-height: 180px;
+}
+
+.wave-type-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.wave-type-btn {
+  flex: 1;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  padding: 6px 4px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--fg-dim);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.wave-type-btn.active {
+  background: rgba(68,221,255,0.15);
+  border-color: var(--accent3);
+  color: var(--accent3);
+}
+
+.wave-type-btn:hover {
+  border-color: var(--accent3);
+}
+
+.export-section {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.pixel-grid-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 36px;
+  height: 18px;
+  background: var(--border);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.toggle-switch.on {
+  background: rgba(0,255,136,0.4);
+}
+
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  background: var(--fg-dim);
+  border-radius: 50%;
+  transition: all 0.3s;
+}
+
+.toggle-switch.on::after {
+  left: 20px;
+  background: var(--accent);
+}
+
+.toggle-label {
+  font-size: 10px;
+  color: var(--fg-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>PIXEL FORGE</h1>
+    <div class="subtitle">像素风图像动画工坊</div>
+  </header>
+
+  <div class="workspace">
+    <aside>
+      <div class="panel" style="margin-bottom:16px">
+        <div class="panel-title">◈ 图像源</div>
+        <div class="upload-zone" id="uploadZone">
+          <span class="icon">📂</span>
+          <div class="hint">点击或拖拽上传图像<br>支持 PNG / JPG / GIF</div>
+          <input type="file" id="fileInput" accept="image/*">
+        </div>
+      </div>
+
+      <div class="panel" style="margin-bottom:16px">
+        <div class="panel-title">◈ 效果选择</div>
+        <div class="effect-tabs">
+          <button class="effect-tab active" data-effect="pixelate">
+            <span class="tab-icon">▦</span>
+            <span>像素化</span>
+          </button>
+          <button class="effect-tab" data-effect="ionize">
+            <span class="tab-icon">✧</span>
+            <span>离子化消散</span>
+          </button>
+          <button class="effect-tab" data-effect="wave">
+            <span class="tab-icon">〰</span>
+            <span>波浪纹线条</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">◈ 参数调节</div>
+        <div class="effect-params" id="effectParams">
+          <!-- Dynamic params injected here -->
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="btnPlay">▶ 播放</button>
+          <button class="btn btn-danger" id="btnReset">↺ 重置</button>
+        </div>
+        <div class="export-section">
+          <button class="btn btn-secondary" id="btnExport" style="width:100%">⬇ 导出当前帧</button>
+        </div>
+      </div>
+    </aside>
+
+    <main>
+      <div class="canvas-area" id="canvasArea">
+        <canvas id="mainCanvas"></canvas>
+        <div class="canvas-placeholder" id="placeholder">
+          <span class="big-icon">◈</span>
+          <p>上传一张图像开始<br>选择效果并调节参数<br>点击播放查看动画</p>
+        </div>
+      </div>
+      <div class="status-bar">
+        <span class="info" id="statusInfo">等待图像输入...</span>
+        <span class="fps" id="fpsDisplay">0 FPS</span>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+
+const canvas = $('#mainCanvas');
+const ctx = canvas.getContext('2d');
+const uploadZone = $('#uploadZone');
+const fileInput = $('#fileInput');
+const placeholder = $('#placeholder');
+const effectParams = $('#effectParams');
+const statusInfo = $('#statusInfo');
+const fpsDisplay = $('#fpsDisplay');
+
+let sourceImage = null;
+let sourceData = null;
+let currentEffect = 'pixelate';
+let animating = false;
+let animId = null;
+let startTime = 0;
+let frameCount = 0;
+let lastFpsTime = 0;
+let particles = [];
+let waveLines = [];
+
+const params = {
+  pixelate: { pixelSize: 8, gridShow: false },
+  ionize: { pixelSize: 4, speed: 2.0, spread: 1.5, gravity: 0.3, fade: true },
+  wave: { amplitude: 20, frequency: 0.03, speed: 2.0, waveType: 'sine', lineWidth: 2, gap: 3 }
+};
+
+function loadDefaultImage() {
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    sourceImage = img;
+    uploadZone.classList.add('has-image');
+    uploadZone.innerHTML = '<img src="' + img.src + '" alt="source"><input type="file" id="fileInput" accept="image/*">';
+    const newInput = uploadZone.querySelector('input');
+    newInput.addEventListener('change', handleFile);
+    initCanvas();
+    statusInfo.textContent = `图像已加载 ${img.naturalWidth}×${img.naturalHeight}`;
+  };
+  img.src = 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=pixel%20art%20portrait%20of%20a%20cyberpunk%20warrior%20neon%20colors%20detailed%20retro%20game%20character&image_size=square';
+}
+
+uploadZone.addEventListener('click', () => fileInput.click());
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.style.borderColor = 'var(--accent)'; });
+uploadZone.addEventListener('dragleave', () => { uploadZone.style.borderColor = ''; });
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadZone.style.borderColor = '';
+  if (e.dataTransfer.files.length) handleFileObj(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', handleFile);
+
+function handleFile(e) {
+  if (e.target.files.length) handleFileObj(e.target.files[0]);
+}
+
+function handleFileObj(file) {
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      sourceImage = img;
+      uploadZone.classList.add('has-image');
+      uploadZone.innerHTML = `<img src="${ev.target.result}" alt="source"><input type="file" id="fileInput" accept="image/*">`;
+      uploadZone.querySelector('input').addEventListener('change', handleFile);
+      stopAnimation();
+      initCanvas();
+      statusInfo.textContent = `图像已加载 ${img.naturalWidth}×${img.naturalHeight}`;
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function initCanvas() {
+  if (!sourceImage) return;
+  const maxW = 800, maxH = 600;
+  let w = sourceImage.naturalWidth, h = sourceImage.naturalHeight;
+  if (w > maxW) { h = h * maxW / w; w = maxW; }
+  if (h > maxH) { w = w * maxH / h; h = maxH; }
+  w = Math.floor(w); h = Math.floor(h);
+  canvas.width = w;
+  canvas.height = h;
+  canvas.style.display = 'block';
+  placeholder.style.display = 'none';
+
+  const tempCanvas = document.createElement('canvas');
+  tempCanvas.width = w; tempCanvas.height = h;
+  const tempCtx = tempCanvas.getContext('2d');
+  tempCtx.drawImage(sourceImage, 0, 0, w, h);
+  sourceData = tempCtx.getImageData(0, 0, w, h);
+
+  ctx.drawImage(sourceImage, 0, 0, w, h);
+  renderEffect();
+}
+
+$$('.effect-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    $$('.effect-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentEffect = tab.dataset.effect;
+    stopAnimation();
+    buildParams();
+    renderEffect();
+  });
+});
+
+function buildParams() {
+  let html = '';
+  if (currentEffect === 'pixelate') {
+    html = `
+      <div class="control-group">
+        <label>像素尺寸 <span class="value-display" id="valPixelSize">${params.pixelate.pixelSize}</span></label>
+        <input type="range" min="2" max="32" value="${params.pixelate.pixelSize}" id="ctrlPixelSize">
+      </div>
+      <div class="pixel-grid-toggle">
+        <div class="toggle-switch ${params.pixelate.gridShow?'on':''}" id="toggleGrid"></div>
+        <span class="toggle-label">显示网格线</span>
+      </div>
+    `;
+  } else if (currentEffect === 'ionize') {
+    html = `
+      <div class="control-group">
+        <label>像素尺寸 <span class="value-display" id="valIonPixelSize">${params.ionize.pixelSize}</span></label>
+        <input type="range" min="2" max="16" value="${params.ionize.pixelSize}" id="ctrlIonPixelSize">
+      </div>
+      <div class="control-group">
+        <label>扩散速度 <span class="value-display" id="valIonSpeed">${params.ionize.speed.toFixed(1)}</span></label>
+        <input type="range" min="0.5" max="5" step="0.1" value="${params.ionize.speed}" id="ctrlIonSpeed">
+      </div>
+      <div class="control-group">
+        <label>扩散范围 <span class="value-display" id="valIonSpread">${params.ionize.spread.toFixed(1)}</span></label>
+        <input type="range" min="0.5" max="4" step="0.1" value="${params.ionize.spread}" id="ctrlIonSpread">
+      </div>
+      <div class="control-group">
+        <label>重力 <span class="value-display" id="valIonGravity">${params.ionize.gravity.toFixed(1)}</span></label>
+        <input type="range" min="0" max="2" step="0.1" value="${params.ionize.gravity}" id="ctrlIonGravity">
+      </div>
+      <div class="pixel-grid-toggle">
+        <div class="toggle-switch ${params.ionize.fade?'on':''}" id="toggleFade"></div>
+        <span class="toggle-label">渐隐消散</span>
+      </div>
+    `;
+  } else if (currentEffect === 'wave') {
+    html = `
+      <div class="control-group">
+        <label>振幅 <span class="value-display" id="valWaveAmp">${params.wave.amplitude}</span></label>
+        <input type="range" min="2" max="60" value="${params.wave.amplitude}" id="ctrlWaveAmp">
+      </div>
+      <div class="control-group">
+        <label>频率 <span class="value-display" id="valWaveFreq">${params.wave.frequency.toFixed(3)}</span></label>
+        <input type="range" min="0.005" max="0.1" step="0.001" value="${params.wave.frequency}" id="ctrlWaveFreq">
+      </div>
+      <div class="control-group">
+        <label>速度 <span class="value-display" id="valWaveSpeed">${params.wave.speed.toFixed(1)}</span></label>
+        <input type="range" min="0.5" max="8" step="0.1" value="${params.wave.speed}" id="ctrlWaveSpeed">
+      </div>
+      <div class="control-group">
+        <label>线宽 <span class="value-display" id="valWaveLineW">${params.wave.lineWidth}</span></label>
+        <input type="range" min="1" max="6" value="${params.wave.lineWidth}" id="ctrlWaveLineW">
+      </div>
+      <div class="control-group">
+        <label>行间距 <span class="value-display" id="valWaveGap">${params.wave.gap}</span></label>
+        <input type="range" min="1" max="8" value="${params.wave.gap}" id="ctrlWaveGap">
+      </div>
+      <div class="control-group">
+        <label>波形类型</label>
+        <div class="wave-type-row">
+          <button class="wave-type-btn ${params.wave.waveType==='sine'?'active':''}" data-wtype="sine">正弦</button>
+          <button class="wave-type-btn ${params.wave.waveType==='triangle'?'active':''}" data-wtype="triangle">三角</button>
+          <button class="wave-type-btn ${params.wave.waveType==='sawtooth'?'active':''}" data-wtype="sawtooth">锯齿</button>
+        </div>
+      </div>
+    `;
+  }
+  effectParams.innerHTML = html;
+  bindParamEvents();
+}
+
+function bindParamEvents() {
+  const bind = (id, obj, key, fmt) => {
+    const el = $(`#${id}`);
+    if (!el) return;
+    el.addEventListener('input', () => {
+      obj[key] = parseFloat(el.value);
+      const valEl = $(`#val${id.replace('ctrl','')}`);
+      if (valEl) valEl.textContent = fmt ? fmt(obj[key]) : obj[key];
+      if (!animating) renderEffect();
+    });
+  };
+
+  if (currentEffect === 'pixelate') {
+    bind('ctrlPixelSize', params.pixelate, 'pixelSize');
+    const tg = $('#toggleGrid');
+    if (tg) tg.addEventListener('click', () => {
+      params.pixelate.gridShow = !params.pixelate.gridShow;
+      tg.classList.toggle('on');
+      if (!animating) renderEffect();
+    });
+  } else if (currentEffect === 'ionize') {
+    bind('ctrlIonPixelSize', params.ionize, 'pixelSize');
+    bind('ctrlIonSpeed', params.ionize, 'speed', v => v.toFixed(1));
+    bind('ctrlIonSpread', params.ionize, 'spread', v => v.toFixed(1));
+    bind('ctrlIonGravity', params.ionize, 'gravity', v => v.toFixed(1));
+    const tf = $('#toggleFade');
+    if (tf) tf.addEventListener('click', () => {
+      params.ionize.fade = !params.ionize.fade;
+      tf.classList.toggle('on');
+    });
+  } else if (currentEffect === 'wave') {
+    bind('ctrlWaveAmp', params.wave, 'amplitude');
+    bind('ctrlWaveFreq', params.wave, 'frequency', v => v.toFixed(3));
+    bind('ctrlWaveSpeed', params.wave, 'speed', v => v.toFixed(1));
+    bind('ctrlWaveLineW', params.wave, 'lineWidth');
+    bind('ctrlWaveGap', params.wave, 'gap');
+    $$('.wave-type-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        $$('.wave-type-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        params.wave.waveType = btn.dataset.wtype;
+        if (!animating) renderEffect();
+      });
+    });
+  }
+}
+
+function renderEffect(time = 0) {
+  if (!sourceData) return;
+  if (currentEffect === 'pixelate') renderPixelate(time);
+  else if (currentEffect === 'ionize') renderIonize(time);
+  else if (currentEffect === 'wave') renderWave(time);
+}
+
+function renderPixelate(time) {
+  const { pixelSize, gridShow } = params.pixelate;
+  const w = canvas.width, h = canvas.height;
+  const data = sourceData.data;
+
+  ctx.clearRect(0, 0, w, h);
+
+  for (let y = 0; y < h; y += pixelSize) {
+    for (let x = 0; x < w; x += pixelSize) {
+      let r = 0, g = 0, b = 0, count = 0;
+      for (let dy = 0; dy < pixelSize && y + dy < h; dy++) {
+        for (let dx = 0; dx < pixelSize && x + dx < w; dx++) {
+          const idx = ((y + dy) * w + (x + dx)) * 4;
+          r += data[idx]; g += data[idx+1]; b += data[idx+2]; count++;
+        }
+      }
+      r = Math.round(r/count); g = Math.round(g/count); b = Math.round(b/count);
+      ctx.fillStyle = `rgb(${r},${g},${b})`;
+      ctx.fillRect(x, y, pixelSize, pixelSize);
+    }
+  }
+
+  if (gridShow) {
+    ctx.strokeStyle = 'rgba(0,255,136,0.15)';
+    ctx.lineWidth = 0.5;
+    for (let x = 0; x < w; x += pixelSize) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+    }
+    for (let y = 0; y < h; y += pixelSize) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+    }
+  }
+}
+
+function initIonizeParticles() {
+  particles = [];
+  const { pixelSize } = params.ionize;
+  const w = canvas.width, h = canvas.height;
+  const data = sourceData.data;
+
+  for (let y = 0; y < h; y += pixelSize) {
+    for (let x = 0; x < w; x += pixelSize) {
+      let r = 0, g = 0, b = 0, a = 0, count = 0;
+      for (let dy = 0; dy < pixelSize && y + dy < h; dy++) {
+        for (let dx = 0; dx < pixelSize && x + dx < w; dx++) {
+          const idx = ((y + dy) * w + (x + dx)) * 4;
+          r += data[idx]; g += data[idx+1]; b += data[idx+2]; a += data[idx+3]; count++;
+        }
+      }
+      r = Math.round(r/count); g = Math.round(g/count); b = Math.round(b/count); a = Math.round(a/count);
+      const angle = Math.random() * Math.PI * 2;
+      const force = Math.random() * params.ionize.spread;
+      particles.push({
+        x: x + pixelSize/2,
+        y: y + pixelSize/2,
+        originX: x + pixelSize/2,
+        originY: y + pixelSize/2,
+        vx: Math.cos(angle) * force,
+        vy: Math.sin(angle) * force,
+        r, g, b, a: a/255,
+        size: pixelSize,
+        life: 1.0,
+        delay: Math.random() * 0.5
+      });
+    }
+  }
+}
+
+function renderIonize(time) {
+  const w = canvas.width, h = canvas.height;
+  const { speed, gravity, fade, pixelSize } = params.ionize;
+  const t = time / 1000;
+
+  if (particles.length === 0) initIonizeParticles();
+
+  ctx.clearRect(0, 0, w, h);
+
+  for (let i = 0; i < particles.length; i++) {
+    const p = particles[i];
+    const elapsed = Math.max(0, t - p.delay);
+    if (elapsed <= 0 && animating) {
+      ctx.fillStyle = `rgba(${p.r},${p.g},${p.b},${p.a})`;
+      ctx.fillRect(p.originX - p.size/2, p.originY - p.size/2, p.size, p.size);
+      continue;
+    }
+
+    const px = p.originX + p.vx * elapsed * speed * 60;
+    const py = p.originY + p.vy * elapsed * speed * 60 + gravity * elapsed * elapsed * 300;
+    let alpha = p.a;
+    if (fade) {
+      alpha = p.a * Math.max(0, 1 - elapsed * 0.8);
+    }
+
+    if (alpha <= 0.01) continue;
+
+    ctx.fillStyle = `rgba(${p.r},${p.g},${p.b},${alpha})`;
+    const s = p.size * (1 + elapsed * 0.3);
+    ctx.fillRect(px - s/2, py - s/2, s, s);
+  }
+}
+
+function getWaveValue(phase, type) {
+  switch(type) {
+    case 'sine': return Math.sin(phase);
+    case 'triangle': return 2 * Math.abs(2 * (phase / (2*Math.PI) - Math.floor(phase / (2*Math.PI) + 0.5))) - 1;
+    case 'sawtooth': return 2 * (phase / (2*Math.PI) - Math.floor(phase / (2*Math.PI) + 0.5));
+    default: return Math.sin(phase);
+  }
+}
+
+function renderWave(time) {
+  const w = canvas.width, h = canvas.height;
+  const { amplitude, frequency, speed, waveType, lineWidth, gap } = params.wave;
+  const data = sourceData.data;
+  const t = time / 1000;
+
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = '#0a0a0f';
+  ctx.fillRect(0, 0, w, h);
+
+  const rowStep = gap + 1;
+
+  for (let row = 0; row < h; row += rowStep) {
+    ctx.beginPath();
+    ctx.lineWidth = lineWidth;
+
+    let prevX = null, prevY = null;
+
+    for (let x = 0; x < w; x++) {
+      const phase = x * frequency * Math.PI * 2 + t * speed;
+      const offset = getWaveValue(phase, waveType) * amplitude;
+
+      const drawY = row + offset;
+
+      if (x === 0) {
+        ctx.moveTo(x, drawY);
+      } else {
+        ctx.lineTo(x, drawY);
+      }
+
+      prevX = x;
+      prevY = drawY;
+    }
+
+    const sampleY = Math.min(Math.max(Math.round(row), 0), h - 1);
+    let r = 0, g = 0, b = 0, count = 0;
+    for (let dx = 0; dx < w; dx += 4) {
+      const idx = (sampleY * w + dx) * 4;
+      r += data[idx]; g += data[idx+1]; b += data[idx+2]; count++;
+    }
+    if (count > 0) {
+      r = Math.round(r/count); g = Math.round(g/count); b = Math.round(b/count);
+    }
+
+    ctx.strokeStyle = `rgba(${r},${g},${b},0.9)`;
+    ctx.stroke();
+
+    ctx.strokeStyle = `rgba(${Math.min(255,r+40)},${Math.min(255,g+40)},${Math.min(255,b+40)},0.3)`;
+    ctx.lineWidth = lineWidth + 2;
+    ctx.stroke();
+    ctx.lineWidth = lineWidth;
+  }
+}
+
+$('#btnPlay').addEventListener('click', () => {
+  if (animating) {
+    stopAnimation();
+  } else {
+    startAnimation();
+  }
+});
+
+$('#btnReset').addEventListener('click', () => {
+  stopAnimation();
+  if (currentEffect === 'ionize') {
+    particles = [];
+  }
+  if (sourceData) {
+    renderEffect(0);
+  }
+});
+
+$('#btnExport').addEventListener('click', () => {
+  if (!sourceData) return;
+  const link = document.createElement('a');
+  link.download = `pixelforge_${currentEffect}_${Date.now()}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+});
+
+function startAnimation() {
+  if (!sourceData) return;
+  animating = true;
+  startTime = performance.now();
+  frameCount = 0;
+  lastFpsTime = startTime;
+  $('#btnPlay').textContent = '⏸ 暂停';
+  $('#btnPlay').classList.remove('btn-primary');
+  $('#btnPlay').classList.add('btn-danger');
+
+  if (currentEffect === 'ionize') {
+    initIonizeParticles();
+  }
+
+  animate();
+}
+
+function stopAnimation() {
+  animating = false;
+  if (animId) cancelAnimationFrame(animId);
+  animId = null;
+  $('#btnPlay').textContent = '▶ 播放';
+  $('#btnPlay').classList.remove('btn-danger');
+  $('#btnPlay').classList.add('btn-primary');
+}
+
+function animate() {
+  if (!animating) return;
+  const now = performance.now();
+  const elapsed = now - startTime;
+
+  frameCount++;
+  if (now - lastFpsTime >= 1000) {
+    fpsDisplay.textContent = `${frameCount} FPS`;
+    frameCount = 0;
+    lastFpsTime = now;
+  }
+
+  renderEffect(elapsed);
+  animId = requestAnimationFrame(animate);
+}
+
+buildParams();
+loadDefaultImage();
+</script>
+</body>
+</html>
