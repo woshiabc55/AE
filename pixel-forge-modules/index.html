@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PIXEL FORGE — 像素风图像动画工坊 · 总体方案</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap');
+
+:root {
+  --bg: #06060c;
+  --bg2: #0d0d18;
+  --fg: #e0ffe0;
+  --fg-dim: #4a6a4a;
+  --accent: #00ff88;
+  --accent2: #ff3366;
+  --accent3: #44ddff;
+  --accent4: #ffaa00;
+  --accent5: #a29bfe;
+  --card: rgba(16,16,30,0.85);
+  --border: #1e2e1e;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Share Tech Mono', monospace;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.12) 2px, rgba(0,0,0,0.12) 4px);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.7) 100%);
+  pointer-events: none;
+  z-index: 9998;
+}
+
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  z-index: 0;
+}
+
+.app {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 24px 60px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+header h1 {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 32px;
+  color: var(--accent);
+  text-shadow: 0 0 30px rgba(0,255,136,0.5), 0 0 60px rgba(0,255,136,0.2);
+  letter-spacing: 6px;
+  margin-bottom: 12px;
+  animation: glow 3s ease-in-out infinite;
+}
+
+header .subtitle {
+  font-size: 14px;
+  color: var(--fg-dim);
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+header .tagline {
+  font-size: 12px;
+  color: var(--accent3);
+  opacity: 0.7;
+  letter-spacing: 2px;
+}
+
+@keyframes glow {
+  0%,100% { text-shadow: 0 0 30px rgba(0,255,136,0.5), 0 0 60px rgba(0,255,136,0.2); }
+  50% { text-shadow: 0 0 40px rgba(0,255,136,0.8), 0 0 80px rgba(0,255,136,0.4), 0 0 120px rgba(0,255,136,0.15); }
+}
+
+.section-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  color: var(--accent);
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  letter-spacing: 3px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-title::before {
+  content: '◈';
+  color: var(--accent2);
+}
+
+.arch-diagram {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 28px;
+  margin-bottom: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.arch-diagram::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent3), var(--accent2));
+}
+
+.arch-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.arch-node {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 12px 18px;
+  text-align: center;
+  min-width: 120px;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.arch-node:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 16px rgba(0,255,136,0.2);
+  transform: translateY(-2px);
+}
+
+.arch-node .node-icon {
+  font-size: 20px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.arch-node .node-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: var(--fg);
+  letter-spacing: 1px;
+}
+
+.arch-node .node-desc {
+  font-size: 10px;
+  color: var(--fg-dim);
+  margin-top: 4px;
+}
+
+.arch-node.bus {
+  border-color: var(--accent);
+  background: rgba(0,255,136,0.05);
+  min-width: 160px;
+}
+
+.arch-node.bus .node-label {
+  color: var(--accent);
+}
+
+.arch-arrow {
+  color: var(--fg-dim);
+  font-size: 18px;
+  padding: 0 6px;
+  opacity: 0.5;
+}
+
+.arch-events {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.event-tag {
+  background: rgba(0,255,136,0.06);
+  border: 1px solid rgba(0,255,136,0.15);
+  border-radius: 3px;
+  padding: 6px 10px;
+  font-size: 10px;
+  color: var(--accent);
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.event-tag .ev-name {
+  font-weight: bold;
+  color: var(--accent3);
+}
+
+.versions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.version-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.version-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+.version-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+
+.version-card.v1::before { background: var(--accent); }
+.version-card.v2::before { background: var(--accent4); }
+.version-card.v3::before { background: var(--accent2); }
+.version-card.v4::before { background: var(--accent3); }
+.version-card.v5::before { background: var(--accent5); }
+
+.version-card.v1:hover { border-color: var(--accent); box-shadow: 0 8px 32px rgba(0,255,136,0.15); }
+.version-card.v2:hover { border-color: var(--accent4); box-shadow: 0 8px 32px rgba(255,170,0,0.15); }
+.version-card.v3:hover { border-color: var(--accent2); box-shadow: 0 8px 32px rgba(255,51,102,0.15); }
+.version-card.v4:hover { border-color: var(--accent3); box-shadow: 0 8px 32px rgba(68,221,255,0.15); }
+.version-card.v5:hover { border-color: var(--accent5); box-shadow: 0 8px 32px rgba(162,155,254,0.15); }
+
+.vc-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.vc-badge {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  padding: 6px 10px;
+  border-radius: 3px;
+  letter-spacing: 1px;
+}
+
+.v1 .vc-badge { background: rgba(0,255,136,0.15); color: var(--accent); border: 1px solid var(--accent); }
+.v2 .vc-badge { background: rgba(255,170,0,0.15); color: var(--accent4); border: 1px solid var(--accent4); }
+.v3 .vc-badge { background: rgba(255,51,102,0.15); color: var(--accent2); border: 1px solid var(--accent2); }
+.v4 .vc-badge { background: rgba(68,221,255,0.15); color: var(--accent3); border: 1px solid var(--accent3); }
+.v5 .vc-badge { background: rgba(162,155,254,0.15); color: var(--accent5); border: 1px solid var(--accent5); }
+
+.vc-name {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.vc-desc {
+  font-size: 12px;
+  color: var(--fg-dim);
+  line-height: 1.7;
+  margin-bottom: 14px;
+}
+
+.vc-features {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.vc-feat {
+  font-size: 11px;
+  color: var(--fg);
+  padding-left: 16px;
+  position: relative;
+}
+
+.vc-feat::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+}
+
+.v1 .vc-feat::before { color: var(--accent); }
+.v2 .vc-feat::before { color: var(--accent4); }
+.v3 .vc-feat::before { color: var(--accent2); }
+.v4 .vc-feat::before { color: var(--accent3); }
+.v5 .vc-feat::before { color: var(--accent5); }
+
+.vc-effects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 14px;
+}
+
+.vc-effect-tag {
+  font-size: 9px;
+  padding: 3px 8px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  color: var(--fg-dim);
+}
+
+.vc-effect-tag.new {
+  border-color: var(--accent2);
+  color: var(--accent2);
+  background: rgba(255,51,102,0.08);
+}
+
+.vc-launch {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  padding: 8px 16px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 1px;
+  width: 100%;
+  text-align: center;
+  display: block;
+  text-decoration: none;
+  color: var(--fg-dim);
+}
+
+.v1 .vc-launch:hover { background: rgba(0,255,136,0.15); color: var(--accent); border-color: var(--accent); }
+.v2 .vc-launch:hover { background: rgba(255,170,0,0.15); color: var(--accent4); border-color: var(--accent4); }
+.v3 .vc-launch:hover { background: rgba(255,51,102,0.15); color: var(--accent2); border-color: var(--accent2); }
+.v4 .vc-launch:hover { background: rgba(68,221,255,0.15); color: var(--accent3); border-color: var(--accent3); }
+.v5 .vc-launch:hover { background: rgba(162,155,254,0.15); color: var(--accent5); border-color: var(--accent5); }
+
+.evolution {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 28px;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.evolution::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent4), var(--accent2), var(--accent3), var(--accent5));
+}
+
+.evo-timeline {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  overflow-x: auto;
+  padding: 10px 0;
+}
+
+.evo-step {
+  flex: 1;
+  min-width: 160px;
+  text-align: center;
+  position: relative;
+  padding: 0 8px;
+}
+
+.evo-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  margin: 0 auto 10px;
+  position: relative;
+  z-index: 2;
+}
+
+.evo-step:nth-child(1) .evo-dot { background: var(--accent); box-shadow: 0 0 12px rgba(0,255,136,0.5); }
+.evo-step:nth-child(2) .evo-dot { background: var(--accent4); box-shadow: 0 0 12px rgba(255,170,0,0.5); }
+.evo-step:nth-child(3) .evo-dot { background: var(--accent2); box-shadow: 0 0 12px rgba(255,51,102,0.5); }
+.evo-step:nth-child(4) .evo-dot { background: var(--accent3); box-shadow: 0 0 12px rgba(68,221,255,0.5); }
+.evo-step:nth-child(5) .evo-dot { background: var(--accent5); box-shadow: 0 0 12px rgba(162,155,254,0.5); }
+
+.evo-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: calc(50% + 14px);
+  right: calc(-50% + 14px);
+  height: 2px;
+  background: var(--border);
+  z-index: 1;
+}
+
+.evo-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  margin-bottom: 4px;
+  letter-spacing: 1px;
+}
+
+.evo-step:nth-child(1) .evo-label { color: var(--accent); }
+.evo-step:nth-child(2) .evo-label { color: var(--accent4); }
+.evo-step:nth-child(3) .evo-label { color: var(--accent2); }
+.evo-step:nth-child(4) .evo-label { color: var(--accent3); }
+.evo-step:nth-child(5) .evo-label { color: var(--accent5); }
+
+.evo-detail {
+  font-size: 10px;
+  color: var(--fg-dim);
+  line-height: 1.5;
+}
+
+.specs {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 28px;
+  position: relative;
+}
+
+.specs::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent);
+}
+
+.spec-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.spec-item {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 16px;
+}
+
+.spec-item h4 {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: var(--accent3);
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+.spec-item p {
+  font-size: 11px;
+  color: var(--fg-dim);
+  line-height: 1.7;
+}
+
+.spec-item code {
+  color: var(--accent);
+  font-size: 10px;
+  background: rgba(0,255,136,0.06);
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+
+footer {
+  text-align: center;
+  margin-top: 48px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 10px;
+  color: var(--fg-dim);
+  letter-spacing: 2px;
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="app">
+
+  <header>
+    <h1>PIXEL FORGE</h1>
+    <div class="subtitle">像素风图像动画工坊</div>
+    <div class="tagline">模块化架构 · 5版迭代 · 事件驱动通信</div>
+  </header>
+
+  <section>
+    <div class="section-title">系统架构</div>
+    <div class="arch-diagram">
+      <div class="arch-flow">
+        <div class="arch-node">
+          <span class="node-icon">📂</span>
+          <span class="node-label">CoreModule</span>
+          <span class="node-desc">画布 / 图像 / 动画</span>
+        </div>
+        <span class="arch-arrow">⟷</span>
+        <div class="arch-node bus">
+          <span class="node-icon">⚡</span>
+          <span class="node-label">EventBus</span>
+          <span class="node-desc">事件总线 · 唯一通信</span>
+        </div>
+        <span class="arch-arrow">⟷</span>
+        <div class="arch-node">
+          <span class="node-icon">🎛</span>
+          <span class="node-label">UIModule</span>
+          <span class="node-desc">交互 / 参数 / 控制</span>
+        </div>
+      </div>
+      <div class="arch-flow" style="margin-top:16px">
+        <div class="arch-node">
+          <span class="node-icon">▦</span>
+          <span class="node-label">Pixelate</span>
+          <span class="node-desc">像素化</span>
+        </div>
+        <div class="arch-node">
+          <span class="node-icon">✧</span>
+          <span class="node-label">Ionize</span>
+          <span class="node-desc">离子化消散</span>
+        </div>
+        <div class="arch-node">
+          <span class="node-icon">〰</span>
+          <span class="node-label">Wave</span>
+          <span class="node-desc">波浪纹线条</span>
+        </div>
+        <div class="arch-node">
+          <span class="node-icon">⚡</span>
+          <span class="node-label">Glitch</span>
+          <span class="node-desc">数字故障</span>
+        </div>
+        <div class="arch-node">
+          <span class="node-icon">🌈</span>
+          <span class="node-label">Chromatic</span>
+          <span class="node-desc">色差分离</span>
+        </div>
+      </div>
+      <div class="arch-events">
+        <div class="event-tag"><span class="ev-name">image:loaded</span> 图像加载</div>
+        <div class="event-tag"><span class="ev-name">effect:changed</span> 效果切换</div>
+        <div class="event-tag"><span class="ev-name">animation:frame</span> 帧回调</div>
+        <div class="event-tag"><span class="ev-name">param:changed</span> 参数变更</div>
+        <div class="event-tag"><span class="ev-name">module:ready</span> 模块就绪</div>
+        <div class="event-tag"><span class="ev-name">pipeline:updated</span> 管道更新</div>
+        <div class="event-tag"><span class="ev-name">compositor:rendered</span> 合成完成</div>
+        <div class="event-tag"><span class="ev-name">modulation:applied</span> 调制应用</div>
+        <div class="event-tag"><span class="ev-name">plugin:installed</span> 插件安装</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title">迭代演进</div>
+    <div class="evolution">
+      <div class="evo-timeline">
+        <div class="evo-step">
+          <div class="evo-dot"></div>
+          <div class="evo-label">V1</div>
+          <div class="evo-detail">事件总线<br>模块通信<br>3种效果</div>
+        </div>
+        <div class="evo-step">
+          <div class="evo-dot"></div>
+          <div class="evo-label">V2</div>
+          <div class="evo-detail">链式管道<br>数据流传递<br>+Glitch</div>
+        </div>
+        <div class="evo-step">
+          <div class="evo-dot"></div>
+          <div class="evo-label">V3</div>
+          <div class="evo-detail">图层合成<br>7种混合<br>+Chromatic</div>
+        </div>
+        <div class="evo-step">
+          <div class="evo-dot"></div>
+          <div class="evo-label">V4</div>
+          <div class="evo-detail">参数调制<br>节点连接<br>示波器</div>
+        </div>
+        <div class="evo-step">
+          <div class="evo-dot"></div>
+          <div class="evo-label">V5</div>
+          <div class="evo-detail">插件系统<br>动态注册<br>代码编辑</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title">版本入口</div>
+    <div class="versions">
+
+      <a class="version-card v1" href="v1-core/index.html">
+        <div class="vc-header">
+          <span class="vc-badge">V1</span>
+          <span class="vc-name">CORE 核心</span>
+        </div>
+        <div class="vc-desc">EventBus 驱动的模块化基础架构，所有模块通过事件总线通信，零直接引用。</div>
+        <div class="vc-features">
+          <div class="vc-feat">EventBus 发布/订阅通信</div>
+          <div class="vc-feat">CoreModule 画布与动画管理</div>
+          <div class="vc-feat">UIModule 统一交互入口</div>
+          <div class="vc-feat">通信日志实时可视化</div>
+        </div>
+        <div class="vc-effects">
+          <span class="vc-effect-tag">像素化</span>
+          <span class="vc-effect-tag">离子化</span>
+          <span class="vc-effect-tag">波浪纹</span>
+        </div>
+        <span class="vc-launch">▶ 启动 V1-CORE</span>
+      </a>
+
+      <a class="version-card v2" href="v2-chain/index.html">
+        <div class="vc-header">
+          <span class="vc-badge">V2</span>
+          <span class="vc-name">CHAIN 链式</span>
+        </div>
+        <div class="vc-desc">效果链式管道，前级输出作为后级输入，支持动态排序和增删效果节点。</div>
+        <div class="vc-features">
+          <div class="vc-feat">Pipeline 管道引擎</div>
+          <div class="vc-feat">离屏Canvas中间渲染</div>
+          <div class="vc-feat">效果可排序/增删/开关</div>
+          <div class="vc-feat">管道数据流缩略图预览</div>
+        </div>
+        <div class="vc-effects">
+          <span class="vc-effect-tag">像素化</span>
+          <span class="vc-effect-tag">离子化</span>
+          <span class="vc-effect-tag">波浪纹</span>
+          <span class="vc-effect-tag new">+ 故障</span>
+        </div>
+        <span class="vc-launch">▶ 启动 V2-CHAIN</span>
+      </a>
+
+      <a class="version-card v3" href="v3-blend/index.html">
+        <div class="vc-header">
+          <span class="vc-badge">V3</span>
+          <span class="vc-name">BLEND 合成</span>
+        </div>
+        <div class="vc-desc">多效果图层混合系统，7种Canvas混合模式，类Photoshop图层管理。</div>
+        <div class="vc-features">
+          <div class="vc-feat">Compositor 图层合成器</div>
+          <div class="vc-feat">7种混合模式 (multiply/screen/overlay...)</div>
+          <div class="vc-feat">图层透明度/可见性/排序</div>
+          <div class="vc-feat">合成预览实时缩略图</div>
+        </div>
+        <div class="vc-effects">
+          <span class="vc-effect-tag">像素化</span>
+          <span class="vc-effect-tag">离子化</span>
+          <span class="vc-effect-tag">波浪纹</span>
+          <span class="vc-effect-tag">故障</span>
+          <span class="vc-effect-tag new">+ 色差</span>
+        </div>
+        <span class="vc-launch">▶ 启动 V3-BLEND</span>
+      </a>
+
+      <a class="version-card v4" href="v4-interactive/index.html">
+        <div class="vc-header">
+          <span class="vc-badge">V4</span>
+          <span class="vc-name">INTERACTIVE 交互</span>
+        </div>
+        <div class="vc-desc">跨模块参数调制系统，合成器风格节点连接，一个效果参数可驱动另一个。</div>
+        <div class="vc-features">
+          <div class="vc-feat">ModulationEngine 调制引擎</div>
+          <div class="vc-feat">5种变换函数 (linear/sine/square...)</div>
+          <div class="vc-feat">可视化Patch面板 + SVG连线</div>
+          <div class="vc-feat">示波器波形监视器</div>
+        </div>
+        <div class="vc-effects">
+          <span class="vc-effect-tag">像素化</span>
+          <span class="vc-effect-tag">离子化</span>
+          <span class="vc-effect-tag">波浪纹</span>
+          <span class="vc-effect-tag">故障</span>
+          <span class="vc-effect-tag">色差</span>
+        </div>
+        <span class="vc-launch">▶ 启动 V4-INTERACTIVE</span>
+      </a>
+
+      <a class="version-card v5" href="v5-plugin/index.html">
+        <div class="vc-header">
+          <span class="vc-badge">V5</span>
+          <span class="vc-name">PLUGIN 插件</span>
+        </div>
+        <div class="vc-desc">完整插件系统，运行时动态注册效果，内置代码编辑器，支持自定义效果开发。</div>
+        <div class="vc-features">
+          <div class="vc-feat">PluginManager 完整生命周期</div>
+          <div class="vc-feat">PixelForge.registerPlugin() API</div>
+          <div class="vc-feat">内置代码编辑器 + 模板</div>
+          <div class="vc-feat">插件控制台 + Toast通知</div>
+        </div>
+        <div class="vc-effects">
+          <span class="vc-effect-tag">像素化</span>
+          <span class="vc-effect-tag">离子化</span>
+          <span class="vc-effect-tag">波浪纹</span>
+          <span class="vc-effect-tag">故障</span>
+          <span class="vc-effect-tag">色差</span>
+          <span class="vc-effect-tag new">+ 自定义</span>
+        </div>
+        <span class="vc-launch">▶ 启动 V5-PLUGIN</span>
+      </a>
+
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title">技术规格</div>
+    <div class="specs">
+      <div class="spec-grid">
+        <div class="spec-item">
+          <h4>通信协议</h4>
+          <p>所有模块通过 <code>EventBus</code> 通信，支持 <code>on/off/emit/once</code>。V5扩展通配符与事件拦截。模块间零直接引用。</p>
+        </div>
+        <div class="spec-item">
+          <h4>渲染管线</h4>
+          <p>V1单效果 → V2链式管道(ImageData传递) → V3多图层合成(globalCompositeOperation) → V4/V5保持图层架构</p>
+        </div>
+        <div class="spec-item">
+          <h4>效果接口</h4>
+          <p>标准接口: <code>init(bus)</code> <code>render(ctx, sourceData, time)</code> <code>getParams()</code> <code>setParam(name, value)</code>。V5通过Plugin API暴露。</p>
+        </div>
+        <div class="spec-item">
+          <h4>动画系统</h4>
+          <p><code>requestAnimationFrame</code> 驱动，CoreModule管理循环，每帧发射 <code>animation:frame</code> 事件携带 elapsed 时间。</p>
+        </div>
+        <div class="spec-item">
+          <h4>UI框架</h4>
+          <p>纯HTML/CSS/JS，零依赖。CRT终端美学，扫描线+暗角+霓虹发光。Press Start 2P + Share Tech Mono字体。</p>
+        </div>
+        <div class="spec-item">
+          <h4>图像处理</h4>
+          <p>Canvas 2D API，ImageData像素级操作。像素化=区域均值采样，离子化=粒子物理模拟，波浪纹=行级正弦位移。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    PIXEL FORGE · 像素风图像动画工坊 · 模块化架构总体方案
+  </footer>
+
+</div>
+</body>
+</html>
