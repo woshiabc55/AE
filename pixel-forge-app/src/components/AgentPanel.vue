@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { getAllAgents, getAgentsByLayer, getLayerColor, onAnyAgentMessage, type Agent, type AgentMessage } from '../core/agents'
 
 const props = defineProps<{
@@ -17,6 +17,7 @@ const selectedLayer = ref<Agent['layer'] | 'all'>('all')
 const messages = ref<AgentMessage[]>([])
 const maxMessages = 50
 let unsub: (() => void) | null = null
+const panelRef = ref<HTMLElement | null>(null)
 
 const agents = computed(() => {
   if (selectedLayer.value === 'all') return getAllAgents()
@@ -41,6 +42,14 @@ onMounted(() => {
   })
 })
 
+watch(() => props.visible, (val) => {
+  if (val) {
+    nextTick(() => {
+      panelRef.value?.focus()
+    })
+  }
+})
+
 onUnmounted(() => {
   if (unsub) unsub()
 })
@@ -57,7 +66,7 @@ function handleKeydown(e: KeyboardEvent) {
 
 <template>
   <Teleport to="body">
-    <div class="agent-fullscreen" :class="{ open: visible }" @keydown="handleKeydown" tabindex="-1">
+    <div ref="panelRef" class="agent-fullscreen" :class="{ open: visible }" @keydown="handleKeydown" tabindex="-1">
       <div class="af-bar">
         <span class="af-dot" :style="{ background: versionColor }"></span>
         <span class="af-title" :style="{ color: versionColor }">⬡ GENT · {{ versionLabel }}</span>
@@ -229,6 +238,8 @@ function handleKeydown(e: KeyboardEvent) {
   display: flex;
   flex-direction: column;
   border-bottom: 1px solid #1a2a1a;
+  flex: 1;
+  min-height: 0;
 }
 .af-section-title {
   font-family: 'Press Start 2P', monospace;
@@ -241,6 +252,8 @@ function handleKeydown(e: KeyboardEvent) {
 .af-section-body {
   padding: 8px 12px;
   overflow-y: auto;
+  flex: 1;
+  min-height: 0;
 }
 .af-msg-body {
   max-height: 300px;

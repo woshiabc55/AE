@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { EFFECTS, getDefaultParams } from '../core/effects'
 import { applyEffect } from '../core/renderer'
 import { MCOP_FORMATS, SKILL_PACKS, WORKSPACES } from '../core/mcop'
@@ -35,6 +35,8 @@ const leftTab = ref('docs')
 const rightTab = ref('effect')
 const expandedGroups = ref<Set<string>>(new Set(MCOP_FORMATS.map(f => f.ext)))
 const selectedDoc = ref<{ ext: string; id: string; name: string } | null>(null)
+
+let sourceSnapshot: Uint8ClampedArray | null = null
 
 function initCanvas() {
   if (!canvasRef.value) return
@@ -176,7 +178,8 @@ function animateLoop(timestamp: number) {
   frame.value++
   frameCount++
   if (timestamp - fpsTime >= 1000) { fps.value = frameCount; frameCount = 0; fpsTime = timestamp }
-  const src = new Uint8ClampedArray(pixelData.data)
+  if (!sourceSnapshot) sourceSnapshot = new Uint8ClampedArray(pixelData.data)
+  const src = new Uint8ClampedArray(sourceSnapshot)
   applyEffect(src, pixelData.data, canvasW.value, canvasH.value, currentEffect.value, effectParams.value, timestamp)
   offCtx.putImageData(pixelData, 0, 0)
   renderCanvas()
@@ -185,6 +188,7 @@ function animateLoop(timestamp: number) {
 
 function play() {
   if (isPlaying.value) return
+  sourceSnapshot = null
   isPlaying.value = true; frame.value = 0; fpsTime = performance.now(); frameCount = 0
   animId = requestAnimationFrame(animateLoop)
 }
@@ -193,7 +197,9 @@ function stop() {
   isPlaying.value = false
   if (animId) cancelAnimationFrame(animId)
   animId = null
+  sourceSnapshot = null
   if (sourceImage && offCtx) {
+    offCtx.imageSmoothingEnabled = false
     offCtx.drawImage(sourceImage, 0, 0, canvasW.value, canvasH.value)
     pixelData = offCtx.getImageData(0, 0, canvasW.value, canvasH.value)
     renderCanvas()
@@ -222,8 +228,6 @@ function toggleGroup(ext: string) {
 }
 
 const currentEffectInfo = computed(() => EFFECTS.find(e => e.id === currentEffect.value))
-
-import { computed } from 'vue'
 
 onMounted(() => { initCanvas() })
 onUnmounted(() => { stop() })

@@ -30,8 +30,6 @@ const timelineItems = VERSIONS.map((v, i) => ({
 const openTabs = reactive<TabEntry[]>([])
 const activeTabId = ref<string | null>(null)
 const monitorTabId = ref<string | null>(null)
-const longPressTimer = ref<ReturnType<typeof setTimeout> | null>(null)
-const slideVisible = ref(false)
 
 function openAsTab(version: typeof VERSIONS[number]) {
   const exists = openTabs.find(t => t.id === version.id)
@@ -56,7 +54,7 @@ function closeTab(tabId: string, e?: Event) {
     activeTabId.value = openTabs.length > 0 ? openTabs[openTabs.length - 1]!.id : null
   }
   if (monitorTabId.value === tabId) {
-    closeSlidePanel()
+    closeAgentPanel()
   }
 }
 
@@ -67,44 +65,14 @@ function selectTab(tabId: string) {
 
 function onTabDoubleClick(tabId: string) {
   monitorTabId.value = tabId
-  requestAnimationFrame(() => {
-    slideVisible.value = true
-    enterFullscreen()
-  })
+  enterFullscreen()
 }
 
-function closeSlidePanel() {
-  slideVisible.value = false
+function closeAgentPanel() {
   exitFullscreen()
   setTimeout(() => {
     monitorTabId.value = null
-  }, 350)
-}
-
-function onSlideMouseDown() {
-  longPressTimer.value = setTimeout(() => {
-    closeSlidePanel()
-  }, 600)
-}
-
-function onSlideMouseUp() {
-  if (longPressTimer.value) {
-    clearTimeout(longPressTimer.value)
-    longPressTimer.value = null
-  }
-}
-
-function onSlideTouchStart() {
-  longPressTimer.value = setTimeout(() => {
-    closeSlidePanel()
-  }, 600)
-}
-
-function onSlideTouchEnd() {
-  if (longPressTimer.value) {
-    clearTimeout(longPressTimer.value)
-    longPressTimer.value = null
-  }
+  }, 400)
 }
 
 const activeTab = computed(() => {
@@ -137,27 +105,6 @@ const monitorTab = computed(() => {
           </div>
         </div>
       </aside>
-
-      <div class="slide-panel" :class="{ open: slideVisible && monitorTab }"
-        @mousedown="onSlideMouseDown" @mouseup="onSlideMouseUp" @mouseleave="onSlideMouseUp"
-        @touchstart="onSlideTouchStart" @touchend="onSlideTouchEnd">
-        <template v-if="monitorTab">
-          <div class="slide-bar">
-            <span class="slide-dot" :style="{ background: monitorTab.color }"></span>
-            <span class="slide-title" :style="{ color: monitorTab.color }">◉ {{ monitorTab.label }} · {{ monitorTab.name }}</span>
-            <span class="slide-hint">长按关闭</span>
-            <span class="spacer"></span>
-            <span class="slide-close" @click.stop="closeSlidePanel">✕</span>
-          </div>
-          <div class="slide-frame">
-            <iframe
-              :src="monitorTab.path + 'index.html'"
-              class="slide-iframe"
-              sandbox="allow-scripts allow-same-origin"
-            ></iframe>
-          </div>
-        </template>
-      </div>
 
       <main class="v-main">
         <div class="v-main-header">
@@ -254,11 +201,11 @@ const monitorTab = computed(() => {
     </div>
 
     <AgentPanel
-      :visible="slideVisible && !!monitorTab"
+      :visible="!!monitorTab"
       :version-path="monitorTab?.path ?? ''"
       :version-label="monitorTab?.label ?? ''"
       :version-color="monitorTab?.color ?? '#00ff88'"
-      @close="closeSlidePanel"
+      @close="closeAgentPanel"
     />
   </div>
 </template>
@@ -282,76 +229,6 @@ const monitorTab = computed(() => {
 .timeline-name { font-size: 11px; color: #d0ffd0; }
 .timeline-desc { font-size: 9px; color: #3a5a3a; }
 .timeline-count { font-family: 'Press Start 2P', monospace; font-size: 4px; color: #3a5a3a; letter-spacing: 0.5px; }
-
-.slide-panel {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 100;
-  background: #050508;
-  display: flex;
-  flex-direction: column;
-  transform: translateX(-100%);
-  opacity: 0;
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
-  pointer-events: none;
-}
-.slide-panel.open {
-  transform: translateX(0);
-  opacity: 1;
-  pointer-events: auto;
-}
-.slide-bar {
-  height: 36px;
-  background: #0a0a12;
-  border-bottom: 1px solid #1a2a1a;
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-  gap: 10px;
-  flex-shrink: 0;
-}
-.slide-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  animation: blink 1.5s ease-in-out infinite;
-}
-.slide-title {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 7px;
-  letter-spacing: 1px;
-}
-.slide-hint {
-  font-size: 9px;
-  color: #3a5a3a;
-  margin-left: 8px;
-}
-.slide-close {
-  font-size: 14px;
-  color: #3a5a3a;
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 3px;
-  transition: all 0.2s;
-}
-.slide-close:hover {
-  color: #ff3366;
-  background: rgba(255,51,102,0.1);
-}
-.slide-frame {
-  flex: 1;
-  position: relative;
-  background: #050508;
-}
-.slide-iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-  background: #050508;
-}
 
 .v-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 .v-main-header { height: 40px; background: #0f0f1a; border-bottom: 1px solid #1a2a1a; display: flex; align-items: center; padding: 0 16px; gap: 10px; flex-shrink: 0; }

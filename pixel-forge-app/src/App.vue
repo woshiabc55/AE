@@ -54,7 +54,7 @@ body::after { content: ''; position: fixed; inset: 0; background: radial-gradien
 
 <style scoped>
 .app-shell { display: flex; height: 100%; position: relative; z-index: 1; transition: all 0.3s ease; }
-.app-shell.app-fullscreen .app-main { width: 100%; }
+.app-shell.app-fullscreen .app-main { width: 100%; flex: 1; }
 .app-nav { width: 48px; background: #0a0a12; border-right: 1px solid #1a2a1a; display: flex; flex-direction: column; align-items: center; padding: 8px 0; gap: 4px; flex-shrink: 0; transition: width 0.3s ease, opacity 0.3s ease; }
 .nav-logo { font-family: 'Press Start 2P', monospace; font-size: 8px; color: #7cff6b; cursor: pointer; padding: 8px 0; text-shadow: 0 0 8px rgba(124,255,107,0.4); }
 .nav-item { width: 40px; height: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; border-radius: 3px; transition: all 0.2s; }

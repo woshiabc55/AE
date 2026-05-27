@@ -1,15 +1,10 @@
 <script setup lang="ts">
 import type { VersionConfig } from '../core/versions'
+import { getLayerColor } from '../core/agents'
 
 const props = defineProps<{
   version: VersionConfig
 }>()
-
-const layerColors: Record<string, string> = {
-  core: '#a29bfe',
-  effect: '#ff6b9d',
-  arch: '#44ddff',
-}
 </script>
 
 <template>
@@ -18,9 +13,9 @@ const layerColors: Record<string, string> = {
       <div class="vdetail-title" style="color:#a29bfe">⬡ AGENT · 模块代理</div>
       <div class="vdetail-body">
         <div class="agent-grid">
-          <div v-for="agent in version.agents" :key="agent.id" class="agent-chip" :style="{ borderColor: layerColors[agent.layer], background: layerColors[agent.layer] + '10' }">
-            <span class="agent-dot" :style="{ background: layerColors[agent.layer] }"></span>
-            <span class="agent-name" :style="{ color: layerColors[agent.layer] }">{{ agent.name }}</span>
+          <div v-for="agent in version.agents" :key="agent.id" class="agent-chip" :style="{ borderColor: getLayerColor(agent.layer), background: getLayerColor(agent.layer) + '10' }">
+            <span class="agent-dot" :style="{ background: getLayerColor(agent.layer) }"></span>
+            <span class="agent-name" :style="{ color: getLayerColor(agent.layer) }">{{ agent.name }}</span>
             <span class="agent-layer" :class="agent.layer">{{ agent.layer }}</span>
           </div>
         </div>
