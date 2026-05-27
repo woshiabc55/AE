@@ -26,6 +26,7 @@ const openTabs = reactive<TabEntry[]>([])
 const activeTabId = ref<string | null>(null)
 const monitorTabId = ref<string | null>(null)
 const longPressTimer = ref<ReturnType<typeof setTimeout> | null>(null)
+const slideVisible = ref(false)
 
 function openAsTab(version: typeof VERSIONS[number]) {
   const exists = openTabs.find(t => t.id === version.id)
@@ -50,7 +51,7 @@ function closeTab(tabId: string, e?: Event) {
     activeTabId.value = openTabs.length > 0 ? openTabs[openTabs.length - 1]!.id : null
   }
   if (monitorTabId.value === tabId) {
-    monitorTabId.value = null
+    closeSlidePanel()
   }
 }
 
@@ -61,40 +62,42 @@ function selectTab(tabId: string) {
 
 function onTabDoubleClick(tabId: string) {
   monitorTabId.value = tabId
+  requestAnimationFrame(() => {
+    slideVisible.value = true
+  })
 }
 
-function onMonitorLongPress() {
-  monitorTabId.value = null
+function closeSlidePanel() {
+  slideVisible.value = false
+  setTimeout(() => {
+    monitorTabId.value = null
+  }, 350)
 }
 
-function onMonitorMouseDown() {
+function onSlideMouseDown() {
   longPressTimer.value = setTimeout(() => {
-    onMonitorLongPress()
+    closeSlidePanel()
   }, 600)
 }
 
-function onMonitorMouseUp() {
+function onSlideMouseUp() {
   if (longPressTimer.value) {
     clearTimeout(longPressTimer.value)
     longPressTimer.value = null
   }
 }
 
-function onMonitorTouchStart() {
+function onSlideTouchStart() {
   longPressTimer.value = setTimeout(() => {
-    onMonitorLongPress()
+    closeSlidePanel()
   }, 600)
 }
 
-function onMonitorTouchEnd() {
+function onSlideTouchEnd() {
   if (longPressTimer.value) {
     clearTimeout(longPressTimer.value)
     longPressTimer.value = null
   }
-}
-
-function closeMonitor() {
-  monitorTabId.value = null
 }
 
 const activeTab = computed(() => {
@@ -111,7 +114,7 @@ const monitorTab = computed(() => {
   <div class="versions-page">
     <header class="v-header">
       <h1 class="v-title">▶ 版本迭代设计</h1>
-      <span class="v-sub">v1→v7 · MCOP映射 · 双击监视 · 长按退出</span>
+      <span class="v-sub">v1→v7 · MCOP映射 · 双击全屏 · 长按退出</span>
     </header>
 
     <div class="v-body">
@@ -127,6 +130,27 @@ const monitorTab = computed(() => {
           </div>
         </div>
       </aside>
+
+      <div class="slide-panel" :class="{ open: slideVisible && monitorTab }"
+        @mousedown="onSlideMouseDown" @mouseup="onSlideMouseUp" @mouseleave="onSlideMouseUp"
+        @touchstart="onSlideTouchStart" @touchend="onSlideTouchEnd">
+        <template v-if="monitorTab">
+          <div class="slide-bar">
+            <span class="slide-dot" :style="{ background: monitorTab.color }"></span>
+            <span class="slide-title" :style="{ color: monitorTab.color }">◉ {{ monitorTab.label }} · {{ monitorTab.name }}</span>
+            <span class="slide-hint">长按关闭</span>
+            <span class="spacer"></span>
+            <span class="slide-close" @click.stop="closeSlidePanel">✕</span>
+          </div>
+          <div class="slide-frame">
+            <iframe
+              :src="monitorTab.path + 'index.html'"
+              class="slide-iframe"
+              sandbox="allow-scripts allow-same-origin"
+            ></iframe>
+          </div>
+        </template>
+      </div>
 
       <main class="v-main">
         <div class="v-main-header">
@@ -152,25 +176,6 @@ const monitorTab = computed(() => {
             <span class="tab-label">{{ tab.label }}</span>
             <span v-if="monitorTabId === tab.id" class="tab-monitor-icon">◉</span>
             <span class="tab-close" @click="closeTab(tab.id, $event)">✕</span>
-          </div>
-        </div>
-
-        <div class="monitor-strip" v-if="monitorTab"
-          @mousedown="onMonitorMouseDown" @mouseup="onMonitorMouseUp" @mouseleave="onMonitorMouseUp"
-          @touchstart="onMonitorTouchStart" @touchend="onMonitorTouchEnd">
-          <div class="monitor-bar">
-            <span class="monitor-dot" :style="{ background: monitorTab.color }"></span>
-            <span class="monitor-title" :style="{ color: monitorTab.color }">◉ 监视 · {{ monitorTab.label }} · {{ monitorTab.name }}</span>
-            <span class="monitor-hint">长按关闭监视</span>
-            <span class="spacer"></span>
-            <span class="monitor-close" @click.stop="closeMonitor">✕</span>
-          </div>
-          <div class="monitor-frame">
-            <iframe
-              :src="monitorTab.path + 'index.html'"
-              class="monitor-iframe"
-              sandbox="allow-scripts allow-same-origin"
-            ></iframe>
           </div>
         </div>
 
@@ -221,7 +226,7 @@ const monitorTab = computed(() => {
                   <div class="embed-bar">
                     <span class="embed-dot" :style="{ background: activeTab.color }"></span>
                     <span class="embed-title" :style="{ color: activeTab.color }">{{ activeTab.label }} · {{ activeTab.name }}</span>
-                    <span class="embed-hint">双击标签 → 顶部监视</span>
+                    <span class="embed-hint">双击标签 → 左侧全屏</span>
                   </div>
                   <iframe
                     :src="activeTab.path + 'index.html'"
@@ -232,7 +237,7 @@ const monitorTab = computed(() => {
                 <div v-else class="embed-empty">
                   <span class="empty-icon">◈</span>
                   <span>点击上方「+ 打开为标签」加载版本实例</span>
-                  <span class="empty-hint">双击标签 → 顶部监视 · 长按监视区 → 退出</span>
+                  <span class="empty-hint">双击标签 → 左侧全屏 · 长按面板 → 退出</span>
                 </div>
               </template>
             </div>
@@ -248,9 +253,9 @@ const monitorTab = computed(() => {
 .v-header { height: 48px; display: flex; align-items: center; padding: 0 20px; gap: 16px; border-bottom: 1px solid #1a2a1a; background: #0a0a12; flex-shrink: 0; }
 .v-title { font-family: 'Press Start 2P', monospace; font-size: 10px; color: #ffaa00; letter-spacing: 2px; }
 .v-sub { font-size: 10px; color: #3a5a3a; }
-.v-body { flex: 1; overflow: hidden; display: flex; }
+.v-body { flex: 1; overflow: hidden; display: flex; position: relative; }
 
-.v-timeline { width: 220px; background: #0a0a12; border-right: 1px solid #1a2a1a; overflow-y: auto; padding: 16px 0; flex-shrink: 0; position: relative; }
+.v-timeline { width: 220px; background: #0a0a12; border-right: 1px solid #1a2a1a; overflow-y: auto; padding: 16px 0; flex-shrink: 0; position: relative; z-index: 1; }
 .timeline-item { position: relative; padding: 8px 16px 8px 32px; cursor: pointer; transition: background 0.2s; }
 .timeline-item:hover { background: rgba(255,255,255,0.02); }
 .timeline-item.active { background: rgba(0,255,136,0.04); }
@@ -262,6 +267,76 @@ const monitorTab = computed(() => {
 .timeline-name { font-size: 11px; color: #d0ffd0; }
 .timeline-desc { font-size: 9px; color: #3a5a3a; }
 .timeline-count { font-family: 'Press Start 2P', monospace; font-size: 4px; color: #3a5a3a; letter-spacing: 0.5px; }
+
+.slide-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  background: #050508;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(-100%);
+  opacity: 0;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+  pointer-events: none;
+}
+.slide-panel.open {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+.slide-bar {
+  height: 36px;
+  background: #0a0a12;
+  border-bottom: 1px solid #1a2a1a;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.slide-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: blink 1.5s ease-in-out infinite;
+}
+.slide-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  letter-spacing: 1px;
+}
+.slide-hint {
+  font-size: 9px;
+  color: #3a5a3a;
+  margin-left: 8px;
+}
+.slide-close {
+  font-size: 14px;
+  color: #3a5a3a;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 3px;
+  transition: all 0.2s;
+}
+.slide-close:hover {
+  color: #ff3366;
+  background: rgba(255,51,102,0.1);
+}
+.slide-frame {
+  flex: 1;
+  position: relative;
+  background: #050508;
+}
+.slide-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #050508;
+}
 
 .v-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 .v-main-header { height: 40px; background: #0f0f1a; border-bottom: 1px solid #1a2a1a; display: flex; align-items: center; padding: 0 16px; gap: 10px; flex-shrink: 0; }
@@ -286,17 +361,6 @@ const monitorTab = computed(() => {
 @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
 .tab-close { font-size: 9px; color: #3a5a3a; padding: 0 2px; margin-left: 2px; border-radius: 2px; transition: all 0.2s; }
 .tab-close:hover { color: #ff3366; background: rgba(255,51,102,0.1); }
-
-.monitor-strip { flex-shrink: 0; border-bottom: 2px solid #ffaa00; background: #0a0a12; animation: monitorIn 0.3s ease; }
-@keyframes monitorIn { from { max-height: 0; opacity: 0; } to { max-height: 500px; opacity: 1; } }
-.monitor-bar { height: 28px; background: #0f0f1a; border-bottom: 1px solid #1a2a1a; display: flex; align-items: center; padding: 0 12px; gap: 8px; }
-.monitor-dot { width: 6px; height: 6px; border-radius: 50%; animation: blink 1.5s ease-in-out infinite; }
-.monitor-title { font-family: 'Press Start 2P', monospace; font-size: 6px; letter-spacing: 1px; }
-.monitor-hint { font-size: 8px; color: #3a5a3a; margin-left: 8px; }
-.monitor-close { font-size: 11px; color: #3a5a3a; cursor: pointer; padding: 2px 4px; border-radius: 2px; transition: all 0.2s; }
-.monitor-close:hover { color: #ff3366; }
-.monitor-frame { height: 55vh; position: relative; background: #050508; }
-.monitor-iframe { width: 100%; height: 100%; border: none; background: #050508; }
 
 .v-main-body { flex: 1; display: flex; overflow: hidden; }
 .v-left-col { flex: 1; overflow-y: auto; padding: 12px; }
