@@ -24,7 +24,7 @@ const timelineItems = VERSIONS.map((v, i) => ({
 
 const openTabs = reactive<TabEntry[]>([])
 const activeTabId = ref<string | null>(null)
-const fullscreenTabId = ref<string | null>(null)
+const monitorTabId = ref<string | null>(null)
 const longPressTimer = ref<ReturnType<typeof setTimeout> | null>(null)
 
 function openAsTab(version: typeof VERSIONS[number]) {
@@ -49,8 +49,8 @@ function closeTab(tabId: string, e?: Event) {
   if (activeTabId.value === tabId) {
     activeTabId.value = openTabs.length > 0 ? openTabs[openTabs.length - 1]!.id : null
   }
-  if (fullscreenTabId.value === tabId) {
-    fullscreenTabId.value = null
+  if (monitorTabId.value === tabId) {
+    monitorTabId.value = null
   }
 }
 
@@ -60,50 +60,50 @@ function selectTab(tabId: string) {
 }
 
 function onTabDoubleClick(tabId: string) {
-  fullscreenTabId.value = tabId
+  monitorTabId.value = tabId
 }
 
-function onTabMouseDown(tabId: string) {
+function onMonitorLongPress() {
+  monitorTabId.value = null
+}
+
+function onMonitorMouseDown() {
   longPressTimer.value = setTimeout(() => {
-    if (fullscreenTabId.value === tabId) {
-      fullscreenTabId.value = null
-    }
+    onMonitorLongPress()
   }, 600)
 }
 
-function onTabMouseUp() {
+function onMonitorMouseUp() {
   if (longPressTimer.value) {
     clearTimeout(longPressTimer.value)
     longPressTimer.value = null
   }
 }
 
-function onTabTouchStart(tabId: string) {
+function onMonitorTouchStart() {
   longPressTimer.value = setTimeout(() => {
-    if (fullscreenTabId.value === tabId) {
-      fullscreenTabId.value = null
-    }
+    onMonitorLongPress()
   }, 600)
 }
 
-function onTabTouchEnd() {
+function onMonitorTouchEnd() {
   if (longPressTimer.value) {
     clearTimeout(longPressTimer.value)
     longPressTimer.value = null
   }
 }
 
-function exitFullscreen() {
-  fullscreenTabId.value = null
+function closeMonitor() {
+  monitorTabId.value = null
 }
 
 const activeTab = computed(() => {
   return openTabs.find(t => t.id === activeTabId.value) || null
 })
 
-const fullscreenTab = computed(() => {
-  if (!fullscreenTabId.value) return null
-  return openTabs.find(t => t.id === fullscreenTabId.value) || null
+const monitorTab = computed(() => {
+  if (!monitorTabId.value) return null
+  return openTabs.find(t => t.id === monitorTabId.value) || null
 })
 </script>
 
@@ -111,7 +111,7 @@ const fullscreenTab = computed(() => {
   <div class="versions-page">
     <header class="v-header">
       <h1 class="v-title">▶ 版本迭代设计</h1>
-      <span class="v-sub">v1→v7 · MCOP映射 · 嵌套查看 · 双击全屏 · 长按退出</span>
+      <span class="v-sub">v1→v7 · MCOP映射 · 双击监视 · 长按退出</span>
     </header>
 
     <div class="v-body">
@@ -143,19 +143,34 @@ const fullscreenTab = computed(() => {
             v-for="tab in openTabs"
             :key="tab.id"
             class="tab-item"
-            :class="{ active: activeTabId === tab.id }"
+            :class="{ active: activeTabId === tab.id, monitored: monitorTabId === tab.id }"
             :style="{ '--tab-color': tab.color }"
             @click="selectTab(tab.id)"
             @dblclick="onTabDoubleClick(tab.id)"
-            @mousedown="onTabMouseDown(tab.id)"
-            @mouseup="onTabMouseUp"
-            @mouseleave="onTabMouseUp"
-            @touchstart="onTabTouchStart(tab.id)"
-            @touchend="onTabTouchEnd"
           >
             <span class="tab-dot" :style="{ background: tab.color }"></span>
             <span class="tab-label">{{ tab.label }}</span>
+            <span v-if="monitorTabId === tab.id" class="tab-monitor-icon">◉</span>
             <span class="tab-close" @click="closeTab(tab.id, $event)">✕</span>
+          </div>
+        </div>
+
+        <div class="monitor-strip" v-if="monitorTab"
+          @mousedown="onMonitorMouseDown" @mouseup="onMonitorMouseUp" @mouseleave="onMonitorMouseUp"
+          @touchstart="onMonitorTouchStart" @touchend="onMonitorTouchEnd">
+          <div class="monitor-bar">
+            <span class="monitor-dot" :style="{ background: monitorTab.color }"></span>
+            <span class="monitor-title" :style="{ color: monitorTab.color }">◉ 监视 · {{ monitorTab.label }} · {{ monitorTab.name }}</span>
+            <span class="monitor-hint">长按关闭监视</span>
+            <span class="spacer"></span>
+            <span class="monitor-close" @click.stop="closeMonitor">✕</span>
+          </div>
+          <div class="monitor-frame">
+            <iframe
+              :src="monitorTab.path + 'index.html'"
+              class="monitor-iframe"
+              sandbox="allow-scripts allow-same-origin"
+            ></iframe>
           </div>
         </div>
 
@@ -206,7 +221,7 @@ const fullscreenTab = computed(() => {
                   <div class="embed-bar">
                     <span class="embed-dot" :style="{ background: activeTab.color }"></span>
                     <span class="embed-title" :style="{ color: activeTab.color }">{{ activeTab.label }} · {{ activeTab.name }}</span>
-                    <span class="embed-hint">双击标签全屏 · 长按退出</span>
+                    <span class="embed-hint">双击标签 → 顶部监视</span>
                   </div>
                   <iframe
                     :src="activeTab.path + 'index.html'"
@@ -217,7 +232,7 @@ const fullscreenTab = computed(() => {
                 <div v-else class="embed-empty">
                   <span class="empty-icon">◈</span>
                   <span>点击上方「+ 打开为标签」加载版本实例</span>
-                  <span class="empty-hint">双击标签 → 全屏 · 长按标签 → 退出全屏</span>
+                  <span class="empty-hint">双击标签 → 顶部监视 · 长按监视区 → 退出</span>
                 </div>
               </template>
             </div>
@@ -225,23 +240,6 @@ const fullscreenTab = computed(() => {
         </div>
       </main>
     </div>
-
-    <Teleport to="body">
-      <div v-if="fullscreenTab" class="fullscreen-overlay" @mousedown="onTabMouseDown(fullscreenTab!.id)" @mouseup="onTabMouseUp" @touchstart="onTabTouchStart(fullscreenTab!.id)" @touchend="onTabTouchEnd">
-        <div class="fullscreen-bar">
-          <span class="fs-dot" :style="{ background: fullscreenTab.color }"></span>
-          <span class="fs-title" :style="{ color: fullscreenTab.color }">{{ fullscreenTab.label }} · {{ fullscreenTab.name }}</span>
-          <span class="fs-hint">长按任意位置退出全屏</span>
-          <span class="spacer"></span>
-          <span class="fs-close" @click="exitFullscreen">✕ 退出</span>
-        </div>
-        <iframe
-          :src="fullscreenTab.path + 'index.html'"
-          class="fullscreen-iframe"
-          sandbox="allow-scripts allow-same-origin"
-        ></iframe>
-      </div>
-    </Teleport>
   </div>
 </template>
 
@@ -280,15 +278,29 @@ const fullscreenTab = computed(() => {
 .tab-item { display: flex; align-items: center; gap: 4px; padding: 0 8px; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; flex-shrink: 0; user-select: none; }
 .tab-item:hover { background: rgba(255,255,255,0.02); }
 .tab-item.active { border-bottom-color: var(--tab-color); background: rgba(0,255,136,0.03); }
+.tab-item.monitored { background: rgba(255,170,0,0.06); }
 .tab-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
 .tab-label { font-family: 'Press Start 2P', monospace; font-size: 5px; color: #6a8a6a; letter-spacing: 0.5px; }
 .tab-item.active .tab-label { color: #d0ffd0; }
+.tab-monitor-icon { font-size: 8px; color: #ffaa00; animation: blink 1.5s ease-in-out infinite; }
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
 .tab-close { font-size: 9px; color: #3a5a3a; padding: 0 2px; margin-left: 2px; border-radius: 2px; transition: all 0.2s; }
 .tab-close:hover { color: #ff3366; background: rgba(255,51,102,0.1); }
 
+.monitor-strip { flex-shrink: 0; border-bottom: 2px solid #ffaa00; background: #0a0a12; animation: monitorIn 0.3s ease; }
+@keyframes monitorIn { from { max-height: 0; opacity: 0; } to { max-height: 500px; opacity: 1; } }
+.monitor-bar { height: 28px; background: #0f0f1a; border-bottom: 1px solid #1a2a1a; display: flex; align-items: center; padding: 0 12px; gap: 8px; }
+.monitor-dot { width: 6px; height: 6px; border-radius: 50%; animation: blink 1.5s ease-in-out infinite; }
+.monitor-title { font-family: 'Press Start 2P', monospace; font-size: 6px; letter-spacing: 1px; }
+.monitor-hint { font-size: 8px; color: #3a5a3a; margin-left: 8px; }
+.monitor-close { font-size: 11px; color: #3a5a3a; cursor: pointer; padding: 2px 4px; border-radius: 2px; transition: all 0.2s; }
+.monitor-close:hover { color: #ff3366; }
+.monitor-frame { height: 55vh; position: relative; background: #050508; }
+.monitor-iframe { width: 100%; height: 100%; border: none; background: #050508; }
+
 .v-main-body { flex: 1; display: flex; overflow: hidden; }
 .v-left-col { flex: 1; overflow-y: auto; padding: 12px; }
-.v-right-col { width: 340px; border-left: 1px solid #1a2a1a; display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; }
+.v-right-col { width: 420px; border-left: 1px solid #1a2a1a; display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; }
 .v-right-tabs { display: flex; border-bottom: 1px solid #1a2a1a; flex-shrink: 0; }
 .v-right-tab { flex: 1; padding: 6px 0; font-family: 'Press Start 2P', monospace; font-size: 5px; text-align: center; color: #3a5a3a; cursor: pointer; transition: all 0.2s; letter-spacing: 1px; border-bottom: 2px solid transparent; }
 .v-right-tab:hover { color: #6a8a6a; }
@@ -311,21 +323,9 @@ const fullscreenTab = computed(() => {
 .embed-dot { width: 5px; height: 5px; border-radius: 50%; }
 .embed-title { font-family: 'Press Start 2P', monospace; font-size: 5px; letter-spacing: 1px; }
 .embed-hint { font-size: 8px; color: #3a5a3a; margin-left: auto; }
-.embed-iframe { width: 100%; height: 400px; border: none; background: #050508; }
+.embed-iframe { width: 100%; height: 500px; border: none; background: #050508; }
 
 .embed-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px; gap: 10px; color: #3a5a3a; }
 .empty-icon { font-size: 36px; opacity: 0.3; }
 .empty-hint { font-size: 8px; color: #2a3a2a; }
-</style>
-
-<style>
-.fullscreen-overlay { position: fixed; inset: 0; z-index: 10000; background: #050508; display: flex; flex-direction: column; animation: fsIn 0.3s ease; }
-@keyframes fsIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-.fullscreen-bar { height: 36px; background: #0a0a12; border-bottom: 1px solid #1a2a1a; display: flex; align-items: center; padding: 0 16px; gap: 8px; flex-shrink: 0; }
-.fs-dot { width: 8px; height: 8px; border-radius: 50%; }
-.fs-title { font-family: 'Press Start 2P', monospace; font-size: 7px; letter-spacing: 1px; }
-.fs-hint { font-size: 9px; color: #3a5a3a; margin-left: 8px; }
-.fs-close { font-family: 'Press Start 2P', monospace; font-size: 6px; color: #3a5a3a; cursor: pointer; padding: 4px 8px; border: 1px solid #1a2a1a; border-radius: 2px; transition: all 0.2s; letter-spacing: 1px; }
-.fs-close:hover { border-color: #ff3366; color: #ff3366; }
-.fullscreen-iframe { flex: 1; width: 100%; border: none; background: #050508; }
 </style>
