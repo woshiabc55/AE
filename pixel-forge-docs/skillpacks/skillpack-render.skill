@@ -1,0 +1,52 @@
+{
+  "//": ".skill — 技能包文档 | Skill Pack Document",
+  "//": "技能包 = 一组相关能力的可部署组合，定义能力集合、依赖链、激活条件",
+
+  "format": "skill/1.0",
+  "type": "skill-pack",
+
+  "id": "skillpack-render",
+  "name": "渲染技能包",
+  "version": 1,
+  "state": "published",
+
+  "description": "2D像素渲染核心技能包，包含Canvas操作、像素化渲染、纹理映射三项能力",
+
+  "packType": "core",
+
+  "capabilities": [
+    {
+      "ref": "skill:pixel-render",
+      "required": true,
+      "provides": ["pixelate", "texture-map"]
+    },
+    {
+      "ref": "skill:spec-canvas2d",
+      "required": true,
+      "provides": ["image-data-ops", "draw-ops", "composite-ops"]
+    }
+  ],
+
+  "agents": [
+    { "ref": "agent:pixelate", "role": "primary-effect" },
+    { "ref": "agent:core", "role": "orchestrator" }
+  ],
+
+  "effects": [
+    { "ref": "kelex:pixelate-basic", "default": true }
+  ],
+
+  "pipeline": "rpa:single-effect",
+
+  "activation": {
+    "autoActivate": true,
+    "conditions": ["CanvasRenderingContext2D available"],
+    "initOrder": ["canvas2d", "pixel-render", "pixelate-effect"]
+  },
+
+  "compatibility": {
+    "minVersion": "v1",
+    "maxVersion": "v7+",
+    "conflicts": []
+  }
+}

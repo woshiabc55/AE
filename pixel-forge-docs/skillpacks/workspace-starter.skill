@@ -1,0 +1,72 @@
+{
+  "//": ".skill — 制作空间技能包 | Production Space Skill Pack",
+  "//": "制作空间 = 完整工作流技能包，组合多个技能包形成端到端制作能力",
+
+  "format": "skill/1.0",
+  "type": "production-space",
+
+  "id": "workspace-starter",
+  "name": "入门制作空间",
+  "version": 1,
+  "state": "published",
+
+  "description": "入门级制作空间：上传图片 → 选择效果 → 调参 → 导出，对应v1-v2能力",
+
+  "spaceTier": 1,
+
+  "includedPacks": [
+    { "ref": "skillpack-render", "required": true },
+    { "ref": "skillpack-effects", "required": true }
+  ],
+
+  "workflow": {
+    "steps": [
+      {
+        "order": 1,
+        "name": "load",
+        "description": "上传/加载源图像",
+        "events": ["ui:upload", "image:loaded"],
+        "agents": ["agent:core"]
+      },
+      {
+        "order": 2,
+        "name": "select-effect",
+        "description": "选择效果（5选1）",
+        "events": ["effect:changed"],
+        "agents": ["agent:ui", "agent:pixelate"]
+      },
+      {
+        "order": 3,
+        "name": "tune-params",
+        "description": "调整效果参数",
+        "events": ["param:changed"],
+        "agents": ["agent:ui"]
+      },
+      {
+        "order": 4,
+        "name": "animate",
+        "description": "启动/停止动画",
+        "events": ["animation:start", "animation:stop", "animation:frame"],
+        "agents": ["agent:core"]
+      },
+      {
+        "order": 5,
+        "name": "export",
+        "description": "导出结果",
+        "events": ["ui:export"],
+        "agents": ["agent:core"]
+      }
+    ]
+  },
+
+  "scene": "selena:default-plane",
+  "pipeline": "rpa:single-effect",
+
+  "constraints": {
+    "maxEffects": 1,
+    "maxLayers": 1,
+    "physics": false,
+    "3d": false,
+    "plugins": false
+  }
+}

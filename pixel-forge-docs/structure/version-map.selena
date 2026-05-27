@@ -1,0 +1,110 @@
+{
+  "//": ".selena — 版本迭代结构文档 | Version Iteration Structure",
+
+  "format": "selena/1.0",
+  "type": "version-iteration",
+
+  "id": "version-map",
+  "name": "版本迭代映射",
+  "version": 1,
+  "state": "published",
+
+  "description": "7个迭代版本的能力递进映射，每个版本对应一组技能包和场景",
+
+  "versions": [
+    {
+      "version": "v1-core",
+      "name": "模块化基础",
+      "description": "EventBus + 单效果渲染",
+      "workspace": "workspace-starter",
+      "agents": ["agent:eventbus", "agent:core", "agent:ui", "agent:pixelate"],
+      "effects": ["kelex:pixelate-basic"],
+      "pipeline": "rpa:single-effect",
+      "scene": "selena:default-plane",
+      "skillPacks": ["skillpack-render"],
+      "newCapabilities": ["EventBus通信", "模块化架构", "像素化效果"]
+    },
+    {
+      "version": "v2-chain",
+      "name": "链式管道",
+      "description": "效果串联执行",
+      "workspace": "workspace-starter",
+      "agents": ["agent:pipeline"],
+      "effects": ["kelex:ionize-burst", "kelex:wave-line"],
+      "pipeline": "rpa:single-effect",
+      "scene": "selena:default-plane",
+      "skillPacks": ["skillpack-effects"],
+      "newCapabilities": ["链式管道", "3种效果", "动态增删"]
+    },
+    {
+      "version": "v3-blend",
+      "name": "图层合成",
+      "description": "多效果图层叠加 + 7种混合模式",
+      "workspace": "workspace-advanced",
+      "agents": ["agent:compositor"],
+      "effects": [],
+      "pipeline": "rpa:composite-pipeline",
+      "scene": "selena:default-plane",
+      "skillPacks": ["skillpack-pipeline"],
+      "newCapabilities": ["图层合成", "7种混合模式", "离屏Canvas"]
+    },
+    {
+      "version": "v4-interactive",
+      "name": "参数调制",
+      "description": "source→transform→target参数联动",
+      "workspace": "workspace-advanced",
+      "agents": ["agent:modulation"],
+      "effects": [],
+      "pipeline": "rpa:composite-pipeline",
+      "scene": "selena:default-plane",
+      "skillPacks": ["skillpack-pipeline"],
+      "newCapabilities": ["参数调制", "实时联动", "transform函数"]
+    },
+    {
+      "version": "v5-plugin",
+      "name": "插件系统",
+      "description": "动态注册/注销效果插件",
+      "workspace": "workspace-advanced",
+      "agents": ["agent:plugin-manager"],
+      "effects": [],
+      "pipeline": "rpa:plugin-pipeline",
+      "scene": "selena:default-plane",
+      "skillPacks": ["skillpack-plugin"],
+      "newCapabilities": ["插件注册", "eval沙箱", "自定义效果"]
+    },
+    {
+      "version": "v6-physics3d",
+      "name": "3D物理解算",
+      "description": "Three.js + Verlet物理 + 5种3D面",
+      "workspace": "workspace-3d",
+      "agents": ["agent:physics", "agent:scene3d"],
+      "effects": [],
+      "pipeline": "rpa:physics-pipeline",
+      "scene": "selena:cloth-gravity",
+      "skillPacks": ["skillpack-physics", "skillpack-3d"],
+      "newCapabilities": ["3D面渲染", "Verlet物理", "5种力场", "轨道相机"]
+    },
+    {
+      "version": "v7-software-model",
+      "name": "软件实体模型",
+      "description": "程序化纹理 + 3D软件实体建模",
+      "workspace": "workspace-3d",
+      "agents": ["agent:texture"],
+      "effects": [],
+      "pipeline": "rpa:physics-pipeline",
+      "scene": "selena:cloth-gravity",
+      "skillPacks": ["skillpack-3d"],
+      "newCapabilities": ["5种程序化纹理", "3D实体建模", "通信连线可视化"]
+    }
+  ],
+
+  "cumulativeCapabilities": {
+    "v1": 3,
+    "v2": 6,
+    "v3": 9,
+    "v4": 11,
+    "v5": 13,
+    "v6": 17,
+    "v7": 20
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "//": ".skill — 技能包文档 | Skill Pack Document",
+
+  "format": "skill/1.0",
+  "type": "skill-pack",
+
+  "id": "skillpack-effects",
+  "name": "效果技能包",
+  "version": 1,
+  "state": "published",
+
+  "description": "5种视觉效果技能包，包含像素化/离子化/波浪纹/故障/色差全部效果",
+
+  "packType": "core",
+
+  "capabilities": [
+    {
+      "ref": "skill:pixel-render",
+      "required": true,
+      "provides": ["pixelate"]
+    },
+    {
+      "ref": "skill:physics-solve",
+      "required": false,
+      "provides": ["verlet-step"],
+      "note": "仅ionize效果需要"
+    }
+  ],
+
+  "agents": [
+    { "ref": "agent:pixelate", "role": "effect", "category": "basic" },
+    { "ref": "agent:ionize", "role": "effect", "category": "particle" },
+    { "ref": "agent:wave", "role": "effect", "category": "line" },
+    { "ref": "agent:glitch", "role": "effect", "category": "distort" },
+    { "ref": "agent:chromatic", "role": "effect", "category": "distort" }
+  ],
+
+  "effects": [
+    { "ref": "kelex:pixelate-basic", "category": "basic", "default": true },
+    { "ref": "kelex:ionize-burst", "category": "particle" },
+    { "ref": "kelex:wave-line", "category": "line" },
+    { "ref": "kelex:glitch-shift", "category": "distort" },
+    { "ref": "kelex:chromatic-aberration", "category": "distort" }
+  ],
+
+  "pipeline": "rpa:single-effect",
+
+  "effectCategories": {
+    "basic": {
+      "name": "基础",
+      "effects": ["pixelate-basic"],
+      "description": "像素级区域采样变换"
+    },
+    "particle": {
+      "name": "粒子",
+      "effects": ["ionize-burst"],
+      "description": "粒子物理模拟消散",
+      "requires": "skillpack-physics"
+    },
+    "line": {
+      "name": "线条",
+      "effects": ["wave-line"],
+      "description": "行级正弦位移解算"
+    },
+    "distort": {
+      "name": "畸变",
+      "effects": ["glitch-shift", "chromatic-aberration"],
+      "description": "通道偏移与故障"
+    }
+  },
+
+  "activation": {
+    "autoActivate": true,
+    "conditions": ["CanvasRenderingContext2D available"],
+    "initOrder": ["pixelate", "ionize", "wave", "glitch", "chromatic"]
+  },
+
+  "compatibility": {
+    "minVersion": "v1",
+    "maxVersion": "v7+",
+    "conflicts": []
+  }
+}

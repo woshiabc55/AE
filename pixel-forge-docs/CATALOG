@@ -5,42 +5,43 @@
   "format": "catalog/1.0",
   "project": "pixel-forge",
   "generatedAt": "2026-05-27",
+  "revision": 2,
 
   "markupFormats": [
     {
       "ext": ".selena",
       "name": "Selena",
       "purpose": "场景选择文档 | Scene Selection",
-      "description": "标记场景配置、3D面选择、物理状态、变换参数",
-      "count": 7
+      "description": "标记场景配置、3D面选择、物理状态、变换参数、架构总览、版本迭代",
+      "count": 8
     },
     {
       "ext": ".kelex",
       "name": "Kelex",
       "purpose": "效果变换文档 | Effect Transform",
-      "description": "标记效果算法、参数定义、输入输出规格",
-      "count": 5
+      "description": "标记效果算法、参数定义、输入输出规格、格式规格",
+      "count": 7
     },
     {
       "ext": ".skill",
       "name": "Skill",
       "purpose": "能力技能文档 | Capability & Skill",
-      "description": "标记系统/模块的能力声明与技能规格",
-      "count": 4
+      "description": "标记能力声明、技能规格、技能包、制作空间",
+      "count": 12
     },
     {
       "ext": ".hermes",
       "name": "Hermes",
       "purpose": "通信事件文档 | Communication & Event",
-      "description": "标记模块间通信协议、事件定义、数据流规格",
-      "count": 3
+      "description": "标记模块间通信协议、事件定义、集成映射",
+      "count": 4
     },
     {
       "ext": ".agent",
       "name": "Agent",
       "purpose": "模块代理文档 | Module Agent",
       "description": "标记软件模块/代理的定义、接口、依赖、生命周期",
-      "count": 14
+      "count": 15
     },
     {
       "ext": ".opic",
@@ -53,12 +54,12 @@
       "ext": ".rpa",
       "name": "RPA",
       "purpose": "渲染管线架构文档 | Render Pipeline Architecture",
-      "description": "标记渲染管线阶段、数据流向、合成策略",
-      "count": 4
+      "description": "标记渲染管线阶段、数据流向、合成策略、技能包依赖管线",
+      "count": 5
     }
   ],
 
-  "totalDocuments": 43,
+  "totalDocuments": 57,
 
   "directories": {
     "scenes/": {
@@ -147,99 +148,86 @@
         { "id": "spec-canvas2d", "name": "Canvas 2D能力规格", "format": ".skill", "file": "spec-canvas2d.skill" },
         { "id": "spec-threejs-scene", "name": "Three.js场景能力规格", "format": ".skill", "file": "spec-threejs-scene.skill" }
       ]
+    },
+    "skillpacks/": {
+      "format": ".skill",
+      "type": "skill-pack | production-space",
+      "documents": [
+        { "id": "skillpack-render", "name": "渲染技能包", "packType": "core", "file": "skillpack-render.skill" },
+        { "id": "skillpack-physics", "name": "物理技能包", "packType": "core", "file": "skillpack-physics.skill" },
+        { "id": "skillpack-effects", "name": "效果技能包", "packType": "core", "file": "skillpack-effects.skill" },
+        { "id": "skillpack-pipeline", "name": "管线技能包", "packType": "architecture", "file": "skillpack-pipeline.skill" },
+        { "id": "skillpack-3d", "name": "3D场景技能包", "packType": "architecture", "file": "skillpack-3d.skill" },
+        { "id": "skillpack-plugin", "name": "插件技能包", "packType": "architecture", "file": "skillpack-plugin.skill" },
+        { "id": "workspace-starter", "name": "入门制作空间", "spaceTier": 1, "file": "workspace-starter.skill" },
+        { "id": "workspace-advanced", "name": "进阶制作空间", "spaceTier": 2, "file": "workspace-advanced.skill" },
+        { "id": "workspace-3d", "name": "3D制作空间", "spaceTier": 3, "file": "workspace-3d.skill" },
+        { "id": "workspace-full", "name": "完整制作空间", "spaceTier": 4, "file": "workspace-full.skill" }
+      ]
+    },
+    "structure/": {
+      "format": "mixed",
+      "description": "架构总览、集成映射、版本迭代、格式规格、依赖管线",
+      "documents": [
+        { "id": "arch-overview", "name": "架构总览", "format": ".selena", "file": "arch-overview.selena" },
+        { "id": "integration-map", "name": "集成映射", "format": ".hermes", "file": "integration-map.hermes" },
+        { "id": "version-map", "name": "版本迭代映射", "format": ".selena", "file": "version-map.selena" },
+        { "id": "pack-dependency-graph", "name": "技能包依赖管线", "format": ".rpa", "file": "pack-dependency-graph.rpa" },
+        { "id": "format-spec-all", "name": "7种文档标记格式规格", "format": ".kelex", "file": "format-spec.kelex" }
+      ]
     }
   },
 
   "crossReferences": [
-    {
-      "from": "selena:default-plane",
-      "to": ["optic:pixel-default", "kelex:pixelate-basic", "rpa:single-effect"]
-    },
-    {
-      "from": "selena:cloth-gravity",
-      "to": ["optic:pixel-default", "kelex:ionize-burst", "rpa:physics-pipeline"]
-    },
-    {
-      "from": "selena:sphere-wrap",
-      "to": ["optic:pixel-default", "kelex:pixelate-basic", "rpa:physics-pipeline"]
-    },
-    {
-      "from": "selena:cylinder-roll",
-      "to": ["optic:rings-neon", "kelex:ionize-burst", "rpa:physics-pipeline"]
-    },
-    {
-      "from": "selena:cube-explode",
-      "to": ["optic:spiral-cyber", "kelex:glitch-shift", "rpa:composite-pipeline"]
-    },
-    {
-      "from": "selena:torus-wave",
-      "to": ["optic:checkerboard-mono", "kelex:wave-line", "rpa:physics-pipeline"]
-    },
-    {
-      "from": "agent:pixelate",
-      "to": ["agent:eventbus", "kelex:pixelate-basic", "skill:pixel-render"]
-    },
-    {
-      "from": "agent:ionize",
-      "to": ["agent:eventbus", "kelex:ionize-burst", "skill:physics-solve"]
-    },
-    {
-      "from": "agent:wave",
-      "to": ["agent:eventbus", "kelex:wave-line", "skill:pixel-render"]
-    },
-    {
-      "from": "agent:glitch",
-      "to": ["agent:eventbus", "kelex:glitch-shift"]
-    },
-    {
-      "from": "agent:chromatic",
-      "to": ["agent:eventbus", "kelex:chromatic-aberration"]
-    },
-    {
-      "from": "agent:pipeline",
-      "to": ["agent:eventbus", "rpa:single-effect", "rpa:composite-pipeline"]
-    },
-    {
-      "from": "agent:compositor",
-      "to": ["agent:eventbus", "rpa:composite-pipeline"]
-    },
-    {
-      "from": "agent:modulation",
-      "to": ["agent:eventbus", "agent:pipeline"]
-    },
-    {
-      "from": "agent:plugin-manager",
-      "to": ["agent:eventbus", "rpa:plugin-pipeline"]
-    },
-    {
-      "from": "agent:physics",
-      "to": ["agent:eventbus", "skill:physics-solve", "agent:scene3d"]
-    },
-    {
-      "from": "agent:scene3d",
-      "to": ["agent:eventbus", "agent:physics", "skill:threejs-scene"]
-    },
-    {
-      "from": "agent:texture",
-      "to": ["agent:eventbus"]
-    },
-    {
-      "from": "hermes:core-events",
-      "to": ["agent:eventbus", "agent:core", "agent:ui"]
-    },
-    {
-      "from": "hermes:effect-events",
-      "to": ["agent:pixelate", "agent:ionize", "agent:wave", "agent:glitch", "agent:chromatic"]
-    },
-    {
-      "from": "hermes:ui-events",
-      "to": ["agent:ui", "agent:core"]
-    }
+    { "from": "selena:default-plane", "to": ["optic:pixel-default", "kelex:pixelate-basic", "rpa:single-effect"] },
+    { "from": "selena:cloth-gravity", "to": ["optic:pixel-default", "kelex:ionize-burst", "rpa:physics-pipeline"] },
+    { "from": "selena:sphere-wrap", "to": ["optic:pixel-default", "kelex:pixelate-basic", "rpa:physics-pipeline"] },
+    { "from": "selena:cylinder-roll", "to": ["optic:rings-neon", "kelex:ionize-burst", "rpa:physics-pipeline"] },
+    { "from": "selena:cube-explode", "to": ["optic:spiral-cyber", "kelex:glitch-shift", "rpa:composite-pipeline"] },
+    { "from": "selena:torus-wave", "to": ["optic:checkerboard-mono", "kelex:wave-line", "rpa:physics-pipeline"] },
+    { "from": "agent:pixelate", "to": ["agent:eventbus", "kelex:pixelate-basic", "skill:pixel-render"] },
+    { "from": "agent:ionize", "to": ["agent:eventbus", "kelex:ionize-burst", "skill:physics-solve"] },
+    { "from": "agent:wave", "to": ["agent:eventbus", "kelex:wave-line", "skill:pixel-render"] },
+    { "from": "agent:glitch", "to": ["agent:eventbus", "kelex:glitch-shift"] },
+    { "from": "agent:chromatic", "to": ["agent:eventbus", "kelex:chromatic-aberration"] },
+    { "from": "agent:pipeline", "to": ["agent:eventbus", "rpa:single-effect", "rpa:composite-pipeline"] },
+    { "from": "agent:compositor", "to": ["agent:eventbus", "rpa:composite-pipeline"] },
+    { "from": "agent:modulation", "to": ["agent:eventbus", "agent:pipeline"] },
+    { "from": "agent:plugin-manager", "to": ["agent:eventbus", "rpa:plugin-pipeline"] },
+    { "from": "agent:physics", "to": ["agent:eventbus", "skill:physics-solve", "agent:scene3d"] },
+    { "from": "agent:scene3d", "to": ["agent:eventbus", "agent:physics", "skill:threejs-scene"] },
+    { "from": "agent:texture", "to": ["agent:eventbus"] },
+    { "from": "hermes:core-events", "to": ["agent:eventbus", "agent:core", "agent:ui"] },
+    { "from": "hermes:effect-events", "to": ["agent:pixelate", "agent:ionize", "agent:wave", "agent:glitch", "agent:chromatic"] },
+    { "from": "hermes:ui-events", "to": ["agent:ui", "agent:core"] },
+    { "from": "skillpack:render", "to": ["skill:pixel-render", "agent:pixelate", "kelex:pixelate-basic"] },
+    { "from": "skillpack:physics", "to": ["skill:physics-solve", "agent:physics", "agent:scene3d"] },
+    { "from": "skillpack:effects", "to": ["skill:pixel-render", "skill:physics-solve", "agent:pixelate", "agent:ionize", "agent:wave", "agent:glitch", "agent:chromatic"] },
+    { "from": "skillpack:pipeline", "to": ["agent:pipeline", "agent:compositor", "agent:modulation"] },
+    { "from": "skillpack:3d", "to": ["skillpack:render", "skillpack:physics", "agent:scene3d", "agent:texture"] },
+    { "from": "skillpack:plugin", "to": ["skillpack:render", "skillpack:pipeline", "agent:plugin-manager"] },
+    { "from": "workspace:starter", "to": ["skillpack:render", "skillpack:effects"] },
+    { "from": "workspace:advanced", "to": ["skillpack:render", "skillpack:effects", "skillpack:pipeline"] },
+    { "from": "workspace:3d", "to": ["skillpack:render", "skillpack:effects", "skillpack:pipeline", "skillpack:physics", "skillpack:3d"] },
+    { "from": "workspace:full", "to": ["skillpack:render", "skillpack:effects", "skillpack:pipeline", "skillpack:physics", "skillpack:3d", "skillpack:plugin"] }
   ],
 
   "layers": {
     "core": ["eventbus", "core", "ui"],
     "effect": ["pixelate", "ionize", "wave", "glitch", "chromatic"],
     "architecture": ["pipeline", "compositor", "modulation", "plugin-manager", "physics", "scene3d", "texture"]
+  },
+
+  "skillPackTiers": {
+    "tier1-core": ["skillpack-render", "skillpack-effects", "skillpack-physics"],
+    "tier2-architecture": ["skillpack-pipeline", "skillpack-3d", "skillpack-plugin"],
+    "tier3-production": ["workspace-starter", "workspace-advanced", "workspace-3d", "workspace-full"]
+  },
+
+  "productionSpaces": {
+    "tier1-starter": { "name": "入门制作空间", "effects": 1, "layers": 1, "physics": false, "3d": false, "plugins": false },
+    "tier2-advanced": { "name": "进阶制作空间", "effects": 5, "layers": 8, "physics": false, "3d": false, "plugins": false },
+    "tier3-3d": { "name": "3D制作空间", "effects": 5, "layers": 8, "physics": true, "3d": true, "plugins": false },
+    "tier4-full": { "name": "完整制作空间", "effects": "unlimited", "layers": 8, "physics": true, "3d": true, "plugins": true }
   }
 }

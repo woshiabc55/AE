@@ -1,0 +1,62 @@
+{
+  "//": ".selena — 架构总览结构文档 | Architecture Overview Structure",
+
+  "format": "selena/1.0",
+  "type": "architecture-overview",
+
+  "id": "arch-overview",
+  "name": "PixelForge架构总览",
+  "version": 1,
+  "state": "published",
+
+  "description": "系统整体架构：3层15模块 + EventBus通信 + 7种文档标记",
+
+  "layers": [
+    {
+      "name": "core",
+      "description": "核心层：通信枢纽 + 图像管理 + 用户界面",
+      "agents": ["agent:eventbus", "agent:core", "agent:ui"],
+      "events": ["hermes:core-events", "hermes:ui-events"]
+    },
+    {
+      "name": "effect",
+      "description": "效果层：5种视觉效果模块",
+      "agents": ["agent:pixelate", "agent:ionize", "agent:wave", "agent:glitch", "agent:chromatic"],
+      "effects": ["kelex:pixelate-basic", "kelex:ionize-burst", "kelex:wave-line", "kelex:glitch-shift", "kelex:chromatic-aberration"],
+      "events": ["hermes:effect-events"]
+    },
+    {
+      "name": "architecture",
+      "description": "架构层：管线/合成/调制/插件/物理/3D/纹理",
+      "agents": ["agent:pipeline", "agent:compositor", "agent:modulation", "agent:plugin-manager", "agent:physics", "agent:scene3d", "agent:texture"],
+      "pipelines": ["rpa:single-effect", "rpa:composite-pipeline", "rpa:physics-pipeline", "rpa:plugin-pipeline"]
+    }
+  ],
+
+  "communicationBus": {
+    "type": "EventBus",
+    "pattern": "publish-subscribe",
+    "constraint": "模块间零直接引用，EventBus为唯一通信通道",
+    "totalEvents": 29,
+    "protocols": ["hermes:core-events", "hermes:effect-events", "hermes:ui-events"]
+  },
+
+  "skillPacks": {
+    "core": ["skillpack-render", "skillpack-effects"],
+    "architecture": ["skillpack-pipeline", "skillpack-physics", "skillpack-3d", "skillpack-plugin"],
+    "production": ["workspace-starter", "workspace-advanced", "workspace-3d", "workspace-full"]
+  },
+
+  "dependencyGraph": {
+    "skillpack-render": [],
+    "skillpack-effects": ["skillpack-render"],
+    "skillpack-pipeline": ["skillpack-render"],
+    "skillpack-physics": [],
+    "skillpack-3d": ["skillpack-render", "skillpack-physics"],
+    "skillpack-plugin": ["skillpack-render", "skillpack-pipeline"],
+    "workspace-starter": ["skillpack-render", "skillpack-effects"],
+    "workspace-advanced": ["skillpack-render", "skillpack-effects", "skillpack-pipeline"],
+    "workspace-3d": ["skillpack-render", "skillpack-effects", "skillpack-pipeline", "skillpack-physics", "skillpack-3d"],
+    "workspace-full": ["skillpack-render", "skillpack-effects", "skillpack-pipeline", "skillpack-physics", "skillpack-3d", "skillpack-plugin"]
+  }
+}

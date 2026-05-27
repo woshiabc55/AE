@@ -1,0 +1,71 @@
+{
+  "//": ".skill — 技能包文档 | Skill Pack Document",
+
+  "format": "skill/1.0",
+  "type": "skill-pack",
+
+  "id": "skillpack-3d",
+  "name": "3D场景技能包",
+  "version": 1,
+  "state": "published",
+
+  "description": "3D场景渲染技能包，包含Three.js场景搭建、5种3D面、程序化纹理、轨道相机控制",
+
+  "packType": "architecture",
+
+  "capabilities": [
+    {
+      "ref": "skill:spec-threejs-scene",
+      "required": true,
+      "provides": ["scene-setup", "geometry", "material", "lighting"]
+    },
+    {
+      "ref": "agent:scene3d",
+      "required": true,
+      "provides": ["set-surface", "apply-texture", "update-vertices", "render-3d"]
+    },
+    {
+      "ref": "agent:texture",
+      "required": true,
+      "provides": ["generate-texture", "set-param", "get-types"]
+    }
+  ],
+
+  "agents": [
+    { "ref": "agent:scene3d", "role": "renderer" },
+    { "ref": "agent:texture", "role": "texture-gen" },
+    { "ref": "agent:physics", "role": "vertex-solver" }
+  ],
+
+  "surfaces": [
+    { "type": "plane", "name": "平面", "subdivRange": [8, 64], "ref": "selena:default-plane" },
+    { "type": "sphere", "name": "球体", "subdivRange": [8, 48], "ref": "selena:sphere-wrap" },
+    { "type": "cylinder", "name": "圆柱", "subdivRange": [8, 48], "ref": "selena:cylinder-roll" },
+    { "type": "box", "name": "立方体", "subdivRange": [4, 32], "ref": "selena:cube-explode" },
+    { "type": "torus", "name": "环面", "subdivRange": [8, 48], "ref": "selena:torus-wave" }
+  ],
+
+  "textures": [
+    { "ref": "opic:pixel-default", "generator": "pixelate" },
+    { "ref": "opic:rings-neon", "generator": "rings" },
+    { "ref": "opic:spiral-cyber", "generator": "spiral" },
+    { "ref": "opic:checkerboard-mono", "generator": "checkerboard" },
+    { "ref": "opic:gradient-sunset", "generator": "gradient" },
+    { "ref": "opic:stripe-signal", "generator": "stripe" }
+  ],
+
+  "pipeline": "rpa:physics-pipeline",
+
+  "activation": {
+    "autoActivate": false,
+    "conditions": ["THREE.js loaded", "WebGL available", "skillpack-physics activated"],
+    "initOrder": ["threejs-scene", "surface-geometry", "procedural-texture", "orbit-camera", "physics-bind"]
+  },
+
+  "compatibility": {
+    "minVersion": "v6",
+    "maxVersion": "v7+",
+    "conflicts": [],
+    "dependsOn": ["skillpack-render", "skillpack-physics"]
+  }
+}

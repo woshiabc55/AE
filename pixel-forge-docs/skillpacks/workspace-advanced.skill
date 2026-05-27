@@ -1,0 +1,79 @@
+{
+  "//": ".skill — 制作空间技能包 | Production Space Skill Pack",
+
+  "format": "skill/1.0",
+  "type": "production-space",
+
+  "id": "workspace-advanced",
+  "name": "进阶制作空间",
+  "version": 1,
+  "state": "published",
+
+  "description": "进阶制作空间：多效果图层合成 + 参数调制 + 7种混合模式，对应v2-v4能力",
+
+  "spaceTier": 2,
+
+  "includedPacks": [
+    { "ref": "skillpack-render", "required": true },
+    { "ref": "skillpack-effects", "required": true },
+    { "ref": "skillpack-pipeline", "required": true }
+  ],
+
+  "workflow": {
+    "steps": [
+      {
+        "order": 1,
+        "name": "load",
+        "description": "上传/加载源图像",
+        "events": ["ui:upload", "image:loaded"],
+        "agents": ["agent:core"]
+      },
+      {
+        "order": 2,
+        "name": "build-pipeline",
+        "description": "构建效果管道（添加/排序/移除效果）",
+        "events": ["pipeline:updated"],
+        "agents": ["agent:pipeline"]
+      },
+      {
+        "order": 3,
+        "name": "layer-setup",
+        "description": "配置图层（混合模式/透明度/可见性）",
+        "events": ["compositor:rendered"],
+        "agents": ["agent:compositor"]
+      },
+      {
+        "order": 4,
+        "name": "modulation",
+        "description": "创建参数调制链接",
+        "events": ["modulation:applied"],
+        "agents": ["agent:modulation"]
+      },
+      {
+        "order": 5,
+        "name": "animate",
+        "description": "动画循环渲染",
+        "events": ["animation:frame"],
+        "agents": ["agent:core", "agent:pipeline", "agent:compositor"]
+      },
+      {
+        "order": 6,
+        "name": "export",
+        "description": "导出结果",
+        "events": ["ui:export"],
+        "agents": ["agent:core"]
+      }
+    ]
+  },
+
+  "scene": "selena:default-plane",
+  "pipeline": "rpa:composite-pipeline",
+
+  "constraints": {
+    "maxEffects": 5,
+    "maxLayers": 8,
+    "physics": false,
+    "3d": false,
+    "plugins": false
+  }
+}

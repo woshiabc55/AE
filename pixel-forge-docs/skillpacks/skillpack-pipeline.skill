@@ -1,0 +1,68 @@
+{
+  "//": ".skill — 技能包文档 | Skill Pack Document",
+
+  "format": "skill/1.0",
+  "type": "skill-pack",
+
+  "id": "skillpack-pipeline",
+  "name": "管线技能包",
+  "version": 1,
+  "state": "published",
+
+  "description": "效果管线技能包，包含链式管道、图层合成、参数调制三项架构能力",
+
+  "packType": "architecture",
+
+  "capabilities": [
+    {
+      "ref": "agent:pipeline",
+      "required": true,
+      "provides": ["chain-execution", "dynamic-reorder", "add-remove"]
+    },
+    {
+      "ref": "agent:compositor",
+      "required": true,
+      "provides": ["layer-composite", "blend-modes", "opacity-control"]
+    },
+    {
+      "ref": "agent:modulation",
+      "required": true,
+      "provides": ["param-link", "transform-chain", "realtime-modulation"]
+    }
+  ],
+
+  "agents": [
+    { "ref": "agent:pipeline", "role": "chain" },
+    { "ref": "agent:compositor", "role": "blend" },
+    { "ref": "agent:modulation", "role": "modulate" }
+  ],
+
+  "pipelines": [
+    { "ref": "rpa:single-effect", "tier": 1 },
+    { "ref": "rpa:composite-pipeline", "tier": 2 },
+    { "ref": "rpa:plugin-pipeline", "tier": 3 }
+  ],
+
+  "blendModes": [
+    { "id": "source-over", "name": "正常", "tier": 1 },
+    { "id": "multiply", "name": "正片叠底", "tier": 2 },
+    { "id": "screen", "name": "滤色", "tier": 2 },
+    { "id": "overlay", "name": "叠加", "tier": 2 },
+    { "id": "difference", "name": "差值", "tier": 3 },
+    { "id": "exclusion", "name": "排除", "tier": 3 },
+    { "id": "color-dodge", "name": "颜色减淡", "tier": 3 }
+  ],
+
+  "activation": {
+    "autoActivate": false,
+    "conditions": ["skillpack-render activated"],
+    "initOrder": ["pipeline", "compositor", "modulation"]
+  },
+
+  "compatibility": {
+    "minVersion": "v2",
+    "maxVersion": "v7+",
+    "conflicts": [],
+    "dependsOn": ["skillpack-render"]
+  }
+}

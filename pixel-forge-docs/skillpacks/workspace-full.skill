@@ -1,0 +1,123 @@
+{
+  "//": ".skill — 制作空间技能包 | Production Space Skill Pack",
+
+  "format": "skill/1.0",
+  "type": "production-space",
+
+  "id": "workspace-full",
+  "name": "完整制作空间",
+  "version": 1,
+  "state": "published",
+
+  "description": "完整制作空间：全部6个技能包 + 插件扩展 + 全部场景 + 全部管线，对应v1-v7全部能力",
+
+  "spaceTier": 4,
+
+  "includedPacks": [
+    { "ref": "skillpack-render", "required": true },
+    { "ref": "skillpack-effects", "required": true },
+    { "ref": "skillpack-pipeline", "required": true },
+    { "ref": "skillpack-physics", "required": true },
+    { "ref": "skillpack-3d", "required": true },
+    { "ref": "skillpack-plugin", "required": true }
+  ],
+
+  "workflow": {
+    "steps": [
+      {
+        "order": 1,
+        "name": "load",
+        "description": "上传/加载源图像",
+        "events": ["ui:upload", "image:loaded"],
+        "agents": ["agent:core"]
+      },
+      {
+        "order": 2,
+        "name": "select-surface",
+        "description": "选择3D面类型和细分度",
+        "events": ["surface:changed"],
+        "agents": ["agent:scene3d"]
+      },
+      {
+        "order": 3,
+        "name": "apply-texture",
+        "description": "选择/生成程序化纹理映射到3D面",
+        "events": ["texture:param"],
+        "agents": ["agent:texture", "agent:scene3d"]
+      },
+      {
+        "order": 4,
+        "name": "build-pipeline",
+        "description": "构建效果管道（内置+插件）",
+        "events": ["pipeline:updated", "plugin:installed"],
+        "agents": ["agent:pipeline", "agent:plugin-manager"]
+      },
+      {
+        "order": 5,
+        "name": "layer-setup",
+        "description": "配置图层合成",
+        "events": ["compositor:rendered"],
+        "agents": ["agent:compositor"]
+      },
+      {
+        "order": 6,
+        "name": "modulation",
+        "description": "参数调制链接",
+        "events": ["modulation:applied"],
+        "agents": ["agent:modulation"]
+      },
+      {
+        "order": 7,
+        "name": "physics-setup",
+        "description": "配置力场",
+        "events": ["physics:applied"],
+        "agents": ["agent:physics"]
+      },
+      {
+        "order": 8,
+        "name": "plugin-extend",
+        "description": "注册自定义插件效果",
+        "events": ["plugin:installed"],
+        "agents": ["agent:plugin-manager"]
+      },
+      {
+        "order": 9,
+        "name": "animate",
+        "description": "动画循环渲染",
+        "events": ["animation:frame"],
+        "agents": ["agent:core", "agent:pipeline", "agent:compositor", "agent:scene3d"]
+      },
+      {
+        "order": 10,
+        "name": "export",
+        "description": "导出结果",
+        "events": ["ui:export"],
+        "agents": ["agent:core"]
+      }
+    ]
+  },
+
+  "scenes": [
+    "selena:default-plane",
+    "selena:cloth-gravity",
+    "selena:sphere-wrap",
+    "selena:cylinder-roll",
+    "selena:cube-explode",
+    "selena:torus-wave"
+  ],
+
+  "pipelines": [
+    "rpa:single-effect",
+    "rpa:composite-pipeline",
+    "rpa:physics-pipeline",
+    "rpa:plugin-pipeline"
+  ],
+
+  "constraints": {
+    "maxEffects": "unlimited",
+    "maxLayers": 8,
+    "physics": true,
+    "3d": true,
+    "plugins": true
+  }
+}

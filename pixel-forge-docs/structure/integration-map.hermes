@@ -1,0 +1,95 @@
+{
+  "//": ".hermes — 集成映射文档 | Integration Mapping Document",
+
+  "format": "hermes/1.0",
+  "type": "integration-map",
+
+  "id": "integration-map",
+  "name": "模块集成映射",
+  "version": 1,
+  "state": "published",
+
+  "description": "定义所有模块间的集成关系：依赖方向、事件流、数据通道",
+
+  "integrations": [
+    {
+      "from": "agent:core",
+      "to": "agent:eventbus",
+      "type": "publish",
+      "events": ["image:loaded", "animation:frame"],
+      "data": "ImageData → EventBus → subscribers"
+    },
+    {
+      "from": "agent:ui",
+      "to": "agent:eventbus",
+      "type": "publish",
+      "events": ["effect:changed", "param:changed", "animation:start", "animation:stop", "surface:changed"],
+      "data": "用户操作 → EventBus → 模块响应"
+    },
+    {
+      "from": "agent:pixelate",
+      "to": "agent:eventbus",
+      "type": "subscribe",
+      "events": ["effect:changed", "param:changed", "animation:frame"],
+      "data": "EventBus → render(ctx, source, time)"
+    },
+    {
+      "from": "agent:ionize",
+      "to": "agent:eventbus",
+      "type": "subscribe",
+      "events": ["effect:changed", "param:changed", "animation:frame", "image:loaded"],
+      "data": "EventBus → 粒子采样 → 物理模拟 → 渲染"
+    },
+    {
+      "from": "agent:pipeline",
+      "to": "agent:eventbus",
+      "type": "both",
+      "publishes": ["pipeline:updated"],
+      "subscribes": ["effect:changed", "animation:frame"],
+      "data": "效果列表 → 串联执行 → 输出"
+    },
+    {
+      "from": "agent:compositor",
+      "to": "agent:eventbus",
+      "type": "both",
+      "publishes": ["compositor:rendered"],
+      "subscribes": ["animation:frame"],
+      "data": "多图层 → blend合成 → 输出"
+    },
+    {
+      "from": "agent:modulation",
+      "to": "agent:pipeline",
+      "type": "depends",
+      "data": "调制链接 → 参数联动 → pipeline效果参数更新"
+    },
+    {
+      "from": "agent:physics",
+      "to": "agent:scene3d",
+      "type": "feeds",
+      "events": ["physics:applied"],
+      "data": "Float32Array(vertices) → Scene3D.updateVertices()"
+    },
+    {
+      "from": "agent:scene3d",
+      "to": "agent:texture",
+      "type": "consumes",
+      "data": "ProceduralTexture.generate() → Canvas → Scene3D.applyTexture()"
+    },
+    {
+      "from": "agent:plugin-manager",
+      "to": "agent:pipeline",
+      "type": "injects",
+      "events": ["plugin:installed"],
+      "data": "Plugin.render → Pipeline.add(pluginEffect)"
+    }
+  ],
+
+  "dataFlowSummary": {
+    "source": "HTMLImageElement | HTMLCanvasElement",
+    "processing": "ImageData → Effect.render() → ImageData",
+    "composition": "[ImageData, ...] → Compositor.composite() → Canvas",
+    "3dMapping": "Canvas → CanvasTexture → Scene3D.applyTexture() → Mesh",
+    "physicsUpdate": "PhysicsEngine.step() → Float32Array → Scene3D.updateVertices()",
+    "output": "Canvas.toDataURL() | Canvas.toBlob()"
+  }
+}

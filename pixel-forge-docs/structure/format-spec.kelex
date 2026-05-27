@@ -1,0 +1,94 @@
+{
+  "//": ".kelex — 文档标记格式规格 | Markup Format Specification",
+
+  "format": "kelex/1.0",
+  "type": "format-spec",
+
+  "id": "format-spec-all",
+  "name": "7种文档标记格式规格",
+  "version": 1,
+  "state": "published",
+
+  "description": "定义7种自定义文档标记格式的统一规格、公共字段、扩展规则",
+
+  "commonFields": {
+    "format": { "type": "string", "pattern": "{name}/1.0", "required": true },
+    "type": { "type": "string", "required": true },
+    "id": { "type": "string", "required": true, "pattern": "kebab-case" },
+    "name": { "type": "string", "required": true },
+    "version": { "type": "integer", "required": true, "min": 1 },
+    "state": { "type": "enum", "values": ["draft", "review", "approved", "published", "archived"], "default": "published" }
+  },
+
+  "formats": [
+    {
+      "ext": ".selena",
+      "formatId": "selena/1.0",
+      "name": "场景选择文档",
+      "typeValues": ["scene-selection", "module-spec", "architecture-overview", "version-iteration"],
+      "uniqueFields": ["selection", "physics", "transform", "camera", "references"],
+      "directory": "scenes/",
+      "crossRef": ["optic:*", "kelex:*", "rpa:*"]
+    },
+    {
+      "ext": ".kelex",
+      "formatId": "kelex/1.0",
+      "name": "效果变换文档",
+      "typeValues": ["effect-transform", "effect-spec", "format-spec"],
+      "uniqueFields": ["algorithm", "params", "inputOutput", "dependencies", "category"],
+      "directory": "effects/",
+      "crossRef": ["skill:*", "agent:*"]
+    },
+    {
+      "ext": ".skill",
+      "formatId": "skill/1.0",
+      "name": "能力技能文档",
+      "typeValues": ["capability", "capability-spec", "skill-pack", "production-space"],
+      "uniqueFields": ["provides", "requires", "performance", "versions", "packType", "includedPacks", "workflow"],
+      "directory": "skills/ | skillpacks/",
+      "crossRef": ["agent:*", "kelex:*", "rpa:*", "selena:*"]
+    },
+    {
+      "ext": ".hermes",
+      "formatId": "hermes/1.0",
+      "name": "通信事件文档",
+      "typeValues": ["event-protocol", "integration-map"],
+      "uniqueFields": ["events", "topology"],
+      "directory": "comms/",
+      "crossRef": ["agent:*"]
+    },
+    {
+      "ext": ".agent",
+      "formatId": "agent/1.0",
+      "name": "模块代理文档",
+      "typeValues": ["module-agent"],
+      "uniqueFields": ["interfaces", "dependencies", "lifecycle", "events", "shape3d", "layer"],
+      "directory": "agents/",
+      "crossRef": ["hermes:*", "kelex:*", "skill:*"]
+    },
+    {
+      "ext": ".opic",
+      "formatId": "opic/1.0",
+      "name": "视觉纹理文档",
+      "typeValues": ["optic-texture"],
+      "uniqueFields": ["generator", "params", "colors", "output"],
+      "directory": "optics/",
+      "crossRef": ["agent:texture", "agent:scene3d"]
+    },
+    {
+      "ext": ".rpa",
+      "formatId": "rpa/1.0",
+      "name": "渲染管线架构文档",
+      "typeValues": ["render-pipeline", "pack-dependency"],
+      "uniqueFields": ["stages", "dataFlow", "compositing", "pluginAPI"],
+      "directory": "pipelines/",
+      "crossRef": ["kelex:*", "agent:*"]
+    }
+  ],
+
+  "crossReferenceSyntax": {
+    "pattern": "{format}:{id}",
+    "examples": ["optic:pixel-default", "kelex:pixelate-basic", "agent:eventbus", "rpa:single-effect", "skill:pixel-render", "hermes:core-events", "selena:default-plane"],
+    "resolution": "CATALOG文件中查找对应directory和file"
+  }
+}

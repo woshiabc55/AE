@@ -1,0 +1,61 @@
+{
+  "//": ".skill — 技能包文档 | Skill Pack Document",
+
+  "format": "skill/1.0",
+  "type": "skill-pack",
+
+  "id": "skillpack-plugin",
+  "name": "插件技能包",
+  "version": 1,
+  "state": "published",
+
+  "description": "插件扩展技能包，包含插件注册/注销、eval沙箱加载、动态效果注入",
+
+  "packType": "architecture",
+
+  "capabilities": [
+    {
+      "ref": "agent:plugin-manager",
+      "required": true,
+      "provides": ["register-plugin", "unregister-plugin", "list-plugins"]
+    }
+  ],
+
+  "agents": [
+    { "ref": "agent:plugin-manager", "role": "registry" }
+  ],
+
+  "pipelines": [
+    { "ref": "rpa:plugin-pipeline", "description": "插件效果注入点在builtin之后" }
+  ],
+
+  "pluginAPI": {
+    "register": {
+      "method": "PixelForge.registerPlugin",
+      "signature": "registerPlugin(definition: {id, name, render, params}): PluginHandle",
+      "example": "PixelForge.registerPlugin({id:'invert', name:'反色', render:(ctx,src,t)=>{...}, params:[{name:'threshold',...}]})"
+    },
+    "lifecycle": {
+      "stages": ["install", "validate", "activate", "active", "deactivate", "uninstall"],
+      "validation": "params类型检查 + render函数签名验证"
+    },
+    "sandbox": {
+      "method": "new Function(code)",
+      "constraints": ["无DOM访问", "无网络请求", "仅Canvas API"],
+      "timeout": "5000ms"
+    }
+  },
+
+  "activation": {
+    "autoActivate": false,
+    "conditions": ["skillpack-pipeline activated"],
+    "initOrder": ["plugin-manager", "sandbox-setup", "builtin-plugins"]
+  },
+
+  "compatibility": {
+    "minVersion": "v5",
+    "maxVersion": "v7+",
+    "conflicts": [],
+    "dependsOn": ["skillpack-render", "skillpack-pipeline"]
+  }
+}

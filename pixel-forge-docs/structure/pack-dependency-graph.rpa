@@ -1,0 +1,94 @@
+{
+  "//": ".rpa — 技能包依赖管线文档 | Skill Pack Dependency Pipeline",
+
+  "format": "rpa/1.0",
+  "type": "pack-dependency",
+
+  "id": "pack-dependency-graph",
+  "name": "技能包依赖管线",
+  "version": 1,
+  "state": "published",
+
+  "description": "技能包之间的依赖关系和激活顺序，形成层级管线",
+
+  "tiers": [
+    {
+      "tier": 1,
+      "name": "基础层",
+      "packs": ["skillpack-render"],
+      "description": "无依赖，自动激活",
+      "activatesWith": "CanvasRenderingContext2D"
+    },
+    {
+      "tier": 2,
+      "name": "效果层",
+      "packs": ["skillpack-effects", "skillpack-physics"],
+      "description": "依赖基础层",
+      "activatesWith": "skillpack-render activated"
+    },
+    {
+      "tier": 3,
+      "name": "架构层",
+      "packs": ["skillpack-pipeline", "skillpack-3d", "skillpack-plugin"],
+      "description": "依赖基础层+效果层",
+      "activatesWith": "skillpack-render + skillpack-effects activated"
+    },
+    {
+      "tier": 4,
+      "name": "制作空间层",
+      "packs": ["workspace-starter", "workspace-advanced", "workspace-3d", "workspace-full"],
+      "description": "组合技能包形成端到端工作流",
+      "activatesWith": "对应tier的技能包全部就绪"
+    }
+  ],
+
+  "activationPipeline": [
+    {
+      "order": 1,
+      "pack": "skillpack-render",
+      "waitsFor": [],
+      "initializes": ["canvas2d", "pixel-render", "pixelate-effect"]
+    },
+    {
+      "order": 2,
+      "pack": "skillpack-effects",
+      "waitsFor": ["skillpack-render"],
+      "initializes": ["ionize", "wave", "glitch", "chromatic"]
+    },
+    {
+      "order": 2,
+      "pack": "skillpack-physics",
+      "waitsFor": [],
+      "initializes": ["verlet-engine", "force-models"]
+    },
+    {
+      "order": 3,
+      "pack": "skillpack-pipeline",
+      "waitsFor": ["skillpack-render"],
+      "initializes": ["pipeline", "compositor", "modulation"]
+    },
+    {
+      "order": 3,
+      "pack": "skillpack-3d",
+      "waitsFor": ["skillpack-render", "skillpack-physics"],
+      "initializes": ["scene3d", "procedural-texture", "orbit-camera"]
+    },
+    {
+      "order": 3,
+      "pack": "skillpack-plugin",
+      "waitsFor": ["skillpack-render", "skillpack-pipeline"],
+      "initializes": ["plugin-manager", "sandbox"]
+    },
+    {
+      "order": 4,
+      "pack": "workspace-*",
+      "waitsFor": ["对应技能包"],
+      "initializes": ["完整工作流"]
+    }
+  ],
+
+  "conflictResolution": {
+    "rule": "同层技能包可并行激活，跨层按依赖顺序",
+    "fallback": "缺失依赖时降级到不依赖该包的最低可用制作空间"
+  }
+}

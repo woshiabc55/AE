@@ -1,0 +1,55 @@
+{
+  "//": ".skill — 技能包文档 | Skill Pack Document",
+
+  "format": "skill/1.0",
+  "type": "skill-pack",
+
+  "id": "skillpack-physics",
+  "name": "物理技能包",
+  "version": 1,
+  "state": "published",
+
+  "description": "物理解算技能包，包含Verlet积分、6种力模型、3D顶点变形能力",
+
+  "packType": "core",
+
+  "capabilities": [
+    {
+      "ref": "skill:physics-solve",
+      "required": true,
+      "provides": ["verlet-step", "force-gravity", "force-wind", "force-explode", "force-wave3d", "force-spring"]
+    }
+  ],
+
+  "agents": [
+    { "ref": "agent:physics", "role": "engine" },
+    { "ref": "agent:ionize", "role": "consumer" },
+    { "ref": "agent:scene3d", "role": "renderer" }
+  ],
+
+  "effects": [
+    { "ref": "kelex:ionize-burst", "default": true }
+  ],
+
+  "pipeline": "rpa:physics-pipeline",
+
+  "activation": {
+    "autoActivate": false,
+    "conditions": ["THREE.js loaded", "WebGL available"],
+    "initOrder": ["physics-engine", "force-models", "scene3d-bind"]
+  },
+
+  "forceModels": {
+    "gravity": { "strength": [0, 2.0], "default": 0.5 },
+    "wind": { "strength": [0, 3.0], "default": 1.2 },
+    "explode": { "strength": [0, 5.0], "default": 2.0 },
+    "wave3d": { "strength": [0, 3.0], "default": 1.5 },
+    "spring": { "stiffness": [0, 1.0], "default": 0.8 }
+  },
+
+  "compatibility": {
+    "minVersion": "v6",
+    "maxVersion": "v7+",
+    "conflicts": []
+  }
+}
