@@ -97,8 +97,11 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
     <span class="fname" id="currentFile">未选择文件</span>
     <span class="spacer"></span>
     <button class="tbtn" id="btnSave">💾 保存</button>
+    <button class="tbtn" id="btnSaveApi">☁ 保存到API</button>
     <button class="tbtn" id="btnRun">▶ 预览</button>
     <button class="tbtn" id="btnExport">⬇ 导出</button>
+    <span class="sep">|</span>
+    <span class="fname" id="apiStatus" style="color:var(--fg-dim)">API: 检测中</span>
     <a href="../index.html" class="back">◁ 总览</a>
   </div>
 
@@ -155,6 +158,34 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 <script>
 const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
 
+const API_BASE='http://localhost:4000/api';
+let apiConnected=false;
+
+async function checkApi(){
+  try{
+    const r=await fetch(`${API_BASE}/status`);
+    if(r.ok){apiConnected=true;$('#apiStatus').textContent='API: ✓ 已连接';$('#apiStatus').style.color='#00ff88';return true}
+  }catch(e){}
+  apiConnected=false;$('#apiStatus').textContent='API: ✗ 未连接';$('#apiStatus').style.color='#ff3366';return false;
+}
+
+checkApi();
+
+async function apiGet(endpoint){
+  if(!apiConnected)return null;
+  try{const r=await fetch(`${API_BASE}/${endpoint}`);return r.ok?await r.json():null}catch(e){return null}
+}
+
+async function apiPost(endpoint,body){
+  if(!apiConnected)return null;
+  try{const r=await fetch(`${API_BASE}/${endpoint}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});return r.ok?await r.json():null}catch(e){return null}
+}
+
+async function apiDelete(endpoint){
+  if(!apiConnected)return null;
+  try{const r=await fetch(`${API_BASE}/${endpoint}`,{method:'DELETE'});return r.ok?await r.json():null}catch(e){return null}
+}
+
 const FILES=[
   {id:'v1',label:'V1-CORE',color:'#00ff88',files:[
     {name:'index.html',path:'../v1-core/index.html',lang:'HTML'}
@@ -202,6 +233,13 @@ const FILES=[
   ]},
   {id:'overview',label:'总览页',color:'#00ff88',files:[
     {name:'index.html',path:'../index.html',lang:'HTML'}
+  ]},
+  {id:'senik',label:'☁ SENIK 内容',color:'#ff6b9d',files:[
+    {name:'default.json',path:'senik:scenes/default.json',lang:'JSON',api:true},
+    {name:'ionize-burst.json',path:'senik:effects/ionize-burst.json',lang:'JSON',api:true},
+    {name:'neon-rings.json',path:'senik:textures/neon-rings.json',lang:'JSON',api:true},
+    {name:'software-architecture.json',path:'senik:models/software-architecture.json',lang:'JSON',api:true},
+    {name:'api-config.json',path:'senik:configs/api-config.json',lang:'JSON',api:true}
   ]}
 ];
 
@@ -245,13 +283,20 @@ function buildFileTree(){
 }
 
 async function openFile(path,name,lang,groupId){
+  const isApi=path.startsWith('senik:');
   if(!fileContents[path]){
-    try{
-      const resp=await fetch(path);
-      if(resp.ok) fileContents[path]=await resp.text();
-      else fileContents[path]=`// 无法加载: ${path}\n// HTTP ${resp.status}`;
-    }catch(e){
-      fileContents[path]=`// 加载失败: ${path}\n// ${e.message}`;
+    if(isApi&&apiConnected){
+      const apiPath=path.replace('senik:','');
+      const data=await apiGet(`senik/read?path=${encodeURIComponent(apiPath)}`);
+      fileContents[path]=data?data.content:`// 无法从API加载: ${apiPath}`;
+    }else{
+      try{
+        const resp=await fetch(path);
+        if(resp.ok) fileContents[path]=await resp.text();
+        else fileContents[path]=`// 无法加载: ${path}\n// HTTP ${resp.status}`;
+      }catch(e){
+        fileContents[path]=`// 加载失败: ${path}\n// ${e.message}`;
+      }
     }
   }
   if(!openTabs.find(t=>t.path===path)){
@@ -422,6 +467,32 @@ function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').repla
 $('#btnSave').addEventListener('click',saveFile);
 $('#btnRun').addEventListener('click',runPreview);
 $('#btnRefresh').addEventListener('click',runPreview);
+
+$('#btnSaveApi').addEventListener('click',async()=>{
+  if(!activeFile||!apiConnected)return;
+  const isApi=activeFile.startsWith('senik:');
+  if(isApi){
+    const apiPath=activeFile.replace('senik:','');
+    const result=await apiPost('senik/write',{path:apiPath,content:currentContent});
+    if(result&&result.ok){
+      modified[activeFile]=false;
+      $('#stMod').textContent='已保存到API';
+    }else{
+      alert('保存到API失败');
+    }
+  }else if(activeFile.startsWith('../')){
+    const projPath=activeFile.replace('../','');
+    const result=await apiPost('projects/write',{path:projPath,content:currentContent});
+    if(result&&result.ok){
+      modified[activeFile]=false;
+      $('#stMod').textContent='已保存到项目API';
+    }else{
+      alert('保存到项目API失败');
+    }
+  }else{
+    alert('此文件不支持API保存');
+  }
+});
 
 $('#btnExport').addEventListener('click',()=>{
   if(!activeFile)return;

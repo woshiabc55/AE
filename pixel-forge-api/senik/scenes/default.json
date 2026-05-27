@@ -1,0 +1,25 @@
+{
+  "id": "default-scene",
+  "name": "默认场景",
+  "version": "1.0.0",
+  "surface": "plane",
+  "physics": "none",
+  "texture": {
+    "type": "pixel",
+    "pixelSize": 8,
+    "color1": "#00ff88",
+    "color2": "#ff3366"
+  },
+  "physicsConfig": {
+    "strength": 1.0,
+    "damping": 0.98,
+    "stiffness": 0.8
+  },
+  "transform": {
+    "rotX": 0,
+    "rotY": 0,
+    "scale": 1.0
+  },
+  "layers": [],
+  "pipeline": []
+}

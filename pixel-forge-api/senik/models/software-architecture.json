@@ -1,0 +1,13 @@
+{
+  "id": "software-architecture",
+  "name": "软件架构实体",
+  "entities": [
+    { "id": "eventbus", "name": "EventBus", "type": "core", "color": "#00ff88", "shape": "octahedron", "position": [0, 1.2, 0], "size": 0.6 },
+    { "id": "core", "name": "CoreModule", "type": "core", "color": "#44ddff", "shape": "box", "position": [-2, 0.5, 0], "size": 0.5 },
+    { "id": "ui", "name": "UIModule", "type": "core", "color": "#ffaa00", "shape": "box", "position": [2, 0.5, 0], "size": 0.5 }
+  ],
+  "links": [
+    ["core", "eventbus"],
+    ["ui", "eventbus"]
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "neon-rings",
+  "name": "霓虹环带",
+  "type": "rings",
+  "params": {
+    "ringCount": 10,
+    "ringWidth": 0.5,
+    "color1": "#00ff88",
+    "color2": "#0a0a0f"
+  },
+  "author": "PIXEL FORGE",
+  "tags": ["环带", "霓虹", "程序化"]
+}
