@@ -1,0 +1,31 @@
+{
+  "//": ".agent — 模块代理文档 | CoreModule",
+
+  "format": "agent/1.0",
+  "type": "module-agent",
+
+  "id": "core",
+  "name": "CoreModule",
+  "layer": "core",
+  "version": 1,
+  "state": "published",
+
+  "description": "画布管理 · 图像加载 · 动画循环 · 提供sourceData给效果模块",
+
+  "interfaces": [
+    { "name": "getSourceData", "signature": "getSourceData(): ImageData", "description": "获取当前源图像像素数据" },
+    { "name": "getCanvas", "signature": "getCanvas(): HTMLCanvasElement", "description": "获取主画布" },
+    { "name": "loadImage", "signature": "loadImage(src: string): Promise<void>", "description": "加载图像" }
+  ],
+
+  "dependencies": ["eventbus"],
+
+  "lifecycle": ["init", "active", "dispose"],
+
+  "events": {
+    "publishes": ["image:loaded", "animation:frame"],
+    "subscribes": ["animation:start", "animation:stop"]
+  },
+
+  "shape3d": { "geometry": "box", "color": "#44ddff", "size": 0.5, "position": [-2, 0.5, 0] }
+}

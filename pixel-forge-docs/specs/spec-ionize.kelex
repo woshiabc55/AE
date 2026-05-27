@@ -1,0 +1,80 @@
+{
+  "//": ".kelex — 效果规格文档 | Effect Specification (stored in specs/)",
+
+  "format": "kelex/1.0",
+  "type": "effect-spec",
+
+  "id": "spec-ionize",
+  "name": "离子化消散效果规格",
+  "version": 1,
+  "state": "published",
+
+  "target": "kelex:ionize-burst",
+
+  "contract": {
+    "input": "Uint8ClampedArray (RGBA pixel data)",
+    "output": "Uint8ClampedArray (RGBA pixel data)",
+    "inPlace": false,
+    "frameBudget": "16ms @ 60fps",
+    "requiresTime": true
+  },
+
+  "params": [
+    {
+      "name": "density",
+      "type": "float",
+      "range": [0.01, 0.2],
+      "default": 0.05,
+      "description": "粒子采样密度"
+    },
+    {
+      "name": "speed",
+      "type": "float",
+      "range": [0.5, 5.0],
+      "default": 2.0,
+      "description": "消散速度"
+    },
+    {
+      "name": "gravity",
+      "type": "float",
+      "range": [0, 2.0],
+      "default": 0.5,
+      "description": "重力系数"
+    },
+    {
+      "name": "spread",
+      "type": "float",
+      "range": [0.5, 3.0],
+      "default": 1.5,
+      "description": "扩散范围"
+    }
+  ],
+
+  "algorithm": {
+    "pseudocode": [
+      "sample particles from source pixels at density rate",
+      "each particle: {x, y, vx, vy, r, g, b, a, life}",
+      "per frame:",
+      "  clear canvas",
+      "  for each alive particle:",
+      "    apply gravity: vy += gravity * dt",
+      "    apply spread: vx += random(-spread, spread) * dt",
+      "    update position: x += vx * speed * dt, y += vy * speed * dt",
+      "    decay life: life -= dt * speed",
+      "    if life > 0: draw pixel at (x, y) with (r, g, b, a * life)"
+    ],
+    "complexity": "O(particleCount) per frame",
+    "memory": "O(width * height * density) for particle array"
+  },
+
+  "edgeCases": [
+    "density=0 → 无粒子，画布空白",
+    "speed=0 → 粒子静止不消散",
+    "超大图像 → 限制最大粒子数为50000"
+  ],
+
+  "references": {
+    "effect": "kelex:ionize-burst",
+    "skill": "skill:physics-solve"
+  }
+}

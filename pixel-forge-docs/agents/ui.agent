@@ -1,0 +1,32 @@
+{
+  "//": ".agent — 模块代理文档 | UIModule",
+
+  "format": "agent/1.0",
+  "type": "module-agent",
+
+  "id": "ui",
+  "name": "UIModule",
+  "layer": "core",
+  "version": 1,
+  "state": "published",
+
+  "description": "DOM交互 · 参数控制 · 事件发射 · 用户操作唯一入口",
+
+  "interfaces": [
+    { "name": "createEffectPanel", "signature": "createEffectPanel(effects: Effect[]): HTMLElement", "description": "创建效果面板" },
+    { "name": "createLayerPanel", "signature": "createLayerPanel(compositor: Compositor): HTMLElement", "description": "创建图层面板" },
+    { "name": "createParamControls", "signature": "createParamControls(effect: Effect): HTMLElement", "description": "创建参数控件" },
+    { "name": "createUploadZone", "signature": "createUploadZone(): HTMLElement", "description": "创建上传区" }
+  ],
+
+  "dependencies": ["eventbus"],
+
+  "lifecycle": ["init", "active", "dispose"],
+
+  "events": {
+    "publishes": ["effect:changed", "param:changed", "animation:start", "animation:stop", "surface:changed", "texture:param", "stage:change"],
+    "subscribes": ["compositor:rendered", "modulation:applied", "plugin:installed"]
+  },
+
+  "shape3d": { "geometry": "box", "color": "#ffaa00", "size": 0.5, "position": [2, 0.5, 0] }
+}

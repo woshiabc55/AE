@@ -1,0 +1,46 @@
+{
+  "//": ".selena — 模块规格文档 | Module Specification (stored in specs/)",
+
+  "format": "selena/1.0",
+  "type": "module-spec",
+
+  "id": "spec-eventbus",
+  "name": "EventBus模块规格",
+  "version": 1,
+  "state": "published",
+
+  "target": "agent:eventbus",
+
+  "requirements": [
+    "发布/订阅模式，支持on/off/emit/once四个方法",
+    "on()返回UnsubscribeFn用于取消订阅",
+    "once()触发一次后自动取消",
+    "事件名使用namespace:event格式",
+    "支持通配符*订阅所有事件",
+    "零外部依赖"
+  ],
+
+  "interface": {
+    "on": { "params": ["event: string", "handler: Function"], "returns": "UnsubscribeFn" },
+    "off": { "params": ["event: string", "handler: Function"], "returns": "void" },
+    "emit": { "params": ["event: string", "data: any"], "returns": "void" },
+    "once": { "params": ["event: string", "handler: Function"], "returns": "UnsubscribeFn" }
+  },
+
+  "constraints": [
+    "模块间零直接引用",
+    "EventBus为唯一通信通道",
+    "事件payload必须为plain object"
+  ],
+
+  "testCases": [
+    { "name": "订阅并发射", "steps": ["on('test', cb)", "emit('test', {v:1})", "cb应收到{v:1}"] },
+    { "name": "取消订阅", "steps": ["const unsub = on('test', cb)", "unsub()", "emit('test', {})", "cb不应被调用"] },
+    { "name": "一次性订阅", "steps": ["once('test', cb)", "emit('test', {})", "emit('test', {})", "cb仅调用1次"] }
+  ],
+
+  "references": {
+    "agent": "agent:eventbus",
+    "events": "hermes:core-events"
+  }
+}

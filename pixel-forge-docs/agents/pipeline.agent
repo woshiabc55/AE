@@ -1,0 +1,53 @@
+{
+  "//": ".agent — 模块代理文档 | Module Agent Document",
+
+  "format": "agent/1.0",
+  "type": "module-agent",
+
+  "id": "pipeline",
+  "name": "Pipeline",
+  "layer": "architecture",
+  "version": 1,
+  "state": "published",
+
+  "description": "链式管道模块 · 效果串联执行 · 动态增删效果节点",
+
+  "interfaces": [
+    {
+      "name": "add",
+      "signature": "add(effect: EffectModule): Pipeline",
+      "description": "添加效果到管道末尾"
+    },
+    {
+      "name": "remove",
+      "signature": "remove(effectId: string): Pipeline",
+      "description": "从管道移除效果"
+    },
+    {
+      "name": "render",
+      "signature": "render(ctx: CanvasRenderingContext2D, source: ImageData, time: number): void",
+      "description": "按序执行管道中所有效果"
+    },
+    {
+      "name": "getOrder",
+      "signature": "getOrder(): string[]",
+      "description": "获取当前效果执行顺序"
+    }
+  ],
+
+  "dependencies": ["agent:eventbus"],
+
+  "lifecycle": ["init", "active", "dispose"],
+
+  "events": {
+    "publishes": ["pipeline:updated"],
+    "subscribes": ["effect:changed", "animation:frame"]
+  },
+
+  "shape3d": {
+    "geometry": "cylinder",
+    "color": "#888888",
+    "size": 0.5,
+    "position": [0, -1.2, 0]
+  }
+}

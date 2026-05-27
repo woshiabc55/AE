@@ -1,0 +1,43 @@
+{
+  "//": ".agent — 模块代理文档 | Module Agent Document",
+
+  "format": "agent/1.0",
+  "type": "module-agent",
+
+  "id": "ionize",
+  "name": "IonizeEffect",
+  "layer": "effect",
+  "version": 1,
+  "state": "published",
+
+  "description": "离子化消散效果模块 · 粒子物理模拟 · 重力/扩散/衰减",
+
+  "interfaces": [
+    {
+      "name": "render",
+      "signature": "render(ctx: CanvasRenderingContext2D, source: ImageData, time: number): void",
+      "description": "渲染离子化消散效果"
+    },
+    {
+      "name": "reset",
+      "signature": "reset(): void",
+      "description": "重置粒子系统"
+    }
+  ],
+
+  "dependencies": ["agent:eventbus"],
+
+  "lifecycle": ["init", "active", "dispose"],
+
+  "events": {
+    "publishes": [],
+    "subscribes": ["effect:changed", "param:changed", "animation:frame", "image:loaded"]
+  },
+
+  "shape3d": {
+    "geometry": "sphere",
+    "color": "#ff3366",
+    "size": 0.4,
+    "position": [-0.5, 0, 0]
+  }
+}

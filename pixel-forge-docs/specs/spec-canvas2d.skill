@@ -1,0 +1,46 @@
+{
+  "//": ".skill — 能力规格文档 | Capability Specification (stored in specs/)",
+
+  "format": "skill/1.0",
+  "type": "capability-spec",
+
+  "id": "spec-canvas2d",
+  "name": "Canvas 2D能力规格",
+  "version": 1,
+  "state": "published",
+
+  "description": "Canvas 2D渲染上下文的基础能力规格，所有2D效果的底层依赖",
+
+  "provides": [
+    {
+      "id": "image-data-ops",
+      "name": "ImageData操作",
+      "operations": ["getImageData", "putImageData", "createImageData"],
+      "description": "像素级读写操作"
+    },
+    {
+      "id": "draw-ops",
+      "name": "绘制操作",
+      "operations": ["drawImage", "fillRect", "strokeRect", "clearRect"],
+      "description": "基础绘制原语"
+    },
+    {
+      "id": "composite-ops",
+      "name": "合成操作",
+      "operations": ["globalCompositeOperation", "globalAlpha"],
+      "values": ["source-over", "multiply", "screen", "overlay", "difference", "exclusion", "color-dodge"],
+      "description": "7种图层混合模式"
+    }
+  ],
+
+  "requires": [
+    "HTMLCanvasElement",
+    "CanvasRenderingContext2D"
+  ],
+
+  "performance": {
+    "getImageData": "O(w*h) ~1ms @ 800x600",
+    "putImageData": "O(w*h) ~1ms @ 800x600",
+    "drawImage": "O(1) GPU blit"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "//": ".opic — 视觉纹理文档 | Optic Texture Document",
+
+  "format": "opic/1.0",
+  "type": "optic-texture",
+
+  "id": "gradient-sunset",
+  "name": "日落渐变纹理",
+  "version": 1,
+  "state": "published",
+
+  "description": "暖色调线性渐变纹理，从深紫到橙红到金黄",
+
+  "generator": "gradient",
+
+  "params": {
+    "direction": "vertical",
+    "stops": [
+      { "offset": 0, "color": "#1a0033" },
+      { "offset": 0.3, "color": "#cc3366" },
+      { "offset": 0.6, "color": "#ff6633" },
+      { "offset": 1, "color": "#ffcc00" }
+    ],
+    "magFilter": "LinearFilter",
+    "minFilter": "LinearFilter"
+  },
+
+  "colors": {
+    "primary": "#cc3366",
+    "secondary": "#ffcc00"
+  },
+
+  "output": {
+    "type": "THREE.CanvasTexture",
+    "size": "256x256",
+    "format": "RGBA"
+  }
+}

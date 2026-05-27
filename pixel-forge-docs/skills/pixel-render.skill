@@ -1,0 +1,47 @@
+{
+  "//": ".skill — 能力技能文档 | Capability & Skill Document",
+  "//": "标记系统/模块的能力声明与技能规格",
+
+  "format": "skill/1.0",
+  "type": "capability",
+
+  "id": "pixel-render",
+  "name": "像素渲染能力",
+  "version": 1,
+  "state": "published",
+
+  "description": "将源图像像素化并渲染到Canvas或3D面的核心能力",
+
+  "provides": [
+    {
+      "id": "pixelate",
+      "name": "像素化渲染",
+      "input": "HTMLImageElement | HTMLCanvasElement",
+      "output": "CanvasRenderingContext2D | THREE.CanvasTexture",
+      "params": ["pixelSize", "gridShow"]
+    },
+    {
+      "id": "texture-map",
+      "name": "纹理映射",
+      "input": "HTMLCanvasElement + THREE.BufferGeometry",
+      "output": "THREE.Mesh",
+      "params": ["magFilter", "minFilter"]
+    }
+  ],
+
+  "requires": [
+    "skill:canvas-2d",
+    "skill:threejs-scene"
+  ],
+
+  "performance": {
+    "pixelate": "O(w*h) ~2ms @ 800x600",
+    "texture-map": "O(1) GPU upload"
+  },
+
+  "versions": {
+    "v1": "Canvas 2D 像素化",
+    "v6": "Three.js 纹理映射",
+    "v7": "程序化纹理 + 3D面"
+  }
+}

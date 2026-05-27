@@ -1,0 +1,54 @@
+{
+  "//": ".skill — 能力技能文档 | 物理解算能力",
+
+  "format": "skill/1.0",
+  "type": "capability",
+
+  "id": "physics-solve",
+  "name": "物理解算能力",
+  "version": 1,
+  "state": "published",
+
+  "description": "Verlet积分物理引擎，支持6种力模型，驱动2D粒子与3D顶点变形",
+
+  "provides": [
+    {
+      "id": "verlet-step",
+      "name": "Verlet积分步进",
+      "input": "Float32Array(positions) + Float32Array(velocities)",
+      "output": "Float32Array(updatedPositions)",
+      "params": ["strength", "damping", "stiffness"]
+    },
+    {
+      "id": "force-gravity",
+      "name": "重力",
+      "algorithm": "F.y -= g * strength; F += restore * stiffness"
+    },
+    {
+      "id": "force-wind",
+      "name": "风力",
+      "algorithm": "F.x += sin(t*2+oy*3) * strength; F += restore * stiffness"
+    },
+    {
+      "id": "force-explode",
+      "name": "爆炸",
+      "algorithm": "F += normalize(offset) * strength / dist; decay over time"
+    },
+    {
+      "id": "force-wave3d",
+      "name": "3D波",
+      "algorithm": "position = original + sin(original*freq + t*speed) * amplitude"
+    },
+    {
+      "id": "force-spring",
+      "name": "弹簧",
+      "algorithm": "F += (original - current) * stiffness * 3; F += perturbation"
+    }
+  ],
+
+  "requires": [],
+
+  "performance": {
+    "verlet-step": "O(n) ~0.5ms @ 10k vertices"
+  }
+}

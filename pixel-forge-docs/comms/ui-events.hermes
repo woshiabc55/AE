@@ -1,0 +1,71 @@
+{
+  "//": ".hermes — 通信事件文档 | Communication & Event Document",
+
+  "format": "hermes/1.0",
+  "type": "event-protocol",
+
+  "id": "ui-events",
+  "name": "UI事件协议",
+  "version": 1,
+  "state": "published",
+
+  "description": "用户界面交互事件协议，覆盖控件操作、面板切换、文件操作",
+
+  "events": [
+    {
+      "name": "ui:upload",
+      "publisher": "UIModule",
+      "subscribers": ["CoreModule"],
+      "payload": { "fileName": "string", "fileSize": "number", "fileType": "string" },
+      "description": "用户上传图片"
+    },
+    {
+      "name": "ui:panel-toggle",
+      "publisher": "UIModule",
+      "subscribers": ["UIModule"],
+      "payload": { "panel": "effects|layers|modulation|plugins|physics|3d", "visible": "boolean" },
+      "description": "面板显隐切换"
+    },
+    {
+      "name": "ui:export",
+      "publisher": "UIModule",
+      "subscribers": ["CoreModule"],
+      "payload": { "format": "png|gif|webm", "quality": "number" },
+      "description": "导出请求"
+    },
+    {
+      "name": "ui:theme",
+      "publisher": "UIModule",
+      "subscribers": ["UIModule"],
+      "payload": { "theme": "dark|light|crt" },
+      "description": "主题切换"
+    },
+    {
+      "name": "ui:fullscreen",
+      "publisher": "UIModule",
+      "subscribers": ["CoreModule"],
+      "payload": { "enabled": "boolean" },
+      "description": "全屏切换"
+    },
+    {
+      "name": "ui:history",
+      "publisher": "UIModule",
+      "subscribers": ["CoreModule"],
+      "payload": { "action": "undo|redo" },
+      "description": "撤销/重做"
+    },
+    {
+      "name": "ui:resize",
+      "publisher": "UIModule",
+      "subscribers": ["CoreModule", "Scene3D"],
+      "payload": { "width": "number", "height": "number" },
+      "description": "窗口尺寸变更"
+    }
+  ],
+
+  "topology": {
+    "bus": "EventBus",
+    "pattern": "publish-subscribe",
+    "constraint": "UI事件由用户操作触发，不涉及效果内部逻辑"
+  }
+}

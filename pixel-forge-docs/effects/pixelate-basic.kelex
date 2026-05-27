@@ -1,0 +1,51 @@
+{
+  "//": ".kelex — 效果变换文档 | Effect Transform Document",
+  "//": "标记效果算法、参数定义、输入输出规格",
+
+  "format": "kelex/1.0",
+  "type": "effect-transform",
+
+  "id": "pixelate-basic",
+  "name": "像素化",
+  "category": "basic",
+  "version": 1,
+  "state": "published",
+
+  "description": "将图像降采样为色块，每个块取区域平均色",
+
+  "algorithm": {
+    "type": "block-average",
+    "complexity": "O(w*h)",
+    "steps": [
+      "遍历图像，按pixelSize分块",
+      "每块内求RGB均值",
+      "填充块为均值色"
+    ]
+  },
+
+  "params": [
+    {
+      "name": "pixelSize",
+      "label": "像素尺寸",
+      "type": "range",
+      "min": 2,
+      "max": 32,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "name": "gridShow",
+      "label": "网格线",
+      "type": "boolean",
+      "default": false
+    }
+  ],
+
+  "inputOutput": {
+    "input": "ImageData",
+    "output": "ImageData",
+    "sideEffect": "none"
+  },
+
+  "dependencies": []
+}

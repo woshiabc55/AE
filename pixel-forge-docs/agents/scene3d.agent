@@ -1,0 +1,53 @@
+{
+  "//": ".agent — 模块代理文档 | Module Agent Document",
+
+  "format": "agent/1.0",
+  "type": "module-agent",
+
+  "id": "scene3d",
+  "name": "Scene3D",
+  "layer": "architecture",
+  "version": 1,
+  "state": "published",
+
+  "description": "3D场景模块 · Three.js渲染 · 5种3D面 · 轨道相机控制",
+
+  "interfaces": [
+    {
+      "name": "setSurface",
+      "signature": "setSurface(type: string, subdivision: number): void",
+      "description": "设置3D面类型和细分度"
+    },
+    {
+      "name": "applyTexture",
+      "signature": "applyTexture(canvas: HTMLCanvasElement): void",
+      "description": "将Canvas内容映射为3D面纹理"
+    },
+    {
+      "name": "updateVertices",
+      "signature": "updateVertices(positions: Float32Array): void",
+      "description": "更新几何体顶点位置（物理解算后）"
+    },
+    {
+      "name": "render",
+      "signature": "render(): void",
+      "description": "渲染3D场景"
+    }
+  ],
+
+  "dependencies": ["agent:eventbus", "agent:physics"],
+
+  "lifecycle": ["init", "active", "dispose"],
+
+  "events": {
+    "publishes": [],
+    "subscribes": ["surface:changed", "physics:applied", "texture:param"]
+  },
+
+  "shape3d": {
+    "geometry": "sphere",
+    "color": "#44aaff",
+    "size": 0.6,
+    "position": [2, 2.4, 0]
+  }
+}

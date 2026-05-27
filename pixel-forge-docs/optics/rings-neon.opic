@@ -1,0 +1,36 @@
+{
+  "//": ".opic — 视觉纹理文档 | 霓虹环带纹理",
+
+  "format": "opic/1.0",
+  "type": "optic-texture",
+
+  "id": "rings-neon",
+  "name": "霓虹环带纹理",
+  "version": 1,
+  "state": "published",
+
+  "description": "程序化生成的同心圆环带纹理，双色调阈值化",
+
+  "generator": "rings",
+
+  "params": {
+    "ringCount": 10,
+    "ringWidth": 0.5,
+    "resolution": 512,
+    "magFilter": "NearestFilter",
+    "minFilter": "NearestFilter"
+  },
+
+  "colors": {
+    "primary": "#00ff88",
+    "secondary": "#0a0a0f"
+  },
+
+  "algorithm": "dist * ringCount * PI * 2 → sin → threshold(ringWidth)",
+
+  "output": {
+    "type": "THREE.CanvasTexture",
+    "size": "512x512",
+    "format": "RGBA"
+  }
+}

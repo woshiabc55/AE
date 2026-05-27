@@ -1,0 +1,62 @@
+{
+  "//": ".rpa — 渲染管线架构文档 | Render Pipeline Architecture Document",
+
+  "format": "rpa/1.0",
+  "type": "render-pipeline",
+
+  "id": "plugin-pipeline",
+  "name": "插件管线",
+  "version": 1,
+  "state": "published",
+
+  "description": "V5插件管线：支持动态注册效果插件的扩展管线",
+
+  "stages": [
+    {
+      "order": 1,
+      "name": "source",
+      "type": "input",
+      "description": "加载源图像到ImageData"
+    },
+    {
+      "order": 2,
+      "name": "builtin-effects",
+      "type": "transform",
+      "description": "内置效果管道执行",
+      "reference": "rpa:single-effect"
+    },
+    {
+      "order": 3,
+      "name": "plugin-effects",
+      "type": "transform",
+      "description": "插件效果管道执行",
+      "reference": "plugin:*"
+    },
+    {
+      "order": 4,
+      "name": "composite",
+      "type": "blend",
+      "description": "图层合成",
+      "reference": "rpa:composite-pipeline"
+    },
+    {
+      "order": 5,
+      "name": "output",
+      "type": "display",
+      "description": "最终输出到Canvas"
+    }
+  ],
+
+  "dataFlow": "ImageData → BuiltinPipeline → PluginPipeline → Compositor → Canvas",
+
+  "compositing": {
+    "mode": "layered",
+    "layers": "dynamic",
+    "maxLayers": 8
+  },
+
+  "pluginAPI": {
+    "register": "PixelForge.registerPlugin({id, name, render, params})",
+    "lifecycle": "install → active → uninstall"
+  }
+}

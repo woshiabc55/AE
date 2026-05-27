@@ -1,0 +1,70 @@
+{
+  "//": ".rpa — 渲染管线架构文档 | 物理管线",
+
+  "format": "rpa/1.0",
+  "type": "render-pipeline",
+
+  "id": "physics-pipeline",
+  "name": "3D物理管线",
+  "version": 1,
+  "state": "published",
+
+  "description": "V6/V7管线：Three.js 3D渲染 + Verlet物理解算 + 像素化纹理映射",
+
+  "stages": [
+    {
+      "order": 1,
+      "name": "source",
+      "type": "input",
+      "description": "加载源图像"
+    },
+    {
+      "order": 2,
+      "name": "pixelate",
+      "type": "transform",
+      "description": "像素化处理 → CanvasTexture",
+      "reference": "opic:*"
+    },
+    {
+      "order": 3,
+      "name": "geometry",
+      "type": "construct",
+      "description": "构建3D面几何体",
+      "reference": "selena:*"
+    },
+    {
+      "order": 4,
+      "name": "texture-map",
+      "type": "map",
+      "description": "纹理映射到3D面"
+    },
+    {
+      "order": 5,
+      "name": "physics",
+      "type": "simulate",
+      "description": "Verlet物理解算顶点变形",
+      "reference": "skill:physics-solve"
+    },
+    {
+      "order": 6,
+      "name": "render",
+      "type": "render",
+      "description": "Three.js WebGL渲染"
+    },
+    {
+      "order": 7,
+      "name": "output",
+      "type": "display",
+      "description": "Canvas显示3D结果"
+    }
+  ],
+
+  "dataFlow": "Image → Pixelate → CanvasTexture → Map to Geometry → Physics Step → Three.js Render → Canvas",
+
+  "compositing": {
+    "mode": "3d-scene",
+    "layers": 1,
+    "lights": ["ambient", "point-1", "point-2"],
+    "shadows": true
+  }
+}

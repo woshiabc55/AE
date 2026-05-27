@@ -1,0 +1,46 @@
+{
+  "//": ".selena — 场景选择文档 | Scene Selection Document",
+
+  "format": "selena/1.0",
+  "type": "scene-selection",
+
+  "id": "sphere-wrap",
+  "name": "球体包裹场景",
+  "version": 1,
+  "state": "published",
+
+  "selection": {
+    "surface": "sphere",
+    "subdivision": 24,
+    "doubleSide": true
+  },
+
+  "physics": {
+    "force": "gravity",
+    "config": {
+      "strength": 0.8,
+      "damping": 0.95,
+      "stiffness": 0.6
+    }
+  },
+
+  "transform": {
+    "rotX": 0,
+    "rotY": 0,
+    "rotZ": 0,
+    "scale": 1.0
+  },
+
+  "camera": {
+    "theta": 0.5,
+    "phi": 1.0,
+    "radius": 5,
+    "autoRotate": true
+  },
+
+  "references": {
+    "texture": "opic:pixel-default",
+    "effect": "kelex:pixelate-basic",
+    "pipeline": "rpa:physics-pipeline"
+  }
+}

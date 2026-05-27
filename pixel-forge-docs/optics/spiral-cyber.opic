@@ -1,0 +1,36 @@
+{
+  "//": ".opic — 视觉纹理文档 | 螺旋纹理",
+
+  "format": "opic/1.0",
+  "type": "optic-texture",
+
+  "id": "spiral-cyber",
+  "name": "赛博螺旋纹理",
+  "version": 1,
+  "state": "draft",
+
+  "description": "程序化阿基米德螺旋纹理，角度+距离双维度调制",
+
+  "generator": "spiral",
+
+  "params": {
+    "spiralTurns": 8,
+    "threshold": 0.4,
+    "resolution": 512,
+    "magFilter": "NearestFilter",
+    "minFilter": "NearestFilter"
+  },
+
+  "colors": {
+    "primary": "#44ddff",
+    "secondary": "#ff3366"
+  },
+
+  "algorithm": "sin(atan2(ny,nx) + dist * turns * PI * 2 * 3) → threshold",
+
+  "output": {
+    "type": "THREE.CanvasTexture",
+    "size": "512x512",
+    "format": "RGBA"
+  }
+}

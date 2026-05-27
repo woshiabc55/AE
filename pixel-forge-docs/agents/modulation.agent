@@ -1,0 +1,48 @@
+{
+  "//": ".agent — 模块代理文档 | Module Agent Document",
+
+  "format": "agent/1.0",
+  "type": "module-agent",
+
+  "id": "modulation",
+  "name": "ModulationEngine",
+  "layer": "architecture",
+  "version": 1,
+  "state": "published",
+
+  "description": "参数调制引擎 · source→transform→target链接 · 实时参数联动",
+
+  "interfaces": [
+    {
+      "name": "link",
+      "signature": "link(source: {effect, param}, transform: Function, target: {effect, param}): string",
+      "description": "创建调制链接，返回linkId"
+    },
+    {
+      "name": "unlink",
+      "signature": "unlink(linkId: string): void",
+      "description": "移除调制链接"
+    },
+    {
+      "name": "apply",
+      "signature": "apply(): void",
+      "description": "执行所有调制链接"
+    }
+  ],
+
+  "dependencies": ["agent:eventbus", "agent:pipeline"],
+
+  "lifecycle": ["init", "active", "dispose"],
+
+  "events": {
+    "publishes": ["modulation:applied"],
+    "subscribes": ["param:changed", "animation:frame"]
+  },
+
+  "shape3d": {
+    "geometry": "torusKnot",
+    "color": "#ff8800",
+    "size": 0.4,
+    "position": [1.2, -1.2, 0]
+  }
+}

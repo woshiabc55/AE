@@ -1,0 +1,47 @@
+{
+  "//": ".selena — 场景选择文档 | Scene Selection Document",
+
+  "format": "selena/1.0",
+  "type": "scene-selection",
+
+  "id": "torus-wave",
+  "name": "环面波浪场景",
+  "version": 1,
+  "state": "published",
+
+  "selection": {
+    "surface": "torus",
+    "subdivision": 24,
+    "doubleSide": true
+  },
+
+  "physics": {
+    "force": "wave3d",
+    "config": {
+      "strength": 1.5,
+      "damping": 0.96,
+      "stiffness": 0.8,
+      "frequency": 2.0
+    }
+  },
+
+  "transform": {
+    "rotX": 0.5,
+    "rotY": 0,
+    "rotZ": 0,
+    "scale": 1.0
+  },
+
+  "camera": {
+    "theta": 0,
+    "phi": 1.0,
+    "radius": 5,
+    "autoRotate": true
+  },
+
+  "references": {
+    "texture": "optic:checkerboard-mono",
+    "effect": "kelex:wave-line",
+    "pipeline": "rpa:physics-pipeline"
+  }
+}

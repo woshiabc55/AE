@@ -1,0 +1,69 @@
+{
+  "//": ".kelex — 效果变换文档 | Effect Transform Document",
+
+  "format": "kelex/1.0",
+  "type": "effect-transform",
+
+  "id": "chromatic-aberration",
+  "name": "色差",
+  "category": "distort",
+  "version": 1,
+  "state": "published",
+
+  "description": "RGB三通道独立径向位移，模拟镜头色散效果",
+
+  "algorithm": {
+    "type": "channel-displacement",
+    "complexity": "O(w*h*3)",
+    "steps": [
+      "分离源图像为R/G/B三个通道",
+      "R通道向左偏移offsetR像素",
+      "B通道向右偏移offsetB像素",
+      "G通道保持原位",
+      "合并三通道为输出图像"
+    ]
+  },
+
+  "params": [
+    {
+      "name": "offsetR",
+      "label": "红通道偏移",
+      "type": "range",
+      "min": -20,
+      "max": 20,
+      "default": -4,
+      "unit": "px"
+    },
+    {
+      "name": "offsetB",
+      "label": "蓝通道偏移",
+      "type": "range",
+      "min": -20,
+      "max": 20,
+      "default": 4,
+      "unit": "px"
+    },
+    {
+      "name": "radial",
+      "label": "径向模式",
+      "type": "boolean",
+      "default": true,
+      "description": "偏移量随距中心距离缩放"
+    },
+    {
+      "name": "animate",
+      "label": "动画",
+      "type": "boolean",
+      "default": true,
+      "description": "偏移量随时间脉动"
+    }
+  ],
+
+  "inputOutput": {
+    "input": "ImageData",
+    "output": "ImageData",
+    "sideEffect": "none"
+  },
+
+  "dependencies": []
+}

@@ -1,0 +1,47 @@
+{
+  "//": ".selena — 场景选择文档 | Scene Selection Document",
+
+  "format": "selena/1.0",
+  "type": "scene-selection",
+
+  "id": "cylinder-roll",
+  "name": "圆柱滚动场景",
+  "version": 1,
+  "state": "published",
+
+  "selection": {
+    "surface": "cylinder",
+    "subdivision": 32,
+    "doubleSide": true
+  },
+
+  "physics": {
+    "force": "wind",
+    "config": {
+      "strength": 1.2,
+      "damping": 0.92,
+      "stiffness": 0.7,
+      "direction": [1, 0, 0]
+    }
+  },
+
+  "transform": {
+    "rotX": 0,
+    "rotY": 0,
+    "rotZ": 0,
+    "scale": 1.0
+  },
+
+  "camera": {
+    "theta": 0.3,
+    "phi": 1.2,
+    "radius": 5,
+    "autoRotate": false
+  },
+
+  "references": {
+    "texture": "optic:rings-neon",
+    "effect": "kelex:ionize-burst",
+    "pipeline": "rpa:physics-pipeline"
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "//": ".kelex — 效果规格文档 | Effect Specification (stored in specs/)",
+
+  "format": "kelex/1.0",
+  "type": "effect-spec",
+
+  "id": "spec-wave",
+  "name": "波浪纹线条效果规格",
+  "version": 1,
+  "state": "published",
+
+  "target": "kelex:wave-line",
+
+  "contract": {
+    "input": "Uint8ClampedArray (RGBA pixel data)",
+    "output": "Uint8ClampedArray (RGBA pixel data)",
+    "inPlace": false,
+    "frameBudget": "16ms @ 60fps",
+    "requiresTime": true
+  },
+
+  "params": [
+    {
+      "name": "amplitude",
+      "type": "float",
+      "range": [1, 50],
+      "default": 15,
+      "unit": "px",
+      "description": "波浪振幅"
+    },
+    {
+      "name": "frequency",
+      "type": "float",
+      "range": [0.5, 10],
+      "default": 3.0,
+      "unit": "cycles",
+      "description": "波浪频率"
+    },
+    {
+      "name": "speed",
+      "type": "float",
+      "range": [0.1, 5.0],
+      "default": 1.0,
+      "description": "动画速度"
+    },
+    {
+      "name": "lineMode",
+      "type": "enum",
+      "values": ["sine", "triangle", "sawtooth"],
+      "default": "sine",
+      "description": "波形类型"
+    }
+  ],
+
+  "algorithm": {
+    "pseudocode": [
+      "for each row y in source image:",
+      "  offset = amplitude * waveFunc(y * frequency + time * speed)",
+      "  for each column x:",
+      "    srcX = x + offset",
+      "    if srcX in [0, width):",
+      "      dest[y][x] = source[y][clamp(srcX)]",
+      "    else:",
+      "      dest[y][x] = transparent"
+    ],
+    "complexity": "O(width * height)",
+    "memory": "O(width * height) for output buffer"
+  },
+
+  "edgeCases": [
+    "amplitude=0 → 无位移（恒等变换）",
+    "frequency=0 → 整体平移",
+    "lineMode=sine → 使用Math.sin，triangle → 三角波，sawtooth → 锯齿波"
+  ],
+
+  "references": {
+    "effect": "kelex:wave-line",
+    "skill": "skill:pixel-render"
+  }
+}

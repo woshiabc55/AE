@@ -1,0 +1,43 @@
+{
+  "//": ".agent — 模块代理文档 | Module Agent Document",
+
+  "format": "agent/1.0",
+  "type": "module-agent",
+
+  "id": "pixelate",
+  "name": "PixelateEffect",
+  "layer": "effect",
+  "version": 1,
+  "state": "published",
+
+  "description": "像素化效果模块 · 区域均值采样 · 支持网格线叠加",
+
+  "interfaces": [
+    {
+      "name": "render",
+      "signature": "render(ctx: CanvasRenderingContext2D, source: ImageData, time: number): void",
+      "description": "渲染像素化效果"
+    },
+    {
+      "name": "setParam",
+      "signature": "setParam(name: string, value: any): void",
+      "description": "设置参数(pixelSize/gridShow)"
+    }
+  ],
+
+  "dependencies": ["agent:eventbus"],
+
+  "lifecycle": ["init", "active", "dispose"],
+
+  "events": {
+    "publishes": [],
+    "subscribes": ["effect:changed", "param:changed", "animation:frame"]
+  },
+
+  "shape3d": {
+    "geometry": "box",
+    "color": "#00ff88",
+    "size": 0.4,
+    "position": [-1.5, 0, 0]
+  }
+}

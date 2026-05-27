@@ -1,0 +1,34 @@
+{
+  "//": ".opic — 视觉纹理文档 | Optic Texture Document",
+
+  "format": "opic/1.0",
+  "type": "optic-texture",
+
+  "id": "checkerboard-mono",
+  "name": "单色棋盘纹理",
+  "version": 1,
+  "state": "published",
+
+  "description": "黑白交替棋盘格纹理，用于3D面UV可视化",
+
+  "generator": "checkerboard",
+
+  "params": {
+    "cellSize": 16,
+    "colorA": "#000000",
+    "colorB": "#ffffff",
+    "magFilter": "NearestFilter",
+    "minFilter": "NearestFilter"
+  },
+
+  "colors": {
+    "primary": "#000000",
+    "secondary": "#ffffff"
+  },
+
+  "output": {
+    "type": "THREE.CanvasTexture",
+    "size": "256x256",
+    "format": "RGBA"
+  }
+}

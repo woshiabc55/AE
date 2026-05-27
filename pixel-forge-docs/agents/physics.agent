@@ -1,0 +1,53 @@
+{
+  "//": ".agent — 模块代理文档 | Module Agent Document",
+
+  "format": "agent/1.0",
+  "type": "module-agent",
+
+  "id": "physics",
+  "name": "PhysicsEngine",
+  "layer": "architecture",
+  "version": 1,
+  "state": "published",
+
+  "description": "物理解算引擎 · Verlet积分 · 重力/风力/爆炸/3D波/弹簧力场",
+
+  "interfaces": [
+    {
+      "name": "addForce",
+      "signature": "addForce(type: string, config: object): string",
+      "description": "添加力场，返回forceId"
+    },
+    {
+      "name": "removeForce",
+      "signature": "removeForce(forceId: string): void",
+      "description": "移除力场"
+    },
+    {
+      "name": "step",
+      "signature": "step(dt: number): void",
+      "description": "执行一步物理模拟"
+    },
+    {
+      "name": "getVertices",
+      "signature": "getVertices(): Float32Array",
+      "description": "获取当前顶点位置"
+    }
+  ],
+
+  "dependencies": ["agent:eventbus"],
+
+  "lifecycle": ["init", "active", "dispose"],
+
+  "events": {
+    "publishes": ["physics:applied"],
+    "subscribes": ["animation:frame", "surface:changed"]
+  },
+
+  "shape3d": {
+    "geometry": "octahedron",
+    "color": "#ff4444",
+    "size": 0.6,
+    "position": [0, 2.4, 0]
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "//": ".kelex — 效果变换文档 | 离子化消散",
+
+  "format": "kelex/1.0",
+  "type": "effect-transform",
+
+  "id": "ionize-burst",
+  "name": "离子化消散",
+  "category": "particle",
+  "version": 1,
+  "state": "published",
+
+  "description": "每个像素块变为独立粒子，带随机方向/速度/重力/渐隐的物理散射",
+
+  "algorithm": {
+    "type": "verlet-particle",
+    "complexity": "O(n)",
+    "steps": [
+      "初始化: 每个像素块→粒子(位置/速度/延迟)",
+      "每帧: 计算力(重力/风力/爆炸/弹簧)",
+      "更新速度: v = (v + F*dt) * damping",
+      "更新位置: p = p + v*dt",
+      "渲染: 绘制粒子方块(带alpha衰减)"
+    ]
+  },
+
+  "params": [
+    { "name": "pixelSize", "label": "像素尺寸", "type": "range", "min": 2, "max": 16, "default": 4 },
+    { "name": "speed", "label": "扩散速度", "type": "range", "min": 0.5, "max": 5, "step": 0.1, "default": 2.0 },
+    { "name": "spread", "label": "扩散范围", "type": "range", "min": 0.5, "max": 4, "step": 0.1, "default": 1.5 },
+    { "name": "gravity", "label": "重力", "type": "range", "min": 0, "max": 2, "step": 0.1, "default": 0.3 },
+    { "name": "fade", "label": "渐隐", "type": "boolean", "default": true }
+  ],
+
+  "inputOutput": {
+    "input": "ImageData",
+    "output": "Canvas2D",
+    "sideEffect": "particle-state"
+  },
+
+  "dependencies": ["physics:verlet"]
+}

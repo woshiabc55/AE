@@ -1,0 +1,50 @@
+{
+  "//": ".skill — 能力规格文档 | Capability Specification (stored in specs/)",
+
+  "format": "skill/1.0",
+  "type": "capability-spec",
+
+  "id": "spec-threejs-scene",
+  "name": "Three.js场景能力规格",
+  "version": 1,
+  "state": "published",
+
+  "description": "Three.js 3D场景渲染能力规格，3D面和物理解算的底层依赖",
+
+  "provides": [
+    {
+      "id": "scene-setup",
+      "name": "场景搭建",
+      "operations": ["Scene", "PerspectiveCamera", "WebGLRenderer"],
+      "description": "3D场景基础组件"
+    },
+    {
+      "id": "geometry",
+      "name": "几何体",
+      "operations": ["PlaneGeometry", "SphereGeometry", "CylinderGeometry", "TorusGeometry", "BoxGeometry"],
+      "description": "5种内置3D面"
+    },
+    {
+      "id": "material",
+      "name": "材质",
+      "operations": ["MeshBasicMaterial", "MeshStandardMaterial", "CanvasTexture"],
+      "description": "材质与纹理映射"
+    },
+    {
+      "id": "lighting",
+      "name": "光照",
+      "operations": ["AmbientLight", "DirectionalLight", "PointLight"],
+      "description": "3种光源"
+    }
+  ],
+
+  "requires": [
+    "THREE (r128+)",
+    "WebGL support"
+  ],
+
+  "performance": {
+    "render": "O(faces) ~16ms @ 32x32 subdivision",
+    "textureUpload": "O(1) GPU upload per frame"
+  }
+}

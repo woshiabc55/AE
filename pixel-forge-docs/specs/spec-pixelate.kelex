@@ -1,0 +1,62 @@
+{
+  "//": ".kelex — 效果规格文档 | Effect Specification (stored in specs/)",
+
+  "format": "kelex/1.0",
+  "type": "effect-spec",
+
+  "id": "spec-pixelate",
+  "name": "像素化效果规格",
+  "version": 1,
+  "state": "published",
+
+  "target": "kelex:pixelate-basic",
+
+  "contract": {
+    "input": "Uint8ClampedArray (RGBA pixel data)",
+    "output": "Uint8ClampedArray (RGBA pixel data)",
+    "inPlace": true,
+    "frameBudget": "16ms @ 60fps"
+  },
+
+  "params": [
+    {
+      "name": "pixelSize",
+      "type": "integer",
+      "range": [2, 32],
+      "default": 8,
+      "validation": "pixelSize >= 2 && pixelSize <= Math.min(width, height)"
+    },
+    {
+      "name": "gridShow",
+      "type": "boolean",
+      "default": false,
+      "sideEffect": "绘制1px灰色网格线"
+    }
+  ],
+
+  "algorithm": {
+    "pseudocode": [
+      "for each block (bx, by) in image with size pixelSize:",
+      "  sumR = sumG = sumB = sumA = 0; count = 0",
+      "  for px in [bx, bx+pixelSize):",
+      "    for py in [by, by+pixelSize):",
+      "      sumR += data[offset]; sumG += data[offset+1] ...",
+      "      count++",
+      "  avg = [sumR/count, sumG/count, sumB/count, sumA/count]",
+      "  fill block (bx,by) with avg color"
+    ],
+    "complexity": "O(width * height)",
+    "memory": "O(1) additional (in-place)"
+  },
+
+  "edgeCases": [
+    "图像尺寸不是pixelSize整数倍 → 最后一行/列块可能小于pixelSize",
+    "pixelSize=1 → 无变化（恒等变换）",
+    "空图像 → 直接返回"
+  ],
+
+  "references": {
+    "effect": "kelex:pixelate-basic",
+    "skill": "skill:pixel-render"
+  }
+}

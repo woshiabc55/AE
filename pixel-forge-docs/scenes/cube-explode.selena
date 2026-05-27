@@ -1,0 +1,47 @@
+{
+  "//": ".selena — 场景选择文档 | Scene Selection Document",
+
+  "format": "selena/1.0",
+  "type": "scene-selection",
+
+  "id": "cube-explode",
+  "name": "立方体爆炸场景",
+  "version": 1,
+  "state": "published",
+
+  "selection": {
+    "surface": "box",
+    "subdivision": 16,
+    "doubleSide": true
+  },
+
+  "physics": {
+    "force": "explosion",
+    "config": {
+      "strength": 2.0,
+      "damping": 0.90,
+      "stiffness": 0.5,
+      "origin": [0, 0, 0]
+    }
+  },
+
+  "transform": {
+    "rotX": 0.4,
+    "rotY": 0.3,
+    "rotZ": 0,
+    "scale": 1.0
+  },
+
+  "camera": {
+    "theta": 0.8,
+    "phi": 1.0,
+    "radius": 6,
+    "autoRotate": true
+  },
+
+  "references": {
+    "texture": "optic:spiral-cyber",
+    "effect": "kelex:glitch-shift",
+    "pipeline": "rpa:composite-pipeline"
+  }
+}

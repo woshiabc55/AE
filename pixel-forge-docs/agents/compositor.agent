@@ -1,0 +1,53 @@
+{
+  "//": ".agent — 模块代理文档 | Module Agent Document",
+
+  "format": "agent/1.0",
+  "type": "module-agent",
+
+  "id": "compositor",
+  "name": "Compositor",
+  "layer": "architecture",
+  "version": 1,
+  "state": "published",
+
+  "description": "图层合成模块 · 多层叠加 · 7种混合模式 · 全局透明度控制",
+
+  "interfaces": [
+    {
+      "name": "addLayer",
+      "signature": "addLayer(canvas: HTMLCanvasElement, blendMode: string, opacity: number): number",
+      "description": "添加图层，返回图层索引"
+    },
+    {
+      "name": "removeLayer",
+      "signature": "removeLayer(index: number): void",
+      "description": "移除图层"
+    },
+    {
+      "name": "composite",
+      "signature": "composite(targetCtx: CanvasRenderingContext2D): void",
+      "description": "合成所有图层到目标上下文"
+    },
+    {
+      "name": "setBlendMode",
+      "signature": "setBlendMode(index: number, mode: string): void",
+      "description": "设置图层混合模式"
+    }
+  ],
+
+  "dependencies": ["agent:eventbus"],
+
+  "lifecycle": ["init", "active", "dispose"],
+
+  "events": {
+    "publishes": ["compositor:rendered"],
+    "subscribes": ["animation:frame"]
+  },
+
+  "shape3d": {
+    "geometry": "box",
+    "color": "#6666cc",
+    "size": 0.5,
+    "position": [-1.2, -1.2, 0]
+  }
+}

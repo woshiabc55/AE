@@ -1,0 +1,48 @@
+{
+  "//": ".agent — 模块代理文档 | Module Agent Document",
+
+  "format": "agent/1.0",
+  "type": "module-agent",
+
+  "id": "plugin-manager",
+  "name": "PluginManager",
+  "layer": "architecture",
+  "version": 1,
+  "state": "published",
+
+  "description": "插件管理模块 · 动态注册/注销效果插件 · eval沙箱加载",
+
+  "interfaces": [
+    {
+      "name": "registerPlugin",
+      "signature": "registerPlugin(code: string): {id: string, name: string}",
+      "description": "注册插件代码，返回插件信息"
+    },
+    {
+      "name": "unregisterPlugin",
+      "signature": "unregisterPlugin(pluginId: string): void",
+      "description": "注销插件"
+    },
+    {
+      "name": "listPlugins",
+      "signature": "listPlugins(): Array<{id, name, version}>",
+      "description": "列出已注册插件"
+    }
+  ],
+
+  "dependencies": ["agent:eventbus"],
+
+  "lifecycle": ["init", "active", "dispose"],
+
+  "events": {
+    "publishes": ["plugin:installed"],
+    "subscribes": []
+  },
+
+  "shape3d": {
+    "geometry": "cone",
+    "color": "#cc44cc",
+    "size": 0.4,
+    "position": [0, -2.4, 0]
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "//": ".hermes — 通信事件文档 | Communication & Event Document",
+  "//": "标记模块间通信协议、事件定义、数据流规格 (Hermes=信使之神)",
+
+  "format": "hermes/1.0",
+  "type": "event-protocol",
+
+  "id": "core-events",
+  "name": "核心事件协议",
+  "version": 1,
+  "state": "published",
+
+  "description": "EventBus事件总线通信协议，所有模块间通信的唯一通道",
+
+  "events": [
+    {
+      "name": "image:loaded",
+      "publisher": "CoreModule",
+      "subscribers": ["*"],
+      "payload": { "width": "number", "height": "number", "source": "string" },
+      "description": "图像加载完成"
+    },
+    {
+      "name": "effect:changed",
+      "publisher": "UIModule",
+      "subscribers": ["EffectModules"],
+      "payload": { "effectId": "string" },
+      "description": "效果切换"
+    },
+    {
+      "name": "animation:frame",
+      "publisher": "CoreModule",
+      "subscribers": ["EffectModules", "PhysicsEngine"],
+      "payload": { "elapsed": "number", "dt": "number" },
+      "description": "每帧回调"
+    },
+    {
+      "name": "param:changed",
+      "publisher": "UIModule",
+      "subscribers": ["EffectModules"],
+      "payload": { "effectId": "string", "param": "string", "value": "any" },
+      "description": "参数变更"
+    },
+    {
+      "name": "animation:start",
+      "publisher": "UIModule",
+      "subscribers": ["CoreModule"],
+      "payload": {},
+      "description": "启动动画"
+    },
+    {
+      "name": "animation:stop",
+      "publisher": "UIModule",
+      "subscribers": ["CoreModule"],
+      "payload": {},
+      "description": "停止动画"
+    },
+    {
+      "name": "module:ready",
+      "publisher": "AnyModule",
+      "subscribers": ["EventBus"],
+      "payload": { "moduleId": "string", "version": "string" },
+      "description": "模块初始化就绪"
+    },
+    {
+      "name": "pipeline:updated",
+      "publisher": "Pipeline",
+      "subscribers": ["UIModule", "EffectModules"],
+      "payload": { "order": "string[]", "added": "string?", "removed": "string?" },
+      "description": "管道更新"
+    },
+    {
+      "name": "compositor:rendered",
+      "publisher": "Compositor",
+      "subscribers": ["UIModule"],
+      "payload": { "layerCount": "number", "blendModes": "string[]" },
+      "description": "合成完成"
+    },
+    {
+      "name": "modulation:applied",
+      "publisher": "ModulationEngine",
+      "subscribers": ["UIModule"],
+      "payload": { "links": "number", "values": "object" },
+      "description": "调制应用"
+    },
+    {
+      "name": "plugin:installed",
+      "publisher": "PluginManager",
+      "subscribers": ["UIModule", "EffectModules"],
+      "payload": { "pluginId": "string", "name": "string" },
+      "description": "插件安装"
+    },
+    {
+      "name": "physics:applied",
+      "publisher": "PhysicsEngine",
+      "subscribers": ["Scene3D"],
+      "payload": { "force": "string", "vertexCount": "number" },
+      "description": "物理解算完成"
+    },
+    {
+      "name": "surface:changed",
+      "publisher": "UIModule",
+      "subscribers": ["Scene3D"],
+      "payload": { "surface": "string", "subdivision": "number" },
+      "description": "3D面切换"
+    },
+    {
+      "name": "texture:param",
+      "publisher": "UI/Console",
+      "subscribers": ["ProceduralTexture"],
+      "payload": { "param": "string", "value": "any" },
+      "description": "纹理参数变更"
+    },
+    {
+      "name": "stage:change",
+      "publisher": "UIModule",
+      "subscribers": ["App"],
+      "payload": { "stage": "load|process|composite|output" },
+      "description": "放样阶段切换"
+    }
+  ],
+
+  "topology": {
+    "bus": "EventBus",
+    "pattern": "publish-subscribe",
+    "constraint": "模块间零直接引用，EventBus为唯一通信通道"
+  }
+}

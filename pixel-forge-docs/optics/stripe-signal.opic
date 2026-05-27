@@ -1,0 +1,35 @@
+{
+  "//": ".opic — 视觉纹理文档 | Optic Texture Document",
+
+  "format": "opic/1.0",
+  "type": "optic-texture",
+
+  "id": "stripe-signal",
+  "name": "信号条纹纹理",
+  "version": 1,
+  "state": "published",
+
+  "description": "水平信号条纹纹理，模拟CRT扫描线效果",
+
+  "generator": "stripe",
+
+  "params": {
+    "stripeWidth": 4,
+    "gapWidth": 2,
+    "color": "#00ff88",
+    "bgColor": "#001100",
+    "magFilter": "NearestFilter",
+    "minFilter": "NearestFilter"
+  },
+
+  "colors": {
+    "primary": "#00ff88",
+    "secondary": "#001100"
+  },
+
+  "output": {
+    "type": "THREE.CanvasTexture",
+    "size": "256x256",
+    "format": "RGBA"
+  }
+}

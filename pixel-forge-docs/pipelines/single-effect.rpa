@@ -1,0 +1,43 @@
+{
+  "//": ".rpa — 渲染管线架构文档 | Render Pipeline Architecture Document",
+  "//": "标记渲染管线阶段、数据流向、合成策略",
+
+  "format": "rpa/1.0",
+  "type": "render-pipeline",
+
+  "id": "single-effect",
+  "name": "单效果管线",
+  "version": 1,
+  "state": "published",
+
+  "description": "V1基础管线：单效果直接渲染到主画布",
+
+  "stages": [
+    {
+      "order": 1,
+      "name": "source",
+      "type": "input",
+      "description": "加载源图像到ImageData"
+    },
+    {
+      "order": 2,
+      "name": "effect",
+      "type": "transform",
+      "description": "当前效果渲染到主Canvas",
+      "reference": "kelex:*"
+    },
+    {
+      "order": 3,
+      "name": "output",
+      "type": "display",
+      "description": "主Canvas显示结果"
+    }
+  ],
+
+  "dataFlow": "ImageData → Effect.render(ctx, sourceData, time) → Canvas",
+
+  "compositing": {
+    "mode": "none",
+    "layers": 1
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "//": ".rpa — 渲染管线架构文档 | 图层合成管线",
+
+  "format": "rpa/1.0",
+  "type": "render-pipeline",
+
+  "id": "composite-pipeline",
+  "name": "图层合成管线",
+  "version": 1,
+  "state": "published",
+
+  "description": "V3管线：多效果图层离屏渲染 + globalCompositeOperation合成",
+
+  "stages": [
+    {
+      "order": 1,
+      "name": "source",
+      "type": "input",
+      "description": "加载源图像到ImageData"
+    },
+    {
+      "order": 2,
+      "name": "layer-render",
+      "type": "parallel-transform",
+      "description": "每个效果图层渲染到独立离屏Canvas",
+      "reference": "kelex:*",
+      "parallel": true
+    },
+    {
+      "order": 3,
+      "name": "composite",
+      "type": "composite",
+      "description": "Compositor按层序合成所有图层",
+      "blendModes": ["normal", "multiply", "screen", "overlay", "difference", "color-dodge", "exclusion"]
+    },
+    {
+      "order": 4,
+      "name": "output",
+      "type": "display",
+      "description": "主Canvas显示合成结果"
+    }
+  ],
+
+  "dataFlow": "ImageData → [Layer1.render(), Layer2.render(), ...] → Compositor.composite() → Canvas",
+
+  "compositing": {
+    "mode": "layer-composite",
+    "layers": "dynamic",
+    "perLayer": ["opacity", "blendMode", "visible"]
+  }
+}

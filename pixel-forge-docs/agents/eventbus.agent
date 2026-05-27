@@ -1,0 +1,54 @@
+{
+  "//": ".agent — 模块代理文档 | Module Agent Document",
+  "//": "标记软件模块/代理的定义、接口、依赖、生命周期",
+
+  "format": "agent/1.0",
+  "type": "module-agent",
+
+  "id": "eventbus",
+  "name": "EventBus",
+  "layer": "core",
+  "version": 1,
+  "state": "published",
+
+  "description": "事件总线 · 发布/订阅通信枢纽 · 所有模块间唯一通信通道",
+
+  "interfaces": [
+    {
+      "name": "on",
+      "signature": "on(event: string, handler: Function): UnsubscribeFn",
+      "description": "订阅事件，返回取消订阅函数"
+    },
+    {
+      "name": "off",
+      "signature": "off(event: string, handler: Function): void",
+      "description": "取消订阅"
+    },
+    {
+      "name": "emit",
+      "signature": "emit(event: string, data: any): void",
+      "description": "发射事件"
+    },
+    {
+      "name": "once",
+      "signature": "once(event: string, handler: Function): UnsubscribeFn",
+      "description": "一次性订阅"
+    }
+  ],
+
+  "dependencies": [],
+
+  "lifecycle": ["init", "active", "dispose"],
+
+  "events": {
+    "publishes": [],
+    "subscribes": ["*"]
+  },
+
+  "shape3d": {
+    "geometry": "octahedron",
+    "color": "#00ff88",
+    "size": 0.6,
+    "position": [0, 1.2, 0]
+  }
+}

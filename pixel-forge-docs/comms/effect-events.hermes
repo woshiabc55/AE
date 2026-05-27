@@ -1,0 +1,71 @@
+{
+  "//": ".hermes — 通信事件文档 | Communication & Event Document",
+
+  "format": "hermes/1.0",
+  "type": "event-protocol",
+
+  "id": "effect-events",
+  "name": "效果事件协议",
+  "version": 1,
+  "state": "published",
+
+  "description": "效果模块相关的事件协议，覆盖5种效果的参数变更和状态事件",
+
+  "events": [
+    {
+      "name": "effect:pixelate",
+      "publisher": "PixelateEffect",
+      "subscribers": ["UIModule", "Pipeline"],
+      "payload": { "pixelSize": "number", "gridShow": "boolean" },
+      "description": "像素化参数变更"
+    },
+    {
+      "name": "effect:ionize",
+      "publisher": "IonizeEffect",
+      "subscribers": ["UIModule", "Pipeline"],
+      "payload": { "density": "number", "speed": "number", "gravity": "number", "spread": "number" },
+      "description": "离子化参数变更"
+    },
+    {
+      "name": "effect:wave",
+      "publisher": "WaveEffect",
+      "subscribers": ["UIModule", "Pipeline"],
+      "payload": { "amplitude": "number", "frequency": "number", "speed": "number", "lineMode": "string" },
+      "description": "波浪纹参数变更"
+    },
+    {
+      "name": "effect:glitch",
+      "publisher": "GlitchEffect",
+      "subscribers": ["UIModule", "Pipeline"],
+      "payload": { "intensity": "number", "bandCount": "number", "channelShift": "number", "burstMode": "boolean" },
+      "description": "故障效果参数变更"
+    },
+    {
+      "name": "effect:chromatic",
+      "publisher": "ChromaticEffect",
+      "subscribers": ["UIModule", "Pipeline"],
+      "payload": { "offsetR": "number", "offsetB": "number", "radial": "boolean", "animate": "boolean" },
+      "description": "色差参数变更"
+    },
+    {
+      "name": "effect:reset",
+      "publisher": "AnyEffect",
+      "subscribers": ["Pipeline", "Compositor"],
+      "payload": { "effectId": "string" },
+      "description": "效果重置到初始状态"
+    },
+    {
+      "name": "effect:error",
+      "publisher": "AnyEffect",
+      "subscribers": ["UIModule"],
+      "payload": { "effectId": "string", "error": "string", "frame": "number" },
+      "description": "效果渲染错误"
+    }
+  ],
+
+  "topology": {
+    "bus": "EventBus",
+    "pattern": "publish-subscribe",
+    "constraint": "效果事件通过EventBus广播，UI和Pipeline监听"
+  }
+}

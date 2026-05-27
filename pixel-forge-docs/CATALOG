@@ -1,0 +1,245 @@
+{
+  "//": "CATALOG — 文档清单索引 | Document Catalog & Index",
+  "//": "列出所有7种标记格式的文档及其交叉引用关系",
+
+  "format": "catalog/1.0",
+  "project": "pixel-forge",
+  "generatedAt": "2026-05-27",
+
+  "markupFormats": [
+    {
+      "ext": ".selena",
+      "name": "Selena",
+      "purpose": "场景选择文档 | Scene Selection",
+      "description": "标记场景配置、3D面选择、物理状态、变换参数",
+      "count": 7
+    },
+    {
+      "ext": ".kelex",
+      "name": "Kelex",
+      "purpose": "效果变换文档 | Effect Transform",
+      "description": "标记效果算法、参数定义、输入输出规格",
+      "count": 5
+    },
+    {
+      "ext": ".skill",
+      "name": "Skill",
+      "purpose": "能力技能文档 | Capability & Skill",
+      "description": "标记系统/模块的能力声明与技能规格",
+      "count": 4
+    },
+    {
+      "ext": ".hermes",
+      "name": "Hermes",
+      "purpose": "通信事件文档 | Communication & Event",
+      "description": "标记模块间通信协议、事件定义、数据流规格",
+      "count": 3
+    },
+    {
+      "ext": ".agent",
+      "name": "Agent",
+      "purpose": "模块代理文档 | Module Agent",
+      "description": "标记软件模块/代理的定义、接口、依赖、生命周期",
+      "count": 14
+    },
+    {
+      "ext": ".opic",
+      "name": "Opic",
+      "purpose": "视觉纹理文档 | Optic Texture",
+      "description": "标记程序化纹理生成规格、颜色方案、视觉参数",
+      "count": 6
+    },
+    {
+      "ext": ".rpa",
+      "name": "RPA",
+      "purpose": "渲染管线架构文档 | Render Pipeline Architecture",
+      "description": "标记渲染管线阶段、数据流向、合成策略",
+      "count": 4
+    }
+  ],
+
+  "totalDocuments": 43,
+
+  "directories": {
+    "scenes/": {
+      "format": ".selena",
+      "documents": [
+        { "id": "default-plane", "name": "默认平面场景", "file": "default-plane.selena" },
+        { "id": "cloth-gravity", "name": "布料重力场景", "file": "cloth-gravity.selena" },
+        { "id": "sphere-wrap", "name": "球体包裹场景", "file": "sphere-wrap.selena" },
+        { "id": "cylinder-roll", "name": "圆柱滚动场景", "file": "cylinder-roll.selena" },
+        { "id": "cube-explode", "name": "立方体爆炸场景", "file": "cube-explode.selena" },
+        { "id": "torus-wave", "name": "环面波浪场景", "file": "torus-wave.selena" }
+      ]
+    },
+    "effects/": {
+      "format": ".kelex",
+      "documents": [
+        { "id": "pixelate-basic", "name": "像素化", "file": "pixelate-basic.kelex" },
+        { "id": "ionize-burst", "name": "离子化消散", "file": "ionize-burst.kelex" },
+        { "id": "wave-line", "name": "波浪纹线条", "file": "wave-line.kelex" },
+        { "id": "glitch-shift", "name": "故障偏移", "file": "glitch-shift.kelex" },
+        { "id": "chromatic-aberration", "name": "色差", "file": "chromatic-aberration.kelex" }
+      ]
+    },
+    "skills/": {
+      "format": ".skill",
+      "documents": [
+        { "id": "pixel-render", "name": "像素渲染能力", "file": "pixel-render.skill" },
+        { "id": "physics-solve", "name": "物理解算能力", "file": "physics-solve.skill" }
+      ]
+    },
+    "comms/": {
+      "format": ".hermes",
+      "documents": [
+        { "id": "core-events", "name": "核心事件协议", "file": "core-events.hermes" },
+        { "id": "effect-events", "name": "效果事件协议", "file": "effect-events.hermes" },
+        { "id": "ui-events", "name": "UI事件协议", "file": "ui-events.hermes" }
+      ]
+    },
+    "agents/": {
+      "format": ".agent",
+      "documents": [
+        { "id": "eventbus", "name": "EventBus", "layer": "core", "file": "eventbus.agent" },
+        { "id": "core", "name": "CoreModule", "layer": "core", "file": "core.agent" },
+        { "id": "ui", "name": "UIModule", "layer": "core", "file": "ui.agent" },
+        { "id": "pixelate", "name": "PixelateEffect", "layer": "effect", "file": "pixelate.agent" },
+        { "id": "ionize", "name": "IonizeEffect", "layer": "effect", "file": "ionize.agent" },
+        { "id": "wave", "name": "WaveEffect", "layer": "effect", "file": "wave.agent" },
+        { "id": "glitch", "name": "GlitchEffect", "layer": "effect", "file": "glitch.agent" },
+        { "id": "chromatic", "name": "ChromaticEffect", "layer": "effect", "file": "chromatic.agent" },
+        { "id": "pipeline", "name": "Pipeline", "layer": "architecture", "file": "pipeline.agent" },
+        { "id": "compositor", "name": "Compositor", "layer": "architecture", "file": "compositor.agent" },
+        { "id": "modulation", "name": "ModulationEngine", "layer": "architecture", "file": "modulation.agent" },
+        { "id": "plugin-manager", "name": "PluginManager", "layer": "architecture", "file": "plugin-manager.agent" },
+        { "id": "physics", "name": "PhysicsEngine", "layer": "architecture", "file": "physics.agent" },
+        { "id": "scene3d", "name": "Scene3D", "layer": "architecture", "file": "scene3d.agent" },
+        { "id": "texture", "name": "ProceduralTexture", "layer": "architecture", "file": "texture.agent" }
+      ]
+    },
+    "optics/": {
+      "format": ".opic",
+      "documents": [
+        { "id": "pixel-default", "name": "默认像素化纹理", "file": "pixel-default.opic" },
+        { "id": "rings-neon", "name": "霓虹环带纹理", "file": "rings-neon.opic" },
+        { "id": "spiral-cyber", "name": "赛博螺旋纹理", "file": "spiral-cyber.opic" },
+        { "id": "checkerboard-mono", "name": "单色棋盘纹理", "file": "checkerboard-mono.opic" },
+        { "id": "gradient-sunset", "name": "日落渐变纹理", "file": "gradient-sunset.opic" },
+        { "id": "stripe-signal", "name": "信号条纹纹理", "file": "stripe-signal.opic" }
+      ]
+    },
+    "pipelines/": {
+      "format": ".rpa",
+      "documents": [
+        { "id": "single-effect", "name": "单效果管线", "file": "single-effect.rpa" },
+        { "id": "physics-pipeline", "name": "3D物理渲染管线", "file": "physics-pipeline.rpa" },
+        { "id": "composite-pipeline", "name": "图层合成渲染管线", "file": "composite-pipeline.rpa" },
+        { "id": "plugin-pipeline", "name": "插件管线", "file": "plugin-pipeline.rpa" }
+      ]
+    },
+    "specs/": {
+      "format": "mixed",
+      "documents": [
+        { "id": "spec-eventbus", "name": "EventBus模块规格", "format": ".selena", "file": "spec-eventbus.selena" },
+        { "id": "spec-pixelate", "name": "像素化效果规格", "format": ".kelex", "file": "spec-pixelate.kelex" },
+        { "id": "spec-ionize", "name": "离子化效果规格", "format": ".kelex", "file": "spec-ionize.kelex" },
+        { "id": "spec-wave", "name": "波浪纹效果规格", "format": ".kelex", "file": "spec-wave.kelex" },
+        { "id": "spec-canvas2d", "name": "Canvas 2D能力规格", "format": ".skill", "file": "spec-canvas2d.skill" },
+        { "id": "spec-threejs-scene", "name": "Three.js场景能力规格", "format": ".skill", "file": "spec-threejs-scene.skill" }
+      ]
+    }
+  },
+
+  "crossReferences": [
+    {
+      "from": "selena:default-plane",
+      "to": ["optic:pixel-default", "kelex:pixelate-basic", "rpa:single-effect"]
+    },
+    {
+      "from": "selena:cloth-gravity",
+      "to": ["optic:pixel-default", "kelex:ionize-burst", "rpa:physics-pipeline"]
+    },
+    {
+      "from": "selena:sphere-wrap",
+      "to": ["optic:pixel-default", "kelex:pixelate-basic", "rpa:physics-pipeline"]
+    },
+    {
+      "from": "selena:cylinder-roll",
+      "to": ["optic:rings-neon", "kelex:ionize-burst", "rpa:physics-pipeline"]
+    },
+    {
+      "from": "selena:cube-explode",
+      "to": ["optic:spiral-cyber", "kelex:glitch-shift", "rpa:composite-pipeline"]
+    },
+    {
+      "from": "selena:torus-wave",
+      "to": ["optic:checkerboard-mono", "kelex:wave-line", "rpa:physics-pipeline"]
+    },
+    {
+      "from": "agent:pixelate",
+      "to": ["agent:eventbus", "kelex:pixelate-basic", "skill:pixel-render"]
+    },
+    {
+      "from": "agent:ionize",
+      "to": ["agent:eventbus", "kelex:ionize-burst", "skill:physics-solve"]
+    },
+    {
+      "from": "agent:wave",
+      "to": ["agent:eventbus", "kelex:wave-line", "skill:pixel-render"]
+    },
+    {
+      "from": "agent:glitch",
+      "to": ["agent:eventbus", "kelex:glitch-shift"]
+    },
+    {
+      "from": "agent:chromatic",
+      "to": ["agent:eventbus", "kelex:chromatic-aberration"]
+    },
+    {
+      "from": "agent:pipeline",
+      "to": ["agent:eventbus", "rpa:single-effect", "rpa:composite-pipeline"]
+    },
+    {
+      "from": "agent:compositor",
+      "to": ["agent:eventbus", "rpa:composite-pipeline"]
+    },
+    {
+      "from": "agent:modulation",
+      "to": ["agent:eventbus", "agent:pipeline"]
+    },
+    {
+      "from": "agent:plugin-manager",
+      "to": ["agent:eventbus", "rpa:plugin-pipeline"]
+    },
+    {
+      "from": "agent:physics",
+      "to": ["agent:eventbus", "skill:physics-solve", "agent:scene3d"]
+    },
+    {
+      "from": "agent:scene3d",
+      "to": ["agent:eventbus", "agent:physics", "skill:threejs-scene"]
+    },
+    {
+      "from": "agent:texture",
+      "to": ["agent:eventbus"]
+    },
+    {
+      "from": "hermes:core-events",
+      "to": ["agent:eventbus", "agent:core", "agent:ui"]
+    },
+    {
+      "from": "hermes:effect-events",
+      "to": ["agent:pixelate", "agent:ionize", "agent:wave", "agent:glitch", "agent:chromatic"]
+    },
+    {
+      "from": "hermes:ui-events",
+      "to": ["agent:ui", "agent:core"]
+    }
+  ],
+
+  "layers": {
+    "core": ["eventbus", "core", "ui"],
+    "effect": ["pixelate", "ionize", "wave", "glitch", "chromatic"],
+    "architecture": ["pipeline", "compositor", "modulation", "plugin-manager", "physics", "scene3d", "texture"]
+  }
+}

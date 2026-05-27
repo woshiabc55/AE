@@ -1,0 +1,48 @@
+{
+  "//": ".agent — 模块代理文档 | Module Agent Document",
+
+  "format": "agent/1.0",
+  "type": "module-agent",
+
+  "id": "texture",
+  "name": "ProceduralTexture",
+  "layer": "architecture",
+  "version": 1,
+  "state": "published",
+
+  "description": "程序化纹理模块 · 5种纹理生成算法 · 环带/条纹/螺旋/棋盘/渐变",
+
+  "interfaces": [
+    {
+      "name": "generate",
+      "signature": "generate(type: string, params: object): HTMLCanvasElement",
+      "description": "生成程序化纹理Canvas"
+    },
+    {
+      "name": "setParam",
+      "signature": "setParam(param: string, value: any): void",
+      "description": "设置纹理参数"
+    },
+    {
+      "name": "getTypes",
+      "signature": "getTypes(): string[]",
+      "description": "获取可用纹理类型列表"
+    }
+  ],
+
+  "dependencies": ["agent:eventbus"],
+
+  "lifecycle": ["init", "active", "dispose"],
+
+  "events": {
+    "publishes": [],
+    "subscribes": ["texture:param"]
+  },
+
+  "shape3d": {
+    "geometry": "torus",
+    "color": "#44ff44",
+    "size": 0.5,
+    "position": [-2, 2.4, 0]
+  }
+}

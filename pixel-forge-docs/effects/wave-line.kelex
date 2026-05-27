@@ -1,0 +1,43 @@
+{
+  "//": ".kelex — 效果变换文档 | 波浪纹线条",
+
+  "format": "kelex/1.0",
+  "type": "effect-transform",
+
+  "id": "wave-line",
+  "name": "波浪纹线条",
+  "category": "line",
+  "version": 1,
+  "state": "published",
+
+  "description": "逐行采样原图颜色，以线条形式绘制，每条线施加波形位移(线条解算，非粒子化)",
+
+  "algorithm": {
+    "type": "line-displacement",
+    "complexity": "O(w*h/gap)",
+    "steps": [
+      "按gap间距遍历行",
+      "每行: 采样该行平均色作为strokeStyle",
+      "对每个x: 计算waveValue(phase, type) * amplitude",
+      "绘制lineTo(x, rowY + offset)",
+      "stroke()绘制线条"
+    ]
+  },
+
+  "params": [
+    { "name": "amplitude", "label": "振幅", "type": "range", "min": 2, "max": 60, "default": 20 },
+    { "name": "frequency", "label": "频率", "type": "range", "min": 0.005, "max": 0.1, "step": 0.001, "default": 0.03 },
+    { "name": "speed", "label": "速度", "type": "range", "min": 0.5, "max": 8, "step": 0.1, "default": 2.0 },
+    { "name": "waveType", "label": "波形", "type": "select", "default": "sine", "options": ["sine","triangle","sawtooth"] },
+    { "name": "lineWidth", "label": "线宽", "type": "range", "min": 1, "max": 6, "default": 2 },
+    { "name": "gap", "label": "行间距", "type": "range", "min": 1, "max": 8, "default": 3 }
+  ],
+
+  "inputOutput": {
+    "input": "ImageData",
+    "output": "Canvas2D",
+    "sideEffect": "none"
+  },
+
+  "dependencies": []
+}

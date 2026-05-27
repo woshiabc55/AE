@@ -1,0 +1,35 @@
+{
+  "//": ".opic — 视觉纹理文档 | Optic Texture Document",
+  "//": "标记程序化纹理生成规格、颜色方案、视觉参数",
+
+  "format": "opic/1.0",
+  "type": "optic-texture",
+
+  "id": "pixel-default",
+  "name": "默认像素化纹理",
+  "version": 1,
+  "state": "published",
+
+  "description": "源图像像素化后的CanvasTexture，NearestFilter保持像素锐利",
+
+  "generator": "pixelate",
+
+  "params": {
+    "pixelSize": 8,
+    "magFilter": "NearestFilter",
+    "minFilter": "NearestFilter",
+    "wrapS": "ClampToEdgeWrapping",
+    "wrapT": "ClampToEdgeWrapping"
+  },
+
+  "colors": {
+    "primary": "#00ff88",
+    "secondary": "#ff3366"
+  },
+
+  "output": {
+    "type": "THREE.CanvasTexture",
+    "size": "source-dependent",
+    "format": "RGBA"
+  }
+}

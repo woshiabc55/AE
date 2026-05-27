@@ -1,0 +1,43 @@
+{
+  "//": ".agent — 模块代理文档 | Module Agent Document",
+
+  "format": "agent/1.0",
+  "type": "module-agent",
+
+  "id": "wave",
+  "name": "WaveEffect",
+  "layer": "effect",
+  "version": 1,
+  "state": "published",
+
+  "description": "波浪纹线条效果模块 · 行级正弦位移 · 线条解算非粒子化",
+
+  "interfaces": [
+    {
+      "name": "render",
+      "signature": "render(ctx: CanvasRenderingContext2D, source: ImageData, time: number): void",
+      "description": "渲染波浪纹线条效果"
+    },
+    {
+      "name": "setWaveFunc",
+      "signature": "setWaveFunc(mode: 'sine'|'triangle'|'sawtooth'): void",
+      "description": "切换波形函数"
+    }
+  ],
+
+  "dependencies": ["agent:eventbus"],
+
+  "lifecycle": ["init", "active", "dispose"],
+
+  "events": {
+    "publishes": [],
+    "subscribes": ["effect:changed", "param:changed", "animation:frame"]
+  },
+
+  "shape3d": {
+    "geometry": "torus",
+    "color": "#33ccff",
+    "size": 0.4,
+    "position": [0.5, 0, 0]
+  }
+}
