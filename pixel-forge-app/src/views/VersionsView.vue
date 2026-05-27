@@ -1,19 +1,12 @@
 <script setup lang="ts">
-import { ref, computed, reactive, inject, type Ref } from 'vue'
+import { ref, computed, inject, type Ref } from 'vue'
 import { VERSIONS } from '../core/versions'
 import VersionDetail from '../components/VersionDetail.vue'
 import AgentPanel from '../components/AgentPanel.vue'
 
-interface TabEntry {
-  id: string
-  label: string
-  name: string
-  color: string
-  path: string
-}
-
 const selectedId = ref('v1')
-const rightTab = ref('detail')
+const loadedId = ref<string | null>(null)
+const showDetail = ref(false)
 
 const fullscreen = inject<Ref<boolean>>('fullscreen', ref(false))
 const enterFullscreen = inject<() => void>('enterFullscreen', () => {})
@@ -21,67 +14,46 @@ const exitFullscreen = inject<() => void>('exitFullscreen', () => {})
 
 const selected = computed(() => VERSIONS.find(v => v.id === selectedId.value)!)
 
+const loadedVersion = computed(() => {
+  if (!loadedId.value) return null
+  return VERSIONS.find(v => v.id === loadedId.value) || null
+})
+
 const timelineItems = VERSIONS.map((v, i) => ({
   ...v,
   index: i,
   isLast: i === VERSIONS.length - 1,
 }))
 
-const openTabs = reactive<TabEntry[]>([])
-const activeTabId = ref<string | null>(null)
-const monitorTabId = ref<string | null>(null)
-
-function openAsTab(version: typeof VERSIONS[number]) {
-  const exists = openTabs.find(t => t.id === version.id)
-  if (!exists) {
-    openTabs.push({
-      id: version.id,
-      label: version.label,
-      name: version.name,
-      color: version.color,
-      path: version.path,
-    })
-  }
-  activeTabId.value = version.id
-  rightTab.value = 'embed'
+function loadVersion(version: typeof VERSIONS[number]) {
+  loadedId.value = version.id
 }
 
-function closeTab(tabId: string, e?: Event) {
-  if (e) e.stopPropagation()
-  const idx = openTabs.findIndex(t => t.id === tabId)
-  if (idx !== -1) openTabs.splice(idx, 1)
-  if (activeTabId.value === tabId) {
-    activeTabId.value = openTabs.length > 0 ? openTabs[openTabs.length - 1]!.id : null
-  }
-  if (monitorTabId.value === tabId) {
-    closeAgentPanel()
-  }
+function unloadVersion() {
+  loadedId.value = null
 }
 
-function selectTab(tabId: string) {
-  activeTabId.value = tabId
-  selectedId.value = tabId
+function onTimelineClick(version: typeof VERSIONS[number]) {
+  selectedId.value = version.id
+  loadVersion(version)
 }
 
-function onTabDoubleClick(tabId: string) {
-  monitorTabId.value = tabId
+function onTimelineDblClick(version: typeof VERSIONS[number]) {
+  loadedId.value = version.id
   enterFullscreen()
 }
 
 function closeAgentPanel() {
   exitFullscreen()
   setTimeout(() => {
-    monitorTabId.value = null
+    loadedId.value = null
   }, 400)
 }
 
-const activeTab = computed(() => {
-  return openTabs.find(t => t.id === activeTabId.value) || null
-})
-
 const monitorTab = computed(() => {
-  if (!monitorTabId.value) return null
-  return openTabs.find(t => t.id === monitorTabId.value) || null
+  if (!loadedId.value) return null
+  const v = VERSIONS.find(ver => ver.id === loadedId.value)
+  return v ? { id: v.id, label: v.label, name: v.name, color: v.color, path: v.path } : null
 })
 </script>
 
@@ -89,12 +61,13 @@ const monitorTab = computed(() => {
   <div class="versions-page">
     <header class="v-header">
       <h1 class="v-title">▶ 版本迭代设计</h1>
-      <span class="v-sub">v1→v7 · MCOP映射 · 双击全屏 · 长按退出</span>
+      <span class="v-sub">v1→v7 · 点击载入 · 双击全屏</span>
     </header>
 
     <div class="v-body">
       <aside class="v-timeline">
-        <div v-for="item in timelineItems" :key="item.id" class="timeline-item" :class="{ active: selectedId === item.id }" @click="selectedId = item.id">
+        <div class="timeline-head">版本选择</div>
+        <div v-for="item in timelineItems" :key="item.id" class="timeline-item" :class="{ active: selectedId === item.id, loaded: loadedId === item.id }" @click="onTimelineClick(item)" @dblclick="onTimelineDblClick(item)">
           <div class="timeline-dot" :style="{ background: selectedId === item.id ? item.color : '#1a2a1a', boxShadow: selectedId === item.id ? '0 0 8px ' + item.color : 'none' }"></div>
           <div class="timeline-connector" v-if="!item.isLast" :class="{ lit: selectedId === item.id }"></div>
           <div class="timeline-content">
@@ -103,97 +76,85 @@ const monitorTab = computed(() => {
             <span class="timeline-desc">{{ item.desc }}</span>
             <span class="timeline-count">{{ item.cumulativeCount }} caps</span>
           </div>
+          <span v-if="loadedId === item.id" class="timeline-loaded">◉</span>
         </div>
       </aside>
 
-      <main class="v-main">
-        <div class="v-main-header">
-          <span class="v-badge" :style="{ color: selected.color, borderColor: selected.color }">{{ selected.label }}</span>
-          <span class="v-name">{{ selected.name }}</span>
-          <span class="v-desc-main">{{ selected.desc }}</span>
-          <span class="spacer"></span>
-          <button class="open-tab-btn" @click="openAsTab(selected)">+ 打开为标签</button>
-          <span class="v-ws">workspace: {{ selected.workspace.replace('workspace-', '') }}</span>
+      <div class="v-loader">
+        <div class="loader-head">
+          <span class="loader-title">载入版本</span>
         </div>
-
-        <div class="tab-bar" v-if="openTabs.length > 0">
+        <div class="loader-list">
           <div
-            v-for="tab in openTabs"
-            :key="tab.id"
-            class="tab-item"
-            :class="{ active: activeTabId === tab.id, monitored: monitorTabId === tab.id }"
-            :style="{ '--tab-color': tab.color }"
-            @click="selectTab(tab.id)"
-            @dblclick="onTabDoubleClick(tab.id)"
+            v-for="v in VERSIONS"
+            :key="v.id"
+            class="loader-item"
+            :class="{ active: loadedId === v.id, selected: selectedId === v.id }"
+            :style="{ '--v-color': v.color }"
+            @click="loadVersion(v)"
+            @dblclick="onTimelineDblClick(v)"
           >
-            <span class="tab-dot" :style="{ background: tab.color }"></span>
-            <span class="tab-label">{{ tab.label }}</span>
-            <span v-if="monitorTabId === tab.id" class="tab-monitor-icon">◉</span>
-            <span class="tab-close" @click="closeTab(tab.id, $event)">✕</span>
+            <span class="loader-dot" :style="{ background: v.color }"></span>
+            <span class="loader-label">{{ v.label }}</span>
+            <span v-if="loadedId === v.id" class="loader-badge">LIVE</span>
           </div>
+        </div>
+        <div class="loader-info" v-if="selected">
+          <div class="loader-info-row">
+            <span class="loader-info-key">版本</span>
+            <span class="loader-info-val" :style="{ color: selected.color }">{{ selected.label }}</span>
+          </div>
+          <div class="loader-info-row">
+            <span class="loader-info-key">名称</span>
+            <span class="loader-info-val">{{ selected.name }}</span>
+          </div>
+          <div class="loader-info-row">
+            <span class="loader-info-key">空间</span>
+            <span class="loader-info-val">{{ selected.workspace.replace('workspace-', '') }}</span>
+          </div>
+          <div class="loader-info-row">
+            <span class="loader-info-key">能力</span>
+            <span class="loader-info-val">{{ selected.cumulativeCount }}</span>
+          </div>
+          <button class="detail-toggle" @click="showDetail = !showDetail">{{ showDetail ? '◁ 收起' : '▷ 详情' }}</button>
+        </div>
+      </div>
+
+      <main class="v-main">
+        <div class="v-main-header" v-if="loadedVersion">
+          <span class="v-badge" :style="{ color: loadedVersion.color, borderColor: loadedVersion.color }">{{ loadedVersion.label }}</span>
+          <span class="v-name">{{ loadedVersion.name }}</span>
+          <span class="v-desc-main">{{ loadedVersion.desc }}</span>
+          <span class="spacer"></span>
+          <button class="unload-btn" @click="unloadVersion">✕ 关闭</button>
+          <button class="fullscreen-btn" @click="onTimelineDblClick(loadedVersion)">◉ 全屏</button>
+        </div>
+        <div class="v-main-header" v-else>
+          <span class="v-hint-main">← 选择版本载入</span>
         </div>
 
         <div class="v-main-body">
-          <div class="v-left-col">
-            <VersionDetail :version="selected" />
+          <div class="v-viewport" v-if="loadedVersion">
+            <iframe
+              :src="loadedVersion.path + 'index.html'"
+              class="v-iframe"
+              sandbox="allow-scripts allow-same-origin"
+            ></iframe>
           </div>
-          <div class="v-right-col">
-            <div class="v-right-tabs">
-              <div class="v-right-tab" :class="{ active: rightTab === 'detail' }" @click="rightTab = 'detail'">配置</div>
-              <div class="v-right-tab" :class="{ active: rightTab === 'embed' }" @click="rightTab = 'embed'">嵌套</div>
+          <div class="v-empty" v-else>
+            <span class="empty-icon">▶</span>
+            <span class="empty-text">点击左侧版本载入预览</span>
+            <span class="empty-hint">单击 → 主镜头载入 · 双击 → 全屏GENT</span>
+          </div>
+
+          <div class="v-detail-panel" :class="{ open: showDetail }" v-if="loadedVersion">
+            <div class="detail-panel-bar">
+              <span class="detail-panel-title" :style="{ color: loadedVersion.color }">{{ loadedVersion.label }} · 配置</span>
+              <span class="spacer"></span>
+              <span class="detail-panel-close" @click="showDetail = false">◁</span>
             </div>
-            <div class="v-right-content">
-              <template v-if="rightTab === 'detail'">
-                <div class="config-section">
-                  <div class="config-title" style="color:#00ff88">迭代配置</div>
-                  <div class="config-body">
-                    <pre class="config-json">{{ JSON.stringify({
-                      version: selected.label,
-                      workspace: selected.workspace,
-                      pipeline: selected.pipeline.id,
-                      scene: selected.scene.id,
-                      agents: selected.agents.map(a => a.id),
-                      effects: selected.effects.map(e => e.id),
-                      events: selected.events.map(e => e.name),
-                      skillPacks: selected.skillPacks,
-                      newCapabilities: selected.newCapabilities,
-                    }, null, 2) }}</pre>
-                  </div>
-                </div>
-                <div class="config-section">
-                  <div class="config-title" style="color:#44ddff">能力累积</div>
-                  <div class="config-body">
-                    <div class="bar-chart">
-                      <div v-for="v in VERSIONS" :key="v.id" class="bar-row">
-                        <span class="bar-label" :style="{ color: v.color }">{{ v.label }}</span>
-                        <div class="bar-track">
-                          <div class="bar-fill" :style="{ width: (v.cumulativeCount / 20 * 100) + '%', background: v.color }"></div>
-                        </div>
-                        <span class="bar-val">{{ v.cumulativeCount }}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </template>
-              <template v-if="rightTab === 'embed'">
-                <div class="embed-area" v-if="activeTab">
-                  <div class="embed-bar">
-                    <span class="embed-dot" :style="{ background: activeTab.color }"></span>
-                    <span class="embed-title" :style="{ color: activeTab.color }">{{ activeTab.label }} · {{ activeTab.name }}</span>
-                    <span class="embed-hint">双击标签 → 左侧全屏</span>
-                  </div>
-                  <iframe
-                    :src="activeTab.path + 'index.html'"
-                    class="embed-iframe"
-                    sandbox="allow-scripts allow-same-origin"
-                  ></iframe>
-                </div>
-                <div v-else class="embed-empty">
-                  <span class="empty-icon">◈</span>
-                  <span>点击上方「+ 打开为标签」加载版本实例</span>
-                  <span class="empty-hint">双击标签 → 左侧全屏 · 长按面板 → 退出</span>
-                </div>
-              </template>
+            <div class="detail-panel-body">
+              <VersionDetail :version="loadedVersion" />
             </div>
           </div>
         </div>
@@ -217,18 +178,40 @@ const monitorTab = computed(() => {
 .v-sub { font-size: 10px; color: #3a5a3a; }
 .v-body { flex: 1; overflow: hidden; display: flex; position: relative; }
 
-.v-timeline { width: 220px; background: #0a0a12; border-right: 1px solid #1a2a1a; overflow-y: auto; padding: 16px 0; flex-shrink: 0; position: relative; z-index: 1; }
-.timeline-item { position: relative; padding: 8px 16px 8px 32px; cursor: pointer; transition: background 0.2s; }
+.v-timeline { width: 200px; background: #0a0a12; border-right: 1px solid #1a2a1a; overflow-y: auto; flex-shrink: 0; }
+.timeline-head { font-family: 'Press Start 2P', monospace; font-size: 6px; color: #3a5a3a; padding: 10px 12px; letter-spacing: 1px; border-bottom: 1px solid #1a2a1a; background: #0f0f1a; }
+.timeline-item { position: relative; padding: 8px 12px 8px 28px; cursor: pointer; transition: background 0.2s; }
 .timeline-item:hover { background: rgba(255,255,255,0.02); }
 .timeline-item.active { background: rgba(0,255,136,0.04); }
-.timeline-dot { position: absolute; left: 14px; top: 14px; width: 8px; height: 8px; border-radius: 50%; transition: all 0.3s; z-index: 2; }
-.timeline-connector { position: absolute; left: 17px; top: 26px; width: 2px; height: calc(100% - 18px); background: #1a2a1a; z-index: 1; }
+.timeline-item.loaded { background: rgba(255,170,0,0.04); }
+.timeline-dot { position: absolute; left: 12px; top: 12px; width: 6px; height: 6px; border-radius: 50%; transition: all 0.3s; z-index: 2; }
+.timeline-connector { position: absolute; left: 14px; top: 22px; width: 2px; height: calc(100% - 16px); background: #1a2a1a; z-index: 1; }
 .timeline-connector.lit { background: linear-gradient(to bottom, #00ff88, #1a2a1a); }
-.timeline-content { display: flex; flex-direction: column; gap: 2px; }
-.timeline-label { font-family: 'Press Start 2P', monospace; font-size: 6px; letter-spacing: 1px; transition: color 0.2s; }
-.timeline-name { font-size: 11px; color: #d0ffd0; }
-.timeline-desc { font-size: 9px; color: #3a5a3a; }
+.timeline-content { display: flex; flex-direction: column; gap: 1px; }
+.timeline-label { font-family: 'Press Start 2P', monospace; font-size: 5px; letter-spacing: 1px; transition: color 0.2s; }
+.timeline-name { font-size: 10px; color: #d0ffd0; }
+.timeline-desc { font-size: 8px; color: #3a5a3a; }
 .timeline-count { font-family: 'Press Start 2P', monospace; font-size: 4px; color: #3a5a3a; letter-spacing: 0.5px; }
+.timeline-loaded { position: absolute; right: 8px; top: 10px; font-size: 8px; color: #ffaa00; animation: blink 1.5s ease-in-out infinite; }
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+.v-loader { width: 140px; background: #0a0a12; border-right: 1px solid #1a2a1a; display: flex; flex-direction: column; flex-shrink: 0; }
+.loader-head { font-family: 'Press Start 2P', monospace; font-size: 5px; color: #3a5a3a; padding: 8px 10px; letter-spacing: 1px; border-bottom: 1px solid #1a2a1a; background: #0f0f1a; }
+.loader-list { flex-shrink: 0; }
+.loader-item { display: flex; align-items: center; gap: 6px; padding: 6px 10px; cursor: pointer; transition: all 0.2s; border-left: 2px solid transparent; }
+.loader-item:hover { background: rgba(255,255,255,0.02); }
+.loader-item.selected { border-left-color: var(--v-color); background: rgba(0,255,136,0.03); }
+.loader-item.active { background: rgba(255,170,0,0.06); border-left-color: #ffaa00; }
+.loader-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.loader-label { font-family: 'Press Start 2P', monospace; font-size: 5px; color: #6a8a6a; letter-spacing: 0.5px; }
+.loader-item.active .loader-label { color: #ffaa00; }
+.loader-badge { font-family: 'Press Start 2P', monospace; font-size: 4px; color: #ffaa00; background: rgba(255,170,0,0.1); padding: 1px 3px; border-radius: 1px; letter-spacing: 0.5px; margin-left: auto; }
+.loader-info { flex: 1; padding: 8px 10px; border-top: 1px solid #1a2a1a; display: flex; flex-direction: column; gap: 4px; }
+.loader-info-row { display: flex; justify-content: space-between; align-items: center; }
+.loader-info-key { font-family: 'Press Start 2P', monospace; font-size: 4px; color: #3a5a3a; letter-spacing: 0.5px; }
+.loader-info-val { font-size: 9px; color: #d0ffd0; }
+.detail-toggle { font-family: 'Press Start 2P', monospace; font-size: 5px; padding: 4px 0; background: transparent; border: 1px solid #1a2a1a; color: #6a8a6a; border-radius: 2px; cursor: pointer; transition: all 0.2s; letter-spacing: 1px; margin-top: 4px; width: 100%; }
+.detail-toggle:hover { border-color: #00ff88; color: #00ff88; }
 
 .v-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 .v-main-header { height: 40px; background: #0f0f1a; border-bottom: 1px solid #1a2a1a; display: flex; align-items: center; padding: 0 16px; gap: 10px; flex-shrink: 0; }
@@ -236,52 +219,28 @@ const monitorTab = computed(() => {
 .v-name { font-size: 13px; color: #d0ffd0; }
 .v-desc-main { font-size: 10px; color: #3a5a3a; }
 .spacer { flex: 1; }
-.v-ws { font-family: 'Press Start 2P', monospace; font-size: 5px; color: #3a5a3a; letter-spacing: 1px; border: 1px solid #1a2a1a; padding: 2px 6px; border-radius: 2px; }
+.v-hint-main { font-family: 'Press Start 2P', monospace; font-size: 6px; color: #2a3a2a; letter-spacing: 1px; }
 
-.open-tab-btn { font-family: 'Press Start 2P', monospace; font-size: 5px; padding: 4px 10px; background: transparent; border: 1px solid #1a2a1a; color: #6a8a6a; border-radius: 2px; cursor: pointer; transition: all 0.2s; letter-spacing: 1px; }
-.open-tab-btn:hover { border-color: #00ff88; color: #00ff88; background: rgba(0,255,136,0.05); }
+.unload-btn { font-family: 'Press Start 2P', monospace; font-size: 5px; padding: 4px 8px; background: transparent; border: 1px solid #1a2a1a; color: #3a5a3a; border-radius: 2px; cursor: pointer; transition: all 0.2s; letter-spacing: 1px; }
+.unload-btn:hover { border-color: #ff3366; color: #ff3366; }
+.fullscreen-btn { font-family: 'Press Start 2P', monospace; font-size: 5px; padding: 4px 8px; background: transparent; border: 1px solid #1a2a1a; color: #6a8a6a; border-radius: 2px; cursor: pointer; transition: all 0.2s; letter-spacing: 1px; }
+.fullscreen-btn:hover { border-color: #ffaa00; color: #ffaa00; }
 
-.tab-bar { height: 30px; background: #0a0a12; border-bottom: 1px solid #1a2a1a; display: flex; align-items: stretch; padding: 0 4px; gap: 2px; flex-shrink: 0; overflow-x: auto; }
-.tab-item { display: flex; align-items: center; gap: 4px; padding: 0 8px; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; flex-shrink: 0; user-select: none; }
-.tab-item:hover { background: rgba(255,255,255,0.02); }
-.tab-item.active { border-bottom-color: var(--tab-color); background: rgba(0,255,136,0.03); }
-.tab-item.monitored { background: rgba(255,170,0,0.06); }
-.tab-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
-.tab-label { font-family: 'Press Start 2P', monospace; font-size: 5px; color: #6a8a6a; letter-spacing: 0.5px; }
-.tab-item.active .tab-label { color: #d0ffd0; }
-.tab-monitor-icon { font-size: 8px; color: #ffaa00; animation: blink 1.5s ease-in-out infinite; }
-@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
-.tab-close { font-size: 9px; color: #3a5a3a; padding: 0 2px; margin-left: 2px; border-radius: 2px; transition: all 0.2s; }
-.tab-close:hover { color: #ff3366; background: rgba(255,51,102,0.1); }
+.v-main-body { flex: 1; display: flex; overflow: hidden; position: relative; }
 
-.v-main-body { flex: 1; display: flex; overflow: hidden; }
-.v-left-col { flex: 1; overflow-y: auto; padding: 12px; }
-.v-right-col { width: 420px; border-left: 1px solid #1a2a1a; display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; }
-.v-right-tabs { display: flex; border-bottom: 1px solid #1a2a1a; flex-shrink: 0; }
-.v-right-tab { flex: 1; padding: 6px 0; font-family: 'Press Start 2P', monospace; font-size: 5px; text-align: center; color: #3a5a3a; cursor: pointer; transition: all 0.2s; letter-spacing: 1px; border-bottom: 2px solid transparent; }
-.v-right-tab:hover { color: #6a8a6a; }
-.v-right-tab.active { color: #44ddff; border-bottom-color: #44ddff; background: rgba(68,221,255,0.03); }
-.v-right-content { flex: 1; overflow-y: auto; padding: 10px; }
+.v-viewport { flex: 1; position: relative; background: #050508; }
+.v-iframe { width: 100%; height: 100%; border: none; background: #050508; }
 
-.config-section { margin-bottom: 10px; border: 1px solid #1a2a1a; border-radius: 3px; overflow: hidden; }
-.config-title { font-family: 'Press Start 2P', monospace; font-size: 6px; padding: 6px 8px; letter-spacing: 1px; background: #0f0f1a; }
-.config-body { padding: 8px; border-top: 1px solid #1a2a1a; }
-.config-json { background: #0a0a14; border: 1px solid #1a2a1a; border-radius: 3px; padding: 10px; font-family: 'Fira Code', monospace; font-size: 9px; color: #a9b1d6; overflow-x: auto; white-space: pre; margin: 0; }
-.bar-chart { display: flex; flex-direction: column; gap: 4px; }
-.bar-row { display: flex; align-items: center; gap: 6px; }
-.bar-label { font-family: 'Press Start 2P', monospace; font-size: 5px; min-width: 50px; letter-spacing: 0.5px; }
-.bar-track { flex: 1; height: 8px; background: #1a2a1a; border-radius: 4px; overflow: hidden; }
-.bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s; }
-.bar-val { font-size: 10px; color: #6a8a6a; min-width: 20px; text-align: right; }
+.v-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; background: #050508; }
+.empty-icon { font-size: 48px; color: #1a2a1a; }
+.empty-text { font-family: 'Press Start 2P', monospace; font-size: 7px; color: #3a5a3a; letter-spacing: 1px; }
+.empty-hint { font-size: 9px; color: #2a3a2a; }
 
-.embed-area { border: 1px solid #1a2a1a; border-radius: 4px; overflow: hidden; display: flex; flex-direction: column; }
-.embed-bar { height: 26px; background: #0f0f1a; border-bottom: 1px solid #1a2a1a; display: flex; align-items: center; padding: 0 8px; gap: 6px; }
-.embed-dot { width: 5px; height: 5px; border-radius: 50%; }
-.embed-title { font-family: 'Press Start 2P', monospace; font-size: 5px; letter-spacing: 1px; }
-.embed-hint { font-size: 8px; color: #3a5a3a; margin-left: auto; }
-.embed-iframe { width: 100%; height: 500px; border: none; background: #050508; }
-
-.embed-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px; gap: 10px; color: #3a5a3a; }
-.empty-icon { font-size: 36px; opacity: 0.3; }
-.empty-hint { font-size: 8px; color: #2a3a2a; }
+.v-detail-panel { position: absolute; top: 0; right: 0; width: 360px; height: 100%; background: #0a0a12; border-left: 1px solid #1a2a1a; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); z-index: 10; }
+.v-detail-panel.open { transform: translateX(0); }
+.detail-panel-bar { height: 32px; background: #0f0f1a; border-bottom: 1px solid #1a2a1a; display: flex; align-items: center; padding: 0 12px; gap: 8px; flex-shrink: 0; }
+.detail-panel-title { font-family: 'Press Start 2P', monospace; font-size: 6px; letter-spacing: 1px; }
+.detail-panel-close { font-size: 12px; color: #3a5a3a; cursor: pointer; padding: 2px 4px; transition: all 0.2s; }
+.detail-panel-close:hover { color: #ff3366; }
+.detail-panel-body { flex: 1; overflow-y: auto; padding: 8px; }
 </style>
