@@ -4,7 +4,6 @@ import type { VersionConfig } from '../core/versions'
 
 const props = defineProps<{
   version: VersionConfig
-  baseUrl: string
 }>()
 
 const iframeLoaded = ref(false)
@@ -12,7 +11,7 @@ const iframeError = ref(false)
 const showIframe = ref(false)
 
 const iframeSrc = computed(() => {
-  return props.baseUrl + props.version.path + 'index.html'
+  return props.version.path + 'index.html'
 })
 
 function openIframe() {

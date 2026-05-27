@@ -124,19 +124,24 @@ export const VERSIONS: VersionConfig[] = [
     cumulativeCount: 11,
   },
   {
-    id: 'v5', label: 'v5-plugin', name: '插件系统', desc: '动态注册/注销效果插件',
+    id: 'v5', label: 'v5-plugin', name: '效果扩展', desc: '故障偏移+色差效果 + 效果分类',
     color: '#a29bfe', path: '/v5-plugin/', workspace: 'workspace-advanced',
     agents: [
-      { id: 'plugin-manager', name: 'PluginManager', layer: 'arch', color: '#cc44cc' },
+      { id: 'glitch', name: 'GlitchEffect', layer: 'effect', color: '#ff00ff' },
+      { id: 'chromatic', name: 'ChromaticEffect', layer: 'effect', color: '#ffaa00' },
     ],
-    effects: [],
-    pipeline: { id: 'plugin-pipeline', name: '插件管线', stages: ['source', 'builtin', 'plugin', 'composite', 'output'] },
+    effects: [
+      { id: 'glitch-shift', name: '故障偏移', category: 'distort', color: '#ff00ff' },
+      { id: 'chromatic-aberration', name: '色差', category: 'distort', color: '#ffaa00' },
+    ],
+    pipeline: { id: 'composite-pipeline', name: '扩展合成管线', stages: ['source', 'effects', 'modulation', 'composite', 'output'] },
     scene: { id: 'default-plane', name: '默认平面场景', surface: 'plane' },
     events: [
-      { name: 'plugin:installed', publisher: 'PluginManager' },
+      { name: 'effect:glitch', publisher: 'GlitchEffect' },
+      { name: 'effect:chromatic', publisher: 'ChromaticEffect' },
     ],
-    skillPacks: ['skillpack-render', 'skillpack-effects', 'skillpack-pipeline', 'skillpack-plugin'],
-    newCapabilities: ['插件注册', 'eval沙箱', '自定义效果'],
+    skillPacks: ['skillpack-render', 'skillpack-effects', 'skillpack-pipeline'],
+    newCapabilities: ['故障偏移效果', '色差效果', '效果分类体系'],
     cumulativeCount: 13,
   },
   {

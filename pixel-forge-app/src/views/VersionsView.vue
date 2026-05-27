@@ -5,7 +5,6 @@ import VersionEmbed from '../components/VersionEmbed.vue'
 import VersionDetail from '../components/VersionDetail.vue'
 
 const selectedId = ref('v1')
-const baseUrl = window.location.origin + ':8081'
 
 const selected = computed(() => VERSIONS.find(v => v.id === selectedId.value)!)
 
@@ -92,7 +91,7 @@ const rightTab = ref('detail')
                 </div>
               </template>
               <template v-if="rightTab === 'embed'">
-                <VersionEmbed :version="selected" :base-url="baseUrl" />
+                <VersionEmbed :version="selected" />
               </template>
             </div>
           </div>
