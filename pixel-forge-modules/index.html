@@ -17,7 +17,7 @@
   --accent3: #44ddff;
   --accent4: #ffaa00;
   --accent5: #a29bfe;
-  --accent6: #ff6b9d;
+  --accent7: #7cff6b;
   --card: rgba(16,16,30,0.85);
   --border: #1e2e1e;
 }
@@ -263,6 +263,7 @@ header .tagline {
 .version-card.v4::before { background: var(--accent3); }
 .version-card.v5::before { background: var(--accent5); }
 .version-card.v6::before { background: var(--accent6); }
+.version-card.v7::before { background: var(--accent7); }
 
 .version-card.v1:hover { border-color: var(--accent); box-shadow: 0 8px 32px rgba(0,255,136,0.15); }
 .version-card.v2:hover { border-color: var(--accent4); box-shadow: 0 8px 32px rgba(255,170,0,0.15); }
@@ -270,6 +271,7 @@ header .tagline {
 .version-card.v4:hover { border-color: var(--accent3); box-shadow: 0 8px 32px rgba(68,221,255,0.15); }
 .version-card.v5:hover { border-color: var(--accent5); box-shadow: 0 8px 32px rgba(162,155,254,0.15); }
 .version-card.v6:hover { border-color: var(--accent6); box-shadow: 0 8px 32px rgba(255,107,157,0.15); }
+.version-card.v7:hover { border-color: var(--accent7); box-shadow: 0 8px 32px rgba(124,255,107,0.15); }
 
 .vc-header {
   display: flex;
@@ -292,6 +294,7 @@ header .tagline {
 .v4 .vc-badge { background: rgba(68,221,255,0.15); color: var(--accent3); border: 1px solid var(--accent3); }
 .v5 .vc-badge { background: rgba(162,155,254,0.15); color: var(--accent5); border: 1px solid var(--accent5); }
 .v6 .vc-badge { background: rgba(255,107,157,0.15); color: var(--accent6); border: 1px solid var(--accent6); }
+.v7 .vc-badge { background: rgba(124,255,107,0.15); color: var(--accent7); border: 1px solid var(--accent7); }
 
 .vc-name {
   font-family: 'Press Start 2P', monospace;
@@ -332,6 +335,7 @@ header .tagline {
 .v4 .vc-feat::before { color: var(--accent3); }
 .v5 .vc-feat::before { color: var(--accent5); }
 .v6 .vc-feat::before { color: var(--accent6); }
+.v7 .vc-feat::before { color: var(--accent7); }
 
 .vc-effects {
   display: flex;
@@ -378,6 +382,7 @@ header .tagline {
 .v4 .vc-launch:hover { background: rgba(68,221,255,0.15); color: var(--accent3); border-color: var(--accent3); }
 .v5 .vc-launch:hover { background: rgba(162,155,254,0.15); color: var(--accent5); border-color: var(--accent5); }
 .v6 .vc-launch:hover { background: rgba(255,107,157,0.15); color: var(--accent6); border-color: var(--accent6); }
+.v7 .vc-launch:hover { background: rgba(124,255,107,0.15); color: var(--accent7); border-color: var(--accent7); }
 
 .evolution {
   background: var(--card);
@@ -393,7 +398,7 @@ header .tagline {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 2px;
-  background: linear-gradient(90deg, var(--accent), var(--accent4), var(--accent2), var(--accent3), var(--accent5), var(--accent6));
+  background: linear-gradient(90deg, var(--accent), var(--accent4), var(--accent2), var(--accent3), var(--accent5), var(--accent6), var(--accent7));
 }
 
 .evo-timeline {
@@ -427,6 +432,7 @@ header .tagline {
 .evo-step:nth-child(4) .evo-dot { background: var(--accent3); box-shadow: 0 0 12px rgba(68,221,255,0.5); }
 .evo-step:nth-child(5) .evo-dot { background: var(--accent5); box-shadow: 0 0 12px rgba(162,155,254,0.5); }
 .evo-step:nth-child(6) .evo-dot { background: var(--accent6); box-shadow: 0 0 12px rgba(255,107,157,0.5); }
+.evo-step:nth-child(7) .evo-dot { background: var(--accent7); box-shadow: 0 0 12px rgba(124,255,107,0.5); }
 
 .evo-step:not(:last-child)::after {
   content: '';
@@ -452,6 +458,7 @@ header .tagline {
 .evo-step:nth-child(4) .evo-label { color: var(--accent3); }
 .evo-step:nth-child(5) .evo-label { color: var(--accent5); }
 .evo-step:nth-child(6) .evo-label { color: var(--accent6); }
+.evo-step:nth-child(7) .evo-label { color: var(--accent7); }
 
 .evo-detail {
   font-size: 10px;
@@ -528,7 +535,7 @@ footer {
   <header>
     <h1>PIXEL FORGE</h1>
     <div class="subtitle">像素风图像动画工坊</div>
-    <div class="tagline">模块化架构 · 6版迭代 · 事件驱动通信 · 3D物理解算</div>
+    <div class="tagline">模块化架构 · 7版迭代 · 事件驱动通信 · 3D物理解算 · 软件实体模型</div>
   </header>
 
   <section>
@@ -634,6 +641,11 @@ footer {
           <div class="evo-dot"></div>
           <div class="evo-label">V6</div>
           <div class="evo-detail">3D物理解算<br>6种3D面<br>5种物理力</div>
+        </div>
+        <div class="evo-step">
+          <div class="evo-dot"></div>
+          <div class="evo-label">V7</div>
+          <div class="evo-detail">伪造纹理环带<br>软件实体模型<br>自描述架构</div>
         </div>
       </div>
     </div>
@@ -772,6 +784,29 @@ footer {
           <span class="vc-effect-tag new">交互相机</span>
         </div>
         <span class="vc-launch">▶ 启动 V6-PHYSICS 3D</span>
+      </a>
+
+      <a class="version-card v7" href="v7-software-model/index.html">
+        <div class="vc-header">
+          <span class="vc-badge">V7</span>
+          <span class="vc-name">SOFTWARE MODEL 软件实体</span>
+        </div>
+        <div class="vc-desc">伪造纹理环带 + 软件实体3D建模，将软件自身架构映射为3D实体场景，自描述可视化。</div>
+        <div class="vc-features">
+          <div class="vc-feat">5种程序化纹理环带: 环带/条纹/螺旋/棋盘/渐变</div>
+          <div class="vc-feat">13个软件实体3D建模 (核心/效果/架构层)</div>
+          <div class="vc-feat">实体间通信连线可视化</div>
+          <div class="vc-feat">实体自旋转 + 浮动动画</div>
+          <div class="vc-feat">双模式: 纹理面模式 ↔ 软件实体模式</div>
+          <div class="vc-feat">物理效果 + 纹理环带可叠加</div>
+        </div>
+        <div class="vc-effects">
+          <span class="vc-effect-tag">像素化</span>
+          <span class="vc-effect-tag new">环带纹理</span>
+          <span class="vc-effect-tag new">软件实体</span>
+          <span class="vc-effect-tag new">通信连线</span>
+        </div>
+        <span class="vc-launch">▶ 启动 V7-SOFTWARE MODEL</span>
       </a>
 
     </div>

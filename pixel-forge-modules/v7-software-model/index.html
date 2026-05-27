@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PIXEL FORGE V7 — 软件实体模型</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap');
+:root {
+  --bg:#06060c;--fg:#e0ffe0;--fg-dim:#4a6a4a;--accent:#00ff88;--accent2:#ff3366;
+  --accent3:#44ddff;--accent4:#ffaa00;--accent5:#a29bfe;--accent6:#ff6b9d;
+  --accent7:#7cff6b;--card:rgba(14,14,26,0.92);--border:#1e2e1e;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:'Share Tech Mono',monospace;overflow:hidden;height:100vh}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.1) 2px,rgba(0,0,0,0.1) 4px);pointer-events:none;z-index:9999}
+#threeCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
+.ui{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10}
+.ui>*{pointer-events:auto}
+.top-bar{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:linear-gradient(180deg,rgba(6,6,12,0.92) 0%,transparent 100%)}
+.top-bar h1{font-family:'Press Start 2P',monospace;font-size:12px;color:var(--accent7);text-shadow:0 0 16px rgba(124,255,107,0.5);letter-spacing:3px}
+.top-bar .vtag{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--accent7);background:rgba(124,255,107,0.12);border:1px solid var(--accent7);padding:3px 7px;border-radius:2px;letter-spacing:1px}
+.top-right{display:flex;gap:6px;align-items:center}
+.tbtn{font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 10px;background:var(--card);border:1px solid var(--border);color:var(--fg-dim);border-radius:2px;cursor:pointer;transition:all .2s;letter-spacing:1px}
+.tbtn:hover{border-color:var(--accent7);color:var(--accent7)}
+.tbtn.active{background:rgba(124,255,107,0.1);border-color:var(--accent7);color:var(--accent7)}
+.lpanel{position:absolute;top:50px;left:10px;bottom:10px;width:252px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.rpanel{position:absolute;top:50px;right:10px;bottom:10px;width:230px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.pnl{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:12px;backdrop-filter:blur(10px);position:relative}
+.pnl::before{content:'';position:absolute;top:-1px;left:-1px;right:-1px;height:2px;background:linear-gradient(90deg,var(--accent7),var(--accent));border-radius:4px 4px 0 0}
+.pnl-t{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--accent7);margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid var(--border);letter-spacing:2px}
+.mode-tabs{display:flex;gap:4px;margin-bottom:8px}
+.mode-tab{flex:1;font-family:'Share Tech Mono',monospace;font-size:9px;padding:6px 4px;background:transparent;border:1px solid var(--border);color:var(--fg-dim);border-radius:2px;cursor:pointer;transition:all .2s;text-align:center}
+.mode-tab.active{background:rgba(124,255,107,0.1);border-color:var(--accent7);color:var(--accent7)}
+.mode-tab:hover{border-color:var(--accent7)}
+.ctrls{display:flex;flex-direction:column;gap:8px}
+.cg label{display:block;font-size:9px;color:var(--fg-dim);margin-bottom:3px;letter-spacing:1px;text-transform:uppercase}
+.cg .v{float:right;color:var(--accent);font-family:'Press Start 2P',monospace;font-size:7px}
+input[type="range"]{-webkit-appearance:none;width:100%;height:3px;background:var(--border);border-radius:2px;outline:none}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:10px;background:var(--accent7);border-radius:2px;cursor:pointer;box-shadow:0 0 6px rgba(124,255,107,0.4)}
+.btn-row{display:flex;gap:5px}
+.btn{flex:1;font-family:'Press Start 2P',monospace;font-size:7px;padding:7px 4px;border:1px solid var(--border);border-radius:2px;cursor:pointer;transition:all .2s;text-align:center;letter-spacing:1px}
+.btn-p{background:rgba(124,255,107,0.1);color:var(--accent7);border-color:var(--accent7)}
+.btn-p:hover{background:rgba(124,255,107,0.2)}
+.btn-d{background:rgba(255,51,102,0.08);color:var(--accent2);border-color:var(--accent2)}
+.btn-d:hover{background:rgba(255,51,102,0.15)}
+.btn-w{background:rgba(255,170,0,0.08);color:var(--accent4);border-color:var(--accent4)}
+.btn-w:hover{background:rgba(255,170,0,0.15)}
+.upload-zone{border:2px dashed var(--border);border-radius:3px;padding:12px 8px;text-align:center;cursor:pointer;transition:all .3s;font-size:9px;color:var(--fg-dim)}
+.upload-zone:hover{border-color:var(--accent7);background:rgba(124,255,107,0.02)}
+.upload-zone.has-img{padding:4px;border-style:solid;border-color:var(--accent7)}
+.upload-zone img{max-width:100%;max-height:60px;image-rendering:pixelated;border-radius:2px}
+.upload-zone input{display:none}
+.tex-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.tex-btn{font-family:'Share Tech Mono',monospace;font-size:9px;padding:6px 4px;background:transparent;border:1px solid var(--border);color:var(--fg-dim);border-radius:2px;cursor:pointer;transition:all .2s;text-align:center}
+.tex-btn:hover{border-color:var(--accent3);color:var(--fg)}
+.tex-btn.active{background:rgba(68,221,255,0.1);border-color:var(--accent3);color:var(--accent3)}
+.tex-btn .ti{font-size:14px;display:block;margin-bottom:2px}
+.ent-list{display:flex;flex-direction:column;gap:4px;max-height:260px;overflow-y:auto}
+.ent-item{display:flex;align-items:center;gap:6px;padding:5px 7px;background:rgba(0,0,0,0.2);border:1px solid var(--border);border-radius:2px;cursor:pointer;transition:all .2s;font-size:9px}
+.ent-item:hover{border-color:var(--accent7)}
+.ent-item.active{border-color:var(--accent7);background:rgba(124,255,107,0.06)}
+.ent-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ent-name{flex:1;color:var(--fg)}
+.ent-type{font-size:8px;color:var(--fg-dim)}
+.sbar{position:absolute;bottom:0;left:0;right:0;display:flex;justify-content:space-between;padding:5px 14px;background:linear-gradient(0deg,rgba(6,6,12,0.85) 0%,transparent 100%);font-size:8px;color:var(--fg-dim);pointer-events:none}
+.sbar .fps{color:var(--accent7);font-family:'Press Start 2P',monospace;font-size:7px}
+.sbar .info{color:var(--accent3)}
+.tog-row{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.tog-sw{position:relative;width:28px;height:14px;background:var(--border);border-radius:7px;cursor:pointer;transition:background .3s;flex-shrink:0}
+.tog-sw.on{background:rgba(124,255,107,0.4)}
+.tog-sw::after{content:'';position:absolute;top:2px;left:2px;width:10px;height:10px;background:var(--fg-dim);border-radius:50%;transition:all .3s}
+.tog-sw.on::after{left:16px;background:var(--accent7)}
+.tog-lbl{font-size:8px;color:var(--fg-dim);text-transform:uppercase;letter-spacing:1px}
+.color-row{display:flex;gap:4px;margin-top:4px}
+.cswatch{width:20px;height:20px;border-radius:2px;cursor:pointer;border:1px solid var(--border);transition:all .2s}
+.cswatch:hover{border-color:var(--fg)}
+.cswatch.active{border-color:#fff;box-shadow:0 0 6px rgba(255,255,255,0.3)}
+.back-link{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--fg-dim);text-decoration:none;border:1px solid var(--border);padding:3px 8px;border-radius:2px;transition:all .2s}
+.back-link:hover{border-color:var(--accent7);color:var(--accent7)}
+</style>
+</head>
+<body>
+<canvas id="threeCanvas"></canvas>
+<div class="ui">
+  <div class="top-bar">
+    <h1>PIXEL FORGE</h1>
+    <a href="../index.html" class="back-link">◁ 总览</a>
+    <div class="top-right">
+      <span class="vtag">V7 SOFTWARE MODEL</span>
+      <button class="tbtn" id="btnAutoRot">自转</button>
+      <button class="tbtn" id="btnExport">截图</button>
+    </div>
+  </div>
+
+  <div class="lpanel">
+    <div class="pnl">
+      <div class="pnl-t">◈ 模式</div>
+      <div class="mode-tabs">
+        <button class="mode-tab active" data-mode="texture">纹理面</button>
+        <button class="mode-tab" data-mode="entity">软件实体</button>
+      </div>
+    </div>
+
+    <div class="pnl" id="pnlTexture">
+      <div class="pnl-t">◈ 图像源</div>
+      <div class="upload-zone" id="uploadZone">
+        <div>📂 上传图像</div>
+        <input type="file" id="fileInput" accept="image/*">
+      </div>
+    </div>
+
+    <div class="pnl" id="pnlTexType">
+      <div class="pnl-t">◈ 纹理类型</div>
+      <div class="tex-grid">
+        <button class="tex-btn active" data-tex="pixel"><span class="ti">▦</span>像素化</button>
+        <button class="tex-btn" data-tex="rings"><span class="ti">◎</span>环带</button>
+        <button class="tex-btn" data-tex="bands"><span class="ti">☰</span>条纹</button>
+        <button class="tex-btn" data-tex="spiral"><span class="ti">@</span>螺旋</button>
+        <button class="tex-btn" data-tex="checker"><span class="ti">▦</span>棋盘</button>
+        <button class="tex-btn" data-tex="gradient"><span class="ti">▧</span>渐变</button>
+      </div>
+    </div>
+
+    <div class="pnl" id="pnlTexParams">
+      <div class="pnl-t">◈ 纹理参数</div>
+      <div class="ctrls">
+        <div class="cg"><label>环带数 <span class="v" id="vRingCount">8</span></label><input type="range" min="2" max="32" value="8" id="cRingCount"></div>
+        <div class="cg"><label>环带宽度 <span class="v" id="vRingWidth">0.5</span></label><input type="range" min="0.1" max="1" step="0.05" value="0.5" id="cRingWidth"></div>
+        <div class="cg"><label>像素尺寸 <span class="v" id="vPxSize">8</span></label><input type="range" min="2" max="32" value="8" id="cPxSize"></div>
+        <div class="cg"><label>条纹密度 <span class="v" id="vBandDensity">10</span></label><input type="range" min="2" max="40" value="10" id="cBandDensity"></div>
+        <div class="cg"><label>螺旋圈数 <span class="v" id="vSpiralTurns">5</span></label><input type="range" min="1" max="20" value="5" id="cSpiralTurns"></div>
+        <div class="cg"><label>主色</label>
+          <div class="color-row" id="colorRow1">
+            <div class="cswatch active" data-color="#00ff88" style="background:#00ff88"></div>
+            <div class="cswatch" data-color="#ff3366" style="background:#ff3366"></div>
+            <div class="cswatch" data-color="#44ddff" style="background:#44ddff"></div>
+            <div class="cswatch" data-color="#ffaa00" style="background:#ffaa00"></div>
+            <div class="cswatch" data-color="#a29bfe" style="background:#a29bfe"></div>
+            <div class="cswatch" data-color="#ff6b9d" style="background:#ff6b9d"></div>
+          </div>
+        </div>
+        <div class="cg"><label>辅色</label>
+          <div class="color-row" id="colorRow2">
+            <div class="cswatch" data-color="#00ff88" style="background:#00ff88"></div>
+            <div class="cswatch active" data-color="#ff3366" style="background:#ff3366"></div>
+            <div class="cswatch" data-color="#44ddff" style="background:#44ddff"></div>
+            <div class="cswatch" data-color="#ffaa00" style="background:#ffaa00"></div>
+            <div class="cswatch" data-color="#0a0a0f" style="background:#0a0a0f"></div>
+            <div class="cswatch" data-color="#ffffff" style="background:#ffffff"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pnl" id="pnlSurface">
+      <div class="pnl-t">◈ 3D 面</div>
+      <div class="tex-grid">
+        <button class="tex-btn active" data-surface="plane"><span class="ti">▬</span>平面</button>
+        <button class="tex-btn" data-surface="cube"><span class="ti">⬜</span>立方体</button>
+        <button class="tex-btn" data-surface="sphere"><span class="ti">◯</span>球体</button>
+        <button class="tex-btn" data-surface="cylinder"><span class="ti">▮</span>圆柱</button>
+        <button class="tex-btn" data-surface="torus"><span class="ti">◎</span>环面</button>
+        <button class="tex-btn" data-surface="cone"><span class="ti">△</span>锥体</button>
+      </div>
+    </div>
+
+    <div class="pnl" id="pnlPhysics">
+      <div class="pnl-t">◈ 物理效果</div>
+      <div class="tex-grid">
+        <button class="tex-btn active" data-phys="none"><span class="ti">·</span>无</button>
+        <button class="tex-btn" data-phys="gravity"><span class="ti">↓</span>重力</button>
+        <button class="tex-btn" data-phys="wind"><span class="ti">≋</span>风力</button>
+        <button class="tex-btn" data-phys="explode"><span class="ti">✦</span>爆炸</button>
+        <button class="tex-btn" data-phys="wave3d"><span class="ti">∿</span>3D波</button>
+        <button class="tex-btn" data-phys="spring"><span class="ti">⌇</span>弹簧</button>
+      </div>
+      <div class="ctrls" style="margin-top:8px">
+        <div class="cg"><label>强度 <span class="v" id="vStr">1.0</span></label><input type="range" min="0.1" max="5" step="0.1" value="1.0" id="cStr"></div>
+        <div class="cg"><label>阻尼 <span class="v" id="vDamp">0.98</span></label><input type="range" min="0.8" max="1" step="0.005" value="0.98" id="cDamp"></div>
+        <div class="cg"><label>刚度 <span class="v" id="vStiff">0.8</span></label><input type="range" min="0.1" max="1" step="0.05" value="0.8" id="cStiff"></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-p" id="btnPlay">▶ 播放</button>
+      <button class="btn btn-w" id="btnReset">↺ 重置</button>
+    </div>
+  </div>
+
+  <div class="rpanel">
+    <div class="pnl" id="pnlEntityList" style="display:none">
+      <div class="pnl-t">◈ 软件实体</div>
+      <div class="ent-list" id="entList"></div>
+    </div>
+
+    <div class="pnl">
+      <div class="pnl-t">◈ 显示</div>
+      <div class="tog-row"><div class="tog-sw on" id="togTex"></div><span class="tog-lbl">纹理</span></div>
+      <div class="tog-row"><div class="tog-sw" id="togWire"></div><span class="tog-lbl">线框叠加</span></div>
+      <div class="tog-row"><div class="tog-sw on" id="togGrid"></div><span class="tog-lbl">地面网格</span></div>
+      <div class="tog-row"><div class="tog-sw" id="togLinks"></div><span class="tog-lbl">通信连线</span></div>
+    </div>
+
+    <div class="pnl">
+      <div class="pnl-t">◈ 变换</div>
+      <div class="ctrls">
+        <div class="cg"><label>旋转X <span class="v" id="vRX">0</span>°</label><input type="range" min="-180" max="180" value="0" id="cRX"></div>
+        <div class="cg"><label>旋转Y <span class="v" id="vRY">0</span>°</label><input type="range" min="-180" max="180" value="0" id="cRY"></div>
+        <div class="cg"><label>缩放 <span class="v" id="vSc">1.0</span></label><input type="range" min="0.2" max="3" step="0.1" value="1.0" id="cSc"></div>
+        <div class="cg"><label>细分 <span class="v" id="vSub">32</span></label><input type="range" min="4" max="64" step="4" value="32" id="cSub"></div>
+      </div>
+    </div>
+
+    <div class="pnl">
+      <div class="pnl-t">◈ 场景</div>
+      <div class="ctrls">
+        <div class="cg"><label>环境光 <span class="v" id="vAmb">0.4</span></label><input type="range" min="0" max="1" step="0.05" value="0.4" id="cAmb"></div>
+        <div class="cg"><label>点光 <span class="v" id="vPt">1.0</span></label><input type="range" min="0" max="3" step="0.1" value="1.0" id="cPt"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sbar">
+    <span id="statusInfo">初始化中...</span>
+    <span class="info" id="vertCount">0 顶点</span>
+    <span class="fps" id="fpsD">0 FPS</span>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
+
+let scene,camera,renderer,mesh,wireMesh,gridHelper,linkGroup;
+let ambLight,ptLight,ptLight2;
+let sourceImage=null,pixelTexture=null;
+let origPos=null,vels=null;
+let animating=false,animId=null,frameCount=0,lastFpsT=0,lastTime=0,physT=0;
+let currentMode='texture',currentTex='pixel',currentSurface='plane',currentPhys='none';
+let entityMeshes=[],entityLinks=[];
+let selectedEntity=null;
+
+const C={
+  ringCount:8,ringWidth:0.5,pxSize:8,bandDensity:10,spiralTurns:5,
+  color1:'#00ff88',color2:'#ff3366',
+  strength:1,damping:0.98,stiffness:0.8,
+  rotX:0,rotY:0,scale:1,subdiv:32,
+  showTex:true,showWire:false,showGrid:true,showLinks:false,
+  autoRotate:false,ambient:0.4,pointInt:1.0
+};
+
+const SOFTWARE_ENTITIES=[
+  {id:'eventbus',name:'EventBus',type:'核心',color:'#00ff88',shape:'octahedron',pos:[0,1.2,0],size:0.6,
+   desc:'事件总线 · 发布/订阅通信枢纽'},
+  {id:'core',name:'CoreModule',type:'核心',color:'#44ddff',shape:'box',pos:[-2,0.5,0],size:0.5,
+   desc:'画布管理 · 图像加载 · 动画循环'},
+  {id:'ui',name:'UIModule',type:'核心',color:'#ffaa00',shape:'box',pos:[2,0.5,0],size:0.5,
+   desc:'DOM交互 · 参数控制 · 事件发射'},
+  {id:'pixelate',name:'Pixelate',type:'效果',color:'#ff6b6b',shape:'sphere',pos:[-1.5,0.3,-1.5],size:0.35,
+   desc:'像素化 · 区域均值采样'},
+  {id:'ionize',name:'Ionize',type:'效果',color:'#4ecdc4',shape:'sphere',pos:[0,0.3,-2],size:0.35,
+   desc:'离子化 · 粒子散射消散'},
+  {id:'wave',name:'Wave',type:'效果',color:'#ffe66d',shape:'sphere',pos:[1.5,0.3,-1.5],size:0.35,
+   desc:'波浪纹 · 线条波形位移'},
+  {id:'glitch',name:'Glitch',type:'效果',color:'#a29bfe',shape:'sphere',pos:[-1,0.3,-2.8],size:0.35,
+   desc:'数字故障 · 切片RGB偏移'},
+  {id:'chromatic',name:'Chromatic',type:'效果',color:'#fd79a8',shape:'sphere',pos:[1,0.3,-2.8],size:0.35,
+   desc:'色差分离 · RGB通道偏移'},
+  {id:'physics3d',name:'Physics3D',type:'效果',color:'#ff6b9d',shape:'torus',pos:[0,0.3,-3.5],size:0.35,
+   desc:'3D物理解算 · Verlet积分'},
+  {id:'pipeline',name:'Pipeline',type:'架构',color:'#ff9f43',shape:'cylinder',pos:[-2.5,0.4,-1],size:0.3,
+   desc:'链式管道 · 数据流传递'},
+  {id:'compositor',name:'Compositor',type:'架构',color:'#ee5a24',shape:'cylinder',pos:[2.5,0.4,-1],size:0.3,
+   desc:'图层合成 · 混合模式'},
+  {id:'modulation',name:'Modulation',type:'架构',color:'#0abde3',shape:'cylinder',pos:[0,0.4,-4.2],size:0.3,
+   desc:'参数调制 · 信号变换'},
+  {id:'plugin',name:'PluginMgr',type:'架构',color:'#7cff6b',shape:'cylinder',pos:[-2,0.4,-3],size:0.3,
+   desc:'插件管理 · 动态注册'}
+];
+
+const ENTITY_LINKS=[
+  ['core','eventbus'],['ui','eventbus'],
+  ['pixelate','eventbus'],['ionize','eventbus'],['wave','eventbus'],
+  ['glitch','eventbus'],['chromatic','eventbus'],['physics3d','eventbus'],
+  ['pipeline','eventbus'],['compositor','eventbus'],['modulation','eventbus'],['plugin','eventbus'],
+  ['core','pixelate'],['core','ionize'],['core','wave'],
+  ['ui','pixelate'],['ui','ionize'],['ui','wave'],
+  ['pipeline','pixelate'],['pipeline','glitch'],
+  ['compositor','chromatic'],['compositor','pixelate'],
+  ['modulation','wave'],['modulation','ionize'],
+  ['plugin','glitch'],['plugin','chromatic']
+];
+
+function hexToRgb(h){const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return{r,g,b}}
+
+function generateProceduralTexture(type,w,h){
+  const c=document.createElement('canvas');c.width=w;c.height=h;
+  const cx=c.getContext('2d');
+  const c1=hexToRgb(C.color1),c2=hexToRgb(C.color2);
+  const imgData=cx.createImageData(w,h);const d=imgData.data;
+
+  for(let y=0;y<h;y++){
+    for(let x=0;x<w;x++){
+      const idx=(y*w+x)*4;
+      const nx=x/w-0.5,ny=y/h-0.5;
+      const dist=Math.sqrt(nx*nx+ny*ny)*2;
+      const angle=Math.atan2(ny,nx);
+      let t=0;
+
+      switch(type){
+        case 'rings':{
+          const ring=dist*C.ringCount*Math.PI*2;
+          t=0.5+0.5*Math.sin(ring);
+          const edge=Math.abs(Math.sin(ring));
+          t=edge>C.ringWidth?1:0;
+          break;
+        }
+        case 'bands':{
+          const band=(y/h)*C.bandDensity*Math.PI*2;
+          const edge=Math.abs(Math.sin(band));
+          t=edge>0.5?1:0;
+          break;
+        }
+        case 'spiral':{
+          const sp=angle+dist*C.spiralTurns*Math.PI*2;
+          t=0.5+0.5*Math.sin(sp*3);
+          const edge=Math.abs(Math.sin(sp*3));
+          t=edge>0.4?1:0;
+          break;
+        }
+        case 'checker':{
+          const cx2=Math.floor(x/(w/C.bandDensity));
+          const cy2=Math.floor(y/(h/C.bandDensity));
+          t=(cx2+cy2)%2;
+          break;
+        }
+        case 'gradient':{
+          t=dist;
+          break;
+        }
+        default:t=0;
+      }
+
+      t=Math.max(0,Math.min(1,t));
+      d[idx]=Math.round(c1.r*t+c2.r*(1-t));
+      d[idx+1]=Math.round(c1.g*t+c2.g*(1-t));
+      d[idx+2]=Math.round(c1.b*t+c2.b*(1-t));
+      d[idx+3]=255;
+    }
+  }
+  cx.putImageData(imgData,0,0);
+  return c;
+}
+
+function createPixelTexture(img){
+  const pc=document.createElement('canvas');const px=pc.getContext('2d');
+  const w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;
+  pc.width=w;pc.height=h;px.drawImage(img,0,0,w,h);
+  const id=px.getImageData(0,0,w,h);const dd=id.data;const ps=C.pxSize;
+  px.clearRect(0,0,w,h);
+  for(let y=0;y<h;y+=ps){for(let x=0;x<w;x+=ps){
+    let r=0,g=0,b=0,cnt=0;
+    for(let dy=0;dy<ps&&y+dy<h;dy++){for(let dx=0;dx<ps&&x+dx<w;dx++){
+      const i=((y+dy)*w+(x+dx))*4;r+=dd[i];g+=dd[i+1];b+=dd[i+2];cnt++;
+    }}
+    r=Math.round(r/cnt);g=Math.round(g/cnt);b=Math.round(b/cnt);
+    px.fillStyle=`rgb(${r},${g},${b})`;px.fillRect(x,y,ps,ps);
+  }}
+  return pc;
+}
+
+function getTexture(){
+  if(pixelTexture)pixelTexture.dispose();
+  let canvas;
+  if(currentTex==='pixel'&&sourceImage){
+    canvas=createPixelTexture(sourceImage);
+  }else if(currentTex==='pixel'){
+    const c=document.createElement('canvas');c.width=256;c.height=256;
+    const cx=c.getContext('2d');
+    const g=cx.createLinearGradient(0,0,256,256);
+    g.addColorStop(0,C.color1);g.addColorStop(1,C.color2);
+    cx.fillStyle=g;cx.fillRect(0,0,256,256);
+    canvas=c;
+  }else{
+    canvas=generateProceduralTexture(currentTex,512,512);
+  }
+  pixelTexture=new THREE.CanvasTexture(canvas);
+  pixelTexture.magFilter=THREE.NearestFilter;
+  pixelTexture.minFilter=THREE.NearestFilter;
+  return pixelTexture;
+}
+
+function initThree(){
+  scene=new THREE.Scene();
+  scene.background=new THREE.Color('#06060c');
+  scene.fog=new THREE.FogExp2('#06060c',0.06);
+  camera=new THREE.PerspectiveCamera(55,innerWidth/innerHeight,0.1,100);
+  camera.position.set(0,2,5);camera.lookAt(0,0,0);
+  renderer=new THREE.WebGLRenderer({canvas:$('#threeCanvas'),antialias:true,preserveDrawingBuffer:true});
+  renderer.setSize(innerWidth,innerHeight);
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.shadowMap.enabled=true;
+  ambLight=new THREE.AmbientLight(0xffffff,C.ambient);scene.add(ambLight);
+  ptLight=new THREE.PointLight(0x7cff6b,C.pointInt,20);ptLight.position.set(3,4,3);ptLight.castShadow=true;scene.add(ptLight);
+  ptLight2=new THREE.PointLight(0xff3366,0.5,15);ptLight2.position.set(-3,2,-2);scene.add(ptLight2);
+  gridHelper=new THREE.GridHelper(12,24,0x1a3a1a,0x0d1a0d);scene.add(gridHelper);
+  linkGroup=new THREE.Group();linkGroup.visible=C.showLinks;scene.add(linkGroup);
+
+  let drag=false,prev={x:0,y:0},sph={theta:0,phi:Math.PI/5,radius:5};
+  const cv=$('#threeCanvas');
+  cv.addEventListener('mousedown',e=>{drag=true;prev={x:e.clientX,y:e.clientY}});
+  cv.addEventListener('mousemove',e=>{if(!drag)return;sph.theta-=(e.clientX-prev.x)*0.005;sph.phi=Math.max(0.1,Math.min(Math.PI-0.1,sph.phi-(e.clientY-prev.y)*0.005));prev={x:e.clientX,y:e.clientY};upCam(sph)});
+  cv.addEventListener('mouseup',()=>drag=false);cv.addEventListener('mouseleave',()=>drag=false);
+  cv.addEventListener('wheel',e=>{sph.radius=Math.max(1.5,Math.min(15,sph.radius+e.deltaY*0.005));upCam(sph)});
+  cv.addEventListener('touchstart',e=>{if(e.touches.length===1){drag=true;prev={x:e.touches[0].clientX,y:e.touches[0].clientY}}});
+  cv.addEventListener('touchmove',e=>{if(!drag||e.touches.length!==1)return;e.preventDefault();sph.theta-=(e.touches[0].clientX-prev.x)*0.005;sph.phi=Math.max(0.1,Math.min(Math.PI-0.1,sph.phi-(e.touches[0].clientY-prev.y)*0.005));prev={x:e.touches[0].clientX,y:e.touches[0].clientY};upCam(sph)},{passive:false});
+  cv.addEventListener('touchend',()=>drag=false);
+  addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+}
+
+function upCam(s){camera.position.set(s.radius*Math.sin(s.phi)*Math.sin(s.theta),s.radius*Math.cos(s.phi),s.radius*Math.sin(s.phi)*Math.cos(s.theta));camera.lookAt(0,0,0)}
+
+function buildSurface(type){
+  if(mesh){scene.remove(mesh);mesh.geometry.dispose();mesh.material.dispose()}
+  if(wireMesh){scene.remove(wireMesh);wireMesh.geometry.dispose();wireMesh.material.dispose()}
+  let geo;const seg=C.subdiv;
+  switch(type){
+    case 'plane':geo=new THREE.PlaneGeometry(3,3,seg,seg);break;
+    case 'cube':geo=new THREE.BoxGeometry(2,2,2,Math.max(1,seg/4|0),Math.max(1,seg/4|0),Math.max(1,seg/4|0));break;
+    case 'sphere':geo=new THREE.SphereGeometry(1.5,seg,seg/2|0);break;
+    case 'cylinder':geo=new THREE.CylinderGeometry(1,1,2.5,seg,seg/2|0,true);break;
+    case 'torus':geo=new THREE.TorusGeometry(1.2,0.5,seg/2|0,seg);break;
+    case 'cone':geo=new THREE.ConeGeometry(1.2,2.5,seg,seg/2|0);break;
+    default:geo=new THREE.PlaneGeometry(3,3,seg,seg);
+  }
+  const mat=new THREE.MeshPhongMaterial({map:getTexture(),side:THREE.DoubleSide,shininess:30,wireframe:!C.showTex});
+  mesh=new THREE.Mesh(geo,mat);mesh.castShadow=true;mesh.receiveShadow=true;scene.add(mesh);
+  const wm=new THREE.MeshBasicMaterial({color:0x7cff6b,wireframe:true,transparent:true,opacity:0.12,side:THREE.DoubleSide});
+  wireMesh=new THREE.Mesh(geo.clone(),wm);wireMesh.visible=C.showWire;scene.add(wireMesh);
+  origPos=new Float32Array(geo.attributes.position.array);
+  vels=new Float32Array(geo.attributes.position.count*3);
+  $('#vertCount').textContent=geo.attributes.position.count+' 顶点';
+  applyTransform();
+}
+
+function buildEntityModel(){
+  clearEntities();
+  const entMap={};
+  SOFTWARE_ENTITIES.forEach(ent=>{
+    let geo;
+    switch(ent.shape){
+      case 'octahedron':geo=new THREE.OctahedronGeometry(ent.size,0);break;
+      case 'box':geo=new THREE.BoxGeometry(ent.size*1.4,ent.size*1.4,ent.size*1.4);break;
+      case 'sphere':geo=new THREE.SphereGeometry(ent.size,16,12);break;
+      case 'torus':geo=new THREE.TorusGeometry(ent.size,ent.size*0.35,8,16);break;
+      case 'cylinder':geo=new THREE.CylinderGeometry(ent.size*0.5,ent.size*0.5,ent.size*1.2,12);break;
+      default:geo=new THREE.BoxGeometry(ent.size,ent.size,ent.size);
+    }
+    const tex=generateProceduralTexture('rings',256,256);
+    const t=new THREE.CanvasTexture(tex);t.magFilter=THREE.NearestFilter;t.minFilter=THREE.NearestFilter;
+    const mat=new THREE.MeshPhongMaterial({map:t,color:new THREE.Color(ent.color),emissive:new THREE.Color(ent.color),emissiveIntensity:0.15,side:THREE.DoubleSide,shininess:40});
+    const m=new THREE.Mesh(geo,mat);
+    m.position.set(ent.pos[0],ent.pos[1],ent.pos[2]);
+    m.userData=ent;
+    m.castShadow=true;
+    scene.add(m);
+    entityMeshes.push(m);
+    entMap[ent.id]=m;
+
+    const wm=new THREE.MeshBasicMaterial({color:new THREE.Color(ent.color),wireframe:true,transparent:true,opacity:0.3});
+    const w=new THREE.Mesh(geo.clone(),wm);
+    w.position.copy(m.position);w.scale.setScalar(1.05);
+    w.visible=C.showWire;
+    scene.add(w);
+    m.userData.wireClone=w;
+  });
+
+  ENTITY_LINKS.forEach(([fromId,toId])=>{
+    const from=entMap[fromId],to=entMap[toId];
+    if(!from||!to)return;
+    const pts=[from.position.clone(),to.position.clone()];
+    const lineGeo=new THREE.BufferGeometry().setFromPoints(pts);
+    const lineMat=new THREE.LineBasicMaterial({color:0x1a3a1a,transparent:true,opacity:0.3});
+    const line=new THREE.Line(lineGeo,lineMat);
+    linkGroup.add(line);
+    entityLinks.push({line,from,to});
+  });
+
+  buildEntityList();
+}
+
+function clearEntities(){
+  entityMeshes.forEach(m=>{scene.remove(m);m.geometry.dispose();m.material.dispose();if(m.userData.wireClone){scene.remove(m.userData.wireClone);m.userData.wireClone.geometry.dispose();m.userData.wireClone.material.dispose()}});
+  entityMeshes=[];
+  entityLinks=[];
+  while(linkGroup.children.length){const c=linkGroup.children[0];linkGroup.remove(c);c.geometry.dispose();c.material.dispose()}
+}
+
+function buildEntityList(){
+  const el=$('#entList');el.innerHTML='';
+  SOFTWARE_ENTITIES.forEach((ent,i)=>{
+    const d=document.createElement('div');d.className='ent-item';d.dataset.idx=i;
+    d.innerHTML=`<div class="ent-dot" style="background:${ent.color}"></div><span class="ent-name">${ent.name}</span><span class="ent-type">${ent.type}</span>`;
+    d.addEventListener('click',()=>{
+      $$('.ent-item').forEach(x=>x.classList.remove('active'));
+      d.classList.add('active');
+      selectedEntity=entityMeshes[i];
+    });
+    el.appendChild(d);
+  });
+}
+
+function applyTransform(){
+  if(!mesh)return;
+  mesh.rotation.set(C.rotX*Math.PI/180,C.rotY*Math.PI/180,0);
+  mesh.scale.setScalar(C.scale);
+  if(wireMesh){wireMesh.rotation.copy(mesh.rotation);wireMesh.scale.copy(mesh.scale)}
+}
+
+function resetPhys(){
+  if(!mesh||!origPos)return;
+  const p=mesh.geometry.attributes.position.array;
+  for(let i=0;i<p.length;i++)p[i]=origPos[i];
+  vels.fill(0);mesh.geometry.attributes.position.needsUpdate=true;mesh.geometry.computeVertexNormals();
+  if(wireMesh){const w=wireMesh.geometry.attributes.position.array;for(let i=0;i<w.length;i++)w[i]=origPos[i];wireMesh.geometry.attributes.position.needsUpdate=true;wireMesh.geometry.computeVertexNormals()}
+  physT=0;
+}
+
+function applyPhys(dt){
+  if(!mesh||!origPos||currentPhys==='none')return;
+  const p=mesh.geometry.attributes.position.array;const cnt=mesh.geometry.attributes.position.count;
+  const str=C.strength,dmp=C.damping,stf=C.stiffness;physT+=dt;
+  for(let i=0;i<cnt;i++){
+    const i3=i*3;const ox=origPos[i3],oy=origPos[i3+1],oz=origPos[i3+2];
+    let fx=0,fy=0,fz=0;
+    switch(currentPhys){
+      case 'gravity':fy-=2*str;fy+=(oy-p[i3+1])*stf*0.5;fx+=(ox-p[i3])*stf*0.3;fz+=(oz-p[i3+2])*stf*0.3;break;
+      case 'wind':fx+=Math.sin(physT*2+oy*3)*1.5*str;fz+=Math.cos(physT*1.5+ox*2)*0.8*str;fx+=(ox-p[i3])*stf;fy+=(oy-p[i3+1])*stf;fz+=(oz-p[i3+2])*stf;break;
+      case 'explode':{const dx=ox,dy=oy,dz=oz;const dist=Math.sqrt(dx*dx+dy*dy+dz*dz)+0.01;const f=str*3/(dist*0.5+0.5);const dec=Math.max(0,1-physT*0.3);fx+=dx/dist*f*dec;fy+=dy/dist*f*dec;fz+=dz/dist*f*dec;if(physT>3){fx+=(ox-p[i3])*stf*0.5;fy+=(oy-p[i3+1])*stf*0.5;fz+=(oz-p[i3+2])*stf*0.5}break}
+      case 'wave3d':p[i3]=ox+Math.sin(ox*3+physT*2)*str*0.3;p[i3+1]=oy+Math.sin(oy*3+physT*2.5)*str*0.3;p[i3+2]=oz+Math.cos(oz*3+physT*1.8)*str*0.3;continue;
+      case 'spring':fx+=(ox-p[i3])*stf*3;fy+=(oy-p[i3+1])*stf*3;fz+=(oz-p[i3+2])*stf*3;fx+=Math.sin(physT*4+i*0.1)*str*0.5;fy+=Math.cos(physT*3+i*0.15)*str*0.5;fz+=Math.sin(physT*5+i*0.05)*str*0.3;break;
+    }
+    vels[i3]=(vels[i3]+fx*dt)*dmp;vels[i3+1]=(vels[i3+1]+fy*dt)*dmp;vels[i3+2]=(vels[i3+2]+fz*dt)*dmp;
+    p[i3]+=vels[i3]*dt;p[i3+1]+=vels[i3+1]*dt;p[i3+2]+=vels[i3+2]*dt;
+  }
+  mesh.geometry.attributes.position.needsUpdate=true;mesh.geometry.computeVertexNormals();
+  if(wireMesh&&wireMesh.visible){const w=wireMesh.geometry.attributes.position.array;for(let i=0;i<p.length;i++)w[i]=p[i];wireMesh.geometry.attributes.position.needsUpdate=true;wireMesh.geometry.computeVertexNormals()}
+}
+
+function loadDefaultImage(){
+  const img=new Image();img.crossOrigin='anonymous';
+  img.onload=()=>{sourceImage=img;$('#uploadZone').classList.add('has-img');$('#uploadZone').innerHTML=`<img src="${img.src}" alt="src"><input type="file" id="fileInput" accept="image/*">`;$('#uploadZone').querySelector('input').addEventListener('change',handleFile);$('#statusInfo').textContent=`图像 ${img.naturalWidth}×${img.naturalHeight}`;if(currentMode==='texture')buildSurface(currentSurface)};
+  img.onerror=()=>{sourceImage=null;if(currentMode==='texture')buildSurface(currentSurface);$('#statusInfo').textContent='使用程序化纹理'};
+  img.src='https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=pixel%20art%20portrait%20of%20a%20cyberpunk%20warrior%20neon%20colors%20detailed%20retro%20game%20character&image_size=square';
+}
+
+const uz=$('#uploadZone');
+uz.addEventListener('click',()=>{const i=uz.querySelector('input');if(i)i.click()});
+uz.addEventListener('dragover',e=>e.preventDefault());
+uz.addEventListener('drop',e=>{e.preventDefault();if(e.dataTransfer.files.length)handleFileObj(e.dataTransfer.files[0])});
+function handleFile(e){if(e.target.files.length)handleFileObj(e.target.files[0])}
+function handleFileObj(f){const r=new FileReader();r.onload=ev=>{const img=new Image();img.onload=()=>{sourceImage=img;uz.classList.add('has-img');uz.innerHTML=`<img src="${ev.target.result}" alt="src"><input type="file" id="fileInput" accept="image/*">`;uz.querySelector('input').addEventListener('change',handleFile);if(currentMode==='texture')buildSurface(currentSurface)};img.src=ev.target.result};r.readAsDataURL(f)}
+
+$$('.mode-tab').forEach(t=>t.addEventListener('click',()=>{
+  $$('.mode-tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');
+  currentMode=t.dataset.mode;
+  if(currentMode==='texture'){
+    clearEntities();buildSurface(currentSurface);
+    $('#pnlTexture').style.display='';$('#pnlTexType').style.display='';$('#pnlTexParams').style.display='';$('#pnlSurface').style.display='';$('#pnlPhysics').style.display='';
+    $('#pnlEntityList').style.display='none';
+  }else{
+    if(mesh){scene.remove(mesh);mesh.geometry.dispose();mesh.material.dispose();mesh=null}
+    if(wireMesh){scene.remove(wireMesh);wireMesh.geometry.dispose();wireMesh.material.dispose();wireMesh=null}
+    $('#pnlTexture').style.display='none';$('#pnlTexType').style.display='none';$('#pnlTexParams').style.display='none';$('#pnlSurface').style.display='none';$('#pnlPhysics').style.display='none';
+    $('#pnlEntityList').style.display='';
+    buildEntityModel();
+  }
+}));
+
+$$('[data-tex]').forEach(b=>b.addEventListener('click',()=>{$$('[data-tex]').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentTex=b.dataset.tex;if(currentMode==='texture'&&mesh){mesh.material.map=getTexture();mesh.material.needsUpdate=true}}));
+$$('[data-surface]').forEach(b=>b.addEventListener('click',()=>{$$('[data-surface]').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentSurface=b.dataset.surface;resetPhys();buildSurface(currentSurface)}));
+$$('[data-phys]').forEach(b=>b.addEventListener('click',()=>{$$('[data-phys]').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentPhys=b.dataset.phys;resetPhys()}));
+
+const bind=(id,key,fmt,cb)=>{const el=$(`#${id}`);if(!el)return;el.addEventListener('input',()=>{C[key]=parseFloat(el.value);const v=$(`#v${id.replace('c','')}`);if(v)v.textContent=fmt?fmt(C[key]):C[key];if(cb)cb()})};
+bind('cRingCount','ringCount');bind('cRingWidth','ringWidth',v=>v.toFixed(2));bind('cPxSize','pxSize');
+bind('cBandDensity','bandDensity');bind('cSpiralTurns','spiralTurns');
+bind('cStr','strength',v=>v.toFixed(1));bind('cDamp','damping',v=>v.toFixed(3));bind('cStiff','stiffness',v=>v.toFixed(2));
+bind('cRX','rotX',null,applyTransform);bind('cRY','rotY',null,applyTransform);
+bind('cSc','scale',v=>v.toFixed(1),applyTransform);bind('cSub','subdiv',null,()=>{resetPhys();if(currentMode==='texture')buildSurface(currentSurface)});
+bind('cAmb','ambient',v=>v.toFixed(2));bind('cPt','pointInt',v=>v.toFixed(1));
+
+$$('.color-row').forEach(row=>{
+  row.querySelectorAll('.cswatch').forEach(sw=>sw.addEventListener('click',()=>{
+    row.querySelectorAll('.cswatch').forEach(s=>s.classList.remove('active'));
+    sw.classList.add('active');
+    if(row.id==='colorRow1')C.color1=sw.dataset.color;else C.color2=sw.dataset.color;
+    if(currentMode==='texture'&&mesh){mesh.material.map=getTexture();mesh.material.needsUpdate=true}
+    if(currentMode==='entity')buildEntityModel();
+  }));
+});
+
+const bindTog=(id,key,cb)=>{const el=$(`#${id}`);if(!el)return;el.addEventListener('click',()=>{C[key]=!C[key];el.classList.toggle('on');if(cb)cb()})};
+bindTog('togTex','showTex',()=>{if(mesh){mesh.material.wireframe=!C.showTex;mesh.material.needsUpdate=true}});
+bindTog('togWire','showWire',()=>{if(wireMesh)wireMesh.visible=C.showWire;entityMeshes.forEach(m=>{if(m.userData.wireClone)m.userData.wireClone.visible=C.showWire})});
+bindTog('togGrid','showGrid',()=>{if(gridHelper)gridHelper.visible=C.showGrid});
+bindTog('togLinks','showLinks',()=>{if(linkGroup)linkGroup.visible=C.showLinks});
+
+$('#btnAutoRot').addEventListener('click',function(){C.autoRotate=!C.autoRotate;this.classList.toggle('active',C.autoRotate)});
+$('#btnExport').addEventListener('click',()=>{renderer.render(scene,camera);const a=document.createElement('a');a.download=`pf_v7_${Date.now()}.png`;a.href=renderer.domElement.toDataURL('image/png');a.click()});
+
+$('#btnPlay').addEventListener('click',()=>{
+  if(animating){animating=false;$('#btnPlay').textContent='▶ 播放';$('#btnPlay').className='btn btn-p'}
+  else{animating=true;frameCount=0;lastFpsT=performance.now();$('#btnPlay').textContent='⏸ 暂停';$('#btnPlay').className='btn btn-d';animate()}
+});
+$('#btnReset').addEventListener('click',()=>{resetPhys();applyTransform();if(animating){animating=false;$('#btnPlay').textContent='▶ 播放';$('#btnPlay').className='btn btn-p'}});
+
+function animate(now){
+  if(!animating)return;animId=requestAnimationFrame(animate);
+  const dt=Math.min((now-(lastTime||now))/1000,0.05);lastTime=now;
+  frameCount++;if(now-lastFpsT>=1000){$('#fpsD').textContent=frameCount+' FPS';frameCount=0;lastFpsT=now}
+
+  ambLight.intensity=C.ambient;ptLight.intensity=C.pointInt;
+  const t=now/1000;
+  ptLight.position.x=Math.sin(t*0.7)*4;ptLight.position.z=Math.cos(t*0.7)*4;
+  ptLight2.position.x=Math.cos(t*0.5)*3;ptLight2.position.z=Math.sin(t*0.5)*3;
+
+  if(currentMode==='texture'){
+    if(C.autoRotate&&mesh)mesh.rotation.y+=dt*0.5;
+    applyPhys(dt);
+  }else{
+    entityMeshes.forEach((m,i)=>{
+      m.rotation.y+=dt*0.3;m.rotation.x+=dt*0.1*(i%3===0?1:0);
+      if(m.userData.wireClone){m.userData.wireClone.rotation.copy(m.rotation)}
+      const ent=m.userData;
+      m.position.y=ent.pos[1]+Math.sin(t*1.5+i*0.7)*0.08;
+      if(m.userData.wireClone)m.userData.wireClone.position.copy(m.position);
+    });
+    entityLinks.forEach(lk=>{
+      const pts=lk.line.geometry.attributes.position.array;
+      pts[0]=lk.from.position.x;pts[1]=lk.from.position.y;pts[2]=lk.from.position.z;
+      pts[3]=lk.to.position.x;pts[4]=lk.to.position.y;pts[5]=lk.to.position.z;
+      lk.line.geometry.attributes.position.needsUpdate=true;
+      lk.line.material.opacity=0.2+0.15*Math.sin(t*3);
+    });
+  }
+  renderer.render(scene,camera);
+}
+
+function renderOnce(){if(!animating)renderer.render(scene,camera)}
+
+initThree();loadDefaultImage();
+setInterval(renderOnce,100);
+</script>
+</body>
+</html>
