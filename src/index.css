@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+:root {
+  font-family: "Noto Sans SC", "Source Han Sans SC", "PingFang SC", sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer base {
+  body {
+    @apply bg-ink-900 text-loess-100;
+  }
+
+  ::selection {
+    @apply bg-vermilion-700/40 text-loess-50;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-ink-800;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-loess-700 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-loess-600;
+  }
+}
+
+@layer components {
+  .paper-texture {
+    background-image:
+      radial-gradient(ellipse at 20% 50%, rgba(196,162,101,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(139,37,0,0.04) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 80%, rgba(45,90,39,0.03) 0%, transparent 50%);
+  }
+
+  .noise-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .node-glow {
+    box-shadow: 0 0 12px rgba(196,162,101,0.2), 0 0 24px rgba(139,37,0,0.1);
+  }
+
+  .node-glow-active {
+    box-shadow: 0 0 16px rgba(196,162,101,0.4), 0 0 32px rgba(139,37,0,0.2);
+  }
+
+  .ink-border {
+    border-image: linear-gradient(135deg, rgba(196,162,101,0.6), rgba(139,37,0,0.4), rgba(45,90,39,0.3)) 1;
+  }
+
+  .ancient-divider {
+    @apply h-px w-full;
+    background: linear-gradient(90deg, transparent, rgba(196,162,101,0.4), rgba(139,37,0,0.3), rgba(196,162,101,0.4), transparent);
+  }
+
+  .markdown-preview h1 {
+    @apply text-2xl font-serif font-bold text-loess-200 mb-4 mt-6;
+  }
+  .markdown-preview h2 {
+    @apply text-xl font-serif font-semibold text-loess-300 mb-3 mt-5;
+  }
+  .markdown-preview h3 {
+    @apply text-lg font-serif font-medium text-loess-400 mb-2 mt-4;
+  }
+  .markdown-preview p {
+    @apply text-loess-200 leading-relaxed mb-3;
+  }
+  .markdown-preview strong {
+    @apply text-vermilion-400 font-semibold;
+  }
+  .markdown-preview em {
+    @apply text-loess-300 italic;
+  }
+  .markdown-preview blockquote {
+    @apply border-l-2 border-vermilion-700 pl-4 my-3 text-loess-300 italic;
+  }
+  .markdown-preview code {
+    @apply bg-ink-700 text-vermilion-300 px-1.5 py-0.5 rounded text-sm font-mono;
+  }
+  .markdown-preview ul {
+    @apply list-disc list-inside mb-3 space-y-1;
+  }
+  .markdown-preview ol {
+    @apply list-decimal list-inside mb-3 space-y-1;
+  }
+  .markdown-preview li {
+    @apply text-loess-200;
+  }
+  .markdown-preview table {
+    @apply w-full border-collapse my-4;
+  }
+  .markdown-preview th {
+    @apply bg-ink-700 text-loess-200 px-3 py-2 text-left font-serif border border-ink-600;
+  }
+  .markdown-preview td {
+    @apply px-3 py-2 border border-ink-600 text-loess-300;
+  }
+  .markdown-preview hr {
+    @apply ancient-divider my-6;
+  }
+}
