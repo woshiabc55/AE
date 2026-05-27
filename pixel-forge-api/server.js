@@ -3,6 +3,10 @@ const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
+const AssetManager = require('./lib/AssetManager');
+const SceneManager = require('./lib/SceneManager');
+const EffectRegistry = require('./lib/EffectRegistry');
+const { DocPlanner, SelectDraft } = require('./lib/DocPlanner');
 
 const app = express();
 const PORT = 4000;
@@ -15,6 +19,13 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
+const senikAssets = new AssetManager(SENIK_DIR);
+const projectAssets = new AssetManager(PROJECTS_DIR);
+const tsAssets = new AssetManager(TS_DIR);
+const sceneManager = new SceneManager(SENIK_DIR);
+const effectRegistry = new EffectRegistry(SENIK_DIR);
+const docPlanner = new DocPlanner(SENIK_DIR);
+
 const upload = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
@@ -22,304 +33,121 @@ const upload = multer({
       if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
       cb(null, dir);
     },
-    filename: (req, file, cb) => {
-      cb(null, file.originalname);
-    }
+    filename: (req, file, cb) => cb(null, file.originalname)
   })
 });
-
-function safePath(base, rel) {
-  const resolved = path.resolve(base, rel);
-  if (!resolved.startsWith(path.resolve(base))) return null;
-  return resolved;
-}
 
 app.get('/api/status', (req, res) => {
   res.json({
     status: 'ok',
     service: 'pixel-forge-api',
     version: '1.0.0',
-    endpoints: [
-      'GET  /api/status',
-      'GET  /api/senik/tree',
-      'GET  /api/senik/list?dir=',
-      'GET  /api/senik/read?path=',
-      'POST /api/senik/write',
-      'POST /api/senik/mkdir',
-      'DELETE /api/senik/delete?path=',
-      'POST /api/senik/upload',
-      'GET  /api/projects/tree',
-      'GET  /api/projects/read?path=',
-      'POST /api/projects/write',
-      'GET  /api/ts/tree',
-      'GET  /api/ts/read?path=',
-      'POST /api/ts/write',
-      'POST /api/render/preview',
-      'GET  /api/senik/preview?path='
-    ]
+    modules: {
+      AssetManager: 'active',
+      SceneManager: 'active',
+      EffectRegistry: `active (${effectRegistry.listAll().total} effects)`,
+      DocPlanner: 'active',
+      SelectDraft: 'active'
+    },
+    stats: {
+      senikFiles: senikAssets.tree('').length,
+      scenes: sceneManager.list().length,
+      effects: effectRegistry.listAll().total,
+      drafts: docPlanner.getStats().total
+    }
   });
 });
 
-function buildTree(dir, prefix = '') {
-  const items = [];
-  try {
-    const entries = fs.readdirSync(dir, { withFileTypes: true });
-    for (const entry of entries) {
-      if (entry.name.startsWith('.') || entry.name === 'node_modules') continue;
-      const fullPath = path.join(dir, entry.name);
-      const relPath = prefix ? `${prefix}/${entry.name}` : entry.name;
-      if (entry.isDirectory()) {
-        items.push({
-          name: entry.name,
-          path: relPath,
-          type: 'directory',
-          children: buildTree(fullPath, relPath)
-        });
-      } else {
-        const stat = fs.statSync(fullPath);
-        const ext = path.extname(entry.name).toLowerCase();
-        items.push({
-          name: entry.name,
-          path: relPath,
-          type: 'file',
-          size: stat.size,
-          modified: stat.mtime.toISOString(),
-          lang: extToLang(ext)
-        });
-      }
-    }
-  } catch (e) {}
-  return items.sort((a, b) => {
-    if (a.type !== b.type) return a.type === 'directory' ? -1 : 1;
-    return a.name.localeCompare(b.name);
-  });
-}
-
-function extToLang(ext) {
-  const map = {
-    '.html': 'HTML', '.htm': 'HTML', '.css': 'CSS', '.js': 'JS',
-    '.ts': 'TS', '.json': 'JSON', '.md': 'MD', '.png': 'IMG',
-    '.jpg': 'IMG', '.jpeg': 'IMG', '.gif': 'IMG', '.svg': 'SVG',
-    '.glb': '3D', '.gltf': '3D', '.obj': '3D',
-    '.yaml': 'YAML', '.yml': 'YAML', '.txt': 'TXT'
-  };
-  return map[ext] || 'FILE';
-}
-
-app.get('/api/senik/tree', (req, res) => {
-  res.json({ root: 'senik', children: buildTree(SENIK_DIR) });
-});
-
-app.get('/api/senik/list', (req, res) => {
-  const dir = req.query.dir || '';
-  const target = safePath(SENIK_DIR, dir);
-  if (!target) return res.status(400).json({ error: 'invalid path' });
-  if (!fs.existsSync(target)) return res.status(404).json({ error: 'not found' });
-  try {
-    const entries = fs.readdirSync(target, { withFileTypes: true });
-    const items = entries
-      .filter(e => !e.name.startsWith('.'))
-      .map(e => {
-        const fullPath = path.join(target, e.name);
-        const isDir = e.isDirectory();
-        const stat = isDir ? null : fs.statSync(fullPath);
-        return {
-          name: e.name,
-          type: isDir ? 'directory' : 'file',
-          size: stat ? stat.size : 0,
-          modified: stat ? stat.mtime.toISOString() : ''
-        };
-      });
-    res.json({ dir, items });
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
-});
-
-app.get('/api/senik/read', (req, res) => {
-  const relPath = req.query.path || '';
-  const target = safePath(SENIK_DIR, relPath);
-  if (!target) return res.status(400).json({ error: 'invalid path' });
-  if (!fs.existsSync(target)) return res.status(404).json({ error: 'not found' });
-  try {
-    const ext = path.extname(target).toLowerCase();
-    const imgExts = ['.png', '.jpg', '.jpeg', '.gif', '.svg'];
-    if (imgExts.includes(ext)) {
-      const data = fs.readFileSync(target);
-      const base64 = data.toString('base64');
-      const mime = ext === '.svg' ? 'image/svg+xml' : `image/${ext.slice(1)}`;
-      res.json({ type: 'binary', mime, base64: `data:${mime};base64,${base64}` });
-    } else {
-      const content = fs.readFileSync(target, 'utf-8');
-      const stat = fs.statSync(target);
-      res.json({
-        type: 'text',
-        content,
-        size: stat.size,
-        modified: stat.mtime.toISOString(),
-        lang: extToLang(ext)
-      });
-    }
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
-});
-
-app.post('/api/senik/write', (req, res) => {
-  const { path: relPath, content } = req.body;
-  if (!relPath) return res.status(400).json({ error: 'path required' });
-  const target = safePath(SENIK_DIR, relPath);
-  if (!target) return res.status(400).json({ error: 'invalid path' });
-  try {
-    const dir = path.dirname(target);
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(target, content, 'utf-8');
-    res.json({ ok: true, path: relPath, size: content.length });
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
-});
-
-app.post('/api/senik/mkdir', (req, res) => {
-  const { path: relPath } = req.body;
-  if (!relPath) return res.status(400).json({ error: 'path required' });
-  const target = safePath(SENIK_DIR, relPath);
-  if (!target) return res.status(400).json({ error: 'invalid path' });
-  try {
-    fs.mkdirSync(target, { recursive: true });
-    res.json({ ok: true, path: relPath });
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
-});
-
-app.delete('/api/senik/delete', (req, res) => {
-  const relPath = req.query.path || '';
-  if (!relPath) return res.status(400).json({ error: 'path required' });
-  const target = safePath(SENIK_DIR, relPath);
-  if (!target) return res.status(400).json({ error: 'invalid path' });
-  if (!fs.existsSync(target)) return res.status(404).json({ error: 'not found' });
-  try {
-    const stat = fs.statSync(target);
-    if (stat.isDirectory()) {
-      fs.rmSync(target, { recursive: true });
-    } else {
-      fs.unlinkSync(target);
-    }
-    res.json({ ok: true, path: relPath });
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
-});
-
+// === Senik File CRUD ===
+app.get('/api/senik/tree', (req, res) => res.json({ root: 'senik', children: senikAssets.tree('') }));
+app.get('/api/senik/list', (req, res) => res.json({ dir: req.query.dir || '', items: senikAssets.list(req.query.dir || '') }));
+app.get('/api/senik/read', (req, res) => { const d = senikAssets.read(req.query.path || ''); d ? res.json(d) : res.status(404).json({ error: 'not found' }); });
+app.post('/api/senik/write', (req, res) => res.json(senikAssets.write(req.body.path, req.body.content)));
+app.post('/api/senik/mkdir', (req, res) => res.json(senikAssets.mkdir(req.body.path)));
+app.delete('/api/senik/delete', (req, res) => res.json(senikAssets.delete(req.query.path || '')));
+app.get('/api/senik/stat', (req, res) => { const s = senikAssets.stat(req.query.path || ''); s ? res.json(s) : res.status(404).json({ error: 'not found' }); });
+app.get('/api/senik/search', (req, res) => res.json({ query: req.query.q || '', results: senikAssets.search(req.query.q || '') }));
+app.post('/api/senik/copy', (req, res) => res.json(senikAssets.copy(req.body.from, req.body.to)));
+app.post('/api/senik/move', (req, res) => res.json(senikAssets.move(req.body.from, req.body.to)));
 app.post('/api/senik/upload', upload.single('file'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'no file' });
-  res.json({
-    ok: true,
-    filename: req.file.originalname,
-    path: `${req.body.directory || 'scenes'}/${req.file.originalname}`,
-    size: req.file.size
-  });
+  res.json({ ok: true, filename: req.file.originalname, path: `${req.body.directory || 'scenes'}/${req.file.originalname}`, size: req.file.size });
 });
-
 app.get('/api/senik/preview', (req, res) => {
-  const relPath = req.query.path || '';
-  const target = safePath(SENIK_DIR, relPath);
+  const target = senikAssets._resolve(req.query.path || '');
   if (!target || !fs.existsSync(target)) return res.status(404).send('not found');
   const ext = path.extname(target).toLowerCase();
   const imgExts = ['.png', '.jpg', '.jpeg', '.gif', '.svg'];
   if (imgExts.includes(ext)) {
-    const mime = ext === '.svg' ? 'image/svg+xml' : `image/${ext.slice(1)}`;
-    res.setHeader('Content-Type', mime);
-    res.sendFile(target);
+    res.setHeader('Content-Type', ext === '.svg' ? 'image/svg+xml' : `image/${ext.slice(1)}`);
   } else {
     res.setHeader('Content-Type', 'text/plain');
-    res.sendFile(target);
   }
+  res.sendFile(target);
 });
 
-app.get('/api/projects/tree', (req, res) => {
-  res.json({ root: 'pixel-forge-modules', children: buildTree(PROJECTS_DIR) });
-});
+// === Scene Management ===
+app.get('/api/scenes', (req, res) => res.json(sceneManager.list()));
+app.get('/api/scenes/:name', (req, res) => { const s = sceneManager.get(req.params.name); s ? res.json(s) : res.status(404).json({ error: 'not found' }); });
+app.post('/api/scenes', (req, res) => res.json(sceneManager.create(req.body)));
+app.put('/api/scenes/:name', (req, res) => res.json(sceneManager.update(req.params.name, req.body)));
+app.delete('/api/scenes/:name', (req, res) => res.json(sceneManager.delete(req.params.name)));
+app.post('/api/scenes/:name/duplicate', (req, res) => res.json(sceneManager.duplicate(req.params.name, req.body.newName || `${req.params.name}-copy.json`)));
+app.post('/api/scenes/import', (req, res) => res.json(sceneManager.importScene(req.body.json)));
+app.get('/api/scenes/:name/export', (req, res) => { const d = sceneManager.exportScene(req.params.name); d ? res.setHeader('Content-Type', 'application/json').send(d) : res.status(404).json({ error: 'not found' }); });
 
-app.get('/api/projects/read', (req, res) => {
-  const relPath = req.query.path || '';
-  const target = safePath(PROJECTS_DIR, relPath);
-  if (!target || !fs.existsSync(target)) return res.status(404).json({ error: 'not found' });
-  try {
-    const content = fs.readFileSync(target, 'utf-8');
-    const stat = fs.statSync(target);
-    res.json({
-      type: 'text',
-      content,
-      size: stat.size,
-      modified: stat.mtime.toISOString(),
-      lang: extToLang(path.extname(target))
-    });
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
-});
+// === Effect Registry ===
+app.get('/api/effects', (req, res) => res.json(effectRegistry.listAll()));
+app.get('/api/effects/:id', (req, res) => { const e = effectRegistry.get(req.params.id); e ? res.json(e) : res.status(404).json({ error: 'not found' }); });
+app.post('/api/effects', (req, res) => res.json(effectRegistry.register(req.body)));
+app.delete('/api/effects/:id', (req, res) => res.json(effectRegistry.unregister(req.params.id)));
+app.get('/api/effects/presets', (req, res) => res.json(effectRegistry.getPresets()));
 
-app.post('/api/projects/write', (req, res) => {
-  const { path: relPath, content } = req.body;
-  if (!relPath) return res.status(400).json({ error: 'path required' });
-  const target = safePath(PROJECTS_DIR, relPath);
-  if (!target) return res.status(400).json({ error: 'invalid path' });
-  try {
-    fs.writeFileSync(target, content, 'utf-8');
-    res.json({ ok: true, path: relPath, size: content.length });
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
+// === Doc Planner + Select Draft ===
+app.get('/api/drafts', (req, res) => res.json(docPlanner.getStats()));
+app.get('/api/drafts/all', (req, res) => res.json(SelectDraft.STATES));
+app.get('/api/drafts/:state', (req, res) => {
+  const states = Object.values(SelectDraft.STATES);
+  if (!states.includes(req.params.state)) return res.status(400).json({ error: `invalid state. valid: ${states.join(',')}` });
+  res.json(docPlanner.selectDraft.listByState(req.params.state));
 });
+app.get('/api/drafts/item/:id', (req, res) => { const d = docPlanner.selectDraft.get(req.params.id); d ? res.json(d) : res.status(404).json({ error: 'not found' }); });
+app.post('/api/drafts', (req, res) => res.json(docPlanner.selectDraft.create(req.body)));
+app.put('/api/drafts/:id', (req, res) => res.json(docPlanner.selectDraft.update(req.params.id, req.body)));
+app.delete('/api/drafts/:id', (req, res) => res.json(docPlanner.selectDraft.delete(req.params.id)));
+app.post('/api/drafts/:id/transition', (req, res) => res.json(docPlanner.selectDraft.transition(req.params.id, req.body.state, req.body.note || '')));
 
-app.get('/api/ts/tree', (req, res) => {
-  res.json({ root: 'pixel-forge-ts', children: buildTree(TS_DIR) });
-});
+app.get('/api/plans', (req, res) => res.json(docPlanner.getPlans()));
+app.post('/api/plans', (req, res) => res.json(docPlanner.createPlan(req.body)));
+app.post('/api/plans/:id/approve', (req, res) => res.json(docPlanner.approve(req.params.id)));
+app.post('/api/plans/:id/publish', (req, res) => res.json(docPlanner.publish(req.params.id)));
+app.post('/api/plans/:id/review', (req, res) => res.json(docPlanner.review(req.params.id)));
+app.post('/api/plans/:id/archive', (req, res) => res.json(docPlanner.archive(req.params.id)));
 
-app.get('/api/ts/read', (req, res) => {
-  const relPath = req.query.path || '';
-  const target = safePath(TS_DIR, relPath);
-  if (!target || !fs.existsSync(target)) return res.status(404).json({ error: 'not found' });
-  try {
-    const content = fs.readFileSync(target, 'utf-8');
-    const stat = fs.statSync(target);
-    res.json({ type: 'text', content, size: stat.size, modified: stat.mtime.toISOString(), lang: extToLang(path.extname(target)) });
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
-});
+app.get('/api/specs/modules', (req, res) => res.json(docPlanner.getModuleSpecs()));
+app.post('/api/specs/modules', (req, res) => res.json(docPlanner.createModuleSpec(req.body)));
+app.get('/api/specs/effects', (req, res) => res.json(docPlanner.getEffectSpecs()));
+app.post('/api/specs/effects', (req, res) => res.json(docPlanner.createEffectSpec(req.body)));
 
-app.post('/api/ts/write', (req, res) => {
-  const { path: relPath, content } = req.body;
-  if (!relPath) return res.status(400).json({ error: 'path required' });
-  const target = safePath(TS_DIR, relPath);
-  if (!target) return res.status(400).json({ error: 'invalid path' });
-  try {
-    fs.writeFileSync(target, content, 'utf-8');
-    res.json({ ok: true, path: relPath, size: content.length });
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
-});
+// === Project Files ===
+app.get('/api/projects/tree', (req, res) => res.json({ root: 'pixel-forge-modules', children: projectAssets.tree('') }));
+app.get('/api/projects/read', (req, res) => { const d = projectAssets.read(req.query.path || ''); d ? res.json(d) : res.status(404).json({ error: 'not found' }); });
+app.post('/api/projects/write', (req, res) => res.json(projectAssets.write(req.body.path, req.body.content)));
+
+app.get('/api/ts/tree', (req, res) => res.json({ root: 'pixel-forge-ts', children: tsAssets.tree('') }));
+app.get('/api/ts/read', (req, res) => { const d = tsAssets.read(req.query.path || ''); d ? res.json(d) : res.status(404).json({ error: 'not found' }); });
+app.post('/api/ts/write', (req, res) => res.json(tsAssets.write(req.body.path, req.body.content)));
 
 app.post('/api/render/preview', (req, res) => {
   const { content, type = 'html' } = req.body;
   if (!content) return res.status(400).json({ error: 'content required' });
-  if (type === 'html') {
-    res.setHeader('Content-Type', 'text/html');
-    res.send(content);
-  } else {
-    res.setHeader('Content-Type', 'text/plain');
-    res.send(content);
-  }
+  res.setHeader('Content-Type', type === 'html' ? 'text/html' : 'text/plain');
+  res.send(content);
 });
 
 app.listen(PORT, () => {
   console.log(`PIXEL FORGE API Server running on http://localhost:${PORT}`);
-  console.log(`Senik content dir: ${SENIK_DIR}`);
-  console.log(`Projects dir: ${PROJECTS_DIR}`);
-  console.log(`TS dir: ${TS_DIR}`);
-  console.log(`API status: http://localhost:${PORT}/api/status`);
+  console.log(`Modules: AssetManager, SceneManager, EffectRegistry, DocPlanner, SelectDraft`);
+  console.log(`Senik: ${SENIK_DIR}`);
+  console.log(`Scenes: ${sceneManager.list().length} | Effects: ${effectRegistry.listAll().total} | Drafts: ${docPlanner.getStats().total}`);
 });

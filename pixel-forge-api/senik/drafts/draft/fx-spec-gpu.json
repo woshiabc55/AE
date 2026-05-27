@@ -1,0 +1,48 @@
+{
+  "id": "fx-spec-gpu",
+  "title": "GPU粒子效果规格",
+  "type": "effect-spec",
+  "state": "draft",
+  "tags": [
+    "effect",
+    "spec"
+  ],
+  "content": {
+    "effectId": "gpu-particles",
+    "name": "GPU粒子",
+    "category": "gpu",
+    "description": "WebGPU Compute Shader驱动的百万级粒子系统",
+    "algorithm": "Compute Shader并行计算粒子位置/速度，Indirect Draw渲染",
+    "params": [
+      {
+        "name": "particleCount",
+        "label": "粒子数",
+        "type": "range",
+        "min": 1000,
+        "max": 1000000,
+        "default": 100000
+      }
+    ],
+    "inputOutput": {
+      "input": "ImageData",
+      "output": "ImageData"
+    },
+    "performance": {
+      "complexity": "O(n)",
+      "notes": ""
+    }
+  },
+  "meta": {
+    "author": "system",
+    "createdAt": "2026-05-27T11:14:53.100Z",
+    "updatedAt": "2026-05-27T11:14:53.100Z",
+    "version": 1,
+    "history": [
+      {
+        "state": "draft",
+        "timestamp": "2026-05-27T11:14:53.100Z",
+        "note": "created"
+      }
+    ]
+  }
+}

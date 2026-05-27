@@ -1,0 +1,59 @@
+{
+  "id": "plan-001",
+  "title": "V8架构规划",
+  "type": "doc-plan",
+  "state": "approved",
+  "tags": [
+    "planning"
+  ],
+  "content": {
+    "objective": "实现GPU加速渲染管线",
+    "scope": [
+      "WebGPU集成",
+      "Compute Shader",
+      "GPU粒子系统"
+    ],
+    "milestones": [
+      {
+        "name": "调研",
+        "status": "pending"
+      },
+      {
+        "name": "原型",
+        "status": "pending"
+      },
+      {
+        "name": "实现",
+        "status": "pending"
+      }
+    ],
+    "deliverables": [],
+    "dependencies": [],
+    "timeline": {},
+    "resources": {}
+  },
+  "meta": {
+    "author": "system",
+    "createdAt": "2026-05-27T11:14:52.652Z",
+    "updatedAt": "2026-05-27T11:15:03.811Z",
+    "version": 3,
+    "history": [
+      {
+        "state": "draft",
+        "timestamp": "2026-05-27T11:14:52.652Z",
+        "note": "created"
+      },
+      {
+        "state": "review",
+        "timestamp": "2026-05-27T11:15:03.597Z",
+        "note": "提交评审"
+      },
+      {
+        "state": "approved",
+        "timestamp": "2026-05-27T11:15:03.811Z",
+        "note": "评审通过"
+      }
+    ]
+  },
+  "_path": "drafts/review/plan-001.json"
+}
