@@ -250,7 +250,7 @@ const fullscreenTab = computed(() => {
 .v-header { height: 48px; display: flex; align-items: center; padding: 0 20px; gap: 16px; border-bottom: 1px solid #1a2a1a; background: #0a0a12; flex-shrink: 0; }
 .v-title { font-family: 'Press Start 2P', monospace; font-size: 10px; color: #ffaa00; letter-spacing: 2px; }
 .v-sub { font-size: 10px; color: #3a5a3a; }
-.v-body { flex: 1; display: overflow: hidden; display: flex; }
+.v-body { flex: 1; overflow: hidden; display: flex; }
 
 .v-timeline { width: 220px; background: #0a0a12; border-right: 1px solid #1a2a1a; overflow-y: auto; padding: 16px 0; flex-shrink: 0; position: relative; }
 .timeline-item { position: relative; padding: 8px 16px 8px 32px; cursor: pointer; transition: background 0.2s; }
