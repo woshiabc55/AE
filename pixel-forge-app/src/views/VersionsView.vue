@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, inject, type Ref } from 'vue'
 import { VERSIONS } from '../core/versions'
 import VersionDetail from '../components/VersionDetail.vue'
+import AgentPanel from '../components/AgentPanel.vue'
 
 interface TabEntry {
   id: string
@@ -13,6 +14,10 @@ interface TabEntry {
 
 const selectedId = ref('v1')
 const rightTab = ref('detail')
+
+const fullscreen = inject<Ref<boolean>>('fullscreen', ref(false))
+const enterFullscreen = inject<() => void>('enterFullscreen', () => {})
+const exitFullscreen = inject<() => void>('exitFullscreen', () => {})
 
 const selected = computed(() => VERSIONS.find(v => v.id === selectedId.value)!)
 
@@ -64,11 +69,13 @@ function onTabDoubleClick(tabId: string) {
   monitorTabId.value = tabId
   requestAnimationFrame(() => {
     slideVisible.value = true
+    enterFullscreen()
   })
 }
 
 function closeSlidePanel() {
   slideVisible.value = false
+  exitFullscreen()
   setTimeout(() => {
     monitorTabId.value = null
   }, 350)
@@ -245,6 +252,14 @@ const monitorTab = computed(() => {
         </div>
       </main>
     </div>
+
+    <AgentPanel
+      :visible="slideVisible && !!monitorTab"
+      :version-path="monitorTab?.path ?? ''"
+      :version-label="monitorTab?.label ?? ''"
+      :version-color="monitorTab?.color ?? '#00ff88'"
+      @close="closeSlidePanel"
+    />
   </div>
 </template>
 

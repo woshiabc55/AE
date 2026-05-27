@@ -1,8 +1,23 @@
 <script setup lang="ts">
+import { ref, provide, readonly } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
 const route = useRoute()
+
+const fullscreen = ref(false)
+
+function enterFullscreen() {
+  fullscreen.value = true
+}
+
+function exitFullscreen() {
+  fullscreen.value = false
+}
+
+provide('fullscreen', readonly(fullscreen))
+provide('enterFullscreen', enterFullscreen)
+provide('exitFullscreen', exitFullscreen)
 
 const navItems = [
   { id: 'home', label: '首页', icon: '⌂' },
@@ -13,8 +28,8 @@ const navItems = [
 </script>
 
 <template>
-  <div class="app-shell">
-    <nav class="app-nav">
+  <div class="app-shell" :class="{ 'app-fullscreen': fullscreen }">
+    <nav class="app-nav" v-show="!fullscreen">
       <span class="nav-logo" @click="router.push({ name: 'home' })">PF</span>
       <div v-for="item in navItems" :key="item.id" class="nav-item" :class="{ active: route.name === item.id }" @click="router.push({ name: item.id })">
         <span class="nav-icon">{{ item.icon }}</span>
@@ -38,8 +53,9 @@ body::after { content: ''; position: fixed; inset: 0; background: radial-gradien
 </style>
 
 <style scoped>
-.app-shell { display: flex; height: 100%; position: relative; z-index: 1; }
-.app-nav { width: 48px; background: #0a0a12; border-right: 1px solid #1a2a1a; display: flex; flex-direction: column; align-items: center; padding: 8px 0; gap: 4px; flex-shrink: 0; }
+.app-shell { display: flex; height: 100%; position: relative; z-index: 1; transition: all 0.3s ease; }
+.app-shell.app-fullscreen .app-main { width: 100%; }
+.app-nav { width: 48px; background: #0a0a12; border-right: 1px solid #1a2a1a; display: flex; flex-direction: column; align-items: center; padding: 8px 0; gap: 4px; flex-shrink: 0; transition: width 0.3s ease, opacity 0.3s ease; }
 .nav-logo { font-family: 'Press Start 2P', monospace; font-size: 8px; color: #7cff6b; cursor: pointer; padding: 8px 0; text-shadow: 0 0 8px rgba(124,255,107,0.4); }
 .nav-item { width: 40px; height: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; border-radius: 3px; transition: all 0.2s; }
 .nav-item:hover { background: rgba(0,255,136,0.05); }
