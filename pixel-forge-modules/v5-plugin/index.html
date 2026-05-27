@@ -659,6 +659,7 @@ class CoreModule {
     this.sourceData = this.offCtx.getImageData(0, 0, size, size);
     this.ctx.drawImage(this.offCanvas, 0, 0);
     this.sourceImage = this.offCanvas;
+    this.bus.emit('source:loaded', { width: size, height: size });
   }
   startAnimation() {
     if (this.animating) return;

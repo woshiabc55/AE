@@ -1704,9 +1704,33 @@ class UIModule {
     };
     img.onerror = () => {
       document.getElementById('load-image-btn').textContent = '加载失败';
-      setTimeout(() => {
+      const c = document.createElement('canvas');
+      c.width = 512; c.height = 512;
+      const cx = c.getContext('2d');
+      const grad = cx.createLinearGradient(0, 0, 512, 512);
+      grad.addColorStop(0, '#1a0030');
+      grad.addColorStop(0.5, '#002040');
+      grad.addColorStop(1, '#003020');
+      cx.fillStyle = grad;
+      cx.fillRect(0, 0, 512, 512);
+      for (let i = 0; i < 200; i++) {
+        const x = Math.random() * 512;
+        const y = Math.random() * 512;
+        const s = Math.random() * 8 + 2;
+        cx.fillStyle = `hsl(${Math.random()*360}, 80%, 60%)`;
+        cx.fillRect(Math.floor(x/4)*4, Math.floor(y/4)*4, s, s);
+      }
+      cx.fillStyle = '#00ff88';
+      cx.font = '16px "Press Start 2P"';
+      cx.textAlign = 'center';
+      cx.fillText('SAMPLE', 256, 240);
+      cx.fillText('IMAGE', 256, 270);
+      const fallback = new Image();
+      fallback.onload = () => {
+        this.bus.emit('image:loaded', fallback);
         document.getElementById('load-image-btn').textContent = '加载图像';
-      }, 2000);
+      };
+      fallback.src = c.toDataURL();
     };
     img.src = url;
   }

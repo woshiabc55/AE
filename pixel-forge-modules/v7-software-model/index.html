@@ -550,8 +550,31 @@ function applyPhys(dt){
 
 function loadDefaultImage(){
   const img=new Image();img.crossOrigin='anonymous';
-  img.onload=()=>{sourceImage=img;$('#uploadZone').classList.add('has-img');$('#uploadZone').innerHTML=`<img src="${img.src}" alt="src"><input type="file" id="fileInput" accept="image/*">`;$('#uploadZone').querySelector('input').addEventListener('change',handleFile);$('#statusInfo').textContent=`图像 ${img.naturalWidth}×${img.naturalHeight}`;if(currentMode==='texture')buildSurface(currentSurface)};
-  img.onerror=()=>{sourceImage=null;if(currentMode==='texture')buildSurface(currentSurface);$('#statusInfo').textContent='使用程序化纹理'};
+  img.onload=()=>{
+    sourceImage=img;
+    const tmpC=document.createElement('canvas');tmpC.width=img.naturalWidth;tmpC.height=img.naturalHeight;tmpC.getContext('2d').drawImage(img,0,0);
+    const dataUrl=tmpC.toDataURL();
+    $('#uploadZone').classList.add('has-img');
+    $('#uploadZone').innerHTML=`<img src="${dataUrl}" alt="src"><input type="file" id="fileInput" accept="image/*">`;
+    $('#uploadZone').querySelector('input').addEventListener('change',handleFile);
+    $('#statusInfo').textContent=`图像 ${img.naturalWidth}×${img.naturalHeight}`;
+    if(currentMode==='texture')buildSurface(currentSurface);
+  };
+  img.onerror=()=>{
+    const c=document.createElement('canvas');c.width=256;c.height=256;
+    const cx=c.getContext('2d');
+    const grd=cx.createLinearGradient(0,0,256,256);
+    grd.addColorStop(0,'#7cff6b');grd.addColorStop(0.5,'#ff3366');grd.addColorStop(1,'#44ddff');
+    cx.fillStyle=grd;cx.fillRect(0,0,256,256);
+    for(let i=0;i<64;i++){cx.fillStyle=`rgba(0,0,0,${Math.random()*0.3})`;cx.fillRect(Math.random()*256,Math.random()*256,8+Math.random()*24,8+Math.random()*24)}
+    sourceImage=c;
+    const dataUrl=c.toDataURL();
+    $('#uploadZone').classList.add('has-img');
+    $('#uploadZone').innerHTML=`<img src="${dataUrl}" alt="src"><input type="file" id="fileInput" accept="image/*">`;
+    $('#uploadZone').querySelector('input').addEventListener('change',handleFile);
+    if(currentMode==='texture')buildSurface(currentSurface);
+    $('#statusInfo').textContent='使用默认渐变纹理';
+  };
   img.src='https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=pixel%20art%20portrait%20of%20a%20cyberpunk%20warrior%20neon%20colors%20detailed%20retro%20game%20character&image_size=square';
 }
 

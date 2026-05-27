@@ -1029,7 +1029,11 @@ function loadDefaultImage() {
     createPixelTexture(img);
     buildSurface(currentSurface);
     $('#uploadZone').classList.add('has-image');
-    $('#uploadZone').innerHTML = `<img src="${img.src}" alt="src"><input type="file" id="fileInput" accept="image/*">`;
+    const tmpC = document.createElement('canvas');
+    tmpC.width = img.naturalWidth; tmpC.height = img.naturalHeight;
+    tmpC.getContext('2d').drawImage(img, 0, 0);
+    const dataUrl = tmpC.toDataURL();
+    $('#uploadZone').innerHTML = `<img src="${dataUrl}" alt="src"><input type="file" id="fileInput" accept="image/*">`;
     $('#uploadZone').querySelector('input').addEventListener('change', handleFile);
     $('#statusInfo').textContent = `图像已加载 ${img.naturalWidth}×${img.naturalHeight}`;
   };
@@ -1050,6 +1054,10 @@ function loadDefaultImage() {
     sourceImage = c;
     createPixelTexture(c);
     buildSurface(currentSurface);
+    const dataUrl = c.toDataURL();
+    $('#uploadZone').classList.add('has-image');
+    $('#uploadZone').innerHTML = `<img src="${dataUrl}" alt="src"><input type="file" id="fileInput" accept="image/*">`;
+    $('#uploadZone').querySelector('input').addEventListener('change', handleFile);
     $('#statusInfo').textContent = '使用默认渐变纹理';
   };
   img.src = 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=pixel%20art%20portrait%20of%20a%20cyberpunk%20warrior%20neon%20colors%20detailed%20retro%20game%20character&image_size=square';

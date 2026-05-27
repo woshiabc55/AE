@@ -797,18 +797,41 @@ const CoreModule = {
     };
     img.onerror = () => {
       overlay.style.display = 'none';
-      this._drawPlaceholder();
+      this._generateFallback();
     };
     img.src = src;
   },
 
-  _drawPlaceholder() {
-    this.ctx.fillStyle = '#0a0a0f';
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.fillStyle = '#303050';
-    this.ctx.font = '12px "Press Start 2P"';
-    this.ctx.textAlign = 'center';
-    this.ctx.fillText('NO IMAGE', this.canvas.width / 2, this.canvas.height / 2);
+  _generateFallback() {
+    const w = 512, h = 512;
+    this.canvas.width = w;
+    this.canvas.height = h;
+    const tmpCanvas = document.createElement('canvas');
+    tmpCanvas.width = w;
+    tmpCanvas.height = h;
+    const tmpCtx = tmpCanvas.getContext('2d');
+    const grad = tmpCtx.createLinearGradient(0, 0, w, h);
+    grad.addColorStop(0, '#1a0030');
+    grad.addColorStop(0.5, '#002040');
+    grad.addColorStop(1, '#003020');
+    tmpCtx.fillStyle = grad;
+    tmpCtx.fillRect(0, 0, w, h);
+    for (let i = 0; i < 200; i++) {
+      const x = Math.random() * w;
+      const y = Math.random() * h;
+      const s = Math.random() * 8 + 2;
+      tmpCtx.fillStyle = `hsl(${Math.random()*360}, 80%, 60%)`;
+      tmpCtx.fillRect(Math.floor(x/4)*4, Math.floor(y/4)*4, s, s);
+    }
+    tmpCtx.fillStyle = '#00ff88';
+    tmpCtx.font = '16px "Press Start 2P"';
+    tmpCtx.textAlign = 'center';
+    tmpCtx.fillText('SAMPLE', w/2, h/2 - 16);
+    tmpCtx.fillText('IMAGE', w/2, h/2 + 16);
+    this.ctx.drawImage(tmpCanvas, 0, 0);
+    this.sourceImage = tmpCanvas;
+    this.sourceData = this.ctx.getImageData(0, 0, w, h);
+    bus.emit('image:loaded', { width: w, height: h });
   },
 
   getSourceData() {

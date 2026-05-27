@@ -1083,6 +1083,7 @@ class CoreModule {
     const reader = new FileReader();
     reader.onload = (ev) => this.loadImage(ev.target.result);
     reader.readAsDataURL(file);
+    e.target.value = '';
   }
 
   processImage() {
