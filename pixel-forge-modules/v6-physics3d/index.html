@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PIXEL FORGE V6 — 3D物理解算</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap');
+
+:root {
+  --bg: #06060c;
+  --bg2: #0d0d18;
+  --fg: #e0ffe0;
+  --fg-dim: #4a6a4a;
+  --accent: #00ff88;
+  --accent2: #ff3366;
+  --accent3: #44ddff;
+  --accent4: #ffaa00;
+  --accent5: #a29bfe;
+  --accent6: #ff6b9d;
+  --card: rgba(14,14,26,0.92);
+  --border: #1e2e1e;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Share Tech Mono', monospace;
+  overflow: hidden;
+  height: 100vh;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+#threeCanvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+}
+
+.ui-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.ui-overlay > * {
+  pointer-events: auto;
+}
+
+.top-bar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: linear-gradient(180deg, rgba(6,6,12,0.9) 0%, transparent 100%);
+}
+
+.top-bar h1 {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 14px;
+  color: var(--accent);
+  text-shadow: 0 0 16px rgba(0,255,136,0.5);
+  letter-spacing: 3px;
+}
+
+.top-bar .version-tag {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: var(--accent6);
+  background: rgba(255,107,157,0.15);
+  border: 1px solid var(--accent6);
+  padding: 4px 8px;
+  border-radius: 2px;
+  letter-spacing: 1px;
+}
+
+.top-right {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.top-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  padding: 6px 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--fg-dim);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 1px;
+}
+
+.top-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.top-btn.active {
+  background: rgba(0,255,136,0.12);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.left-panel {
+  position: absolute;
+  top: 56px;
+  left: 12px;
+  bottom: 12px;
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px;
+  backdrop-filter: blur(12px);
+  position: relative;
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: -1px; right: -1px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent6), var(--accent));
+  border-radius: 4px 4px 0 0;
+}
+
+.panel-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: var(--accent6);
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+  letter-spacing: 2px;
+}
+
+.upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: 3px;
+  padding: 16px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 10px;
+  color: var(--fg-dim);
+}
+
+.upload-zone:hover {
+  border-color: var(--accent6);
+  background: rgba(255,107,157,0.03);
+}
+
+.upload-zone.has-image {
+  padding: 6px;
+  border-style: solid;
+  border-color: var(--accent6);
+}
+
+.upload-zone img {
+  max-width: 100%;
+  max-height: 80px;
+  image-rendering: pixelated;
+  border-radius: 2px;
+}
+
+.upload-zone input { display: none; }
+
+.surface-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.surface-btn {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  padding: 8px 6px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--fg-dim);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.surface-btn:hover {
+  border-color: var(--accent3);
+  color: var(--fg);
+}
+
+.surface-btn.active {
+  background: rgba(68,221,255,0.12);
+  border-color: var(--accent3);
+  color: var(--accent3);
+}
+
+.surface-btn .s-icon {
+  font-size: 16px;
+  display: block;
+  margin-bottom: 3px;
+}
+
+.physics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.physics-btn {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  padding: 8px 6px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--fg-dim);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.physics-btn:hover {
+  border-color: var(--accent4);
+  color: var(--fg);
+}
+
+.physics-btn.active {
+  background: rgba(255,170,0,0.12);
+  border-color: var(--accent4);
+  color: var(--accent4);
+}
+
+.physics-btn .p-icon {
+  font-size: 14px;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.control-group label {
+  display: block;
+  font-size: 9px;
+  color: var(--fg-dim);
+  margin-bottom: 4px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.control-group .val {
+  float: right;
+  color: var(--accent);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  background: var(--accent);
+  border-radius: 2px;
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(0,255,136,0.4);
+}
+
+.btn-row {
+  display: flex;
+  gap: 6px;
+}
+
+.btn {
+  flex: 1;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  padding: 8px 6px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.btn-primary {
+  background: rgba(0,255,136,0.12);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.btn-primary:hover {
+  background: rgba(0,255,136,0.25);
+}
+
+.btn-danger {
+  background: rgba(255,51,102,0.1);
+  color: var(--accent2);
+  border-color: var(--accent2);
+}
+
+.btn-danger:hover {
+  background: rgba(255,51,102,0.2);
+}
+
+.btn-warn {
+  background: rgba(255,170,0,0.1);
+  color: var(--accent4);
+  border-color: var(--accent4);
+}
+
+.btn-warn:hover {
+  background: rgba(255,170,0,0.2);
+}
+
+.right-panel {
+  position: absolute;
+  top: 56px;
+  right: 12px;
+  bottom: 12px;
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.status-bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 16px;
+  background: linear-gradient(0deg, rgba(6,6,12,0.85) 0%, transparent 100%);
+  font-size: 9px;
+  color: var(--fg-dim);
+  pointer-events: none;
+}
+
+.status-bar .fps {
+  color: var(--accent);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+}
+
+.status-bar .verts {
+  color: var(--accent3);
+}
+
+.wireframe-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.toggle-sw {
+  position: relative;
+  width: 32px;
+  height: 16px;
+  background: var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.toggle-sw.on {
+  background: rgba(0,255,136,0.4);
+}
+
+.toggle-sw::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 12px; height: 12px;
+  background: var(--fg-dim);
+  border-radius: 50%;
+  transition: all 0.3s;
+}
+
+.toggle-sw.on::after {
+  left: 18px;
+  background: var(--accent);
+}
+
+.toggle-label {
+  font-size: 9px;
+  color: var(--fg-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.pixel-preview {
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.pixel-preview canvas {
+  width: 100%;
+  image-rendering: pixelated;
+  display: block;
+}
+
+.axis-info {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.axis-tag {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  padding: 3px 6px;
+  border-radius: 2px;
+}
+
+.axis-tag.x { background: rgba(255,80,80,0.15); color: #ff5050; border: 1px solid #ff5050; }
+.axis-tag.y { background: rgba(80,255,80,0.15); color: #50ff50; border: 1px solid #50ff50; }
+.axis-tag.z { background: rgba(80,80,255,0.15); color: #5050ff; border: 1px solid #5050ff; }
+
+.back-link {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: var(--fg-dim);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+
+.back-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+</style>
+</head>
+<body>
+
+<canvas id="threeCanvas"></canvas>
+
+<div class="ui-overlay">
+  <div class="top-bar">
+    <h1>PIXEL FORGE</h1>
+    <a href="../index.html" class="back-link">◁ 总览</a>
+    <div class="top-right">
+      <span class="version-tag">V6 PHYSICS 3D</span>
+      <button class="top-btn" id="btnWireframe">线框</button>
+      <button class="top-btn" id="btnAutoRotate">自转</button>
+      <button class="top-btn" id="btnExport3D">截图</button>
+    </div>
+  </div>
+
+  <div class="left-panel">
+    <div class="panel">
+      <div class="panel-title">◈ 图像源</div>
+      <div class="upload-zone" id="uploadZone">
+        <div>📂 点击上传图像</div>
+        <input type="file" id="fileInput" accept="image/*">
+      </div>
+      <div class="pixel-preview">
+        <canvas id="pixelPreview" width="232" height="80"></canvas>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">◈ 3D 面</div>
+      <div class="surface-grid">
+        <button class="surface-btn active" data-surface="plane"><span class="s-icon">▬</span>平面</button>
+        <button class="surface-btn" data-surface="cube"><span class="s-icon">⬜</span>立方体</button>
+        <button class="surface-btn" data-surface="sphere"><span class="s-icon">◯</span>球体</button>
+        <button class="surface-btn" data-surface="cylinder"><span class="s-icon">▮</span>圆柱</button>
+        <button class="surface-btn" data-surface="torus"><span class="s-icon">◎</span>环面</button>
+        <button class="surface-btn" data-surface="cloth"><span class="s-icon">≋</span>布料</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">◈ 物理效果</div>
+      <div class="physics-grid">
+        <button class="physics-btn active" data-physics="none"><span class="p-icon">·</span>无</button>
+        <button class="physics-btn" data-physics="gravity"><span class="p-icon">↓</span>重力</button>
+        <button class="physics-btn" data-physics="wind"><span class="p-icon">≋</span>风力</button>
+        <button class="physics-btn" data-physics="explode"><span class="p-icon">✦</span>爆炸</button>
+        <button class="physics-btn" data-physics="wave3d"><span class="p-icon">∿</span>3D波</button>
+        <button class="physics-btn" data-physics="spring"><span class="p-icon">⌇</span>弹簧</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">◈ 像素化</div>
+      <div class="controls">
+        <div class="control-group">
+          <label>像素尺寸 <span class="val" id="valPxSize">8</span></label>
+          <input type="range" min="2" max="32" value="8" id="ctrlPxSize">
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">◈ 物理参数</div>
+      <div class="controls" id="physicsParams">
+        <div class="control-group">
+          <label>强度 <span class="val" id="valStrength">1.0</span></label>
+          <input type="range" min="0.1" max="5" step="0.1" value="1.0" id="ctrlStrength">
+        </div>
+        <div class="control-group">
+          <label>阻尼 <span class="val" id="valDamping">0.98</span></label>
+          <input type="range" min="0.8" max="1.0" step="0.005" value="0.98" id="ctrlDamping">
+        </div>
+        <div class="control-group">
+          <label>刚度 <span class="val" id="valStiffness">0.8</span></label>
+          <input type="range" min="0.1" max="1.0" step="0.05" value="0.8" id="ctrlStiffness">
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">◈ 变换</div>
+      <div class="controls">
+        <div class="control-group">
+          <label>旋转X <span class="val" id="valRotX">0</span>°</label>
+          <input type="range" min="-180" max="180" value="0" id="ctrlRotX">
+        </div>
+        <div class="control-group">
+          <label>旋转Y <span class="val" id="valRotY">0</span>°</label>
+          <input type="range" min="-180" max="180" value="0" id="ctrlRotY">
+        </div>
+        <div class="control-group">
+          <label>旋转Z <span class="val" id="valRotZ">0</span>°</label>
+          <input type="range" min="-180" max="180" value="0" id="ctrlRotZ">
+        </div>
+        <div class="control-group">
+          <label>缩放 <span class="val" id="valScale">1.0</span></label>
+          <input type="range" min="0.2" max="3" step="0.1" value="1.0" id="ctrlScale">
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" id="btnPlay">▶ 播放</button>
+      <button class="btn btn-warn" id="btnReset">↺ 重置</button>
+    </div>
+  </div>
+
+  <div class="right-panel">
+    <div class="panel">
+      <div class="panel-title">◈ 显示</div>
+      <div class="wireframe-toggle">
+        <div class="toggle-sw on" id="toggleTexture"></div>
+        <span class="toggle-label">纹理贴图</span>
+      </div>
+      <div class="wireframe-toggle">
+        <div class="toggle-sw" id="toggleWireOverlay"></div>
+        <span class="toggle-label">线框叠加</span>
+      </div>
+      <div class="wireframe-toggle">
+        <div class="toggle-sw" id="toggleNormals"></div>
+        <span class="toggle-label">法线可视化</span>
+      </div>
+      <div class="wireframe-toggle">
+        <div class="toggle-sw on" id="toggleGrid"></div>
+        <span class="toggle-label">地面网格</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">◈ 场景</div>
+      <div class="controls">
+        <div class="control-group">
+          <label>环境光 <span class="val" id="valAmbient">0.4</span></label>
+          <input type="range" min="0" max="1" step="0.05" value="0.4" id="ctrlAmbient">
+        </div>
+        <div class="control-group">
+          <label>点光 <span class="val" id="valPoint">1.0</span></label>
+          <input type="range" min="0" max="3" step="0.1" value="1.0" id="ctrlPoint">
+        </div>
+        <div class="control-group">
+          <label>背景色</label>
+          <div style="display:flex;gap:4px;margin-top:4px">
+            <button class="top-btn" data-bg="#06060c" style="background:#06060c">暗</button>
+            <button class="top-btn" data-bg="#1a1a2e" style="background:#1a1a2e">蓝</button>
+            <button class="top-btn" data-bg="#0d1117" style="background:#0d1117">墨</button>
+            <button class="top-btn" data-bg="#2d1b2e" style="background:#2d1b2e">紫</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">◈ 坐标轴</div>
+      <div class="axis-info">
+        <span class="axis-tag x">X</span>
+        <span class="axis-tag y">Y</span>
+        <span class="axis-tag z">Z</span>
+      </div>
+      <div class="controls">
+        <div class="control-group">
+          <label>细分度 <span class="val" id="valSubdiv">32</span></label>
+          <input type="range" min="4" max="64" step="4" value="32" id="ctrlSubdiv">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="status-bar">
+    <span id="statusInfo">初始化中...</span>
+    <span class="verts" id="vertCount">0 顶点</span>
+    <span class="fps" id="fpsDisplay">0 FPS</span>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+
+let scene, camera, renderer, mesh, wireOverlay, gridHelper, axesHelper;
+let ambientLight, pointLight, pointLight2;
+let sourceImage = null;
+let pixelTexture = null;
+let originalPositions = null;
+let velocities = null;
+let animating = false;
+let animId = null;
+let startTime = 0;
+let frameCount = 0;
+let lastFpsTime = 0;
+let currentSurface = 'plane';
+let currentPhysics = 'none';
+let physicsTime = 0;
+
+const config = {
+  pixelSize: 8,
+  strength: 1.0,
+  damping: 0.98,
+  stiffness: 0.8,
+  rotX: 0, rotY: 0, rotZ: 0,
+  scale: 1.0,
+  showTexture: true,
+  showWireOverlay: false,
+  showNormals: false,
+  showGrid: true,
+  autoRotate: false,
+  ambient: 0.4,
+  pointLightIntensity: 1.0,
+  subdivision: 32,
+  bgColor: '#06060c'
+};
+
+function initThree() {
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(config.bgColor);
+  scene.fog = new THREE.FogExp2(config.bgColor, 0.08);
+
+  camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 100);
+  camera.position.set(0, 1.5, 4);
+  camera.lookAt(0, 0, 0);
+
+  renderer = new THREE.WebGLRenderer({
+    canvas: $('#threeCanvas'),
+    antialias: true,
+    preserveDrawingBuffer: true
+  });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  ambientLight = new THREE.AmbientLight(0xffffff, config.ambient);
+  scene.add(ambientLight);
+
+  pointLight = new THREE.PointLight(0x00ff88, config.pointLightIntensity, 20);
+  pointLight.position.set(3, 4, 3);
+  pointLight.castShadow = true;
+  scene.add(pointLight);
+
+  pointLight2 = new THREE.PointLight(0xff3366, 0.5, 15);
+  pointLight2.position.set(-3, 2, -2);
+  scene.add(pointLight2);
+
+  gridHelper = new THREE.GridHelper(10, 20, 0x1a3a1a, 0x0d1a0d);
+  scene.add(gridHelper);
+
+  axesHelper = new THREE.AxesHelper(1.5);
+  axesHelper.visible = false;
+  scene.add(axesHelper);
+
+  let isDragging = false;
+  let prevMouse = { x: 0, y: 0 };
+  let spherical = { theta: 0, phi: Math.PI / 5, radius: 4 };
+
+  const canvas = $('#threeCanvas');
+  canvas.addEventListener('mousedown', e => {
+    isDragging = true;
+    prevMouse = { x: e.clientX, y: e.clientY };
+  });
+  canvas.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    const dx = e.clientX - prevMouse.x;
+    const dy = e.clientY - prevMouse.y;
+    spherical.theta -= dx * 0.005;
+    spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, spherical.phi - dy * 0.005));
+    prevMouse = { x: e.clientX, y: e.clientY };
+    updateCamera(spherical);
+  });
+  canvas.addEventListener('mouseup', () => isDragging = false);
+  canvas.addEventListener('mouseleave', () => isDragging = false);
+  canvas.addEventListener('wheel', e => {
+    spherical.radius = Math.max(1.5, Math.min(12, spherical.radius + e.deltaY * 0.005));
+    updateCamera(spherical);
+  });
+
+  canvas.addEventListener('touchstart', e => {
+    if (e.touches.length === 1) {
+      isDragging = true;
+      prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+  });
+  canvas.addEventListener('touchmove', e => {
+    if (!isDragging || e.touches.length !== 1) return;
+    e.preventDefault();
+    const dx = e.touches[0].clientX - prevMouse.x;
+    const dy = e.touches[0].clientY - prevMouse.y;
+    spherical.theta -= dx * 0.005;
+    spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, spherical.phi - dy * 0.005));
+    prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    updateCamera(spherical);
+  }, { passive: false });
+  canvas.addEventListener('touchend', () => isDragging = false);
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+}
+
+function updateCamera(s) {
+  camera.position.x = s.radius * Math.sin(s.phi) * Math.sin(s.theta);
+  camera.position.y = s.radius * Math.cos(s.phi);
+  camera.position.z = s.radius * Math.sin(s.phi) * Math.cos(s.theta);
+  camera.lookAt(0, 0, 0);
+}
+
+function createPixelTexture(img) {
+  const pCanvas = document.createElement('canvas');
+  const pCtx = pCanvas.getContext('2d');
+  const w = img.naturalWidth || img.width;
+  const h = img.naturalHeight || img.height;
+  pCanvas.width = w;
+  pCanvas.height = h;
+  pCtx.drawImage(img, 0, 0, w, h);
+
+  const imgData = pCtx.getImageData(0, 0, w, h);
+  const data = imgData.data;
+  const ps = config.pixelSize;
+
+  pCtx.clearRect(0, 0, w, h);
+  for (let y = 0; y < h; y += ps) {
+    for (let x = 0; x < w; x += ps) {
+      let r = 0, g = 0, b = 0, count = 0;
+      for (let dy = 0; dy < ps && y + dy < h; dy++) {
+        for (let dx = 0; dx < ps && x + dx < w; dx++) {
+          const idx = ((y + dy) * w + (x + dx)) * 4;
+          r += data[idx]; g += data[idx+1]; b += data[idx+2]; count++;
+        }
+      }
+      r = Math.round(r/count); g = Math.round(g/count); b = Math.round(b/count);
+      pCtx.fillStyle = `rgb(${r},${g},${b})`;
+      pCtx.fillRect(x, y, ps, ps);
+    }
+  }
+
+  const previewCtx = $('#pixelPreview').getContext('2d');
+  previewCtx.clearRect(0, 0, 232, 80);
+  previewCtx.drawImage(pCanvas, 0, 0, 232, 80);
+
+  if (pixelTexture) pixelTexture.dispose();
+  pixelTexture = new THREE.CanvasTexture(pCanvas);
+  pixelTexture.magFilter = THREE.NearestFilter;
+  pixelTexture.minFilter = THREE.NearestFilter;
+  pixelTexture.wrapS = THREE.ClampToEdgeWrapping;
+  pixelTexture.wrapT = THREE.ClampToEdgeWrapping;
+  return pixelTexture;
+}
+
+function buildSurface(type) {
+  if (mesh) { scene.remove(mesh); mesh.geometry.dispose(); mesh.material.dispose(); }
+  if (wireOverlay) { scene.remove(wireOverlay); wireOverlay.geometry.dispose(); wireOverlay.material.dispose(); }
+
+  let geometry;
+  const seg = config.subdivision;
+
+  switch(type) {
+    case 'plane':
+      geometry = new THREE.PlaneGeometry(3, 3, seg, seg);
+      break;
+    case 'cube':
+      geometry = new THREE.BoxGeometry(2, 2, 2, Math.max(1,Math.floor(seg/4)), Math.max(1,Math.floor(seg/4)), Math.max(1,Math.floor(seg/4)));
+      break;
+    case 'sphere':
+      geometry = new THREE.SphereGeometry(1.5, seg, Math.max(4, Math.floor(seg/2)));
+      break;
+    case 'cylinder':
+      geometry = new THREE.CylinderGeometry(1, 1, 2.5, seg, Math.max(4, Math.floor(seg/2)), true);
+      break;
+    case 'torus':
+      geometry = new THREE.TorusGeometry(1.2, 0.5, Math.max(4, Math.floor(seg/2)), seg);
+      break;
+    case 'cloth':
+      geometry = new THREE.PlaneGeometry(3, 3, seg, seg);
+      break;
+    default:
+      geometry = new THREE.PlaneGeometry(3, 3, seg, seg);
+  }
+
+  const material = new THREE.MeshPhongMaterial({
+    map: pixelTexture,
+    side: THREE.DoubleSide,
+    shininess: 30,
+    specular: new THREE.Color(0x222222),
+    wireframe: !config.showTexture
+  });
+
+  mesh = new THREE.Mesh(geometry, material);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  scene.add(mesh);
+
+  const wireMat = new THREE.MeshBasicMaterial({
+    color: 0x00ff88,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.15,
+    side: THREE.DoubleSide
+  });
+  wireOverlay = new THREE.Mesh(geometry.clone(), wireMat);
+  wireOverlay.visible = config.showWireOverlay;
+  scene.add(wireOverlay);
+
+  originalPositions = new Float32Array(geometry.attributes.position.array);
+  velocities = new Float32Array(geometry.attributes.position.count * 3);
+
+  $('#vertCount').textContent = geometry.attributes.position.count + ' 顶点';
+  applyTransform();
+}
+
+function applyTransform() {
+  if (!mesh) return;
+  mesh.rotation.set(
+    config.rotX * Math.PI / 180,
+    config.rotY * Math.PI / 180,
+    config.rotZ * Math.PI / 180
+  );
+  mesh.scale.setScalar(config.scale);
+  if (wireOverlay) {
+    wireOverlay.rotation.copy(mesh.rotation);
+    wireOverlay.scale.copy(mesh.scale);
+  }
+}
+
+function resetPhysics() {
+  if (!mesh || !originalPositions) return;
+  const pos = mesh.geometry.attributes.position.array;
+  for (let i = 0; i < pos.length; i++) {
+    pos[i] = originalPositions[i];
+  }
+  velocities.fill(0);
+  mesh.geometry.attributes.position.needsUpdate = true;
+  mesh.geometry.computeVertexNormals();
+  if (wireOverlay) {
+    const wPos = wireOverlay.geometry.attributes.position.array;
+    for (let i = 0; i < wPos.length; i++) wPos[i] = originalPositions[i];
+    wireOverlay.geometry.attributes.position.needsUpdate = true;
+    wireOverlay.geometry.computeVertexNormals();
+  }
+  physicsTime = 0;
+}
+
+function applyPhysics(dt) {
+  if (!mesh || !originalPositions || currentPhysics === 'none') return;
+
+  const pos = mesh.geometry.attributes.position.array;
+  const count = mesh.geometry.attributes.position.count;
+  const str = config.strength;
+  const damp = config.damping;
+  const stiff = config.stiffness;
+  physicsTime += dt;
+
+  for (let i = 0; i < count; i++) {
+    const i3 = i * 3;
+    const ox = originalPositions[i3];
+    const oy = originalPositions[i3 + 1];
+    const oz = originalPositions[i3 + 2];
+
+    let fx = 0, fy = 0, fz = 0;
+
+    switch(currentPhysics) {
+      case 'gravity': {
+        fy -= 2.0 * str;
+        const restoreY = (oy - pos[i3+1]) * stiff * 0.5;
+        fy += restoreY;
+        const restoreX = (ox - pos[i3]) * stiff * 0.3;
+        const restoreZ = (oz - pos[i3+2]) * stiff * 0.3;
+        fx += restoreX; fz += restoreZ;
+        break;
+      }
+      case 'wind': {
+        fx += Math.sin(physicsTime * 2 + oy * 3) * 1.5 * str;
+        fz += Math.cos(physicsTime * 1.5 + ox * 2) * 0.8 * str;
+        const rx = (ox - pos[i3]) * stiff;
+        const ry = (oy - pos[i3+1]) * stiff;
+        const rz = (oz - pos[i3+2]) * stiff;
+        fx += rx; fy += ry; fz += rz;
+        break;
+      }
+      case 'explode': {
+        const cx = 0, cy = 0, cz = 0;
+        const dx = ox - cx, dy = oy - cy, dz = oz - cz;
+        const dist = Math.sqrt(dx*dx + dy*dy + dz*dz) + 0.01;
+        const force = str * 3 / (dist * 0.5 + 0.5);
+        const decay = Math.max(0, 1 - physicsTime * 0.3);
+        fx += dx / dist * force * decay;
+        fy += dy / dist * force * decay;
+        fz += dz / dist * force * decay;
+        if (physicsTime > 3) {
+          const rx = (ox - pos[i3]) * stiff * 0.5;
+          const ry = (oy - pos[i3+1]) * stiff * 0.5;
+          const rz = (oz - pos[i3+2]) * stiff * 0.5;
+          fx += rx; fy += ry; fz += rz;
+        }
+        break;
+      }
+      case 'wave3d': {
+        const waveX = Math.sin(ox * 3 + physicsTime * 2) * str * 0.3;
+        const waveY = Math.sin(oy * 3 + physicsTime * 2.5) * str * 0.3;
+        const waveZ = Math.cos(oz * 3 + physicsTime * 1.8) * str * 0.3;
+        pos[i3] = ox + waveX;
+        pos[i3+1] = oy + waveY;
+        pos[i3+2] = oz + waveZ;
+        continue;
+      }
+      case 'spring': {
+        const rx = (ox - pos[i3]) * stiff * 3;
+        const ry = (oy - pos[i3+1]) * stiff * 3;
+        const rz = (oz - pos[i3+2]) * stiff * 3;
+        fx += rx; fy += ry; fz += rz;
+        fx += Math.sin(physicsTime * 4 + i * 0.1) * str * 0.5;
+        fy += Math.cos(physicsTime * 3 + i * 0.15) * str * 0.5;
+        fz += Math.sin(physicsTime * 5 + i * 0.05) * str * 0.3;
+        break;
+      }
+    }
+
+    velocities[i3] = (velocities[i3] + fx * dt) * damp;
+    velocities[i3+1] = (velocities[i3+1] + fy * dt) * damp;
+    velocities[i3+2] = (velocities[i3+2] + fz * dt) * damp;
+
+    pos[i3] += velocities[i3] * dt;
+    pos[i3+1] += velocities[i3+1] * dt;
+    pos[i3+2] += velocities[i3+2] * dt;
+  }
+
+  mesh.geometry.attributes.position.needsUpdate = true;
+  mesh.geometry.computeVertexNormals();
+
+  if (wireOverlay && wireOverlay.visible) {
+    const wPos = wireOverlay.geometry.attributes.position.array;
+    for (let i = 0; i < pos.length; i++) wPos[i] = pos[i];
+    wireOverlay.geometry.attributes.position.needsUpdate = true;
+    wireOverlay.geometry.computeVertexNormals();
+  }
+}
+
+function loadDefaultImage() {
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    sourceImage = img;
+    createPixelTexture(img);
+    buildSurface(currentSurface);
+    $('#uploadZone').classList.add('has-image');
+    $('#uploadZone').innerHTML = `<img src="${img.src}" alt="src"><input type="file" id="fileInput" accept="image/*">`;
+    $('#uploadZone').querySelector('input').addEventListener('change', handleFile);
+    $('#statusInfo').textContent = `图像已加载 ${img.naturalWidth}×${img.naturalHeight}`;
+  };
+  img.onerror = () => {
+    const c = document.createElement('canvas');
+    c.width = 256; c.height = 256;
+    const cx = c.getContext('2d');
+    const grd = cx.createLinearGradient(0,0,256,256);
+    grd.addColorStop(0, '#00ff88');
+    grd.addColorStop(0.5, '#ff3366');
+    grd.addColorStop(1, '#44ddff');
+    cx.fillStyle = grd;
+    cx.fillRect(0,0,256,256);
+    for (let i = 0; i < 64; i++) {
+      cx.fillStyle = `rgba(0,0,0,${Math.random()*0.3})`;
+      cx.fillRect(Math.random()*256, Math.random()*256, 8+Math.random()*24, 8+Math.random()*24);
+    }
+    sourceImage = c;
+    createPixelTexture(c);
+    buildSurface(currentSurface);
+    $('#statusInfo').textContent = '使用默认渐变纹理';
+  };
+  img.src = 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=pixel%20art%20portrait%20of%20a%20cyberpunk%20warrior%20neon%20colors%20detailed%20retro%20game%20character&image_size=square';
+}
+
+const uploadZone = $('#uploadZone');
+uploadZone.addEventListener('click', () => {
+  const inp = uploadZone.querySelector('input');
+  if (inp) inp.click();
+});
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); });
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault();
+  if (e.dataTransfer.files.length) handleFileObj(e.dataTransfer.files[0]);
+});
+
+function handleFile(e) {
+  if (e.target.files.length) handleFileObj(e.target.files[0]);
+}
+
+function handleFileObj(file) {
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      sourceImage = img;
+      createPixelTexture(img);
+      buildSurface(currentSurface);
+      uploadZone.classList.add('has-image');
+      uploadZone.innerHTML = `<img src="${ev.target.result}" alt="src"><input type="file" id="fileInput" accept="image/*">`;
+      uploadZone.querySelector('input').addEventListener('change', handleFile);
+      $('#statusInfo').textContent = `图像已加载 ${img.naturalWidth}×${img.naturalHeight}`;
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+$$('.surface-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    $$('.surface-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentSurface = btn.dataset.surface;
+    resetPhysics();
+    buildSurface(currentSurface);
+  });
+});
+
+$$('.physics-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    $$('.physics-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentPhysics = btn.dataset.physics;
+    resetPhysics();
+  });
+});
+
+const bindSlider = (id, key, fmt) => {
+  const el = $(`#${id}`);
+  if (!el) return;
+  el.addEventListener('input', () => {
+    config[key] = parseFloat(el.value);
+    const valEl = $(`#val${id.replace('ctrl','')}`);
+    if (valEl) valEl.textContent = fmt ? fmt(config[key]) : config[key];
+    if (['rotX','rotY','rotZ','scale'].includes(key)) applyTransform();
+    if (key === 'pixelSize' && sourceImage) {
+      createPixelTexture(sourceImage);
+      if (mesh && mesh.material.map) {
+        mesh.material.map = pixelTexture;
+        mesh.material.needsUpdate = true;
+      }
+    }
+    if (key === 'subdivision') {
+      resetPhysics();
+      buildSurface(currentSurface);
+    }
+  });
+};
+
+bindSlider('ctrlPxSize', 'pixelSize');
+bindSlider('ctrlStrength', 'strength', v => v.toFixed(1));
+bindSlider('ctrlDamping', 'damping', v => v.toFixed(3));
+bindSlider('ctrlStiffness', 'stiffness', v => v.toFixed(2));
+bindSlider('ctrlRotX', 'rotX');
+bindSlider('ctrlRotY', 'rotY');
+bindSlider('ctrlRotZ', 'rotZ');
+bindSlider('ctrlScale', 'scale', v => v.toFixed(1));
+bindSlider('ctrlAmbient', 'ambient', v => v.toFixed(2));
+bindSlider('ctrlPoint', 'pointLightIntensity', v => v.toFixed(1));
+bindSlider('ctrlSubdiv', 'subdivision');
+
+const bindToggle = (id, key, cb) => {
+  const el = $(`#${id}`);
+  if (!el) return;
+  el.addEventListener('click', () => {
+    config[key] = !config[key];
+    el.classList.toggle('on');
+    if (cb) cb();
+  });
+};
+
+bindToggle('toggleTexture', 'showTexture', () => {
+  if (mesh) {
+    mesh.material.wireframe = !config.showTexture;
+    mesh.material.needsUpdate = true;
+  }
+});
+
+bindToggle('toggleWireOverlay', 'showWireOverlay', () => {
+  if (wireOverlay) wireOverlay.visible = config.showWireOverlay;
+});
+
+bindToggle('toggleNormals', 'showNormals', () => {
+  if (mesh) {
+    if (config.showNormals) {
+      mesh.material.normalMap = null;
+      mesh.material.flatShading = true;
+    } else {
+      mesh.material.flatShading = false;
+    }
+    mesh.material.needsUpdate = true;
+    mesh.geometry.computeVertexNormals();
+  }
+});
+
+bindToggle('toggleGrid', 'showGrid', () => {
+  if (gridHelper) gridHelper.visible = config.showGrid;
+});
+
+$('#btnWireframe').addEventListener('click', function() {
+  this.classList.toggle('active');
+  if (mesh) {
+    mesh.material.wireframe = this.classList.contains('active');
+    mesh.material.needsUpdate = true;
+  }
+});
+
+$('#btnAutoRotate').addEventListener('click', function() {
+  config.autoRotate = !config.autoRotate;
+  this.classList.toggle('active', config.autoRotate);
+});
+
+$('#btnExport3D').addEventListener('click', () => {
+  renderer.render(scene, camera);
+  const link = document.createElement('a');
+  link.download = `pixelforge_3d_${Date.now()}.png`;
+  link.href = renderer.domElement.toDataURL('image/png');
+  link.click();
+});
+
+$$('[data-bg]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    config.bgColor = btn.dataset.bg;
+    scene.background.set(config.bgColor);
+    scene.fog.color.set(config.bgColor);
+  });
+});
+
+$('#btnPlay').addEventListener('click', () => {
+  if (animating) {
+    animating = false;
+    $('#btnPlay').textContent = '▶ 播放';
+    $('#btnPlay').classList.remove('btn-danger');
+    $('#btnPlay').classList.add('btn-primary');
+  } else {
+    animating = true;
+    startTime = performance.now();
+    frameCount = 0;
+    lastFpsTime = startTime;
+    $('#btnPlay').textContent = '⏸ 暂停';
+    $('#btnPlay').classList.remove('btn-primary');
+    $('#btnPlay').classList.add('btn-danger');
+    animate();
+  }
+});
+
+$('#btnReset').addEventListener('click', () => {
+  resetPhysics();
+  applyTransform();
+  if (animating) {
+    animating = false;
+    $('#btnPlay').textContent = '▶ 播放';
+    $('#btnPlay').classList.remove('btn-danger');
+    $('#btnPlay').classList.add('btn-primary');
+  }
+});
+
+let lastTime = 0;
+
+function animate(now) {
+  if (!animating) return;
+  animId = requestAnimationFrame(animate);
+
+  const dt = Math.min((now - (lastTime || now)) / 1000, 0.05);
+  lastTime = now;
+
+  frameCount++;
+  if (now - lastFpsTime >= 1000) {
+    $('#fpsDisplay').textContent = frameCount + ' FPS';
+    frameCount = 0;
+    lastFpsTime = now;
+  }
+
+  if (config.autoRotate && mesh) {
+    mesh.rotation.y += dt * 0.5;
+    if (wireOverlay) wireOverlay.rotation.y = mesh.rotation.y;
+  }
+
+  ambientLight.intensity = config.ambient;
+  pointLight.intensity = config.pointLightIntensity;
+
+  applyPhysics(dt);
+
+  const t = now / 1000;
+  pointLight.position.x = Math.sin(t * 0.7) * 4;
+  pointLight.position.z = Math.cos(t * 0.7) * 4;
+  pointLight2.position.x = Math.cos(t * 0.5) * 3;
+  pointLight2.position.z = Math.sin(t * 0.5) * 3;
+
+  renderer.render(scene, camera);
+}
+
+function renderOnce() {
+  if (!animating) {
+    renderer.render(scene, camera);
+  }
+}
+
+initThree();
+loadDefaultImage();
+
+setInterval(() => {
+  if (!animating) renderOnce();
+}, 100);
+</script>
+</body>
+</html>

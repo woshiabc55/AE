@@ -17,6 +17,7 @@
   --accent3: #44ddff;
   --accent4: #ffaa00;
   --accent5: #a29bfe;
+  --accent6: #ff6b9d;
   --card: rgba(16,16,30,0.85);
   --border: #1e2e1e;
 }
@@ -261,12 +262,14 @@ header .tagline {
 .version-card.v3::before { background: var(--accent2); }
 .version-card.v4::before { background: var(--accent3); }
 .version-card.v5::before { background: var(--accent5); }
+.version-card.v6::before { background: var(--accent6); }
 
 .version-card.v1:hover { border-color: var(--accent); box-shadow: 0 8px 32px rgba(0,255,136,0.15); }
 .version-card.v2:hover { border-color: var(--accent4); box-shadow: 0 8px 32px rgba(255,170,0,0.15); }
 .version-card.v3:hover { border-color: var(--accent2); box-shadow: 0 8px 32px rgba(255,51,102,0.15); }
 .version-card.v4:hover { border-color: var(--accent3); box-shadow: 0 8px 32px rgba(68,221,255,0.15); }
 .version-card.v5:hover { border-color: var(--accent5); box-shadow: 0 8px 32px rgba(162,155,254,0.15); }
+.version-card.v6:hover { border-color: var(--accent6); box-shadow: 0 8px 32px rgba(255,107,157,0.15); }
 
 .vc-header {
   display: flex;
@@ -288,6 +291,7 @@ header .tagline {
 .v3 .vc-badge { background: rgba(255,51,102,0.15); color: var(--accent2); border: 1px solid var(--accent2); }
 .v4 .vc-badge { background: rgba(68,221,255,0.15); color: var(--accent3); border: 1px solid var(--accent3); }
 .v5 .vc-badge { background: rgba(162,155,254,0.15); color: var(--accent5); border: 1px solid var(--accent5); }
+.v6 .vc-badge { background: rgba(255,107,157,0.15); color: var(--accent6); border: 1px solid var(--accent6); }
 
 .vc-name {
   font-family: 'Press Start 2P', monospace;
@@ -327,6 +331,7 @@ header .tagline {
 .v3 .vc-feat::before { color: var(--accent2); }
 .v4 .vc-feat::before { color: var(--accent3); }
 .v5 .vc-feat::before { color: var(--accent5); }
+.v6 .vc-feat::before { color: var(--accent6); }
 
 .vc-effects {
   display: flex;
@@ -372,6 +377,7 @@ header .tagline {
 .v3 .vc-launch:hover { background: rgba(255,51,102,0.15); color: var(--accent2); border-color: var(--accent2); }
 .v4 .vc-launch:hover { background: rgba(68,221,255,0.15); color: var(--accent3); border-color: var(--accent3); }
 .v5 .vc-launch:hover { background: rgba(162,155,254,0.15); color: var(--accent5); border-color: var(--accent5); }
+.v6 .vc-launch:hover { background: rgba(255,107,157,0.15); color: var(--accent6); border-color: var(--accent6); }
 
 .evolution {
   background: var(--card);
@@ -387,7 +393,7 @@ header .tagline {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 2px;
-  background: linear-gradient(90deg, var(--accent), var(--accent4), var(--accent2), var(--accent3), var(--accent5));
+  background: linear-gradient(90deg, var(--accent), var(--accent4), var(--accent2), var(--accent3), var(--accent5), var(--accent6));
 }
 
 .evo-timeline {
@@ -420,6 +426,7 @@ header .tagline {
 .evo-step:nth-child(3) .evo-dot { background: var(--accent2); box-shadow: 0 0 12px rgba(255,51,102,0.5); }
 .evo-step:nth-child(4) .evo-dot { background: var(--accent3); box-shadow: 0 0 12px rgba(68,221,255,0.5); }
 .evo-step:nth-child(5) .evo-dot { background: var(--accent5); box-shadow: 0 0 12px rgba(162,155,254,0.5); }
+.evo-step:nth-child(6) .evo-dot { background: var(--accent6); box-shadow: 0 0 12px rgba(255,107,157,0.5); }
 
 .evo-step:not(:last-child)::after {
   content: '';
@@ -444,6 +451,7 @@ header .tagline {
 .evo-step:nth-child(3) .evo-label { color: var(--accent2); }
 .evo-step:nth-child(4) .evo-label { color: var(--accent3); }
 .evo-step:nth-child(5) .evo-label { color: var(--accent5); }
+.evo-step:nth-child(6) .evo-label { color: var(--accent6); }
 
 .evo-detail {
   font-size: 10px;
@@ -520,7 +528,7 @@ footer {
   <header>
     <h1>PIXEL FORGE</h1>
     <div class="subtitle">像素风图像动画工坊</div>
-    <div class="tagline">模块化架构 · 5版迭代 · 事件驱动通信</div>
+    <div class="tagline">模块化架构 · 6版迭代 · 事件驱动通信 · 3D物理解算</div>
   </header>
 
   <section>
@@ -571,6 +579,11 @@ footer {
           <span class="node-label">Chromatic</span>
           <span class="node-desc">色差分离</span>
         </div>
+        <div class="arch-node">
+          <span class="node-icon">🧊</span>
+          <span class="node-label">Physics3D</span>
+          <span class="node-desc">3D物理解算</span>
+        </div>
       </div>
       <div class="arch-events">
         <div class="event-tag"><span class="ev-name">image:loaded</span> 图像加载</div>
@@ -582,6 +595,8 @@ footer {
         <div class="event-tag"><span class="ev-name">compositor:rendered</span> 合成完成</div>
         <div class="event-tag"><span class="ev-name">modulation:applied</span> 调制应用</div>
         <div class="event-tag"><span class="ev-name">plugin:installed</span> 插件安装</div>
+        <div class="event-tag"><span class="ev-name">physics:applied</span> 物理解算</div>
+        <div class="event-tag"><span class="ev-name">surface:changed</span> 3D面切换</div>
       </div>
     </div>
   </section>
@@ -614,6 +629,11 @@ footer {
           <div class="evo-dot"></div>
           <div class="evo-label">V5</div>
           <div class="evo-detail">插件系统<br>动态注册<br>代码编辑</div>
+        </div>
+        <div class="evo-step">
+          <div class="evo-dot"></div>
+          <div class="evo-label">V6</div>
+          <div class="evo-detail">3D物理解算<br>6种3D面<br>5种物理力</div>
         </div>
       </div>
     </div>
@@ -731,6 +751,29 @@ footer {
         <span class="vc-launch">▶ 启动 V5-PLUGIN</span>
       </a>
 
+      <a class="version-card v6" href="v6-physics3d/index.html">
+        <div class="vc-header">
+          <span class="vc-badge">V6</span>
+          <span class="vc-name">PHYSICS 3D 物理解算</span>
+        </div>
+        <div class="vc-desc">Three.js 3D渲染 + Verlet物理引擎，像素化纹理映射到3D面，实时物理解算与交互。</div>
+        <div class="vc-features">
+          <div class="vc-feat">Three.js WebGL 3D场景渲染</div>
+          <div class="vc-feat">6种3D面: 平面/立方体/球体/圆柱/环面/布料</div>
+          <div class="vc-feat">5种物理力: 重力/风力/爆炸/3D波/弹簧</div>
+          <div class="vc-feat">Verlet积分 + 速度阻尼 + 刚度约束</div>
+          <div class="vc-feat">鼠标拖拽旋转 + 滚轮缩放</div>
+          <div class="vc-feat">线框/纹理/法线/网格多模式显示</div>
+        </div>
+        <div class="vc-effects">
+          <span class="vc-effect-tag">像素化纹理</span>
+          <span class="vc-effect-tag new">3D面绘制</span>
+          <span class="vc-effect-tag new">物理解算</span>
+          <span class="vc-effect-tag new">交互相机</span>
+        </div>
+        <span class="vc-launch">▶ 启动 V6-PHYSICS 3D</span>
+      </a>
+
     </div>
   </section>
 
@@ -744,7 +787,7 @@ footer {
         </div>
         <div class="spec-item">
           <h4>渲染管线</h4>
-          <p>V1单效果 → V2链式管道(ImageData传递) → V3多图层合成(globalCompositeOperation) → V4/V5保持图层架构</p>
+          <p>V1单效果 → V2链式管道(ImageData传递) → V3多图层合成(globalCompositeOperation) → V4/V5保持图层架构 → V6 Three.js WebGL 3D渲染 + Verlet物理引擎</p>
         </div>
         <div class="spec-item">
           <h4>效果接口</h4>
@@ -760,7 +803,7 @@ footer {
         </div>
         <div class="spec-item">
           <h4>图像处理</h4>
-          <p>Canvas 2D API，ImageData像素级操作。像素化=区域均值采样，离子化=粒子物理模拟，波浪纹=行级正弦位移。</p>
+          <p>Canvas 2D API，ImageData像素级操作。像素化=区域均值采样，离子化=粒子物理模拟，波浪纹=行级正弦位移。V6扩展至Three.js 3D面纹理映射 + Verlet积分物理解算。</p>
         </div>
       </div>
     </div>
