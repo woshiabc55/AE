@@ -1,0 +1,102 @@
+{
+  "appId": "com.example.myapp",
+  "productName": "MyApp",
+  "version": "1.0.0",
+  "description": "My Electron Application",
+  "copyright": "Copyright © 2024 MyApp Team",
+  "directories": {
+    "app": "./",
+    "buildResources": "./build",
+    "output": "./release"
+  },
+  "electron": {
+    "version": "28.0.0",
+    "mirror": "https://npmmirror.com/mirrors/electron/"
+  },
+  "compiler": {
+    "entry": "./src/main/index.ts",
+    "outDir": "./dist/compiled",
+    "target": "esbuild",
+    "minify": true,
+    "sourcemap": false,
+    "external": ["better-sqlite3", "sharp"]
+  },
+  "asar": {
+    "enabled": true,
+    "unpack": "*.node",
+    "unpackDir": "native-modules"
+  },
+  "files": [
+    "dist/compiled/**/*",
+    "package.json",
+    "!**/*.map",
+    "!**/*.ts"
+  ],
+  "extraResources": [
+    {
+      "from": "assets/",
+      "to": "assets"
+    }
+  ],
+  "platforms": [
+    {
+      "platform": "win32",
+      "arch": "x64",
+      "installerType": "nsis"
+    },
+    {
+      "platform": "darwin",
+      "arch": "x64",
+      "installerType": "dmg"
+    },
+    {
+      "platform": "darwin",
+      "arch": "arm64",
+      "installerType": "dmg"
+    },
+    {
+      "platform": "linux",
+      "arch": "x64",
+      "installerType": "appimage"
+    }
+  ],
+  "win": {
+    "icon": "icon.ico",
+    "executableName": "MyApp",
+    "requestedExecutionLevel": "asInvoker"
+  },
+  "mac": {
+    "icon": "icon.icns",
+    "category": "public.app-category.utilities",
+    "executableName": "MyApp",
+    "appId": "com.example.myapp"
+  },
+  "linux": {
+    "icon": "icon.png",
+    "executableName": "myapp",
+    "category": "Utility"
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "MyApp",
+    "deleteAppDataOnUninstall": false
+  },
+  "dmg": {
+    "title": "MyApp Installer",
+    "windowSize": {
+      "width": 660,
+      "height": 400
+    },
+    "contents": [
+      { "x": 180, "y": 170, "type": "file", "path": "MyApp.app" },
+      { "x": 480, "y": 170, "type": "link", "path": "/Applications" }
+    ]
+  },
+  "appImage": {
+    "category": "Utility"
+  }
+}
