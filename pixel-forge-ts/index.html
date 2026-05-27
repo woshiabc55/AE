@@ -1,47 +1,169 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pixel Forge</title>
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      html, body { width: 100%; height: 100%; overflow: hidden; background: #0a0a0f; color: #e0e0e0; font-family: 'Segoe UI', system-ui, sans-serif; }
-      #app { display: flex; width: 100%; height: 100%; }
-      #canvas-area { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; }
-      #canvas-area canvas { image-rendering: pixelated; border: 1px solid #333; }
-      #sidebar { width: 320px; background: #111118; border-left: 1px solid #222; overflow-y: auto; padding: 12px; }
-      .panel { margin-bottom: 16px; background: #1a1a24; border-radius: 8px; padding: 12px; }
-      .panel h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 8px; }
-      .param-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-      .param-row label { font-size: 12px; min-width: 80px; color: #aaa; }
-      .param-row input[type="range"] { flex: 1; accent-color: #6c5ce7; }
-      .param-row input[type="checkbox"] { accent-color: #6c5ce7; }
-      .param-row select { flex: 1; background: #222; color: #ddd; border: 1px solid #444; border-radius: 4px; padding: 2px 4px; }
-      .param-row .value { font-size: 11px; min-width: 36px; text-align: right; color: #6c5ce7; }
-      .layer-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; background: #222230; border-radius: 6px; margin-bottom: 4px; cursor: grab; }
-      .layer-item .layer-name { flex: 1; font-size: 12px; }
-      .layer-item .layer-opacity { width: 60px; }
-      .btn { padding: 6px 14px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; transition: background 0.2s; }
-      .btn-primary { background: #6c5ce7; color: #fff; }
-      .btn-primary:hover { background: #5a4bd6; }
-      .btn-secondary { background: #333; color: #ccc; }
-      .btn-secondary:hover { background: #444; }
-      .btn-danger { background: #e74c3c; color: #fff; }
-      .btn-danger:hover { background: #c0392b; }
-      .upload-zone { border: 2px dashed #444; border-radius: 8px; padding: 24px; text-align: center; cursor: pointer; transition: border-color 0.2s; }
-      .upload-zone:hover { border-color: #6c5ce7; }
-      .upload-zone p { font-size: 13px; color: #888; }
-      .mode-switch { display: flex; gap: 4px; margin-bottom: 12px; }
-      .mode-switch .btn { flex: 1; }
-      .mode-switch .btn.active { background: #6c5ce7; color: #fff; }
-    </style>
-  </head>
-  <body>
-    <div id="app">
-      <div id="canvas-area"></div>
-      <div id="sidebar"></div>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PIXEL FORGE — 像素风图像动画工坊</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#06060c;--bg2:#0d0d18;--fg:#e0ffe0;--fg-dim:#4a6a4a;
+  --accent:#00ff88;--accent2:#ff3366;--accent3:#44ddff;
+  --accent4:#ffaa00;--accent5:#a29bfe;--accent6:#ff6b9d;--accent7:#7cff6b;
+  --card:rgba(14,14,26,0.95);--border:#1e2e1e;--border2:#2a3a2a;
+  --font-pixel:'Press Start 2P',monospace;
+  --font-mono:'Share Tech Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-family:var(--font-mono)}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.1) 2px,rgba(0,0,0,0.1) 4px);pointer-events:none;z-index:9999}
+body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,0.5) 100%);pointer-events:none;z-index:9998}
+
+#app{display:flex;width:100%;height:100%;position:relative;z-index:1}
+
+#sidebar{width:300px;min-width:300px;height:100%;background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;overflow-x:hidden;padding:0;scrollbar-width:thin;scrollbar-color:var(--border) transparent;display:flex;flex-direction:column}
+#sidebar::-webkit-scrollbar{width:4px}
+#sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+.sb-header{padding:12px 14px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(0,255,136,0.04) 0%,transparent 100%)}
+.sb-header h1{font-family:var(--font-pixel);font-size:11px;color:var(--accent);text-shadow:0 0 12px rgba(0,255,136,0.4);letter-spacing:3px;margin-bottom:4px}
+.sb-header .sub{font-family:var(--font-pixel);font-size:6px;color:var(--fg-dim);letter-spacing:2px}
+
+.sb-body{flex:1;overflow-y:auto;padding:8px}
+
+.panel{margin-bottom:8px;background:var(--card);border:1px solid var(--border);border-radius:3px;padding:10px 12px;position:relative}
+.panel::before{content:'';position:absolute;top:-1px;left:-1px;right:-1px;height:2px;border-radius:3px 3px 0 0}
+.panel:nth-child(1)::before{background:var(--accent)}
+.panel:nth-child(2)::before{background:var(--accent3)}
+.panel:nth-child(3)::before{background:var(--accent4)}
+.panel:nth-child(4)::before{background:var(--accent2)}
+.panel:nth-child(5)::before{background:var(--accent5)}
+.panel:nth-child(6)::before{background:var(--accent6)}
+.panel:nth-child(7)::before{background:var(--accent7)}
+
+.panel-title{font-family:var(--font-pixel);font-size:7px;color:var(--accent);margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--border);letter-spacing:2px;display:flex;align-items:center;gap:6px}
+.panel-title::before{content:'◈';color:var(--accent2);font-size:9px}
+
+.ctrls{display:flex;flex-direction:column;gap:6px}
+.cg{display:flex;flex-direction:column;gap:2px}
+.cg label{font-family:var(--font-pixel);font-size:6px;color:var(--fg-dim);letter-spacing:1px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cg label .v{color:var(--accent);font-size:7px}
+input[type="range"]{-webkit-appearance:none;width:100%;height:3px;background:var(--border);border-radius:2px;outline:none}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:10px;background:var(--accent);border-radius:2px;cursor:pointer;box-shadow:0 0 6px rgba(0,255,136,0.4)}
+input[type="checkbox"]{accent-color:var(--accent)}
+select{background:var(--bg);color:var(--fg);border:1px solid var(--border);border-radius:2px;padding:3px 6px;font-family:var(--font-mono);font-size:10px;outline:none}
+select:focus{border-color:var(--accent)}
+
+.mode-tabs{display:flex;gap:3px}
+.mode-tab{flex:1;font-family:var(--font-pixel);font-size:6px;padding:6px 4px;background:transparent;border:1px solid var(--border);color:var(--fg-dim);border-radius:2px;cursor:pointer;transition:all .2s;text-align:center;letter-spacing:1px}
+.mode-tab:hover{border-color:var(--accent);color:var(--fg)}
+.mode-tab.active{background:rgba(0,255,136,0.1);border-color:var(--accent);color:var(--accent)}
+
+.effect-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.effect-btn{font-family:var(--font-pixel);font-size:6px;padding:5px 4px;background:transparent;border:1px solid var(--border);color:var(--fg-dim);border-radius:2px;cursor:pointer;transition:all .2s;text-align:center}
+.effect-btn:hover{border-color:var(--accent3);color:var(--fg)}
+.effect-btn.active{background:rgba(68,221,255,0.1);border-color:var(--accent3);color:var(--accent3)}
+
+.layer-item{display:flex;align-items:center;gap:4px;padding:4px 6px;background:rgba(0,0,0,0.2);border:1px solid var(--border);border-radius:2px;margin-bottom:3px;font-family:var(--font-pixel);font-size:6px}
+.layer-item .ln{flex:1;color:var(--fg)}
+.layer-item input[type="range"]{width:50px;height:2px}
+.layer-item .rm{background:transparent;border:1px solid var(--accent2);color:var(--accent2);font-family:var(--font-pixel);font-size:6px;padding:1px 4px;border-radius:1px;cursor:pointer}
+
+.upload-zone{border:2px dashed var(--border);border-radius:3px;padding:12px 8px;text-align:center;cursor:pointer;transition:all .3s;font-family:var(--font-pixel);font-size:7px;color:var(--fg-dim);letter-spacing:1px}
+.upload-zone:hover{border-color:var(--accent);background:rgba(0,255,136,0.02)}
+.upload-zone.has-img{padding:4px;border-style:solid;border-color:var(--accent)}
+.upload-zone img{max-width:100%;max-height:60px;image-rendering:pixelated;border-radius:2px}
+.upload-zone input{display:none}
+
+.btn-row{display:flex;gap:4px;margin-top:6px}
+.btn{flex:1;font-family:var(--font-pixel);font-size:6px;padding:6px 4px;border:1px solid var(--border);border-radius:2px;cursor:pointer;transition:all .2s;text-align:center;letter-spacing:1px}
+.btn-p{background:rgba(0,255,136,0.1);color:var(--accent);border-color:var(--accent)}
+.btn-p:hover{background:rgba(0,255,136,0.2)}
+.btn-d{background:rgba(255,51,102,0.08);color:var(--accent2);border-color:var(--accent2)}
+.btn-d:hover{background:rgba(255,51,102,0.15)}
+.btn-s{background:transparent;color:var(--fg-dim)}
+.btn-s:hover{color:var(--fg);border-color:var(--fg-dim)}
+
+#canvas-area{flex:1;display:flex;flex-direction:column;position:relative;overflow:hidden}
+#canvas-main{flex:1;display:flex;align-items:center;justify-content:center}
+#canvas-main canvas{image-rendering:pixelated;image-rendering:crisp-edges}
+
+.staging-bar{height:28px;background:var(--bg2);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 12px;gap:12px;font-family:var(--font-pixel);font-size:6px;color:var(--fg-dim);letter-spacing:1px;flex-shrink:0}
+.staging-bar .stage{padding:2px 8px;border:1px solid var(--border);border-radius:2px;cursor:pointer;transition:all .2s}
+.staging-bar .stage:hover{border-color:var(--accent);color:var(--accent)}
+.staging-bar .stage.active{background:rgba(0,255,136,0.1);border-color:var(--accent);color:var(--accent)}
+.staging-bar .stage-arrow{color:var(--border);font-size:8px}
+.staging-bar .stage-info{margin-left:auto;color:var(--accent3)}
+
+.console-panel{height:140px;background:var(--bg2);border-top:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.console-header{display:flex;align-items:center;justify-content:space-between;padding:4px 10px;border-bottom:1px solid var(--border);font-family:var(--font-pixel);font-size:6px;color:var(--accent4);letter-spacing:1px}
+.console-header .ch-btns{display:flex;gap:4px}
+.console-header .ch-btn{font-family:var(--font-pixel);font-size:6px;padding:2px 6px;background:transparent;border:1px solid var(--border);color:var(--fg-dim);border-radius:1px;cursor:pointer}
+.console-header .ch-btn:hover{border-color:var(--accent4);color:var(--accent4)}
+.console-body{flex:1;overflow-y:auto;padding:6px 10px;font-family:var(--font-mono);font-size:10px;line-height:1.6}
+.console-body .log-line{display:flex;gap:6px}
+.console-body .log-time{color:var(--fg-dim);min-width:60px}
+.console-body .log-event{color:var(--accent3);min-width:120px}
+.console-body .log-data{color:var(--fg-dim)}
+.console-input{display:flex;border-top:1px solid var(--border)}
+.console-input input{flex:1;background:var(--bg);border:none;color:var(--fg);padding:4px 10px;font-family:var(--font-mono);font-size:10px;outline:none}
+.console-input button{font-family:var(--font-pixel);font-size:6px;padding:4px 10px;background:rgba(0,255,136,0.1);border:1px solid var(--accent);color:var(--accent);cursor:pointer;letter-spacing:1px}
+
+.footnote-bar{height:22px;background:rgba(6,6,12,0.95);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 12px;font-family:var(--font-pixel);font-size:5px;color:var(--fg-dim);letter-spacing:1px;gap:16px;flex-shrink:0}
+.footnote-bar .fn-sep{color:var(--border)}
+.footnote-bar .fn-accent{color:var(--accent)}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="sidebar">
+    <div class="sb-header">
+      <h1>PIXEL FORGE</h1>
+      <div class="sub">像素风图像动画工坊</div>
     </div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+    <div class="sb-body" id="sbBody">
+      <!-- Panels injected by UIManager -->
+    </div>
+  </div>
+  <div id="canvas-area">
+    <div id="canvas-main"></div>
+    <div class="staging-bar" id="stagingBar">
+      <span class="stage active" data-stage="load">LOAD</span>
+      <span class="stage-arrow">▸</span>
+      <span class="stage" data-stage="process">PROCESS</span>
+      <span class="stage-arrow">▸</span>
+      <span class="stage" data-stage="composite">COMPOSITE</span>
+      <span class="stage-arrow">▸</span>
+      <span class="stage" data-stage="output">OUTPUT</span>
+      <span class="stage-info" id="stageInfo">STAGE: LOAD</span>
+    </div>
+    <div class="console-panel" id="consolePanel">
+      <div class="console-header">
+        <span>◈ 条带输出控制台</span>
+        <div class="ch-btns">
+          <button class="ch-btn" id="btnClearConsole">CLEAR</button>
+          <button class="ch-btn" id="btnToggleConsole">▼</button>
+        </div>
+      </div>
+      <div class="console-body" id="consoleBody"></div>
+      <div class="console-input">
+        <input type="text" id="consoleInput" placeholder="输入命令 (如: bands 12, rings 6, color1 #ff3366) ...">
+        <button id="consoleSend">EXEC</button>
+      </div>
+    </div>
+    <div class="footnote-bar">
+      <span>PIXEL FORGE v7.0</span>
+      <span class="fn-sep">|</span>
+      <span>模块化架构 · 事件驱动</span>
+      <span class="fn-sep">|</span>
+      <span class="fn-accent" id="fnFps">0 FPS</span>
+      <span class="fn-sep">|</span>
+      <span id="fnStatus">就绪</span>
+      <span class="fn-sep">|</span>
+      <span>© 2026 PIXEL FORGE PROJECT</span>
+    </div>
+  </div>
+</div>
+<script type="module" src="/src/main.ts"></script>
+</body>
 </html>
