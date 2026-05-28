@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>龙虾农场：一场反向狩猎</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+#app{position:relative;width:100%;height:100%;overflow:hidden}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .6s ease,visibility .6s ease}
+.screen.active{opacity:1;visibility:visible;pointer-events:auto}
+.scene-bg{position:absolute;inset:0;z-index:0}
+.scene-content{position:relative;z-index:1;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2vh 4vw}
+.act-badge{position:absolute;top:3vh;left:4vw;font-size:clamp(10px,1.2vh,14px);letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.15);padding:4px 12px;border-radius:2px;z-index:5}
+.scene-title{font-size:clamp(14px,2.2vh,22px);color:rgba(255,255,255,.7);margin-bottom:2vh;letter-spacing:4px;font-weight:300}
+.dialogue-box{position:absolute;bottom:0;left:0;right:0;z-index:10;padding:2vh 4vw 3vh;background:linear-gradient(transparent,rgba(0,0,0,.92) 30%);min-height:22vh;display:flex;flex-direction:column;justify-content:flex-end}
+.speaker{font-size:clamp(11px,1.4vh,15px);color:#ff6b35;font-weight:700;margin-bottom:.8vh;letter-spacing:1px}
+.dialogue-text{font-size:clamp(13px,1.8vh,18px);color:#e8e8e8;line-height:1.8;max-width:80vw}
+.dialogue-text .highlight{color:#ff6b35;font-weight:600}
+.dialogue-text .tech{color:#4ecdc4;font-family:"Courier New",monospace;font-weight:600}
+.dialogue-text .danger{color:#ff4757;font-weight:600}
+.tap-hint{position:absolute;bottom:1.5vh;right:4vw;font-size:clamp(10px,1.2vh,13px);color:rgba(255,255,255,.3);animation:pulse 2s infinite;z-index:15}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:.7}}
+.visual-area{flex:1;display:flex;align-items:center;justify-content:center;width:100%;position:relative;overflow:hidden}
+.phone-frame{width:clamp(120px,18vw,200px);height:clamp(220px,32vh,360px);border:3px solid #333;border-radius:16px;background:#111;position:relative;overflow:hidden;box-shadow:0 0 30px rgba(0,0,0,.6)}
+.phone-screen{position:absolute;inset:6px;border-radius:10px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.poster-card{background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid rgba(78,205,196,.3);border-radius:8px;padding:clamp(10px,1.5vh,18px);max-width:clamp(200px,30vw,360px);width:90%}
+.poster-title{font-size:clamp(11px,1.4vh,15px);color:#4ecdc4;font-weight:700;margin-bottom:6px;text-align:center}
+.poster-sub{font-size:clamp(9px,1.1vh,12px);color:rgba(255,255,255,.6);text-align:center;line-height:1.6}
+.poster-badge{display:inline-block;background:#ff6b35;color:#fff;font-size:clamp(8px,1vh,11px);padding:2px 8px;border-radius:2px;margin-top:6px}
+.patent-card{background:rgba(255,255,255,.05);border:1px solid rgba(78,205,196,.2);border-radius:6px;padding:clamp(8px,1vh,14px);margin:4px 0;width:clamp(180px,26vw,300px)}
+.patent-title{font-size:clamp(9px,1.1vh,12px);color:#4ecdc4;font-weight:600}
+.patent-meta{font-size:clamp(8px,.9vh,10px);color:rgba(255,255,255,.4);margin-top:3px}
+.ai-tag{position:absolute;bottom:4px;right:6px;font-size:clamp(7px,.8vh,9px);color:rgba(255,255,255,.35);background:rgba(0,0,0,.5);padding:1px 6px;border-radius:2px}
+.transfer-amount{font-size:clamp(28px,4vh,48px);color:#ff6b35;font-weight:700;font-family:"Courier New",monospace}
+.profit-num{font-size:clamp(20px,3vh,36px);color:#2ed573;font-weight:700;font-family:"Courier New",monospace;animation:numPulse 1s infinite}
+@keyframes numPulse{0%,100%{opacity:1}50%{opacity:.6}}
+.error-screen{background:#1a0000;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.error-text{font-size:clamp(12px,1.6vh,18px);color:#ff4757;font-weight:700;animation:errorBlink .8s infinite}
+@keyframes errorBlink{0%,100%{opacity:1}50%{opacity:.3}
+}
+.code-rain{position:absolute;inset:0;overflow:hidden;opacity:.15}
+.code-line{position:absolute;font-family:"Courier New",monospace;font-size:clamp(8px,1vh,12px);color:#4ecdc4;white-space:nowrap;animation:codeFall linear infinite}
+@keyframes codeFall{0%{transform:translateY(-100%)}100%{transform:translateY(100vh)}}
+.factory-scene{position:relative;width:clamp(200px,35vw,400px);height:clamp(120px,20vh,240px)}
+.pool{position:absolute;bottom:0;width:80%;left:10%;height:40%;background:linear-gradient(180deg,#2d2d2d,#1a1a1a);border:2px solid #333;border-radius:4px 4px 0 0}
+.pool-dry{position:absolute;inset:8px;display:flex;align-items:center;justify-content:center;font-size:clamp(9px,1vh,12px);color:rgba(255,255,255,.2);border:1px dashed rgba(255,255,255,.1)}
+.pump{position:absolute;bottom:42%;right:15%;width:clamp(30px,4vw,50px);height:clamp(40px,5vh,60px);background:linear-gradient(135deg,#4a4a4a,#2d2d2d);border-radius:3px;transform:rotate(-15deg);border:1px solid #555}
+.pump-label{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:clamp(6px,.7vh,8px);color:#ff6b35;white-space:nowrap;background:rgba(0,0,0,.7);padding:1px 4px;border-radius:2px}
+.search-result{background:#fff;border-radius:8px;padding:clamp(10px,1.5vh,18px);max-width:clamp(200px,30vw,340px);width:90%;color:#333}
+.search-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #eee;font-size:clamp(10px,1.2vh,14px)}
+.search-price{color:#ff4757;font-weight:700;font-size:clamp(12px,1.5vh,17px)}
+.search-no{color:#ff4757;font-size:clamp(10px,1.2vh,14px);font-weight:600}
+.evidence-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(6px,1vh,12px);max-width:clamp(250px,38vw,420px)}
+.evidence-item{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:clamp(8px,1vh,14px);text-align:center;font-size:clamp(9px,1vh,12px);color:rgba(255,255,255,.6)}
+.evidence-icon{font-size:clamp(18px,2.5vh,30px);margin-bottom:4px}
+.end-card{background:#0a0a0a;padding:clamp(16px,3vh,40px);border:1px solid rgba(255,255,255,.1);border-radius:8px;max-width:clamp(300px,50vw,600px);width:90%;max-height:80vh;overflow-y:auto}
+.end-section{margin-bottom:clamp(12px,2vh,24px)}
+.end-label{font-size:clamp(10px,1.2vh,14px);color:#ff6b35;font-weight:700;margin-bottom:6px;letter-spacing:1px}
+.end-text{font-size:clamp(9px,1.1vh,13px);color:rgba(255,255,255,.6);line-height:1.8}
+.end-check{display:flex;align-items:flex-start;gap:6px;font-size:clamp(9px,1vh,12px);color:rgba(255,255,255,.5);margin:3px 0}
+.end-check::before{content:"□";color:rgba(255,255,255,.3);flex-shrink:0}
+.end-highlight{color:#4ecdc4;font-weight:600}
+.end-danger{color:#ff4757;font-weight:700;font-size:clamp(12px,1.5vh,17px)}
+.title-screen-bg{background:radial-gradient(ellipse at center,#1a1a2e 0%,#0a0a0a 70%)}
+.title-main{font-size:clamp(22px,4vh,48px);color:#e8e8e8;font-weight:700;letter-spacing:6px;text-shadow:0 0 40px rgba(255,107,53,.3)}
+.title-sub{font-size:clamp(12px,1.8vh,20px);color:#ff6b35;letter-spacing:8px;margin-top:1vh;font-weight:300}
+.title-tag{margin-top:3vh;font-size:clamp(9px,1.1vh,13px);color:rgba(255,255,255,.3);letter-spacing:2px}
+.start-btn{margin-top:4vh;padding:clamp(10px,1.5vh,18px) clamp(30px,5vw,60px);background:transparent;border:1px solid #ff6b35;color:#ff6b35;font-size:clamp(12px,1.6vh,18px);letter-spacing:4px;cursor:pointer;transition:all .3s;border-radius:2px}
+.start-btn:hover,.start-btn:active{background:#ff6b35;color:#fff}
+.progress-bar{position:absolute;top:0;left:0;height:2px;background:linear-gradient(90deg,#ff6b35,#4ecdc4);z-index:20;transition:width .4s ease}
+.scene-counter{position:absolute;top:3vh;right:4vw;font-size:clamp(9px,1vh,12px);color:rgba(255,255,255,.25);z-index:5;font-family:"Courier New",monospace}
+.char-avatar{width:clamp(36px,5vw,56px);height:clamp(36px,5vw,56px);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:clamp(14px,2vh,22px);flex-shrink:0;border:2px solid}
+.char-aduo{background:rgba(46,213,115,.15);border-color:#2ed573}
+.char-jinlin{background:rgba(255,107,53,.15);border-color:#ff6b35}
+.char-dashi{background:rgba(78,205,196,.15);border-color:#4ecdc4}
+.typewriter{overflow:hidden;white-space:normal}
+.scene-transition{position:absolute;inset:0;background:#000;z-index:50;opacity:0;pointer-events:none;transition:opacity .4s ease}
+.scene-transition.active{opacity:1;pointer-events:auto}
+.lobster-icon{font-size:clamp(40px,6vh,80px);animation:lobsterFloat 3s ease-in-out infinite}
+@keyframes lobsterFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-8px) rotate(3deg)}}
+.warning-strip{position:absolute;top:0;left:0;right:0;height:3px;background:repeating-linear-gradient(90deg,#ff4757 0,#ff4757 20px,transparent 20px,transparent 40px);z-index:5}
+.news-ticker{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:clamp(8px,1.2vh,16px);max-width:clamp(250px,40vw,450px);font-size:clamp(10px,1.2vh,14px);color:rgba(255,255,255,.7);line-height:1.7;border-left:3px solid #ff6b35}
+.handcuff-scene{display:flex;flex-direction:column;align-items:center;gap:2vh}
+.silhouette{width:clamp(60px,10vw,120px);height:clamp(100px,16vh,200px);background:#1a1a1a;border-radius:50% 50% 5% 5%;position:relative}
+.silhouette::after{content:"";position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);width:clamp(40px,6vw,80px);height:3px;background:rgba(255,255,255,.1);border-radius:50%}
+.final-action{display:flex;align-items:center;gap:clamp(8px,1.5vw,16px)}
+.sticky-note{background:#f9ca24;color:#2d2d2d;padding:clamp(6px,1vh,12px);font-size:clamp(9px,1.1vh,13px);font-weight:700;transform:rotate(-3deg);box-shadow:2px 2px 6px rgba(0,0,0,.3)}
+</style>
+</head>
+<body>
+<div id="app">
+<div class="scene-transition" id="transition"></div>
+<div class="progress-bar" id="progress"></div>
+
+<div id="screen-title" class="screen active">
+<div class="scene-bg title-screen-bg"></div>
+<div class="scene-content" style="text-align:center">
+<div class="lobster-icon">🦞</div>
+<div class="title-main">龙虾农场</div>
+<div class="title-sub">一场反向狩猎</div>
+<div class="title-tag">互动反诈警示体验 · 16:9横屏</div>
+<button class="start-btn" id="btn-start" type="button">开始体验</button>
+</div>
+</div>
+
+<div id="screen-scene" class="screen">
+<div class="scene-bg" id="scene-bg"></div>
+<div class="act-badge" id="act-badge"></div>
+<div class="scene-counter" id="scene-counter"></div>
+<div class="visual-area" id="visual-area"></div>
+<div class="dialogue-box" id="dialogue-box">
+<div class="speaker" id="speaker"></div>
+<div class="dialogue-text" id="dialogue-text"></div>
+</div>
+<div class="tap-hint" id="tap-hint">轻触继续 ▸</div>
+</div>
+
+<div id="screen-end" class="screen">
+<div class="scene-bg" style="background:#050505"></div>
+<div class="scene-content" style="align-items:center">
+<div class="end-card">
+<div class="end-section">
+<div class="end-label">【作品名称】</div>
+<div class="end-text">龙虾农场：一场反向狩猎</div>
+</div>
+<div class="end-section">
+<div class="end-label">【AI生成内容标识】</div>
+<div class="end-text">本视频部分画面由AI技术生成：</div>
+<div class="end-check">虚假龙虾养殖直播画面</div>
+<div class="end-check">伪造专利证书</div>
+<div class="end-check">智能体后台界面动画</div>
+<div class="end-check">共联局网APP界面</div>
+<div class="end-text" style="margin-top:6px;font-size:clamp(8px,.9vh,11px)">（画面已标注AI生成标识）</div>
+</div>
+<div class="end-section">
+<div class="end-label">【术语揭秘】</div>
+<div class="end-text"><span class="end-highlight">IGBT、PWM、SVPWM、MPPT、PFC</span>均为真实电力电子技术，片中锦蔺将其作为诈骗话术包装，仅用于反诈警示。</div>
+</div>
+<div class="end-section">
+<div class="end-label">【举报方式】</div>
+<div class="end-text">遭遇非法金融活动，请拨打 <span class="end-danger">110</span><br>或登录"国家反诈中心"APP举报</div>
+</div>
+<div style="margin-top:clamp(12px,2vh,24px);text-align:center">
+<button class="start-btn" id="btn-restart" type="button" style="font-size:clamp(10px,1.2vh,14px);padding:8px 24px">重新体验</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+var SCENES = [
+{
+act:"第一幕",actTitle:"诱饵与陷阱",
+bg:"linear-gradient(180deg,#2c2c3a 0%,#1a1a2e 50%,#0f0f1a 100%)",
+visuals:"street",
+dialogues:[
+{speaker:"",text:"路面特写——一张传单被踩在脚下。"},
+{speaker:"",text:"传单正面赫然写着："},
+{speaker:"",text:'<span class="highlight">AI智慧养殖·龙虾农场</span><br>投入1万，月返3000<br>大学生创业扶持计划',isHTML:true},
+{speaker:"",text:'底部印有 <span class="danger">"WAIC 2026 Future Tech入围项目"</span> 字样',isHTML:true}
+]
+},
+{
+act:"第一幕",actTitle:"诱饵与陷阱",
+bg:"linear-gradient(180deg,#1e2a3a 0%,#16213e 100%)",
+visuals:"campus",
+dialogues:[
+{speaker:"阿道（旁白）",text:"当时觉得，这简直是为我们量身定做的。"},
+{speaker:"",text:"校园公告栏前，同样的传单与"创业讲座"海报并列张贴。"},
+{speaker:"",text:"旁边有学生驻足观看，眼神中满是期待。"}
+]
+},
+{
+act:"第一幕",actTitle:"诱饵与陷阱",
+bg:"linear-gradient(180deg,#0a1628 0%,#0d2137 100%)",
+visuals:"app",
+dialogues:[
+{speaker:"",text:"阿道扫码，进入"龙虾农场"APP——"},
+{speaker:"系统音",text:"欢迎进入智慧农业共享平台。",style:"tech"},
+{speaker:"",text:'开屏动画显示 <span class="danger">"共联局网·智慧农业联盟"</span>',isHTML:true},
+{speaker:"",text:'伪造的政府合作标识，看起来无比权威。',isHTML:true}
+]
+},
+{
+act:"第一幕",actTitle:"诱饵与陷阱",
+bg:"linear-gradient(180deg,#1a1a2e 0%,#0f1923 100%)",
+visuals:"roadshow",
+dialogues:[
+{speaker:"锦蔺",text:"传统养殖靠经验，我们靠电力电子变流技术！"},
+{speaker:"锦蔺",text:'你看这套系统，采用 <span class="tech">SVPWM</span> 调制，配合 <span class="tech">IGBT</span> 并联均流——',isHTML:true},
+{speaker:"锦蔺",text:'每小时对5000立方水体完成一次变频曝气循环。',isHTML:true},
+{speaker:"锦蔺",text:'你投的每一分钱，都变成了池底的 <span class="tech">高频斩波控制器</span>！',isHTML:true},
+{speaker:"",text:'展板上印满术语："三相全桥逆变增氧系统""SVPWM空间矢量调制""IGBT并联均流技术"'}
+]
+},
+{
+act:"第一幕",actTitle:"诱饵与陷阱",
+bg:"linear-gradient(180deg,#0d1117 0%,#161b22 100%)",
+visuals:"patents",
+dialogues:[
+{speaker:"锦蔺（画外音）",text:"我们拥有12项核心专利，技术壁垒极高。"},
+{speaker:"",text:'伪造专利一：<span class="tech">一种基于MPPT算法的养殖光伏协同系统</span>',isHTML:true},
+{speaker:"",text:'伪造专利二：<span class="tech">软开关逆变器在循环水养殖中的应用</span>',isHTML:true},
+{speaker:"",text:'伪造专利三：<span class="tech">采用PFC校正的智能投喂变流电源</span>',isHTML:true},
+{speaker:"",text:'<span class="danger">⚠ 本画面由AI技术生成</span>',isHTML:true}
+]
+},
+{
+act:"第一幕",actTitle:"诱饵与陷阱",
+bg:"linear-gradient(180deg,#0a1a0a 0%,#0d2818 50%,#0a1a0a 100%)",
+visuals:"livestream",
+dialogues:[
+{speaker:"阿道（旁白）",text:"每天看直播，龙虾在游，数字在涨。"},
+{speaker:"",text:'那个增氧泵上写着 <span class="tech">"IGBT变频"</span>，我觉得特别专业。',isHTML:true},
+{speaker:"",text:'账户收益数字跳动：<span class="highlight">+3000</span>',isHTML:true},
+{speaker:"",text:'<span class="danger">⚠ 龙虾池直播画面为AI生成</span>',isHTML:true}
+]
+},
+{
+act:"第一幕",actTitle:"诱饵与陷阱",
+bg:"linear-gradient(180deg,#1a0000 0%,#0a0a0a 100%)",
+visuals:"crash",
+dialogues:[
+{speaker:"",text:'手机突然黑屏——'},
+{speaker:"",text:'<span class="danger">系统维护中（72小时）</span>',isHTML:true},
+{speaker:"",text:'阿道疯狂点击，App闪退。再点开——'},
+{speaker:"",text:'<span class="danger">网络错误</span>',isHTML:true},
+{speaker:"阿道（旁白）",text:'直到那天，锦蔺拿了我的东西，消失了。'}
+]
+},
+{
+act:"第二幕",actTitle:"反向狩猎",
+bg:"linear-gradient(180deg,#0a0a14 0%,#0d0d1a 100%)",
+visuals:"hack",
+dialogues:[
+{speaker:"阿道",text:"我要用这个，把他的龙虾农场，彻底破坏。"},
+{speaker:"",text:'屏幕上映出锦蔺的诈骗后台—— <span class="tech">"LobsterAgent"</span> 智能体系统',isHTML:true},
+{speaker:"",text:'数据瀑布流在瞳孔中倒映。'}
+]
+},
+{
+act:"第二幕",actTitle:"反向狩猎",
+bg:"linear-gradient(180deg,#0a0f1a 0%,#0d1a2a 100%)",
+visuals:"agent",
+dialogues:[
+{speaker:"大师（旁白）",text:'这不是普通爬虫，这是 <span class="highlight">AI智能体</span>。',isHTML:true},
+{speaker:"大师（旁白）",text:'它自己会上网、会阅读、会判断。'},
+{speaker:"大师（旁白）",text:'你发过的每一条动态，都在教它怎么骗你。'},
+{speaker:"",text:'AI智能体自动扫描校园论坛→抓取"缺钱""创业"关键词→生成猎物画像'},
+{speaker:"",text:'阿道的头像被标记为红色 <span class="danger">"高转化"</span>',isHTML:true}
+]
+},
+{
+act:"第二幕",actTitle:"反向狩猎",
+bg:"linear-gradient(180deg,#1a1a1a 0%,#0d0d0d 100%)",
+visuals:"factory",
+dialogues:[
+{speaker:"阿道（旁白）",text:"我的龙虾呢？我的IGBT逆变系统呢？"},
+{speaker:"",text:'郊区"龙虾农场"实地——破落空厂房。'},
+{speaker:"",text:'几个干涸水泥池，根本没有龙虾。'},
+{speaker:"",text:'一台生锈的增氧泵倒在地上——铭牌写着 <span class="danger">"某宝售价：¥380"</span>',isHTML:true}
+]
+},
+{
+act:"第二幕",actTitle:"反向狩猎",
+bg:"linear-gradient(180deg,#1a1a2e 0%,#16213e 100%)",
+visuals:"dashi",
+dialogues:[
+{speaker:"",text:'阿道举起手机要拍摄证据——'},
+{speaker:"",text:'突然一只手按住他肩膀。'},
+{speaker:"大师",text:'阿道，停下。'},
+{speaker:"大师",text:'用黑客技术反击，你也成了非法金融活动的帮凶。'},
+{speaker:"大师",text:'<span class="highlight">不能以暴制暴。</span>',isHTML:true}
+]
+},
+{
+act:"第三幕",actTitle:"觉醒与猎杀",
+bg:"linear-gradient(180deg,#1a1a1a 0%,#0d1a1a 100%)",
+visuals:"debunk",
+dialogues:[
+{speaker:"大师",text:'骗子最喜欢用 <span class="tech">IGBT</span>、<span class="tech">PWM</span> 这种听着很玄的词。',isHTML:true},
+{speaker:"大师",text:'实际上，一个几百块的变频器就能实现他说的"矢量变频"。'},
+{speaker:"大师",text:'根本不值几万一台。'},
+{speaker:"大师",text:'所谓"变流技术"，只是给 <span class="danger">空气项目贴金</span>。',isHTML:true},
+{speaker:"",text:'国家知识产权局：查无此专利。'}
+]
+},
+{
+act:"第三幕",actTitle:"觉醒与猎杀",
+bg:"linear-gradient(180deg,#0a0a14 0%,#141428 100%)",
+visuals:"evidence",
+dialogues:[
+{speaker:"",text:'阿道整理证据——转账记录、聊天截图、虚假直播录屏。'},
+{speaker:"",text:'拨打 110。'},
+{speaker:"新闻播报",text:'近日，警方破获一起利用电力电子术语包装的"云养殖"非法集资案。'},
+{speaker:"",text:'警方后台显示 <span class="danger">"共联局网"为虚假备案</span>',isHTML:true}
+]
+},
+{
+act:"第三幕",actTitle:"觉醒与猎杀",
+bg:"linear-gradient(180deg,#0a0a0a 0%,#1a1a1a 100%)",
+visuals:"arrest",
+dialogues:[
+{speaker:"",text:'锦蔺被带走。'},
+{speaker:"",text:'回头看了阿道一眼。'},
+{speaker:"",text:'阿道站在原地，表情平静。'}
+]
+},
+{
+act:"第三幕",actTitle:"觉醒与猎杀",
+bg:"linear-gradient(180deg,#1a1a2e 0%,#0f0f1a 100%)",
+visuals:"return",
+dialogues:[
+{speaker:"",text:'阿道回到校园公告栏。'},
+{speaker:"",text:'撕下一张"龙虾农场"传单。'},
+{speaker:"",text:'在背面写下：<span class="highlight">已报案，勿信</span>',isHTML:true},
+{speaker:"",text:'贴回原处。'},
+{speaker:"阿道（旁白）",text:'真正的技术，不该是捕猎弱者的工具。'},
+{speaker:"阿道（旁白）",text:'<span class="danger">警惕任何用"变流""逆变""IGBT"包装的稳赚不赔。</span>',isHTML:true}
+]
+}
+];
+
+var currentScene = -1;
+var currentDialogue = -1;
+var isTransitioning = false;
+var totalScenes = SCENES.length;
+
+var elApp = document.getElementById("app");
+var elTransition = document.getElementById("transition");
+var elProgress = document.getElementById("progress");
+var elTitle = document.getElementById("screen-title");
+var elScene = document.getElementById("screen-scene");
+var elEnd = document.getElementById("screen-end");
+var elBg = document.getElementById("scene-bg");
+var elActBadge = document.getElementById("act-badge");
+var elCounter = document.getElementById("scene-counter");
+var elVisual = document.getElementById("visual-area");
+var elSpeaker = document.getElementById("speaker");
+var elDialogue = document.getElementById("dialogue-text");
+var elTapHint = document.getElementById("tap-hint");
+
+function hideAllScreens(){
+[elTitle,elScene,elEnd].forEach(function(el){
+el.classList.remove("active");
+});
+}
+
+function showScreen(el){
+hideAllScreens();
+el.classList.add("active");
+}
+
+function updateProgress(){
+var pct = currentScene >= 0 ? ((currentScene + 1) / totalScenes) * 100 : 0;
+elProgress.style.width = pct + "%";
+}
+
+function buildVisual(type){
+var html = "";
+switch(type){
+case "street":
+html = '<div style="text-align:center"><div style="font-size:clamp(40px,6vh,80px);margin-bottom:2vh">👟</div><div class="poster-card"><div class="poster-title">AI智慧养殖·龙虾农场</div><div class="poster-sub">投入1万 月返3000<br>大学生创业扶持计划</div><div class="poster-badge">WAIC 2026 Future Tech 入围项目</div></div><div class="ai-tag">虚构标识</div></div>';
+break;
+case "campus":
+html = '<div style="text-align:center"><div style="font-size:clamp(50px,7vh,90px);margin-bottom:2vh">🏫</div><div class="poster-card" style="border-color:rgba(255,107,53,.3)"><div class="poster-title" style="color:#ff6b35">创业讲座</div><div class="poster-sub">AI赋能·智慧农业新机遇<br>限额50名·扫码报名</div></div></div>';
+break;
+case "app":
+html = '<div style="text-align:center"><div class="phone-frame"><div class="phone-screen" style="background:linear-gradient(135deg,#0d2137,#1a3a5c)"><div style="font-size:clamp(24px,3.5vh,40px);margin-bottom:1vh">🦞</div><div style="font-size:clamp(10px,1.3vh,15px);color:#4ecdc4;font-weight:700">龙虾农场</div><div style="font-size:clamp(8px,1vh,11px);color:rgba(255,255,255,.5);margin-top:4px">共联局网·智慧农业联盟</div><div style="margin-top:clamp(8px,1.5vh,16px);padding:4px 12px;background:rgba(78,205,196,.2);border:1px solid rgba(78,205,196,.3);border-radius:4px;font-size:clamp(7px,.8vh,10px);color:#4ecdc4">政府合作认证 ✓</div></div></div><div class="ai-tag">虚构平台</div></div>';
+break;
+case "roadshow":
+html = '<div style="text-align:center;width:90%;max-width:500px"><div style="display:flex;align-items:center;justify-content:center;gap:clamp(10px,2vw,20px);margin-bottom:2vh"><div class="char-avatar char-jinlin">🎤</div><div style="font-size:clamp(11px,1.4vh,16px);color:#ff6b35;font-weight:700">锦蔺 · 技术路演</div></div><div style="background:rgba(255,255,255,.03);border:1px solid rgba(78,205,196,.2);border-radius:6px;padding:clamp(10px,1.5vh,18px);text-align:left"><div style="font-size:clamp(9px,1.1vh,13px);color:#4ecdc4;font-family:monospace;line-height:2">▸ 三相全桥逆变增氧系统<br>▸ SVPWM空间矢量调制<br>▸ IGBT并联均流技术<br>▸ 高频斩波控制器</div></div></div>';
+break;
+case "patents":
+html = '<div style="text-align:center"><div style="font-size:clamp(11px,1.4vh,16px);color:rgba(255,255,255,.4);margin-bottom:1.5vh;letter-spacing:2px">伪造专利墙</div><div class="patent-card"><div class="patent-title">一种基于MPPT算法的养殖光伏协同系统</div><div class="patent-meta">专利号：ZL 2024 1 0XXXXXX.X</div></div><div class="patent-card"><div class="patent-title">软开关逆变器在循环水养殖中的应用</div><div class="patent-meta">专利号：ZL 2024 1 0XXXXXX.X</div></div><div class="patent-card"><div class="patent-title">采用PFC校正的智能投喂变流电源</div><div class="patent-meta">专利号：ZL 2024 1 0XXXXXX.X</div></div><div class="ai-tag">本画面由AI技术生成</div></div>';
+break;
+case "livestream":
+html = '<div style="text-align:center"><div class="phone-frame"><div class="phone-screen" style="background:linear-gradient(180deg,#0a2818,#0d3a20)"><div style="font-size:clamp(8px,.9vh,11px);color:rgba(255,255,255,.4);position:absolute;top:6px;left:8px">● LIVE</div><div style="font-size:clamp(30px,4vh,50px);margin-top:10px">🦞🦞🦞</div><div style="font-size:clamp(7px,.8vh,10px);color:#4ecdc4;margin-top:4px">IGBT变频增氧泵运行中</div><div style="margin-top:auto;margin-bottom:8px;font-size:clamp(10px,1.2vh,14px);color:#2ed573;font-weight:700">收益 +3000</div></div></div><div class="ai-tag">AI生成画面</div></div>';
+break;
+case "crash":
+html = '<div style="text-align:center"><div class="phone-frame"><div class="phone-screen error-screen"><div style="font-size:clamp(30px,4vh,50px);margin-bottom:1vh">⚠️</div><div class="error-text">系统维护中</div><div style="font-size:clamp(10px,1.2vh,14px);color:rgba(255,71,87,.6);margin-top:1vh">（72小时）</div></div></div></div>';
+break;
+case "hack":
+html = '<div style="text-align:center;position:relative;width:100%;height:100%"><div class="code-rain" id="codeRain"></div><div style="position:relative;z-index:2"><div style="display:flex;align-items:center;justify-content:center;gap:clamp(8px,1.5vw,16px);margin-bottom:2vh"><div class="char-avatar char-aduo">😤</div></div><div style="font-family:monospace;font-size:clamp(10px,1.3vh,15px);color:#4ecdc4;background:rgba(0,0,0,.6);padding:clamp(8px,1vh,14px);border-radius:4px;border:1px solid rgba(78,205,196,.2)"><span style="color:#ff6b35">LobsterAgent</span> v2.1.0<br>scanning targets...<br><span style="color:#2ed573">STATUS: ACTIVE</span></div></div></div>';
+break;
+case "agent":
+html = '<div style="text-align:center;width:90%;max-width:480px"><div style="background:rgba(0,0,0,.5);border:1px solid rgba(78,205,196,.2);border-radius:8px;padding:clamp(12px,2vh,24px)"><div style="font-size:clamp(10px,1.2vh,14px);color:#4ecdc4;font-weight:700;margin-bottom:1vh">🤖 AI智能体 · 猎物画像</div><div style="display:flex;gap:clamp(6px,1vw,12px);flex-wrap:wrap;justify-content:center;margin-bottom:1vh"><span style="background:rgba(255,71,87,.15);border:1px solid rgba(255,71,87,.3);color:#ff4757;padding:3px 10px;border-radius:3px;font-size:clamp(9px,1vh,12px)">缺钱</span><span style="background:rgba(255,71,87,.15);border:1px solid rgba(255,71,87,.3);color:#ff4757;padding:3px 10px;border-radius:3px;font-size:clamp(9px,1vh,12px)">创业</span><span style="background:rgba(255,71,87,.15);border:1px solid rgba(255,71,87,.3);color:#ff4757;padding:3px 10px;border-radius:3px;font-size:clamp(9px,1vh,12px)">大学生</span></div><div style="display:flex;align-items:center;justify-content:center;gap:8px"><div class="char-avatar char-aduo" style="width:clamp(28px,4vw,44px);height:clamp(28px,4vw,44px);font-size:clamp(12px,1.6vh,18px)">👤</div><div style="font-size:clamp(10px,1.2vh,14px);color:#ff4757;font-weight:700">高转化目标</div></div></div></div>';
+break;
+case "factory":
+html = '<div style="text-align:center"><div class="factory-scene"><div class="pool"><div class="pool-dry">干涸</div></div><div class="pump"><div class="pump-label">IGBT变频</div></div><div style="position:absolute;bottom:2%;left:5%;font-size:clamp(8px,.9vh,11px);color:rgba(255,71,87,.6);background:rgba(0,0,0,.5);padding:2px 8px;border-radius:2px">某宝售价：¥380</div></div><div style="margin-top:2vh;font-size:clamp(10px,1.2vh,14px);color:rgba(255,255,255,.3)">破落空厂房 · 没有龙虾</div></div>';
+break;
+case "dashi":
+html = '<div style="text-align:center"><div style="display:flex;align-items:center;justify-content:center;gap:clamp(16px,3vw,40px)"><div style="text-align:center"><div class="char-avatar char-aduo" style="width:clamp(44px,6vw,68px);height:clamp(44px,6vw,68px);font-size:clamp(18px,2.5vh,28px);margin:0 auto 8px">📱</div><div style="font-size:clamp(9px,1vh,12px);color:rgba(255,255,255,.4)">阿道</div></div><div style="font-size:clamp(20px,3vh,36px);color:rgba(255,255,255,.15)">→</div><div style="text-align:center"><div class="char-avatar char-dashi" style="width:clamp(44px,6vw,68px);height:clamp(44px,6vw,68px);font-size:clamp(18px,2.5vh,28px);margin:0 auto 8px">🛑</div><div style="font-size:clamp(9px,1vh,12px);color:#4ecdc4">大师</div></div></div></div>';
+break;
+case "debunk":
+html = '<div style="text-align:center;width:90%;max-width:440px"><div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:1.5vh"><div class="char-avatar char-dashi">🔍</div><div style="font-size:clamp(11px,1.4vh,16px);color:#4ecdc4;font-weight:700">大师 · 技术打假</div></div><div class="search-result"><div class="search-item"><span>变频器通用型号</span><span class="search-price">¥380</span></div><div class="search-item"><span>国家知识产权局</span><span class="search-no">查无此专利 ❌</span></div></div></div>';
+break;
+case "evidence":
+html = '<div style="text-align:center"><div class="evidence-grid"><div class="evidence-item"><div class="evidence-icon">💳</div><div>转账记录</div></div><div class="evidence-item"><div class="evidence-icon">💬</div><div>聊天截图</div></div><div class="evidence-item"><div class="evidence-icon">📹</div><div>虚假直播录屏</div></div><div class="evidence-item"><div class="evidence-icon">🚨</div><div>拨打110</div></div></div><div class="news-ticker" style="margin-top:2vh">近日，警方破获一起利用电力电子术语包装的"云养殖"非法集资案。</div></div>';
+break;
+case "arrest":
+html = '<div class="handcuff-scene"><div class="silhouette"></div><div style="font-size:clamp(24px,3.5vh,40px)">🔗</div><div style="font-size:clamp(10px,1.2vh,14px);color:rgba(255,255,255,.3)">锦蔺被带走</div></div>';
+break;
+case "return":
+html = '<div style="text-align:center"><div style="font-size:clamp(40px,6vh,80px);margin-bottom:2vh">📋</div><div class="final-action"><div style="font-size:clamp(10px,1.2vh,14px);color:rgba(255,255,255,.4)">龙虾农场传单</div><div style="font-size:clamp(16px,2vh,24px);color:rgba(255,255,255,.2)">→</div><div class="sticky-note">已报案<br>勿信</div></div></div>';
+break;
+default:
+html = "";
+}
+return html;
+}
+
+function initCodeRain(){
+var container = document.getElementById("codeRain");
+if(!container) return;
+container.innerHTML = "";
+var snippets = [
+"scan(target)","fetch_profile()","classify(high)","generate_pitch()",
+"IGBT.invert()","pwm.modulate()","agent.run()","target.convert()",
+"lobster.farm","profit.fake()","patent.forge()","stream.ai_gen"
+];
+for(var i = 0; i < 12; i++){
+var line = document.createElement("div");
+line.className = "code-line";
+line.textContent = snippets[i % snippets.length];
+line.style.left = (Math.random() * 90) + "%";
+line.style.animationDuration = (4 + Math.random() * 6) + "s";
+line.style.animationDelay = (Math.random() * 3) + "s";
+container.appendChild(line);
+}
+}
+
+function loadScene(index){
+if(index < 0 || index >= totalScenes) return;
+currentScene = index;
+currentDialogue = -1;
+var scene = SCENES[index];
+
+elBg.style.background = scene.bg;
+elActBadge.textContent = scene.act + "：" + scene.actTitle;
+elCounter.textContent = (index + 1) + " / " + totalScenes;
+elVisual.innerHTML = buildVisual(scene.visuals);
+elSpeaker.textContent = "";
+elDialogue.textContent = "";
+elTapHint.style.display = "block";
+updateProgress();
+
+if(scene.visuals === "hack"){
+setTimeout(initCodeRain, 100);
+}
+
+advanceDialogue();
+}
+
+function advanceDialogue(){
+var scene = SCENES[currentScene];
+if(!scene) return;
+currentDialogue++;
+if(currentDialogue >= scene.dialogues.length){
+goToNextScene();
+return;
+}
+var d = scene.dialogues[currentDialogue];
+elSpeaker.textContent = d.speaker || "";
+if(d.isHTML){
+elDialogue.innerHTML = d.text;
+} else {
+elDialogue.textContent = d.text;
+}
+}
+
+function goToNextScene(){
+if(isTransitioning) return;
+if(currentScene >= totalScenes - 1){
+showEndCard();
+return;
+}
+isTransitioning = true;
+elTransition.classList.add("active");
+setTimeout(function(){
+loadScene(currentScene + 1);
+setTimeout(function(){
+elTransition.classList.remove("active");
+isTransitioning = false;
+}, 400);
+}, 400);
+}
+
+function showEndCard(){
+isTransitioning = true;
+elTransition.classList.add("active");
+setTimeout(function(){
+updateProgress();
+elProgress.style.width = "100%";
+showScreen(elEnd);
+setTimeout(function(){
+elTransition.classList.remove("active");
+isTransitioning = false;
+}, 400);
+}, 400);
+}
+
+function startExperience(){
+isTransitioning = true;
+elTransition.classList.add("active");
+setTimeout(function(){
+showScreen(elScene);
+loadScene(0);
+setTimeout(function(){
+elTransition.classList.remove("active");
+isTransitioning = false;
+}, 400);
+}, 400);
+}
+
+function restartExperience(){
+currentScene = -1;
+currentDialogue = -1;
+isTransitioning = true;
+elTransition.classList.add("active");
+setTimeout(function(){
+elProgress.style.width = "0%";
+showScreen(elTitle);
+setTimeout(function(){
+elTransition.classList.remove("active");
+isTransitioning = false;
+}, 400);
+}, 400);
+}
+
+elApp.addEventListener("pointerdown", function(e){
+if(isTransitioning) return;
+if(elScene.classList.contains("active")){
+advanceDialogue();
+}
+});
+
+document.getElementById("btn-start").addEventListener("pointerdown", function(e){
+e.stopPropagation();
+startExperience();
+});
+
+document.getElementById("btn-restart").addEventListener("pointerdown", function(e){
+e.stopPropagation();
+restartExperience();
+});
+
+window.addEventListener("load", function(){
+try{
+showScreen(elTitle);
+}catch(error){
+console.error(error);
+var fallback = document.createElement("div");
+fallback.style.cssText = "position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#fff;color:#111;font-size:18px;padding:24px;text-align:center;z-index:9999;";
+fallback.textContent = "哎呀，出错了，请重启试试吧~";
+document.body.innerHTML = "";
+document.body.appendChild(fallback);
+}
+});
+})();
+</script>
+</body>
+</html>
