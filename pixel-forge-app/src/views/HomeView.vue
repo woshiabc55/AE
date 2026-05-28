@@ -6,8 +6,11 @@ const router = useRouter()
 const hoverItem = ref<string | null>(null)
 
 const navItems = [
+  { id: 'tool', label: '稻锊 · 工具', icon: '◈', color: '#7cff6b', desc: 'MD文档查看 · 图像预览' },
   { id: 'model-editor', label: '模型编辑器', icon: '◈', color: '#ffaa00', desc: '稻锊 · Canvas Pixel 模型编辑' },
   { id: 'editor', label: '像素编辑器', icon: '✏', color: '#00ff88', desc: '像素绘制 + 5种效果渲染' },
+  { id: 'dataset', label: '数据集标注', icon: '▣', color: '#ff6b9d', desc: '图文→标注数据制作' },
+  { id: 'training', label: '训练管线', icon: '⬡', color: '#a29bfe', desc: 'Node训练 + 空链后端' },
   { id: 'docs', label: 'MCOP文档', icon: '◈', color: '#44ddff', desc: '7种标记格式 · 57个文档' },
   { id: 'versions', label: '版本迭代', icon: '▶', color: '#ffaa00', desc: 'v1-v7 七个迭代版本' },
 ]

@@ -22,6 +22,7 @@ provide('exitFullscreen', exitFullscreen)
 
 const navItems = [
   { id: 'home', label: '首页', icon: '⌂' },
+  { id: 'tool', label: '工具', icon: '◈' },
   { id: 'editor', label: '编辑器', icon: '✏' },
   { id: 'model-editor', label: '模型', icon: '◈' },
   { id: 'dataset', label: '数据', icon: '▣' },
@@ -31,6 +32,7 @@ const navItems = [
 ]
 
 const originMenuItems = [
+  { id: 'tool', label: '稻锊 · 主要工具', desc: 'MD文档查看 + 图像预览', icon: '◈' },
   { id: 'model-editor', label: '模型编辑器', desc: 'Canvas Pixel 模型编辑', icon: '◈' },
   { id: 'editor', label: '像素编辑器', desc: '像素绘制 + 效果渲染', icon: '✏' },
   { id: 'dataset', label: '数据集标注', desc: '图文→标注数据制作', icon: '▣' },
