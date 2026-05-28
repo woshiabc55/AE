@@ -1,0 +1,21 @@
+{
+  "ds_22221cb49766": {
+    "id": "ds_22221cb49766",
+    "name": "da",
+    "description": "dw",
+    "type": "image-only",
+    "format": "jsonl",
+    "tags": [],
+    "created": "2026-05-28T06:35:49.997Z",
+    "updated": "2026-05-28T06:35:49.997Z",
+    "stats": {
+      "total": 0,
+      "images": 0,
+      "texts": 0,
+      "annotated": 0,
+      "sizeBytes": 0
+    },
+    "annotations": [],
+    "exportReady": false
+  }
+}
