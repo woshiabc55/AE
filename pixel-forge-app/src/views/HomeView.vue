@@ -6,6 +6,7 @@ const router = useRouter()
 const hoverItem = ref<string | null>(null)
 
 const navItems = [
+  { id: 'model-editor', label: '模型编辑器', icon: '◈', color: '#ffaa00', desc: '稻锊 · Canvas Pixel 模型编辑' },
   { id: 'editor', label: '像素编辑器', icon: '✏', color: '#00ff88', desc: '像素绘制 + 5种效果渲染' },
   { id: 'docs', label: 'MCOP文档', icon: '◈', color: '#44ddff', desc: '7种标记格式 · 57个文档' },
   { id: 'versions', label: '版本迭代', icon: '▶', color: '#ffaa00', desc: 'v1-v7 七个迭代版本' },
@@ -15,8 +16,8 @@ const navItems = [
 <template>
   <div class="home">
     <div class="hero">
-      <h1 class="logo">PIXEL FORGE</h1>
-      <p class="sub">像素风图像转动画 · Vue + TypeScript</p>
+      <h1 class="logo">稻锊 模型 编辑器</h1>
+      <p class="sub">DAOLUE · MODEL EDITOR · Canvas Pixel System</p>
     </div>
     <div class="nav-grid">
       <div
@@ -52,10 +53,10 @@ const navItems = [
 .hero { text-align: center; }
 .logo {
   font-family: 'Press Start 2P', monospace;
-  font-size: 28px;
-  color: #7cff6b;
-  text-shadow: 0 0 20px rgba(124,255,107,0.4);
-  letter-spacing: 4px;
+  font-size: 22px;
+  color: #ffaa00;
+  text-shadow: 0 0 30px rgba(255,170,0,0.5), 0 0 60px rgba(255,170,0,0.2);
+  letter-spacing: 6px;
   margin-bottom: 12px;
 }
 .sub {
@@ -84,10 +85,10 @@ const navItems = [
   gap: 10px;
 }
 .nav-card.hover {
-  border-color: #00ff88;
-  background: rgba(0,255,136,0.04);
+  border-color: #ffaa00;
+  background: rgba(255,170,0,0.04);
   transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(0,255,136,0.08);
+  box-shadow: 0 8px 30px rgba(255,170,0,0.08);
 }
 .nav-icon { font-size: 28px; }
 .nav-label {

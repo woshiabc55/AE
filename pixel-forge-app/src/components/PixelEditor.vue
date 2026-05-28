@@ -32,7 +32,6 @@ let frameCount = 0
 let fpsTime = 0
 
 const leftTab = ref('docs')
-const rightTab = ref('effect')
 const expandedGroups = ref<Set<string>>(new Set(MCOP_FORMATS.map(f => f.ext)))
 const selectedDoc = ref<{ ext: string; id: string; name: string } | null>(null)
 
@@ -339,13 +338,8 @@ watch([canvasW, canvasH], () => { initCanvas() })
       </div>
 
       <aside class="right-panel">
-        <div class="rp-tabs">
-          <div class="rp-tab" :class="{ active: rightTab === 'effect' }" @click="rightTab = 'effect'">效果</div>
-          <div class="rp-tab" :class="{ active: rightTab === 'pipeline' }" @click="rightTab = 'pipeline'">管线</div>
-          <div class="rp-tab" :class="{ active: rightTab === 'scene' }" @click="rightTab = 'scene'">场景</div>
-        </div>
         <div class="rp-content">
-          <template v-if="rightTab === 'effect' && currentEffectInfo">
+          <template v-if="currentEffectInfo">
             <div class="prop-section">
               <div class="prop-title" :style="{ color: '#ff6b9d' }">KELEX: {{ currentEffectInfo.name }}</div>
               <div class="prop-body">
@@ -366,44 +360,17 @@ watch([canvasW, canvasH], () => { initCanvas() })
                 </div>
               </div>
             </div>
-            <div class="prop-section">
-              <div class="prop-title" style="color:#00ff88">画笔颜色</div>
-              <div class="prop-body">
-                <div class="prop-row">
-                  <span class="prop-label">当前色</span>
-                  <input class="prop-color" type="color" v-model="currentColor">
-                  <span class="prop-val">{{ currentColor }}</span>
-                </div>
-              </div>
-            </div>
           </template>
-          <template v-if="rightTab === 'pipeline'">
-            <div class="prop-section">
-              <div class="prop-title" style="color:#00ff88">RPA: 渲染管线</div>
-              <div class="prop-body">
-                <div class="pipe-stage active"><span class="pipe-num">1</span>source<input></div>
-                <div class="pipe-arrow">↓</div>
-                <div class="pipe-stage active"><span class="pipe-num">2</span>effect</div>
-                <div class="pipe-arrow">↓</div>
-                <div class="pipe-stage"><span class="pipe-num">3</span>output</div>
+          <div class="prop-section">
+            <div class="prop-title" style="color:#00ff88">画笔颜色</div>
+            <div class="prop-body">
+              <div class="prop-row">
+                <span class="prop-label">当前色</span>
+                <input class="prop-color" type="color" v-model="currentColor">
+                <span class="prop-val">{{ currentColor }}</span>
               </div>
             </div>
-          </template>
-          <template v-if="rightTab === 'scene'">
-            <div class="prop-section">
-              <div class="prop-title" style="color:#44ddff">SELENA: 场景配置</div>
-              <div class="prop-body">
-                <div class="prop-row"><span class="prop-label">3D面</span><select class="prop-select"><option>plane</option><option>sphere</option><option>cylinder</option><option>box</option><option>torus</option></select></div>
-                <div class="prop-row"><span class="prop-label">力场</span><select class="prop-select"><option>none</option><option>gravity</option><option>wind</option><option>explode</option><option>wave3d</option><option>spring</option></select></div>
-              </div>
-            </div>
-            <div class="prop-section">
-              <div class="prop-title" style="color:#ff3366">OPIC: 纹理映射</div>
-              <div class="prop-body">
-                <div class="prop-row"><span class="prop-label">纹理</span><select class="prop-select"><option>pixel-default</option><option>rings-neon</option><option>spiral-cyber</option><option>checkerboard-mono</option><option>gradient-sunset</option><option>stripe-signal</option></select></div>
-              </div>
-            </div>
-          </template>
+          </div>
         </div>
       </aside>
     </div>
@@ -480,10 +447,6 @@ watch([canvasW, canvasH], () => { initCanvas() })
 .canvas-area::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(0,255,136,0.015) 1px, transparent 1px); background-size: 20px 20px; pointer-events: none; }
 .canvas-area canvas { image-rendering: pixelated; image-rendering: crisp-edges; border: 1px solid #253525; box-shadow: 0 0 40px rgba(0,255,136,0.06), 0 0 80px rgba(0,0,0,0.4); cursor: crosshair; position: relative; z-index: 1; }
 .right-panel { width: 260px; background: #0a0a12; border-left: 1px solid #1a2a1a; display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; }
-.rp-tabs { display: flex; border-bottom: 1px solid #1a2a1a; flex-shrink: 0; }
-.rp-tab { flex: 1; padding: 6px 0; font-family: 'Press Start 2P', monospace; font-size: 5px; text-align: center; color: #3a5a3a; cursor: pointer; transition: all 0.2s; letter-spacing: 1px; border-bottom: 2px solid transparent; }
-.rp-tab:hover { color: #6a8a6a; }
-.rp-tab.active { color: #44ddff; border-bottom-color: #44ddff; background: rgba(68,221,255,0.03); }
 .rp-content { flex: 1; overflow-y: auto; padding: 8px; }
 .prop-section { margin-bottom: 10px; border: 1px solid #1a2a1a; border-radius: 3px; overflow: hidden; }
 .prop-title { font-family: 'Press Start 2P', monospace; font-size: 6px; padding: 6px 8px; letter-spacing: 1px; background: #0f0f1a; }
@@ -499,11 +462,6 @@ watch([canvasW, canvasH], () => { initCanvas() })
 .toggle.on { background: rgba(0,255,136,0.3); }
 .toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; background: #3a5a3a; border-radius: 50%; transition: all 0.2s; }
 .toggle.on::after { left: 18px; background: #00ff88; }
-.pipe-stage { display: flex; align-items: center; gap: 4px; padding: 3px 6px; border: 1px solid #1a2a1a; border-radius: 2px; font-family: 'Press Start 2P', monospace; font-size: 5px; color: #3a5a3a; margin-bottom: 3px; }
-.pipe-stage.active { border-color: #00ff88; color: #00ff88; background: rgba(0,255,136,0.06); }
-.pipe-num { width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; background: #1a2a1a; border-radius: 50%; font-size: 6px; }
-.pipe-stage.active .pipe-num { background: #00ff88; color: #050508; }
-.pipe-arrow { text-align: center; color: #3a5a3a; font-size: 10px; margin: 2px 0; }
 .statusbar { height: 22px; background: #0a0a12; border-top: 1px solid #1a2a1a; display: flex; align-items: center; padding: 0 12px; font-family: 'Press Start 2P', monospace; font-size: 5px; color: #3a5a3a; letter-spacing: 1px; gap: 14px; flex-shrink: 0; }
 .indicator { width: 6px; height: 6px; border-radius: 50%; }
 </style>

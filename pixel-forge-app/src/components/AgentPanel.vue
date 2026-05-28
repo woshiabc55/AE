@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
-import { getAllAgents, getAgentsByLayer, getLayerColor, onAnyAgentMessage, type Agent, type AgentMessage } from '../core/agents'
+import { ref, computed, watch, nextTick } from 'vue'
+import { getAllAgents, getAgentsByLayer, getLayerColor, type Agent } from '../core/agents'
 
 const props = defineProps<{
   visible: boolean
@@ -14,9 +14,6 @@ const emit = defineEmits<{
 }>()
 
 const selectedLayer = ref<Agent['layer'] | 'all'>('all')
-const messages = ref<AgentMessage[]>([])
-const maxMessages = 50
-let unsub: (() => void) | null = null
 const panelRef = ref<HTMLElement | null>(null)
 
 const agents = computed(() => {
@@ -33,15 +30,6 @@ const layerGroups = computed(() => {
   return groups
 })
 
-onMounted(() => {
-  unsub = onAnyAgentMessage((msg) => {
-    messages.value.unshift(msg)
-    if (messages.value.length > maxMessages) {
-      messages.value = messages.value.slice(0, maxMessages)
-    }
-  })
-})
-
 watch(() => props.visible, (val) => {
   if (val) {
     nextTick(() => {
@@ -49,15 +37,6 @@ watch(() => props.visible, (val) => {
     })
   }
 })
-
-onUnmounted(() => {
-  if (unsub) unsub()
-})
-
-function formatTime(ts: number): string {
-  const d = new Date(ts)
-  return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}:${d.getSeconds().toString().padStart(2, '0')}.${d.getMilliseconds().toString().padStart(3, '0')}`
-}
 
 function handleKeydown(e: KeyboardEvent) {
   if (e.key === 'Escape') emit('close')
@@ -105,19 +84,7 @@ function handleKeydown(e: KeyboardEvent) {
             </div>
           </div>
 
-          <div class="af-section">
-            <div class="af-section-title" style="color:#ffaa00">⚡ MESSAGE · 通信日志</div>
-            <div class="af-section-body af-msg-body">
-              <div v-if="messages.length === 0" class="msg-empty">等待消息...</div>
-              <div v-for="(msg, i) in messages" :key="i" class="msg-row">
-                <span class="msg-time">{{ formatTime(msg.timestamp) }}</span>
-                <span class="msg-from" :style="{ color: '#a29bfe' }">{{ msg.from }}</span>
-                <span class="msg-arrow">→</span>
-                <span class="msg-to" :style="{ color: '#44ddff' }">{{ msg.to }}</span>
-                <span class="msg-event">{{ msg.event }}</span>
-              </div>
-            </div>
-          </div>
+          
         </div>
       </div>
     </div>
@@ -255,9 +222,6 @@ function handleKeydown(e: KeyboardEvent) {
   flex: 1;
   min-height: 0;
 }
-.af-msg-body {
-  max-height: 300px;
-}
 .agent-list {
   display: flex;
   flex-direction: column;
@@ -298,44 +262,4 @@ function handleKeydown(e: KeyboardEvent) {
 .agent-layer-badge.core { background: rgba(162,155,254,0.15); color: #a29bfe; }
 .agent-layer-badge.effect { background: rgba(255,107,157,0.15); color: #ff6b9d; }
 .agent-layer-badge.arch { background: rgba(68,221,255,0.15); color: #44ddff; }
-
-.msg-empty {
-  font-size: 10px;
-  color: #2a3a2a;
-  text-align: center;
-  padding: 20px 0;
-}
-.msg-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 2px 0;
-  font-size: 9px;
-  border-bottom: 1px solid rgba(26,42,26,0.5);
-}
-.msg-time {
-  font-family: 'Fira Code', monospace;
-  font-size: 8px;
-  color: #2a3a2a;
-  min-width: 90px;
-}
-.msg-from {
-  font-family: 'Fira Code', monospace;
-  font-size: 9px;
-  min-width: 60px;
-}
-.msg-arrow {
-  color: #3a5a3a;
-  font-size: 10px;
-}
-.msg-to {
-  font-family: 'Fira Code', monospace;
-  font-size: 9px;
-  min-width: 60px;
-}
-.msg-event {
-  font-family: 'Fira Code', monospace;
-  font-size: 9px;
-  color: #ffaa00;
-}
 </style>
