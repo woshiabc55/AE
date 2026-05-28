@@ -24,6 +24,8 @@ const navItems = [
   { id: 'home', label: '首页', icon: '⌂' },
   { id: 'editor', label: '编辑器', icon: '✏' },
   { id: 'model-editor', label: '模型', icon: '◈' },
+  { id: 'dataset', label: '数据', icon: '▣' },
+  { id: 'training', label: '训练', icon: '⬡' },
   { id: 'docs', label: '文档', icon: '◈' },
   { id: 'versions', label: '版本', icon: '▶' },
 ]
@@ -31,6 +33,8 @@ const navItems = [
 const originMenuItems = [
   { id: 'model-editor', label: '模型编辑器', desc: 'Canvas Pixel 模型编辑', icon: '◈' },
   { id: 'editor', label: '像素编辑器', desc: '像素绘制 + 效果渲染', icon: '✏' },
+  { id: 'dataset', label: '数据集标注', desc: '图文→标注数据制作', icon: '▣' },
+  { id: 'training', label: '训练管线', desc: 'Node训练 + 空链后端', icon: '⬡' },
   { id: 'versions', label: '版本迭代', desc: 'v1-v7 迭代预览', icon: '▶' },
   { id: 'docs', label: 'MCOP文档', desc: '文档框架浏览', icon: '◈' },
 ]

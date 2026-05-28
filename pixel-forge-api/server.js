@@ -7,6 +7,9 @@ const AssetManager = require('./lib/AssetManager');
 const SceneManager = require('./lib/SceneManager');
 const EffectRegistry = require('./lib/EffectRegistry');
 const { DocPlanner, SelectDraft } = require('./lib/DocPlanner');
+const DatasetManager = require('./lib/DatasetManager');
+const { TrainingPipeline } = require('./lib/TrainingNode');
+const EmptyChain = require('./lib/EmptyChain');
 
 const app = express();
 const PORT = 4000;
@@ -25,11 +28,27 @@ const tsAssets = new AssetManager(TS_DIR);
 const sceneManager = new SceneManager(SENIK_DIR);
 const effectRegistry = new EffectRegistry(SENIK_DIR);
 const docPlanner = new DocPlanner(SENIK_DIR);
+const datasetManager = new DatasetManager(SENIK_DIR);
+const trainingPipeline = new TrainingPipeline();
+const emptyChain = new EmptyChain();
 
 const upload = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
       const dir = path.join(SENIK_DIR, req.body.directory || 'scenes');
+      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+      cb(null, dir);
+    },
+    filename: (req, file, cb) => cb(null, file.originalname)
+  })
+});
+
+const datasetUpload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      const dsId = req.params.id || req.body.datasetId;
+      if (!dsId) return cb(new Error('datasetId required'));
+      const dir = path.join(SENIK_DIR, 'datasets', dsId, 'images');
       if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
       cb(null, dir);
     },
@@ -47,13 +66,19 @@ app.get('/api/status', (req, res) => {
       SceneManager: 'active',
       EffectRegistry: `active (${effectRegistry.listAll().total} effects)`,
       DocPlanner: 'active',
-      SelectDraft: 'active'
+      SelectDraft: 'active',
+      DatasetManager: `active (${datasetManager.getStats().totalDatasets} datasets)`,
+      TrainingPipeline: `active (${trainingPipeline.nodes.size} nodes)`,
+      EmptyChain: `active (${emptyChain.getStats().totalChains} chains)`,
     },
     stats: {
       senikFiles: senikAssets.tree('').length,
       scenes: sceneManager.list().length,
       effects: effectRegistry.listAll().total,
-      drafts: docPlanner.getStats().total
+      drafts: docPlanner.getStats().total,
+      ...datasetManager.getStats(),
+      chains: emptyChain.getStats().totalChains,
+      pipelines: trainingPipeline.nodes.size,
     }
   });
 });
@@ -129,6 +154,57 @@ app.post('/api/specs/modules', (req, res) => res.json(docPlanner.createModuleSpe
 app.get('/api/specs/effects', (req, res) => res.json(docPlanner.getEffectSpecs()));
 app.post('/api/specs/effects', (req, res) => res.json(docPlanner.createEffectSpec(req.body)));
 
+// === Datasets: 数据集处理 ===
+app.get('/api/datasets', (req, res) => res.json(datasetManager.list()));
+app.get('/api/datasets/stats', (req, res) => res.json(datasetManager.getStats()));
+app.get('/api/datasets/:id', (req, res) => { const d = datasetManager.get(req.params.id); d ? res.json(d) : res.status(404).json({ error: 'not found' }); });
+app.post('/api/datasets', (req, res) => res.json(datasetManager.create(req.body)));
+app.delete('/api/datasets/:id', (req, res) => res.json(datasetManager.delete(req.params.id)));
+
+app.post('/api/datasets/:id/images', datasetUpload.single('file'), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'no file' });
+  res.json(datasetManager.addImage(req.params.id, req.file.originalname, fs.readFileSync(req.file.path)));
+});
+app.post('/api/datasets/:id/texts', (req, res) => {
+  const { name, content } = req.body;
+  if (!name || !content) return res.status(400).json({ error: 'name and content required' });
+  res.json(datasetManager.addText(req.params.id, name, content));
+});
+
+app.post('/api/datasets/:id/annotate', (req, res) => res.json(datasetManager.annotate(req.params.id, req.body)));
+app.post('/api/datasets/:id/annotate-batch', (req, res) => res.json(datasetManager.batchAnnotate(req.params.id, req.body.annotations || [])));
+app.post('/api/datasets/:id/auto-label', (req, res) => res.json(datasetManager.autoLabel(req.params.id, req.body)));
+
+app.post('/api/datasets/:id/export', (req, res) => {
+  const format = req.body.format || 'jsonl';
+  const result = datasetManager.exportDataset(req.params.id, format);
+  result.ok ? res.json(result) : res.status(400).json(result);
+});
+
+// === Training Pipeline: 节点训练管线 ===
+app.get('/api/nodes', (req, res) => res.json(trainingPipeline.toJSON()));
+app.post('/api/nodes', (req, res) => res.json(trainingPipeline.createNode(req.body)));
+app.delete('/api/nodes/:id', (req, res) => res.json(trainingPipeline.removeNode(req.params.id)));
+app.post('/api/nodes/connect', (req, res) => res.json(trainingPipeline.connect(req.body.from, req.body.to)));
+app.get('/api/nodes/:id', (req, res) => { const n = trainingPipeline.getNode(req.params.id); n ? res.json(n.toJSON()) : res.status(404).json({ error: 'not found' }); });
+app.post('/api/nodes/run', async (req, res) => {
+  const result = await trainingPipeline.run(req.body.datasetSize || 100);
+  res.json(result);
+});
+
+// === Empty Chain: 空链云端处理 ===
+app.get('/api/chains', (req, res) => res.json(emptyChain.list()));
+app.get('/api/chains/stats', (req, res) => res.json(emptyChain.getStats()));
+app.post('/api/chains', (req, res) => res.json(emptyChain.create(req.body)));
+app.delete('/api/chains/:id', (req, res) => res.json(emptyChain.delete(req.params.id)));
+app.get('/api/chains/:id', (req, res) => { const c = emptyChain.get(req.params.id); c ? res.json(c) : res.status(404).json({ error: 'not found' }); });
+app.post('/api/chains/:id/links', (req, res) => res.json(emptyChain.addLink(req.params.id, req.body)));
+app.delete('/api/chains/:id/links/:linkId', (req, res) => res.json(emptyChain.removeLink(req.params.id, req.params.linkId)));
+app.post('/api/chains/:id/execute', async (req, res) => {
+  const result = await emptyChain.execute(req.params.id, req.body.input || {});
+  res.json(result);
+});
+
 // === Project Files ===
 app.get('/api/projects/tree', (req, res) => res.json({ root: 'pixel-forge-modules', children: projectAssets.tree('') }));
 app.get('/api/projects/read', (req, res) => { const d = projectAssets.read(req.query.path || ''); d ? res.json(d) : res.status(404).json({ error: 'not found' }); });
@@ -147,7 +223,8 @@ app.post('/api/render/preview', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`PIXEL FORGE API Server running on http://localhost:${PORT}`);
-  console.log(`Modules: AssetManager, SceneManager, EffectRegistry, DocPlanner, SelectDraft`);
+  console.log(`Modules: AssetManager, SceneManager, EffectRegistry, DocPlanner, SelectDraft, DatasetManager, TrainingPipeline, EmptyChain`);
   console.log(`Senik: ${SENIK_DIR}`);
   console.log(`Scenes: ${sceneManager.list().length} | Effects: ${effectRegistry.listAll().total} | Drafts: ${docPlanner.getStats().total}`);
+  console.log(`Datasets: ${datasetManager.getStats().totalDatasets} | Nodes: ${trainingPipeline.nodes.size} | Chains: ${emptyChain.getStats().totalChains}`);
 });

@@ -6,15 +6,15 @@ const versionPaths = [
   '/v5-plugin/', '/v6-physics3d/', '/v7-software-model/',
 ]
 
+const proxy: Record<string, { target: string; changeOrigin: boolean }> = {}
+
+for (const path of versionPaths) {
+  proxy[path] = { target: 'http://localhost:8081', changeOrigin: true }
+}
+
+proxy['/api'] = { target: 'http://localhost:4000', changeOrigin: true }
+
 export default defineConfig({
   plugins: [vue()],
-  server: {
-    proxy: versionPaths.reduce((acc, path) => {
-      acc[path] = {
-        target: 'http://localhost:8081',
-        changeOrigin: true,
-      }
-      return acc
-    }, {} as Record<string, { target: string; changeOrigin: boolean }>),
-  },
+  server: { proxy },
 })
