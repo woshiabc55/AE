@@ -16,6 +16,22 @@
 		{
 			"Name": "QuixelBridge",
 			"Enabled": true
+		},
+		{
+			"Name": "RemoteControlApi",
+			"Enabled": true
+		},
+		{
+			"Name": "PythonEditorScriptPlugin",
+			"Enabled": true
+		},
+		{
+			"Name": "EditorScriptingUtilities",
+			"Enabled": true
+		},
+		{
+			"Name": "RemoteControlWebInterface",
+			"Enabled": true
 		}
 	]
 }

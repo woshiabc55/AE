@@ -1,0 +1,11 @@
+{
+	"mcpServers": {
+		"unreal": {
+			"command": "npx",
+			"args": [
+				"-y",
+				"@runreal/unreal-mcp"
+			]
+		}
+	}
+}
