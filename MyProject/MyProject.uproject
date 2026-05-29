@@ -1,0 +1,21 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "5.4",
+	"Category": "Games",
+	"Name": "MyProject",
+	"TargetPlatforms": [
+		"Windows",
+		"Linux",
+		"Mac"
+	],
+	"Plugins": [
+		{
+			"Name": "Bridge",
+			"Enabled": true
+		},
+		{
+			"Name": "QuixelBridge",
+			"Enabled": true
+		}
+	]
+}
