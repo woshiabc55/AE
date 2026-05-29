@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+:root {
+  font-family: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.8;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #1a1410;
+  color: #F5F0E8;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  background-color: #1a1410;
+}
+
+::selection {
+  background-color: rgba(74, 124, 89, 0.4);
+  color: #F5F0E8;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1410;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4A7C59;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #B0C4B1;
+}
+
+@layer components {
+  .story-title {
+    @apply font-serif font-bold tracking-wider;
+  }
+
+  .story-subtitle {
+    @apply font-serif font-medium tracking-wide;
+  }
+
+  .story-body {
+    @apply font-sans font-light leading-relaxed;
+  }
+
+  .story-quote {
+    @apply font-serif italic tracking-widest;
+  }
+
+  .section-container {
+    @apply relative min-h-screen w-full overflow-hidden;
+  }
+
+  .glow-text {
+    text-shadow: 0 0 20px rgba(212, 98, 43, 0.5), 0 0 40px rgba(212, 98, 43, 0.3);
+  }
+
+  .celadon-glow {
+    text-shadow: 0 0 20px rgba(74, 124, 89, 0.5), 0 0 40px rgba(74, 124, 89, 0.3);
+  }
+
+  .gold-glow {
+    text-shadow: 0 0 15px rgba(201, 168, 76, 0.6), 0 0 30px rgba(201, 168, 76, 0.3);
+  }
+}
