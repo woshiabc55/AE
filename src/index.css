@@ -1,0 +1,215 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+
+:root {
+  --qblue: #1a3a6b;
+  --qblue-mid: #3a6aaa;
+  --qblue-light: #7aaad4;
+  --qblue-pale: #a8c8e8;
+  --grid-bg: #f0f0f0;
+  --grid-primary: #d0d0d0;
+  --grid-secondary: #e0e0e0;
+  --ink: #1a1a1a;
+  --paper: #ffffff;
+  --paper-warm: #faf8f5;
+  --shadow-gray: #909090;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--grid-bg);
+  color: var(--ink);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-mono-cn {
+  font-family: 'JetBrains Mono', 'Noto Sans SC', monospace;
+}
+
+.grid-bg {
+  background-color: var(--grid-bg);
+  background-image:
+    linear-gradient(var(--grid-secondary) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-secondary) 1px, transparent 1px),
+    linear-gradient(var(--grid-primary) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-primary) 1px, transparent 1px);
+  background-size:
+    5px 5px,
+    5px 5px,
+    20px 20px,
+    20px 20px;
+}
+
+.paper-card {
+  background: var(--paper);
+  border: 0.5px solid var(--ink);
+  box-shadow: 2px 3px 8px rgba(0, 0, 0, 0.18);
+  position: relative;
+}
+
+.paper-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 6px;
+  height: 6px;
+  background: linear-gradient(135deg, var(--paper) 50%, var(--grid-bg) 50%);
+}
+
+.corner-bracket {
+  position: relative;
+}
+
+.corner-bracket::before,
+.corner-bracket::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-color: var(--ink);
+  border-style: solid;
+}
+
+.corner-bracket::before {
+  top: -1px;
+  left: -1px;
+  border-width: 1px 0 0 1px;
+}
+
+.corner-bracket::after {
+  bottom: -1px;
+  right: -1px;
+  border-width: 0 1px 1px 0;
+}
+
+.qblue-accent {
+  color: var(--qblue);
+}
+
+.qblue-border {
+  border-color: var(--qblue);
+}
+
+.qblue-bg {
+  background-color: var(--qblue);
+}
+
+.tag-label {
+  display: inline-block;
+  padding: 2px 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  border: 0.5px solid var(--ink);
+  background: var(--paper);
+  transform: rotate(-1deg);
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.12);
+}
+
+.prompt-text {
+  font-family: 'JetBrains Mono', 'Noto Sans SC', monospace;
+  font-size: 13px;
+  line-height: 1.8;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.param-highlight {
+  display: inline-block;
+  padding: 1px 6px;
+  background: rgba(26, 58, 107, 0.08);
+  border: 0.5px solid var(--qblue-light);
+  border-radius: 2px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--qblue);
+}
+
+.crop-mark {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+}
+
+.crop-mark-tl {
+  top: 10px;
+  left: 10px;
+  border-top: 0.5px solid var(--ink);
+  border-left: 0.5px solid var(--ink);
+}
+
+.crop-mark-tr {
+  top: 10px;
+  right: 10px;
+  border-top: 0.5px solid var(--ink);
+  border-right: 0.5px solid var(--ink);
+}
+
+.crop-mark-bl {
+  bottom: 10px;
+  left: 10px;
+  border-bottom: 0.5px solid var(--ink);
+  border-left: 0.5px solid var(--ink);
+}
+
+.crop-mark-br {
+  bottom: 10px;
+  right: 10px;
+  border-bottom: 0.5px solid var(--ink);
+  border-right: 0.5px solid var(--ink);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+@keyframes copyFlash {
+  0% { background-color: rgba(26, 58, 107, 0.15); }
+  100% { background-color: transparent; }
+}
+
+.copy-flash {
+  animation: copyFlash 0.6s ease-out;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: var(--grid-bg);
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: var(--shadow-gray);
+  border-radius: 2px;
+}
