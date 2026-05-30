@@ -1,9 +1,11 @@
-import type { CharacterId, Expression } from '@/engine/types'
+import { useEffect, useState } from 'react'
+import type { CharacterId, Expression, CharacterAnimData } from '@/engine/types'
 import { characters } from '@/engine/types'
 
 interface CharacterLayerProps {
   visibleCharacters: CharacterId[]
   expressions: Record<CharacterId, Expression>
+  characterAnims?: Record<CharacterId, CharacterAnimData>
 }
 
 const characterSilhouettes: Record<CharacterId, { shape: string; accent: string; detail: string }> = {
@@ -68,7 +70,41 @@ function getExpressionPath(expr: Expression): string {
   }
 }
 
-export default function CharacterLayer({ visibleCharacters, expressions }: CharacterLayerProps) {
+function getEnterTransform(from: string): string {
+  switch (from) {
+    case 'left': return 'translateX(-120%)'
+    case 'right': return 'translateX(120%)'
+    case 'bottom': return 'translateY(100%)'
+    case 'fade': return 'scale(0.8)'
+    default: return 'translateY(30px)'
+  }
+}
+
+export default function CharacterLayer({ visibleCharacters, expressions, characterAnims }: CharacterLayerProps) {
+  const [prevVisible, setPrevVisible] = useState<CharacterId[]>([])
+  const [enteringChars, setEnteringChars] = useState<Set<CharacterId>>(new Set())
+
+  useEffect(() => {
+    const newChars = visibleCharacters.filter((id) => !prevVisible.includes(id))
+    if (newChars.length > 0) {
+      setEnteringChars(new Set(newChars))
+      const timers = newChars.map((id) => {
+        const anim = characterAnims?.[id]
+        const duration = anim?.enterDuration || 700
+        return setTimeout(() => {
+          setEnteringChars((prev) => {
+            const next = new Set(prev)
+            next.delete(id)
+            return next
+          })
+        }, duration)
+      })
+      setPrevVisible(visibleCharacters)
+      return () => timers.forEach(clearTimeout)
+    }
+    setPrevVisible(visibleCharacters)
+  }, [visibleCharacters, characterAnims])
+
   const positionMap: Record<string, number> = {}
   const leftChars = visibleCharacters.filter((id) => characters[id]?.side === 'left')
   const centerChars = visibleCharacters.filter((id) => characters[id]?.side === 'center')
@@ -94,22 +130,34 @@ export default function CharacterLayer({ visibleCharacters, expressions }: Chara
 
         const xPos = positionMap[id] ?? 50
         const expr = expressions[id] || 'neutral'
+        const anim = characterAnims?.[id]
+        const isEntering = enteringChars.has(id)
+        const glowColor = anim?.glowColor || silhouette.accent
+        const glowIntensity = anim?.glowIntensity || 0
+
+        const enterFrom = anim?.enterFrom || 'fade'
+        const enterDuration = anim?.enterDuration || 700
 
         return (
           <div
             key={id}
-            className="absolute bottom-0 transition-all duration-700 ease-out"
+            className="absolute bottom-0"
             style={{
               left: `${xPos}%`,
-              transform: 'translateX(-50%)',
+              transform: `translateX(-50%) ${isEntering ? getEnterTransform(enterFrom) : 'translateY(0)'}`,
+              opacity: isEntering ? 0 : 1,
               width: '180px',
               height: '70%',
+              transition: `all ${enterDuration}ms cubic-bezier(0.16, 1, 0.3, 1)`,
             }}
           >
             <svg
               viewBox="0 0 100 100"
               className="w-full h-full"
               preserveAspectRatio="xMidYMax meet"
+              style={anim?.breathe ? {
+                animation: 'breathe 3s ease-in-out infinite',
+              } : undefined}
             >
               <defs>
                 <linearGradient id={`charGrad-${id}`} x1="0%" y1="0%" x2="0%" y2="100%">
@@ -117,13 +165,22 @@ export default function CharacterLayer({ visibleCharacters, expressions }: Chara
                   <stop offset="100%" stopColor={silhouette.accent} stopOpacity="0.15" />
                 </linearGradient>
                 <filter id={`charGlow-${id}`}>
-                  <feGaussianBlur stdDeviation="2" result="blur" />
+                  <feGaussianBlur stdDeviation={2 + glowIntensity * 3} result="blur" />
                   <feMerge>
                     <feMergeNode in="blur" />
                     <feMergeNode in="SourceGraphic" />
                   </feMerge>
                 </filter>
               </defs>
+
+              {glowIntensity > 0 && (
+                <ellipse
+                  cx="50" cy="50" rx="35" ry="45"
+                  fill={glowColor}
+                  opacity={glowIntensity * 0.15}
+                  filter={`url(#charGlow-${id})`}
+                />
+              )}
 
               <path
                 d={silhouette.shape}
@@ -147,6 +204,7 @@ export default function CharacterLayer({ visibleCharacters, expressions }: Chara
                 stroke={silhouette.accent}
                 strokeWidth="1"
                 opacity="0.8"
+                style={{ transition: 'd 0.3s ease' }}
               />
 
               <circle cx="43" cy="42" r="2" fill={silhouette.accent} opacity="0.6" />
@@ -161,6 +219,13 @@ export default function CharacterLayer({ visibleCharacters, expressions }: Chara
                 {char.name}
               </span>
             </div>
+
+            <style>{`
+              @keyframes breathe {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-3px); }
+              }
+            `}</style>
           </div>
         )
       })}

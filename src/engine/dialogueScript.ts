@@ -6,17 +6,20 @@ export const dialogueScript: Record<string, DialogueLine> = {
     chapter: 'intro',
     scene: 'kiln_night',
     bgm: 'main_theme',
+    mood: 'solemn',
     text: '千年窑火，映照古今。裂痕生光，慢火传灯。',
     next: 'intro_2',
   },
   intro_2: {
     id: 'intro_2',
     scene: 'kiln_night',
+    mood: 'solemn',
     text: '南宋龙泉，章氏兄弟的窑火在此燃起。千年之后，张氏兄弟在同一片土地上，重新点燃了这炉火。',
     next: 'intro_3',
   },
   intro_3: {
     id: 'intro_3',
+    mood: 'solemn',
     text: '你想先聆听哪一段故事？',
     choices: [
       { text: '古线·章氏兄弟——裂痕如何催生至美', next: 'ancient_1' },
@@ -29,6 +32,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
     chapter: 'ancient',
     scene: 'ancient_kiln_exterior',
     bgm: 'ancient_kiln',
+    mood: 'solemn',
     showCharacters: ['zhangCunGen'],
     character: 'zhangCunGen',
     expression: 'determined',
@@ -37,12 +41,14 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   ancient_2: {
     id: 'ancient_2',
+    mood: 'solemn',
     character: 'narrator',
     text: '章村根临终握二子之手，目光如炬。窑火映照在他苍老的面容上，那是一生守窑的执念。',
     next: 'ancient_3',
   },
   ancient_3: {
     id: 'ancient_3',
+    mood: 'solemn',
     hideCharacters: ['zhangCunGen'],
     showCharacters: ['zhangShengYi'],
     character: 'zhangShengYi',
@@ -52,6 +58,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   ancient_4: {
     id: 'ancient_4',
+    mood: 'solemn',
     showCharacters: ['zhangShengEr'],
     character: 'zhangShengEr',
     expression: 'sad',
@@ -60,12 +67,14 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   ancient_5: {
     id: 'ancient_5',
+    mood: 'solemn',
     character: 'narrator',
     text: '然兄刚弟柔，性情各异。同一窑火，两种执念——终分立窑炉。',
     next: 'ancient_6',
   },
   ancient_6: {
     id: 'ancient_6',
+    mood: 'tense',
     scene: 'ancient_kiln_interior',
     character: 'narrator',
     text: '生一取铁胎紫土，生二取白胎青土。兄窑出紫口铁足，弟窑出温润粉青。',
@@ -73,6 +82,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   ancient_7: {
     id: 'ancient_7',
+    mood: 'tense',
     character: 'zhangShengYi',
     expression: 'determined',
     text: '铁胎紫土，方为正道。弟之青土，过于柔弱。',
@@ -80,6 +90,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   ancient_8: {
     id: 'ancient_8',
+    mood: 'tense',
     character: 'zhangShengEr',
     expression: 'sad',
     text: '兄长何出此言？白胎青土，亦能烧出绝世之釉。',
@@ -87,6 +98,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   ancient_9: {
     id: 'ancient_9',
+    mood: 'tense',
     character: 'narrator',
     text: '兄受皇恩贡瓷，声名远播。弟心生不平，暗夜潜入兄窑……',
     next: 'ancient_choice_1',
@@ -95,6 +107,8 @@ export const dialogueScript: Record<string, DialogueLine> = {
     id: 'ancient_choice_1',
     scene: 'kiln_night',
     bgm: 'tension',
+    mood: 'tense',
+    camera: { shake: 3, shakeDuration: 800 },
     character: 'zhangShengEr',
     expression: 'angry',
     text: '……我该不该投草木灰于兄之釉缸？',
@@ -105,6 +119,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   ancient_throw: {
     id: 'ancient_throw',
+    mood: 'tense',
     character: 'zhangShengEr',
     expression: 'angry',
     sfx: 'kiln_fire',
@@ -113,6 +128,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   ancient_hesitate: {
     id: 'ancient_hesitate',
+    mood: 'tense',
     character: 'zhangShengEr',
     expression: 'sad',
     text: '不……我不能如此。但——',
@@ -120,6 +136,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   ancient_hesitate_2: {
     id: 'ancient_hesitate_2',
+    mood: 'tense',
     character: 'narrator',
     text: '然而命运弄人，一阵夜风吹开了窑门，草木灰自行飘入了釉缸。该来的，终究会来。',
     next: 'ancient_crack',
@@ -128,6 +145,9 @@ export const dialogueScript: Record<string, DialogueLine> = {
     id: 'ancient_crack',
     scene: 'crack_closeup',
     sfx: 'crack',
+    mood: 'awestruck',
+    camera: { zoom: 1.2 },
+    light: { intensity: 0.8, pulse: true, pulseSpeed: 2 },
     hideCharacters: ['zhangShengEr'],
     character: 'narrator',
     text: '翌日开窑——釉面竟生冰裂纹路！大纹若铁线，细纹如金丝！',
@@ -135,12 +155,14 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   ancient_crack_2: {
     id: 'ancient_crack_2',
+    mood: 'awestruck',
     character: 'narrator',
     text: '"金丝铁线"自此诞生。破坏催生至美，嫉妒开出奇花。',
     next: 'ancient_crack_3',
   },
   ancient_crack_3: {
     id: 'ancient_crack_3',
+    mood: 'awestruck',
     showCharacters: ['zhangShengYi'],
     character: 'zhangShengYi',
     expression: 'surprised',
@@ -149,6 +171,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   ancient_reveal: {
     id: 'ancient_reveal',
+    mood: 'tense',
     showCharacters: ['zhangShengEr'],
     character: 'zhangShengEr',
     expression: 'guilty',
@@ -157,6 +180,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   ancient_split: {
     id: 'ancient_split',
+    mood: 'tense',
     bgm: 'tension',
     character: 'zhangShengYi',
     expression: 'angry',
@@ -165,6 +189,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   ancient_split_2: {
     id: 'ancient_split_2',
+    mood: 'tense',
     character: 'zhangShengEr',
     expression: 'sad',
     text: '我……负疚远走。另辟窑址，苦心孤诣——终烧出梅子青釉。',
@@ -173,12 +198,14 @@ export const dialogueScript: Record<string, DialogueLine> = {
   ancient_meizi: {
     id: 'ancient_meizi',
     scene: 'ancient_kiln_exterior',
+    mood: 'tense',
     character: 'narrator',
     text: '色如初梅，翠欲滴。与兄之开片并称双绝。',
     next: 'ancient_tribute',
   },
   ancient_tribute: {
     id: 'ancient_tribute',
+    mood: 'tense',
     character: 'narrator',
     text: '后朝廷加征万件贡瓷，一窑难承——兄弟被迫联手。',
     next: 'ancient_joint',
@@ -187,6 +214,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
     id: 'ancient_joint',
     scene: 'joint_firing',
     bgm: 'reunion',
+    mood: 'warm',
     showCharacters: ['zhangShengYi'],
     character: 'narrator',
     text: '合烧之日，开片与厚釉共存一器，裂纹与温润相映。',
@@ -194,6 +222,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   ancient_joint_2: {
     id: 'ancient_joint_2',
+    mood: 'warm',
     showCharacters: ['zhangShengEr'],
     character: 'narrator',
     text: '兄弟相视无言，和解于窑火之中。',
@@ -201,6 +230,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   ancient_end: {
     id: 'ancient_end',
+    mood: 'solemn',
     character: 'narrator',
     text: '章氏窑火经元外销四海、明奉旨烧造，至清渐熄沉埋，唯残片犹在。',
     next: 'after_ancient',
@@ -220,6 +250,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
     chapter: 'modern',
     scene: 'creek',
     bgm: 'modern_longquan',
+    mood: 'warm',
     showCharacters: ['zhangJi'],
     character: 'narrator',
     text: '龙泉老宅，张寄与张生元幼时以泥为伴，手印留在湿坯上，笑声融进窑烟里。',
@@ -227,6 +258,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   modern_2: {
     id: 'modern_2',
+    mood: 'warm',
     showCharacters: ['zhangShengYuan'],
     character: 'zhangJi',
     expression: 'happy',
@@ -235,6 +267,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   modern_3: {
     id: 'modern_3',
+    mood: 'warm',
     character: 'zhangShengYuan',
     expression: 'happy',
     text: '歪歪扭扭的，哈哈！不过……泥巴真好啊。',
@@ -242,6 +275,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   modern_4: {
     id: 'modern_4',
+    mood: 'warm',
     hideCharacters: ['zhangShengYuan'],
     scene: 'modern_workshop',
     character: 'narrator',
@@ -250,6 +284,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   modern_5: {
     id: 'modern_5',
+    mood: 'warm',
     showCharacters: ['master'],
     character: 'zhangJi',
     expression: 'determined',
@@ -258,6 +293,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   modern_6: {
     id: 'modern_6',
+    mood: 'warm',
     character: 'master',
     expression: 'neutral',
     sfx: 'shard',
@@ -266,6 +302,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   modern_7: {
     id: 'modern_7',
+    mood: 'warm',
     hideCharacters: ['master'],
     character: 'zhangJi',
     expression: 'determined',
@@ -274,6 +311,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   modern_8: {
     id: 'modern_8',
+    mood: 'melancholy',
     scene: 'school',
     hideCharacters: ['zhangJi'],
     character: 'narrator',
@@ -282,6 +320,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   modern_9: {
     id: 'modern_9',
+    mood: 'melancholy',
     showCharacters: ['student'],
     character: 'student',
     expression: 'surprised',
@@ -290,6 +329,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   modern_10: {
     id: 'modern_10',
+    mood: 'melancholy',
     showCharacters: ['zhangShengYuan'],
     character: 'zhangShengYuan',
     expression: 'sad',
@@ -298,6 +338,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   modern_11: {
     id: 'modern_11',
+    mood: 'melancholy',
     scene: 'creek',
     sfx: 'shard',
     hideCharacters: ['student'],
@@ -309,6 +350,9 @@ export const dialogueScript: Record<string, DialogueLine> = {
     id: 'modern_clash',
     scene: 'storm_night',
     bgm: 'tension',
+    mood: 'furious',
+    camera: { shake: 5, shakeDuration: 1000 },
+    atmosphere: { fogDensity: 0.03, vignetteStrength: 0.8 },
     hideCharacters: ['student', 'zhangShengYuan'],
     showCharacters: ['zhangJi', 'zhangShengYuan'],
     character: 'zhangJi',
@@ -318,6 +362,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   modern_clash_2: {
     id: 'modern_clash_2',
+    mood: 'furious',
     sfx: 'rain',
     character: 'zhangShengYuan',
     expression: 'determined',
@@ -326,12 +371,14 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   modern_clash_3: {
     id: 'modern_clash_3',
+    mood: 'furious',
     character: 'narrator',
     text: '暴雨夜争吵，雷声与窑火同燃。兄弟二人，各执一词。',
     next: 'modern_choice',
   },
   modern_choice: {
     id: 'modern_choice',
+    mood: 'furious',
     text: '此刻，你站在窑火与教室之间——',
     choices: [
       { text: '理解张寄——技艺需要传承', next: 'modern_side_ji', setVar: { key: 'modern_side', value: 'ji' } },
@@ -340,6 +387,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   modern_side_ji: {
     id: 'modern_side_ji',
+    mood: 'furious',
     character: 'zhangJi',
     expression: 'determined',
     text: '窑火不续，何来传承？没有人做瓷，一切都是空谈。',
@@ -347,6 +395,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   modern_side_yuan: {
     id: 'modern_side_yuan',
+    mood: 'furious',
     character: 'zhangShengYuan',
     expression: 'determined',
     text: '窑火再旺，无人添柴终将熄灭。教育是慢火，传承是长窑。',
@@ -356,6 +405,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
     id: 'modern_turning',
     scene: 'summer_camp',
     bgm: 'reunion',
+    mood: 'hopeful',
     hideCharacters: ['zhangJi', 'zhangShengYuan'],
     character: 'narrator',
     text: '转折起于张寄带残片到学校，为学生演示拉坯。泥在转盘上旋转，孩子们眼中映出千年窑火。',
@@ -363,6 +413,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   modern_turning_2: {
     id: 'modern_turning_2',
+    mood: 'hopeful',
     showCharacters: ['student'],
     character: 'student',
     expression: 'happy',
@@ -371,6 +422,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   modern_camp: {
     id: 'modern_camp',
+    mood: 'hopeful',
     hideCharacters: ['student'],
     showCharacters: ['zhangJi', 'zhangShengYuan'],
     character: 'narrator',
@@ -379,6 +431,7 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   modern_joint: {
     id: 'modern_joint',
+    mood: 'hopeful',
     scene: 'joint_firing',
     character: 'narrator',
     text: '终有一日，兄弟合烧一窑，窑门封堵，火光映照两张脸——',
@@ -386,12 +439,14 @@ export const dialogueScript: Record<string, DialogueLine> = {
   },
   modern_joint_2: {
     id: 'modern_joint_2',
+    mood: 'hopeful',
     character: 'narrator',
     text: '致敬章生一·章生二。千年窑火，同一炉焰。',
     next: 'modern_end',
   },
   modern_end: {
     id: 'modern_end',
+    mood: 'hopeful',
     character: 'narrator',
     text: '传承不在器物而在人心。守窑是传技，育人是传心。',
     next: 'after_modern',
@@ -411,30 +466,35 @@ export const dialogueScript: Record<string, DialogueLine> = {
     chapter: 'resonance',
     scene: 'resonance',
     bgm: 'reunion',
+    mood: 'awestruck',
     character: 'narrator',
     text: '千年窑火，古今共振。裂痕与传承，在此交汇。',
     next: 'resonance_2',
   },
   resonance_2: {
     id: 'resonance_2',
+    mood: 'awestruck',
     character: 'narrator',
     text: '古线以父嘱为起点，今线以泥伴为起点——皆因血脉与泥土而生。',
     next: 'resonance_3',
   },
   resonance_3: {
     id: 'resonance_3',
+    mood: 'awestruck',
     character: 'narrator',
     text: '古线以嫉妒投灰为裂痕，今线以理念碰撞为裂痕——裂痕皆因爱而生。',
     next: 'resonance_4',
   },
   resonance_4: {
     id: 'resonance_4',
+    mood: 'awestruck',
     character: 'narrator',
     text: '古线裂痕催生开片之美，今线碰撞催生教育之新——裂隙是新生的起点。',
     next: 'resonance_5',
   },
   resonance_5: {
     id: 'resonance_5',
+    mood: 'awestruck',
     character: 'narrator',
     text: '古人以合烧和解，今人以合烧致敬——同一炉火，跨越千年。',
     next: 'resonance_theme',
@@ -442,12 +502,16 @@ export const dialogueScript: Record<string, DialogueLine> = {
   resonance_theme: {
     id: 'resonance_theme',
     scene: 'joint_firing',
+    mood: 'awestruck',
+    camera: { zoom: 1.1 },
+    light: { intensity: 0.7, pulse: true, pulseSpeed: 0.3 },
     character: 'narrator',
     text: '裂而不断，和而不同。千年窑火不灭，非因火不曾熄，乃因总有人重新点燃。',
     next: 'resonance_final',
   },
   resonance_final: {
     id: 'resonance_final',
+    mood: 'awestruck',
     scene: 'resonance',
     text: '烧的是瓷，传的是人。',
     isEnding: true,

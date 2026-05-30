@@ -1,5 +1,6 @@
 import { create } from 'zustand'
-import type { CharacterId, Expression, SceneId, BgmId, GameState, DialogueLine } from '@/engine/types'
+import type { CharacterId, Expression, SceneId, BgmId, GameState, DialogueLine, Mood } from '@/engine/types'
+import { defaultCamera, defaultLight, defaultAtmosphere, defaultParticleConfig, moodConfig } from '@/engine/types'
 
 interface GameStore extends GameState {
   setLine: (id: string) => void
@@ -30,6 +31,12 @@ const initialState: GameState = {
   currentBgm: null,
   visibleCharacters: [],
   currentExpression: {} as Record<CharacterId, Expression>,
+  currentMood: 'solemn' as Mood,
+  currentCamera: { ...defaultCamera },
+  currentLight: { ...defaultLight },
+  currentAtmosphere: { ...defaultAtmosphere },
+  currentParticleConfig: { ...defaultParticleConfig },
+  shakeUntil: 0,
 }
 
 export const useGameStore = create<GameStore>((set, get) => ({
@@ -87,6 +94,27 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (line.chapter) updates.chapter = line.chapter
     if (line.setVar) {
       updates.variables = { ...get().variables, [line.setVar.key]: line.setVar.value }
+    }
+    if (line.mood) {
+      updates.currentMood = line.mood
+      const mc = moodConfig[line.mood]
+      updates.currentLight = { ...get().currentLight, color: mc.lightColor, intensity: mc.lightIntensity }
+      updates.currentAtmosphere = { ...get().currentAtmosphere, vignetteStrength: mc.vignette, grainIntensity: mc.grain, fogDensity: mc.fogDensity }
+    }
+    if (line.camera) {
+      updates.currentCamera = { ...get().currentCamera, ...line.camera }
+      if (line.camera.shake) {
+        updates.shakeUntil = Date.now() + (line.camera.shakeDuration || 500)
+      }
+    }
+    if (line.light) {
+      updates.currentLight = { ...(updates.currentLight || get().currentLight), ...line.light }
+    }
+    if (line.atmosphere) {
+      updates.currentAtmosphere = { ...(updates.currentAtmosphere || get().currentAtmosphere), ...line.atmosphere }
+    }
+    if (line.particleOverride) {
+      updates.currentParticleConfig = { ...get().currentParticleConfig, ...line.particleOverride }
     }
     set(updates)
   },

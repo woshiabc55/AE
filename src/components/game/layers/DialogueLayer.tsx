@@ -7,6 +7,7 @@ interface DialogueLayerProps {
   text: string
   choices?: DialogueChoice[]
   isTyping: boolean
+  typingSpeed?: number
   onTypingComplete: () => void
   onChoiceSelect: (choice: DialogueChoice) => void
   onAdvance: () => void
@@ -17,6 +18,7 @@ export default function DialogueLayer({
   text,
   choices,
   isTyping,
+  typingSpeed,
   onTypingComplete,
   onChoiceSelect,
   onAdvance,
@@ -47,7 +49,7 @@ export default function DialogueLayer({
     timerRef.current = setTimeout(() => {
       setDisplayedText(text.slice(0, charIndex + 1))
       setCharIndex((prev) => prev + 1)
-    }, 45)
+    }, typingSpeed || 45)
 
     return () => {
       if (timerRef.current) {

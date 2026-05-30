@@ -23,7 +23,7 @@ export default function ResonanceSection() {
       ref={setRefs}
       className="section-container bg-iron-950"
     >
-      <KilnFireCanvas intensity={0.6} colorScheme="mixed" />
+      <KilnFireCanvas config={{ intensity: 0.6, colorScheme: 'mixed', direction: 'up', speed: 0.6, sizeRange: [2, 6], glowRadius: 300, glowColor: '#B46E32' }} />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-20">
         <div

@@ -15,6 +15,10 @@ export default function GameContainer() {
   const visibleCharacters = useGameStore((s) => s.visibleCharacters)
   const currentExpression = useGameStore((s) => s.currentExpression)
   const isTyping = useGameStore((s) => s.isTyping)
+  const currentParticleConfig = useGameStore((s) => s.currentParticleConfig)
+  const currentAtmosphere = useGameStore((s) => s.currentAtmosphere)
+  const currentLight = useGameStore((s) => s.currentLight)
+  const currentCamera = useGameStore((s) => s.currentCamera)
   const setLine = useGameStore((s) => s.setLine)
   const setTyping = useGameStore((s) => s.setTyping)
   const setVar = useGameStore((s) => s.setVar)
@@ -85,11 +89,16 @@ export default function GameContainer() {
       <BackgroundLayer
         scene={currentScene}
         transition={currentLine.transition}
+        particleConfig={currentParticleConfig}
+        atmosphere={currentAtmosphere}
+        light={currentLight}
+        camera={currentCamera}
       />
 
       <CharacterLayer
         visibleCharacters={visibleCharacters}
         expressions={currentExpression}
+        characterAnims={currentLine.characterAnims}
       />
 
       <DialogueLayer
@@ -97,6 +106,7 @@ export default function GameContainer() {
         text={currentLine.text}
         choices={currentLine.choices}
         isTyping={isTyping}
+        typingSpeed={currentLine.typingSpeed}
         onTypingComplete={handleTypingComplete}
         onChoiceSelect={handleChoiceSelect}
         onAdvance={handleAdvance}

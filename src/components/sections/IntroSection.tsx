@@ -22,7 +22,7 @@ export default function IntroSection() {
 
   return (
     <section ref={ref} className="section-container flex items-center justify-center bg-iron-950">
-      <KilnFireCanvas intensity={1.2} colorScheme="warm" />
+      <KilnFireCanvas config={{ intensity: 1.2, colorScheme: 'warm', direction: 'up', speed: 1.2, sizeRange: [2, 6], glowRadius: 300, glowColor: '#D4622B' }} />
 
       <div className="relative z-10 text-center px-6 max-w-3xl">
         <div
