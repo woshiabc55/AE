@@ -5,7 +5,7 @@ import PromptDisplay from '@/components/PromptDisplay';
 import PreviewImage from '@/components/PreviewImage';
 import ComparePanel from '@/components/ComparePanel';
 import { Link } from 'react-router-dom';
-import { Layers, Eye, GitCompare } from 'lucide-react';
+import { Layers, Eye, GitCompare, Lightbulb, Rocket } from 'lucide-react';
 
 type ViewMode = 'cards' | 'prompt-a' | 'prompt-b' | 'compare';
 
@@ -43,6 +43,20 @@ export default function Home() {
           <div className="font-mono-cn text-[10px] text-[#909090] flex items-center gap-4">
             <span>DATE: 2026-05-30</span>
             <span>STATUS: 已归档</span>
+            <Link
+              to="/concept"
+              className="text-[#1a3a6b] hover:underline inline-flex items-center gap-1"
+            >
+              <Lightbulb size={10} />
+              概念设计
+            </Link>
+            <Link
+              to="/launch"
+              className="text-[#1a3a6b] hover:underline inline-flex items-center gap-1"
+            >
+              <Rocket size={10} />
+              上线方案
+            </Link>
             <Link
               to="/scheme/a"
               className="text-[#1a3a6b] hover:underline"
