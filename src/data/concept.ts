@@ -243,6 +243,216 @@ export const launchPlatforms: LaunchPlatform[] = [
   },
 ];
 
+export interface DomesticPlatform {
+  name: string;
+  logo: string;
+  url: string;
+  category: string;
+  coreProduct: string;
+  cnNodes: string;
+  freeQuota: string;
+  icpSupport: string;
+  ssl: string;
+  cdnNodes: string;
+  deployCmd: string;
+  pricing: string;
+  pros: string[];
+  cons: string[];
+  bestFor: string;
+  serverless: string;
+  ecosystem: string;
+}
+
+export const domesticPlatforms: DomesticPlatform[] = [
+  {
+    name: "腾讯云 CloudBase",
+    logo: "☁️",
+    url: "https://cloud.tencent.com/product/tcb",
+    category: "云开发平台",
+    coreProduct: "云开发 CloudBase + 静态网站托管",
+    cnNodes: "北上广深成5大可用区 + 200+CDN边缘节点",
+    freeQuota: "3000资源点/月（免费体验版），含1GB存储+5GB流量",
+    icpSupport: "✅ 控制台一键提交ICP备案",
+    ssl: "免费自动（Let's Encrypt）",
+    cdnNodes: "2000+国内CDN节点",
+    deployCmd: "tcb hosting deploy -e envId",
+    pricing: "免费体验版0元/月；个人版5.9元/月起",
+    pros: [
+      "国内节点覆盖最全，首包时间<50ms",
+      "ICP备案辅导，微信/QQ内可直接打开",
+      "云函数+数据库+AI模板即用，全栈无缝升级",
+      "CLI一行命令部署，2分钟全球CDN预热",
+      "资源点计费模式灵活，用多少扣多少",
+      "与微信小程序生态深度集成",
+    ],
+    cons: [
+      "免费额度较小（5GB流量/月）",
+      "超量后0.21元/GB，高流量场景成本上升",
+      "需ICP备案（国内域名必需）",
+      "绑定腾讯云生态，迁移成本较高",
+    ],
+    bestFor: "国内用户为主、需备案、微信生态、全栈Serverless扩展",
+    serverless: "云函数（Node.js/Python/PHP）+ 云数据库 + 云存储",
+    ecosystem: "微信小程序、腾讯云COS、TDSQL、混元大模型",
+  },
+  {
+    name: "阿里云 OSS + CDN",
+    logo: "🟠",
+    url: "https://www.aliyun.com/product/oss",
+    category: "对象存储 + CDN",
+    coreProduct: "对象存储OSS + CDN加速 + 函数计算FC",
+    cnNodes: "华北/华东/华南/西南多可用区 + 2800+CDN节点",
+    freeQuota: "新用户免费额度：50GB存储3个月 + CDN流量包",
+    icpSupport: "✅ 阿里云备案系统（国内最成熟）",
+    ssl: "免费DV证书 + 自动续签",
+    cdnNodes: "2800+全球节点，国内覆盖所有省份",
+    deployCmd: "ossutil cp -r ./dist oss://bucket-name/ --force",
+    pricing: "OSS标准存储0.12元/GB/月；CDN流量0.24元/GB起",
+    pros: [
+      "市场份额第一，产品矩阵最完整",
+      "全球化布局优秀，东南亚/欧洲节点优化",
+      "传输加速功能，跨国上传速度快30-40%",
+      "函数计算FC支持SSR/SSG自动化部署",
+      "云效DevOps平台集成CI/CD",
+      "图片处理API功能强大（缩略/水印/格式转换）",
+    ],
+    cons: [
+      "无免费无限额度，所有资源按量计费",
+      "低频存储有30天最短保留期限制",
+      "配置复杂度较高（OSS+CDN+FC需分别配置）",
+      "需ICP备案",
+    ],
+    bestFor: "企业级项目、全球化布局、需图片处理、阿里云生态用户",
+    serverless: "函数计算FC（Node.js/Python/Java/Go）+ API网关",
+    ecosystem: "阿里云全家桶、云效DevOps、通义千问、PolarDB",
+  },
+  {
+    name: "华为云 OBS + CDN",
+    logo: "🔴",
+    url: "https://www.huaweicloud.com/product/obs.html",
+    category: "对象存储 + CDN",
+    coreProduct: "对象存储OBS + CDN加速 + FunctionGraph",
+    cnNodes: "全国多可用区 + 2000+国内CDN节点",
+    freeQuota: "新用户12个月免费：50GB OBS + CDN流量包",
+    icpSupport: "✅ 华为云备案系统",
+    ssl: "免费证书 + 自动续签",
+    cdnNodes: "2000+国内节点，全网带宽180Tbps",
+    deployCmd: "obsutil cp -r ./dist obs://bucket-name/ -f",
+    pricing: "OBS标准存储0.099元/GB/月；CDN流量0.20元/GB起",
+    pros: [
+      "政企信创适配最优，全栈自研（鲲鹏+昇腾+EulerOS）",
+      "CDN国内节点2000+，覆盖所有省份运营商",
+      "AICache技术，缓存命中率高",
+      "新用户12个月免费额度充足",
+      "ModelArts AI平台集成",
+      "GaussDB自研数据库能力强",
+    ],
+    cons: [
+      "免费额度仅12个月，到期后需付费",
+      "开发者体验不如阿里云/腾讯云",
+      "海外节点相对较少",
+      "生态工具链不如阿里云丰富",
+      "需ICP备案",
+    ],
+    bestFor: "政企项目、信创要求、国产化替代、华为生态",
+    serverless: "FunctionGraph（Node.js/Python/Java）+ APIG网关",
+    ecosystem: "华为云全家桶、DevCloud、ModelArts、GaussDB",
+  },
+  {
+    name: "七牛云 Kodo + CDN",
+    logo: "🟣",
+    url: "https://www.qiniu.com/products/kodo",
+    category: "对象存储 + CDN",
+    coreProduct: "对象存储Kodo + CDN加速 + 云函数",
+    cnNodes: "华东/华北多可用区 + 融合CDN",
+    freeQuota: "每月10GB存储 + 10GB CDN流量（长期免费）",
+    icpSupport: "✅ 支持备案",
+    ssl: "免费证书 + 自动续签",
+    cdnNodes: "融合CDN（多厂商节点）",
+    deployCmd: "qshell qupload2 --src-dir=./dist --bucket=bucket-name",
+    pricing: "存储0.148元/GB/月；CDN流量0.29元/GB起",
+    pros: [
+      "长期免费额度（10GB存储+10GB流量/月）",
+      "价格实惠，对成本敏感用户友好",
+      "融合CDN多厂商节点，稳定性好",
+      "丰富的API和SDK，自动化部署方便",
+      "图片/音视频处理能力强",
+      "Webhook触发部署，CI/CD集成简单",
+    ],
+    cons: [
+      "免费额度较小，高流量不够用",
+      "节点覆盖不如阿里云/华为云广",
+      "Serverless能力较弱",
+      "控制台体验不如大厂",
+      "需ICP备案",
+    ],
+    bestFor: "成本敏感、中小型项目、音视频处理、个人开发者",
+    serverless: "云函数（轻量级）",
+    ecosystem: "七牛云全家桶、Pandora数据分析平台",
+  },
+  {
+    name: "又拍云 USS + CDN",
+    logo: "🟢",
+    url: "https://www.upyun.com/products/oss",
+    category: "对象存储 + CDN",
+    coreProduct: "云存储USS + CDN加速",
+    cnNodes: "全国多节点 + 融合CDN",
+    freeQuota: "联盟计划：网站底部标注又拍云可获免费CDN额度",
+    icpSupport: "✅ 支持备案",
+    ssl: "免费证书",
+    cdnNodes: "融合CDN多厂商节点",
+    deployCmd: "upx sync ./dist /",
+    pricing: "存储0.12元/GB/月；CDN流量0.29元/GB起",
+    pros: [
+      "联盟计划可获免费CDN额度",
+      "API/SDK丰富，自动化部署方便",
+      "支持HTTP/2和HTTPS",
+      "图片处理功能完善",
+      "价格透明，无隐藏费用",
+    ],
+    cons: [
+      "免费额度需联盟计划（需标注品牌）",
+      "Serverless能力基本无",
+      "节点覆盖不如大厂",
+      "社区和文档不如大厂完善",
+      "需ICP备案",
+    ],
+    bestFor: "个人博客、小型展示站、成本极度敏感",
+    serverless: "无原生Serverless",
+    ecosystem: "又拍云CDN、图片处理、视频转码",
+  },
+  {
+    name: "Coding Pages",
+    logo: "🔷",
+    url: "https://coding.net/pages",
+    category: "代码托管内置",
+    coreProduct: "Coding Pages（腾讯云旗下）",
+    cnNodes: "国内服务器",
+    freeQuota: "免费版提供基础Pages服务",
+    icpSupport: "✅ 支持备案",
+    ssl: "免费自动",
+    cdnNodes: "腾讯云CDN节点",
+    deployCmd: "git push coding main",
+    pricing: "免费版0元；团队版按需",
+    pros: [
+      "国内访问速度快，服务器在国内",
+      "与Git集成紧密，push即部署",
+      "支持CI/CD流水线",
+      "免费版即可使用",
+      "腾讯云旗下，可无缝对接腾讯云服务",
+    ],
+    cons: [
+      "免费版功能有限制",
+      "自定义域名需备案",
+      "构建速度不如Vercel",
+      "生态不如GitHub丰富",
+    ],
+    bestFor: "国内个人博客、开源项目文档、学生项目",
+    serverless: "无原生Serverless（可对接腾讯云SCF）",
+    ecosystem: "Coding DevOps、腾讯云COS、SCF",
+  },
+];
+
 export const launchSteps: LaunchStep[] = [
   {
     phase: "第一阶段",
@@ -307,13 +517,14 @@ export const launchSteps: LaunchStep[] = [
 ];
 
 export const recommendedPlan = {
-  primary: "Cloudflare Pages",
+  primary: "Cloudflare Pages（海外）",
   reason:
-    "本项目为纯静态前端（React+Vite构建产物），无服务端渲染需求，核心用户群体包含国内访问者。Cloudflare Pages提供无限带宽、亚洲边缘节点覆盖、免费DDoS防护，且对纯静态项目零成本运行，是本项目的最优选择。",
-  secondary: "Vercel",
+    "本项目为纯静态前端（React+Vite构建产物），无服务端渲染需求。Cloudflare Pages提供无限带宽、亚洲边缘节点覆盖、免费DDoS防护，且对纯静态项目零成本运行，是海外用户访问的最优选择。",
+  secondary: "腾讯云 CloudBase（国内）",
   secondaryReason:
-    "作为备选方案，Vercel提供最佳的开发者体验和预览部署功能，适合开发阶段和海外用户访问。但国内访问不稳定且Hobby版禁止商业用途，不适合作为主要生产环境。",
-  domain: "qinghua.design 或 qinghua-archive.pages.dev",
-  estimatedCost: "0元/月（Cloudflare Pages免费版完全覆盖）",
-  sla: "Cloudflare SLA 99.99%，全球300+ PoP",
+    "面向国内用户的首选方案。CloudBase提供国内5大可用区+200+CDN边缘节点，首包时间<50ms，支持ICP备案辅导，微信/QQ内可直接打开。免费体验版3000资源点/月足够个人项目使用，全栈Serverless能力便于后续扩展。",
+  domain: "qinghua.design（海外） / qinghua.cn（国内备案）",
+  estimatedCost: "海外0元/月（Cloudflare免费版）；国内0-5.9元/月（CloudBase免费/个人版）",
+  sla: "Cloudflare SLA 99.99% / 腾讯云 SLA 99.95%",
+  domesticNote: "如需纯国产化部署（信创要求），推荐华为云OBS+CDN方案，全栈自研、政企适配最优。",
 };

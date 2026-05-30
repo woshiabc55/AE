@@ -1,5 +1,5 @@
-import { launchPlatforms, launchSteps, recommendedPlan } from '@/data/concept';
-import { Check, X, ExternalLink, ChevronRight } from 'lucide-react';
+import { launchPlatforms, launchSteps, recommendedPlan, domesticPlatforms } from '@/data/concept';
+import { Check, X, ExternalLink, ChevronRight, Shield } from 'lucide-react';
 
 export default function LaunchPlan() {
   return (
@@ -18,11 +18,11 @@ export default function LaunchPlan() {
             <div className="w-px h-5 bg-[#d0d0d0]" />
             <h1 className="text-lg font-black">上线方案</h1>
             <span className="font-mono-cn text-[10px] text-[#909090] border border-[#d0d0d0] px-2 py-0.5">
-              LAUNCH PLAN v1.0
+              LAUNCH PLAN v2.0
             </span>
           </div>
           <div className="font-mono-cn text-[10px] text-[#909090]">
-            5大平台对比 · 5阶段上线流程
+            国际+国产 · 11大平台对比
           </div>
         </div>
       </header>
@@ -33,27 +33,28 @@ export default function LaunchPlan() {
           <span className="text-3xl font-black qblue-accent">方案</span>
         </div>
         <p className="text-sm text-[#606060] max-w-3xl leading-relaxed">
-          基于本项目纯静态前端（React+Vite）的技术特征，以及国内用户访问需求，
-          以下为完整的部署平台对比分析和推荐上线方案。
+          基于本项目纯静态前端（React+Vite）的技术特征，提供国际平台与国产化部署双轨方案。
+          海外用户推荐Cloudflare Pages零成本运行，国内用户推荐腾讯云CloudBase全栈Serverless，
+          信创场景推荐华为云OBS+CDN全栈自研方案。
         </p>
 
         <div className="paper-card corner-bracket p-0 overflow-hidden">
           <div className="border-b border-[#1a3a6b] bg-[#1a3a6b] px-5 py-3 flex items-center gap-2">
-            <span className="text-white text-sm font-bold">⭐ 推荐方案</span>
-            <span className="font-mono-cn text-[10px] text-[#a8c8e8]">RECOMMENDED</span>
+            <span className="text-white text-sm font-bold">⭐ 双轨推荐方案</span>
+            <span className="font-mono-cn text-[10px] text-[#a8c8e8]">DUAL-TRACK RECOMMENDED</span>
           </div>
           <div className="p-5 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="text-lg font-black mb-2">首选：{recommendedPlan.primary}</h3>
+              <div className="border border-[#1a3a6b] p-4">
+                <h3 className="text-lg font-black mb-2">🌍 海外首选：{recommendedPlan.primary}</h3>
                 <p className="text-sm text-[#606060] leading-relaxed">{recommendedPlan.reason}</p>
               </div>
-              <div>
-                <h3 className="text-lg font-black mb-2">备选：{recommendedPlan.secondary}</h3>
+              <div className="border border-[#1a3a6b] p-4">
+                <h3 className="text-lg font-black mb-2">🇨🇳 国内首选：{recommendedPlan.secondary}</h3>
                 <p className="text-sm text-[#606060] leading-relaxed">{recommendedPlan.secondaryReason}</p>
               </div>
             </div>
-            <div className="border-t border-dashed border-[#d0d0d0] pt-4 grid grid-cols-3 gap-4">
+            <div className="border-t border-dashed border-[#d0d0d0] pt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
               <div>
                 <span className="font-mono-cn text-[10px] text-[#909090]">域名</span>
                 <p className="text-sm font-mono-cn mt-1">{recommendedPlan.domain}</p>
@@ -66,6 +67,10 @@ export default function LaunchPlan() {
                 <span className="font-mono-cn text-[10px] text-[#909090]">SLA</span>
                 <p className="text-sm font-mono-cn mt-1">{recommendedPlan.sla}</p>
               </div>
+              <div>
+                <span className="font-mono-cn text-[10px] text-[#909090]">信创备注</span>
+                <p className="text-xs text-[#909060] mt-1">{recommendedPlan.domesticNote}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -74,7 +79,7 @@ export default function LaunchPlan() {
           <div className="flex items-center gap-2 mb-6">
             <div className="w-2 h-2 rounded-full bg-[#1a3a6b]" />
             <span className="font-mono-cn text-xs tracking-wider text-[#606060]">
-              平台对比 / PLATFORM COMPARISON
+              国际平台对比 / INTERNATIONAL PLATFORMS
             </span>
           </div>
 
@@ -118,9 +123,126 @@ export default function LaunchPlan() {
 
         <div>
           <div className="flex items-center gap-2 mb-6">
+            <Shield size={14} className="text-[#1a3a6b]" />
+            <span className="font-mono-cn text-xs tracking-wider text-[#1a3a6b] font-bold">
+              国产化部署方案 / DOMESTIC PLATFORMS
+            </span>
+            <span className="tag-label ml-2" style={{ transform: 'rotate(0deg)' }}>信创适配</span>
+          </div>
+
+          <div className="overflow-x-auto mb-6">
+            <table className="w-full text-xs paper-card overflow-hidden">
+              <thead>
+                <tr className="bg-[#1a3a6b] text-white">
+                  <th className="text-left px-3 py-3 font-mono-cn font-medium">平台</th>
+                  <th className="text-left px-3 py-3 font-mono-cn font-medium">类型</th>
+                  <th className="text-left px-3 py-3 font-mono-cn font-medium">国内节点</th>
+                  <th className="text-left px-3 py-3 font-mono-cn font-medium">免费额度</th>
+                  <th className="text-left px-3 py-3 font-mono-cn font-medium">ICP备案</th>
+                  <th className="text-left px-3 py-3 font-mono-cn font-medium">CDN节点</th>
+                  <th className="text-left px-3 py-3 font-mono-cn font-medium">定价</th>
+                  <th className="text-left px-3 py-3 font-mono-cn font-medium">部署命令</th>
+                </tr>
+              </thead>
+              <tbody>
+                {domesticPlatforms.map((p, i) => (
+                  <tr key={p.name} className={i % 2 === 0 ? 'bg-white' : 'bg-[#faf8f5]'}>
+                    <td className="px-3 py-3 font-bold whitespace-nowrap">
+                      <span className="mr-1">{p.logo}</span>
+                      {p.name}
+                    </td>
+                    <td className="px-3 py-3 font-mono-cn text-[10px]">{p.category}</td>
+                    <td className="px-3 py-3 text-[10px]">{p.cnNodes.split('+')[0]}</td>
+                    <td className="px-3 py-3 font-mono-cn text-[10px]">{p.freeQuota.split('，')[0]}</td>
+                    <td className="px-3 py-3 text-green-700 text-[10px]">{p.icpSupport.split(' ')[0]}</td>
+                    <td className="px-3 py-3 font-mono-cn text-[10px]">{p.cdnNodes.split('+')[0]}</td>
+                    <td className="px-3 py-3 font-mono-cn text-[10px]">{p.pricing.split('；')[0]}</td>
+                    <td className="px-3 py-3 font-mono-cn text-[10px]">{p.deployCmd.split(' ')[0]}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5">
+            {domesticPlatforms.map((p, i) => (
+              <div
+                key={p.name}
+                className="paper-card corner-bracket p-0 overflow-hidden animate-fade-in-up"
+                style={{ animationDelay: `${i * 60}ms` }}
+              >
+                <div className="border-b border-[#1a1a1a] px-4 py-3 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">{p.logo}</span>
+                    <div>
+                      <h3 className="text-sm font-bold">{p.name}</h3>
+                      <span className="font-mono-cn text-[9px] text-[#909090]">{p.category}</span>
+                    </div>
+                  </div>
+                  <a
+                    href={p.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#1a3a6b] hover:underline"
+                  >
+                    <ExternalLink size={14} />
+                  </a>
+                </div>
+                <div className="px-4 py-3 space-y-2">
+                  <div className="grid grid-cols-2 gap-2 text-[10px]">
+                    <div>
+                      <span className="font-mono-cn text-[#909090]">核心产品</span>
+                      <p className="mt-0.5">{p.coreProduct}</p>
+                    </div>
+                    <div>
+                      <span className="font-mono-cn text-[#909090]">Serverless</span>
+                      <p className="mt-0.5">{p.serverless.split('（')[0]}</p>
+                    </div>
+                  </div>
+                  <div>
+                    <span className="font-mono-cn text-[10px] text-[#1a3a6b] font-medium">✓ 优势</span>
+                    <ul className="mt-1 space-y-0.5">
+                      {p.pros.slice(0, 3).map((pro) => (
+                        <li key={pro} className="text-[11px] text-[#1a1a1a] flex items-start gap-1">
+                          <span className="text-green-600 mt-0.5 shrink-0">·</span>
+                          {pro}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <span className="font-mono-cn text-[10px] text-[#909060] font-medium">✗ 劣势</span>
+                    <ul className="mt-1 space-y-0.5">
+                      {p.cons.slice(0, 2).map((con) => (
+                        <li key={con} className="text-[11px] text-[#606060] flex items-start gap-1">
+                          <span className="text-red-400 mt-0.5 shrink-0">·</span>
+                          {con}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="border-t border-dashed border-[#d0d0d0] pt-2 flex items-center justify-between">
+                    <div>
+                      <span className="font-mono-cn text-[9px] text-[#909090]">最适合：</span>
+                      <p className="text-[11px] mt-0.5">{p.bestFor}</p>
+                    </div>
+                    <span className="param-highlight text-[9px]">{p.pricing.split('；')[0]}</span>
+                  </div>
+                  <div className="border-t border-dashed border-[#d0d0d0] pt-2">
+                    <span className="font-mono-cn text-[9px] text-[#909090]">生态：</span>
+                    <p className="text-[10px] mt-0.5 text-[#606060]">{p.ecosystem}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <div className="flex items-center gap-2 mb-6">
             <div className="w-2 h-2 rounded-full bg-[#1a3a6b]" />
             <span className="font-mono-cn text-xs tracking-wider text-[#606060]">
-              平台详情 / PLATFORM DETAILS
+              国际平台详情 / INTERNATIONAL DETAILS
             </span>
           </div>
 
@@ -244,8 +366,8 @@ export default function LaunchPlan() {
 
       <footer className="border-t border-[#d0d0d0] mt-16 py-6">
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between font-mono-cn text-[10px] text-[#909090]">
-          <span>瓷器设计·青花瓷 LAUNCH PLAN</span>
-          <span>Cloudflare Pages · 0元/月</span>
+          <span>瓷器设计·青花瓷 LAUNCH PLAN v2.0</span>
+          <span>海外 Cloudflare Pages 0元/月 · 国内 腾讯云CloudBase 0-5.9元/月</span>
         </div>
       </footer>
     </div>
