@@ -1,0 +1,2163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ビーズワールド | 拼豆世界 — Pixel Bead Universe</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=Press+Start+2P&display=swap');
+
+:root {
+  --bead-pink: #FF6B9D;
+  --bead-purple: #C44DFF;
+  --bead-cyan: #00E5FF;
+  --bead-yellow: #FFD93D;
+  --bead-orange: #FF8A5C;
+  --bead-green: #7BF5A6;
+  --bead-blue: #5C7CFF;
+  --bead-red: #FF4757;
+  --bead-white: #FFF8F0;
+  --bead-dark: #1A1033;
+  --bead-dark2: #2D1B69;
+  --bead-cream: #FFF0E8;
+  --bead-size: 12px;
+  --bead-gap: 2px;
+  --font-pixel: 'Press Start 2P', monospace;
+  --font-kawaii: 'Zen Maru Gothic', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--bead-pink) var(--bead-dark);
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bead-dark); }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(var(--bead-pink), var(--bead-purple));
+  border-radius: 4px;
+}
+
+body {
+  font-family: var(--font-kawaii);
+  background: var(--bead-dark);
+  color: var(--bead-white);
+  overflow-x: hidden;
+  cursor: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><circle cx='10' cy='10' r='8' fill='%23FF6B9D' stroke='%23FFF' stroke-width='2'/></svg>") 10 10, auto;
+}
+
+.bead-grid-bg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.03;
+  background-image:
+    radial-gradient(circle, var(--bead-pink) 4px, transparent 4px),
+    radial-gradient(circle, var(--bead-cyan) 4px, transparent 4px);
+  background-size: 28px 28px, 28px 28px;
+  background-position: 0 0, 14px 14px;
+}
+
+.floating-beads {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.floating-bead {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0;
+  animation: floatBead 8s infinite ease-in-out;
+}
+
+@keyframes floatBead {
+  0% { opacity: 0; transform: translateY(100vh) scale(0); }
+  10% { opacity: 0.6; }
+  90% { opacity: 0.6; }
+  100% { opacity: 0; transform: translateY(-10vh) scale(1); }
+}
+
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 12px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  backdrop-filter: blur(20px);
+  background: rgba(26, 16, 51, 0.85);
+  border-bottom: 2px solid rgba(255, 107, 157, 0.3);
+  transition: all 0.3s;
+}
+
+nav.scrolled {
+  padding: 8px 32px;
+  background: rgba(26, 16, 51, 0.95);
+  border-bottom-color: var(--bead-pink);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--bead-white);
+}
+
+.nav-logo-beads {
+  display: grid;
+  grid-template-columns: repeat(3, 10px);
+  gap: 2px;
+}
+
+.nav-logo-beads span {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  display: block;
+}
+
+.nav-logo-text {
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  background: linear-gradient(135deg, var(--bead-pink), var(--bead-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.nav-links {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.nav-link {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  text-decoration: none;
+  color: var(--bead-white);
+  border: 2px solid transparent;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-link:hover {
+  border-color: var(--bead-pink);
+  background: rgba(255, 107, 157, 0.1);
+  transform: translateY(-2px);
+}
+
+.nav-link.primary {
+  background: linear-gradient(135deg, var(--bead-pink), var(--bead-purple));
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(255, 107, 157, 0.4);
+}
+
+.nav-link.primary:hover {
+  box-shadow: 0 6px 25px rgba(255, 107, 157, 0.6);
+  transform: translateY(-2px) scale(1.05);
+}
+
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: 2px solid var(--bead-pink);
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.mobile-menu-btn span {
+  display: block;
+  width: 20px; height: 2px;
+  background: var(--bead-pink);
+  margin: 3px 0;
+  transition: 0.3s;
+}
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 32px 80px;
+  z-index: 2;
+}
+
+.hero-content {
+  max-width: 1200px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.hero-text { position: relative; }
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: rgba(255, 107, 157, 0.15);
+  border: 1px solid rgba(255, 107, 157, 0.3);
+  border-radius: 30px;
+  font-size: 12px;
+  color: var(--bead-pink);
+  margin-bottom: 24px;
+  font-family: var(--font-pixel);
+}
+
+.hero-badge .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--bead-green);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.hero-title {
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 24px;
+}
+
+.hero-title .line1 {
+  display: block;
+  background: linear-gradient(135deg, var(--bead-pink), var(--bead-orange));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-title .line2 {
+  display: block;
+  background: linear-gradient(135deg, var(--bead-cyan), var(--bead-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-title .bead-word {
+  position: relative;
+  display: inline-block;
+}
+
+.hero-title .bead-word::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0; right: 0;
+  height: 6px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--bead-yellow) 0px,
+    var(--bead-yellow) 8px,
+    transparent 8px,
+    transparent 12px
+  );
+  border-radius: 3px;
+}
+
+.hero-desc {
+  font-size: 16px;
+  line-height: 1.8;
+  color: rgba(255, 248, 240, 0.7);
+  margin-bottom: 36px;
+  max-width: 480px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.btn-bead {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: 30px;
+  font-family: var(--font-pixel);
+  font-size: 12px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-bead::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 30px 30px 0 0;
+}
+
+.btn-bead-primary {
+  background: linear-gradient(135deg, var(--bead-pink), var(--bead-purple));
+  color: white;
+  box-shadow: 0 4px 20px rgba(255, 107, 157, 0.4);
+}
+
+.btn-bead-primary:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 8px 30px rgba(255, 107, 157, 0.6);
+}
+
+.btn-bead-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--bead-white);
+  border: 2px solid rgba(255, 107, 157, 0.3);
+}
+
+.btn-bead-secondary:hover {
+  border-color: var(--bead-pink);
+  background: rgba(255, 107, 157, 0.1);
+  transform: translateY(-3px);
+}
+
+.hero-stats {
+  display: flex;
+  gap: 32px;
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-item {
+  text-align: left;
+}
+
+.stat-num {
+  font-family: var(--font-pixel);
+  font-size: 24px;
+  color: var(--bead-cyan);
+  display: block;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: rgba(255, 248, 240, 0.5);
+  margin-top: 4px;
+}
+
+.hero-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bead-art-container {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  aspect-ratio: 1;
+}
+
+.bead-art-frame {
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 3px solid rgba(255, 107, 157, 0.3);
+  background: rgba(45, 27, 105, 0.5);
+  backdrop-filter: blur(10px);
+}
+
+.bead-canvas {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  gap: 1px;
+  padding: 16px;
+}
+
+.bead-cell {
+  border-radius: 50%;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.bead-cell::after {
+  content: '';
+  position: absolute;
+  top: 15%; left: 15%;
+  width: 30%; height: 30%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.bead-cell:hover {
+  transform: scale(1.3);
+  z-index: 10;
+  filter: brightness(1.3);
+}
+
+.bead-art-glow {
+  position: absolute;
+  inset: -20px;
+  border-radius: 40px;
+  background: radial-gradient(ellipse, rgba(255, 107, 157, 0.15), transparent 70%);
+  z-index: -1;
+  animation: glowPulse 4s infinite ease-in-out;
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+.bead-art-tag {
+  position: absolute;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: tagFloat 3s infinite ease-in-out;
+}
+
+.bead-art-tag:nth-child(2) {
+  top: -10px; right: 20px;
+  background: rgba(255, 107, 157, 0.2);
+  color: var(--bead-pink);
+  animation-delay: 0s;
+}
+
+.bead-art-tag:nth-child(3) {
+  bottom: 20px; left: -10px;
+  background: rgba(0, 229, 255, 0.2);
+  color: var(--bead-cyan);
+  animation-delay: 1s;
+}
+
+.bead-art-tag:nth-child(4) {
+  top: 40%; right: -20px;
+  background: rgba(196, 77, 255, 0.2);
+  color: var(--bead-purple);
+  animation-delay: 2s;
+}
+
+@keyframes tagFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.section {
+  position: relative;
+  z-index: 2;
+  padding: 100px 32px;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 64px;
+}
+
+.section-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  margin-bottom: 16px;
+  border: 1px solid;
+}
+
+.section-tag.pink {
+  color: var(--bead-pink);
+  border-color: rgba(255, 107, 157, 0.3);
+  background: rgba(255, 107, 157, 0.1);
+}
+
+.section-tag.cyan {
+  color: var(--bead-cyan);
+  border-color: rgba(0, 229, 255, 0.3);
+  background: rgba(0, 229, 255, 0.1);
+}
+
+.section-tag.purple {
+  color: var(--bead-purple);
+  border-color: rgba(196, 77, 255, 0.3);
+  background: rgba(196, 77, 255, 0.1);
+}
+
+.section-title {
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 900;
+  margin-bottom: 16px;
+}
+
+.section-title .gradient-pink {
+  background: linear-gradient(135deg, var(--bead-pink), var(--bead-orange));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.section-title .gradient-cyan {
+  background: linear-gradient(135deg, var(--bead-cyan), var(--bead-blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.section-title .gradient-purple {
+  background: linear-gradient(135deg, var(--bead-purple), var(--bead-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.section-desc {
+  font-size: 16px;
+  color: rgba(255, 248, 240, 0.6);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.feature-card {
+  background: rgba(45, 27, 105, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 36px 28px;
+  transition: all 0.4s;
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--bead-pink), var(--bead-cyan));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(255, 107, 157, 0.3);
+  background: rgba(45, 27, 105, 0.6);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.feature-card:hover::before { opacity: 1; }
+
+.feature-icon {
+  width: 56px; height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.feature-icon .bead-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  position: absolute;
+  transition: all 0.3s;
+}
+
+.feature-icon .bead-dot::after {
+  content: '';
+  position: absolute;
+  top: 20%; left: 20%;
+  width: 30%; height: 30%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.feature-card:hover .bead-dot {
+  transform: scale(1.2);
+}
+
+.feature-icon.pink { background: rgba(255, 107, 157, 0.15); }
+.feature-icon.cyan { background: rgba(0, 229, 255, 0.15); }
+.feature-icon.purple { background: rgba(196, 77, 255, 0.15); }
+.feature-icon.yellow { background: rgba(255, 217, 61, 0.15); }
+.feature-icon.green { background: rgba(123, 245, 166, 0.15); }
+.feature-icon.orange { background: rgba(255, 138, 92, 0.15); }
+
+.feature-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.feature-desc {
+  font-size: 14px;
+  color: rgba(255, 248, 240, 0.6);
+  line-height: 1.7;
+}
+
+.feature-beads {
+  display: flex;
+  gap: 4px;
+  margin-top: 16px;
+}
+
+.feature-beads span {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  opacity: 0.6;
+  transition: all 0.3s;
+}
+
+.feature-card:hover .feature-beads span {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+.showcase {
+  background: linear-gradient(180deg, transparent, rgba(45, 27, 105, 0.3), transparent);
+}
+
+.showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.showcase-item {
+  aspect-ratio: 1;
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  border: 2px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.4s;
+}
+
+.showcase-item:hover {
+  transform: scale(1.05);
+  border-color: var(--bead-pink);
+  box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+  z-index: 10;
+}
+
+.showcase-item .bead-pattern {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  gap: 1px;
+  padding: 8px;
+}
+
+.showcase-item .mini-bead {
+  border-radius: 50%;
+  transition: all 0.3s;
+}
+
+.showcase-item:hover .mini-bead {
+  filter: brightness(1.2);
+}
+
+.showcase-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(transparent 50%, rgba(26, 16, 51, 0.9));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.showcase-item:hover .showcase-overlay { opacity: 1; }
+
+.showcase-overlay h4 {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.showcase-overlay p {
+  font-size: 11px;
+  color: rgba(255, 248, 240, 0.7);
+}
+
+.creator-section {
+  position: relative;
+}
+
+.creator-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.creator-panel {
+  background: rgba(45, 27, 105, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.creator-panel::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: 20%; right: 20%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--bead-cyan), transparent);
+}
+
+.creator-title {
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.creator-title .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--bead-green);
+  animation: pulse 2s infinite;
+}
+
+.bead-board {
+  display: grid;
+  grid-template-columns: repeat(16, 1fr);
+  gap: 2px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 20px;
+}
+
+.board-cell {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.board-cell:hover {
+  background: rgba(255, 107, 157, 0.2);
+  border-color: rgba(255, 107, 157, 0.3);
+  transform: scale(1.1);
+}
+
+.board-cell.filled::after {
+  content: '';
+  position: absolute;
+  top: 20%; left: 20%;
+  width: 30%; height: 30%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.board-cell.filled {
+  border-color: transparent;
+  transform: scale(0.9);
+}
+
+.color-palette {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.color-swatch {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  border: 2px solid transparent;
+}
+
+.color-swatch::after {
+  content: '';
+  position: absolute;
+  top: 20%; left: 20%;
+  width: 25%; height: 25%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.color-swatch:hover { transform: scale(1.2); }
+.color-swatch.active {
+  border-color: white;
+  transform: scale(1.2);
+  box-shadow: 0 0 15px currentColor;
+}
+
+.creator-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tool-group {
+  background: rgba(45, 27, 105, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.tool-group-title {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  color: rgba(255, 248, 240, 0.5);
+  margin-bottom: 12px;
+}
+
+.tool-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tool-btn {
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--bead-white);
+  font-family: var(--font-kawaii);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tool-btn:hover {
+  background: rgba(255, 107, 157, 0.15);
+  border-color: rgba(255, 107, 157, 0.3);
+}
+
+.tool-btn.active {
+  background: rgba(255, 107, 157, 0.2);
+  border-color: var(--bead-pink);
+  color: var(--bead-pink);
+}
+
+.tool-btn .icon-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.pricing-card {
+  background: rgba(45, 27, 105, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 36px 28px;
+  text-align: center;
+  transition: all 0.4s;
+  position: relative;
+  overflow: hidden;
+}
+
+.pricing-card.featured {
+  border-color: var(--bead-pink);
+  background: rgba(255, 107, 157, 0.08);
+  transform: scale(1.05);
+}
+
+.pricing-card.featured::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--bead-pink), var(--bead-purple), var(--bead-cyan));
+}
+
+.pricing-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.pricing-card.featured:hover {
+  transform: scale(1.05) translateY(-8px);
+}
+
+.pricing-beads {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 20px;
+}
+
+.pricing-beads span {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  position: relative;
+}
+
+.pricing-beads span::after {
+  content: '';
+  position: absolute;
+  top: 20%; left: 20%;
+  width: 30%; height: 30%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.pricing-name {
+  font-family: var(--font-pixel);
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.pricing-price {
+  font-size: 36px;
+  font-weight: 900;
+  margin-bottom: 4px;
+}
+
+.pricing-price .currency {
+  font-size: 18px;
+  vertical-align: super;
+}
+
+.pricing-period {
+  font-size: 12px;
+  color: rgba(255, 248, 240, 0.5);
+  margin-bottom: 24px;
+}
+
+.pricing-features {
+  list-style: none;
+  text-align: left;
+  margin-bottom: 28px;
+}
+
+.pricing-features li {
+  padding: 8px 0;
+  font-size: 13px;
+  color: rgba(255, 248, 240, 0.7);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pricing-features li .check-bead {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.pricing-features li .check-bead::after {
+  content: '';
+  position: absolute;
+  top: 20%; left: 20%;
+  width: 30%; height: 30%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.pricing-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 20px;
+  font-family: var(--font-pixel);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
+}
+
+.pricing-btn.primary {
+  background: linear-gradient(135deg, var(--bead-pink), var(--bead-purple));
+  color: white;
+  box-shadow: 0 4px 15px rgba(255, 107, 157, 0.4);
+}
+
+.pricing-btn.secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--bead-white);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pricing-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 157, 0.5);
+}
+
+footer {
+  position: relative;
+  z-index: 2;
+  padding: 60px 32px 32px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 48px;
+}
+
+.footer-brand p {
+  font-size: 14px;
+  color: rgba(255, 248, 240, 0.5);
+  line-height: 1.8;
+  margin-top: 16px;
+}
+
+.footer-social {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.footer-social a {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  text-decoration: none;
+}
+
+.footer-social a:hover {
+  background: rgba(255, 107, 157, 0.2);
+  border-color: var(--bead-pink);
+  transform: translateY(-3px);
+}
+
+.footer-social a .social-bead {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+
+.footer-col h4 {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  margin-bottom: 16px;
+  color: var(--bead-pink);
+}
+
+.footer-col a {
+  display: block;
+  font-size: 13px;
+  color: rgba(255, 248, 240, 0.5);
+  text-decoration: none;
+  padding: 6px 0;
+  transition: all 0.2s;
+}
+
+.footer-col a:hover {
+  color: var(--bead-white);
+  transform: translateX(4px);
+}
+
+.footer-bottom {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: rgba(255, 248, 240, 0.3);
+}
+
+.footer-bottom-beads {
+  display: flex;
+  gap: 4px;
+}
+
+.footer-bottom-beads span {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+}
+
+.toast-container {
+  position: fixed;
+  top: 80px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toast {
+  padding: 12px 20px;
+  border-radius: 12px;
+  background: rgba(45, 27, 105, 0.95);
+  border: 1px solid rgba(255, 107, 157, 0.3);
+  backdrop-filter: blur(10px);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: toastIn 0.3s ease-out;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.toast .toast-bead {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes toastOut {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(50px); }
+}
+
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease-out;
+}
+
+.scroll-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 1024px) {
+  .hero-content { grid-template-columns: 1fr; text-align: center; }
+  .hero-desc { margin: 0 auto 36px; }
+  .hero-actions { justify-content: center; }
+  .hero-stats { justify-content: center; }
+  .hero-visual { margin-top: 40px; }
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .showcase-grid { grid-template-columns: repeat(2, 1fr); }
+  .creator-container { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+  .pricing-card.featured { transform: none; }
+  .pricing-card.featured:hover { transform: translateY(-8px); }
+  .footer-content { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .mobile-menu-btn { display: block; }
+  .features-grid { grid-template-columns: 1fr; }
+  .showcase-grid { grid-template-columns: repeat(2, 1fr); }
+  .bead-board { grid-template-columns: repeat(12, 1fr); }
+  .footer-content { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+}
+
+@media (max-width: 480px) {
+  .hero { padding: 100px 16px 60px; }
+  .section { padding: 60px 16px; }
+  .bead-board { grid-template-columns: repeat(10, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<div class="bead-grid-bg"></div>
+<div class="floating-beads" id="floatingBeads"></div>
+<div class="toast-container" id="toastContainer"></div>
+
+<nav id="navbar">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-beads">
+      <span style="background:var(--bead-pink)"></span>
+      <span style="background:var(--bead-cyan)"></span>
+      <span style="background:var(--bead-yellow)"></span>
+      <span style="background:var(--bead-purple)"></span>
+      <span style="background:var(--bead-green)"></span>
+      <span style="background:var(--bead-orange)"></span>
+      <span style="background:var(--bead-blue)"></span>
+      <span style="background:var(--bead-red)"></span>
+      <span style="background:var(--bead-pink)"></span>
+    </div>
+    <span class="nav-logo-text">ビーズワールド</span>
+  </a>
+  <div class="nav-links">
+    <a href="#features" class="nav-link">FEATURES</a>
+    <a href="#showcase" class="nav-link">GALLERY</a>
+    <a href="#creator" class="nav-link">CREATOR</a>
+    <a href="#pricing" class="nav-link">PRICING</a>
+    <a href="#" class="nav-link primary">START FREE</a>
+  </div>
+  <button class="mobile-menu-btn" id="mobileMenuBtn">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<section class="hero" id="hero">
+  <div class="hero-content">
+    <div class="hero-text">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        WEB5 POWERED • DECENTRALIZED
+      </div>
+      <h1 class="hero-title">
+        <span class="line1">ピクセルの</span>
+        <span class="line2"><span class="bead-word">魔法世界</span></span>
+      </h1>
+      <p class="hero-desc">
+        拼豆の世界へようこそ！一つ一つのビーズが織りなす、デジタルアートの新体験。
+        Web5分散型技術で、あなたの創造力を解き放ちましょう。
+      </p>
+      <div class="hero-actions">
+        <a href="#creator" class="btn-bead btn-bead-primary">
+          ✦ 創作を始める
+        </a>
+        <a href="#showcase" class="btn-bead btn-bead-secondary">
+          ◇ ギャラリーを見る
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-num" data-count="12847">0</span>
+          <span class="stat-label">作品数</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" data-count="5293">0</span>
+          <span class="stat-label">クリエイター</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" data-count="891">0</span>
+          <span class="stat-label">テンプレート</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="bead-art-container">
+        <div class="bead-art-glow"></div>
+        <div class="bead-art-frame">
+          <div class="bead-canvas" id="heroBeadCanvas"></div>
+        </div>
+        <div class="bead-art-tag">✦ Web5 DWN</div>
+        <div class="bead-art-tag">◈ Decentralized</div>
+        <div class="bead-art-tag">✧ Pixel Art</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="features">
+  <div class="section-header scroll-reveal">
+    <div class="section-tag pink">✦ FEATURES</div>
+    <h2 class="section-title">
+      <span class="gradient-pink">コア機能</span>
+    </h2>
+    <p class="section-desc">
+      拼豆アートのすべてがここに。プロフェッショナルなツールキットで、あなたのアイデアを形にしましょう。
+    </p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card scroll-reveal">
+      <div class="feature-icon pink">
+        <div class="bead-dot" style="width:20px;height:20px;background:var(--bead-pink);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+      </div>
+      <h3 class="feature-title">ビーズエディタ</h3>
+      <p class="feature-desc">直感的なグリッドベースエディタで、ピクセルパーフェクトな拼豆デザインを簡単に作成。</p>
+      <div class="feature-beads">
+        <span style="background:var(--bead-pink)"></span>
+        <span style="background:var(--bead-cyan)"></span>
+        <span style="background:var(--bead-yellow)"></span>
+        <span style="background:var(--bead-purple)"></span>
+      </div>
+    </div>
+    <div class="feature-card scroll-reveal">
+      <div class="feature-icon cyan">
+        <div class="bead-dot" style="width:20px;height:20px;background:var(--bead-cyan);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+      </div>
+      <h3 class="feature-title">Web5分散保存</h3>
+      <p class="feature-desc">DWN（Decentralized Web Node）に作品を保存。データはあなたのもの、誰にも奪われない。</p>
+      <div class="feature-beads">
+        <span style="background:var(--bead-cyan)"></span>
+        <span style="background:var(--bead-blue)"></span>
+        <span style="background:var(--bead-green)"></span>
+        <span style="background:var(--bead-purple)"></span>
+      </div>
+    </div>
+    <div class="feature-card scroll-reveal">
+      <div class="feature-icon purple">
+        <div class="bead-dot" style="width:20px;height:20px;background:var(--bead-purple);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+      </div>
+      <h3 class="feature-title">テンプレートライブラリ</h3>
+      <p class="feature-desc">891以上のテンプレートから選んでカスタマイズ。アニメ・ゲーム・キャラクターなど豊富なジャンル。</p>
+      <div class="feature-beads">
+        <span style="background:var(--bead-purple)"></span>
+        <span style="background:var(--bead-pink)"></span>
+        <span style="background:var(--bead-orange)"></span>
+        <span style="background:var(--bead-yellow)"></span>
+      </div>
+    </div>
+    <div class="feature-card scroll-reveal">
+      <div class="feature-icon yellow">
+        <div class="bead-dot" style="width:20px;height:20px;background:var(--bead-yellow);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+      </div>
+      <h3 class="feature-title">リアルタイム共有</h3>
+      <p class="feature-desc">作成中の作品をリアルタイムで共有。コラボレーション機能で一緒に創作しよう。</p>
+      <div class="feature-beads">
+        <span style="background:var(--bead-yellow)"></span>
+        <span style="background:var(--bead-orange)"></span>
+        <span style="background:var(--bead-pink)"></span>
+        <span style="background:var(--bead-green)"></span>
+      </div>
+    </div>
+    <div class="feature-card scroll-reveal">
+      <div class="feature-icon green">
+        <div class="bead-dot" style="width:20px;height:20px;background:var(--bead-green);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+      </div>
+      <h3 class="feature-title">AIアシスト</h3>
+      <p class="feature-desc">画像から自動で拼豆パターンを生成。AIが色変換と最適化をサポート。</p>
+      <div class="feature-beads">
+        <span style="background:var(--bead-green)"></span>
+        <span style="background:var(--bead-cyan)"></span>
+        <span style="background:var(--bead-blue)"></span>
+        <span style="background:var(--bead-yellow)"></span>
+      </div>
+    </div>
+    <div class="feature-card scroll-reveal">
+      <div class="feature-icon orange">
+        <div class="bead-dot" style="width:20px;height:20px;background:var(--bead-orange);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+      </div>
+      <h3 class="feature-title">3Dプレビュー</h3>
+      <p class="feature-desc">完成したデザインの3Dプレビュー。実際の拼豆作品がどうなるか確認できます。</p>
+      <div class="feature-beads">
+        <span style="background:var(--bead-orange)"></span>
+        <span style="background:var(--bead-red)"></span>
+        <span style="background:var(--bead-pink)"></span>
+        <span style="background:var(--bead-yellow)"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section showcase" id="showcase">
+  <div class="section-header scroll-reveal">
+    <div class="section-tag cyan">◈ GALLERY</div>
+    <h2 class="section-title">
+      <span class="gradient-cyan">ギャラリー</span>
+    </h2>
+    <p class="section-desc">
+      コミュニティが作った素晴らしい拼豆アート作品のコレクション。
+    </p>
+  </div>
+  <div class="showcase-grid" id="showcaseGrid"></div>
+</section>
+
+<section class="section creator-section" id="creator">
+  <div class="section-header scroll-reveal">
+    <div class="section-tag purple">✧ CREATOR</div>
+    <h2 class="section-title">
+      <span class="gradient-purple">クリエイター</span>
+    </h2>
+    <p class="section-desc">
+      インタラクティブな拼豆ボードで、今すぐ創作を始めよう！
+    </p>
+  </div>
+  <div class="creator-container">
+    <div class="creator-panel scroll-reveal">
+      <div class="creator-title">
+        <span class="dot"></span>
+        ビーズボード
+      </div>
+      <div class="bead-board" id="beadBoard"></div>
+      <div class="color-palette" id="colorPalette"></div>
+    </div>
+    <div class="creator-tools scroll-reveal">
+      <div class="tool-group">
+        <div class="tool-group-title">TOOLS</div>
+        <div class="tool-buttons">
+          <button class="tool-btn active" data-tool="paint">
+            <span class="icon-dot" style="background:var(--bead-pink)"></span>
+            描画
+          </button>
+          <button class="tool-btn" data-tool="erase">
+            <span class="icon-dot" style="background:rgba(255,255,255,0.3)"></span>
+            消去
+          </button>
+          <button class="tool-btn" data-tool="fill">
+            <span class="icon-dot" style="background:var(--bead-cyan)"></span>
+            塗り潰し
+          </button>
+          <button class="tool-btn" data-tool="pick">
+            <span class="icon-dot" style="background:var(--bead-yellow)"></span>
+            スポイト
+          </button>
+        </div>
+      </div>
+      <div class="tool-group">
+        <div class="tool-group-title">TEMPLATES</div>
+        <div class="tool-buttons">
+          <button class="tool-btn" data-template="heart">
+            <span class="icon-dot" style="background:var(--bead-red)"></span>
+            ハート
+          </button>
+          <button class="tool-btn" data-template="star">
+            <span class="icon-dot" style="background:var(--bead-yellow)"></span>
+            スター
+          </button>
+          <button class="tool-btn" data-template="cat">
+            <span class="icon-dot" style="background:var(--bead-pink)"></span>
+            ネコ
+          </button>
+          <button class="tool-btn" data-template="clear">
+            <span class="icon-dot" style="background:rgba(255,255,255,0.3)"></span>
+            クリア
+          </button>
+        </div>
+      </div>
+      <div class="tool-group">
+        <div class="tool-group-title">ACTIONS</div>
+        <div class="tool-buttons">
+          <button class="tool-btn" id="saveBtn">
+            <span class="icon-dot" style="background:var(--bead-green)"></span>
+            DWNに保存
+          </button>
+          <button class="tool-btn" id="exportBtn">
+            <span class="icon-dot" style="background:var(--bead-cyan)"></span>
+            PNG出力
+          </button>
+          <button class="tool-btn" id="shareBtn">
+            <span class="icon-dot" style="background:var(--bead-purple)"></span>
+            共有リンク
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pricing">
+  <div class="section-header scroll-reveal">
+    <div class="section-tag pink">♦ PRICING</div>
+    <h2 class="section-title">
+      <span class="gradient-pink">プラン</span>
+    </h2>
+    <p class="section-desc">
+      あなたの創作スタイルに合わせてプランを選ぼう。
+    </p>
+  </div>
+  <div class="pricing-grid">
+    <div class="pricing-card scroll-reveal">
+      <div class="pricing-beads">
+        <span style="background:var(--bead-cyan)"></span>
+        <span style="background:var(--bead-cyan)"></span>
+        <span style="background:var(--bead-cyan)"></span>
+      </div>
+      <h3 class="pricing-name">STARTER</h3>
+      <div class="pricing-price"><span class="currency">¥</span>0</div>
+      <div class="pricing-period">永久無料</div>
+      <ul class="pricing-features">
+        <li><span class="check-bead" style="background:var(--bead-cyan)"></span>16×16 ビーズボード</li>
+        <li><span class="check-bead" style="background:var(--bead-cyan)"></span>基本カラーパレット</li>
+        <li><span class="check-bead" style="background:var(--bead-cyan)"></span>5作品まで保存</li>
+        <li><span class="check-bead" style="background:var(--bead-cyan)"></span>コミュニティギャラリー</li>
+      </ul>
+      <button class="pricing-btn secondary">無料で始める</button>
+    </div>
+    <div class="pricing-card featured scroll-reveal">
+      <div class="pricing-beads">
+        <span style="background:var(--bead-pink)"></span>
+        <span style="background:var(--bead-purple)"></span>
+        <span style="background:var(--bead-cyan)"></span>
+      </div>
+      <h3 class="pricing-name">CREATOR</h3>
+      <div class="pricing-price"><span class="currency">¥</span>980</div>
+      <div class="pricing-period">月額</div>
+      <ul class="pricing-features">
+        <li><span class="check-bead" style="background:var(--bead-pink)"></span>32×32 ビーズボード</li>
+        <li><span class="check-bead" style="background:var(--bead-pink)"></span>フルカラーパレット</li>
+        <li><span class="check-bead" style="background:var(--bead-pink)"></span>無制限保存（DWN）</li>
+        <li><span class="check-bead" style="background:var(--bead-pink)"></span>AIアシスト機能</li>
+        <li><span class="check-bead" style="background:var(--bead-pink)"></span>3Dプレビュー</li>
+        <li><span class="check-bead" style="background:var(--bead-pink)"></span>コラボレーション</li>
+      </ul>
+      <button class="pricing-btn primary">今すぐ登録</button>
+    </div>
+    <div class="pricing-card scroll-reveal">
+      <div class="pricing-beads">
+        <span style="background:var(--bead-yellow)"></span>
+        <span style="background:var(--bead-orange)"></span>
+        <span style="background:var(--bead-yellow)"></span>
+      </div>
+      <h3 class="pricing-name">STUDIO</h3>
+      <div class="pricing-price"><span class="currency">¥</span>2980</div>
+      <div class="pricing-period">月額</div>
+      <ul class="pricing-features">
+        <li><span class="check-bead" style="background:var(--bead-yellow)"></span>64×64 ビーズボード</li>
+        <li><span class="check-bead" style="background:var(--bead-yellow)"></span>カスタムカラー作成</li>
+        <li><span class="check-bead" style="background:var(--bead-yellow)"></span>チーム管理機能</li>
+        <li><span class="check-bead" style="background:var(--bead-yellow)"></span>API アクセス</li>
+        <li><span class="check-bead" style="background:var(--bead-yellow)"></span>優先サポート</li>
+        <li><span class="check-bead" style="background:var(--bead-yellow)"></span>商用利用ライセンス</li>
+      </ul>
+      <button class="pricing-btn secondary">お問い合わせ</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-content">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo">
+        <div class="nav-logo-beads">
+          <span style="background:var(--bead-pink)"></span>
+          <span style="background:var(--bead-cyan)"></span>
+          <span style="background:var(--bead-yellow)"></span>
+          <span style="background:var(--bead-purple)"></span>
+          <span style="background:var(--bead-green)"></span>
+          <span style="background:var(--bead-orange)"></span>
+          <span style="background:var(--bead-blue)"></span>
+          <span style="background:var(--bead-red)"></span>
+          <span style="background:var(--bead-pink)"></span>
+        </div>
+        <span class="nav-logo-text">ビーズワールド</span>
+      </a>
+      <p>拼豆の世界へようこそ。<br>Web5分散型技術で、創造力の限界を超えよう。</p>
+      <div class="footer-social">
+        <a href="#"><div class="social-bead" style="background:var(--bead-pink)"></div></a>
+        <a href="#"><div class="social-bead" style="background:var(--bead-cyan)"></div></a>
+        <a href="#"><div class="social-bead" style="background:var(--bead-purple)"></div></a>
+        <a href="#"><div class="social-bead" style="background:var(--bead-yellow)"></div></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>PRODUCT</h4>
+      <a href="#">ビーズエディタ</a>
+      <a href="#">テンプレート</a>
+      <a href="#">ギャラリー</a>
+      <a href="#">AIアシスト</a>
+    </div>
+    <div class="footer-col">
+      <h4>RESOURCES</h4>
+      <a href="#">ドキュメント</a>
+      <a href="#">API リファレンス</a>
+      <a href="#">チュートリアル</a>
+      <a href="#">ブログ</a>
+    </div>
+    <div class="footer-col">
+      <h4>COMPANY</h4>
+      <a href="#">について</a>
+      <a href="#">お問い合わせ</a>
+      <a href="#">プライバシー</a>
+      <a href="#">利用規約</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 ビーズワールド — Powered by Web5</span>
+    <div class="footer-bottom-beads">
+      <span style="background:var(--bead-pink)"></span>
+      <span style="background:var(--bead-orange)"></span>
+      <span style="background:var(--bead-yellow)"></span>
+      <span style="background:var(--bead-green)"></span>
+      <span style="background:var(--bead-cyan)"></span>
+      <span style="background:var(--bead-blue)"></span>
+      <span style="background:var(--bead-purple)"></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function() {
+  const COLORS = [
+    '#FF6B9D', '#C44DFF', '#00E5FF', '#FFD93D',
+    '#FF8A5C', '#7BF5A6', '#5C7CFF', '#FF4757',
+    '#FF9FF3', '#FFEAA7', '#55E6C1', '#7158E2',
+    '#3AE374', '#FF3838', '#17C0EB', '#FFB8B8'
+  ];
+
+  const BEAD_COLORS = {
+    pink: '#FF6B9D', purple: '#C44DFF', cyan: '#00E5FF',
+    yellow: '#FFD93D', orange: '#FF8A5C', green: '#7BF5A6',
+    blue: '#5C7CFF', red: '#FF4757', dark: '#1A1033',
+    dark2: '#2D1B69', white: '#FFF8F0', empty: 'rgba(255,255,255,0.03)'
+  };
+
+  function initFloatingBeads() {
+    const container = document.getElementById('floatingBeads');
+    for (let i = 0; i < 25; i++) {
+      const bead = document.createElement('div');
+      bead.className = 'floating-bead';
+      const size = Math.random() * 10 + 4;
+      const color = COLORS[Math.floor(Math.random() * COLORS.length)];
+      bead.style.cssText = `
+        width: ${size}px; height: ${size}px;
+        background: ${color};
+        left: ${Math.random() * 100}%;
+        animation-delay: ${Math.random() * 8}s;
+        animation-duration: ${Math.random() * 6 + 6}s;
+        box-shadow: 0 0 ${size}px ${color}40;
+      `;
+      container.appendChild(bead);
+    }
+  }
+
+  function initHeroCanvas() {
+    const canvas = document.getElementById('heroBeadCanvas');
+    const cols = 22;
+    const rows = 22;
+    canvas.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+
+    const pattern = generatePixelArt(rows, cols);
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const cell = document.createElement('div');
+        cell.className = 'bead-cell';
+        const color = pattern[r][c];
+        if (color) {
+          cell.style.background = color;
+          cell.style.boxShadow = `0 0 6px ${color}60`;
+          cell.dataset.color = color;
+        } else {
+          cell.style.background = 'rgba(255,255,255,0.02)';
+        }
+        cell.style.animationDelay = `${(r + c) * 20}ms`;
+        canvas.appendChild(cell);
+      }
+    }
+
+    animateHeroBeads(canvas);
+  }
+
+  function generatePixelArt(rows, cols) {
+    const grid = Array.from({length: rows}, () => Array(cols).fill(null));
+
+    const centerX = Math.floor(cols / 2);
+    const centerY = Math.floor(rows / 2);
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const dx = c - centerX;
+        const dy = r - centerY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < 3.5) {
+          grid[r][c] = BEAD_COLORS.pink;
+        } else if (dist < 5.5) {
+          grid[r][c] = BEAD_COLORS.purple;
+        } else if (dist < 7.5) {
+          grid[r][c] = BEAD_COLORS.cyan;
+        } else if (dist < 9) {
+          grid[r][c] = BEAD_COLORS.blue;
+        } else if (dist < 10.5) {
+          if (Math.random() > 0.3) grid[r][c] = BEAD_COLORS.dark2;
+        }
+
+        if (Math.abs(dx) <= 1 && r === centerY - 2 && dist < 3.5) {
+          grid[r][c] = BEAD_COLORS.white;
+        }
+        if (Math.abs(dx) <= 1 && r === centerY + 1 && dist < 3.5) {
+          grid[r][c] = BEAD_COLORS.red;
+        }
+      }
+    }
+
+    for (let i = 0; i < 8; i++) {
+      const angle = (i / 8) * Math.PI * 2;
+      const sr = Math.round(centerY + Math.sin(angle) * 9.5);
+      const sc = Math.round(centerX + Math.cos(angle) * 9.5);
+      if (sr >= 0 && sr < rows && sc >= 0 && sc < cols) {
+        grid[sr][sc] = COLORS[i % COLORS.length];
+      }
+    }
+
+    return grid;
+  }
+
+  function animateHeroBeads(canvas) {
+    const cells = canvas.querySelectorAll('.bead-cell');
+    let frame = 0;
+
+    setInterval(() => {
+      frame++;
+      cells.forEach((cell, i) => {
+        if (cell.dataset.color && Math.random() < 0.02) {
+          const origColor = cell.dataset.color;
+          cell.style.filter = 'brightness(1.5)';
+          setTimeout(() => { cell.style.filter = ''; }, 300);
+        }
+      });
+    }, 100);
+  }
+
+  function initShowcase() {
+    const grid = document.getElementById('showcaseGrid');
+    const patterns = [
+      generateShowcasePattern('heart'),
+      generateShowcasePattern('star'),
+      generateShowcasePattern('diamond'),
+      generateShowcasePattern('flower'),
+      generateShowcasePattern('cat'),
+      generateShowcasePattern('moon'),
+      generateShowcasePattern('wave'),
+      generateShowcasePattern('bolt')
+    ];
+
+    const names = ['ハート', 'スター', 'ダイヤ', 'フラワー', 'ネコ', 'ムーン', 'ウェーブ', 'ボルト'];
+    const authors = ['sakura_chan', 'pixel_master', 'bead_queen', 'art_ninja', 'kawaii_dev', 'moon_light', 'wave_rider', 'thunder_bead'];
+
+    patterns.forEach((pattern, idx) => {
+      const item = document.createElement('div');
+      item.className = 'showcase-item scroll-reveal';
+
+      const beadPattern = document.createElement('div');
+      beadPattern.className = 'bead-pattern';
+      beadPattern.style.gridTemplateColumns = `repeat(${pattern[0].length}, 1fr)`;
+
+      pattern.forEach(row => {
+        row.forEach(color => {
+          const bead = document.createElement('div');
+          bead.className = 'mini-bead';
+          bead.style.background = color || 'rgba(255,255,255,0.02)';
+          if (color) {
+            bead.style.boxShadow = `0 0 3px ${color}40`;
+          }
+          beadPattern.appendChild(bead);
+        });
+      });
+
+      const overlay = document.createElement('div');
+      overlay.className = 'showcase-overlay';
+      overlay.innerHTML = `<h4>${names[idx]}</h4><p>by ${authors[idx]}</p>`;
+
+      item.appendChild(beadPattern);
+      item.appendChild(overlay);
+      grid.appendChild(item);
+    });
+  }
+
+  function generateShowcasePattern(type) {
+    const size = 12;
+    const grid = Array.from({length: size}, () => Array(size).fill(null));
+    const cx = size / 2, cy = size / 2;
+
+    switch(type) {
+      case 'heart':
+        for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
+          const x = (c - cx) / 5, y = (r - cy) / 5;
+          const eq = (x*x + y*y - 1)**3 - x*x * y*y*y;
+          if (eq <= 0) grid[r][c] = r < size/2 ? '#FF6B9D' : '#FF4757';
+        }
+        break;
+      case 'star':
+        for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
+          const dx = c - cx + 0.5, dy = r - cy + 0.5;
+          const angle = Math.atan2(dy, dx);
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          const starR = 3 + 2.5 * Math.cos(5 * angle);
+          if (dist < starR) grid[r][c] = dist < 2 ? '#FFD93D' : '#FF8A5C';
+        }
+        break;
+      case 'diamond':
+        for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
+          const dist = Math.abs(c - cx + 0.5) + Math.abs(r - cy + 0.5);
+          if (dist < 5) grid[r][c] = dist < 2 ? '#00E5FF' : '#5C7CFF';
+        }
+        break;
+      case 'flower':
+        for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
+          const dx = c - cx + 0.5, dy = r - cy + 0.5;
+          const angle = Math.atan2(dy, dx);
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          const petalR = 2.5 + 2 * Math.cos(6 * angle);
+          if (dist < petalR) grid[r][c] = dist < 1.5 ? '#FFD93D' : '#FF9FF3';
+        }
+        break;
+      case 'cat':
+        for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
+          const dx = Math.abs(c - cx + 0.5), dy = r - cy + 0.5;
+          if (dy > -3 && dy < 4 && dx < 3.5) {
+            if ((dx < 1 && dy > -1 && dy < 1)) grid[r][c] = '#FF6B9D';
+            else if ((Math.abs(dx - 2) < 1 && dy < -1 && dy > -3)) grid[r][c] = '#C44DFF';
+            else grid[r][c] = '#FFB8B8';
+          }
+        }
+        break;
+      case 'moon':
+        for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
+          const dx = c - cx + 0.5, dy = r - cy + 0.5;
+          const dist1 = Math.sqrt(dx*dx + dy*dy);
+          const dist2 = Math.sqrt((dx-2)*(dx-2) + dy*dy);
+          if (dist1 < 5 && dist2 > 3.5) grid[r][c] = dist1 < 3 ? '#FFD93D' : '#FF8A5C';
+        }
+        break;
+      case 'wave':
+        for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
+          const wave = Math.sin(c * 0.8) * 2 + cy;
+          if (Math.abs(r - wave) < 2) grid[r][c] = r < wave ? '#00E5FF' : '#5C7CFF';
+        }
+        break;
+      case 'bolt':
+        const boltPath = [[2,1],[3,2],[4,1],[5,3],[6,2],[7,4],[8,3],[9,5],[10,4]];
+        boltPath.forEach(([r,c]) => {
+          if (r < size && c < size) {
+            grid[r][c] = '#FFD93D';
+            if (c+1 < size) grid[r][c+1] = '#FF8A5C';
+          }
+        });
+        break;
+    }
+    return grid;
+  }
+
+  let currentTool = 'paint';
+  let currentColor = COLORS[0];
+  let isDrawing = false;
+
+  function initBeadBoard() {
+    const board = document.getElementById('beadBoard');
+    const cols = 16;
+    const rows = 16;
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const cell = document.createElement('div');
+        cell.className = 'board-cell';
+        cell.dataset.row = r;
+        cell.dataset.col = c;
+
+        cell.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          isDrawing = true;
+          handleCellAction(cell);
+        });
+        cell.addEventListener('mouseenter', () => {
+          if (isDrawing) handleCellAction(cell);
+        });
+        cell.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          isDrawing = true;
+          handleCellAction(cell);
+        });
+
+        board.appendChild(cell);
+      }
+    }
+
+    document.addEventListener('mouseup', () => { isDrawing = false; });
+    document.addEventListener('touchend', () => { isDrawing = false; });
+  }
+
+  function handleCellAction(cell) {
+    switch(currentTool) {
+      case 'paint':
+        cell.style.background = currentColor;
+        cell.style.boxShadow = `0 0 6px ${currentColor}60`;
+        cell.classList.add('filled');
+        cell.dataset.color = currentColor;
+        break;
+      case 'erase':
+        cell.style.background = 'rgba(255,255,255,0.03)';
+        cell.style.boxShadow = 'none';
+        cell.classList.remove('filled');
+        delete cell.dataset.color;
+        break;
+      case 'fill':
+        floodFill(
+          parseInt(cell.dataset.row),
+          parseInt(cell.dataset.col),
+          cell.dataset.color || null,
+          currentColor
+        );
+        break;
+      case 'pick':
+        if (cell.dataset.color) {
+          currentColor = cell.dataset.color;
+          document.querySelectorAll('.color-swatch').forEach(s => {
+            s.classList.toggle('active', s.dataset.color === currentColor);
+          });
+          showToast('カラー取得', currentColor);
+        }
+        break;
+    }
+  }
+
+  function floodFill(row, col, targetColor, fillColor) {
+    if (targetColor === fillColor) return;
+    const cells = document.querySelectorAll('.board-cell');
+    const cols = 16;
+    const visited = new Set();
+    const stack = [[row, col]];
+
+    while (stack.length) {
+      const [r, c] = stack.pop();
+      const key = `${r},${c}`;
+      if (visited.has(key)) continue;
+      if (r < 0 || r >= 16 || c < 0 || c >= 16) continue;
+
+      const cell = cells[r * cols + c];
+      const cellColor = cell.dataset.color || null;
+      if (cellColor !== targetColor) continue;
+
+      visited.add(key);
+      cell.style.background = fillColor;
+      cell.style.boxShadow = `0 0 6px ${fillColor}60`;
+      cell.classList.add('filled');
+      cell.dataset.color = fillColor;
+
+      stack.push([r-1, c], [r+1, c], [r, c-1], [r, c+1]);
+    }
+  }
+
+  function initColorPalette() {
+    const palette = document.getElementById('colorPalette');
+    COLORS.forEach((color, i) => {
+      const swatch = document.createElement('div');
+      swatch.className = 'color-swatch' + (i === 0 ? ' active' : '');
+      swatch.style.background = color;
+      swatch.style.color = color;
+      swatch.dataset.color = color;
+      swatch.addEventListener('click', () => {
+        currentColor = color;
+        document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+        swatch.classList.add('active');
+      });
+      palette.appendChild(swatch);
+    });
+  }
+
+  function initTools() {
+    document.querySelectorAll('.tool-btn[data-tool]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentTool = btn.dataset.tool;
+        document.querySelectorAll('.tool-btn[data-tool]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+
+    document.querySelectorAll('.tool-btn[data-template]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        applyTemplate(btn.dataset.template);
+      });
+    });
+
+    document.getElementById('saveBtn').addEventListener('click', () => {
+      showToast('DWNに保存しました！', '#7BF5A6');
+    });
+
+    document.getElementById('exportBtn').addEventListener('click', () => {
+      showToast('PNG出力完了！', '#00E5FF');
+    });
+
+    document.getElementById('shareBtn').addEventListener('click', () => {
+      showToast('共有リンクをコピーしました！', '#C44DFF');
+    });
+  }
+
+  function applyTemplate(type) {
+    const cells = document.querySelectorAll('.board-cell');
+    cells.forEach(cell => {
+      cell.style.background = 'rgba(255,255,255,0.03)';
+      cell.style.boxShadow = 'none';
+      cell.classList.remove('filled');
+      delete cell.dataset.color;
+    });
+
+    if (type === 'clear') {
+      showToast('ボードをクリアしました', '#FFF8F0');
+      return;
+    }
+
+    const size = 16;
+    const pattern = Array.from({length: size}, () => Array(size).fill(null));
+    const cx = size / 2, cy = size / 2;
+
+    switch(type) {
+      case 'heart':
+        for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
+          const x = (c - cx) / 6, y = (r - cy) / 6;
+          if ((x*x + y*y - 1)**3 - x*x * y*y*y <= 0)
+            pattern[r][c] = r < size/2 ? '#FF6B9D' : '#FF4757';
+        }
+        break;
+      case 'star':
+        for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
+          const dx = c - cx + 0.5, dy = r - cy + 0.5;
+          const angle = Math.atan2(dy, dx);
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < 3 + 3 * Math.cos(5 * angle))
+            pattern[r][c] = dist < 2 ? '#FFD93D' : '#FF8A5C';
+        }
+        break;
+      case 'cat':
+        for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
+          const dx = Math.abs(c - cx + 0.5), dy = r - cy + 0.5;
+          if (dy > -4 && dy < 5 && dx < 4.5) {
+            if ((dx < 1.2 && dy > -1 && dy < 1)) pattern[r][c] = '#FF6B9D';
+            else if (Math.abs(dx - 3) < 1.5 && dy < -2 && dy > -5) pattern[r][c] = '#C44DFF';
+            else pattern[r][c] = '#FFB8B8';
+          }
+          if (dy > -2 && dy < 2 && (Math.abs(dx - 2) < 0.8) && dy > -1) pattern[r][c] = '#00E5FF';
+        }
+        break;
+    }
+
+    cells.forEach((cell, i) => {
+      const r = Math.floor(i / size), c = i % size;
+      if (pattern[r][c]) {
+        setTimeout(() => {
+          cell.style.background = pattern[r][c];
+          cell.style.boxShadow = `0 0 6px ${pattern[r][c]}60`;
+          cell.classList.add('filled');
+          cell.dataset.color = pattern[r][c];
+        }, (r + c) * 15);
+      }
+    });
+
+    showToast(`テンプレート「${type}」を適用`, '#FFD93D');
+  }
+
+  function showToast(message, color) {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `<span class="toast-bead" style="background:${color}"></span>${message}`;
+    container.appendChild(toast);
+
+    setTimeout(() => {
+      toast.style.animation = 'toastOut 0.3s ease-in forwards';
+      setTimeout(() => toast.remove(), 300);
+    }, 2500);
+  }
+
+  function initScrollReveal() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+  }
+
+  function initNavScroll() {
+    const nav = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 50);
+    });
+  }
+
+  function initCountUp() {
+    const nums = document.querySelectorAll('.stat-num[data-count]');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const target = parseInt(entry.target.dataset.count);
+          let current = 0;
+          const step = Math.ceil(target / 60);
+          const timer = setInterval(() => {
+            current += step;
+            if (current >= target) {
+              current = target;
+              clearInterval(timer);
+            }
+            entry.target.textContent = current.toLocaleString();
+          }, 20);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    nums.forEach(n => observer.observe(n));
+  }
+
+  function initMobileMenu() {
+    const btn = document.getElementById('mobileMenuBtn');
+    const links = document.querySelector('.nav-links');
+    btn.addEventListener('click', () => {
+      links.style.display = links.style.display === 'flex' ? 'none' : 'flex';
+      links.style.flexDirection = 'column';
+      links.style.position = 'absolute';
+      links.style.top = '100%';
+      links.style.left = '0';
+      links.style.right = '0';
+      links.style.background = 'rgba(26, 16, 51, 0.98)';
+      links.style.padding = '16px';
+      links.style.borderBottom = '2px solid var(--bead-pink)';
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initFloatingBeads();
+    initHeroCanvas();
+    initShowcase();
+    initBeadBoard();
+    initColorPalette();
+    initTools();
+    initScrollReveal();
+    initNavScroll();
+    initCountUp();
+    initMobileMenu();
+  });
+})();
+</script>
+</body>
+</html>
