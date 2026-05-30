@@ -27,26 +27,49 @@ const audioAssets: AudioAssets = {
 
 class AudioEngine {
   private bgmAudio: HTMLAudioElement | null = null
-  private sfxAudio: HTMLAudioElement | null = null
   private currentBgm: BgmId | null = null
   private bgmVolume = 0.3
   private sfxVolume = 0.5
   private audioContext: AudioContext | null = null
+  private activeOscillators: OscillatorNode[] = []
+  private activeTimers: ReturnType<typeof setTimeout>[] = []
+  private bgmGainNode: GainNode | null = null
 
   private getContext(): AudioContext {
     if (!this.audioContext) {
       this.audioContext = new AudioContext()
     }
+    if (this.audioContext.state === 'suspended') {
+      this.audioContext.resume()
+    }
     return this.audioContext
+  }
+
+  private cleanupOscillators() {
+    for (const osc of this.activeOscillators) {
+      try { osc.stop() } catch { /* already stopped */ }
+    }
+    this.activeOscillators = []
+    for (const timer of this.activeTimers) {
+      clearTimeout(timer)
+    }
+    this.activeTimers = []
   }
 
   playBgm(id: BgmId) {
     if (id === this.currentBgm) return
     this.currentBgm = id
 
+    this.cleanupOscillators()
+
     if (this.bgmAudio) {
       this.bgmAudio.pause()
       this.bgmAudio = null
+    }
+
+    if (this.bgmGainNode) {
+      try { this.bgmGainNode.disconnect() } catch { /* ignore */ }
+      this.bgmGainNode = null
     }
 
     if (!audioAssets.bgm[id]) {
@@ -63,9 +86,9 @@ class AudioEngine {
   private playSynthBgm(id: BgmId) {
     try {
       const ctx = this.getContext()
-      const gainNode = ctx.createGain()
-      gainNode.gain.value = 0.08
-      gainNode.connect(ctx.destination)
+      this.bgmGainNode = ctx.createGain()
+      this.bgmGainNode.gain.value = 0.08
+      this.bgmGainNode.connect(ctx.destination)
 
       const configs: Record<string, { freq: number; type: OscillatorType; lfoFreq: number }> = {
         main_theme: { freq: 220, type: 'sine', lfoFreq: 0.3 },
@@ -89,14 +112,18 @@ class AudioEngine {
       lfo.connect(lfoGain)
       lfoGain.connect(osc.frequency)
 
-      osc.connect(gainNode)
+      osc.connect(this.bgmGainNode)
       osc.start()
       lfo.start()
 
-      setTimeout(() => {
-        osc.stop()
-        lfo.stop()
+      this.activeOscillators.push(osc, lfo)
+
+      const timer = setTimeout(() => {
+        try { osc.stop() } catch { /* already stopped */ }
+        try { lfo.stop() } catch { /* already stopped */ }
+        this.activeOscillators = this.activeOscillators.filter((o) => o !== osc && o !== lfo)
       }, 30000)
+      this.activeTimers.push(timer)
     } catch {
       // AudioContext not available
     }
@@ -108,9 +135,9 @@ class AudioEngine {
       return
     }
 
-    this.sfxAudio = new Audio(audioAssets.sfx[id])
-    this.sfxAudio.volume = this.sfxVolume
-    this.sfxAudio.play().catch(() => {})
+    const audio = new Audio(audioAssets.sfx[id])
+    audio.volume = this.sfxVolume
+    audio.play().catch(() => {})
   }
 
   private playSynthSfx(id: SfxId) {
@@ -122,7 +149,7 @@ class AudioEngine {
 
       switch (id) {
         case 'crack': {
-          const bufferSize = ctx.sampleRate * 0.3
+          const bufferSize = Math.floor(ctx.sampleRate * 0.3)
           const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate)
           const data = buffer.getChannelData(0)
           for (let i = 0; i < bufferSize; i++) {
@@ -147,7 +174,7 @@ class AudioEngine {
           break
         }
         case 'kiln_fire': {
-          const bufferSize = ctx.sampleRate * 1
+          const bufferSize = Math.floor(ctx.sampleRate * 1)
           const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate)
           const data = buffer.getChannelData(0)
           for (let i = 0; i < bufferSize; i++) {
@@ -164,7 +191,7 @@ class AudioEngine {
           break
         }
         case 'rain': {
-          const bufferSize = ctx.sampleRate * 2
+          const bufferSize = Math.floor(ctx.sampleRate * 2)
           const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate)
           const data = buffer.getChannelData(0)
           for (let i = 0; i < bufferSize; i++) {
@@ -209,11 +236,24 @@ class AudioEngine {
   }
 
   stopBgm() {
+    this.cleanupOscillators()
     if (this.bgmAudio) {
       this.bgmAudio.pause()
       this.bgmAudio = null
     }
+    if (this.bgmGainNode) {
+      try { this.bgmGainNode.disconnect() } catch { /* ignore */ }
+      this.bgmGainNode = null
+    }
     this.currentBgm = null
+  }
+
+  destroy() {
+    this.stopBgm()
+    if (this.audioContext) {
+      this.audioContext.close()
+      this.audioContext = null
+    }
   }
 }
 

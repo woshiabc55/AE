@@ -5,7 +5,6 @@ interface Crack {
   points: { x: number; y: number }[]
   width: number
   color: string
-  progress: number
   speed: number
   branches: Crack[]
 }
@@ -63,7 +62,6 @@ function generateCrack(
     points,
     width,
     color: isMain ? '#5C3A21' : '#C9A84C',
-    progress: 0,
     speed: 0.3 + Math.random() * 0.4,
     branches,
   }
@@ -106,49 +104,51 @@ function drawCrack(ctx: CanvasRenderingContext2D, crack: Crack, globalProgress: 
 
 export default function CrackCanvas({ className = '', progress = 0 }: CrackCanvasProps) {
   const cracksRef = useRef<Crack[] | null>(null)
-
-  const ensureCracks = useCallback((width: number, height: number) => {
-    if (cracksRef.current) return
-    const centerX = width / 2
-    const centerY = height / 2
-    const mainCracks: Crack[] = []
-
-    const numMain = 5 + Math.floor(Math.random() * 4)
-    for (let i = 0; i < numMain; i++) {
-      const angle = (Math.PI * 2 * i) / numMain + (Math.random() - 0.5) * 0.5
-      const length = 80 + Math.random() * 150
-      mainCracks.push(generateCrack(centerX, centerY, angle, length, 2 + Math.random(), true, 0))
-    }
-
-    const numGold = 8 + Math.floor(Math.random() * 6)
-    for (let i = 0; i < numGold; i++) {
-      const angle = Math.random() * Math.PI * 2
-      const dist = 20 + Math.random() * 60
-      const sx = centerX + Math.cos(angle) * dist
-      const sy = centerY + Math.sin(angle) * dist
-      const length = 40 + Math.random() * 80
-      mainCracks.push(generateCrack(sx, sy, angle + (Math.random() - 0.5), length, 0.8, false, 1))
-    }
-
-    cracksRef.current = mainCracks
-  }, [])
+  const progressRef = useRef(progress)
+  progressRef.current = progress
 
   const draw = useCallback(
     (ctx: CanvasRenderingContext2D, _time: number, _delta: number) => {
       const canvas = ctx.canvas
       const width = canvas.getBoundingClientRect().width
       const height = canvas.getBoundingClientRect().height
+      if (width === 0 || height === 0) return
 
       ctx.clearRect(0, 0, width, height)
-      ensureCracks(width, height)
 
-      if (!cracksRef.current) return
+      if (!cracksRef.current) {
+        const centerX = width / 2
+        const centerY = height / 2
+        const mainCracks: Crack[] = []
+
+        const numMain = 5 + Math.floor(Math.random() * 4)
+        for (let i = 0; i < numMain; i++) {
+          const angle = (Math.PI * 2 * i) / numMain + (Math.random() - 0.5) * 0.5
+          const length = 80 + Math.random() * 150
+          mainCracks.push(generateCrack(centerX, centerY, angle, length, 2 + Math.random(), true, 0))
+        }
+
+        const numGold = 8 + Math.floor(Math.random() * 6)
+        for (let i = 0; i < numGold; i++) {
+          const angle = Math.random() * Math.PI * 2
+          const dist = 20 + Math.random() * 60
+          const sx = centerX + Math.cos(angle) * dist
+          const sy = centerY + Math.sin(angle) * dist
+          const length = 40 + Math.random() * 80
+          mainCracks.push(generateCrack(sx, sy, angle + (Math.random() - 0.5), length, 0.8, false, 1))
+        }
+
+        cracksRef.current = mainCracks
+      }
+
+      const p = progressRef.current
+      if (p <= 0) return
 
       for (const crack of cracksRef.current) {
-        drawCrack(ctx, crack, progress)
+        drawCrack(ctx, crack, p)
       }
     },
-    [progress, ensureCracks]
+    []
   )
 
   const canvasRef = useCanvasAnimation(draw, progress > 0)

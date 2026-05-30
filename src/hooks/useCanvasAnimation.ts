@@ -7,6 +7,9 @@ export function useCanvasAnimation(
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const animFrameRef = useRef<number>(0)
   const lastTimeRef = useRef<number>(0)
+  const drawRef = useRef(draw)
+
+  drawRef.current = draw
 
   const animate = useCallback(
     (time: number) => {
@@ -19,25 +22,21 @@ export function useCanvasAnimation(
       const delta = lastTimeRef.current ? (time - lastTimeRef.current) / 1000 : 0.016
       lastTimeRef.current = time
 
-      draw(ctx, time / 1000, delta)
+      drawRef.current(ctx, time / 1000, Math.min(delta, 0.1))
 
       animFrameRef.current = requestAnimationFrame(animate)
     },
-    [draw]
+    []
   )
 
   useEffect(() => {
-    if (!active) {
-      cancelAnimationFrame(animFrameRef.current)
-      return
-    }
-
     const canvas = canvasRef.current
     if (!canvas) return
 
     const resize = () => {
       const dpr = window.devicePixelRatio || 1
       const rect = canvas.getBoundingClientRect()
+      if (rect.width === 0 || rect.height === 0) return
       canvas.width = rect.width * dpr
       canvas.height = rect.height * dpr
       const ctx = canvas.getContext('2d')
@@ -47,7 +46,10 @@ export function useCanvasAnimation(
     resize()
     window.addEventListener('resize', resize)
 
-    animFrameRef.current = requestAnimationFrame(animate)
+    if (active) {
+      lastTimeRef.current = 0
+      animFrameRef.current = requestAnimationFrame(animate)
+    }
 
     return () => {
       window.removeEventListener('resize', resize)

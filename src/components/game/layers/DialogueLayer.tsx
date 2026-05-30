@@ -24,8 +24,14 @@ export default function DialogueLayer({
   const [displayedText, setDisplayedText] = useState('')
   const [charIndex, setCharIndex] = useState(0)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const onTypingCompleteRef = useRef(onTypingComplete)
+  onTypingCompleteRef.current = onTypingComplete
 
   useEffect(() => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current)
+      timerRef.current = null
+    }
     setDisplayedText('')
     setCharIndex(0)
   }, [text])
@@ -33,7 +39,7 @@ export default function DialogueLayer({
   useEffect(() => {
     if (!isTyping || charIndex >= text.length) {
       if (charIndex >= text.length && isTyping) {
-        onTypingComplete()
+        onTypingCompleteRef.current()
       }
       return
     }
@@ -44,22 +50,36 @@ export default function DialogueLayer({
     }, 45)
 
     return () => {
-      if (timerRef.current) clearTimeout(timerRef.current)
+      if (timerRef.current) {
+        clearTimeout(timerRef.current)
+        timerRef.current = null
+      }
     }
-  }, [charIndex, isTyping, text, onTypingComplete])
+  }, [charIndex, isTyping, text])
 
   const handleClick = useCallback(() => {
     if (isTyping) {
-      if (timerRef.current) clearTimeout(timerRef.current)
+      if (timerRef.current) {
+        clearTimeout(timerRef.current)
+        timerRef.current = null
+      }
       setDisplayedText(text)
       setCharIndex(text.length)
-      onTypingComplete()
+      onTypingCompleteRef.current()
       return
     }
     if (!choices || choices.length === 0) {
       onAdvance()
     }
-  }, [isTyping, text, choices, onAdvance, onTypingComplete])
+  }, [isTyping, text, choices, onAdvance])
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current)
+      }
+    }
+  }, [])
 
   const charInfo = character ? characters[character] : null
   const isNarrator = character === 'narrator' || !character
@@ -71,7 +91,7 @@ export default function DialogueLayer({
     >
       <div className="flex-1" />
 
-      <div className="px-4 pb-6 md:px-8 md:pb-10">
+      <div className="px-4 pb-6 md:px-8 md:pb-10 safe-bottom">
         {charInfo && !isNarrator && (
           <div className="mb-2 px-4">
             <span
@@ -130,7 +150,7 @@ export default function DialogueLayer({
                   e.stopPropagation()
                   onChoiceSelect(choice)
                 }}
-                className="w-full text-left px-5 py-3 md:py-4 rounded-sm border border-glaze-50/10 bg-iron-950/60 backdrop-blur-sm hover:bg-celadon-500/10 hover:border-celadon-400/30 transition-all duration-300 group"
+                className="w-full text-left px-5 py-3 md:py-4 rounded-sm border border-glaze-50/10 bg-iron-950/60 backdrop-blur-sm hover:bg-celadon-500/10 hover:border-celadon-400/30 active:bg-celadon-500/20 transition-all duration-300 group"
               >
                 <span className="text-celadon-300/60 text-xs font-serif mr-3 group-hover:text-celadon-300 transition-colors">
                   {index + 1}.
