@@ -3,106 +3,98 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ビーズワールド | 拼豆世界 — Pixel Bead Universe</title>
+<title>拼豆宇宙 — 数字艺术制作平台</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
 
 :root {
-  --bead-pink: #FF6B9D;
-  --bead-purple: #C44DFF;
-  --bead-cyan: #00E5FF;
-  --bead-yellow: #FFD93D;
-  --bead-orange: #FF8A5C;
-  --bead-green: #7BF5A6;
-  --bead-blue: #5C7CFF;
-  --bead-red: #FF4757;
-  --bead-white: #FFF8F0;
-  --bead-dark: #1A1033;
-  --bead-dark2: #2D1B69;
-  --bead-cream: #FFF0E8;
-  --bead-size: 12px;
-  --bead-gap: 2px;
-  --font-pixel: 'Press Start 2P', monospace;
-  --font-kawaii: 'Zen Maru Gothic', sans-serif;
+  --glow-pink: #FF3C83;
+  --glow-purple: #B24BF3;
+  --glow-cyan: #00E5FF;
+  --glow-blue: #4D7CFF;
+  --glow-yellow: #FFD93D;
+  --glow-orange: #FF7A3D;
+  --glow-green: #3DFF9A;
+  --glow-red: #FF3D3D;
+  --bg-deep: #0A0618;
+  --bg-block: #120E24;
+  --bg-block2: #1A1435;
+  --bg-surface: #221A42;
+  --text-primary: #F0ECFF;
+  --text-secondary: rgba(240, 236, 255, 0.6);
+  --text-muted: rgba(240, 236, 255, 0.35);
+  --rim-pink: 0 0 30px rgba(255, 60, 131, 0.25), inset 0 0 30px rgba(255, 60, 131, 0.05);
+  --rim-cyan: 0 0 30px rgba(0, 229, 255, 0.25), inset 0 0 30px rgba(0, 229, 255, 0.05);
+  --rim-purple: 0 0 30px rgba(178, 75, 243, 0.25), inset 0 0 30px rgba(178, 75, 243, 0.05);
+  --rim-yellow: 0 0 30px rgba(255, 217, 61, 0.25), inset 0 0 30px rgba(255, 217, 61, 0.05);
+  --rim-green: 0 0 30px rgba(61, 255, 154, 0.25), inset 0 0 30px rgba(61, 255, 154, 0.05);
+  --font: 'Noto Sans SC', sans-serif;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
-html {
-  scroll-behavior: smooth;
-  scrollbar-width: thin;
-  scrollbar-color: var(--bead-pink) var(--bead-dark);
-}
-
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--bead-dark); }
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(var(--bead-pink), var(--bead-purple));
-  border-radius: 4px;
-}
+html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--glow-pink) var(--bg-deep); }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb { background: linear-gradient(var(--glow-pink), var(--glow-purple)); border-radius: 3px; }
 
 body {
-  font-family: var(--font-kawaii);
-  background: var(--bead-dark);
-  color: var(--bead-white);
+  font-family: var(--font);
+  background: var(--bg-deep);
+  color: var(--text-primary);
   overflow-x: hidden;
-  cursor: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><circle cx='10' cy='10' r='8' fill='%23FF6B9D' stroke='%23FFF' stroke-width='2'/></svg>") 10 10, auto;
+  -webkit-font-smoothing: antialiased;
 }
 
-.bead-grid-bg {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.03;
-  background-image:
-    radial-gradient(circle, var(--bead-pink) 4px, transparent 4px),
-    radial-gradient(circle, var(--bead-cyan) 4px, transparent 4px);
-  background-size: 28px 28px, 28px 28px;
-  background-position: 0 0, 14px 14px;
+.rim-border {
+  position: relative;
 }
-
-.floating-beads {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.floating-bead {
+.rim-border::before {
+  content: '';
   position: absolute;
-  border-radius: 50%;
-  opacity: 0;
-  animation: floatBead 8s infinite ease-in-out;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255,60,131,0.4), rgba(0,229,255,0.2), rgba(178,75,243,0.4));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 
-@keyframes floatBead {
-  0% { opacity: 0; transform: translateY(100vh) scale(0); }
-  10% { opacity: 0.6; }
-  90% { opacity: 0.6; }
-  100% { opacity: 0; transform: translateY(-10vh) scale(1); }
+.rim-glow {
+  position: relative;
 }
+.rim-glow::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255,60,131,0.15), rgba(0,229,255,0.08), rgba(178,75,243,0.15));
+  filter: blur(20px);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.rim-glow:hover::after { opacity: 1; }
 
 nav {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 1000;
-  padding: 12px 32px;
+  padding: 0 40px;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  backdrop-filter: blur(20px);
-  background: rgba(26, 16, 51, 0.85);
-  border-bottom: 2px solid rgba(255, 107, 157, 0.3);
+  background: rgba(10, 6, 24, 0.8);
+  backdrop-filter: blur(24px) saturate(1.5);
+  border-bottom: 1px solid rgba(255, 60, 131, 0.12);
   transition: all 0.3s;
 }
-
 nav.scrolled {
-  padding: 8px 32px;
-  background: rgba(26, 16, 51, 0.95);
-  border-bottom-color: var(--bead-pink);
+  background: rgba(10, 6, 24, 0.95);
+  border-bottom-color: rgba(255, 60, 131, 0.3);
+  box-shadow: 0 4px 30px rgba(255, 60, 131, 0.08);
 }
 
 .nav-logo {
@@ -110,1029 +102,1041 @@ nav.scrolled {
   align-items: center;
   gap: 12px;
   text-decoration: none;
-  color: var(--bead-white);
+  color: var(--text-primary);
 }
-
-.nav-logo-beads {
+.nav-logo-dots {
   display: grid;
-  grid-template-columns: repeat(3, 10px);
+  grid-template-columns: repeat(3, 8px);
   gap: 2px;
 }
-
-.nav-logo-beads span {
-  width: 10px; height: 10px;
+.nav-logo-dots span {
+  width: 8px; height: 8px;
   border-radius: 50%;
   display: block;
 }
-
 .nav-logo-text {
-  font-family: var(--font-pixel);
-  font-size: 14px;
-  background: linear-gradient(135deg, var(--bead-pink), var(--bead-cyan));
+  font-weight: 900;
+  font-size: 18px;
+  background: linear-gradient(135deg, var(--glow-pink), var(--glow-cyan));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  letter-spacing: 2px;
 }
 
-.nav-links {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
+.nav-links { display: flex; gap: 4px; align-items: center; }
 .nav-link {
-  font-family: var(--font-pixel);
-  font-size: 10px;
-  padding: 8px 16px;
-  border-radius: 20px;
+  padding: 8px 18px;
+  border-radius: 8px;
   text-decoration: none;
-  color: var(--bead-white);
-  border: 2px solid transparent;
-  transition: all 0.3s;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.25s;
   position: relative;
-  overflow: hidden;
 }
-
 .nav-link:hover {
-  border-color: var(--bead-pink);
-  background: rgba(255, 107, 157, 0.1);
-  transform: translateY(-2px);
+  color: var(--text-primary);
+  background: rgba(255, 60, 131, 0.08);
 }
-
 .nav-link.primary {
-  background: linear-gradient(135deg, var(--bead-pink), var(--bead-purple));
-  border-color: transparent;
-  box-shadow: 0 4px 15px rgba(255, 107, 157, 0.4);
+  background: linear-gradient(135deg, var(--glow-pink), var(--glow-purple));
+  color: white;
+  font-weight: 700;
+  box-shadow: 0 2px 16px rgba(255, 60, 131, 0.35);
+  border-radius: 10px;
 }
-
 .nav-link.primary:hover {
-  box-shadow: 0 6px 25px rgba(255, 107, 157, 0.6);
-  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 24px rgba(255, 60, 131, 0.5);
+  transform: translateY(-1px);
 }
 
 .mobile-menu-btn {
   display: none;
   background: none;
-  border: 2px solid var(--bead-pink);
-  border-radius: 8px;
-  padding: 6px 10px;
+  border: 1px solid rgba(255,60,131,0.3);
+  border-radius: 6px;
+  padding: 6px 8px;
   cursor: pointer;
 }
-
 .mobile-menu-btn span {
   display: block;
-  width: 20px; height: 2px;
-  background: var(--bead-pink);
+  width: 18px; height: 2px;
+  background: var(--glow-pink);
   margin: 3px 0;
-  transition: 0.3s;
 }
 
-.hero {
+.block-section {
   position: relative;
-  min-height: 100vh;
+  z-index: 2;
+  padding: 0 40px;
+  margin-bottom: 20px;
+}
+
+.block-panel {
+  background: var(--bg-block);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 24px;
+  overflow: hidden;
+  position: relative;
+}
+
+.block-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--glow-pink), var(--glow-cyan), transparent);
+  opacity: 0.6;
+}
+
+.block-header {
+  padding: 32px 40px 24px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 120px 32px 80px;
-  z-index: 2;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
 }
 
-.hero-content {
-  max-width: 1200px;
-  width: 100%;
+.block-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.block-tag.pink { color: var(--glow-pink); background: rgba(255,60,131,0.1); border: 1px solid rgba(255,60,131,0.2); }
+.block-tag.cyan { color: var(--glow-cyan); background: rgba(0,229,255,0.1); border: 1px solid rgba(0,229,255,0.2); }
+.block-tag.purple { color: var(--glow-purple); background: rgba(178,75,243,0.1); border: 1px solid rgba(178,75,243,0.2); }
+.block-tag.yellow { color: var(--glow-yellow); background: rgba(255,217,61,0.1); border: 1px solid rgba(255,217,61,0.2); }
+.block-tag.green { color: var(--glow-green); background: rgba(61,255,154,0.1); border: 1px solid rgba(61,255,154,0.2); }
+
+.block-title {
+  font-size: clamp(28px, 3.5vw, 42px);
+  font-weight: 900;
+  letter-spacing: -0.5px;
+}
+.block-title .g-pink { background: linear-gradient(135deg, var(--glow-pink), var(--glow-orange)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.block-title .g-cyan { background: linear-gradient(135deg, var(--glow-cyan), var(--glow-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.block-title .g-purple { background: linear-gradient(135deg, var(--glow-purple), var(--glow-pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.block-title .g-yellow { background: linear-gradient(135deg, var(--glow-yellow), var(--glow-orange)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+.block-body { padding: 32px 40px 40px; }
+
+.hero-block { padding-top: 84px; }
+.hero-inner {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 60px;
+  gap: 48px;
   align-items: center;
+  min-height: calc(100vh - 84px);
+  padding: 60px 0;
 }
-
-.hero-text { position: relative; }
 
 .hero-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 6px 16px;
-  background: rgba(255, 107, 157, 0.15);
-  border: 1px solid rgba(255, 107, 157, 0.3);
-  border-radius: 30px;
+  background: rgba(255, 60, 131, 0.08);
+  border: 1px solid rgba(255, 60, 131, 0.2);
+  border-radius: 8px;
   font-size: 12px;
-  color: var(--bead-pink);
-  margin-bottom: 24px;
-  font-family: var(--font-pixel);
+  font-weight: 700;
+  color: var(--glow-pink);
+  margin-bottom: 28px;
+  letter-spacing: 1px;
 }
-
 .hero-badge .dot {
   width: 6px; height: 6px;
   border-radius: 50%;
-  background: var(--bead-green);
-  animation: pulse 2s infinite;
+  background: var(--glow-green);
+  box-shadow: 0 0 8px var(--glow-green);
+  animation: dotPulse 2s infinite;
 }
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.8); }
+@keyframes dotPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }
 
 .hero-title {
-  font-size: clamp(36px, 5vw, 64px);
+  font-size: clamp(40px, 5.5vw, 72px);
   font-weight: 900;
-  line-height: 1.1;
+  line-height: 1.05;
   margin-bottom: 24px;
+  letter-spacing: -1px;
 }
-
 .hero-title .line1 {
   display: block;
-  background: linear-gradient(135deg, var(--bead-pink), var(--bead-orange));
+  background: linear-gradient(135deg, var(--glow-pink), var(--glow-orange));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
-
 .hero-title .line2 {
   display: block;
-  background: linear-gradient(135deg, var(--bead-cyan), var(--bead-purple));
+  background: linear-gradient(135deg, var(--glow-cyan), var(--glow-purple));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
-
-.hero-title .bead-word {
+.hero-title .underline-word {
   position: relative;
   display: inline-block;
 }
-
-.hero-title .bead-word::after {
+.hero-title .underline-word::after {
   content: '';
   position: absolute;
-  bottom: -4px;
-  left: 0; right: 0;
-  height: 6px;
-  background: repeating-linear-gradient(
-    90deg,
-    var(--bead-yellow) 0px,
-    var(--bead-yellow) 8px,
-    transparent 8px,
-    transparent 12px
-  );
-  border-radius: 3px;
+  bottom: -2px; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--glow-yellow), var(--glow-orange));
+  border-radius: 2px;
+  box-shadow: 0 0 12px rgba(255,217,61,0.4);
 }
 
 .hero-desc {
   font-size: 16px;
-  line-height: 1.8;
-  color: rgba(255, 248, 240, 0.7);
+  line-height: 1.9;
+  color: var(--text-secondary);
   margin-bottom: 36px;
-  max-width: 480px;
+  max-width: 500px;
 }
 
-.hero-actions {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-}
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
-.btn-bead {
+.btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 14px 28px;
-  border-radius: 30px;
-  font-family: var(--font-pixel);
-  font-size: 12px;
+  padding: 12px 28px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
   text-decoration: none;
   border: none;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.25s;
   position: relative;
   overflow: hidden;
 }
-
-.btn-bead::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 30px 30px 0 0;
-}
-
-.btn-bead-primary {
-  background: linear-gradient(135deg, var(--bead-pink), var(--bead-purple));
+.btn-primary {
+  background: linear-gradient(135deg, var(--glow-pink), var(--glow-purple));
   color: white;
-  box-shadow: 0 4px 20px rgba(255, 107, 157, 0.4);
+  box-shadow: 0 4px 24px rgba(255,60,131,0.35);
 }
-
-.btn-bead-primary:hover {
-  transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 8px 30px rgba(255, 107, 157, 0.6);
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(255,60,131,0.5);
 }
-
-.btn-bead-secondary {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--bead-white);
-  border: 2px solid rgba(255, 107, 157, 0.3);
+.btn-ghost {
+  background: rgba(255,255,255,0.04);
+  color: var(--text-primary);
+  border: 1px solid rgba(255,255,255,0.1);
 }
-
-.btn-bead-secondary:hover {
-  border-color: var(--bead-pink);
-  background: rgba(255, 107, 157, 0.1);
-  transform: translateY(-3px);
+.btn-ghost:hover {
+  background: rgba(255,60,131,0.08);
+  border-color: rgba(255,60,131,0.3);
+  transform: translateY(-2px);
 }
 
 .hero-stats {
   display: flex;
-  gap: 32px;
+  gap: 40px;
   margin-top: 48px;
   padding-top: 32px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255,255,255,0.06);
 }
-
-.stat-item {
-  text-align: left;
-}
-
 .stat-num {
-  font-family: var(--font-pixel);
-  font-size: 24px;
-  color: var(--bead-cyan);
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--glow-cyan);
   display: block;
+  text-shadow: 0 0 20px rgba(0,229,255,0.3);
 }
-
 .stat-label {
   font-size: 12px;
-  color: rgba(255, 248, 240, 0.5);
+  color: var(--text-muted);
   margin-top: 4px;
+  font-weight: 500;
 }
 
-.hero-visual {
+.hero-canvas-wrap {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
-.bead-art-container {
-  position: relative;
+.hero-canvas-frame {
   width: 100%;
-  max-width: 500px;
+  max-width: 480px;
   aspect-ratio: 1;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--bg-block2);
+  border: 1px solid rgba(255,60,131,0.15);
+  box-shadow: var(--rim-pink);
+  position: relative;
 }
-
-.bead-art-frame {
+.hero-canvas-frame::before {
+  content: '';
   position: absolute;
   inset: 0;
-  border-radius: 24px;
-  overflow: hidden;
-  border: 3px solid rgba(255, 107, 157, 0.3);
-  background: rgba(45, 27, 105, 0.5);
-  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255,60,131,0.5), rgba(0,229,255,0.3), rgba(178,75,243,0.5));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 2;
 }
 
-.bead-canvas {
+.hero-bead-grid {
   width: 100%;
   height: 100%;
   display: grid;
   gap: 1px;
   padding: 16px;
 }
-
-.bead-cell {
+.hero-bead {
   border-radius: 50%;
-  transition: all 0.3s;
   position: relative;
+  transition: all 0.2s;
 }
-
-.bead-cell::after {
+.hero-bead.filled::after {
   content: '';
   position: absolute;
-  top: 15%; left: 15%;
-  width: 30%; height: 30%;
+  top: 18%; left: 18%;
+  width: 28%; height: 28%;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(255,255,255,0.45);
 }
-
-.bead-cell:hover {
-  transform: scale(1.3);
+.hero-bead:hover {
+  transform: scale(1.25);
   z-index: 10;
   filter: brightness(1.3);
 }
 
-.bead-art-glow {
-  position: absolute;
-  inset: -20px;
-  border-radius: 40px;
-  background: radial-gradient(ellipse, rgba(255, 107, 157, 0.15), transparent 70%);
-  z-index: -1;
-  animation: glowPulse 4s infinite ease-in-out;
-}
-
-@keyframes glowPulse {
-  0%, 100% { opacity: 0.5; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.05); }
-}
-
-.bead-art-tag {
+.hero-float-tag {
   position: absolute;
   padding: 6px 14px;
-  border-radius: 20px;
-  font-family: var(--font-pixel);
-  font-size: 9px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  animation: tagFloat 3s infinite ease-in-out;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.15);
+  animation: floatTag 4s infinite ease-in-out;
+  z-index: 3;
 }
-
-.bead-art-tag:nth-child(2) {
-  top: -10px; right: 20px;
-  background: rgba(255, 107, 157, 0.2);
-  color: var(--bead-pink);
-  animation-delay: 0s;
-}
-
-.bead-art-tag:nth-child(3) {
-  bottom: 20px; left: -10px;
-  background: rgba(0, 229, 255, 0.2);
-  color: var(--bead-cyan);
-  animation-delay: 1s;
-}
-
-.bead-art-tag:nth-child(4) {
-  top: 40%; right: -20px;
-  background: rgba(196, 77, 255, 0.2);
-  color: var(--bead-purple);
-  animation-delay: 2s;
-}
-
-@keyframes tagFloat {
+.hero-float-tag:nth-child(2) { top: -8px; right: 24px; background: rgba(255,60,131,0.15); color: var(--glow-pink); }
+.hero-float-tag:nth-child(3) { bottom: 24px; left: -12px; background: rgba(0,229,255,0.15); color: var(--glow-cyan); animation-delay: 1.5s; }
+.hero-float-tag:nth-child(4) { top: 45%; right: -16px; background: rgba(178,75,243,0.15); color: var(--glow-purple); animation-delay: 3s; }
+@keyframes floatTag {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  50% { transform: translateY(-10px); }
 }
 
-.section {
-  position: relative;
-  z-index: 2;
-  padding: 100px 32px;
-}
-
-.section-header {
-  text-align: center;
-  margin-bottom: 64px;
-}
-
-.section-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-family: var(--font-pixel);
-  font-size: 9px;
-  margin-bottom: 16px;
-  border: 1px solid;
-}
-
-.section-tag.pink {
-  color: var(--bead-pink);
-  border-color: rgba(255, 107, 157, 0.3);
-  background: rgba(255, 107, 157, 0.1);
-}
-
-.section-tag.cyan {
-  color: var(--bead-cyan);
-  border-color: rgba(0, 229, 255, 0.3);
-  background: rgba(0, 229, 255, 0.1);
-}
-
-.section-tag.purple {
-  color: var(--bead-purple);
-  border-color: rgba(196, 77, 255, 0.3);
-  background: rgba(196, 77, 255, 0.1);
-}
-
-.section-title {
-  font-size: clamp(28px, 4vw, 48px);
-  font-weight: 900;
-  margin-bottom: 16px;
-}
-
-.section-title .gradient-pink {
-  background: linear-gradient(135deg, var(--bead-pink), var(--bead-orange));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.section-title .gradient-cyan {
-  background: linear-gradient(135deg, var(--bead-cyan), var(--bead-blue));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.section-title .gradient-purple {
-  background: linear-gradient(135deg, var(--bead-purple), var(--bead-pink));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.section-desc {
-  font-size: 16px;
-  color: rgba(255, 248, 240, 0.6);
-  max-width: 600px;
-  margin: 0 auto;
-  line-height: 1.8;
-}
-
-.features-grid {
+.features-layout {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  max-width: 1200px;
-  margin: 0 auto;
+  gap: 16px;
 }
 
-.feature-card {
-  background: rgba(45, 27, 105, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
-  padding: 36px 28px;
-  transition: all 0.4s;
+.feat-card {
+  background: var(--bg-block2);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 16px;
+  padding: 28px 24px;
+  transition: all 0.35s;
   position: relative;
   overflow: hidden;
 }
-
-.feature-card::before {
+.feat-card::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--bead-pink), var(--bead-cyan));
+  height: 2px;
+  background: linear-gradient(90deg, var(--glow-pink), var(--glow-cyan));
   opacity: 0;
   transition: opacity 0.3s;
 }
-
-.feature-card:hover {
-  transform: translateY(-8px);
-  border-color: rgba(255, 107, 157, 0.3);
-  background: rgba(45, 27, 105, 0.6);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-}
-
-.feature-card:hover::before { opacity: 1; }
-
-.feature-icon {
-  width: 56px; height: 56px;
+.feat-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
   border-radius: 16px;
+  box-shadow: var(--rim-pink);
+  opacity: 0;
+  transition: opacity 0.35s;
+  pointer-events: none;
+}
+.feat-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(255,60,131,0.2);
+  background: var(--bg-surface);
+}
+.feat-card:hover::before { opacity: 1; }
+.feat-card:hover::after { opacity: 1; }
+
+.feat-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
-  position: relative;
+  margin-bottom: 16px;
 }
-
-.feature-icon .bead-dot {
-  width: 10px; height: 10px;
+.feat-icon .bead {
+  width: 18px; height: 18px;
   border-radius: 50%;
-  position: absolute;
-  transition: all 0.3s;
+  position: relative;
+  box-shadow: 0 0 12px currentColor;
 }
-
-.feature-icon .bead-dot::after {
+.feat-icon .bead::after {
   content: '';
   position: absolute;
-  top: 20%; left: 20%;
+  top: 18%; left: 18%;
   width: 30%; height: 30%;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255,255,255,0.5);
 }
+.feat-icon.pink { background: rgba(255,60,131,0.1); color: var(--glow-pink); }
+.feat-icon.cyan { background: rgba(0,229,255,0.1); color: var(--glow-cyan); }
+.feat-icon.purple { background: rgba(178,75,243,0.1); color: var(--glow-purple); }
+.feat-icon.yellow { background: rgba(255,217,61,0.1); color: var(--glow-yellow); }
+.feat-icon.green { background: rgba(61,255,154,0.1); color: var(--glow-green); }
+.feat-icon.orange { background: rgba(255,122,61,0.1); color: var(--glow-orange); }
 
-.feature-card:hover .bead-dot {
-  transform: scale(1.2);
-}
+.feat-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.feat-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
 
-.feature-icon.pink { background: rgba(255, 107, 157, 0.15); }
-.feature-icon.cyan { background: rgba(0, 229, 255, 0.15); }
-.feature-icon.purple { background: rgba(196, 77, 255, 0.15); }
-.feature-icon.yellow { background: rgba(255, 217, 61, 0.15); }
-.feature-icon.green { background: rgba(123, 245, 166, 0.15); }
-.feature-icon.orange { background: rgba(255, 138, 92, 0.15); }
+.anim-section .block-body { padding: 0; }
 
-.feature-title {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 12px;
-}
-
-.feature-desc {
-  font-size: 14px;
-  color: rgba(255, 248, 240, 0.6);
-  line-height: 1.7;
-}
-
-.feature-beads {
-  display: flex;
-  gap: 4px;
-  margin-top: 16px;
-}
-
-.feature-beads span {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  opacity: 0.6;
-  transition: all 0.3s;
-}
-
-.feature-card:hover .feature-beads span {
-  opacity: 1;
-  transform: scale(1.2);
-}
-
-.showcase {
-  background: linear-gradient(180deg, transparent, rgba(45, 27, 105, 0.3), transparent);
-}
-
-.showcase-grid {
+.anim-layout {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
+  grid-template-columns: 1fr 360px;
+  min-height: 520px;
 }
 
-.showcase-item {
-  aspect-ratio: 1;
-  border-radius: 20px;
-  overflow: hidden;
+.anim-preview {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid rgba(255,255,255,0.04);
   position: relative;
-  cursor: pointer;
-  border: 2px solid rgba(255, 255, 255, 0.05);
-  transition: all 0.4s;
 }
 
-.showcase-item:hover {
-  transform: scale(1.05);
-  border-color: var(--bead-pink);
-  box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
-  z-index: 10;
+.anim-canvas-wrap {
+  width: 100%;
+  max-width: 400px;
+  aspect-ratio: 1;
+  background: var(--bg-deep);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255,60,131,0.12);
+  box-shadow: 0 0 40px rgba(255,60,131,0.08);
+  position: relative;
+}
+.anim-canvas-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255,60,131,0.4), rgba(0,229,255,0.2), rgba(178,75,243,0.4));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 2;
 }
 
-.showcase-item .bead-pattern {
+.anim-bead-grid {
   width: 100%;
   height: 100%;
   display: grid;
   gap: 1px;
-  padding: 8px;
+  padding: 12px;
 }
-
-.showcase-item .mini-bead {
+.anim-bead {
   border-radius: 50%;
-  transition: all 0.3s;
+  position: relative;
+  transition: background 0.15s, box-shadow 0.15s;
 }
-
-.showcase-item:hover .mini-bead {
-  filter: brightness(1.2);
-}
-
-.showcase-overlay {
+.anim-bead.filled::after {
+  content: '';
   position: absolute;
-  inset: 0;
-  background: linear-gradient(transparent 50%, rgba(26, 16, 51, 0.9));
+  top: 18%; left: 18%;
+  width: 28%; height: 28%;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+}
+
+.anim-controls {
+  padding: 24px 32px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  padding: 20px;
-  opacity: 0;
-  transition: opacity 0.3s;
+  gap: 20px;
 }
 
-.showcase-item:hover .showcase-overlay { opacity: 1; }
-
-.showcase-overlay h4 {
-  font-size: 14px;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-
-.showcase-overlay p {
-  font-size: 11px;
-  color: rgba(255, 248, 240, 0.7);
-}
-
-.creator-section {
-  position: relative;
-}
-
-.creator-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
-  align-items: start;
-}
-
-.creator-panel {
-  background: rgba(45, 27, 105, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
-  padding: 32px;
-  position: relative;
-  overflow: hidden;
-}
-
-.creator-panel::before {
-  content: '';
-  position: absolute;
-  top: -1px; left: 20%; right: 20%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--bead-cyan), transparent);
-}
-
-.creator-title {
-  font-family: var(--font-pixel);
-  font-size: 14px;
-  margin-bottom: 24px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.creator-title .dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--bead-green);
-  animation: pulse 2s infinite;
-}
-
-.bead-board {
-  display: grid;
-  grid-template-columns: repeat(16, 1fr);
-  gap: 2px;
-  background: rgba(0, 0, 0, 0.2);
+.anim-control-group {
+  background: var(--bg-block2);
+  border: 1px solid rgba(255,255,255,0.04);
   border-radius: 12px;
-  padding: 12px;
-  margin-bottom: 20px;
+  padding: 16px;
+}
+.anim-control-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
 }
 
-.board-cell {
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.03);
-  cursor: pointer;
-  transition: all 0.15s;
-  position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.03);
-}
-
-.board-cell:hover {
-  background: rgba(255, 107, 157, 0.2);
-  border-color: rgba(255, 107, 157, 0.3);
-  transform: scale(1.1);
-}
-
-.board-cell.filled::after {
-  content: '';
-  position: absolute;
-  top: 20%; left: 20%;
-  width: 30%; height: 30%;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.4);
-}
-
-.board-cell.filled {
-  border-color: transparent;
-  transform: scale(0.9);
-}
-
-.color-palette {
+.anim-timeline {
   display: flex;
-  gap: 8px;
+  gap: 4px;
+  align-items: center;
   flex-wrap: wrap;
 }
-
-.color-swatch {
-  width: 32px; height: 32px;
-  border-radius: 50%;
+.anim-frame-thumb {
+  width: 40px; height: 40px;
+  border-radius: 6px;
+  background: var(--bg-surface);
+  border: 1px solid rgba(255,255,255,0.06);
   cursor: pointer;
   transition: all 0.2s;
-  position: relative;
-  border: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+.anim-frame-thumb:hover { border-color: rgba(255,60,131,0.3); }
+.anim-frame-thumb.active {
+  border-color: var(--glow-pink);
+  background: rgba(255,60,131,0.1);
+  color: var(--glow-pink);
+  box-shadow: 0 0 12px rgba(255,60,131,0.2);
 }
 
-.color-swatch::after {
+.fps-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.fps-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: var(--bg-surface);
+  border-radius: 2px;
+  outline: none;
+}
+.fps-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--glow-cyan);
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0,229,255,0.4);
+}
+.fps-value {
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--glow-cyan);
+  min-width: 50px;
+  text-align: right;
+  text-shadow: 0 0 10px rgba(0,229,255,0.3);
+}
+
+.anim-playback {
+  display: flex;
+  gap: 8px;
+}
+.anim-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.anim-btn:hover {
+  background: rgba(255,60,131,0.08);
+  border-color: rgba(255,60,131,0.2);
+}
+.anim-btn.playing {
+  background: rgba(255,60,131,0.15);
+  border-color: var(--glow-pink);
+  color: var(--glow-pink);
+  box-shadow: 0 0 12px rgba(255,60,131,0.15);
+}
+
+.frame-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.frame-info .current { color: var(--glow-pink); font-weight: 700; }
+
+.studio-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr 280px;
+  gap: 0;
+  min-height: 600px;
+}
+
+.studio-sidebar {
+  padding: 24px;
+  border-right: 1px solid rgba(255,255,255,0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.studio-sidebar.right {
+  border-right: none;
+  border-left: 1px solid rgba(255,255,255,0.04);
+}
+
+.studio-group {
+  background: var(--bg-block2);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 12px;
+  padding: 16px;
+}
+.studio-group-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.studio-tools {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.studio-tool-btn {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.02);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.studio-tool-btn:hover {
+  background: rgba(255,60,131,0.06);
+  border-color: rgba(255,60,131,0.2);
+}
+.studio-tool-btn.active {
+  background: rgba(255,60,131,0.12);
+  border-color: var(--glow-pink);
+  color: var(--glow-pink);
+}
+.studio-tool-btn .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.studio-palette {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+.studio-swatch {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+  position: relative;
+}
+.studio-swatch::after {
   content: '';
   position: absolute;
   top: 20%; left: 20%;
   width: 25%; height: 25%;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(255,255,255,0.35);
 }
-
-.color-swatch:hover { transform: scale(1.2); }
-.color-swatch.active {
+.studio-swatch:hover { transform: scale(1.1); }
+.studio-swatch.active {
   border-color: white;
-  transform: scale(1.2);
-  box-shadow: 0 0 15px currentColor;
+  transform: scale(1.1);
+  box-shadow: 0 0 16px currentColor;
 }
 
-.creator-tools {
+.studio-main {
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  align-items: center;
+  justify-content: center;
 }
 
-.tool-group {
-  background: rgba(45, 27, 105, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.studio-board-wrap {
+  width: 100%;
+  max-width: 460px;
+  background: var(--bg-deep);
   border-radius: 16px;
-  padding: 20px;
+  padding: 16px;
+  border: 1px solid rgba(255,60,131,0.1);
+  box-shadow: 0 0 40px rgba(255,60,131,0.06);
+  position: relative;
+}
+.studio-board-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255,60,131,0.3), rgba(0,229,255,0.15), rgba(178,75,243,0.3));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 
-.tool-group-title {
-  font-family: var(--font-pixel);
-  font-size: 10px;
-  color: rgba(255, 248, 240, 0.5);
-  margin-bottom: 12px;
+.studio-board {
+  display: grid;
+  grid-template-columns: repeat(20, 1fr);
+  gap: 1px;
+}
+.board-cell {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.02);
+  cursor: pointer;
+  transition: all 0.1s;
+  position: relative;
+  border: 1px solid rgba(255,255,255,0.02);
+}
+.board-cell:hover {
+  background: rgba(255,60,131,0.15);
+  border-color: rgba(255,60,131,0.2);
+}
+.board-cell.filled {
+  border-color: transparent;
+}
+.board-cell.filled::after {
+  content: '';
+  position: absolute;
+  top: 18%; left: 18%;
+  width: 28%; height: 28%;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
 }
 
-.tool-buttons {
+.studio-actions {
   display: flex;
+  flex-direction: column;
   gap: 8px;
-  flex-wrap: wrap;
 }
-
-.tool-btn {
-  padding: 8px 16px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--bead-white);
-  font-family: var(--font-kawaii);
-  font-size: 13px;
+.studio-action-btn {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.02);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
   align-items: center;
-  gap: 6px;
-}
-
-.tool-btn:hover {
-  background: rgba(255, 107, 157, 0.15);
-  border-color: rgba(255, 107, 157, 0.3);
-}
-
-.tool-btn.active {
-  background: rgba(255, 107, 157, 0.2);
-  border-color: var(--bead-pink);
-  color: var(--bead-pink);
-}
-
-.tool-btn .icon-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-}
-
-.pricing-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  max-width: 1000px;
-  margin: 0 auto;
-}
-
-.pricing-card {
-  background: rgba(45, 27, 105, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
-  padding: 36px 28px;
-  text-align: center;
-  transition: all 0.4s;
-  position: relative;
-  overflow: hidden;
-}
-
-.pricing-card.featured {
-  border-color: var(--bead-pink);
-  background: rgba(255, 107, 157, 0.08);
-  transform: scale(1.05);
-}
-
-.pricing-card.featured::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--bead-pink), var(--bead-purple), var(--bead-cyan));
-}
-
-.pricing-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-}
-
-.pricing-card.featured:hover {
-  transform: scale(1.05) translateY(-8px);
-}
-
-.pricing-beads {
-  display: flex;
-  justify-content: center;
-  gap: 4px;
-  margin-bottom: 20px;
-}
-
-.pricing-beads span {
-  width: 12px; height: 12px;
-  border-radius: 50%;
-  position: relative;
-}
-
-.pricing-beads span::after {
-  content: '';
-  position: absolute;
-  top: 20%; left: 20%;
-  width: 30%; height: 30%;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.4);
-}
-
-.pricing-name {
-  font-family: var(--font-pixel);
-  font-size: 12px;
-  margin-bottom: 8px;
-}
-
-.pricing-price {
-  font-size: 36px;
-  font-weight: 900;
-  margin-bottom: 4px;
-}
-
-.pricing-price .currency {
-  font-size: 18px;
-  vertical-align: super;
-}
-
-.pricing-period {
-  font-size: 12px;
-  color: rgba(255, 248, 240, 0.5);
-  margin-bottom: 24px;
-}
-
-.pricing-features {
-  list-style: none;
-  text-align: left;
-  margin-bottom: 28px;
-}
-
-.pricing-features li {
-  padding: 8px 0;
-  font-size: 13px;
-  color: rgba(255, 248, 240, 0.7);
-  display: flex;
-  align-items: center;
   gap: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  width: 100%;
 }
-
-.pricing-features li .check-bead {
+.studio-action-btn:hover {
+  background: rgba(255,60,131,0.06);
+  border-color: rgba(255,60,131,0.2);
+  color: var(--text-primary);
+}
+.studio-action-btn .dot {
   width: 8px; height: 8px;
   border-radius: 50%;
   flex-shrink: 0;
-  position: relative;
 }
 
-.pricing-features li .check-bead::after {
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.gallery-item {
+  aspect-ratio: 1;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.04);
+  transition: all 0.35s;
+}
+.gallery-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  box-shadow: var(--rim-pink);
+  opacity: 0;
+  transition: opacity 0.35s;
+  pointer-events: none;
+}
+.gallery-item:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-color: rgba(255,60,131,0.3);
+  z-index: 10;
+}
+.gallery-item:hover::after { opacity: 1; }
+
+.gallery-item .bead-pattern {
+  width: 100%; height: 100%;
+  display: grid;
+  gap: 1px;
+  padding: 8px;
+}
+.gallery-item .mini-bead {
+  border-radius: 50%;
+  transition: all 0.3s;
+}
+.gallery-item:hover .mini-bead { filter: brightness(1.2); }
+
+.gallery-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(transparent 40%, rgba(10,6,24,0.92));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 16px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.gallery-item:hover .gallery-overlay { opacity: 1; }
+.gallery-overlay h4 { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+.gallery-overlay p { font-size: 11px; color: var(--text-secondary); }
+
+.pricing-layout {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+.price-card {
+  background: var(--bg-block2);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 16px;
+  padding: 32px 24px;
+  text-align: center;
+  transition: all 0.35s;
+  position: relative;
+  overflow: hidden;
+}
+.price-card.featured {
+  border-color: rgba(255,60,131,0.3);
+  background: rgba(255,60,131,0.04);
+  transform: scale(1.04);
+}
+.price-card.featured::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--glow-pink), var(--glow-purple), var(--glow-cyan));
+}
+.price-card.featured::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  box-shadow: var(--rim-pink);
+  opacity: 0.5;
+  pointer-events: none;
+}
+.price-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+.price-card.featured:hover { transform: scale(1.04) translateY(-6px); }
+
+.price-dots {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+.price-dots span {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  position: relative;
+}
+.price-dots span::after {
   content: '';
   position: absolute;
   top: 20%; left: 20%;
   width: 30%; height: 30%;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255,255,255,0.4);
 }
 
-.pricing-btn {
+.price-name { font-size: 13px; font-weight: 700; letter-spacing: 1px; margin-bottom: 8px; color: var(--text-secondary); }
+.price-amount { font-size: 40px; font-weight: 900; margin-bottom: 4px; }
+.price-amount .cur { font-size: 20px; vertical-align: super; }
+.price-period { font-size: 12px; color: var(--text-muted); margin-bottom: 24px; }
+
+.price-list {
+  list-style: none;
+  text-align: left;
+  margin-bottom: 24px;
+}
+.price-list li {
+  padding: 8px 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.price-list li .check {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px currentColor;
+}
+
+.price-btn {
   width: 100%;
   padding: 12px;
-  border-radius: 20px;
-  font-family: var(--font-pixel);
-  font-size: 11px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.25s;
   border: none;
 }
-
-.pricing-btn.primary {
-  background: linear-gradient(135deg, var(--bead-pink), var(--bead-purple));
+.price-btn.primary {
+  background: linear-gradient(135deg, var(--glow-pink), var(--glow-purple));
   color: white;
-  box-shadow: 0 4px 15px rgba(255, 107, 157, 0.4);
+  box-shadow: 0 4px 16px rgba(255,60,131,0.3);
 }
-
-.pricing-btn.secondary {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--bead-white);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.price-btn.ghost {
+  background: rgba(255,255,255,0.03);
+  color: var(--text-primary);
+  border: 1px solid rgba(255,255,255,0.08);
 }
-
-.pricing-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 107, 157, 0.5);
-}
+.price-btn:hover { transform: translateY(-2px); }
 
 footer {
   position: relative;
   z-index: 2;
-  padding: 60px 32px 32px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 48px 40px 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
 }
-
-.footer-content {
+.footer-inner {
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 48px;
-  margin-bottom: 48px;
+  gap: 40px;
+  margin-bottom: 40px;
 }
-
 .footer-brand p {
-  font-size: 14px;
-  color: rgba(255, 248, 240, 0.5);
+  font-size: 13px;
+  color: var(--text-muted);
   line-height: 1.8;
+  margin-top: 12px;
+}
+.footer-dots {
+  display: flex;
+  gap: 6px;
   margin-top: 16px;
 }
-
-.footer-social {
-  display: flex;
-  gap: 12px;
-  margin-top: 20px;
-}
-
-.footer-social a {
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.footer-dots a {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s;
+  transition: all 0.2s;
   text-decoration: none;
 }
-
-.footer-social a:hover {
-  background: rgba(255, 107, 157, 0.2);
-  border-color: var(--bead-pink);
-  transform: translateY(-3px);
+.footer-dots a:hover {
+  background: rgba(255,60,131,0.1);
+  border-color: rgba(255,60,131,0.3);
+  transform: translateY(-2px);
 }
-
-.footer-social a .social-bead {
-  width: 10px; height: 10px;
+.footer-dots a .fdot {
+  width: 8px; height: 8px;
   border-radius: 50%;
 }
 
 .footer-col h4 {
-  font-family: var(--font-pixel);
-  font-size: 10px;
-  margin-bottom: 16px;
-  color: var(--bead-pink);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--glow-pink);
+  letter-spacing: 1px;
+  margin-bottom: 12px;
 }
-
 .footer-col a {
   display: block;
   font-size: 13px;
-  color: rgba(255, 248, 240, 0.5);
+  color: var(--text-muted);
   text-decoration: none;
-  padding: 6px 0;
+  padding: 4px 0;
   transition: all 0.2s;
 }
-
-.footer-col a:hover {
-  color: var(--bead-white);
-  transform: translateX(4px);
-}
+.footer-col a:hover { color: var(--text-primary); transform: translateX(3px); }
 
 .footer-bottom {
   max-width: 1200px;
   margin: 0 auto;
-  padding-top: 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,0.04);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 12px;
-  color: rgba(255, 248, 240, 0.3);
+  font-size: 11px;
+  color: var(--text-muted);
 }
-
-.footer-bottom-beads {
+.footer-bottom-dots {
   display: flex;
-  gap: 4px;
+  gap: 3px;
 }
-
-.footer-bottom-beads span {
-  width: 6px; height: 6px;
+.footer-bottom-dots span {
+  width: 5px; height: 5px;
   border-radius: 50%;
 }
 
@@ -1145,1013 +1149,1038 @@ footer {
   flex-direction: column;
   gap: 8px;
 }
-
 .toast {
-  padding: 12px 20px;
-  border-radius: 12px;
-  background: rgba(45, 27, 105, 0.95);
-  border: 1px solid rgba(255, 107, 157, 0.3);
-  backdrop-filter: blur(10px);
+  padding: 10px 18px;
+  border-radius: 10px;
+  background: rgba(18,14,36,0.95);
+  border: 1px solid rgba(255,60,131,0.2);
+  backdrop-filter: blur(12px);
   font-size: 13px;
+  font-weight: 600;
   display: flex;
   align-items: center;
   gap: 8px;
   animation: toastIn 0.3s ease-out;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
 }
-
-.toast .toast-bead {
-  width: 8px; height: 8px;
+.toast .tdot {
+  width: 6px; height: 6px;
   border-radius: 50%;
   flex-shrink: 0;
 }
-
-@keyframes toastIn {
-  from { opacity: 0; transform: translateX(50px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes toastOut {
-  from { opacity: 1; transform: translateX(0); }
-  to { opacity: 0; transform: translateX(50px); }
-}
+@keyframes toastIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes toastOut { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(40px); } }
 
 .scroll-reveal {
   opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.6s ease-out;
+  transform: translateY(24px);
+  transition: all 0.5s ease-out;
 }
-
-.scroll-reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+.scroll-reveal.visible { opacity: 1; transform: translateY(0); }
 
 @media (max-width: 1024px) {
-  .hero-content { grid-template-columns: 1fr; text-align: center; }
+  .hero-inner { grid-template-columns: 1fr; text-align: center; }
   .hero-desc { margin: 0 auto 36px; }
   .hero-actions { justify-content: center; }
   .hero-stats { justify-content: center; }
-  .hero-visual { margin-top: 40px; }
-  .features-grid { grid-template-columns: repeat(2, 1fr); }
-  .showcase-grid { grid-template-columns: repeat(2, 1fr); }
-  .creator-container { grid-template-columns: 1fr; }
-  .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
-  .pricing-card.featured { transform: none; }
-  .pricing-card.featured:hover { transform: translateY(-8px); }
-  .footer-content { grid-template-columns: 1fr 1fr; }
+  .hero-canvas-wrap { margin: 40px auto 0; }
+  .features-layout { grid-template-columns: repeat(2, 1fr); }
+  .anim-layout { grid-template-columns: 1fr; }
+  .anim-preview { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .studio-layout { grid-template-columns: 1fr; }
+  .studio-sidebar { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .studio-sidebar.right { border-left: none; border-top: 1px solid rgba(255,255,255,0.04); }
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+  .pricing-layout { grid-template-columns: 1fr; max-width: 360px; }
+  .price-card.featured { transform: none; }
+  .price-card.featured:hover { transform: translateY(-6px); }
+  .footer-inner { grid-template-columns: 1fr 1fr; }
 }
-
 @media (max-width: 768px) {
+  .block-section { padding: 0 16px; }
+  .block-header { padding: 24px 20px 16px; flex-direction: column; gap: 12px; align-items: flex-start; }
+  .block-body { padding: 20px; }
   .nav-links { display: none; }
   .mobile-menu-btn { display: block; }
-  .features-grid { grid-template-columns: 1fr; }
-  .showcase-grid { grid-template-columns: repeat(2, 1fr); }
-  .bead-board { grid-template-columns: repeat(12, 1fr); }
-  .footer-content { grid-template-columns: 1fr; }
-  .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
-}
-
-@media (max-width: 480px) {
-  .hero { padding: 100px 16px 60px; }
-  .section { padding: 60px 16px; }
-  .bead-board { grid-template-columns: repeat(10, 1fr); }
+  .features-layout { grid-template-columns: 1fr; }
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-inner { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; gap: 8px; }
+  .studio-board { grid-template-columns: repeat(16, 1fr); }
 }
 </style>
 </head>
 <body>
 
-<div class="bead-grid-bg"></div>
-<div class="floating-beads" id="floatingBeads"></div>
 <div class="toast-container" id="toastContainer"></div>
 
 <nav id="navbar">
   <a href="#" class="nav-logo">
-    <div class="nav-logo-beads">
-      <span style="background:var(--bead-pink)"></span>
-      <span style="background:var(--bead-cyan)"></span>
-      <span style="background:var(--bead-yellow)"></span>
-      <span style="background:var(--bead-purple)"></span>
-      <span style="background:var(--bead-green)"></span>
-      <span style="background:var(--bead-orange)"></span>
-      <span style="background:var(--bead-blue)"></span>
-      <span style="background:var(--bead-red)"></span>
-      <span style="background:var(--bead-pink)"></span>
+    <div class="nav-logo-dots">
+      <span style="background:var(--glow-pink)"></span>
+      <span style="background:var(--glow-cyan)"></span>
+      <span style="background:var(--glow-yellow)"></span>
+      <span style="background:var(--glow-purple)"></span>
+      <span style="background:var(--glow-green)"></span>
+      <span style="background:var(--glow-orange)"></span>
+      <span style="background:var(--glow-blue)"></span>
+      <span style="background:var(--glow-red)"></span>
+      <span style="background:var(--glow-pink)"></span>
     </div>
-    <span class="nav-logo-text">ビーズワールド</span>
+    <span class="nav-logo-text">拼豆宇宙</span>
   </a>
   <div class="nav-links">
-    <a href="#features" class="nav-link">FEATURES</a>
-    <a href="#showcase" class="nav-link">GALLERY</a>
-    <a href="#creator" class="nav-link">CREATOR</a>
-    <a href="#pricing" class="nav-link">PRICING</a>
-    <a href="#" class="nav-link primary">START FREE</a>
+    <a href="#features" class="nav-link">核心功能</a>
+    <a href="#animation" class="nav-link">动画输出</a>
+    <a href="#studio" class="nav-link">制作平台</a>
+    <a href="#gallery" class="nav-link">作品画廊</a>
+    <a href="#pricing" class="nav-link">定价方案</a>
+    <a href="#studio" class="nav-link primary">开始创作</a>
   </div>
-  <button class="mobile-menu-btn" id="mobileMenuBtn">
-    <span></span><span></span><span></span>
-  </button>
+  <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
 </nav>
 
-<section class="hero" id="hero">
-  <div class="hero-content">
-    <div class="hero-text">
-      <div class="hero-badge">
-        <span class="dot"></span>
-        WEB5 POWERED • DECENTRALIZED
-      </div>
-      <h1 class="hero-title">
-        <span class="line1">ピクセルの</span>
-        <span class="line2"><span class="bead-word">魔法世界</span></span>
-      </h1>
-      <p class="hero-desc">
-        拼豆の世界へようこそ！一つ一つのビーズが織りなす、デジタルアートの新体験。
-        Web5分散型技術で、あなたの創造力を解き放ちましょう。
-      </p>
-      <div class="hero-actions">
-        <a href="#creator" class="btn-bead btn-bead-primary">
-          ✦ 創作を始める
-        </a>
-        <a href="#showcase" class="btn-bead btn-bead-secondary">
-          ◇ ギャラリーを見る
-        </a>
-      </div>
-      <div class="hero-stats">
-        <div class="stat-item">
-          <span class="stat-num" data-count="12847">0</span>
-          <span class="stat-label">作品数</span>
+<div class="block-section hero-block">
+  <div class="block-panel rim-border">
+    <div class="block-body">
+      <div class="hero-inner">
+        <div class="hero-text">
+          <div class="hero-badge"><span class="dot"></span>WEB5 驱动 · 去中心化数字艺术</div>
+          <h1 class="hero-title">
+            <span class="line1">像素的</span>
+            <span class="line2"><span class="underline-word">魔法世界</span></span>
+          </h1>
+          <p class="hero-desc">
+            欢迎来到拼豆宇宙！每一颗拼豆都承载着无限创意，Web5去中心化技术为你的数字艺术保驾护航。逐帧动画、实时协作、AI辅助——创作从未如此自由。
+          </p>
+          <div class="hero-actions">
+            <a href="#studio" class="btn btn-primary">✦ 开始创作</a>
+            <a href="#animation" class="btn btn-ghost">◇ 动画演示</a>
+          </div>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <span class="stat-num" data-count="12847">0</span>
+              <span class="stat-label">数字作品</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num" data-count="5293">0</span>
+              <span class="stat-label">创作者</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num" data-count="891">0</span>
+              <span class="stat-label">动画模板</span>
+            </div>
+          </div>
         </div>
-        <div class="stat-item">
-          <span class="stat-num" data-count="5293">0</span>
-          <span class="stat-label">クリエイター</span>
+        <div class="hero-canvas-wrap">
+          <div class="hero-canvas-frame">
+            <div class="hero-bead-grid" id="heroBeadGrid"></div>
+          </div>
+          <div class="hero-float-tag">✦ Web5 DWN</div>
+          <div class="hero-float-tag">◈ 去中心化存储</div>
+          <div class="hero-float-tag">✧ 逐帧动画</div>
         </div>
-        <div class="stat-item">
-          <span class="stat-num" data-count="891">0</span>
-          <span class="stat-label">テンプレート</span>
-        </div>
-      </div>
-    </div>
-    <div class="hero-visual">
-      <div class="bead-art-container">
-        <div class="bead-art-glow"></div>
-        <div class="bead-art-frame">
-          <div class="bead-canvas" id="heroBeadCanvas"></div>
-        </div>
-        <div class="bead-art-tag">✦ Web5 DWN</div>
-        <div class="bead-art-tag">◈ Decentralized</div>
-        <div class="bead-art-tag">✧ Pixel Art</div>
       </div>
     </div>
   </div>
-</section>
+</div>
 
-<section class="section" id="features">
-  <div class="section-header scroll-reveal">
-    <div class="section-tag pink">✦ FEATURES</div>
-    <h2 class="section-title">
-      <span class="gradient-pink">コア機能</span>
-    </h2>
-    <p class="section-desc">
-      拼豆アートのすべてがここに。プロフェッショナルなツールキットで、あなたのアイデアを形にしましょう。
-    </p>
-  </div>
-  <div class="features-grid">
-    <div class="feature-card scroll-reveal">
-      <div class="feature-icon pink">
-        <div class="bead-dot" style="width:20px;height:20px;background:var(--bead-pink);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
-      </div>
-      <h3 class="feature-title">ビーズエディタ</h3>
-      <p class="feature-desc">直感的なグリッドベースエディタで、ピクセルパーフェクトな拼豆デザインを簡単に作成。</p>
-      <div class="feature-beads">
-        <span style="background:var(--bead-pink)"></span>
-        <span style="background:var(--bead-cyan)"></span>
-        <span style="background:var(--bead-yellow)"></span>
-        <span style="background:var(--bead-purple)"></span>
+<div class="block-section" id="features">
+  <div class="block-panel rim-border scroll-reveal">
+    <div class="block-header">
+      <div>
+        <div class="block-tag pink">✦ 核心功能</div>
+        <h2 class="block-title"><span class="g-pink">数字艺术工具箱</span></h2>
       </div>
     </div>
-    <div class="feature-card scroll-reveal">
-      <div class="feature-icon cyan">
-        <div class="bead-dot" style="width:20px;height:20px;background:var(--bead-cyan);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
-      </div>
-      <h3 class="feature-title">Web5分散保存</h3>
-      <p class="feature-desc">DWN（Decentralized Web Node）に作品を保存。データはあなたのもの、誰にも奪われない。</p>
-      <div class="feature-beads">
-        <span style="background:var(--bead-cyan)"></span>
-        <span style="background:var(--bead-blue)"></span>
-        <span style="background:var(--bead-green)"></span>
-        <span style="background:var(--bead-purple)"></span>
-      </div>
-    </div>
-    <div class="feature-card scroll-reveal">
-      <div class="feature-icon purple">
-        <div class="bead-dot" style="width:20px;height:20px;background:var(--bead-purple);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
-      </div>
-      <h3 class="feature-title">テンプレートライブラリ</h3>
-      <p class="feature-desc">891以上のテンプレートから選んでカスタマイズ。アニメ・ゲーム・キャラクターなど豊富なジャンル。</p>
-      <div class="feature-beads">
-        <span style="background:var(--bead-purple)"></span>
-        <span style="background:var(--bead-pink)"></span>
-        <span style="background:var(--bead-orange)"></span>
-        <span style="background:var(--bead-yellow)"></span>
-      </div>
-    </div>
-    <div class="feature-card scroll-reveal">
-      <div class="feature-icon yellow">
-        <div class="bead-dot" style="width:20px;height:20px;background:var(--bead-yellow);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
-      </div>
-      <h3 class="feature-title">リアルタイム共有</h3>
-      <p class="feature-desc">作成中の作品をリアルタイムで共有。コラボレーション機能で一緒に創作しよう。</p>
-      <div class="feature-beads">
-        <span style="background:var(--bead-yellow)"></span>
-        <span style="background:var(--bead-orange)"></span>
-        <span style="background:var(--bead-pink)"></span>
-        <span style="background:var(--bead-green)"></span>
-      </div>
-    </div>
-    <div class="feature-card scroll-reveal">
-      <div class="feature-icon green">
-        <div class="bead-dot" style="width:20px;height:20px;background:var(--bead-green);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
-      </div>
-      <h3 class="feature-title">AIアシスト</h3>
-      <p class="feature-desc">画像から自動で拼豆パターンを生成。AIが色変換と最適化をサポート。</p>
-      <div class="feature-beads">
-        <span style="background:var(--bead-green)"></span>
-        <span style="background:var(--bead-cyan)"></span>
-        <span style="background:var(--bead-blue)"></span>
-        <span style="background:var(--bead-yellow)"></span>
-      </div>
-    </div>
-    <div class="feature-card scroll-reveal">
-      <div class="feature-icon orange">
-        <div class="bead-dot" style="width:20px;height:20px;background:var(--bead-orange);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
-      </div>
-      <h3 class="feature-title">3Dプレビュー</h3>
-      <p class="feature-desc">完成したデザインの3Dプレビュー。実際の拼豆作品がどうなるか確認できます。</p>
-      <div class="feature-beads">
-        <span style="background:var(--bead-orange)"></span>
-        <span style="background:var(--bead-red)"></span>
-        <span style="background:var(--bead-pink)"></span>
-        <span style="background:var(--bead-yellow)"></span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section showcase" id="showcase">
-  <div class="section-header scroll-reveal">
-    <div class="section-tag cyan">◈ GALLERY</div>
-    <h2 class="section-title">
-      <span class="gradient-cyan">ギャラリー</span>
-    </h2>
-    <p class="section-desc">
-      コミュニティが作った素晴らしい拼豆アート作品のコレクション。
-    </p>
-  </div>
-  <div class="showcase-grid" id="showcaseGrid"></div>
-</section>
-
-<section class="section creator-section" id="creator">
-  <div class="section-header scroll-reveal">
-    <div class="section-tag purple">✧ CREATOR</div>
-    <h2 class="section-title">
-      <span class="gradient-purple">クリエイター</span>
-    </h2>
-    <p class="section-desc">
-      インタラクティブな拼豆ボードで、今すぐ創作を始めよう！
-    </p>
-  </div>
-  <div class="creator-container">
-    <div class="creator-panel scroll-reveal">
-      <div class="creator-title">
-        <span class="dot"></span>
-        ビーズボード
-      </div>
-      <div class="bead-board" id="beadBoard"></div>
-      <div class="color-palette" id="colorPalette"></div>
-    </div>
-    <div class="creator-tools scroll-reveal">
-      <div class="tool-group">
-        <div class="tool-group-title">TOOLS</div>
-        <div class="tool-buttons">
-          <button class="tool-btn active" data-tool="paint">
-            <span class="icon-dot" style="background:var(--bead-pink)"></span>
-            描画
-          </button>
-          <button class="tool-btn" data-tool="erase">
-            <span class="icon-dot" style="background:rgba(255,255,255,0.3)"></span>
-            消去
-          </button>
-          <button class="tool-btn" data-tool="fill">
-            <span class="icon-dot" style="background:var(--bead-cyan)"></span>
-            塗り潰し
-          </button>
-          <button class="tool-btn" data-tool="pick">
-            <span class="icon-dot" style="background:var(--bead-yellow)"></span>
-            スポイト
-          </button>
+    <div class="block-body">
+      <div class="features-layout">
+        <div class="feat-card rim-glow">
+          <div class="feat-icon pink"><div class="bead" style="background:var(--glow-pink)"></div></div>
+          <h3 class="feat-title">拼豆编辑器</h3>
+          <p class="feat-desc">直观的网格编辑器，像素级精准的拼豆设计，支持自由绘制与模板套用。</p>
         </div>
-      </div>
-      <div class="tool-group">
-        <div class="tool-group-title">TEMPLATES</div>
-        <div class="tool-buttons">
-          <button class="tool-btn" data-template="heart">
-            <span class="icon-dot" style="background:var(--bead-red)"></span>
-            ハート
-          </button>
-          <button class="tool-btn" data-template="star">
-            <span class="icon-dot" style="background:var(--bead-yellow)"></span>
-            スター
-          </button>
-          <button class="tool-btn" data-template="cat">
-            <span class="icon-dot" style="background:var(--bead-pink)"></span>
-            ネコ
-          </button>
-          <button class="tool-btn" data-template="clear">
-            <span class="icon-dot" style="background:rgba(255,255,255,0.3)"></span>
-            クリア
-          </button>
+        <div class="feat-card rim-glow">
+          <div class="feat-icon cyan"><div class="bead" style="background:var(--glow-cyan)"></div></div>
+          <h3 class="feat-title">Web5去中心化存储</h3>
+          <p class="feat-desc">DWN节点保存作品，数据主权归属创作者，永不丢失、不可篡改。</p>
         </div>
-      </div>
-      <div class="tool-group">
-        <div class="tool-group-title">ACTIONS</div>
-        <div class="tool-buttons">
-          <button class="tool-btn" id="saveBtn">
-            <span class="icon-dot" style="background:var(--bead-green)"></span>
-            DWNに保存
-          </button>
-          <button class="tool-btn" id="exportBtn">
-            <span class="icon-dot" style="background:var(--bead-cyan)"></span>
-            PNG出力
-          </button>
-          <button class="tool-btn" id="shareBtn">
-            <span class="icon-dot" style="background:var(--bead-purple)"></span>
-            共有リンク
-          </button>
+        <div class="feat-card rim-glow">
+          <div class="feat-icon purple"><div class="bead" style="background:var(--glow-purple)"></div></div>
+          <h3 class="feat-title">逐帧动画引擎</h3>
+          <p class="feat-desc">逐帧编排拼豆动画，自定义帧率输出，让静态拼豆动起来。</p>
+        </div>
+        <div class="feat-card rim-glow">
+          <div class="feat-icon yellow"><div class="bead" style="background:var(--glow-yellow)"></div></div>
+          <h3 class="feat-title">实时协作</h3>
+          <p class="feat-desc">多人实时共同创作，Web5 DID身份验证，安全高效的协作体验。</p>
+        </div>
+        <div class="feat-card rim-glow">
+          <div class="feat-icon green"><div class="bead" style="background:var(--glow-green)"></div></div>
+          <h3 class="feat-title">AI智能辅助</h3>
+          <p class="feat-desc">图像自动转拼豆图案，AI色彩优化与动画补帧，释放创造力。</p>
+        </div>
+        <div class="feat-card rim-glow">
+          <div class="feat-icon orange"><div class="bead" style="background:var(--glow-orange)"></div></div>
+          <h3 class="feat-title">3D实时预览</h3>
+          <p class="feat-desc">完成设计的3D拼豆预览，查看真实效果，支持AR投射。</p>
         </div>
       </div>
     </div>
   </div>
-</section>
+</div>
 
-<section class="section" id="pricing">
-  <div class="section-header scroll-reveal">
-    <div class="section-tag pink">♦ PRICING</div>
-    <h2 class="section-title">
-      <span class="gradient-pink">プラン</span>
-    </h2>
-    <p class="section-desc">
-      あなたの創作スタイルに合わせてプランを選ぼう。
-    </p>
-  </div>
-  <div class="pricing-grid">
-    <div class="pricing-card scroll-reveal">
-      <div class="pricing-beads">
-        <span style="background:var(--bead-cyan)"></span>
-        <span style="background:var(--bead-cyan)"></span>
-        <span style="background:var(--bead-cyan)"></span>
+<div class="block-section anim-section" id="animation">
+  <div class="block-panel rim-border scroll-reveal">
+    <div class="block-header">
+      <div>
+        <div class="block-tag cyan">◈ 动画输出</div>
+        <h2 class="block-title"><span class="g-cyan">拼豆逐帧动画</span></h2>
       </div>
-      <h3 class="pricing-name">STARTER</h3>
-      <div class="pricing-price"><span class="currency">¥</span>0</div>
-      <div class="pricing-period">永久無料</div>
-      <ul class="pricing-features">
-        <li><span class="check-bead" style="background:var(--bead-cyan)"></span>16×16 ビーズボード</li>
-        <li><span class="check-bead" style="background:var(--bead-cyan)"></span>基本カラーパレット</li>
-        <li><span class="check-bead" style="background:var(--bead-cyan)"></span>5作品まで保存</li>
-        <li><span class="check-bead" style="background:var(--bead-cyan)"></span>コミュニティギャラリー</li>
-      </ul>
-      <button class="pricing-btn secondary">無料で始める</button>
     </div>
-    <div class="pricing-card featured scroll-reveal">
-      <div class="pricing-beads">
-        <span style="background:var(--bead-pink)"></span>
-        <span style="background:var(--bead-purple)"></span>
-        <span style="background:var(--bead-cyan)"></span>
+    <div class="block-body">
+      <div class="anim-layout">
+        <div class="anim-preview">
+          <div class="anim-canvas-wrap">
+            <div class="anim-bead-grid" id="animBeadGrid"></div>
+          </div>
+        </div>
+        <div class="anim-controls">
+          <div class="anim-control-group">
+            <div class="anim-control-label">帧序列</div>
+            <div class="anim-timeline" id="animTimeline"></div>
+          </div>
+          <div class="anim-control-group">
+            <div class="anim-control-label">帧率控制</div>
+            <div class="fps-control">
+              <input type="range" class="fps-slider" id="fpsSlider" min="1" max="24" value="6">
+              <span class="fps-value" id="fpsValue">6 FPS</span>
+            </div>
+          </div>
+          <div class="anim-control-group">
+            <div class="anim-control-label">播放控制</div>
+            <div class="anim-playback">
+              <button class="anim-btn" id="animPrev">◁ 上一帧</button>
+              <button class="anim-btn" id="animPlay">▶ 播放</button>
+              <button class="anim-btn" id="animNext">下一帧 ▷</button>
+            </div>
+          </div>
+          <div class="anim-control-group">
+            <div class="frame-info">
+              <span>当前帧: <span class="current" id="frameCurrent">1</span></span>
+              <span>总帧数: <span id="frameTotal">8</span></span>
+            </div>
+          </div>
+          <div class="anim-control-group">
+            <div class="anim-control-label">输出操作</div>
+            <div class="anim-playback">
+              <button class="anim-btn" id="animExportGif">导出 GIF</button>
+              <button class="anim-btn" id="animExportPng">导出帧序列</button>
+            </div>
+          </div>
+        </div>
       </div>
-      <h3 class="pricing-name">CREATOR</h3>
-      <div class="pricing-price"><span class="currency">¥</span>980</div>
-      <div class="pricing-period">月額</div>
-      <ul class="pricing-features">
-        <li><span class="check-bead" style="background:var(--bead-pink)"></span>32×32 ビーズボード</li>
-        <li><span class="check-bead" style="background:var(--bead-pink)"></span>フルカラーパレット</li>
-        <li><span class="check-bead" style="background:var(--bead-pink)"></span>無制限保存（DWN）</li>
-        <li><span class="check-bead" style="background:var(--bead-pink)"></span>AIアシスト機能</li>
-        <li><span class="check-bead" style="background:var(--bead-pink)"></span>3Dプレビュー</li>
-        <li><span class="check-bead" style="background:var(--bead-pink)"></span>コラボレーション</li>
-      </ul>
-      <button class="pricing-btn primary">今すぐ登録</button>
-    </div>
-    <div class="pricing-card scroll-reveal">
-      <div class="pricing-beads">
-        <span style="background:var(--bead-yellow)"></span>
-        <span style="background:var(--bead-orange)"></span>
-        <span style="background:var(--bead-yellow)"></span>
-      </div>
-      <h3 class="pricing-name">STUDIO</h3>
-      <div class="pricing-price"><span class="currency">¥</span>2980</div>
-      <div class="pricing-period">月額</div>
-      <ul class="pricing-features">
-        <li><span class="check-bead" style="background:var(--bead-yellow)"></span>64×64 ビーズボード</li>
-        <li><span class="check-bead" style="background:var(--bead-yellow)"></span>カスタムカラー作成</li>
-        <li><span class="check-bead" style="background:var(--bead-yellow)"></span>チーム管理機能</li>
-        <li><span class="check-bead" style="background:var(--bead-yellow)"></span>API アクセス</li>
-        <li><span class="check-bead" style="background:var(--bead-yellow)"></span>優先サポート</li>
-        <li><span class="check-bead" style="background:var(--bead-yellow)"></span>商用利用ライセンス</li>
-      </ul>
-      <button class="pricing-btn secondary">お問い合わせ</button>
     </div>
   </div>
-</section>
+</div>
+
+<div class="block-section" id="studio">
+  <div class="block-panel rim-border scroll-reveal">
+    <div class="block-header">
+      <div>
+        <div class="block-tag purple">✧ 制作平台</div>
+        <h2 class="block-title"><span class="g-purple">拼豆创作工坊</span></h2>
+      </div>
+    </div>
+    <div class="block-body" style="padding:0;">
+      <div class="studio-layout">
+        <div class="studio-sidebar">
+          <div class="studio-group">
+            <div class="studio-group-title">工具</div>
+            <div class="studio-tools">
+              <button class="studio-tool-btn active" data-tool="paint"><span class="dot" style="background:var(--glow-pink)"></span>绘制</button>
+              <button class="studio-tool-btn" data-tool="erase"><span class="dot" style="background:rgba(255,255,255,0.3)"></span>擦除</button>
+              <button class="studio-tool-btn" data-tool="fill"><span class="dot" style="background:var(--glow-cyan)"></span>填充</button>
+              <button class="studio-tool-btn" data-tool="pick"><span class="dot" style="background:var(--glow-yellow)"></span>取色</button>
+            </div>
+          </div>
+          <div class="studio-group">
+            <div class="studio-group-title">色板</div>
+            <div class="studio-palette" id="studioPalette"></div>
+          </div>
+          <div class="studio-group">
+            <div class="studio-group-title">模板</div>
+            <div class="studio-tools">
+              <button class="studio-tool-btn" data-template="heart"><span class="dot" style="background:var(--glow-red)"></span>爱心</button>
+              <button class="studio-tool-btn" data-template="star"><span class="dot" style="background:var(--glow-yellow)"></span>星星</button>
+              <button class="studio-tool-btn" data-template="cat"><span class="dot" style="background:var(--glow-pink)"></span>猫咪</button>
+              <button class="studio-tool-btn" data-template="clear"><span class="dot" style="background:rgba(255,255,255,0.3)"></span>清空</button>
+            </div>
+          </div>
+        </div>
+        <div class="studio-main">
+          <div class="studio-board-wrap">
+            <div class="studio-board" id="studioBoard"></div>
+          </div>
+        </div>
+        <div class="studio-sidebar right">
+          <div class="studio-group">
+            <div class="studio-group-title">操作</div>
+            <div class="studio-actions">
+              <button class="studio-action-btn" id="saveDwn"><span class="dot" style="background:var(--glow-green)"></span>保存至 DWN</button>
+              <button class="studio-action-btn" id="exportPng"><span class="dot" style="background:var(--glow-cyan)"></span>导出 PNG</button>
+              <button class="studio-action-btn" id="shareLink"><span class="dot" style="background:var(--glow-purple)"></span>生成共享链接</button>
+              <button class="studio-action-btn" id="addToAnim"><span class="dot" style="background:var(--glow-yellow)"></span>添加为动画帧</button>
+            </div>
+          </div>
+          <div class="studio-group">
+            <div class="studio-group-title">画板信息</div>
+            <div style="font-size:12px;color:var(--text-muted);line-height:1.8;">
+              <div>尺寸: <span style="color:var(--text-primary)">20 × 20</span></div>
+              <div>已用拼豆: <span style="color:var(--glow-pink)" id="beadCount">0</span></div>
+              <div>颜色数: <span style="color:var(--glow-cyan)" id="colorCount">0</span></div>
+            </div>
+          </div>
+          <div class="studio-group">
+            <div class="studio-group-title">Web5 状态</div>
+            <div style="font-size:12px;color:var(--text-muted);line-height:1.8;">
+              <div>DID: <span style="color:var(--glow-green)">已连接</span></div>
+              <div>DWN: <span style="color:var(--glow-green)">同步中</span></div>
+              <div>存储: <span style="color:var(--text-primary)">2.4 MB / 1 GB</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="block-section" id="gallery">
+  <div class="block-panel rim-border scroll-reveal">
+    <div class="block-header">
+      <div>
+        <div class="block-tag yellow">♦ 作品画廊</div>
+        <h2 class="block-title"><span class="g-yellow">社区精选</span></h2>
+      </div>
+    </div>
+    <div class="block-body">
+      <div class="gallery-grid" id="galleryGrid"></div>
+    </div>
+  </div>
+</div>
+
+<div class="block-section" id="pricing">
+  <div class="block-panel rim-border scroll-reveal">
+    <div class="block-header">
+      <div>
+        <div class="block-tag green">♦ 定价方案</div>
+        <h2 class="block-title">选择你的<span class="g-pink">创作计划</span></h2>
+      </div>
+    </div>
+    <div class="block-body">
+      <div class="pricing-layout">
+        <div class="price-card">
+          <div class="price-dots"><span style="background:var(--glow-cyan)"></span><span style="background:var(--glow-cyan)"></span><span style="background:var(--glow-cyan)"></span></div>
+          <h3 class="price-name">入门版</h3>
+          <div class="price-amount"><span class="cur">¥</span>0</div>
+          <div class="price-period">永久免费</div>
+          <ul class="price-list">
+            <li><span class="check" style="color:var(--glow-cyan);background:var(--glow-cyan)"></span>16×16 拼豆画板</li>
+            <li><span class="check" style="color:var(--glow-cyan);background:var(--glow-cyan)"></span>基础色板</li>
+            <li><span class="check" style="color:var(--glow-cyan);background:var(--glow-cyan)"></span>5幅作品存储</li>
+            <li><span class="check" style="color:var(--glow-cyan);background:var(--glow-cyan)"></span>社区画廊展示</li>
+          </ul>
+          <button class="price-btn ghost">免费开始</button>
+        </div>
+        <div class="price-card featured">
+          <div class="price-dots"><span style="background:var(--glow-pink)"></span><span style="background:var(--glow-purple)"></span><span style="background:var(--glow-cyan)"></span></div>
+          <h3 class="price-name">创作者版</h3>
+          <div class="price-amount"><span class="cur">¥</span>980</div>
+          <div class="price-period">每月</div>
+          <ul class="price-list">
+            <li><span class="check" style="color:var(--glow-pink);background:var(--glow-pink)"></span>32×32 拼豆画板</li>
+            <li><span class="check" style="color:var(--glow-pink);background:var(--glow-pink)"></span>完整色板 + 自定义</li>
+            <li><span class="check" style="color:var(--glow-pink);background:var(--glow-pink)"></span>无限存储 (DWN)</li>
+            <li><span class="check" style="color:var(--glow-pink);background:var(--glow-pink)"></span>AI智能辅助</li>
+            <li><span class="check" style="color:var(--glow-pink);background:var(--glow-pink)"></span>逐帧动画引擎</li>
+            <li><span class="check" style="color:var(--glow-pink);background:var(--glow-pink)"></span>实时协作</li>
+          </ul>
+          <button class="price-btn primary">立即订阅</button>
+        </div>
+        <div class="price-card">
+          <div class="price-dots"><span style="background:var(--glow-yellow)"></span><span style="background:var(--glow-orange)"></span><span style="background:var(--glow-yellow)"></span></div>
+          <h3 class="price-name">工作室版</h3>
+          <div class="price-amount"><span class="cur">¥</span>2980</div>
+          <div class="price-period">每月</div>
+          <ul class="price-list">
+            <li><span class="check" style="color:var(--glow-yellow);background:var(--glow-yellow)"></span>64×64 拼豆画板</li>
+            <li><span class="check" style="color:var(--glow-yellow);background:var(--glow-yellow)"></span>团队管理</li>
+            <li><span class="check" style="color:var(--glow-yellow);background:var(--glow-yellow)"></span>API 接入</li>
+            <li><span class="check" style="color:var(--glow-yellow);background:var(--glow-yellow)"></span>优先技术支持</li>
+            <li><span class="check" style="color:var(--glow-yellow);background:var(--glow-yellow)"></span>商用授权</li>
+            <li><span class="check" style="color:var(--glow-yellow);background:var(--glow-yellow)"></span>3D预览 + AR</li>
+          </ul>
+          <button class="price-btn ghost">联系我们</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <footer>
-  <div class="footer-content">
+  <div class="footer-inner">
     <div class="footer-brand">
       <a href="#" class="nav-logo">
-        <div class="nav-logo-beads">
-          <span style="background:var(--bead-pink)"></span>
-          <span style="background:var(--bead-cyan)"></span>
-          <span style="background:var(--bead-yellow)"></span>
-          <span style="background:var(--bead-purple)"></span>
-          <span style="background:var(--bead-green)"></span>
-          <span style="background:var(--bead-orange)"></span>
-          <span style="background:var(--bead-blue)"></span>
-          <span style="background:var(--bead-red)"></span>
-          <span style="background:var(--bead-pink)"></span>
+        <div class="nav-logo-dots">
+          <span style="background:var(--glow-pink)"></span>
+          <span style="background:var(--glow-cyan)"></span>
+          <span style="background:var(--glow-yellow)"></span>
+          <span style="background:var(--glow-purple)"></span>
+          <span style="background:var(--glow-green)"></span>
+          <span style="background:var(--glow-orange)"></span>
+          <span style="background:var(--glow-blue)"></span>
+          <span style="background:var(--glow-red)"></span>
+          <span style="background:var(--glow-pink)"></span>
         </div>
-        <span class="nav-logo-text">ビーズワールド</span>
+        <span class="nav-logo-text">拼豆宇宙</span>
       </a>
-      <p>拼豆の世界へようこそ。<br>Web5分散型技術で、創造力の限界を超えよう。</p>
-      <div class="footer-social">
-        <a href="#"><div class="social-bead" style="background:var(--bead-pink)"></div></a>
-        <a href="#"><div class="social-bead" style="background:var(--bead-cyan)"></div></a>
-        <a href="#"><div class="social-bead" style="background:var(--bead-purple)"></div></a>
-        <a href="#"><div class="social-bead" style="background:var(--bead-yellow)"></div></a>
+      <p>拼豆宇宙 — Web5去中心化数字艺术制作平台。<br>让每一颗拼豆都闪耀创意之光。</p>
+      <div class="footer-dots">
+        <a href="#"><div class="fdot" style="background:var(--glow-pink)"></div></a>
+        <a href="#"><div class="fdot" style="background:var(--glow-cyan)"></div></a>
+        <a href="#"><div class="fdot" style="background:var(--glow-purple)"></div></a>
+        <a href="#"><div class="fdot" style="background:var(--glow-yellow)"></div></a>
       </div>
     </div>
     <div class="footer-col">
-      <h4>PRODUCT</h4>
-      <a href="#">ビーズエディタ</a>
-      <a href="#">テンプレート</a>
-      <a href="#">ギャラリー</a>
-      <a href="#">AIアシスト</a>
+      <h4>产品</h4>
+      <a href="#">拼豆编辑器</a>
+      <a href="#">动画引擎</a>
+      <a href="#">模板库</a>
+      <a href="#">AI辅助</a>
     </div>
     <div class="footer-col">
-      <h4>RESOURCES</h4>
-      <a href="#">ドキュメント</a>
-      <a href="#">API リファレンス</a>
-      <a href="#">チュートリアル</a>
-      <a href="#">ブログ</a>
+      <h4>资源</h4>
+      <a href="#">开发文档</a>
+      <a href="#">API参考</a>
+      <a href="#">教程中心</a>
+      <a href="#">技术博客</a>
     </div>
     <div class="footer-col">
-      <h4>COMPANY</h4>
-      <a href="#">について</a>
-      <a href="#">お問い合わせ</a>
-      <a href="#">プライバシー</a>
-      <a href="#">利用規約</a>
+      <h4>关于</h4>
+      <a href="#">关于我们</a>
+      <a href="#">联系方式</a>
+      <a href="#">隐私政策</a>
+      <a href="#">服务条款</a>
     </div>
   </div>
   <div class="footer-bottom">
-    <span>© 2026 ビーズワールド — Powered by Web5</span>
-    <div class="footer-bottom-beads">
-      <span style="background:var(--bead-pink)"></span>
-      <span style="background:var(--bead-orange)"></span>
-      <span style="background:var(--bead-yellow)"></span>
-      <span style="background:var(--bead-green)"></span>
-      <span style="background:var(--bead-cyan)"></span>
-      <span style="background:var(--bead-blue)"></span>
-      <span style="background:var(--bead-purple)"></span>
+    <span>© 2026 拼豆宇宙 — Web5 去中心化数字艺术平台</span>
+    <div class="footer-bottom-dots">
+      <span style="background:var(--glow-pink)"></span>
+      <span style="background:var(--glow-orange)"></span>
+      <span style="background:var(--glow-yellow)"></span>
+      <span style="background:var(--glow-green)"></span>
+      <span style="background:var(--glow-cyan)"></span>
+      <span style="background:var(--glow-blue)"></span>
+      <span style="background:var(--glow-purple)"></span>
     </div>
   </div>
 </footer>
 
 <script>
 (function() {
-  const COLORS = [
-    '#FF6B9D', '#C44DFF', '#00E5FF', '#FFD93D',
-    '#FF8A5C', '#7BF5A6', '#5C7CFF', '#FF4757',
-    '#FF9FF3', '#FFEAA7', '#55E6C1', '#7158E2',
-    '#3AE374', '#FF3838', '#17C0EB', '#FFB8B8'
+  var COLORS = [
+    '#FF3C83','#B24BF3','#00E5FF','#FFD93D',
+    '#FF7A3D','#3DFF9A','#4D7CFF','#FF3D3D',
+    '#FF9FF3','#FFEAA7','#55E6C1','#7158E2',
+    '#3AE374','#FF3838','#17C0EB','#FFB8B8'
   ];
 
-  const BEAD_COLORS = {
-    pink: '#FF6B9D', purple: '#C44DFF', cyan: '#00E5FF',
-    yellow: '#FFD93D', orange: '#FF8A5C', green: '#7BF5A6',
-    blue: '#5C7CFF', red: '#FF4757', dark: '#1A1033',
-    dark2: '#2D1B69', white: '#FFF8F0', empty: 'rgba(255,255,255,0.03)'
-  };
-
-  function initFloatingBeads() {
-    const container = document.getElementById('floatingBeads');
-    for (let i = 0; i < 25; i++) {
-      const bead = document.createElement('div');
-      bead.className = 'floating-bead';
-      const size = Math.random() * 10 + 4;
-      const color = COLORS[Math.floor(Math.random() * COLORS.length)];
-      bead.style.cssText = `
-        width: ${size}px; height: ${size}px;
-        background: ${color};
-        left: ${Math.random() * 100}%;
-        animation-delay: ${Math.random() * 8}s;
-        animation-duration: ${Math.random() * 6 + 6}s;
-        box-shadow: 0 0 ${size}px ${color}40;
-      `;
-      container.appendChild(bead);
-    }
-  }
-
-  function initHeroCanvas() {
-    const canvas = document.getElementById('heroBeadCanvas');
-    const cols = 22;
-    const rows = 22;
-    canvas.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-
-    const pattern = generatePixelArt(rows, cols);
-
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const cell = document.createElement('div');
-        cell.className = 'bead-cell';
-        const color = pattern[r][c];
-        if (color) {
-          cell.style.background = color;
-          cell.style.boxShadow = `0 0 6px ${color}60`;
-          cell.dataset.color = color;
-        } else {
-          cell.style.background = 'rgba(255,255,255,0.02)';
-        }
-        cell.style.animationDelay = `${(r + c) * 20}ms`;
-        canvas.appendChild(cell);
-      }
-    }
-
-    animateHeroBeads(canvas);
-  }
-
   function generatePixelArt(rows, cols) {
-    const grid = Array.from({length: rows}, () => Array(cols).fill(null));
-
-    const centerX = Math.floor(cols / 2);
-    const centerY = Math.floor(rows / 2);
-
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const dx = c - centerX;
-        const dy = r - centerY;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < 3.5) {
-          grid[r][c] = BEAD_COLORS.pink;
-        } else if (dist < 5.5) {
-          grid[r][c] = BEAD_COLORS.purple;
-        } else if (dist < 7.5) {
-          grid[r][c] = BEAD_COLORS.cyan;
-        } else if (dist < 9) {
-          grid[r][c] = BEAD_COLORS.blue;
-        } else if (dist < 10.5) {
-          if (Math.random() > 0.3) grid[r][c] = BEAD_COLORS.dark2;
-        }
-
-        if (Math.abs(dx) <= 1 && r === centerY - 2 && dist < 3.5) {
-          grid[r][c] = BEAD_COLORS.white;
-        }
-        if (Math.abs(dx) <= 1 && r === centerY + 1 && dist < 3.5) {
-          grid[r][c] = BEAD_COLORS.red;
-        }
+    var grid = [];
+    for (var r = 0; r < rows; r++) {
+      grid[r] = [];
+      for (var c = 0; c < cols; c++) {
+        grid[r][c] = null;
       }
     }
-
-    for (let i = 0; i < 8; i++) {
-      const angle = (i / 8) * Math.PI * 2;
-      const sr = Math.round(centerY + Math.sin(angle) * 9.5);
-      const sc = Math.round(centerX + Math.cos(angle) * 9.5);
-      if (sr >= 0 && sr < rows && sc >= 0 && sc < cols) {
-        grid[sr][sc] = COLORS[i % COLORS.length];
+    var cx = cols / 2, cy = rows / 2;
+    for (var r = 0; r < rows; r++) {
+      for (var c = 0; c < cols; c++) {
+        var dx = c - cx, dy = r - cy;
+        var dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 3.5) grid[r][c] = '#FF3C83';
+        else if (dist < 5.5) grid[r][c] = '#B24BF3';
+        else if (dist < 7.5) grid[r][c] = '#00E5FF';
+        else if (dist < 9) grid[r][c] = '#4D7CFF';
+        else if (dist < 10.5 && Math.random() > 0.3) grid[r][c] = '#1A1435';
+        if (Math.abs(dx) <= 1 && r === Math.floor(cy) - 2 && dist < 3.5) grid[r][c] = '#F0ECFF';
+        if (Math.abs(dx) <= 1 && r === Math.floor(cy) + 1 && dist < 3.5) grid[r][c] = '#FF3D3D';
       }
     }
-
+    for (var i = 0; i < 8; i++) {
+      var angle = (i / 8) * Math.PI * 2;
+      var sr = Math.round(cy + Math.sin(angle) * 9.5);
+      var sc = Math.round(cx + Math.cos(angle) * 9.5);
+      if (sr >= 0 && sr < rows && sc >= 0 && sc < cols) grid[sr][sc] = COLORS[i % COLORS.length];
+    }
     return grid;
   }
 
-  function animateHeroBeads(canvas) {
-    const cells = canvas.querySelectorAll('.bead-cell');
-    let frame = 0;
-
-    setInterval(() => {
-      frame++;
-      cells.forEach((cell, i) => {
-        if (cell.dataset.color && Math.random() < 0.02) {
-          const origColor = cell.dataset.color;
-          cell.style.filter = 'brightness(1.5)';
-          setTimeout(() => { cell.style.filter = ''; }, 300);
+  function initHeroCanvas() {
+    var grid = document.getElementById('heroBeadGrid');
+    var rows = 22, cols = 22;
+    grid.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
+    var pattern = generatePixelArt(rows, cols);
+    for (var r = 0; r < rows; r++) {
+      for (var c = 0; c < cols; c++) {
+        var cell = document.createElement('div');
+        cell.className = 'hero-bead';
+        var color = pattern[r][c];
+        if (color) {
+          cell.style.background = color;
+          cell.style.boxShadow = '0 0 6px ' + color + '50';
+          cell.classList.add('filled');
+          cell.dataset.color = color;
+        } else {
+          cell.style.background = 'rgba(255,255,255,0.015)';
+        }
+        grid.appendChild(cell);
+      }
+    }
+    setInterval(function() {
+      var cells = grid.querySelectorAll('.hero-bead.filled');
+      cells.forEach(function(cell) {
+        if (Math.random() < 0.015) {
+          cell.style.filter = 'brightness(1.6)';
+          setTimeout(function() { cell.style.filter = ''; }, 250);
         }
       });
     }, 100);
   }
 
-  function initShowcase() {
-    const grid = document.getElementById('showcaseGrid');
-    const patterns = [
-      generateShowcasePattern('heart'),
-      generateShowcasePattern('star'),
-      generateShowcasePattern('diamond'),
-      generateShowcasePattern('flower'),
-      generateShowcasePattern('cat'),
-      generateShowcasePattern('moon'),
-      generateShowcasePattern('wave'),
-      generateShowcasePattern('bolt')
-    ];
+  var animFrames = [];
+  var animCurrentFrame = 0;
+  var animPlaying = false;
+  var animInterval = null;
+  var animFPS = 6;
+  var ANIM_SIZE = 16;
 
-    const names = ['ハート', 'スター', 'ダイヤ', 'フラワー', 'ネコ', 'ムーン', 'ウェーブ', 'ボルト'];
-    const authors = ['sakura_chan', 'pixel_master', 'bead_queen', 'art_ninja', 'kawaii_dev', 'moon_light', 'wave_rider', 'thunder_bead'];
-
-    patterns.forEach((pattern, idx) => {
-      const item = document.createElement('div');
-      item.className = 'showcase-item scroll-reveal';
-
-      const beadPattern = document.createElement('div');
-      beadPattern.className = 'bead-pattern';
-      beadPattern.style.gridTemplateColumns = `repeat(${pattern[0].length}, 1fr)`;
-
-      pattern.forEach(row => {
-        row.forEach(color => {
-          const bead = document.createElement('div');
-          bead.className = 'mini-bead';
-          bead.style.background = color || 'rgba(255,255,255,0.02)';
-          if (color) {
-            bead.style.boxShadow = `0 0 3px ${color}40`;
+  function generateAnimFrames() {
+    animFrames = [];
+    for (var f = 0; f < 8; f++) {
+      var frame = [];
+      var cx = ANIM_SIZE / 2, cy = ANIM_SIZE / 2;
+      var phase = f * Math.PI / 4;
+      for (var r = 0; r < ANIM_SIZE; r++) {
+        frame[r] = [];
+        for (var c = 0; c < ANIM_SIZE; c++) {
+          frame[r][c] = null;
+          var dx = c - cx + 0.5, dy = r - cy + 0.5;
+          var dist = Math.sqrt(dx*dx + dy*dy);
+          var angle = Math.atan2(dy, dx) + phase;
+          var wave = Math.sin(dist * 0.6 - phase * 2) * 0.5 + 0.5;
+          if (dist < 6.5) {
+            var hue = ((angle / Math.PI * 180) + 360 + f * 45) % 360;
+            var colorIdx = Math.floor(hue / 22.5) % COLORS.length;
+            frame[r][c] = wave > 0.3 ? COLORS[colorIdx] : COLORS[(colorIdx + 4) % COLORS.length];
+          } else if (dist < 7.5 && Math.random() > 0.5) {
+            frame[r][c] = '#1A1435';
           }
+        }
+      }
+      animFrames.push(frame);
+    }
+  }
+
+  function initAnimSystem() {
+    generateAnimFrames();
+    var grid = document.getElementById('animBeadGrid');
+    grid.style.gridTemplateColumns = 'repeat(' + ANIM_SIZE + ', 1fr)';
+    for (var r = 0; r < ANIM_SIZE; r++) {
+      for (var c = 0; c < ANIM_SIZE; c++) {
+        var cell = document.createElement('div');
+        cell.className = 'anim-bead';
+        cell.dataset.row = r;
+        cell.dataset.col = c;
+        grid.appendChild(cell);
+      }
+    }
+    renderAnimFrame(0);
+    initAnimTimeline();
+    initAnimControls();
+  }
+
+  function renderAnimFrame(idx) {
+    animCurrentFrame = idx;
+    var frame = animFrames[idx];
+    var cells = document.querySelectorAll('#animBeadGrid .anim-bead');
+    cells.forEach(function(cell) {
+      var r = parseInt(cell.dataset.row);
+      var c = parseInt(cell.dataset.col);
+      var color = frame[r][c];
+      if (color) {
+        cell.style.background = color;
+        cell.style.boxShadow = '0 0 5px ' + color + '50';
+        cell.classList.add('filled');
+      } else {
+        cell.style.background = 'rgba(255,255,255,0.015)';
+        cell.style.boxShadow = 'none';
+        cell.classList.remove('filled');
+      }
+    });
+    document.getElementById('frameCurrent').textContent = idx + 1;
+    document.querySelectorAll('.anim-frame-thumb').forEach(function(t, i) {
+      t.classList.toggle('active', i === idx);
+    });
+  }
+
+  function initAnimTimeline() {
+    var timeline = document.getElementById('animTimeline');
+    timeline.innerHTML = '';
+    for (var i = 0; i < animFrames.length; i++) {
+      var thumb = document.createElement('div');
+      thumb.className = 'anim-frame-thumb' + (i === 0 ? ' active' : '');
+      thumb.textContent = i + 1;
+      thumb.dataset.frame = i;
+      thumb.addEventListener('click', function() {
+        var fi = parseInt(this.dataset.frame);
+        renderAnimFrame(fi);
+      });
+      timeline.appendChild(thumb);
+    }
+    document.getElementById('frameTotal').textContent = animFrames.length;
+  }
+
+  function initAnimControls() {
+    var slider = document.getElementById('fpsSlider');
+    var fpsVal = document.getElementById('fpsValue');
+    slider.addEventListener('input', function() {
+      animFPS = parseInt(this.value);
+      fpsVal.textContent = animFPS + ' FPS';
+      if (animPlaying) {
+        clearInterval(animInterval);
+        animInterval = setInterval(playNextFrame, 1000 / animFPS);
+      }
+    });
+
+    document.getElementById('animPlay').addEventListener('click', function() {
+      if (animPlaying) {
+        animPlaying = false;
+        clearInterval(animInterval);
+        this.textContent = '▶ 播放';
+        this.classList.remove('playing');
+      } else {
+        animPlaying = true;
+        this.textContent = '❚❚ 暂停';
+        this.classList.add('playing');
+        animInterval = setInterval(playNextFrame, 1000 / animFPS);
+      }
+    });
+
+    document.getElementById('animPrev').addEventListener('click', function() {
+      var prev = (animCurrentFrame - 1 + animFrames.length) % animFrames.length;
+      renderAnimFrame(prev);
+    });
+
+    document.getElementById('animNext').addEventListener('click', function() {
+      var next = (animCurrentFrame + 1) % animFrames.length;
+      renderAnimFrame(next);
+    });
+
+    document.getElementById('animExportGif').addEventListener('click', function() {
+      showToast('GIF 动画导出中...', '#3DFF9A');
+    });
+    document.getElementById('animExportPng').addEventListener('click', function() {
+      showToast('帧序列 PNG 导出完成', '#00E5FF');
+    });
+  }
+
+  function playNextFrame() {
+    var next = (animCurrentFrame + 1) % animFrames.length;
+    renderAnimFrame(next);
+  }
+
+  var studioTool = 'paint';
+  var studioColor = COLORS[0];
+  var studioDrawing = false;
+
+  function initStudio() {
+    var board = document.getElementById('studioBoard');
+    var size = 20;
+    board.style.gridTemplateColumns = 'repeat(' + size + ', 1fr)';
+    for (var r = 0; r < size; r++) {
+      for (var c = 0; c < size; c++) {
+        var cell = document.createElement('div');
+        cell.className = 'board-cell';
+        cell.dataset.row = r;
+        cell.dataset.col = c;
+        cell.addEventListener('mousedown', function(e) {
+          e.preventDefault();
+          studioDrawing = true;
+          handleStudioCell(this);
+        });
+        cell.addEventListener('mouseenter', function() {
+          if (studioDrawing) handleStudioCell(this);
+        });
+        cell.addEventListener('touchstart', function(e) {
+          e.preventDefault();
+          studioDrawing = true;
+          handleStudioCell(this);
+        });
+        board.appendChild(cell);
+      }
+    }
+    document.addEventListener('mouseup', function() { studioDrawing = false; });
+    document.addEventListener('touchend', function() { studioDrawing = false; });
+
+    initStudioPalette();
+    initStudioTools();
+    initStudioActions();
+  }
+
+  function handleStudioCell(cell) {
+    switch(studioTool) {
+      case 'paint':
+        cell.style.background = studioColor;
+        cell.style.boxShadow = '0 0 5px ' + studioColor + '50';
+        cell.classList.add('filled');
+        cell.dataset.color = studioColor;
+        break;
+      case 'erase':
+        cell.style.background = 'rgba(255,255,255,0.02)';
+        cell.style.boxShadow = 'none';
+        cell.classList.remove('filled');
+        delete cell.dataset.color;
+        break;
+      case 'fill':
+        studioFloodFill(parseInt(cell.dataset.row), parseInt(cell.dataset.col), cell.dataset.color || null, studioColor);
+        break;
+      case 'pick':
+        if (cell.dataset.color) {
+          studioColor = cell.dataset.color;
+          document.querySelectorAll('.studio-swatch').forEach(function(s) {
+            s.classList.toggle('active', s.dataset.color === studioColor);
+          });
+          showToast('已取色: ' + studioColor, studioColor);
+        }
+        break;
+    }
+    updateStudioInfo();
+  }
+
+  function studioFloodFill(row, col, target, fill) {
+    if (target === fill) return;
+    var cells = document.querySelectorAll('#studioBoard .board-cell');
+    var size = 20;
+    var visited = {};
+    var stack = [[row, col]];
+    while (stack.length) {
+      var pos = stack.pop();
+      var r = pos[0], c = pos[1];
+      var key = r + ',' + c;
+      if (visited[key]) continue;
+      if (r < 0 || r >= size || c < 0 || c >= size) continue;
+      var cell = cells[r * size + c];
+      var cc = cell.dataset.color || null;
+      if (cc !== target) continue;
+      visited[key] = true;
+      cell.style.background = fill;
+      cell.style.boxShadow = '0 0 5px ' + fill + '50';
+      cell.classList.add('filled');
+      cell.dataset.color = fill;
+      stack.push([r-1,c],[r+1,c],[r,c-1],[r,c+1]);
+    }
+  }
+
+  function initStudioPalette() {
+    var palette = document.getElementById('studioPalette');
+    COLORS.forEach(function(color, i) {
+      var swatch = document.createElement('div');
+      swatch.className = 'studio-swatch' + (i === 0 ? ' active' : '');
+      swatch.style.background = color;
+      swatch.style.color = color;
+      swatch.dataset.color = color;
+      swatch.addEventListener('click', function() {
+        studioColor = color;
+        document.querySelectorAll('.studio-swatch').forEach(function(s) { s.classList.remove('active'); });
+        this.classList.add('active');
+      });
+      palette.appendChild(swatch);
+    });
+  }
+
+  function initStudioTools() {
+    document.querySelectorAll('.studio-tool-btn[data-tool]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        studioTool = this.dataset.tool;
+        document.querySelectorAll('.studio-tool-btn[data-tool]').forEach(function(b) { b.classList.remove('active'); });
+        this.classList.add('active');
+      });
+    });
+    document.querySelectorAll('.studio-tool-btn[data-template]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        applyStudioTemplate(this.dataset.template);
+      });
+    });
+  }
+
+  function applyStudioTemplate(type) {
+    var cells = document.querySelectorAll('#studioBoard .board-cell');
+    cells.forEach(function(cell) {
+      cell.style.background = 'rgba(255,255,255,0.02)';
+      cell.style.boxShadow = 'none';
+      cell.classList.remove('filled');
+      delete cell.dataset.color;
+    });
+    if (type === 'clear') {
+      showToast('画板已清空', '#F0ECFF');
+      updateStudioInfo();
+      return;
+    }
+    var size = 20;
+    var pattern = [];
+    for (var r = 0; r < size; r++) { pattern[r] = []; for (var c = 0; c < size; c++) pattern[r][c] = null; }
+    var cx = size / 2, cy = size / 2;
+    switch(type) {
+      case 'heart':
+        for (var r = 0; r < size; r++) for (var c = 0; c < size; c++) {
+          var x = (c - cx) / 7, y = (r - cy) / 7;
+          if ((x*x + y*y - 1)**3 - x*x * y*y*y <= 0) pattern[r][c] = r < size/2 ? '#FF3C83' : '#FF3D3D';
+        }
+        break;
+      case 'star':
+        for (var r = 0; r < size; r++) for (var c = 0; c < size; c++) {
+          var dx = c - cx + 0.5, dy = r - cy + 0.5;
+          var angle = Math.atan2(dy, dx);
+          var dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < 4 + 3.5 * Math.cos(5 * angle)) pattern[r][c] = dist < 2.5 ? '#FFD93D' : '#FF7A3D';
+        }
+        break;
+      case 'cat':
+        for (var r = 0; r < size; r++) for (var c = 0; c < size; c++) {
+          var dx = Math.abs(c - cx + 0.5), dy = r - cy + 0.5;
+          if (dy > -5 && dy < 6 && dx < 5.5) {
+            if (dx < 1.5 && dy > -1.5 && dy < 1.5) pattern[r][c] = '#FF3C83';
+            else if (Math.abs(dx - 3.5) < 2 && dy < -3 && dy > -6) pattern[r][c] = '#B24BF3';
+            else pattern[r][c] = '#FFB8B8';
+          }
+          if (dy > -2 && dy < 2 && Math.abs(dx - 2.5) < 1 && dy > -1) pattern[r][c] = '#00E5FF';
+        }
+        break;
+    }
+    cells.forEach(function(cell, i) {
+      var r = Math.floor(i / size), c = i % size;
+      if (pattern[r][c]) {
+        setTimeout(function() {
+          cell.style.background = pattern[r][c];
+          cell.style.boxShadow = '0 0 5px ' + pattern[r][c] + '50';
+          cell.classList.add('filled');
+          cell.dataset.color = pattern[r][c];
+        }, (r + c) * 12);
+      }
+    });
+    showToast('模板「' + type + '」已应用', '#FFD93D');
+    setTimeout(updateStudioInfo, 800);
+  }
+
+  function updateStudioInfo() {
+    var filled = document.querySelectorAll('#studioBoard .board-cell.filled');
+    var colorSet = {};
+    filled.forEach(function(c) { if (c.dataset.color) colorSet[c.dataset.color] = true; });
+    document.getElementById('beadCount').textContent = filled.length;
+    document.getElementById('colorCount').textContent = Object.keys(colorSet).length;
+  }
+
+  function initStudioActions() {
+    document.getElementById('saveDwn').addEventListener('click', function() { showToast('已保存至 DWN 节点', '#3DFF9A'); });
+    document.getElementById('exportPng').addEventListener('click', function() { showToast('PNG 导出完成', '#00E5FF'); });
+    document.getElementById('shareLink').addEventListener('click', function() { showToast('共享链接已复制', '#B24BF3'); });
+    document.getElementById('addToAnim').addEventListener('click', function() {
+      var cells = document.querySelectorAll('#studioBoard .board-cell');
+      var size = 20;
+      var frame = [];
+      for (var r = 0; r < ANIM_SIZE; r++) {
+        frame[r] = [];
+        for (var c = 0; c < ANIM_SIZE; c++) {
+          var sr = Math.floor(r * size / ANIM_SIZE);
+          var sc = Math.floor(c * size / ANIM_SIZE);
+          var cell = cells[sr * size + sc];
+          frame[r][c] = cell.dataset.color || null;
+        }
+      }
+      animFrames.push(frame);
+      initAnimTimeline();
+      showToast('已添加为第 ' + animFrames.length + ' 帧', '#FFD93D');
+    });
+  }
+
+  function initGallery() {
+    var grid = document.getElementById('galleryGrid');
+    var types = ['heart','star','diamond','flower','cat','moon','wave','bolt'];
+    var names = ['爱心','星辰','钻石','花朵','猫咪','月亮','波浪','闪电'];
+    var creators = ['樱花酱','像素大师','拼豆女王','艺术忍者','可爱开发者','月光','冲浪者','雷霆拼豆'];
+    types.forEach(function(type, idx) {
+      var item = document.createElement('div');
+      item.className = 'gallery-item scroll-reveal';
+      var pattern = generateGalleryPattern(type);
+      var beadPattern = document.createElement('div');
+      beadPattern.className = 'bead-pattern';
+      beadPattern.style.gridTemplateColumns = 'repeat(' + pattern[0].length + ', 1fr)';
+      pattern.forEach(function(row) {
+        row.forEach(function(color) {
+          var bead = document.createElement('div');
+          bead.className = 'mini-bead';
+          bead.style.background = color || 'rgba(255,255,255,0.015)';
+          if (color) bead.style.boxShadow = '0 0 3px ' + color + '35';
           beadPattern.appendChild(bead);
         });
       });
-
-      const overlay = document.createElement('div');
-      overlay.className = 'showcase-overlay';
-      overlay.innerHTML = `<h4>${names[idx]}</h4><p>by ${authors[idx]}</p>`;
-
+      var overlay = document.createElement('div');
+      overlay.className = 'gallery-overlay';
+      overlay.innerHTML = '<h4>' + names[idx] + '</h4><p>by ' + creators[idx] + '</p>';
       item.appendChild(beadPattern);
       item.appendChild(overlay);
       grid.appendChild(item);
     });
   }
 
-  function generateShowcasePattern(type) {
-    const size = 12;
-    const grid = Array.from({length: size}, () => Array(size).fill(null));
-    const cx = size / 2, cy = size / 2;
-
+  function generateGalleryPattern(type) {
+    var size = 12;
+    var grid = [];
+    for (var r = 0; r < size; r++) { grid[r] = []; for (var c = 0; c < size; c++) grid[r][c] = null; }
+    var cx = size / 2, cy = size / 2;
     switch(type) {
       case 'heart':
-        for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
-          const x = (c - cx) / 5, y = (r - cy) / 5;
-          const eq = (x*x + y*y - 1)**3 - x*x * y*y*y;
-          if (eq <= 0) grid[r][c] = r < size/2 ? '#FF6B9D' : '#FF4757';
+        for (var r = 0; r < size; r++) for (var c = 0; c < size; c++) {
+          var x = (c - cx) / 5, y = (r - cy) / 5;
+          if ((x*x + y*y - 1)**3 - x*x * y*y*y <= 0) grid[r][c] = r < size/2 ? '#FF3C83' : '#FF3D3D';
         }
         break;
       case 'star':
-        for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
-          const dx = c - cx + 0.5, dy = r - cy + 0.5;
-          const angle = Math.atan2(dy, dx);
-          const dist = Math.sqrt(dx*dx + dy*dy);
-          const starR = 3 + 2.5 * Math.cos(5 * angle);
-          if (dist < starR) grid[r][c] = dist < 2 ? '#FFD93D' : '#FF8A5C';
+        for (var r = 0; r < size; r++) for (var c = 0; c < size; c++) {
+          var dx = c - cx + 0.5, dy = r - cy + 0.5;
+          var angle = Math.atan2(dy, dx);
+          var dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < 3 + 2.5 * Math.cos(5 * angle)) grid[r][c] = dist < 2 ? '#FFD93D' : '#FF7A3D';
         }
         break;
       case 'diamond':
-        for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
-          const dist = Math.abs(c - cx + 0.5) + Math.abs(r - cy + 0.5);
-          if (dist < 5) grid[r][c] = dist < 2 ? '#00E5FF' : '#5C7CFF';
+        for (var r = 0; r < size; r++) for (var c = 0; c < size; c++) {
+          var dist = Math.abs(c - cx + 0.5) + Math.abs(r - cy + 0.5);
+          if (dist < 5) grid[r][c] = dist < 2 ? '#00E5FF' : '#4D7CFF';
         }
         break;
       case 'flower':
-        for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
-          const dx = c - cx + 0.5, dy = r - cy + 0.5;
-          const angle = Math.atan2(dy, dx);
-          const dist = Math.sqrt(dx*dx + dy*dy);
-          const petalR = 2.5 + 2 * Math.cos(6 * angle);
-          if (dist < petalR) grid[r][c] = dist < 1.5 ? '#FFD93D' : '#FF9FF3';
+        for (var r = 0; r < size; r++) for (var c = 0; c < size; c++) {
+          var dx = c - cx + 0.5, dy = r - cy + 0.5;
+          var angle = Math.atan2(dy, dx);
+          var dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < 2.5 + 2 * Math.cos(6 * angle)) grid[r][c] = dist < 1.5 ? '#FFD93D' : '#FF9FF3';
         }
         break;
       case 'cat':
-        for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
-          const dx = Math.abs(c - cx + 0.5), dy = r - cy + 0.5;
+        for (var r = 0; r < size; r++) for (var c = 0; c < size; c++) {
+          var dx = Math.abs(c - cx + 0.5), dy = r - cy + 0.5;
           if (dy > -3 && dy < 4 && dx < 3.5) {
-            if ((dx < 1 && dy > -1 && dy < 1)) grid[r][c] = '#FF6B9D';
-            else if ((Math.abs(dx - 2) < 1 && dy < -1 && dy > -3)) grid[r][c] = '#C44DFF';
+            if (dx < 1 && dy > -1 && dy < 1) grid[r][c] = '#FF3C83';
+            else if (Math.abs(dx - 2) < 1 && dy < -1 && dy > -3) grid[r][c] = '#B24BF3';
             else grid[r][c] = '#FFB8B8';
           }
         }
         break;
       case 'moon':
-        for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
-          const dx = c - cx + 0.5, dy = r - cy + 0.5;
-          const dist1 = Math.sqrt(dx*dx + dy*dy);
-          const dist2 = Math.sqrt((dx-2)*(dx-2) + dy*dy);
-          if (dist1 < 5 && dist2 > 3.5) grid[r][c] = dist1 < 3 ? '#FFD93D' : '#FF8A5C';
+        for (var r = 0; r < size; r++) for (var c = 0; c < size; c++) {
+          var dx = c - cx + 0.5, dy = r - cy + 0.5;
+          var d1 = Math.sqrt(dx*dx + dy*dy);
+          var d2 = Math.sqrt((dx-2)*(dx-2) + dy*dy);
+          if (d1 < 5 && d2 > 3.5) grid[r][c] = d1 < 3 ? '#FFD93D' : '#FF7A3D';
         }
         break;
       case 'wave':
-        for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
-          const wave = Math.sin(c * 0.8) * 2 + cy;
-          if (Math.abs(r - wave) < 2) grid[r][c] = r < wave ? '#00E5FF' : '#5C7CFF';
+        for (var r = 0; r < size; r++) for (var c = 0; c < size; c++) {
+          var wave = Math.sin(c * 0.8) * 2 + cy;
+          if (Math.abs(r - wave) < 2) grid[r][c] = r < wave ? '#00E5FF' : '#4D7CFF';
         }
         break;
       case 'bolt':
-        const boltPath = [[2,1],[3,2],[4,1],[5,3],[6,2],[7,4],[8,3],[9,5],[10,4]];
-        boltPath.forEach(([r,c]) => {
-          if (r < size && c < size) {
-            grid[r][c] = '#FFD93D';
-            if (c+1 < size) grid[r][c+1] = '#FF8A5C';
-          }
+        [[2,1],[3,2],[4,1],[5,3],[6,2],[7,4],[8,3],[9,5],[10,4]].forEach(function(p) {
+          if (p[0] < size && p[1] < size) { grid[p[0]][p[1]] = '#FFD93D'; if (p[1]+1 < size) grid[p[0]][p[1]+1] = '#FF7A3D'; }
         });
         break;
     }
     return grid;
   }
 
-  let currentTool = 'paint';
-  let currentColor = COLORS[0];
-  let isDrawing = false;
-
-  function initBeadBoard() {
-    const board = document.getElementById('beadBoard');
-    const cols = 16;
-    const rows = 16;
-
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const cell = document.createElement('div');
-        cell.className = 'board-cell';
-        cell.dataset.row = r;
-        cell.dataset.col = c;
-
-        cell.addEventListener('mousedown', (e) => {
-          e.preventDefault();
-          isDrawing = true;
-          handleCellAction(cell);
-        });
-        cell.addEventListener('mouseenter', () => {
-          if (isDrawing) handleCellAction(cell);
-        });
-        cell.addEventListener('touchstart', (e) => {
-          e.preventDefault();
-          isDrawing = true;
-          handleCellAction(cell);
-        });
-
-        board.appendChild(cell);
-      }
-    }
-
-    document.addEventListener('mouseup', () => { isDrawing = false; });
-    document.addEventListener('touchend', () => { isDrawing = false; });
-  }
-
-  function handleCellAction(cell) {
-    switch(currentTool) {
-      case 'paint':
-        cell.style.background = currentColor;
-        cell.style.boxShadow = `0 0 6px ${currentColor}60`;
-        cell.classList.add('filled');
-        cell.dataset.color = currentColor;
-        break;
-      case 'erase':
-        cell.style.background = 'rgba(255,255,255,0.03)';
-        cell.style.boxShadow = 'none';
-        cell.classList.remove('filled');
-        delete cell.dataset.color;
-        break;
-      case 'fill':
-        floodFill(
-          parseInt(cell.dataset.row),
-          parseInt(cell.dataset.col),
-          cell.dataset.color || null,
-          currentColor
-        );
-        break;
-      case 'pick':
-        if (cell.dataset.color) {
-          currentColor = cell.dataset.color;
-          document.querySelectorAll('.color-swatch').forEach(s => {
-            s.classList.toggle('active', s.dataset.color === currentColor);
-          });
-          showToast('カラー取得', currentColor);
-        }
-        break;
-    }
-  }
-
-  function floodFill(row, col, targetColor, fillColor) {
-    if (targetColor === fillColor) return;
-    const cells = document.querySelectorAll('.board-cell');
-    const cols = 16;
-    const visited = new Set();
-    const stack = [[row, col]];
-
-    while (stack.length) {
-      const [r, c] = stack.pop();
-      const key = `${r},${c}`;
-      if (visited.has(key)) continue;
-      if (r < 0 || r >= 16 || c < 0 || c >= 16) continue;
-
-      const cell = cells[r * cols + c];
-      const cellColor = cell.dataset.color || null;
-      if (cellColor !== targetColor) continue;
-
-      visited.add(key);
-      cell.style.background = fillColor;
-      cell.style.boxShadow = `0 0 6px ${fillColor}60`;
-      cell.classList.add('filled');
-      cell.dataset.color = fillColor;
-
-      stack.push([r-1, c], [r+1, c], [r, c-1], [r, c+1]);
-    }
-  }
-
-  function initColorPalette() {
-    const palette = document.getElementById('colorPalette');
-    COLORS.forEach((color, i) => {
-      const swatch = document.createElement('div');
-      swatch.className = 'color-swatch' + (i === 0 ? ' active' : '');
-      swatch.style.background = color;
-      swatch.style.color = color;
-      swatch.dataset.color = color;
-      swatch.addEventListener('click', () => {
-        currentColor = color;
-        document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
-        swatch.classList.add('active');
-      });
-      palette.appendChild(swatch);
-    });
-  }
-
-  function initTools() {
-    document.querySelectorAll('.tool-btn[data-tool]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        currentTool = btn.dataset.tool;
-        document.querySelectorAll('.tool-btn[data-tool]').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-      });
-    });
-
-    document.querySelectorAll('.tool-btn[data-template]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        applyTemplate(btn.dataset.template);
-      });
-    });
-
-    document.getElementById('saveBtn').addEventListener('click', () => {
-      showToast('DWNに保存しました！', '#7BF5A6');
-    });
-
-    document.getElementById('exportBtn').addEventListener('click', () => {
-      showToast('PNG出力完了！', '#00E5FF');
-    });
-
-    document.getElementById('shareBtn').addEventListener('click', () => {
-      showToast('共有リンクをコピーしました！', '#C44DFF');
-    });
-  }
-
-  function applyTemplate(type) {
-    const cells = document.querySelectorAll('.board-cell');
-    cells.forEach(cell => {
-      cell.style.background = 'rgba(255,255,255,0.03)';
-      cell.style.boxShadow = 'none';
-      cell.classList.remove('filled');
-      delete cell.dataset.color;
-    });
-
-    if (type === 'clear') {
-      showToast('ボードをクリアしました', '#FFF8F0');
-      return;
-    }
-
-    const size = 16;
-    const pattern = Array.from({length: size}, () => Array(size).fill(null));
-    const cx = size / 2, cy = size / 2;
-
-    switch(type) {
-      case 'heart':
-        for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
-          const x = (c - cx) / 6, y = (r - cy) / 6;
-          if ((x*x + y*y - 1)**3 - x*x * y*y*y <= 0)
-            pattern[r][c] = r < size/2 ? '#FF6B9D' : '#FF4757';
-        }
-        break;
-      case 'star':
-        for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
-          const dx = c - cx + 0.5, dy = r - cy + 0.5;
-          const angle = Math.atan2(dy, dx);
-          const dist = Math.sqrt(dx*dx + dy*dy);
-          if (dist < 3 + 3 * Math.cos(5 * angle))
-            pattern[r][c] = dist < 2 ? '#FFD93D' : '#FF8A5C';
-        }
-        break;
-      case 'cat':
-        for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
-          const dx = Math.abs(c - cx + 0.5), dy = r - cy + 0.5;
-          if (dy > -4 && dy < 5 && dx < 4.5) {
-            if ((dx < 1.2 && dy > -1 && dy < 1)) pattern[r][c] = '#FF6B9D';
-            else if (Math.abs(dx - 3) < 1.5 && dy < -2 && dy > -5) pattern[r][c] = '#C44DFF';
-            else pattern[r][c] = '#FFB8B8';
-          }
-          if (dy > -2 && dy < 2 && (Math.abs(dx - 2) < 0.8) && dy > -1) pattern[r][c] = '#00E5FF';
-        }
-        break;
-    }
-
-    cells.forEach((cell, i) => {
-      const r = Math.floor(i / size), c = i % size;
-      if (pattern[r][c]) {
-        setTimeout(() => {
-          cell.style.background = pattern[r][c];
-          cell.style.boxShadow = `0 0 6px ${pattern[r][c]}60`;
-          cell.classList.add('filled');
-          cell.dataset.color = pattern[r][c];
-        }, (r + c) * 15);
-      }
-    });
-
-    showToast(`テンプレート「${type}」を適用`, '#FFD93D');
-  }
-
-  function showToast(message, color) {
-    const container = document.getElementById('toastContainer');
-    const toast = document.createElement('div');
+  function showToast(msg, color) {
+    var container = document.getElementById('toastContainer');
+    var toast = document.createElement('div');
     toast.className = 'toast';
-    toast.innerHTML = `<span class="toast-bead" style="background:${color}"></span>${message}`;
+    toast.innerHTML = '<span class="tdot" style="background:' + color + ';box-shadow:0 0 6px ' + color + '"></span>' + msg;
     container.appendChild(toast);
-
-    setTimeout(() => {
+    setTimeout(function() {
       toast.style.animation = 'toastOut 0.3s ease-in forwards';
-      setTimeout(() => toast.remove(), 300);
+      setTimeout(function() { toast.remove(); }, 300);
     }, 2500);
   }
 
   function initScrollReveal() {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-
-    document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.scroll-reveal').forEach(function(el) { observer.observe(el); });
   }
 
   function initNavScroll() {
-    const nav = document.getElementById('navbar');
-    window.addEventListener('scroll', () => {
-      nav.classList.toggle('scrolled', window.scrollY > 50);
-    });
+    var nav = document.getElementById('navbar');
+    window.addEventListener('scroll', function() { nav.classList.toggle('scrolled', window.scrollY > 50); });
   }
 
   function initCountUp() {
-    const nums = document.querySelectorAll('.stat-num[data-count]');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
+    var nums = document.querySelectorAll('.stat-num[data-count]');
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
         if (entry.isIntersecting) {
-          const target = parseInt(entry.target.dataset.count);
-          let current = 0;
-          const step = Math.ceil(target / 60);
-          const timer = setInterval(() => {
+          var target = parseInt(entry.target.dataset.count);
+          var current = 0;
+          var step = Math.ceil(target / 50);
+          var timer = setInterval(function() {
             current += step;
-            if (current >= target) {
-              current = target;
-              clearInterval(timer);
-            }
+            if (current >= target) { current = target; clearInterval(timer); }
             entry.target.textContent = current.toLocaleString();
-          }, 20);
+          }, 25);
           observer.unobserve(entry.target);
         }
       });
     }, { threshold: 0.5 });
-
-    nums.forEach(n => observer.observe(n));
+    nums.forEach(function(n) { observer.observe(n); });
   }
 
   function initMobileMenu() {
-    const btn = document.getElementById('mobileMenuBtn');
-    const links = document.querySelector('.nav-links');
-    btn.addEventListener('click', () => {
-      links.style.display = links.style.display === 'flex' ? 'none' : 'flex';
+    var btn = document.getElementById('mobileMenuBtn');
+    var links = document.querySelector('.nav-links');
+    btn.addEventListener('click', function() {
+      var showing = links.style.display === 'flex';
+      links.style.display = showing ? 'none' : 'flex';
       links.style.flexDirection = 'column';
       links.style.position = 'absolute';
       links.style.top = '100%';
       links.style.left = '0';
       links.style.right = '0';
-      links.style.background = 'rgba(26, 16, 51, 0.98)';
+      links.style.background = 'rgba(10,6,24,0.98)';
       links.style.padding = '16px';
-      links.style.borderBottom = '2px solid var(--bead-pink)';
+      links.style.borderBottom = '1px solid rgba(255,60,131,0.2)';
     });
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    initFloatingBeads();
+  document.addEventListener('DOMContentLoaded', function() {
     initHeroCanvas();
-    initShowcase();
-    initBeadBoard();
-    initColorPalette();
-    initTools();
+    initAnimSystem();
+    initStudio();
+    initGallery();
     initScrollReveal();
     initNavScroll();
     initCountUp();
