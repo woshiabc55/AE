@@ -5,7 +5,7 @@ import PromptDisplay from '@/components/PromptDisplay';
 import PreviewImage from '@/components/PreviewImage';
 import ComparePanel from '@/components/ComparePanel';
 import { Link } from 'react-router-dom';
-import { Layers, Eye, GitCompare, Lightbulb, Rocket, Wrench, Database } from 'lucide-react';
+import { Layers, Eye, GitCompare, Lightbulb, Rocket, Wrench, Database, Grid3x3 } from 'lucide-react';
 
 type ViewMode = 'cards' | 'prompt-a' | 'prompt-b' | 'compare';
 
@@ -70,6 +70,13 @@ export default function Home() {
             >
               <Database size={10} />
               数据库
+            </Link>
+            <Link
+              to="/components"
+              className="text-[#1a3a6b] hover:underline inline-flex items-center gap-1"
+            >
+              <Grid3x3 size={10} />
+              组件库
             </Link>
             <Link
               to="/scheme/a"

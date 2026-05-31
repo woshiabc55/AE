@@ -5,6 +5,7 @@ import ConceptDesign from "@/pages/ConceptDesign";
 import LaunchPlan from "@/pages/LaunchPlan";
 import SkillNim from "@/pages/SkillNim";
 import DesignDatabase from "@/pages/DesignDatabase";
+import ComponentGallery from "@/pages/ComponentGallery";
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="/launch" element={<LaunchPlan />} />
         <Route path="/nim" element={<SkillNim />} />
         <Route path="/db" element={<DesignDatabase />} />
+        <Route path="/components" element={<ComponentGallery />} />
       </Routes>
     </Router>
   );
