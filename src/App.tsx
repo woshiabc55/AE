@@ -4,6 +4,7 @@ import SchemeDetail from "@/pages/SchemeDetail";
 import ConceptDesign from "@/pages/ConceptDesign";
 import LaunchPlan from "@/pages/LaunchPlan";
 import SkillNim from "@/pages/SkillNim";
+import DesignDatabase from "@/pages/DesignDatabase";
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
         <Route path="/concept" element={<ConceptDesign />} />
         <Route path="/launch" element={<LaunchPlan />} />
         <Route path="/nim" element={<SkillNim />} />
+        <Route path="/db" element={<DesignDatabase />} />
       </Routes>
     </Router>
   );
