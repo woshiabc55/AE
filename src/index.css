@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'Noto Sans SC', 'Noto Sans JP', 'Noto Sans KR', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  background-color: #1A1F36;
+  color: #E2E8F0;
+  min-height: 100vh;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #3A4070 transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #3A4070;
+  border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #4A5090;
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-6 py-2.5 bg-brand-accent text-white rounded-full font-medium
+           hover:bg-brand-accent-hover transition-all duration-300
+           hover:shadow-lg hover:shadow-brand-accent/25 active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-2.5 border border-brand-border text-gray-300 rounded-full font-medium
+           hover:bg-brand-card hover:border-brand-accent/50 transition-all duration-300
+           active:scale-95;
+  }
+
+  .card {
+    @apply bg-brand-card rounded-2xl border border-brand-border/50
+           hover:border-brand-accent/30 transition-all duration-300;
+  }
+
+  .glass {
+    @apply bg-brand-surface/80 backdrop-blur-xl border border-brand-border/30;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 bg-brand-surface border border-brand-border rounded-xl
+           text-gray-200 placeholder-gray-500 focus:outline-none focus:border-brand-accent/50
+           focus:ring-1 focus:ring-brand-accent/25 transition-all duration-300;
+  }
+
+  .section-title {
+    @apply text-xl font-display font-bold text-white;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .progress-ring {
+    transform: rotate(-90deg);
+  }
+}
