@@ -514,42 +514,35 @@ nav.scrolled {
 .feat-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
 .feat-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
 
-.anim-section .block-body { padding: 0; }
+.anim-section .block-body { padding: 24px 28px; }
 
 .anim-layout {
   display: grid;
-  grid-template-columns: 1fr;
-  min-height: 700px;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  min-height: 0;
 }
 
-.anim-slider-wrap {
-  position: relative;
-  overflow: hidden;
-}
-
-.anim-slider-track {
+.anim-left {
   display: flex;
-  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  will-change: transform;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.anim-slide {
-  min-width: 100%;
-  flex-shrink: 0;
-}
-
-.anim-main-slide {
+.anim-preview-area {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 32px;
-  min-height: 520px;
+  padding: 24px;
   position: relative;
+  background: var(--bg-block2);
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.04);
 }
 
 .anim-canvas-wrap {
   width: 100%;
-  max-width: 480px;
+  max-width: 420px;
   aspect-ratio: 1;
   background: var(--bg-deep);
   border-radius: 20px;
@@ -574,7 +567,7 @@ nav.scrolled {
 
 .anim-preview-label {
   position: absolute;
-  top: 16px;
+  top: 12px;
   left: 50%;
   transform: translateX(-50%);
   padding: 5px 16px;
@@ -611,111 +604,78 @@ nav.scrolled {
   background: rgba(255,255,255,0.4);
 }
 
-.anim-nav-arrows {
-  position: absolute;
-  top: 50%;
-  left: 0; right: 0;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 12px;
-  transform: translateY(-50%);
-  z-index: 10;
-  pointer-events: none;
-}
-.anim-nav-arrow {
-  width: 40px; height: 40px;
-  border-radius: 50%;
-  background: rgba(10,6,24,0.8);
-  border: 1px solid rgba(255,60,131,0.2);
-  color: var(--text-primary);
-  font-size: 16px;
-  cursor: pointer;
+.anim-playback-bar {
   display: flex;
   align-items: center;
-  justify-content: center;
-  pointer-events: auto;
-  transition: all 0.2s;
-  backdrop-filter: blur(8px);
-}
-.anim-nav-arrow:hover {
-  background: rgba(255,60,131,0.15);
-  border-color: var(--glow-pink);
-  box-shadow: 0 0 16px rgba(255,60,131,0.2);
-}
-
-.anim-slide-dots {
-  display: flex;
-  justify-content: center;
   gap: 8px;
-  padding: 16px 0;
+  padding: 12px 16px;
   background: var(--bg-block2);
-  border-top: 1px solid rgba(255,255,255,0.04);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.04);
 }
-.anim-slide-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.1);
-  cursor: pointer;
-  transition: all 0.25s;
+.anim-playback-bar .frame-info {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-left: auto;
 }
-.anim-slide-dot.active {
-  background: var(--glow-pink);
-  box-shadow: 0 0 10px rgba(255,60,131,0.4);
-  transform: scale(1.3);
+.anim-playback-bar .frame-info .current { color: var(--glow-pink); font-weight: 700; }
+
+.anim-right {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-content: start;
 }
 
-.anim-ctrl-slide {
-  padding: 24px 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  overflow-y: auto;
-  max-height: 700px;
-}
-
-.anim-control-group {
+.anim-module {
   background: var(--bg-block2);
   border: 1px solid rgba(255,255,255,0.04);
-  border-radius: 12px;
-  padding: 14px;
+  border-radius: 14px;
+  padding: 16px;
+  position: relative;
 }
-.anim-control-label {
+.anim-module.full-width {
+  grid-column: 1 / -1;
+}
+
+.anim-module-title {
   font-size: 11px;
   font-weight: 700;
   color: var(--text-muted);
   letter-spacing: 1px;
   text-transform: uppercase;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   display: flex;
   align-items: center;
   gap: 6px;
 }
-.anim-control-label .label-dot {
-  width: 4px; height: 4px;
+.anim-module-title .label-dot {
+  width: 5px; height: 5px;
   border-radius: 50%;
 }
 
 .concept-summary {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 8px;
 }
 .concept-summary-item {
   background: var(--bg-surface);
   border: 1px solid rgba(255,255,255,0.04);
-  border-radius: 10px;
-  padding: 12px;
+  border-radius: 8px;
+  padding: 10px 8px;
   text-align: center;
 }
 .concept-summary-item .cs-label {
-  font-size: 10px;
+  font-size: 9px;
   color: var(--text-muted);
   font-weight: 600;
   letter-spacing: 0.5px;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 .concept-summary-item .cs-value {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 900;
 }
 .concept-summary-item .cs-value.pink { color: var(--glow-pink); }
@@ -726,11 +686,11 @@ nav.scrolled {
 .master-9grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
+  gap: 5px;
 }
 .master-9cell {
   aspect-ratio: 1;
-  border-radius: 10px;
+  border-radius: 8px;
   border: 1px solid rgba(255,255,255,0.06);
   background: var(--bg-surface);
   cursor: pointer;
@@ -739,30 +699,20 @@ nav.scrolled {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 3px;
   position: relative;
   overflow: hidden;
 }
-.master-9cell::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 10px;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
 .master-9cell:hover {
   border-color: rgba(255,60,131,0.3);
-  transform: scale(1.04);
+  transform: scale(1.06);
 }
-.master-9cell:hover::before { opacity: 1; }
 .master-9cell.active {
   border-color: var(--glow-pink);
-  box-shadow: 0 0 16px rgba(255,60,131,0.2);
+  box-shadow: 0 0 12px rgba(255,60,131,0.2);
 }
-.master-9cell.active::before { opacity: 1; }
 .master-9cell .m9-bead {
-  width: 16px; height: 16px;
+  width: 14px; height: 14px;
   border-radius: 50%;
   position: relative;
 }
@@ -775,25 +725,65 @@ nav.scrolled {
   background: rgba(255,255,255,0.4);
 }
 .master-9cell .m9-label {
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 700;
   color: var(--text-muted);
   letter-spacing: 0.5px;
 }
 .master-9cell.active .m9-label { color: var(--glow-pink); }
 
+.concept-selector {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+.concept-btn {
+  padding: 6px 4px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.02);
+  color: var(--text-secondary);
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.concept-btn:hover {
+  background: rgba(178,75,243,0.06);
+  border-color: rgba(178,75,243,0.2);
+}
+.concept-btn.active {
+  background: rgba(178,75,243,0.12);
+  border-color: var(--glow-purple);
+  color: var(--glow-purple);
+  box-shadow: 0 0 10px rgba(178,75,243,0.15);
+}
+.concept-dots {
+  display: flex;
+  gap: 2px;
+}
+.concept-dots span {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  display: block;
+}
+
 .param-slider-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
+  gap: 8px;
+  margin-bottom: 6px;
 }
 .param-slider-row:last-child { margin-bottom: 0; }
 .param-label {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   color: var(--text-secondary);
-  min-width: 48px;
+  min-width: 36px;
 }
 .param-slider {
   flex: 1;
@@ -806,36 +796,36 @@ nav.scrolled {
 }
 .param-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 14px; height: 14px;
+  width: 12px; height: 12px;
   border-radius: 50%;
   background: var(--glow-cyan);
   cursor: pointer;
-  box-shadow: 0 0 8px rgba(0,229,255,0.4);
+  box-shadow: 0 0 6px rgba(0,229,255,0.4);
 }
-.param-slider.pink::-webkit-slider-thumb { background: var(--glow-pink); box-shadow: 0 0 8px rgba(255,60,131,0.4); }
-.param-slider.purple::-webkit-slider-thumb { background: var(--glow-purple); box-shadow: 0 0 8px rgba(178,75,243,0.4); }
-.param-slider.yellow::-webkit-slider-thumb { background: var(--glow-yellow); box-shadow: 0 0 8px rgba(255,217,61,0.4); }
-.param-slider.green::-webkit-slider-thumb { background: var(--glow-green); box-shadow: 0 0 8px rgba(61,255,154,0.4); }
-.param-slider.orange::-webkit-slider-thumb { background: var(--glow-orange); box-shadow: 0 0 8px rgba(255,122,61,0.4); }
+.param-slider.pink::-webkit-slider-thumb { background: var(--glow-pink); box-shadow: 0 0 6px rgba(255,60,131,0.4); }
+.param-slider.purple::-webkit-slider-thumb { background: var(--glow-purple); box-shadow: 0 0 6px rgba(178,75,243,0.4); }
+.param-slider.yellow::-webkit-slider-thumb { background: var(--glow-yellow); box-shadow: 0 0 6px rgba(255,217,61,0.4); }
+.param-slider.green::-webkit-slider-thumb { background: var(--glow-green); box-shadow: 0 0 6px rgba(61,255,154,0.4); }
+.param-slider.orange::-webkit-slider-thumb { background: var(--glow-orange); box-shadow: 0 0 6px rgba(255,122,61,0.4); }
 .param-value {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 900;
-  min-width: 36px;
+  min-width: 30px;
   text-align: right;
 }
 
 .motion-path-selector {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 4px;
+  gap: 3px;
 }
 .motion-path-btn {
-  padding: 6px 4px;
-  border-radius: 6px;
+  padding: 5px 3px;
+  border-radius: 5px;
   border: 1px solid rgba(255,255,255,0.06);
   background: rgba(255,255,255,0.02);
   color: var(--text-secondary);
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -853,13 +843,13 @@ nav.scrolled {
 
 .anim-timeline {
   display: flex;
-  gap: 4px;
+  gap: 3px;
   align-items: center;
   flex-wrap: wrap;
 }
 .anim-frame-thumb {
-  width: 36px; height: 36px;
-  border-radius: 6px;
+  width: 32px; height: 32px;
+  border-radius: 5px;
   background: var(--bg-surface);
   border: 1px solid rgba(255,255,255,0.06);
   cursor: pointer;
@@ -867,7 +857,7 @@ nav.scrolled {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
   color: var(--text-muted);
 }
@@ -876,59 +866,50 @@ nav.scrolled {
   border-color: var(--glow-pink);
   background: rgba(255,60,131,0.1);
   color: var(--glow-pink);
-  box-shadow: 0 0 12px rgba(255,60,131,0.2);
+  box-shadow: 0 0 10px rgba(255,60,131,0.2);
 }
 
 .fps-control {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
 .fps-slider {
   flex: 1;
   -webkit-appearance: none;
   appearance: none;
-  height: 4px;
+  height: 3px;
   background: var(--bg-surface);
   border-radius: 2px;
   outline: none;
 }
 .fps-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 16px; height: 16px;
+  width: 14px; height: 14px;
   border-radius: 50%;
   background: var(--glow-cyan);
   cursor: pointer;
-  box-shadow: 0 0 10px rgba(0,229,255,0.4);
+  box-shadow: 0 0 8px rgba(0,229,255,0.4);
 }
 .fps-value {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 900;
   color: var(--glow-cyan);
-  min-width: 50px;
+  min-width: 44px;
   text-align: right;
-  text-shadow: 0 0 10px rgba(0,229,255,0.3);
+  text-shadow: 0 0 8px rgba(0,229,255,0.3);
 }
 
-.anim-playback {
-  display: flex;
-  gap: 6px;
-}
 .anim-btn {
-  flex: 1;
-  padding: 9px;
-  border-radius: 8px;
+  padding: 7px 10px;
+  border-radius: 6px;
   border: 1px solid rgba(255,255,255,0.08);
   background: rgba(255,255,255,0.03);
   color: var(--text-primary);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
 }
 .anim-btn:hover {
   background: rgba(255,60,131,0.08);
@@ -938,17 +919,14 @@ nav.scrolled {
   background: rgba(255,60,131,0.15);
   border-color: var(--glow-pink);
   color: var(--glow-pink);
-  box-shadow: 0 0 12px rgba(255,60,131,0.15);
+  box-shadow: 0 0 10px rgba(255,60,131,0.15);
 }
 
-.frame-info {
+.anim-export-row {
   display: flex;
-  justify-content: space-between;
-  font-size: 11px;
-  color: var(--text-muted);
-  font-weight: 500;
+  gap: 6px;
 }
-.frame-info .current { color: var(--glow-pink); font-weight: 700; }
+.anim-export-row .anim-btn { flex: 1; text-align: center; }
 
 .board-size-selector {
   display: grid;
@@ -1464,10 +1442,8 @@ footer {
   .hero-canvas-wrap { margin: 40px auto 0; }
   .features-layout { grid-template-columns: repeat(2, 1fr); }
   .anim-layout { grid-template-columns: 1fr; }
-  .anim-preview { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.04); }
-  .anim-controls { max-height: none; }
-  .rhythm-selector { grid-template-columns: repeat(4, 1fr); }
-  .concept-selector { grid-template-columns: repeat(3, 1fr); }
+  .anim-right { grid-template-columns: 1fr 1fr; }
+  .anim-module.full-width { grid-column: 1 / -1; }
   .studio-layout { grid-template-columns: 1fr; }
   .studio-sidebar { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.04); }
   .studio-sidebar.right { border-left: none; border-top: 1px solid rgba(255,255,255,0.04); }
@@ -1619,146 +1595,117 @@ footer {
         <h2 class="block-title"><span class="g-cyan">拼豆逐帧动画</span></h2>
       </div>
     </div>
-    <div class="block-body" style="padding:0;">
+    <div class="block-body">
       <div class="anim-layout">
-        <div class="anim-slider-wrap" id="animSliderWrap">
-          <div class="anim-slider-track" id="animSliderTrack">
-            <div class="anim-slide">
-              <div class="anim-main-slide">
-                <div class="anim-preview-label" id="animModeLabel">螺旋 · 虹光</div>
-                <div class="anim-canvas-wrap">
-                  <div class="anim-bead-grid" id="animBeadGrid"></div>
-                </div>
-              </div>
-            </div>
-            <div class="anim-slide">
-              <div class="anim-ctrl-slide">
-                <div class="anim-control-group">
-                  <div class="anim-control-label"><span class="label-dot" style="background:var(--glow-pink)"></span>概念合计</div>
-                  <div class="concept-summary" id="conceptSummary">
-                    <div class="concept-summary-item"><div class="cs-label">律动模式</div><div class="cs-value pink" id="csRhythm">螺旋</div></div>
-                    <div class="concept-summary-item"><div class="cs-label">概念风格</div><div class="cs-value purple" id="csConcept">虹光</div></div>
-                    <div class="concept-summary-item"><div class="cs-label">帧率</div><div class="cs-value cyan" id="csFps">6 FPS</div></div>
-                    <div class="concept-summary-item"><div class="cs-label">总帧数</div><div class="cs-value yellow" id="csFrames">8</div></div>
-                  </div>
-                </div>
-                <div class="anim-control-group">
-                  <div class="anim-control-label"><span class="label-dot" style="background:var(--glow-cyan)"></span>主管九宫电子拼豆</div>
-                  <div class="master-9grid" id="master9Grid">
-                    <div class="master-9cell active" data-rhythm="spiral" style="--c:var(--glow-pink)"><div class="m9-bead" style="background:var(--glow-pink)"></div><span class="m9-label">螺旋</span></div>
-                    <div class="master-9cell" data-rhythm="breathe" style="--c:var(--glow-cyan)"><div class="m9-bead" style="background:var(--glow-cyan)"></div><span class="m9-label">呼吸</span></div>
-                    <div class="master-9cell" data-rhythm="pulse" style="--c:var(--glow-purple)"><div class="m9-bead" style="background:var(--glow-purple)"></div><span class="m9-label">脉冲</span></div>
-                    <div class="master-9cell" data-rhythm="wave" style="--c:var(--glow-yellow)"><div class="m9-bead" style="background:var(--glow-yellow)"></div><span class="m9-label">波浪</span></div>
-                    <div class="master-9cell" data-rhythm="heartbeat" style="--c:var(--glow-red)"><div class="m9-bead" style="background:var(--glow-red)"></div><span class="m9-label">心跳</span></div>
-                    <div class="master-9cell" data-rhythm="ripple" style="--c:var(--glow-green)"><div class="m9-bead" style="background:var(--glow-green)"></div><span class="m9-label">涟漪</span></div>
-                    <div class="master-9cell" data-rhythm="sparkle" style="--c:var(--glow-orange)"><div class="m9-bead" style="background:var(--glow-orange)"></div><span class="m9-label">闪烁</span></div>
-                    <div class="master-9cell" data-rhythm="tide" style="--c:var(--glow-blue)"><div class="m9-bead" style="background:var(--glow-blue)"></div><span class="m9-label">潮汐</span></div>
-                    <div class="master-9cell" data-concept="cycle" style="--c:var(--glow-pink)"><div class="m9-bead" style="background:linear-gradient(135deg,var(--glow-pink),var(--glow-cyan))"></div><span class="m9-label">风格</span></div>
-                  </div>
-                </div>
-                <div class="anim-control-group">
-                  <div class="anim-control-label"><span class="label-dot" style="background:var(--glow-purple)"></span>概念风格</div>
-                  <div class="concept-selector" id="conceptSelector">
-                    <button class="concept-btn active" data-concept="rainbow"><div class="concept-dots"><span style="background:#FF3C83"></span><span style="background:#FFD93D"></span><span style="background:#00E5FF"></span></div>虹光</button>
-                    <button class="concept-btn" data-concept="sakura"><div class="concept-dots"><span style="background:#FF3C83"></span><span style="background:#FF9FF3"></span><span style="background:#FFB8B8"></span></div>樱粉</button>
-                    <button class="concept-btn" data-concept="ice"><div class="concept-dots"><span style="background:#00E5FF"></span><span style="background:#4D7CFF"></span><span style="background:#17C0EB"></span></div>冰蓝</button>
-                    <button class="concept-btn" data-concept="fire"><div class="concept-dots"><span style="background:#FF3D3D"></span><span style="background:#FF7A3D"></span><span style="background:#FFD93D"></span></div>焰火</button>
-                    <button class="concept-btn" data-concept="aurora"><div class="concept-dots"><span style="background:#3DFF9A"></span><span style="background:#00E5FF"></span><span style="background:#B24BF3"></span></div>极光</button>
-                    <button class="concept-btn" data-concept="cosmos"><div class="concept-dots"><span style="background:#B24BF3"></span><span style="background:#FFD93D"></span><span style="background:#7158E2"></span></div>星尘</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="anim-slide">
-              <div class="anim-ctrl-slide">
-                <div class="anim-control-group">
-                  <div class="anim-control-label"><span class="label-dot" style="background:var(--glow-green)"></span>动画调节</div>
-                  <div class="param-slider-row">
-                    <span class="param-label">振幅</span>
-                    <input type="range" class="param-slider pink" id="paramAmplitude" min="1" max="100" value="50">
-                    <span class="param-value" style="color:var(--glow-pink)" id="valAmplitude">50</span>
-                  </div>
-                  <div class="param-slider-row">
-                    <span class="param-label">速度</span>
-                    <input type="range" class="param-slider purple" id="paramSpeed" min="1" max="100" value="50">
-                    <span class="param-value" style="color:var(--glow-purple)" id="valSpeed">50</span>
-                  </div>
-                  <div class="param-slider-row">
-                    <span class="param-label">相位</span>
-                    <input type="range" class="param-slider cyan" id="paramPhase" min="0" max="360" value="0">
-                    <span class="param-value" style="color:var(--glow-cyan)" id="valPhase">0°</span>
-                  </div>
-                  <div class="param-slider-row">
-                    <span class="param-label">密度</span>
-                    <input type="range" class="param-slider yellow" id="paramDensity" min="1" max="100" value="70">
-                    <span class="param-value" style="color:var(--glow-yellow)" id="valDensity">70</span>
-                  </div>
-                </div>
-                <div class="anim-control-group">
-                  <div class="anim-control-label"><span class="label-dot" style="background:var(--glow-orange)"></span>线运动轨迹</div>
-                  <div class="motion-path-selector" id="motionPathSelector">
-                    <button class="motion-path-btn active" data-path="circular">环形</button>
-                    <button class="motion-path-btn" data-path="horizontal">水平</button>
-                    <button class="motion-path-btn" data-path="vertical">垂直</button>
-                    <button class="motion-path-btn" data-path="diagonal">对角</button>
-                    <button class="motion-path-btn" data-path="lissajous">利萨如</button>
-                    <button class="motion-path-btn" data-path="bounce">弹跳</button>
-                    <button class="motion-path-btn" data-path="orbit">轨道</button>
-                    <button class="motion-path-btn" data-path="none">无</button>
-                  </div>
-                  <div class="param-slider-row" style="margin-top:10px;">
-                    <span class="param-label">偏移X</span>
-                    <input type="range" class="param-slider green" id="paramOffsetX" min="-50" max="50" value="0">
-                    <span class="param-value" style="color:var(--glow-green)" id="valOffsetX">0</span>
-                  </div>
-                  <div class="param-slider-row">
-                    <span class="param-label">偏移Y</span>
-                    <input type="range" class="param-slider orange" id="paramOffsetY" min="-50" max="50" value="0">
-                    <span class="param-value" style="color:var(--glow-orange)" id="valOffsetY">0</span>
-                  </div>
-                </div>
-                <div class="anim-control-group">
-                  <div class="anim-control-label"><span class="label-dot" style="background:var(--glow-yellow)"></span>帧序列</div>
-                  <div class="anim-timeline" id="animTimeline"></div>
-                </div>
-                <div class="anim-control-group">
-                  <div class="anim-control-label"><span class="label-dot" style="background:var(--glow-green)"></span>帧率控制</div>
-                  <div class="fps-control">
-                    <input type="range" class="fps-slider" id="fpsSlider" min="1" max="24" value="6">
-                    <span class="fps-value" id="fpsValue">6 FPS</span>
-                  </div>
-                </div>
-                <div class="anim-control-group">
-                  <div class="anim-control-label"><span class="label-dot" style="background:var(--glow-pink)"></span>播放控制</div>
-                  <div class="anim-playback">
-                    <button class="anim-btn" id="animPrev">◁</button>
-                    <button class="anim-btn" id="animPlay">▶ 播放</button>
-                    <button class="anim-btn" id="animNext">▷</button>
-                  </div>
-                  <div class="frame-info" style="margin-top:8px;">
-                    <span>当前帧: <span class="current" id="frameCurrent">1</span></span>
-                    <span>总帧数: <span id="frameTotal">8</span></span>
-                  </div>
-                </div>
-                <div class="anim-control-group">
-                  <div class="anim-control-label"><span class="label-dot" style="background:var(--glow-orange)"></span>输出</div>
-                  <div class="anim-playback">
-                    <button class="anim-btn" id="animExportGif">导出 GIF</button>
-                    <button class="anim-btn" id="animExportPng">导出帧序列</button>
-                  </div>
-                </div>
-              </div>
+        <div class="anim-left">
+          <div class="anim-preview-area">
+            <div class="anim-preview-label" id="animModeLabel">螺旋 · 虹光</div>
+            <div class="anim-canvas-wrap">
+              <div class="anim-bead-grid" id="animBeadGrid"></div>
             </div>
           </div>
-          <div class="anim-nav-arrows">
-            <button class="anim-nav-arrow" id="animSlidePrev">◁</button>
-            <button class="anim-nav-arrow" id="animSlideNext">▷</button>
+          <div class="anim-playback-bar">
+            <button class="anim-btn" id="animPrev">◁</button>
+            <button class="anim-btn" id="animPlay">▶ 播放</button>
+            <button class="anim-btn" id="animNext">▷</button>
+            <div class="fps-control" style="margin-left:8px;">
+              <input type="range" class="fps-slider" id="fpsSlider" min="1" max="24" value="6">
+              <span class="fps-value" id="fpsValue">6 FPS</span>
+            </div>
+            <div class="frame-info">
+              帧 <span class="current" id="frameCurrent">1</span>/<span id="frameTotal">8</span>
+            </div>
+          </div>
+          <div class="anim-export-row">
+            <button class="anim-btn" id="animExportGif">导出 GIF</button>
+            <button class="anim-btn" id="animExportPng">导出帧序列</button>
           </div>
         </div>
-        <div class="anim-slide-dots" id="animSlideDots">
-          <div class="anim-slide-dot active" data-slide="0"></div>
-          <div class="anim-slide-dot" data-slide="1"></div>
-          <div class="anim-slide-dot" data-slide="2"></div>
+        <div class="anim-right">
+          <div class="anim-module">
+            <div class="anim-module-title"><span class="label-dot" style="background:var(--glow-pink)"></span>概念合计</div>
+            <div class="concept-summary">
+              <div class="concept-summary-item"><div class="cs-label">律动</div><div class="cs-value pink" id="csRhythm">螺旋</div></div>
+              <div class="concept-summary-item"><div class="cs-label">风格</div><div class="cs-value purple" id="csConcept">虹光</div></div>
+              <div class="concept-summary-item"><div class="cs-label">帧率</div><div class="cs-value cyan" id="csFps">6 FPS</div></div>
+              <div class="concept-summary-item"><div class="cs-label">帧数</div><div class="cs-value yellow" id="csFrames">8</div></div>
+            </div>
+          </div>
+          <div class="anim-module">
+            <div class="anim-module-title"><span class="label-dot" style="background:var(--glow-cyan)"></span>九宫电子拼豆</div>
+            <div class="master-9grid" id="master9Grid">
+              <div class="master-9cell active" data-rhythm="spiral"><div class="m9-bead" style="background:var(--glow-pink)"></div><span class="m9-label">螺旋</span></div>
+              <div class="master-9cell" data-rhythm="breathe"><div class="m9-bead" style="background:var(--glow-cyan)"></div><span class="m9-label">呼吸</span></div>
+              <div class="master-9cell" data-rhythm="pulse"><div class="m9-bead" style="background:var(--glow-purple)"></div><span class="m9-label">脉冲</span></div>
+              <div class="master-9cell" data-rhythm="wave"><div class="m9-bead" style="background:var(--glow-yellow)"></div><span class="m9-label">波浪</span></div>
+              <div class="master-9cell" data-rhythm="heartbeat"><div class="m9-bead" style="background:var(--glow-red)"></div><span class="m9-label">心跳</span></div>
+              <div class="master-9cell" data-rhythm="ripple"><div class="m9-bead" style="background:var(--glow-green)"></div><span class="m9-label">涟漪</span></div>
+              <div class="master-9cell" data-rhythm="sparkle"><div class="m9-bead" style="background:var(--glow-orange)"></div><span class="m9-label">闪烁</span></div>
+              <div class="master-9cell" data-rhythm="tide"><div class="m9-bead" style="background:var(--glow-blue)"></div><span class="m9-label">潮汐</span></div>
+              <div class="master-9cell" data-concept="cycle"><div class="m9-bead" style="background:linear-gradient(135deg,var(--glow-pink),var(--glow-cyan))"></div><span class="m9-label">风格</span></div>
+            </div>
+          </div>
+          <div class="anim-module">
+            <div class="anim-module-title"><span class="label-dot" style="background:var(--glow-purple)"></span>概念风格</div>
+            <div class="concept-selector" id="conceptSelector">
+              <button class="concept-btn active" data-concept="rainbow"><div class="concept-dots"><span style="background:#FF3C83"></span><span style="background:#FFD93D"></span><span style="background:#00E5FF"></span></div>虹光</button>
+              <button class="concept-btn" data-concept="sakura"><div class="concept-dots"><span style="background:#FF3C83"></span><span style="background:#FF9FF3"></span><span style="background:#FFB8B8"></span></div>樱粉</button>
+              <button class="concept-btn" data-concept="ice"><div class="concept-dots"><span style="background:#00E5FF"></span><span style="background:#4D7CFF"></span><span style="background:#17C0EB"></span></div>冰蓝</button>
+              <button class="concept-btn" data-concept="fire"><div class="concept-dots"><span style="background:#FF3D3D"></span><span style="background:#FF7A3D"></span><span style="background:#FFD93D"></span></div>焰火</button>
+              <button class="concept-btn" data-concept="aurora"><div class="concept-dots"><span style="background:#3DFF9A"></span><span style="background:#00E5FF"></span><span style="background:#B24BF3"></span></div>极光</button>
+              <button class="concept-btn" data-concept="cosmos"><div class="concept-dots"><span style="background:#B24BF3"></span><span style="background:#FFD93D"></span><span style="background:#7158E2"></span></div>星尘</button>
+            </div>
+          </div>
+          <div class="anim-module">
+            <div class="anim-module-title"><span class="label-dot" style="background:var(--glow-green)"></span>动画调节</div>
+            <div class="param-slider-row">
+              <span class="param-label">振幅</span>
+              <input type="range" class="param-slider pink" id="paramAmplitude" min="1" max="100" value="50">
+              <span class="param-value" style="color:var(--glow-pink)" id="valAmplitude">50</span>
+            </div>
+            <div class="param-slider-row">
+              <span class="param-label">速度</span>
+              <input type="range" class="param-slider purple" id="paramSpeed" min="1" max="100" value="50">
+              <span class="param-value" style="color:var(--glow-purple)" id="valSpeed">50</span>
+            </div>
+            <div class="param-slider-row">
+              <span class="param-label">相位</span>
+              <input type="range" class="param-slider cyan" id="paramPhase" min="0" max="360" value="0">
+              <span class="param-value" style="color:var(--glow-cyan)" id="valPhase">0°</span>
+            </div>
+            <div class="param-slider-row">
+              <span class="param-label">密度</span>
+              <input type="range" class="param-slider yellow" id="paramDensity" min="1" max="100" value="70">
+              <span class="param-value" style="color:var(--glow-yellow)" id="valDensity">70</span>
+            </div>
+          </div>
+          <div class="anim-module">
+            <div class="anim-module-title"><span class="label-dot" style="background:var(--glow-orange)"></span>线运动轨迹</div>
+            <div class="motion-path-selector" id="motionPathSelector">
+              <button class="motion-path-btn active" data-path="circular">环形</button>
+              <button class="motion-path-btn" data-path="horizontal">水平</button>
+              <button class="motion-path-btn" data-path="vertical">垂直</button>
+              <button class="motion-path-btn" data-path="diagonal">对角</button>
+              <button class="motion-path-btn" data-path="lissajous">利萨如</button>
+              <button class="motion-path-btn" data-path="bounce">弹跳</button>
+              <button class="motion-path-btn" data-path="orbit">轨道</button>
+              <button class="motion-path-btn" data-path="none">无</button>
+            </div>
+            <div class="param-slider-row" style="margin-top:8px;">
+              <span class="param-label">偏移X</span>
+              <input type="range" class="param-slider green" id="paramOffsetX" min="-50" max="50" value="0">
+              <span class="param-value" style="color:var(--glow-green)" id="valOffsetX">0</span>
+            </div>
+            <div class="param-slider-row">
+              <span class="param-label">偏移Y</span>
+              <input type="range" class="param-slider orange" id="paramOffsetY" min="-50" max="50" value="0">
+              <span class="param-value" style="color:var(--glow-orange)" id="valOffsetY">0</span>
+            </div>
+          </div>
+          <div class="anim-module full-width">
+            <div class="anim-module-title"><span class="label-dot" style="background:var(--glow-yellow)"></span>帧序列</div>
+            <div class="anim-timeline" id="animTimeline"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -2299,32 +2246,10 @@ footer {
     initAnimControls();
     initMaster9Grid();
     initConceptSelector();
-    initAnimSlider();
     initAnimParams();
     initMotionPath();
     updateConceptSummary();
     updateAnimModeLabel();
-  }
-
-  var animCurrentSlide = 0;
-  var animSlideCount = 3;
-
-  function initAnimSlider() {
-    document.getElementById('animSlidePrev').addEventListener('click', function() { slideAnimTo(animCurrentSlide - 1); });
-    document.getElementById('animSlideNext').addEventListener('click', function() { slideAnimTo(animCurrentSlide + 1); });
-    document.querySelectorAll('.anim-slide-dot').forEach(function(dot) {
-      dot.addEventListener('click', function() { slideAnimTo(parseInt(this.dataset.slide)); });
-    });
-  }
-
-  function slideAnimTo(idx) {
-    if (idx < 0) idx = animSlideCount - 1;
-    if (idx >= animSlideCount) idx = 0;
-    animCurrentSlide = idx;
-    document.getElementById('animSliderTrack').style.transform = 'translateX(-' + (idx * 100) + '%)';
-    document.querySelectorAll('.anim-slide-dot').forEach(function(d, i) {
-      d.classList.toggle('active', i === idx);
-    });
   }
 
   function initMaster9Grid() {
