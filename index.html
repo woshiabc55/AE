@@ -514,36 +514,35 @@ nav.scrolled {
 .feat-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
 .feat-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
 
-.anim-section .block-body { padding: 24px 28px; }
+.anim-section .block-body { padding: 16px 20px; }
 
-.anim-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  min-height: 0;
-}
-
-.anim-left {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.anim-preview-area {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
+.anim-workspace {
   position: relative;
-  background: var(--bg-block2);
+  height: 680px;
+  overflow: hidden;
   border-radius: 16px;
+  background: var(--bg-block2);
   border: 1px solid rgba(255,255,255,0.04);
 }
 
+.anim-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+.anim-workspace.left-open .anim-center {
+  transform: translate(calc(-50% + 80px), -50%);
+}
+.anim-workspace.right-open .anim-center {
+  transform: translate(calc(-50% - 80px), -50%);
+}
+
 .anim-canvas-wrap {
-  width: 100%;
-  max-width: 420px;
-  aspect-ratio: 1;
+  width: 400px;
+  height: 400px;
   background: var(--bg-deep);
   border-radius: 20px;
   overflow: hidden;
@@ -604,28 +603,106 @@ nav.scrolled {
   background: rgba(255,255,255,0.4);
 }
 
-.anim-playback-bar {
+.anim-drawer {
+  position: absolute;
+  top: 0;
+  bottom: 56px;
+  width: 340px;
+  z-index: 10;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid rgba(255,255,255,0.06);
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.anim-drawer-left {
+  left: 0;
+  background: rgba(18,14,36,0.88);
+  border-radius: 0 16px 16px 0;
+  transform: translateX(-100%);
+}
+.anim-workspace.left-open .anim-drawer-left {
+  transform: translateX(0);
+}
+
+.anim-drawer-right {
+  right: 0;
+  background: rgba(18,14,36,0.88);
+  border-radius: 16px 0 0 16px;
+  transform: translateX(100%);
+}
+.anim-workspace.right-open .anim-drawer-right {
+  transform: translateX(0);
+}
+
+.anim-bottom-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 16px;
-  background: var(--bg-block2);
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.04);
+  padding: 0 16px;
+  background: rgba(18,14,36,0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(255,255,255,0.04);
+  z-index: 20;
 }
-.anim-playback-bar .frame-info {
+.anim-bottom-bar .frame-info {
   font-size: 11px;
   color: var(--text-muted);
   font-weight: 500;
-  margin-left: auto;
+  margin-left: 4px;
 }
-.anim-playback-bar .frame-info .current { color: var(--glow-pink); font-weight: 700; }
+.anim-bottom-bar .frame-info .current { color: var(--glow-pink); font-weight: 700; }
 
-.anim-right {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  align-content: start;
+.anim-drawer-toggle {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 64px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(18,14,36,0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+  z-index: 15;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.anim-drawer-toggle:hover {
+  background: rgba(255,60,131,0.12);
+  border-color: rgba(255,60,131,0.3);
+  color: var(--glow-pink);
+}
+#leftDrawerToggle {
+  left: 0;
+  border-radius: 0 8px 8px 0;
+  border-left: none;
+}
+#rightDrawerToggle {
+  right: 0;
+  border-radius: 8px 0 0 8px;
+  border-right: none;
+}
+.anim-workspace.left-open #leftDrawerToggle {
+  left: 340px;
+}
+.anim-workspace.right-open #rightDrawerToggle {
+  right: 340px;
 }
 
 .anim-module {
@@ -1596,32 +1673,14 @@ footer {
       </div>
     </div>
     <div class="block-body">
-      <div class="anim-layout">
-        <div class="anim-left">
-          <div class="anim-preview-area">
-            <div class="anim-preview-label" id="animModeLabel">螺旋 · 虹光</div>
-            <div class="anim-canvas-wrap">
-              <div class="anim-bead-grid" id="animBeadGrid"></div>
-            </div>
-          </div>
-          <div class="anim-playback-bar">
-            <button class="anim-btn" id="animPrev">◁</button>
-            <button class="anim-btn" id="animPlay">▶ 播放</button>
-            <button class="anim-btn" id="animNext">▷</button>
-            <div class="fps-control" style="margin-left:8px;">
-              <input type="range" class="fps-slider" id="fpsSlider" min="1" max="24" value="6">
-              <span class="fps-value" id="fpsValue">6 FPS</span>
-            </div>
-            <div class="frame-info">
-              帧 <span class="current" id="frameCurrent">1</span>/<span id="frameTotal">8</span>
-            </div>
-          </div>
-          <div class="anim-export-row">
-            <button class="anim-btn" id="animExportGif">导出 GIF</button>
-            <button class="anim-btn" id="animExportPng">导出帧序列</button>
+      <div class="anim-workspace" id="animWorkspace">
+        <div class="anim-center">
+          <div class="anim-preview-label" id="animModeLabel">螺旋 · 虹光</div>
+          <div class="anim-canvas-wrap">
+            <div class="anim-bead-grid" id="animBeadGrid"></div>
           </div>
         </div>
-        <div class="anim-right">
+        <div class="anim-drawer anim-drawer-left">
           <div class="anim-module">
             <div class="anim-module-title"><span class="label-dot" style="background:var(--glow-pink)"></span>概念合计</div>
             <div class="concept-summary">
@@ -1656,6 +1715,8 @@ footer {
               <button class="concept-btn" data-concept="cosmos"><div class="concept-dots"><span style="background:#B24BF3"></span><span style="background:#FFD93D"></span><span style="background:#7158E2"></span></div>星尘</button>
             </div>
           </div>
+        </div>
+        <div class="anim-drawer anim-drawer-right">
           <div class="anim-module">
             <div class="anim-module-title"><span class="label-dot" style="background:var(--glow-green)"></span>动画调节</div>
             <div class="param-slider-row">
@@ -1702,11 +1763,29 @@ footer {
               <span class="param-value" style="color:var(--glow-orange)" id="valOffsetY">0</span>
             </div>
           </div>
-          <div class="anim-module full-width">
+          <div class="anim-module">
             <div class="anim-module-title"><span class="label-dot" style="background:var(--glow-yellow)"></span>帧序列</div>
             <div class="anim-timeline" id="animTimeline"></div>
           </div>
         </div>
+        <div class="anim-bottom-bar">
+          <button class="anim-btn" id="animPrev">◁</button>
+          <button class="anim-btn" id="animPlay">▶ 播放</button>
+          <button class="anim-btn" id="animNext">▷</button>
+          <div class="fps-control" style="margin-left:8px;flex:1;max-width:180px;">
+            <input type="range" class="fps-slider" id="fpsSlider" min="1" max="24" value="6">
+            <span class="fps-value" id="fpsValue">6 FPS</span>
+          </div>
+          <div class="frame-info">
+            帧 <span class="current" id="frameCurrent">1</span>/<span id="frameTotal">8</span>
+          </div>
+          <div class="anim-export-row" style="margin-left:auto;">
+            <button class="anim-btn" id="animExportGif">导出 GIF</button>
+            <button class="anim-btn" id="animExportPng">导出帧序列</button>
+          </div>
+        </div>
+        <button class="anim-drawer-toggle" id="leftDrawerToggle">▷</button>
+        <button class="anim-drawer-toggle" id="rightDrawerToggle">◁</button>
       </div>
     </div>
   </div>
@@ -2248,8 +2327,21 @@ footer {
     initConceptSelector();
     initAnimParams();
     initMotionPath();
+    initDrawerToggles();
     updateConceptSummary();
     updateAnimModeLabel();
+  }
+
+  function initDrawerToggles() {
+    var workspace = document.getElementById('animWorkspace');
+    document.getElementById('leftDrawerToggle').addEventListener('click', function() {
+      workspace.classList.toggle('left-open');
+      this.textContent = workspace.classList.contains('left-open') ? '◁' : '▷';
+    });
+    document.getElementById('rightDrawerToggle').addEventListener('click', function() {
+      workspace.classList.toggle('right-open');
+      this.textContent = workspace.classList.contains('right-open') ? '▷' : '◁';
+    });
   }
 
   function initMaster9Grid() {
