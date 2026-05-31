@@ -518,8 +518,109 @@ nav.scrolled {
 
 .anim-layout {
   display: grid;
-  grid-template-columns: 1fr 360px;
-  min-height: 520px;
+  grid-template-columns: 1fr 400px;
+  min-height: 560px;
+}
+
+.rhythm-selector {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+.rhythm-btn {
+  padding: 8px 4px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.02);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+.rhythm-btn:hover {
+  background: rgba(0,229,255,0.06);
+  border-color: rgba(0,229,255,0.2);
+}
+.rhythm-btn.active {
+  background: rgba(0,229,255,0.12);
+  border-color: var(--glow-cyan);
+  color: var(--glow-cyan);
+  box-shadow: 0 0 12px rgba(0,229,255,0.15);
+}
+.rhythm-icon {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.rhythm-icon canvas {
+  width: 100%; height: 100%;
+}
+
+.concept-selector {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.concept-btn {
+  padding: 8px 4px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.02);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+.concept-btn:hover {
+  background: rgba(178,75,243,0.06);
+  border-color: rgba(178,75,243,0.2);
+}
+.concept-btn.active {
+  background: rgba(178,75,243,0.12);
+  border-color: var(--glow-purple);
+  color: var(--glow-purple);
+  box-shadow: 0 0 12px rgba(178,75,243,0.15);
+}
+.concept-dots {
+  display: flex;
+  gap: 2px;
+}
+.concept-dots span {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  display: block;
+}
+
+.anim-preview-label {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 12px;
+  border-radius: 6px;
+  background: rgba(10,6,24,0.8);
+  border: 1px solid rgba(255,60,131,0.2);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--glow-cyan);
+  z-index: 5;
+  backdrop-filter: blur(8px);
+  white-space: nowrap;
 }
 
 .anim-preview {
@@ -579,17 +680,19 @@ nav.scrolled {
 }
 
 .anim-controls {
-  padding: 24px 32px;
+  padding: 20px 24px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 14px;
+  overflow-y: auto;
+  max-height: 600px;
 }
 
 .anim-control-group {
   background: var(--bg-block2);
   border: 1px solid rgba(255,255,255,0.04);
   border-radius: 12px;
-  padding: 16px;
+  padding: 14px;
 }
 .anim-control-label {
   font-size: 11px;
@@ -597,7 +700,14 @@ nav.scrolled {
   color: var(--text-muted);
   letter-spacing: 1px;
   text-transform: uppercase;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.anim-control-label .label-dot {
+  width: 4px; height: 4px;
+  border-radius: 50%;
 }
 
 .anim-timeline {
@@ -1187,6 +1297,9 @@ footer {
   .features-layout { grid-template-columns: repeat(2, 1fr); }
   .anim-layout { grid-template-columns: 1fr; }
   .anim-preview { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .anim-controls { max-height: none; }
+  .rhythm-selector { grid-template-columns: repeat(4, 1fr); }
+  .concept-selector { grid-template-columns: repeat(3, 1fr); }
   .studio-layout { grid-template-columns: 1fr; }
   .studio-sidebar { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.04); }
   .studio-sidebar.right { border-left: none; border-top: 1px solid rgba(255,255,255,0.04); }
@@ -1341,38 +1454,61 @@ footer {
     <div class="block-body">
       <div class="anim-layout">
         <div class="anim-preview">
+          <div class="anim-preview-label" id="animModeLabel">螺旋 · 虹光</div>
           <div class="anim-canvas-wrap">
             <div class="anim-bead-grid" id="animBeadGrid"></div>
           </div>
         </div>
         <div class="anim-controls">
           <div class="anim-control-group">
-            <div class="anim-control-label">帧序列</div>
+            <div class="anim-control-label"><span class="label-dot" style="background:var(--glow-cyan)"></span>律动模式</div>
+            <div class="rhythm-selector" id="rhythmSelector">
+              <button class="rhythm-btn active" data-rhythm="spiral"><div class="rhythm-icon"><canvas data-icon="spiral"></canvas></div>螺旋</button>
+              <button class="rhythm-btn" data-rhythm="breathe"><div class="rhythm-icon"><canvas data-icon="breathe"></canvas></div>呼吸</button>
+              <button class="rhythm-btn" data-rhythm="pulse"><div class="rhythm-icon"><canvas data-icon="pulse"></canvas></div>脉冲</button>
+              <button class="rhythm-btn" data-rhythm="wave"><div class="rhythm-icon"><canvas data-icon="wave"></canvas></div>波浪</button>
+              <button class="rhythm-btn" data-rhythm="heartbeat"><div class="rhythm-icon"><canvas data-icon="heartbeat"></canvas></div>心跳</button>
+              <button class="rhythm-btn" data-rhythm="ripple"><div class="rhythm-icon"><canvas data-icon="ripple"></canvas></div>涟漪</button>
+              <button class="rhythm-btn" data-rhythm="sparkle"><div class="rhythm-icon"><canvas data-icon="sparkle"></canvas></div>闪烁</button>
+              <button class="rhythm-btn" data-rhythm="tide"><div class="rhythm-icon"><canvas data-icon="tide"></canvas></div>潮汐</button>
+            </div>
+          </div>
+          <div class="anim-control-group">
+            <div class="anim-control-label"><span class="label-dot" style="background:var(--glow-purple)"></span>概念风格</div>
+            <div class="concept-selector" id="conceptSelector">
+              <button class="concept-btn active" data-concept="rainbow"><div class="concept-dots"><span style="background:#FF3C83"></span><span style="background:#FFD93D"></span><span style="background:#00E5FF"></span></div>虹光</button>
+              <button class="concept-btn" data-concept="sakura"><div class="concept-dots"><span style="background:#FF3C83"></span><span style="background:#FF9FF3"></span><span style="background:#FFB8B8"></span></div>樱粉</button>
+              <button class="concept-btn" data-concept="ice"><div class="concept-dots"><span style="background:#00E5FF"></span><span style="background:#4D7CFF"></span><span style="background:#17C0EB"></span></div>冰蓝</button>
+              <button class="concept-btn" data-concept="fire"><div class="concept-dots"><span style="background:#FF3D3D"></span><span style="background:#FF7A3D"></span><span style="background:#FFD93D"></span></div>焰火</button>
+              <button class="concept-btn" data-concept="aurora"><div class="concept-dots"><span style="background:#3DFF9A"></span><span style="background:#00E5FF"></span><span style="background:#B24BF3"></span></div>极光</button>
+              <button class="concept-btn" data-concept="cosmos"><div class="concept-dots"><span style="background:#B24BF3"></span><span style="background:#FFD93D"></span><span style="background:#7158E2"></span></div>星尘</button>
+            </div>
+          </div>
+          <div class="anim-control-group">
+            <div class="anim-control-label"><span class="label-dot" style="background:var(--glow-yellow)"></span>帧序列</div>
             <div class="anim-timeline" id="animTimeline"></div>
           </div>
           <div class="anim-control-group">
-            <div class="anim-control-label">帧率控制</div>
+            <div class="anim-control-label"><span class="label-dot" style="background:var(--glow-green)"></span>帧率控制</div>
             <div class="fps-control">
               <input type="range" class="fps-slider" id="fpsSlider" min="1" max="24" value="6">
               <span class="fps-value" id="fpsValue">6 FPS</span>
             </div>
           </div>
           <div class="anim-control-group">
-            <div class="anim-control-label">播放控制</div>
+            <div class="anim-control-label"><span class="label-dot" style="background:var(--glow-pink)"></span>播放控制</div>
             <div class="anim-playback">
               <button class="anim-btn" id="animPrev">◁ 上一帧</button>
               <button class="anim-btn" id="animPlay">▶ 播放</button>
               <button class="anim-btn" id="animNext">下一帧 ▷</button>
             </div>
-          </div>
-          <div class="anim-control-group">
-            <div class="frame-info">
+            <div class="frame-info" style="margin-top:8px;">
               <span>当前帧: <span class="current" id="frameCurrent">1</span></span>
               <span>总帧数: <span id="frameTotal">8</span></span>
             </div>
           </div>
           <div class="anim-control-group">
-            <div class="anim-control-label">输出操作</div>
+            <div class="anim-control-label"><span class="label-dot" style="background:var(--glow-orange)"></span>输出操作</div>
             <div class="anim-playback">
               <button class="anim-btn" id="animExportGif">导出 GIF</button>
               <button class="anim-btn" id="animExportPng">导出帧序列</button>
@@ -1666,32 +1802,223 @@ footer {
   var animInterval = null;
   var animFPS = 6;
   var ANIM_SIZE = 16;
+  var currentRhythm = 'spiral';
+  var currentConcept = 'rainbow';
+
+  var CONCEPT_PALETTES = {
+    rainbow: ['#FF3C83','#B24BF3','#00E5FF','#FFD93D','#FF7A3D','#3DFF9A','#4D7CFF','#FF3D3D','#FF9FF3','#FFEAA7','#55E6C1','#7158E2','#3AE374','#FF3838','#17C0EB','#FFB8B8'],
+    sakura: ['#FF3C83','#FF9FF3','#FFB8B8','#FF6B9D','#FFC0CB','#FFD1DC','#FFE4E1','#FF69B4','#DB7093','#FF1493','#C71585','#F8BBD0','#FCE4EC','#F48FB1','#EC407A','#E91E63'],
+    ice: ['#00E5FF','#4D7CFF','#17C0EB','#55E6C1','#3AE374','#00BCD4','#0097A7','#80DEEA','#B2EBF2','#26C6DA','#00ACC1','#0097A7','#00838F','#006064','#84FFFF','#18FFFF'],
+    fire: ['#FF3D3D','#FF7A3D','#FFD93D','#FF6347','#FF4500','#FF8C00','#FFA500','#FFB347','#FF7043','#E64A19','#F4511E','#FF6E40','#FF9100','#FFAB40','#FFD740','#FFC400'],
+    aurora: ['#3DFF9A','#00E5FF','#B24BF3','#7BF5A6','#55E6C1','#17C0EB','#7158E2','#9C27B0','#00BFA5','#1DE9B6','#00E5FF','#18FFFF','#E040FB','#D500F9','#AA00FF','#7C4DFF'],
+    cosmos: ['#B24BF3','#FFD93D','#7158E2','#9C27B0','#673AB7','#3F51B5','#FF3C83','#E040FB','#D500F9','#AA00FF','#7C4DFF','#536DFE','#448AFF','#40C4FF','#FFD740','#FFAB40']
+  };
+
+  var RHYTHM_NAMES = {
+    spiral: '螺旋', breathe: '呼吸', pulse: '脉冲', wave: '波浪',
+    heartbeat: '心跳', ripple: '涟漪', sparkle: '闪烁', tide: '潮汐'
+  };
+  var CONCEPT_NAMES = {
+    rainbow: '虹光', sakura: '樱粉', ice: '冰蓝', fire: '焰火', aurora: '极光', cosmos: '星尘'
+  };
+
+  function getConceptColor(idx, offset) {
+    var pal = CONCEPT_PALETTES[currentConcept];
+    return pal[(idx + (offset || 0)) % pal.length];
+  }
 
   function generateAnimFrames() {
     animFrames = [];
-    for (var f = 0; f < 8; f++) {
-      var frame = [];
-      var cx = ANIM_SIZE / 2, cy = ANIM_SIZE / 2;
-      var phase = f * Math.PI / 4;
-      for (var r = 0; r < ANIM_SIZE; r++) {
-        frame[r] = [];
-        for (var c = 0; c < ANIM_SIZE; c++) {
-          frame[r][c] = null;
-          var dx = c - cx + 0.5, dy = r - cy + 0.5;
-          var dist = Math.sqrt(dx*dx + dy*dy);
-          var angle = Math.atan2(dy, dx) + phase;
-          var wave = Math.sin(dist * 0.6 - phase * 2) * 0.5 + 0.5;
-          if (dist < 6.5) {
-            var hue = ((angle / Math.PI * 180) + 360 + f * 45) % 360;
-            var colorIdx = Math.floor(hue / 22.5) % COLORS.length;
-            frame[r][c] = wave > 0.3 ? COLORS[colorIdx] : COLORS[(colorIdx + 4) % COLORS.length];
-          } else if (dist < 7.5 && Math.random() > 0.5) {
-            frame[r][c] = '#1A1435';
-          }
-        }
-      }
+    var totalFrames = 8;
+    for (var f = 0; f < totalFrames; f++) {
+      var frame = generateRhythmFrame(currentRhythm, f, totalFrames);
       animFrames.push(frame);
     }
+  }
+
+  function generateRhythmFrame(rhythm, frameIdx, totalFrames) {
+    var frame = [];
+    var cx = ANIM_SIZE / 2, cy = ANIM_SIZE / 2;
+    var t = frameIdx / totalFrames;
+    var phase = t * Math.PI * 2;
+
+    for (var r = 0; r < ANIM_SIZE; r++) {
+      frame[r] = [];
+      for (var c = 0; c < ANIM_SIZE; c++) {
+        frame[r][c] = null;
+        var dx = c - cx + 0.5, dy = r - cy + 0.5;
+        var dist = Math.sqrt(dx*dx + dy*dy);
+        var angle = Math.atan2(dy, dx);
+
+        switch(rhythm) {
+          case 'spiral':
+            var spiralAngle = angle + phase;
+            var spiralWave = Math.sin(dist * 0.7 - phase * 2) * 0.5 + 0.5;
+            if (dist < 6.5) {
+              var ci = Math.floor(((spiralAngle / Math.PI * 180 + 360 + frameIdx * 45) % 360) / 22.5);
+              frame[r][c] = spiralWave > 0.25 ? getConceptColor(ci) : getConceptColor(ci + 4);
+            } else if (dist < 7.5 && Math.random() > 0.5) {
+              frame[r][c] = getConceptColor(0, 8);
+            }
+            break;
+
+          case 'breathe':
+            var breatheScale = 0.5 + 0.5 * Math.sin(phase);
+            var breatheR = 6.5 * breatheScale;
+            if (dist < breatheR) {
+              var intensity = 1 - dist / breatheR;
+              var ci = Math.floor(intensity * 7);
+              frame[r][c] = getConceptColor(ci + frameIdx % 2);
+            }
+            break;
+
+          case 'pulse':
+            var pulseR = (frameIdx % 4) * 2.2;
+            var pulseWidth = 1.8;
+            var pulseDist = Math.abs(dist - pulseR);
+            if (pulseDist < pulseWidth && dist < 7.5) {
+              var ci = Math.floor((dist / 7.5) * 6);
+              frame[r][c] = getConceptColor(ci);
+            } else if (dist < 1.5) {
+              frame[r][c] = getConceptColor(0);
+            }
+            break;
+
+          case 'wave':
+            var waveY = Math.sin(c * 0.5 + phase) * 3 + cy;
+            var waveDist = Math.abs(r - waveY);
+            if (waveDist < 2 && dist < 7.5) {
+              var ci = Math.floor(c / ANIM_SIZE * 6);
+              frame[r][c] = getConceptColor(ci);
+            }
+            break;
+
+          case 'heartbeat':
+            var beatPhase = frameIdx % totalFrames;
+            var beatScale = 0;
+            if (beatPhase === 0) beatScale = 0.9;
+            else if (beatPhase === 1) beatScale = 0.5;
+            else if (beatPhase === 2) beatScale = 1.0;
+            else if (beatPhase === 3) beatScale = 0.4;
+            else beatScale = 0.3;
+            var beatR = 6.5 * beatScale;
+            if (dist < beatR) {
+              var ci = Math.floor((dist / beatR) * 5);
+              frame[r][c] = getConceptColor(ci);
+            }
+            break;
+
+          case 'ripple':
+            for (var ring = 0; ring < 3; ring++) {
+              var ringR = ((frameIdx + ring * 3) % totalFrames) / totalFrames * 7;
+              var ringDist = Math.abs(dist - ringR);
+              if (ringDist < 0.8 && dist < 7.5) {
+                frame[r][c] = getConceptColor(ring * 3 + Math.floor(dist));
+                break;
+              }
+            }
+            break;
+
+          case 'sparkle':
+            var seed = r * ANIM_SIZE + c + frameIdx * 137;
+            var sparkleVal = Math.sin(seed * 12.9898 + seed * 78.233) * 43758.5453;
+            sparkleVal = sparkleVal - Math.floor(sparkleVal);
+            if (dist < 7 && sparkleVal > 0.55) {
+              var ci = Math.floor(sparkleVal * 8);
+              frame[r][c] = getConceptColor(ci);
+            } else if (dist < 7 && sparkleVal > 0.45) {
+              frame[r][c] = getConceptColor(0, 8);
+            }
+            break;
+
+          case 'tide':
+            var tideLevel = Math.sin(phase) * 3 + cy;
+            if (r > tideLevel - 1 && r < tideLevel + 1 && dist < 7.5) {
+              var ci = Math.floor(((r - tideLevel + 1) / 2) * 6);
+              frame[r][c] = getConceptColor(ci);
+            } else if (r > tideLevel && dist < 7.5) {
+              var depth = (r - tideLevel) / (ANIM_SIZE - tideLevel);
+              if (depth < 0.5) frame[r][c] = getConceptColor(Math.floor(depth * 8) + 2, 4);
+            }
+            break;
+        }
+      }
+    }
+    return frame;
+  }
+
+  function drawRhythmIcons() {
+    document.querySelectorAll('.rhythm-icon canvas').forEach(function(canvas) {
+      var type = canvas.dataset.icon;
+      canvas.width = 56; canvas.height = 56;
+      var ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, 56, 56);
+      var cx = 28, cy = 28;
+      var pal = CONCEPT_PALETTES[currentConcept];
+
+      switch(type) {
+        case 'spiral':
+          for (var i = 0; i < 24; i++) {
+            var a = i * 0.5, r = i * 0.8 + 4;
+            var x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r;
+            ctx.beginPath(); ctx.arc(x, y, 2, 0, Math.PI*2);
+            ctx.fillStyle = pal[i % pal.length]; ctx.fill();
+          }
+          break;
+        case 'breathe':
+          for (var r = 3; r >= 1; r--) {
+            ctx.beginPath(); ctx.arc(cx, cy, r * 7, 0, Math.PI*2);
+            ctx.fillStyle = pal[r % pal.length] + '60'; ctx.fill();
+          }
+          ctx.beginPath(); ctx.arc(cx, cy, 4, 0, Math.PI*2);
+          ctx.fillStyle = pal[0]; ctx.fill();
+          break;
+        case 'pulse':
+          [18, 12, 6].forEach(function(r, i) {
+            ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
+            ctx.strokeStyle = pal[i * 3 % pal.length]; ctx.lineWidth = 1.5; ctx.stroke();
+          });
+          ctx.beginPath(); ctx.arc(cx, cy, 3, 0, Math.PI*2);
+          ctx.fillStyle = pal[0]; ctx.fill();
+          break;
+        case 'wave':
+          ctx.beginPath();
+          for (var x = 4; x < 52; x++) {
+            var y = cy + Math.sin(x * 0.15) * 10;
+            x === 4 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+          }
+          ctx.strokeStyle = pal[2]; ctx.lineWidth = 2; ctx.stroke();
+          break;
+        case 'heartbeat':
+          ctx.beginPath();
+          var pts = [[4,28],[12,28],[16,14],[20,38],[24,20],[28,28],[52,28]];
+          pts.forEach(function(p, i) { i === 0 ? ctx.moveTo(p[0], p[1]) : ctx.lineTo(p[0], p[1]); });
+          ctx.strokeStyle = pal[0]; ctx.lineWidth = 2; ctx.stroke();
+          break;
+        case 'ripple':
+          [20, 13, 6].forEach(function(r, i) {
+            ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
+            ctx.strokeStyle = pal[i * 4 % pal.length] + '80'; ctx.lineWidth = 1.5; ctx.stroke();
+          });
+          break;
+        case 'sparkle':
+          for (var i = 0; i < 12; i++) {
+            var x = 8 + Math.random() * 40, y = 8 + Math.random() * 40;
+            ctx.beginPath(); ctx.arc(x, y, 1.5, 0, Math.PI*2);
+            ctx.fillStyle = pal[i % pal.length]; ctx.fill();
+          }
+          break;
+        case 'tide':
+          ctx.beginPath();
+          for (var x = 4; x < 52; x++) {
+            var y = cy + Math.sin(x * 0.1 + 1) * 6 + 4;
+            x === 4 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+          }
+          ctx.lineTo(52, 52); ctx.lineTo(4, 52); ctx.closePath();
+          ctx.fillStyle = pal[2] + '40'; ctx.fill();
+          break;
+      }
+    });
   }
 
   function initAnimSystem() {
@@ -1710,6 +2037,57 @@ footer {
     renderAnimFrame(0);
     initAnimTimeline();
     initAnimControls();
+    initRhythmSelector();
+    initConceptSelector();
+    drawRhythmIcons();
+    updateAnimModeLabel();
+  }
+
+  function initRhythmSelector() {
+    document.querySelectorAll('.rhythm-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        currentRhythm = this.dataset.rhythm;
+        document.querySelectorAll('.rhythm-btn').forEach(function(b) { b.classList.remove('active'); });
+        this.classList.add('active');
+        regenerateAnimation();
+        showToast('律动模式: ' + RHYTHM_NAMES[currentRhythm], '#00E5FF');
+      });
+    });
+  }
+
+  function initConceptSelector() {
+    document.querySelectorAll('.concept-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        currentConcept = this.dataset.concept;
+        document.querySelectorAll('.concept-btn').forEach(function(b) { b.classList.remove('active'); });
+        this.classList.add('active');
+        regenerateAnimation();
+        drawRhythmIcons();
+        showToast('概念风格: ' + CONCEPT_NAMES[currentConcept], '#B24BF3');
+      });
+    });
+  }
+
+  function regenerateAnimation() {
+    var wasPlaying = animPlaying;
+    if (wasPlaying) {
+      animPlaying = false;
+      clearInterval(animInterval);
+    }
+    generateAnimFrames();
+    initAnimTimeline();
+    renderAnimFrame(0);
+    updateAnimModeLabel();
+    if (wasPlaying) {
+      animPlaying = true;
+      document.getElementById('animPlay').textContent = '❚❚ 暂停';
+      document.getElementById('animPlay').classList.add('playing');
+      animInterval = setInterval(playNextFrame, 1000 / animFPS);
+    }
+  }
+
+  function updateAnimModeLabel() {
+    document.getElementById('animModeLabel').textContent = RHYTHM_NAMES[currentRhythm] + ' · ' + CONCEPT_NAMES[currentConcept];
   }
 
   function renderAnimFrame(idx) {
