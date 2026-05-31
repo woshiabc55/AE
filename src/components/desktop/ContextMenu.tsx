@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import type { ContextMenuItem } from '@/types'
 
 interface ContextMenuProps {
@@ -21,33 +22,37 @@ export function ContextMenu({ x, y, items, onClose }: ContextMenuProps) {
     return () => document.removeEventListener('mousedown', handleClick)
   }, [onClose])
 
-  const adjustedX = Math.min(x, window.innerWidth - 200)
-  const adjustedY = Math.min(y, window.innerHeight - 300)
+  const adjustedX = Math.min(x, window.innerWidth - 220)
+  const adjustedY = Math.min(y, window.innerHeight - 350)
 
   return (
-    <div
+    <motion.div
       ref={menuRef}
-      className="fixed z-[9999] min-w-[180px] py-1.5 rounded-xl border border-white/10
-        bg-black/70 backdrop-blur-2xl shadow-2xl"
+      className="fixed z-[9999] min-w-[200px] py-1.5 rounded-xl border border-white/[0.08]
+        bg-[#0a0a14]/85 backdrop-blur-2xl shadow-[0_8px_40px_rgba(0,0,0,0.5)]"
       style={{ left: adjustedX, top: adjustedY }}
+      initial={{ opacity: 0, scale: 0.92, y: -4 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.92, y: -4 }}
+      transition={{ duration: 0.12, ease: [0.32, 0.72, 0, 1] }}
     >
       {items.map((item, index) => (
         <div key={index}>
-          {item.separator && <div className="my-1 h-px bg-white/10" />}
+          {item.separator && <div className="my-1 h-px bg-white/[0.06] mx-2" />}
           <button
-            className="w-full px-3 py-1.5 text-left text-[13px] text-white/80
-              hover:bg-white/10 hover:text-white transition-colors flex items-center gap-2"
+            className="w-full px-3 py-1.5 text-left text-[13px] text-white/70
+              hover:bg-white/[0.06] hover:text-white transition-colors flex items-center gap-2.5"
             onClick={() => {
               item.action()
               onClose()
             }}
           >
-            {item.icon && <span className="text-white/50 text-xs">{item.icon}</span>}
-            {item.label}
+            {item.icon && <span className="text-white/40 text-xs w-5 text-center">{item.icon}</span>}
+            <span>{item.label}</span>
           </button>
         </div>
       ))}
-    </div>
+    </motion.div>
   )
 }
 

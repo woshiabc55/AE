@@ -43,6 +43,7 @@ export interface FileItem {
   modified?: string
   icon: string
   children?: FileItem[]
+  isUploaded?: boolean
 }
 
 export interface DesktopIconItem {
@@ -58,4 +59,13 @@ export interface ContextMenuItem {
   icon?: string
   action: () => void
   separator?: boolean
+}
+
+export interface UploadedFile {
+  id: string
+  name: string
+  size: number
+  type: string
+  url: string
+  uploadedAt: number
 }

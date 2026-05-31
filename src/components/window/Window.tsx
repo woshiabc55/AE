@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { WindowTitleBar } from './WindowTitleBar'
 import { useWindowStore } from '@/stores/useWindowStore'
@@ -6,7 +6,7 @@ import { useDrag } from '@/hooks/useDrag'
 import { useResize } from '@/hooks/useResize'
 import { APP_DEFINITIONS } from '@/utils/apps'
 import { FileManager } from '@/components/apps/FileManager'
-import { Terminal } from '@/components/apps/Terminal'
+import { WarpTerminal } from '@/components/apps/WarpTerminal'
 import { TextEditor } from '@/components/apps/TextEditor'
 import { SystemSettings } from '@/components/apps/SystemSettings'
 import { Calculator } from '@/components/apps/Calculator'
@@ -18,7 +18,7 @@ interface WindowProps {
 
 const APP_COMPONENTS: Record<string, React.ComponentType> = {
   'file-manager': FileManager,
-  'terminal': Terminal,
+  'terminal': WarpTerminal,
   'text-editor': TextEditor,
   'system-settings': SystemSettings,
   'calculator': Calculator,
@@ -101,12 +101,12 @@ export function Window({ window: win }: WindowProps) {
   return (
     <AnimatePresence>
       <motion.div
-        className={`absolute flex flex-col rounded-xl overflow-hidden
+        className={`absolute flex flex-col overflow-hidden
+          ${win.isMaximized ? '' : 'rounded-xl'}
           ${isActive
-            ? 'shadow-2xl shadow-black/40 ring-1 ring-white/[0.08]'
-            : 'shadow-xl shadow-black/30 ring-1 ring-white/[0.04]'
-          }
-          ${win.isMaximized ? 'rounded-none' : ''}`}
+            ? 'shadow-[0_8px_40px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.06)]'
+            : 'shadow-[0_4px_20px_rgba(0,0,0,0.3),0_0_0_1px_rgba(255,255,255,0.03)]'
+          }`}
         style={
           win.isMaximized
             ? { left: 0, top: 0, width: '100%', height: 'calc(100% - 76px)', zIndex: win.zIndex }
@@ -118,13 +118,13 @@ export function Window({ window: win }: WindowProps) {
                 zIndex: win.zIndex,
               }
         }
-        initial={{ opacity: 0, scale: 0.92 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.92 }}
-        transition={{ duration: 0.15, ease: [0.32, 0.72, 0, 1] }}
+        initial={{ opacity: 0, scale: 0.88, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.88, y: 20 }}
+        transition={{ duration: 0.22, ease: [0.32, 0.72, 0, 1] }}
         onMouseDown={() => focusWindow(win.id)}
       >
-        <div className="flex flex-col h-full bg-[#0d1117]/90 backdrop-blur-2xl">
+        <div className="flex flex-col h-full bg-[#0d1117]/92 backdrop-blur-2xl">
           <WindowTitleBar
             windowId={win.id}
             title={win.title}
@@ -136,7 +136,7 @@ export function Window({ window: win }: WindowProps) {
             onClose={() => closeWindow(win.id)}
           />
 
-          <div className="flex-1 overflow-auto">
+          <div className="flex-1 overflow-auto relative">
             {AppComponent && <AppComponent />}
           </div>
         </div>

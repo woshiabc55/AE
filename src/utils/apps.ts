@@ -13,6 +13,7 @@ import {
   Archive,
   Code,
   FileSpreadsheet,
+  Upload,
 } from 'lucide-react'
 
 export const APP_DEFINITIONS: AppDefinition[] = [
@@ -26,11 +27,11 @@ export const APP_DEFINITIONS: AppDefinition[] = [
   },
   {
     id: 'terminal',
-    name: '终端',
+    name: 'Warp 终端',
     icon: 'terminal',
     category: 'utility',
-    defaultSize: { width: 700, height: 450 },
-    minSize: { width: 400, height: 300 },
+    defaultSize: { width: 780, height: 500 },
+    minSize: { width: 500, height: 350 },
   },
   {
     id: 'text-editor',
@@ -60,7 +61,7 @@ export const APP_DEFINITIONS: AppDefinition[] = [
 
 export const DESKTOP_ICONS: DesktopIconItem[] = [
   { id: 'di-1', appId: 'file-manager', label: '文件管理器', icon: 'folder', position: { x: 0, y: 0 } },
-  { id: 'di-2', appId: 'terminal', label: '终端', icon: 'terminal', position: { x: 0, y: 1 } },
+  { id: 'di-2', appId: 'terminal', label: 'Warp 终端', icon: 'terminal', position: { x: 0, y: 1 } },
   { id: 'di-3', appId: 'text-editor', label: '文本编辑器', icon: 'file-text', position: { x: 0, y: 2 } },
   { id: 'di-4', appId: 'system-settings', label: '系统设置', icon: 'settings', position: { x: 0, y: 3 } },
   { id: 'di-5', appId: 'calculator', label: '计算器', icon: 'calculator', position: { x: 0, y: 4 } },
@@ -136,11 +137,32 @@ export const WALLPAPERS = [
   'linear-gradient(135deg, #1a0533 0%, #3a0647 30%, #6b1d5e 60%, #c94b4b 100%)',
   'linear-gradient(135deg, #0c0c1d 0%, #1b2838 40%, #2a4858 70%, #0c0c1d 100%)',
   'linear-gradient(135deg, #141e30 0%, #243b55 50%, #141e30 100%)',
+  'linear-gradient(135deg, #0d0d2b 0%, #1e3a5f 25%, #0d7377 50%, #14ffec 100%)',
+  'linear-gradient(135deg, #1a0a2e 0%, #5b2c8e 30%, #d63384 60%, #ff6b6b 100%)',
 ]
 
 export const TERMINAL_COMMANDS: Record<string, (args: string[]) => string> = {
   help: () =>
-    '可用命令: ls, cd, pwd, clear, help, date, echo, whoami, cat, uname',
+    [
+      '可用命令:',
+      '  ls          列出目录内容',
+      '  cd <dir>    切换目录',
+      '  pwd         显示当前路径',
+      '  clear       清空终端',
+      '  help        显示帮助信息',
+      '  date        显示当前日期时间',
+      '  echo <msg>  输出文本',
+      '  whoami      显示当前用户',
+      '  cat <file>  查看文件内容',
+      '  uname       显示系统信息',
+      '  neofetch    显示系统概览',
+      '  history     显示命令历史',
+      '  uptime      显示运行时间',
+      '  hostname    显示主机名',
+      '  env         显示环境变量',
+      '  top         显示进程信息',
+      '  upload      打开文件上传',
+    ].join('\n'),
   ls: () => '文档  下载  图片  音乐  视频  代码  系统日志.log',
   pwd: () => '/home/user',
   whoami: () => 'user',
@@ -152,7 +174,70 @@ export const TERMINAL_COMMANDS: Record<string, (args: string[]) => string> = {
     return `cat: ${args[0]}: 文件内容加载中...`
   },
   cd: () => '',
+  neofetch: () =>
+    [
+      '       ╭──────────╮',
+      '       │ ConceptOS │    user@concept',
+      '       │   ◈  ◈    │    ─────────────',
+      '       │    ──     │    OS: ConceptOS 1.0.0',
+      '       ╰──────────╯    Kernel: Web/x86_64',
+      '                        Shell: Warp Terminal',
+      '                        Resolution: ' + window.innerWidth + 'x' + window.innerHeight,
+      '                        Theme: Dark Glassmorphism',
+      '                        Terminal: Warp v1.0',
+      '                        CPU: Web Runtime',
+      '                        Memory: ∞ MB / ∞ MB',
+    ].join('\n'),
+  uptime: () => {
+    const hours = Math.floor(Math.random() * 24)
+    const mins = Math.floor(Math.random() * 60)
+    return `up ${hours} hours, ${mins} minutes`
+  },
+  hostname: () => 'concept-os',
+  env: () =>
+    [
+      'HOME=/home/user',
+      'USER=user',
+      'SHELL=/bin/warp',
+      'TERM=warp-256color',
+      'LANG=zh_CN.UTF-8',
+      'PATH=/usr/local/bin:/usr/bin:/bin',
+      'EDITOR=warp-editor',
+    ].join('\n'),
+  top: () =>
+    [
+      'PID   USER   CPU%  MEM%  COMMAND',
+      '1     root   0.0   0.1   init',
+      '42    user   2.3   1.2   warp-terminal',
+      '87    user   0.8   0.5   file-manager',
+      '103   user   1.1   0.3   system-settings',
+      '156   user   0.2   0.1   calculator',
+    ].join('\n'),
+  upload: () => '💡 提示: 将文件拖拽到桌面或文件管理器即可上传',
 }
+
+export const WARP_COMMAND_SUGGESTIONS = [
+  'ls -la',
+  'cd ~/文档',
+  'pwd',
+  'git status',
+  'git log --oneline',
+  'npm run dev',
+  'npm install',
+  'python3 main.py',
+  'docker ps',
+  'curl -X GET https://api.example.com',
+  'ssh user@server',
+  'vim ~/.config',
+  'cat README.md',
+  'mkdir -p new-project',
+  'rm -rf dist/',
+  'echo "Hello, ConceptOS!"',
+  'neofetch',
+  'top',
+  'history',
+  'clear',
+]
 
 export const ICON_MAP: Record<string, React.ComponentType<{ size?: number | string; className?: string }>> = {
   folder: Folder,
@@ -168,4 +253,5 @@ export const ICON_MAP: Record<string, React.ComponentType<{ size?: number | stri
   archive: Archive,
   code: Code,
   'file-spreadsheet': FileSpreadsheet,
+  upload: Upload,
 }
