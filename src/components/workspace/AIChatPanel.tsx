@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from "react";
-import { Sparkles, Send } from "lucide-react";
+import { Sparkles, Send, GitBranch, MessageSquare } from "lucide-react";
 import { useChatStore } from "@/stores/useChatStore";
 import { useTerminalStore } from "@/stores/useTerminalStore";
+import { useToolFlowStore } from "@/stores/useToolFlowStore";
+import { useTraeStore } from "@/stores/useTraeStore";
 import { generateAIResponse } from "@/services/mockAI";
 import type { CodeBlock } from "@/types";
 
@@ -45,6 +47,8 @@ function TypingIndicator() {
 export default function AIChatPanel() {
   const { messages, isTyping, addMessage, setTyping } = useChatStore();
   const { addLine } = useTerminalStore();
+  const { toggleFlowVisibility } = useToolFlowStore();
+  const { connection: traeConnection, sendToTrae } = useTraeStore();
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -62,9 +66,15 @@ export default function AIChatPanel() {
       role: "user" as const,
       content: input.trim(),
       timestamp: Date.now(),
+      source: "nexuscode" as const,
     };
 
     addMessage(userMessage);
+
+    if (traeConnection.isConnected) {
+      sendToTrae(input.trim());
+    }
+
     setInput("");
     setTyping(true);
 
@@ -83,6 +93,21 @@ export default function AIChatPanel() {
         <span className="font-display text-sm font-semibold text-foreground">
           AI <span className="text-neon-cyan">助手</span>
         </span>
+        <div className="ml-auto flex items-center gap-1.5">
+          {traeConnection.isConnected && (
+            <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-orange/10 border border-amber-orange/20">
+              <MessageSquare className="w-3 h-3 text-amber-orange" />
+              <span className="text-[10px] text-amber-orange font-mono">Trae</span>
+            </div>
+          )}
+          <button
+            onClick={toggleFlowVisibility}
+            className="p-1 text-muted hover:text-neon-cyan transition-colors"
+            title="AI 工具流"
+          >
+            <GitBranch className="w-3.5 h-3.5" />
+          </button>
+        </div>
       </div>
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-3 space-y-3">
@@ -95,9 +120,17 @@ export default function AIChatPanel() {
               className={`max-w-[90%] rounded-lg px-3 py-2 text-sm font-body ${
                 msg.role === "user"
                   ? "bg-border-gray/40 text-foreground"
+                  : msg.source === "trae"
+                  ? "glass border-l-2 border-amber-orange text-foreground"
                   : "glass border-l-2 border-neon-cyan text-foreground"
               }`}
             >
+              {msg.source === "trae" && (
+                <div className="flex items-center gap-1 mb-1">
+                  <MessageSquare className="w-3 h-3 text-amber-orange" />
+                  <span className="text-[10px] text-amber-orange font-mono">来自 Trae</span>
+                </div>
+              )}
               <p className="whitespace-pre-wrap">{msg.content}</p>
               {msg.codeBlocks?.map((block, i) => (
                 <CodeBlockView key={i} block={block} />

@@ -3,6 +3,7 @@ import EditorTabs from "@/components/workspace/EditorTabs";
 import CodeEditor from "@/components/workspace/CodeEditor";
 import AIChatPanel from "@/components/workspace/AIChatPanel";
 import TerminalPanel from "@/components/workspace/TerminalPanel";
+import ToolFlowPanel from "@/components/workspace/ToolFlowPanel";
 import StatusBar from "@/components/workspace/StatusBar";
 
 export default function Workspace() {
@@ -15,6 +16,7 @@ export default function Workspace() {
           <div className="flex-1 overflow-hidden">
             <CodeEditor />
           </div>
+          <ToolFlowPanel />
           <TerminalPanel />
         </div>
         <AIChatPanel />
