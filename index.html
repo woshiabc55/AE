@@ -1032,6 +1032,267 @@ nav.scrolled {
   color: var(--glow-pink);
 }
 
+.persist-level-selector {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+.persist-btn {
+  padding: 8px 4px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.02);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.persist-btn:hover { background: rgba(255,255,255,0.05); }
+.persist-btn.active { background: rgba(61,255,154,0.1); border-color: var(--glow-green); color: var(--glow-green); }
+.persist-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.persist-dot.draft { background: var(--glow-yellow); box-shadow: 0 0 6px rgba(255,217,61,0.4); }
+.persist-dot.saved { background: var(--glow-cyan); box-shadow: 0 0 6px rgba(0,229,255,0.4); }
+.persist-dot.locked { background: var(--glow-red); box-shadow: 0 0 6px rgba(255,61,61,0.4); }
+
+.fork-list { display: flex; flex-direction: column; gap: 4px; }
+.fork-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.04);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 12px;
+}
+.fork-item:hover { background: rgba(255,255,255,0.05); }
+.fork-item.active { border-color: var(--glow-green); background: rgba(61,255,154,0.06); }
+.fork-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.fork-name { flex: 1; font-weight: 600; color: var(--text-primary); }
+.fork-badge {
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(61,255,154,0.15);
+  color: var(--glow-green);
+  font-weight: 700;
+}
+
+.material-selector {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+}
+.material-btn {
+  padding: 8px 6px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.02);
+  color: var(--text-secondary);
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-align: left;
+}
+.material-btn:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,122,61,0.2); }
+.material-btn.active { border-color: var(--glow-orange); background: rgba(255,122,61,0.08); color: var(--glow-orange); }
+.mat-preview {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  position: relative;
+}
+.mat-preview::after {
+  content: '';
+  position: absolute;
+  top: 20%; left: 20%;
+  width: 30%; height: 30%;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+}
+
+.order-layout {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 24px;
+}
+.order-field { margin-bottom: 16px; }
+.order-field:last-child { margin-bottom: 0; }
+.order-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+.order-input, .order-select, .order-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: var(--bg-block2);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: var(--font);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.order-input:focus, .order-select:focus, .order-textarea:focus {
+  border-color: rgba(255,60,131,0.4);
+  box-shadow: 0 0 12px rgba(255,60,131,0.08);
+}
+.order-select { -webkit-appearance: none; appearance: none; cursor: pointer; }
+.order-textarea { resize: vertical; }
+.order-size-row { display: flex; gap: 8px; }
+.order-size-row .order-select { flex: 1; }
+
+.order-material-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.order-mat-btn {
+  padding: 10px 6px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.02);
+  color: var(--text-secondary);
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  line-height: 1.5;
+}
+.order-mat-btn:hover { border-color: rgba(255,122,61,0.3); background: rgba(255,122,61,0.04); }
+.order-mat-btn.active { border-color: var(--glow-orange); background: rgba(255,122,61,0.1); color: var(--glow-orange); }
+.omat-swatch {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  margin: 0 auto 6px;
+  position: relative;
+}
+.omat-swatch::after {
+  content: '';
+  position: absolute;
+  top: 20%; left: 20%;
+  width: 30%; height: 30%;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+}
+.omat-price { font-size: 9px; color: var(--text-muted); }
+
+.order-summary-card {
+  background: var(--bg-block2);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 24px;
+  position: sticky;
+  top: 84px;
+}
+.order-summary-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.order-summary-rows { display: flex; flex-direction: column; gap: 8px; }
+.os-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.os-row.total { font-size: 16px; font-weight: 900; color: var(--glow-pink); }
+.os-row.total span:last-child { text-shadow: 0 0 12px rgba(255,60,131,0.3); }
+.os-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 4px 0; }
+
+.contact-layout {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 32px;
+}
+.contact-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.contact-card {
+  background: var(--bg-block2);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 14px;
+  padding: 20px;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.contact-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--glow-pink), var(--glow-cyan));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.contact-card:hover { transform: translateY(-4px); border-color: rgba(255,60,131,0.2); }
+.contact-card:hover::before { opacity: 1; }
+.contact-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  background: rgba(255,255,255,0.03);
+}
+.contact-icon .bead {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  position: relative;
+}
+.contact-icon .bead::after {
+  content: '';
+  position: absolute;
+  top: 20%; left: 20%;
+  width: 30%; height: 30%;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+}
+.contact-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+.contact-card p { font-size: 14px; font-weight: 600; color: var(--glow-cyan); margin-bottom: 2px; }
+.contact-card span { font-size: 11px; color: var(--text-muted); }
+
+.contact-form-wrap {
+  background: var(--bg-block2);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.studio-board-wrap.texture-grid { background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 20px 20px; }
+.studio-board-wrap.texture-dots { background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 12px 12px; }
+.studio-board-wrap.texture-checker { background-image: linear-gradient(45deg, rgba(255,255,255,0.02) 25%, transparent 25%), linear-gradient(-45deg, rgba(255,255,255,0.02) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.02) 75%), linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.02) 75%); background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0; }
+.studio-board-wrap.texture-wood { background-image: repeating-linear-gradient(90deg, rgba(139,105,20,0.06) 0px, rgba(212,165,116,0.04) 2px, rgba(139,105,20,0.03) 4px); background-size: 100% 100%; }
+.studio-board-wrap.texture-fabric { background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0px, transparent 1px, transparent 3px), repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0px, transparent 1px, transparent 3px); background-size: 4px 4px; }
+
 .studio-layout {
   display: grid;
   grid-template-columns: 280px 1fr 280px;
@@ -1565,11 +1826,11 @@ footer {
   </a>
   <div class="nav-links">
     <a href="#features" class="nav-link">核心功能</a>
-    <a href="#animation" class="nav-link">动画输出</a>
-    <a href="#studio" class="nav-link">制作平台</a>
-    <a href="#gallery" class="nav-link">作品画廊</a>
-    <a href="#pricing" class="nav-link">定价方案</a>
-    <a href="#studio" class="nav-link primary">开始创作</a>
+        <a href="#animation" class="nav-link">动画输出</a>
+        <a href="#studio" class="nav-link">制作平台</a>
+        <a href="#order" class="nav-link">发布订单</a>
+        <a href="#contact" class="nav-link">联系我们</a>
+        <a href="#studio" class="nav-link primary">开始创作</a>
   </div>
   <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
 </nav>
@@ -1803,6 +2064,17 @@ footer {
       <div class="studio-layout">
         <div class="studio-sidebar">
           <div class="studio-group">
+            <div class="studio-group-title">工作台纹理</div>
+            <div class="studio-tools">
+              <button class="studio-tool-btn active" data-texture="none"><span class="dot" style="background:rgba(255,255,255,0.15)"></span>无</button>
+              <button class="studio-tool-btn" data-texture="grid"><span class="dot" style="background:var(--glow-cyan)"></span>网格</button>
+              <button class="studio-tool-btn" data-texture="dots"><span class="dot" style="background:var(--glow-purple)"></span>点阵</button>
+              <button class="studio-tool-btn" data-texture="checker"><span class="dot" style="background:var(--glow-yellow)"></span>棋盘</button>
+              <button class="studio-tool-btn" data-texture="wood"><span class="dot" style="background:var(--glow-orange)"></span>木质</button>
+              <button class="studio-tool-btn" data-texture="fabric"><span class="dot" style="background:var(--glow-pink)"></span>织物</button>
+            </div>
+          </div>
+          <div class="studio-group">
             <div class="studio-group-title">画板尺寸</div>
             <div class="board-size-selector" id="boardSizeSelector">
               <button class="board-size-btn" data-size="12">12×12</button>
@@ -1841,6 +2113,37 @@ footer {
         </div>
         <div class="studio-sidebar right">
           <div class="studio-group">
+            <div class="studio-group-title">存留级别</div>
+            <div class="persist-level-selector" id="persistLevelSelector">
+              <button class="persist-btn active" data-level="draft"><span class="persist-dot draft"></span>草稿</button>
+              <button class="persist-btn" data-level="saved"><span class="persist-dot saved"></span>已保存</button>
+              <button class="persist-btn" data-level="locked"><span class="persist-dot locked"></span>锁定</button>
+            </div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:8px;line-height:1.6;" id="persistDesc">草稿状态 — 可自由编辑修改</div>
+          </div>
+          <div class="studio-group">
+            <div class="studio-group-title">版本分叉</div>
+            <div class="fork-list" id="forkList">
+              <div class="fork-item active">
+                <span class="fork-dot" style="background:var(--glow-green)"></span>
+                <span class="fork-name">主线</span>
+                <span class="fork-badge">当前</span>
+              </div>
+            </div>
+            <button class="studio-action-btn" id="createFork" style="margin-top:8px;"><span class="dot" style="background:var(--glow-green)"></span>创建分叉</button>
+          </div>
+          <div class="studio-group">
+            <div class="studio-group-title">设定材料</div>
+            <div class="material-selector" id="materialSelector">
+              <button class="material-btn active" data-material="plastic"><div class="mat-preview" style="background:linear-gradient(135deg,#FF3C83,#FF9FF3)"></div>塑料拼豆</button>
+              <button class="material-btn" data-material="wood"><div class="mat-preview" style="background:linear-gradient(135deg,#D4A574,#8B6914)"></div>木质拼豆</button>
+              <button class="material-btn" data-material="glass"><div class="mat-preview" style="background:linear-gradient(135deg,#00E5FF,#4D7CFF)"></div>玻璃拼豆</button>
+              <button class="material-btn" data-material="ceramic"><div class="mat-preview" style="background:linear-gradient(135deg,#FFEAA7,#FFB8B8)"></div>陶瓷拼豆</button>
+              <button class="material-btn" data-material="metal"><div class="mat-preview" style="background:linear-gradient(135deg,#C0C0C0,#808080)"></div>金属拼豆</button>
+              <button class="material-btn" data-material="glow"><div class="mat-preview" style="background:linear-gradient(135deg,#3DFF9A,#00E5FF)"></div>夜光拼豆</button>
+            </div>
+          </div>
+          <div class="studio-group">
             <div class="studio-group-title">操作</div>
             <div class="studio-actions">
               <button class="studio-action-btn" id="saveDwn"><span class="dot" style="background:var(--glow-green)"></span>保存至 DWN</button>
@@ -1855,6 +2158,8 @@ footer {
               <div>尺寸: <span style="color:var(--text-primary)" id="boardSizeInfo">20 × 20</span></div>
               <div>已用拼豆: <span style="color:var(--glow-pink)" id="beadCount">0</span></div>
               <div>颜色数: <span style="color:var(--glow-cyan)" id="colorCount">0</span></div>
+              <div>材料: <span style="color:var(--glow-orange)" id="materialInfo">塑料拼豆</span></div>
+              <div>纹理: <span style="color:var(--glow-yellow)" id="textureInfo">无</span></div>
             </div>
           </div>
           <div class="studio-group">
@@ -1864,6 +2169,134 @@ footer {
               <div>DWN: <span style="color:var(--glow-green)">同步中</span></div>
               <div>存储: <span style="color:var(--text-primary)">2.4 MB / 1 GB</span></div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="block-section" id="order">
+  <div class="block-panel rim-border scroll-reveal">
+    <div class="block-header">
+      <div>
+        <div class="block-tag orange">♦ 发布订单</div>
+        <h2 class="block-title">制作<span class="g-pink">实体拼豆</span></h2>
+      </div>
+    </div>
+    <div class="block-body">
+      <div class="order-layout">
+        <div class="order-form">
+          <div class="order-field">
+            <label class="order-label">作品名称</label>
+            <input type="text" class="order-input" id="orderName" placeholder="输入你的拼豆作品名称">
+          </div>
+          <div class="order-field">
+            <label class="order-label">选择材料</label>
+            <div class="order-material-grid" id="orderMaterialGrid">
+              <button class="order-mat-btn active" data-omat="plastic"><div class="omat-swatch" style="background:linear-gradient(135deg,#FF3C83,#FF9FF3)"></div>塑料拼豆<br><span class="omat-price">¥0.5/颗</span></button>
+              <button class="order-mat-btn" data-omat="wood"><div class="omat-swatch" style="background:linear-gradient(135deg,#D4A574,#8B6914)"></div>木质拼豆<br><span class="omat-price">¥1.2/颗</span></button>
+              <button class="order-mat-btn" data-omat="glass"><div class="omat-swatch" style="background:linear-gradient(135deg,#00E5FF,#4D7CFF)"></div>玻璃拼豆<br><span class="omat-price">¥2.0/颗</span></button>
+              <button class="order-mat-btn" data-omat="ceramic"><div class="omat-swatch" style="background:linear-gradient(135deg,#FFEAA7,#FFB8B8)"></div>陶瓷拼豆<br><span class="omat-price">¥1.8/颗</span></button>
+              <button class="order-mat-btn" data-omat="metal"><div class="omat-swatch" style="background:linear-gradient(135deg,#C0C0C0,#808080)"></div>金属拼豆<br><span class="omat-price">¥3.5/颗</span></button>
+              <button class="order-mat-btn" data-omat="glow"><div class="omat-swatch" style="background:linear-gradient(135deg,#3DFF9A,#00E5FF)"></div>夜光拼豆<br><span class="omat-price">¥2.5/颗</span></button>
+            </div>
+          </div>
+          <div class="order-field">
+            <label class="order-label">底板规格</label>
+            <div class="order-size-row">
+              <select class="order-select" id="orderSize">
+                <option value="12">12×12 (144颗)</option>
+                <option value="16">16×16 (256颗)</option>
+                <option value="20" selected>20×20 (400颗)</option>
+                <option value="32">32×32 (1024颗)</option>
+              </select>
+              <select class="order-select" id="orderFrame">
+                <option value="none">无框</option>
+                <option value="wood" selected>木质画框</option>
+                <option value="metal">金属画框</option>
+                <option value="acrylic">亚克力罩</option>
+              </select>
+            </div>
+          </div>
+          <div class="order-field">
+            <label class="order-label">收货地址</label>
+            <textarea class="order-textarea" id="orderAddress" placeholder="请输入详细收货地址" rows="2"></textarea>
+          </div>
+          <div class="order-field">
+            <label class="order-label">联系电话</label>
+            <input type="tel" class="order-input" id="orderPhone" placeholder="手机号码">
+          </div>
+          <div class="order-field">
+            <label class="order-label">备注</label>
+            <textarea class="order-textarea" id="orderNote" placeholder="特殊要求或备注信息" rows="2"></textarea>
+          </div>
+        </div>
+        <div class="order-summary">
+          <div class="order-summary-card">
+            <h4 class="order-summary-title">订单摘要</h4>
+            <div class="order-summary-rows">
+              <div class="os-row"><span>拼豆数量</span><span id="osBeads">400 颗</span></div>
+              <div class="os-row"><span>材料</span><span id="osMaterial">塑料拼豆</span></div>
+              <div class="os-row"><span>单价</span><span id="osPrice">¥0.5/颗</span></div>
+              <div class="os-row"><span>画框</span><span id="osFrame">木质画框</span></div>
+              <div class="os-row"><span>画框费用</span><span id="osFramePrice">¥28</span></div>
+              <div class="os-row"><span>运费</span><span id="osShipping">¥12</span></div>
+              <div class="os-divider"></div>
+              <div class="os-row total"><span>合计</span><span id="osTotal">¥240</span></div>
+            </div>
+            <button class="btn btn-primary" id="submitOrder" style="width:100%;margin-top:20px;">提交订单</button>
+            <p style="font-size:10px;color:var(--text-muted);text-align:center;margin-top:10px;">提交后将在24小时内确认并开始制作</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="block-section" id="contact">
+  <div class="block-panel rim-border scroll-reveal">
+    <div class="block-header">
+      <div>
+        <div class="block-tag cyan">♦ 联系我们</div>
+        <h2 class="block-title"><span class="g-cyan">取得联系</span></h2>
+      </div>
+    </div>
+    <div class="block-body">
+      <div class="contact-layout">
+        <div class="contact-info-grid">
+          <div class="contact-card">
+            <div class="contact-icon"><div class="bead" style="background:var(--glow-pink)"></div></div>
+            <h4>客服热线</h4>
+            <p>400-888-PINBEAN</p>
+            <span>工作日 9:00-18:00</span>
+          </div>
+          <div class="contact-card">
+            <div class="contact-icon"><div class="bead" style="background:var(--glow-cyan)"></div></div>
+            <h4>电子邮箱</h4>
+            <p>hello@pinbean.universe</p>
+            <span>24小时内回复</span>
+          </div>
+          <div class="contact-card">
+            <div class="contact-icon"><div class="bead" style="background:var(--glow-purple)"></div></div>
+            <h4>社区论坛</h4>
+            <p>community.pinbean.universe</p>
+            <span>创作者互助社区</span>
+          </div>
+          <div class="contact-card">
+            <div class="contact-icon"><div class="bead" style="background:var(--glow-yellow)"></div></div>
+            <h4>商务合作</h4>
+            <p>biz@pinbean.universe</p>
+            <span>品牌定制 / 批量订购</span>
+          </div>
+        </div>
+        <div class="contact-form-wrap">
+          <div class="contact-form-inner">
+            <h4 style="font-size:16px;font-weight:700;margin-bottom:16px;">发送消息</h4>
+            <div class="order-field"><label class="order-label">称呼</label><input type="text" class="order-input" id="contactName" placeholder="你的名字"></div>
+            <div class="order-field"><label class="order-label">邮箱</label><input type="email" class="order-input" id="contactEmail" placeholder="your@email.com"></div>
+            <div class="order-field"><label class="order-label">消息</label><textarea class="order-textarea" id="contactMsg" placeholder="你想说什么..." rows="4"></textarea></div>
+            <button class="btn btn-primary" id="sendContact" style="width:100%;">发送消息</button>
           </div>
         </div>
       </div>
@@ -2794,6 +3227,138 @@ footer {
     });
   }
 
+  var currentTexture = 'none';
+  var currentMaterial = 'plastic';
+  var currentPersistLevel = 'draft';
+  var forkCount = 0;
+
+  var MATERIAL_NAMES = { plastic:'塑料拼豆', wood:'木质拼豆', glass:'玻璃拼豆', ceramic:'陶瓷拼豆', metal:'金属拼豆', glow:'夜光拼豆' };
+  var MATERIAL_PRICES = { plastic:0.5, wood:1.2, glass:2.0, ceramic:1.8, metal:3.5, glow:2.5 };
+  var FRAME_PRICES = { none:0, wood:28, metal:45, acrylic:35 };
+  var FRAME_NAMES = { none:'无框', wood:'木质画框', metal:'金属画框', acrylic:'亚克力罩' };
+  var PERSIST_DESCS = { draft:'草稿状态 — 可自由编辑修改', saved:'已保存 — 内容已持久化至 DWN', locked:'已锁定 — 不可修改，版本已封存' };
+  var TEXTURE_NAMES = { none:'无', grid:'网格', dots:'点阵', checker:'棋盘', wood:'木质', fabric:'织物' };
+
+  function initTextureSelector() {
+    document.querySelectorAll('.studio-tool-btn[data-texture]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        currentTexture = this.dataset.texture;
+        document.querySelectorAll('.studio-tool-btn[data-texture]').forEach(function(b) { b.classList.remove('active'); });
+        this.classList.add('active');
+        var wrap = document.querySelector('.studio-board-wrap');
+        wrap.className = 'studio-board-wrap';
+        if (currentTexture !== 'none') wrap.classList.add('texture-' + currentTexture);
+        document.getElementById('textureInfo').textContent = TEXTURE_NAMES[currentTexture];
+        showToast('纹理: ' + TEXTURE_NAMES[currentTexture], '#FFD93D');
+      });
+    });
+  }
+
+  function initMaterialSelector() {
+    document.querySelectorAll('.material-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        currentMaterial = this.dataset.material;
+        document.querySelectorAll('.material-btn').forEach(function(b) { b.classList.remove('active'); });
+        this.classList.add('active');
+        document.getElementById('materialInfo').textContent = MATERIAL_NAMES[currentMaterial];
+        showToast('材料: ' + MATERIAL_NAMES[currentMaterial], '#FF7A3D');
+      });
+    });
+  }
+
+  function initPersistLevel() {
+    document.querySelectorAll('.persist-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        currentPersistLevel = this.dataset.level;
+        document.querySelectorAll('.persist-btn').forEach(function(b) { b.classList.remove('active'); });
+        this.classList.add('active');
+        document.getElementById('persistDesc').textContent = PERSIST_DESCS[currentPersistLevel];
+        if (currentPersistLevel === 'locked') {
+          showToast('版本已锁定', '#FF3D3D');
+        } else if (currentPersistLevel === 'saved') {
+          showToast('已保存至 DWN', '#00E5FF');
+        } else {
+          showToast('切换为草稿模式', '#FFD93D');
+        }
+      });
+    });
+  }
+
+  function initForkSystem() {
+    document.getElementById('createFork').addEventListener('click', function() {
+      forkCount++;
+      var list = document.getElementById('forkList');
+      var colors = ['#FF3C83','#00E5FF','#B24BF3','#FFD93D','#3DFF9A','#FF7A3D'];
+      var color = colors[forkCount % colors.length];
+      document.querySelectorAll('.fork-item').forEach(function(f) { f.classList.remove('active'); f.querySelector('.fork-badge').textContent = ''; });
+      var item = document.createElement('div');
+      item.className = 'fork-item active';
+      item.innerHTML = '<span class="fork-dot" style="background:' + color + '"></span><span class="fork-name">分叉-' + forkCount + '</span><span class="fork-badge">当前</span>';
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.fork-item').forEach(function(f) { f.classList.remove('active'); f.querySelector('.fork-badge').textContent = ''; });
+        this.classList.add('active');
+        this.querySelector('.fork-badge').textContent = '当前';
+      });
+      list.appendChild(item);
+      showToast('已创建分叉-' + forkCount, color);
+    });
+  }
+
+  var orderMaterial = 'plastic';
+  function initOrderSystem() {
+    document.querySelectorAll('.order-mat-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        orderMaterial = this.dataset.omat;
+        document.querySelectorAll('.order-mat-btn').forEach(function(b) { b.classList.remove('active'); });
+        this.classList.add('active');
+        updateOrderSummary();
+      });
+    });
+    document.getElementById('orderSize').addEventListener('change', updateOrderSummary);
+    document.getElementById('orderFrame').addEventListener('change', updateOrderSummary);
+    document.getElementById('submitOrder').addEventListener('click', function() {
+      var name = document.getElementById('orderName').value;
+      var addr = document.getElementById('orderAddress').value;
+      var phone = document.getElementById('orderPhone').value;
+      if (!name || !addr || !phone) {
+        showToast('请填写完整的订单信息', '#FF3D3D');
+        return;
+      }
+      showToast('订单已提交！将尽快确认', '#3DFF9A');
+    });
+    updateOrderSummary();
+  }
+
+  function updateOrderSummary() {
+    var size = parseInt(document.getElementById('orderSize').value);
+    var beads = size * size;
+    var frame = document.getElementById('orderFrame').value;
+    var price = MATERIAL_PRICES[orderMaterial];
+    var framePrice = FRAME_PRICES[frame];
+    var shipping = 12;
+    var total = beads * price + framePrice + shipping;
+    document.getElementById('osBeads').textContent = beads + ' 颗';
+    document.getElementById('osMaterial').textContent = MATERIAL_NAMES[orderMaterial];
+    document.getElementById('osPrice').textContent = '¥' + price + '/颗';
+    document.getElementById('osFrame').textContent = FRAME_NAMES[frame];
+    document.getElementById('osFramePrice').textContent = '¥' + framePrice;
+    document.getElementById('osShipping').textContent = '¥' + shipping;
+    document.getElementById('osTotal').textContent = '¥' + total;
+  }
+
+  function initContactForm() {
+    document.getElementById('sendContact').addEventListener('click', function() {
+      var name = document.getElementById('contactName').value;
+      var email = document.getElementById('contactEmail').value;
+      var msg = document.getElementById('contactMsg').value;
+      if (!name || !email || !msg) {
+        showToast('请填写完整联系信息', '#FF3D3D');
+        return;
+      }
+      showToast('消息已发送！我们会尽快回复', '#3DFF9A');
+    });
+  }
+
   function initGallery() {
     var grid = document.getElementById('galleryGrid');
     var types = ['heart','star','diamond','flower','cat','moon','wave','bolt'];
@@ -2959,6 +3524,12 @@ footer {
     initAnimSystem();
     initStudio();
     ensureGlobalListeners();
+    initTextureSelector();
+    initMaterialSelector();
+    initPersistLevel();
+    initForkSystem();
+    initOrderSystem();
+    initContactForm();
     initGallery();
     initScrollReveal();
     initNavScroll();
