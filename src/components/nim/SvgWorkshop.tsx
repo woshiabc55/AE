@@ -1,9 +1,10 @@
 import { useState, useMemo, useCallback } from 'react';
-import { svgTemplates, generateSvg, type SvgTemplate, type SvgParam } from '@/data/svgTemplates';
-import { Code, Eye, Download, Palette, SlidersHorizontal } from 'lucide-react';
+import { svgTemplates, generateSvg, templateCategories, type SvgTemplate, type SvgParam } from '@/data/svgTemplates';
+import { Code, Eye, Download, Palette, SlidersHorizontal, Filter } from 'lucide-react';
 
 export default function SvgWorkshop() {
   const [selectedId, setSelectedId] = useState(svgTemplates[0].id);
+  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
   const [paramValues, setParamValues] = useState<Record<string, number>>(() => {
     const init: Record<string, number> = {};
     svgTemplates.forEach((t) => t.params.forEach((p) => { init[p.key] = p.default; }));
@@ -11,6 +12,11 @@ export default function SvgWorkshop() {
   });
   const [customCode, setCustomCode] = useState('');
   const [mode, setMode] = useState<'template' | 'custom'>('template');
+
+  const filteredTemplates = useMemo(() => {
+    if (!categoryFilter) return svgTemplates;
+    return svgTemplates.filter((t) => t.category === categoryFilter);
+  }, [categoryFilter]);
 
   const selectedTemplate = svgTemplates.find((t) => t.id === selectedId)!;
 
@@ -44,6 +50,7 @@ export default function SvgWorkshop() {
         <div className="flex items-center gap-2">
           <Palette size={14} className="text-[#1a3a6b]" />
           <span className="font-mono-cn text-xs tracking-wider">SVG图形工坊</span>
+          <span className="font-mono-cn text-[10px] text-[#909090]">{svgTemplates.length}个模板</span>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -70,11 +77,34 @@ export default function SvgWorkshop() {
 
       <div className="flex-1 flex min-h-0">
         {mode === 'template' && (
-          <div className="w-48 border-r border-[#d0d0d0] bg-[#faf8f5] overflow-y-auto scrollbar-thin shrink-0">
-            <div className="p-2">
-              <span className="font-mono-cn text-[9px] text-[#909090] px-2">模板库 / TEMPLATES</span>
+          <div className="w-56 border-r border-[#d0d0d0] bg-[#faf8f5] overflow-y-auto scrollbar-thin shrink-0">
+            <div className="p-2 border-b border-[#d0d0d0] sticky top-0 bg-[#faf8f5] z-10">
+              <div className="flex items-center gap-1 mb-1.5">
+                <Filter size={10} className="text-[#909090]" />
+                <span className="font-mono-cn text-[9px] text-[#909090]">分类筛选</span>
+              </div>
+              <div className="flex flex-wrap gap-1">
+                <button
+                  onClick={() => setCategoryFilter(null)}
+                  className={`px-1.5 py-0.5 text-[8px] font-mono-cn border transition-all cursor-pointer ${!categoryFilter ? 'bg-[#1a3a6b] text-white border-[#1a3a6b]' : 'border-[#d0d0d0] text-[#606060] hover:border-[#1a3a6b]'}`}
+                >
+                  全部
+                </button>
+                {templateCategories.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => setCategoryFilter(cat.id)}
+                    className={`px-1.5 py-0.5 text-[8px] font-mono-cn border transition-all cursor-pointer ${categoryFilter === cat.id ? 'bg-[#1a3a6b] text-white border-[#1a3a6b]' : 'border-[#d0d0d0] text-[#606060] hover:border-[#1a3a6b]'}`}
+                  >
+                    {cat.label}
+                  </button>
+                ))}
+              </div>
             </div>
-            {svgTemplates.map((t) => (
+            <div className="p-2">
+              <span className="font-mono-cn text-[9px] text-[#909090] px-2">模板库 / TEMPLATES ({filteredTemplates.length})</span>
+            </div>
+            {filteredTemplates.map((t) => (
               <button
                 key={t.id}
                 onClick={() => handleTemplateSelect(t)}
@@ -82,7 +112,12 @@ export default function SvgWorkshop() {
                   selectedId === t.id ? 'bg-[#1a3a6b] text-white' : 'text-[#1a1a1a] hover:bg-[#f0f0f0]'
                 }`}
               >
-                <div className="font-bold">{t.name}</div>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-bold">{t.name}</span>
+                  <span className={`text-[8px] px-1 py-0.5 border ${selectedId === t.id ? 'border-[#a8c8e8] text-[#a8c8e8]' : 'border-[#d0d0d0] text-[#909090]'}`}>
+                    {t.category}
+                  </span>
+                </div>
                 <div className={`text-[9px] mt-0.5 ${selectedId === t.id ? 'text-[#a8c8e8]' : 'text-[#909090]'}`}>
                   {t.description}
                 </div>
@@ -98,6 +133,7 @@ export default function SvgWorkshop() {
                 <div className="flex items-center gap-2 mb-2">
                   <SlidersHorizontal size={12} className="text-[#1a3a6b]" />
                   <span className="font-mono-cn text-[10px] text-[#606060]">参数调整 / PARAMETERS</span>
+                  <span className="font-mono-cn text-[9px] text-[#909090]">— {selectedTemplate.name}</span>
                 </div>
                 <div className="flex flex-wrap gap-4">
                   {selectedTemplate.params.map((p: SvgParam) => (
