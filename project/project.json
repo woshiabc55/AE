@@ -1,0 +1,61 @@
+{
+  "project_name": "视频分镜项目",
+  "version": "1.0.0",
+  "description": "基于分镜描述创建的视频项目，包含混沌之战、神人好声音导师入场、废墟觉醒三个主要场景",
+  "scenes": [
+    {
+      "id": "scene_1",
+      "name": "混沌之战",
+      "duration": 30,
+      "shots": 6
+    },
+    {
+      "id": "scene_2",
+      "name": "神人好声音导师入场",
+      "duration": 15,
+      "shots": 5
+    },
+    {
+      "id": "scene_3",
+      "name": "废墟觉醒",
+      "duration": 15,
+      "shots": 4
+    }
+  ],
+  "characters": [
+    "战士（主人公）",
+    "巨兽（决战对象）",
+    "Papa导师",
+    "神秘人"
+  ],
+  "visual_style": {
+    "quality": "IMAX史诗感",
+    "filter": "OBS 021滤镜",
+    "reference": "feline电影质感"
+  },
+  "camera_style": [
+    "超广角镜头",
+    "运动镜头回转",
+    "推拉跟随",
+    "轨迹运镜",
+    "第一视角切换"
+  ],
+  "effects": [
+    "马赫运动模糊",
+    "冲击波扩散",
+    "瞬移光效",
+    "残影叠加",
+    "破碎效果",
+    "震动波纹"
+  ],
+  "total_duration": 60,
+  "total_shots": 15,
+  "created_at": "2026-06-01",
+  "files": {
+    "storyboard": "scenes/storyboard.md",
+    "scenes": "scenes/scenes.md",
+    "characters": "characters/characters.md",
+    "effects": "effects/effects.md",
+    "camera": "camera/camera.md"
+  }
+}
