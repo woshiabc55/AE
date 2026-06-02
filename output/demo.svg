@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect x="50" y="50" width="200" height="150" fill="lightblue" stroke="blue" stroke-width="3"/>
+  <circle cx="350" cy="125" r="75" fill="lightgreen" stroke="green" stroke-width="3"/>
+  <ellipse cx="550" cy="125" rx="80" ry="50" fill="lightyellow" stroke="orange" stroke-width="3"/>
+  <line x1="700" y1="50" x2="700" y2="200" stroke="purple" stroke-width="4"/>
+  <polygon points="100,300 200,250 300,300 250,380 150,380" fill="pink" stroke="red" stroke-width="3"/>
+  <polyline points="400,300 450,350 500,300 550,350 600,300" fill="none" stroke="teal" stroke-width="3"/>
+  <path d="M 100 450 Q 200 380 300 450 T 500 450" fill="none" stroke="brown" stroke-width="3"/>
+  <text x="400" y="520" font-size="24" text-anchor="middle" fill="darkblue">SVG Drawing Tool Demo</text>
+</svg>

@@ -1,0 +1,12 @@
+{
+  "name": "svg-draw-tool",
+  "version": "1.0.0",
+  "description": "A simple Node.js SVG drawing tool",
+  "main": "src/svg-draw.js",
+  "scripts": {
+    "test": "node examples/demo.js"
+  },
+  "keywords": ["svg", "drawing", "nodejs"],
+  "author": "",
+  "license": "MIT"
+}
