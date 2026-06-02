@@ -1,0 +1,14 @@
+{
+  "name": "svg-animation-studio",
+  "version": "1.0.0",
+  "description": "Multi-language SVG Animation Editor",
+  "scripts": {
+    "start": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "backend": "cd backend && npm run dev",
+    "frontend": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build"
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.0"
+  }
+}
