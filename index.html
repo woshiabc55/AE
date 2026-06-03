@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>职业技能库 · 240+ 随机技能</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0b1020;
+    --bg-2: #11182f;
+    --card: #161e3a;
+    --card-2: #1c2547;
+    --text: #e6ecff;
+    --muted: #8a93b8;
+    --border: rgba(255,255,255,0.08);
+    --accent: #6ea8ff;
+    --accent-2: #a78bfa;
+    --shadow: 0 10px 30px rgba(0,0,0,0.35);
+  }
+  html[data-theme="light"] {
+    --bg: #f5f7fb;
+    --bg-2: #ffffff;
+    --card: #ffffff;
+    --card-2: #f1f4fb;
+    --text: #0f172a;
+    --muted: #64748b;
+    --border: rgba(15,23,42,0.08);
+    --shadow: 0 8px 24px rgba(15,23,42,0.08);
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    background: radial-gradient(1200px 800px at 20% -10%, #1b2452 0%, transparent 60%),
+                radial-gradient(1000px 700px at 100% 0%, #2a1d52 0%, transparent 55%),
+                var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+  html[data-theme="light"] body {
+    background: radial-gradient(1200px 800px at 20% -10%, #dbe7ff 0%, transparent 60%),
+                radial-gradient(1000px 700px at 100% 0%, #f0e2ff 0%, transparent 55%),
+                var(--bg);
+  }
+  .container { max-width: 1280px; margin: 0 auto; padding: 32px 24px 80px; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .logo {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: linear-gradient(135deg, #6ea8ff 0%, #a78bfa 100%);
+    display: grid; place-items: center; color: #fff; font-size: 22px;
+    box-shadow: var(--shadow);
+  }
+  h1 { font-size: 22px; font-weight: 700; letter-spacing: 0.3px; }
+  .subtitle { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .actions { display: flex; gap: 10px; align-items: center; }
+  .btn {
+    height: 36px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--border);
+    background: var(--card); color: var(--text); cursor: pointer; font-size: 13px;
+    display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;
+  }
+  .btn:hover { transform: translateY(-1px); border-color: var(--accent); }
+  .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 20px 0 24px;
+  }
+  .stat {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 16px 18px; box-shadow: var(--shadow);
+  }
+  .stat .num { font-size: 24px; font-weight: 700; }
+  .stat .lbl { color: var(--muted); font-size: 12px; margin-top: 4px; }
+  .panel {
+    background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+    padding: 18px; box-shadow: var(--shadow); margin-bottom: 22px;
+  }
+  .search-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .search {
+    flex: 1; min-width: 220px; height: 42px; padding: 0 16px 0 40px;
+    border-radius: 12px; border: 1px solid var(--border);
+    background: var(--card-2) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238a93b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><path d='m21 21-4.3-4.3'/></svg>") no-repeat 14px center;
+    color: var(--text); font-size: 14px; outline: none; transition: border-color 0.2s;
+  }
+  .search:focus { border-color: var(--accent); }
+  .select {
+    height: 42px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--border);
+    background: var(--card-2); color: var(--text); font-size: 13px; cursor: pointer; outline: none;
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .chip {
+    padding: 6px 12px; border-radius: 999px; border: 1px solid var(--border);
+    background: var(--card-2); color: var(--text); cursor: pointer; font-size: 12px;
+    transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .chip:hover { transform: translateY(-1px); }
+  .chip.active {
+    background: linear-gradient(135deg, #6ea8ff 0%, #a78bfa 100%);
+    color: #fff; border-color: transparent;
+  }
+  .chip .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+  }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 16px; position: relative; overflow: hidden; cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .card::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+    background: var(--cat-color, var(--accent));
+  }
+  .card:hover { transform: translateY(-3px); border-color: var(--cat-color, var(--accent)); box-shadow: var(--shadow); }
+  .card .row1 { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .card .cat {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted);
+    padding: 3px 8px; border-radius: 999px; background: var(--card-2);
+  }
+  .card .level {
+    font-size: 11px; padding: 3px 8px; border-radius: 999px; color: #fff;
+  }
+  .card .name { font-size: 15px; font-weight: 600; margin: 10px 0 6px; line-height: 1.4; }
+  .card .desc { font-size: 12px; color: var(--muted); line-height: 1.55; min-height: 36px; }
+  .card .foot { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
+  .hot { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
+  .hot-bar { width: 80px; height: 4px; background: var(--card-2); border-radius: 4px; overflow: hidden; }
+  .hot-bar > span { display: block; height: 100%; background: linear-gradient(90deg, #fbbf24, #ef4444); border-radius: 4px; }
+  .id { font-size: 10px; color: var(--muted); font-family: ui-monospace, "JetBrains Mono", monospace; }
+  .empty { text-align: center; color: var(--muted); padding: 60px 20px; }
+  .empty h3 { color: var(--text); margin-bottom: 6px; }
+  /* Modal */
+  .modal {
+    position: fixed; inset: 0; background: rgba(2,6,23,0.6);
+    display: none; align-items: center; justify-content: center; z-index: 50; padding: 20px;
+    backdrop-filter: blur(6px);
+  }
+  .modal.open { display: flex; animation: fade 0.2s ease; }
+  .modal .box {
+    background: var(--card); border: 1px solid var(--border); border-radius: 18px;
+    padding: 28px; max-width: 520px; width: 100%; box-shadow: var(--shadow); position: relative;
+  }
+  .modal .close { position: absolute; top: 14px; right: 14px; background: transparent; border: none; color: var(--muted); cursor: pointer; font-size: 18px; }
+  .modal h2 { font-size: 22px; margin: 6px 0 6px; }
+  .modal .row { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 16px; }
+  .modal .badge { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: var(--card-2); color: var(--text); }
+  .modal p { color: var(--muted); line-height: 1.7; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  footer { text-align: center; color: var(--muted); font-size: 12px; margin-top: 36px; }
+
+  @media (max-width: 720px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .container { padding: 20px 14px 60px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="brand">
+      <div class="logo">⚡</div>
+      <div>
+        <h1>职业技能库</h1>
+        <div class="subtitle">覆盖 15 个领域、240+ 项专业技能</div>
+      </div>
+    </div>
+    <div class="actions">
+      <button id="shuffleBtn" class="btn" title="随机抽 5 个">🎲 抽 5 个</button>
+      <button id="themeBtn" class="btn" title="切换主题">🌓 主题</button>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><div class="num" id="statTotal">—</div><div class="lbl">技能总数</div></div>
+    <div class="stat"><div class="num" id="statCat">—</div><div class="lbl">覆盖领域</div></div>
+    <div class="stat"><div class="num" id="statLevel">—</div><div class="lbl">技能等级</div></div>
+    <div class="stat"><div class="num" id="statShown">—</div><div class="lbl">当前显示</div></div>
+  </div>
+
+  <div class="panel">
+    <div class="search-row">
+      <input id="search" class="search" placeholder="搜索技能名称、描述…" />
+      <select id="levelSel" class="select">
+        <option value="">所有等级</option>
+        <option>入门</option><option>初级</option><option>中级</option><option>高级</option><option>专家</option>
+      </select>
+      <select id="sortSel" class="select">
+        <option value="default">默认排序</option>
+        <option value="hot">热度降序</option>
+        <option value="name">名称 A→Z</option>
+        <option value="level">等级降序</option>
+      </select>
+    </div>
+    <div id="chips" class="chips"></div>
+  </div>
+
+  <div id="grid" class="grid"></div>
+  <div id="empty" class="empty" style="display:none">
+    <h3>没有匹配的技能</h3>
+    <p>试试更换关键词或重置筛选条件</p>
+  </div>
+
+  <footer>数据随机生成 · 仅作示例展示</footer>
+</div>
+
+<div id="modal" class="modal">
+  <div class="box">
+    <button class="close" id="closeModal">✕</button>
+    <div id="modalCat" class="card cat" style="display:inline-flex;margin-bottom:4px"></div>
+    <h2 id="modalName"></h2>
+    <div class="row">
+      <span id="modalLevel" class="badge"></span>
+      <span id="modalHot" class="badge"></span>
+      <span id="modalId" class="badge"></span>
+    </div>
+    <p id="modalDesc"></p>
+  </div>
+</div>
+
+<script>
+let DATA = null;
+const LEVEL_ORDER = { "入门":1, "初级":2, "中级":3, "高级":4, "专家":5 };
+const LEVEL_COLOR = {
+  "入门":"#94a3b8", "初级":"#10b981", "中级":"#3b82f6",
+  "高级":"#8b5cf6", "专家":"#ef4444"
+};
+
+const state = { q: "", cat: "全部", level: "", sort: "default" };
+
+function el(html) { const d = document.createElement("div"); d.innerHTML = html.trim(); return d.firstChild; }
+
+function renderChips() {
+  const wrap = document.getElementById("chips");
+  wrap.innerHTML = "";
+  const cats = ["全部", ...Object.keys(DATA.categories)];
+  cats.forEach(c => {
+    const meta = c === "全部" ? { color: "#6ea8ff", icon: "🌐" } : DATA.categories[c];
+    const chip = el(`<div class="chip ${state.cat===c?'active':''}" data-cat="${c}">
+      <span class="dot" style="background:${meta.color}"></span>${meta.icon} ${c}
+    </div>`);
+    chip.addEventListener("click", () => { state.cat = c; renderChips(); renderGrid(); });
+    wrap.appendChild(chip);
+  });
+}
+
+function applyFilters() {
+  let arr = DATA.items.slice();
+  if (state.q) {
+    const q = state.q.toLowerCase();
+    arr = arr.filter(x => x.name.toLowerCase().includes(q) || x.description.toLowerCase().includes(q));
+  }
+  if (state.cat !== "全部") arr = arr.filter(x => x.category === state.cat);
+  if (state.level) arr = arr.filter(x => x.level === state.level);
+  if (state.sort === "hot") arr.sort((a,b) => b.hot - a.hot);
+  else if (state.sort === "name") arr.sort((a,b) => a.name.localeCompare(b.name, "zh"));
+  else if (state.sort === "level") arr.sort((a,b) => LEVEL_ORDER[b.level]-LEVEL_ORDER[a.level]);
+  return arr;
+}
+
+function renderGrid() {
+  const grid = document.getElementById("grid");
+  const empty = document.getElementById("empty");
+  const list = applyFilters();
+  document.getElementById("statShown").textContent = list.length;
+  if (!list.length) { grid.innerHTML = ""; empty.style.display = "block"; return; }
+  empty.style.display = "none";
+  grid.innerHTML = "";
+  const frag = document.createDocumentFragment();
+  list.forEach(item => {
+    const meta = DATA.categories[item.category];
+    const card = el(`<div class="card" style="--cat-color:${meta.color}">
+      <div class="row1">
+        <div class="cat">${meta.icon} ${item.category}</div>
+        <div class="level" style="background:${LEVEL_COLOR[item.level]}">${item.level}</div>
+      </div>
+      <div class="name">${item.name}</div>
+      <div class="desc">${item.description}</div>
+      <div class="foot">
+        <div class="hot">
+          <span>热度</span>
+          <div class="hot-bar"><span style="width:${item.hot}%"></span></div>
+          <span>${item.hot}</span>
+        </div>
+        <span class="id">#${item.id}</span>
+      </div>
+    </div>`);
+    card.addEventListener("click", () => openModal(item));
+    frag.appendChild(card);
+  });
+  grid.appendChild(frag);
+}
+
+function openModal(item) {
+  const meta = DATA.categories[item.category];
+  document.getElementById("modalCat").innerHTML = `${meta.icon} ${item.category}`;
+  document.getElementById("modalName").textContent = item.name;
+  document.getElementById("modalLevel").textContent = "等级：" + item.level;
+  document.getElementById("modalHot").textContent = "热度：" + item.hot;
+  document.getElementById("modalId").textContent = "ID：" + item.id;
+  document.getElementById("modalDesc").textContent = item.description;
+  document.getElementById("modal").classList.add("open");
+}
+document.getElementById("closeModal").addEventListener("click", () => {
+  document.getElementById("modal").classList.remove("open");
+});
+document.getElementById("modal").addEventListener("click", (e) => {
+  if (e.target.id === "modal") e.currentTarget.classList.remove("open");
+});
+
+document.getElementById("search").addEventListener("input", (e) => { state.q = e.target.value; renderGrid(); });
+document.getElementById("levelSel").addEventListener("change", (e) => { state.level = e.target.value; renderGrid(); });
+document.getElementById("sortSel").addEventListener("change", (e) => { state.sort = e.target.value; renderGrid(); });
+document.getElementById("shuffleBtn").addEventListener("click", () => {
+  const list = applyFilters();
+  if (!list.length) return;
+  const picks = [...list].sort(() => Math.random() - 0.5).slice(0, 5);
+  picks.forEach(p => openModal(p));
+});
+document.getElementById("themeBtn").addEventListener("click", () => {
+  const html = document.documentElement;
+  const next = html.getAttribute("data-theme") === "light" ? "dark" : "light";
+  html.setAttribute("data-theme", next);
+});
+
+async function init() {
+  const res = await fetch("skills.json");
+  DATA = await res.json();
+  document.getElementById("statTotal").textContent = DATA.items.length;
+  document.getElementById("statCat").textContent = Object.keys(DATA.categories).length;
+  document.getElementById("statLevel").textContent = new Set(DATA.items.map(i=>i.level)).size;
+  renderChips();
+  renderGrid();
+}
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,2226 @@
+{
+  "categories": {
+    "编程开发": {
+      "color": "#3b82f6",
+      "icon": "💻"
+    },
+    "数据与AI": {
+      "color": "#8b5cf6",
+      "icon": "🧠"
+    },
+    "设计与创意": {
+      "color": "#ec4899",
+      "icon": "🎨"
+    },
+    "产品与运营": {
+      "color": "#f59e0b",
+      "icon": "🚀"
+    },
+    "市场营销": {
+      "color": "#ef4444",
+      "icon": "📣"
+    },
+    "销售与商务": {
+      "color": "#10b981",
+      "icon": "🤝"
+    },
+    "金融与财务": {
+      "color": "#0ea5e9",
+      "icon": "💰"
+    },
+    "项目管理": {
+      "color": "#6366f1",
+      "icon": "📋"
+    },
+    "人力资源": {
+      "color": "#f97316",
+      "icon": "👥"
+    },
+    "语言与沟通": {
+      "color": "#14b8a6",
+      "icon": "🗣️"
+    },
+    "工程与制造": {
+      "color": "#64748b",
+      "icon": "⚙️"
+    },
+    "医疗与健康": {
+      "color": "#22c55e",
+      "icon": "🏥"
+    },
+    "教育与培训": {
+      "color": "#a855f7",
+      "icon": "📚"
+    },
+    "法律与合规": {
+      "color": "#475569",
+      "icon": "⚖️"
+    },
+    "行政与办公": {
+      "color": "#0891b2",
+      "icon": "🗂️"
+    }
+  },
+  "items": [
+    {
+      "id": "46ac7b8e",
+      "index": 1,
+      "name": "智能税务筹划",
+      "category": "金融与财务",
+      "level": "初级",
+      "description": "具备扎实的理论基础与丰富的项目落地经验，善于解决复杂问题。",
+      "hot": 73
+    },
+    {
+      "id": "c4c2c096",
+      "index": 2,
+      "name": "响应式网络安全合规",
+      "category": "法律与合规",
+      "level": "中级",
+      "description": "具备扎实的理论基础与丰富的项目落地经验，善于解决复杂问题。",
+      "hot": 95
+    },
+    {
+      "id": "910b7833",
+      "index": 3,
+      "name": "响应式临床诊疗",
+      "category": "医疗与健康",
+      "level": "高级",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 55
+    },
+    {
+      "id": "20047afe",
+      "index": 4,
+      "name": "微服务员工持股计划",
+      "category": "人力资源",
+      "level": "初级",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 47
+    },
+    {
+      "id": "d6a9cc0f",
+      "index": 5,
+      "name": "现代化健康管理",
+      "category": "医疗与健康",
+      "level": "高级",
+      "description": "具备扎实的理论基础与丰富的项目落地经验，善于解决复杂问题。",
+      "hot": 80
+    },
+    {
+      "id": "5f83324a",
+      "index": 6,
+      "name": "可视化经销商管理",
+      "category": "销售与商务",
+      "level": "高级",
+      "description": "深入理解领域核心概念，可主导大型项目从 0 到 1 的搭建。",
+      "hot": 46
+    },
+    {
+      "id": "45e7c0cd",
+      "index": 7,
+      "name": "自动化IPO 上市辅导",
+      "category": "金融与财务",
+      "level": "中级",
+      "description": "深入理解领域核心概念，可主导大型项目从 0 到 1 的搭建。",
+      "hot": 46
+    },
+    {
+      "id": "0bec97da",
+      "index": 8,
+      "name": "可视化数字营销",
+      "category": "市场营销",
+      "level": "高级",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 44
+    },
+    {
+      "id": "4b9ef1b4",
+      "index": 9,
+      "name": "响应式知乎内容营销",
+      "category": "市场营销",
+      "level": "高级",
+      "description": "熟悉主流工具与最佳实践，注重性能、可维护性与团队协作。",
+      "hot": 47
+    },
+    {
+      "id": "53559652",
+      "index": 10,
+      "name": "硬件测试",
+      "category": "工程与制造",
+      "level": "中级",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 43
+    },
+    {
+      "id": "9dda9c6c",
+      "index": 11,
+      "name": "智能信息架构",
+      "category": "设计与创意",
+      "level": "专家",
+      "description": "具备较强的跨部门协作与影响力，推动变革发生。",
+      "hot": 99
+    },
+    {
+      "id": "23626c91",
+      "index": 12,
+      "name": "可视化法务管理",
+      "category": "法律与合规",
+      "level": "入门",
+      "description": "熟悉主流工具与最佳实践，注重性能、可维护性与团队协作。",
+      "hot": 77
+    },
+    {
+      "id": "6ccc2b61",
+      "index": 13,
+      "name": "云原生Ruby on Rails",
+      "category": "编程开发",
+      "level": "入门",
+      "description": "兼具战略视野与执行能力，能够赋能团队共同成长。",
+      "hot": 67
+    },
+    {
+      "id": "0045e09e",
+      "index": 14,
+      "name": "低代码临床诊疗",
+      "category": "医疗与健康",
+      "level": "入门",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 52
+    },
+    {
+      "id": "d5cc6aff",
+      "index": 15,
+      "name": "可视化俄语商务",
+      "category": "语言与沟通",
+      "level": "初级",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 93
+    },
+    {
+      "id": "2ceac541",
+      "index": 16,
+      "name": "医保审核",
+      "category": "医疗与健康",
+      "level": "专家",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 71
+    },
+    {
+      "id": "08f26584",
+      "index": 17,
+      "name": "安全语音识别",
+      "category": "数据与AI",
+      "level": "中级",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 69
+    },
+    {
+      "id": "e87d273e",
+      "index": 18,
+      "name": "高可用财务分析",
+      "category": "金融与财务",
+      "level": "初级",
+      "description": "能结合业务场景灵活应用，持续推动效率提升与价值创造。",
+      "hot": 61
+    },
+    {
+      "id": "5ea880a9",
+      "index": 19,
+      "name": "模块化直销管理",
+      "category": "销售与商务",
+      "level": "中级",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 50
+    },
+    {
+      "id": "5ccf3ad6",
+      "index": 20,
+      "name": "云原生机械设计",
+      "category": "工程与制造",
+      "level": "专家",
+      "description": "深入理解领域核心概念，可主导大型项目从 0 到 1 的搭建。",
+      "hot": 56
+    },
+    {
+      "id": "ad1b159b",
+      "index": 21,
+      "name": "分布式GraphQL 服务端",
+      "category": "编程开发",
+      "level": "入门",
+      "description": "熟悉主流工具与最佳实践，注重性能、可维护性与团队协作。",
+      "hot": 98
+    },
+    {
+      "id": "fde94be1",
+      "index": 22,
+      "name": "C++ 性能优化",
+      "category": "编程开发",
+      "level": "高级",
+      "description": "兼具战略视野与执行能力，能够赋能团队共同成长。",
+      "hot": 42
+    },
+    {
+      "id": "3880ce91",
+      "index": 23,
+      "name": "食堂运营",
+      "category": "行政与办公",
+      "level": "入门",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 54
+    },
+    {
+      "id": "21ccf0a0",
+      "index": 24,
+      "name": "分布式进出口贸易",
+      "category": "销售与商务",
+      "level": "初级",
+      "description": "掌握从基础到精通的全链路实践，能独立交付企业级方案。",
+      "hot": 86
+    },
+    {
+      "id": "dc0297fe",
+      "index": 25,
+      "name": "响应式进度管理",
+      "category": "项目管理",
+      "level": "中级",
+      "description": "能够将复杂问题拆解为可执行步骤并持续交付结果。",
+      "hot": 91
+    },
+    {
+      "id": "9dff64c1",
+      "index": 26,
+      "name": "模块化基金运营",
+      "category": "金融与财务",
+      "level": "入门",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 48
+    },
+    {
+      "id": "666e6aec",
+      "index": 27,
+      "name": "微服务康复治疗",
+      "category": "医疗与健康",
+      "level": "初级",
+      "description": "熟悉主流工具与最佳实践，注重性能、可维护性与团队协作。",
+      "hot": 78
+    },
+    {
+      "id": "583cb77f",
+      "index": 28,
+      "name": "实时三维建模",
+      "category": "设计与创意",
+      "level": "入门",
+      "description": "能结合业务场景灵活应用，持续推动效率提升与价值创造。",
+      "hot": 50
+    },
+    {
+      "id": "2bb64b26",
+      "index": 29,
+      "name": "实时MOOC 课程开发",
+      "category": "教育与培训",
+      "level": "专家",
+      "description": "掌握从基础到精通的全链路实践，能独立交付企业级方案。",
+      "hot": 66
+    },
+    {
+      "id": "df3f9f2e",
+      "index": 30,
+      "name": "资深知识产权保护",
+      "category": "法律与合规",
+      "level": "高级",
+      "description": "兼具战略视野与执行能力，能够赋能团队共同成长。",
+      "hot": 77
+    },
+    {
+      "id": "b3dbb163",
+      "index": 31,
+      "name": "模块化KYC 客户尽调",
+      "category": "金融与财务",
+      "level": "高级",
+      "description": "能结合业务场景灵活应用，持续推动效率提升与价值创造。",
+      "hot": 72
+    },
+    {
+      "id": "399e2069",
+      "index": 32,
+      "name": "配置管理",
+      "category": "项目管理",
+      "level": "专家",
+      "description": "兼具战略视野与执行能力，能够赋能团队共同成长。",
+      "hot": 48
+    },
+    {
+      "id": "8f50e859",
+      "index": 33,
+      "name": "高级数据仓库",
+      "category": "数据与AI",
+      "level": "中级",
+      "description": "兼具战略视野与执行能力，能够赋能团队共同成长。",
+      "hot": 42
+    },
+    {
+      "id": "68c535be",
+      "index": 34,
+      "name": "ESG 报告",
+      "category": "法律与合规",
+      "level": "专家",
+      "description": "能结合业务场景灵活应用，持续推动效率提升与价值创造。",
+      "hot": 47
+    },
+    {
+      "id": "312e4a1d",
+      "index": 35,
+      "name": "分布式Flink 实时计算",
+      "category": "数据与AI",
+      "level": "高级",
+      "description": "能结合业务场景灵活应用，持续推动效率提升与价值创造。",
+      "hot": 89
+    },
+    {
+      "id": "2dd2fd8c",
+      "index": 36,
+      "name": "跨平台远程团队管理",
+      "category": "人力资源",
+      "level": "专家",
+      "description": "具备扎实的理论基础与丰富的项目落地经验，善于解决复杂问题。",
+      "hot": 91
+    },
+    {
+      "id": "9011fcee",
+      "index": 37,
+      "name": "模块化内部控制",
+      "category": "金融与财务",
+      "level": "高级",
+      "description": "能结合业务场景灵活应用，持续推动效率提升与价值创造。",
+      "hot": 56
+    },
+    {
+      "id": "e30326d9",
+      "index": 38,
+      "name": "资深SQL 调优",
+      "category": "数据与AI",
+      "level": "初级",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 46
+    },
+    {
+      "id": "4d4e1288",
+      "index": 39,
+      "name": "自动化微课设计",
+      "category": "教育与培训",
+      "level": "初级",
+      "description": "能结合业务场景灵活应用，持续推动效率提升与价值创造。",
+      "hot": 88
+    },
+    {
+      "id": "33278979",
+      "index": 40,
+      "name": "智能IT 服务管理",
+      "category": "项目管理",
+      "level": "专家",
+      "description": "具备较强的跨部门协作与影响力，推动变革发生。",
+      "hot": 57
+    },
+    {
+      "id": "3a429805",
+      "index": 41,
+      "name": "容器化客户旅程地图",
+      "category": "设计与创意",
+      "level": "高级",
+      "description": "深入理解领域核心概念，可主导大型项目从 0 到 1 的搭建。",
+      "hot": 56
+    },
+    {
+      "id": "18e1fd7a",
+      "index": 42,
+      "name": "高级渲染与材质",
+      "category": "设计与创意",
+      "level": "中级",
+      "description": "能结合业务场景灵活应用，持续推动效率提升与价值创造。",
+      "hot": 66
+    },
+    {
+      "id": "8b0fc84e",
+      "index": 43,
+      "name": "高并发灰度发布",
+      "category": "项目管理",
+      "level": "入门",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 40
+    },
+    {
+      "id": "da56aff2",
+      "index": 44,
+      "name": "现代化网络安全合规",
+      "category": "法律与合规",
+      "level": "初级",
+      "description": "熟悉主流工具与最佳实践，注重性能、可维护性与团队协作。",
+      "hot": 74
+    },
+    {
+      "id": "e665070e",
+      "index": 45,
+      "name": "实时安保管理",
+      "category": "行政与办公",
+      "level": "专家",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 86
+    },
+    {
+      "id": "8c123d60",
+      "index": 46,
+      "name": "响应式内容运营",
+      "category": "产品与运营",
+      "level": "高级",
+      "description": "熟悉主流工具与最佳实践，注重性能、可维护性与团队协作。",
+      "hot": 57
+    },
+    {
+      "id": "6ae3d61c",
+      "index": 47,
+      "name": "自动化司库管理",
+      "category": "金融与财务",
+      "level": "入门",
+      "description": "具备扎实的理论基础与丰富的项目落地经验，善于解决复杂问题。",
+      "hot": 66
+    },
+    {
+      "id": "550319d2",
+      "index": 48,
+      "name": "高可用MOOC 课程开发",
+      "category": "教育与培训",
+      "level": "中级",
+      "description": "具备扎实的理论基础与丰富的项目落地经验，善于解决复杂问题。",
+      "hot": 81
+    },
+    {
+      "id": "4ac8c4e1",
+      "index": 49,
+      "name": "实时药剂调配",
+      "category": "医疗与健康",
+      "level": "入门",
+      "description": "能够将复杂问题拆解为可执行步骤并持续交付结果。",
+      "hot": 53
+    },
+    {
+      "id": "5e1ea38c",
+      "index": 50,
+      "name": "可视化定价策略",
+      "category": "产品与运营",
+      "level": "中级",
+      "description": "具备扎实的理论基础与丰富的项目落地经验，善于解决复杂问题。",
+      "hot": 78
+    },
+    {
+      "id": "dd0b488d",
+      "index": 51,
+      "name": "容器化质量管理",
+      "category": "项目管理",
+      "level": "初级",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 98
+    },
+    {
+      "id": "9d24e759",
+      "index": 52,
+      "name": "跨平台院感控制",
+      "category": "医疗与健康",
+      "level": "中级",
+      "description": "深入理解领域核心概念，可主导大型项目从 0 到 1 的搭建。",
+      "hot": 60
+    },
+    {
+      "id": "d3196b7b",
+      "index": 53,
+      "name": "现代化主持与控场",
+      "category": "语言与沟通",
+      "level": "中级",
+      "description": "深入理解领域核心概念，可主导大型项目从 0 到 1 的搭建。",
+      "hot": 86
+    },
+    {
+      "id": "fb656c97",
+      "index": 54,
+      "name": "资深Premiere 视频剪辑",
+      "category": "设计与创意",
+      "level": "高级",
+      "description": "能够将复杂问题拆解为可执行步骤并持续交付结果。",
+      "hot": 57
+    },
+    {
+      "id": "8f9a3118",
+      "index": 55,
+      "name": "跨平台Go 后端服务",
+      "category": "编程开发",
+      "level": "入门",
+      "description": "熟悉主流工具与最佳实践，注重性能、可维护性与团队协作。",
+      "hot": 59
+    },
+    {
+      "id": "5d058bef",
+      "index": 56,
+      "name": "高级整合营销传播",
+      "category": "市场营销",
+      "level": "专家",
+      "description": "能结合业务场景灵活应用，持续推动效率提升与价值创造。",
+      "hot": 97
+    },
+    {
+      "id": "8aa8964e",
+      "index": 57,
+      "name": "微服务财务报表分析",
+      "category": "金融与财务",
+      "level": "高级",
+      "description": "兼具战略视野与执行能力，能够赋能团队共同成长。",
+      "hot": 45
+    },
+    {
+      "id": "aaa4b6c7",
+      "index": 58,
+      "name": "安全风险管理",
+      "category": "金融与财务",
+      "level": "入门",
+      "description": "熟悉主流工具与最佳实践，注重性能、可维护性与团队协作。",
+      "hot": 69
+    },
+    {
+      "id": "c85c566d",
+      "index": 59,
+      "name": "安全KYC 客户尽调",
+      "category": "金融与财务",
+      "level": "高级",
+      "description": "兼具战略视野与执行能力，能够赋能团队共同成长。",
+      "hot": 69
+    },
+    {
+      "id": "171c4856",
+      "index": 60,
+      "name": "高级MOOC 课程开发",
+      "category": "教育与培训",
+      "level": "中级",
+      "description": "熟悉主流工具与最佳实践，注重性能、可维护性与团队协作。",
+      "hot": 67
+    },
+    {
+      "id": "81fa46ee",
+      "index": 61,
+      "name": "跨平台数据可视化",
+      "category": "数据与AI",
+      "level": "专家",
+      "description": "能够将复杂问题拆解为可执行步骤并持续交付结果。",
+      "hot": 58
+    },
+    {
+      "id": "81e488cb",
+      "index": 62,
+      "name": "投资分析",
+      "category": "金融与财务",
+      "level": "中级",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 41
+    },
+    {
+      "id": "1dd1300b",
+      "index": 63,
+      "name": "自动化食堂运营",
+      "category": "行政与办公",
+      "level": "初级",
+      "description": "熟悉主流工具与最佳实践，注重性能、可维护性与团队协作。",
+      "hot": 74
+    },
+    {
+      "id": "464f91e1",
+      "index": 64,
+      "name": "可视化DRG/DIP 病案",
+      "category": "医疗与健康",
+      "level": "专家",
+      "description": "能够将复杂问题拆解为可执行步骤并持续交付结果。",
+      "hot": 48
+    },
+    {
+      "id": "7aef7f05",
+      "index": 65,
+      "name": "阿里巴巴国际站",
+      "category": "销售与商务",
+      "level": "专家",
+      "description": "能够将复杂问题拆解为可执行步骤并持续交付结果。",
+      "hot": 64
+    },
+    {
+      "id": "a7bd91aa",
+      "index": 66,
+      "name": "刑事辩护",
+      "category": "法律与合规",
+      "level": "初级",
+      "description": "熟悉主流工具与最佳实践，注重性能、可维护性与团队协作。",
+      "hot": 95
+    },
+    {
+      "id": "976dc443",
+      "index": 67,
+      "name": "云原生差旅安排",
+      "category": "行政与办公",
+      "level": "高级",
+      "description": "具备扎实的理论基础与丰富的项目落地经验，善于解决复杂问题。",
+      "hot": 62
+    },
+    {
+      "id": "832215bd",
+      "index": 68,
+      "name": "可视化破产重整",
+      "category": "法律与合规",
+      "level": "中级",
+      "description": "具备扎实的理论基础与丰富的项目落地经验，善于解决复杂问题。",
+      "hot": 92
+    },
+    {
+      "id": "f43689e3",
+      "index": 69,
+      "name": "SMT 工艺",
+      "category": "工程与制造",
+      "level": "初级",
+      "description": "熟悉主流工具与最佳实践，注重性能、可维护性与团队协作。",
+      "hot": 59
+    },
+    {
+      "id": "374cc442",
+      "index": 70,
+      "name": "分布式员工心理健康",
+      "category": "人力资源",
+      "level": "专家",
+      "description": "深入理解领域核心概念，可主导大型项目从 0 到 1 的搭建。",
+      "hot": 77
+    },
+    {
+      "id": "3a4faf61",
+      "index": 71,
+      "name": "微服务信用评估",
+      "category": "金融与财务",
+      "level": "专家",
+      "description": "能结合业务场景灵活应用，持续推动效率提升与价值创造。",
+      "hot": 72
+    },
+    {
+      "id": "16f253f5",
+      "index": 72,
+      "name": "可扩展新员工引导",
+      "category": "教育与培训",
+      "level": "高级",
+      "description": "深入理解领域核心概念，可主导大型项目从 0 到 1 的搭建。",
+      "hot": 88
+    },
+    {
+      "id": "3ac01c7e",
+      "index": 73,
+      "name": "安全PRD 撰写",
+      "category": "产品与运营",
+      "level": "中级",
+      "description": "具备扎实的理论基础与丰富的项目落地经验，善于解决复杂问题。",
+      "hot": 84
+    },
+    {
+      "id": "d467a717",
+      "index": 74,
+      "name": "自动化合同管理",
+      "category": "法律与合规",
+      "level": "专家",
+      "description": "具备扎实的理论基础与丰富的项目落地经验，善于解决复杂问题。",
+      "hot": 99
+    },
+    {
+      "id": "cc1e29aa",
+      "index": 75,
+      "name": "容器化中医辨证",
+      "category": "医疗与健康",
+      "level": "专家",
+      "description": "能够将复杂问题拆解为可执行步骤并持续交付结果。",
+      "hot": 50
+    },
+    {
+      "id": "89f0aeaf",
+      "index": 76,
+      "name": "跨平台MES 系统实施",
+      "category": "工程与制造",
+      "level": "初级",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 59
+    },
+    {
+      "id": "0400284f",
+      "index": 77,
+      "name": "自动化合同审查",
+      "category": "法律与合规",
+      "level": "初级",
+      "description": "具备扎实的理论基础与丰富的项目落地经验，善于解决复杂问题。",
+      "hot": 61
+    },
+    {
+      "id": "9fcd7eef",
+      "index": 78,
+      "name": "高级新闻稿发布",
+      "category": "市场营销",
+      "level": "专家",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 82
+    },
+    {
+      "id": "167e7b1b",
+      "index": 79,
+      "name": "自动化海报排版设计",
+      "category": "设计与创意",
+      "level": "中级",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 62
+    },
+    {
+      "id": "459e4f27",
+      "index": 80,
+      "name": "可视化Kotlin Android",
+      "category": "编程开发",
+      "level": "入门",
+      "description": "能够将复杂问题拆解为可执行步骤并持续交付结果。",
+      "hot": 42
+    },
+    {
+      "id": "a71b1b0b",
+      "index": 81,
+      "name": "低代码校园招聘",
+      "category": "人力资源",
+      "level": "高级",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 52
+    },
+    {
+      "id": "69273f44",
+      "index": 82,
+      "name": "自动化老年照护",
+      "category": "医疗与健康",
+      "level": "初级",
+      "description": "兼具战略视野与执行能力，能够赋能团队共同成长。",
+      "hot": 52
+    },
+    {
+      "id": "e41a03b6",
+      "index": 83,
+      "name": "高级员工活动策划",
+      "category": "行政与办公",
+      "level": "中级",
+      "description": "熟悉主流工具与最佳实践，注重性能、可维护性与团队协作。",
+      "hot": 83
+    },
+    {
+      "id": "541ae3d2",
+      "index": 84,
+      "name": "跨平台风险管理",
+      "category": "金融与财务",
+      "level": "高级",
+      "description": "具备较强的跨部门协作与影响力，推动变革发生。",
+      "hot": 64
+    },
+    {
+      "id": "a49d2e48",
+      "index": 85,
+      "name": "自动化网络安全合规",
+      "category": "法律与合规",
+      "level": "入门",
+      "description": "能够将复杂问题拆解为可执行步骤并持续交付结果。",
+      "hot": 67
+    },
+    {
+      "id": "2d977349",
+      "index": 86,
+      "name": "实时Swift iOS 开发",
+      "category": "编程开发",
+      "level": "中级",
+      "description": "兼具战略视野与执行能力，能够赋能团队共同成长。",
+      "hot": 81
+    },
+    {
+      "id": "0fb80a26",
+      "index": 87,
+      "name": "云原生游戏化学习",
+      "category": "教育与培训",
+      "level": "高级",
+      "description": "具备较强的跨部门协作与影响力，推动变革发生。",
+      "hot": 58
+    },
+    {
+      "id": "b6b37b0c",
+      "index": 88,
+      "name": "智能制造",
+      "category": "工程与制造",
+      "level": "中级",
+      "description": "掌握从基础到精通的全链路实践，能独立交付企业级方案。",
+      "hot": 54
+    },
+    {
+      "id": "85f076b6",
+      "index": 89,
+      "name": "云原生办公室装修",
+      "category": "行政与办公",
+      "level": "专家",
+      "description": "深入理解领域核心概念，可主导大型项目从 0 到 1 的搭建。",
+      "hot": 46
+    },
+    {
+      "id": "1cbd94ba",
+      "index": 90,
+      "name": "云原生员工关系",
+      "category": "人力资源",
+      "level": "入门",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 78
+    },
+    {
+      "id": "0a7abb57",
+      "index": 91,
+      "name": "跨平台Electron 桌面端",
+      "category": "编程开发",
+      "level": "高级",
+      "description": "具备扎实的理论基础与丰富的项目落地经验，善于解决复杂问题。",
+      "hot": 52
+    },
+    {
+      "id": "5a9e29f6",
+      "index": 92,
+      "name": "低代码股权投资",
+      "category": "金融与财务",
+      "level": "中级",
+      "description": "能够将复杂问题拆解为可执行步骤并持续交付结果。",
+      "hot": 73
+    },
+    {
+      "id": "be81b8ca",
+      "index": 93,
+      "name": "容器化商务谈判",
+      "category": "销售与商务",
+      "level": "高级",
+      "description": "能够将复杂问题拆解为可执行步骤并持续交付结果。",
+      "hot": 69
+    },
+    {
+      "id": "d7318ee3",
+      "index": 94,
+      "name": "实时投资分析",
+      "category": "金融与财务",
+      "level": "初级",
+      "description": "能结合业务场景灵活应用，持续推动效率提升与价值创造。",
+      "hot": 67
+    },
+    {
+      "id": "85d87bfb",
+      "index": 95,
+      "name": "私域流量运营",
+      "category": "市场营销",
+      "level": "高级",
+      "description": "具备较强的跨部门协作与影响力，推动变革发生。",
+      "hot": 67
+    },
+    {
+      "id": "d84061be",
+      "index": 96,
+      "name": "智能客户分层运营",
+      "category": "销售与商务",
+      "level": "中级",
+      "description": "深入理解领域核心概念，可主导大型项目从 0 到 1 的搭建。",
+      "hot": 61
+    },
+    {
+      "id": "b453471a",
+      "index": 97,
+      "name": "高并发Blender 三维创作",
+      "category": "设计与创意",
+      "level": "初级",
+      "description": "熟悉主流工具与最佳实践，注重性能、可维护性与团队协作。",
+      "hot": 81
+    },
+    {
+      "id": "9378ddc5",
+      "index": 98,
+      "name": "企业级管培生带教",
+      "category": "教育与培训",
+      "level": "入门",
+      "description": "深入理解领域核心概念，可主导大型项目从 0 到 1 的搭建。",
+      "hot": 83
+    },
+    {
+      "id": "75d47fd4",
+      "index": 99,
+      "name": "高可用Scala 大数据",
+      "category": "编程开发",
+      "level": "专家",
+      "description": "具备扎实的理论基础与丰富的项目落地经验，善于解决复杂问题。",
+      "hot": 97
+    },
+    {
+      "id": "1d4c0d1b",
+      "index": 100,
+      "name": "容器化3D 打印技术",
+      "category": "工程与制造",
+      "level": "入门",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 42
+    },
+    {
+      "id": "238112d0",
+      "index": 101,
+      "name": "企业级C++ 性能优化",
+      "category": "编程开发",
+      "level": "入门",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 64
+    },
+    {
+      "id": "a37bd5f5",
+      "index": 102,
+      "name": "模块化引导式培训",
+      "category": "教育与培训",
+      "level": "初级",
+      "description": "兼具战略视野与执行能力，能够赋能团队共同成长。",
+      "hot": 88
+    },
+    {
+      "id": "007f3ebf",
+      "index": 103,
+      "name": "安全固定资产管理",
+      "category": "行政与办公",
+      "level": "中级",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 60
+    },
+    {
+      "id": "7d802ad3",
+      "index": 104,
+      "name": "可视化文案撰写",
+      "category": "语言与沟通",
+      "level": "入门",
+      "description": "能够将复杂问题拆解为可执行步骤并持续交付结果。",
+      "hot": 61
+    },
+    {
+      "id": "eaf2769d",
+      "index": 105,
+      "name": "资深精益创业",
+      "category": "项目管理",
+      "level": "中级",
+      "description": "能够将复杂问题拆解为可执行步骤并持续交付结果。",
+      "hot": 51
+    },
+    {
+      "id": "3143abea",
+      "index": 106,
+      "name": "低代码律师执业管理",
+      "category": "法律与合规",
+      "level": "专家",
+      "description": "深入理解领域核心概念，可主导大型项目从 0 到 1 的搭建。",
+      "hot": 93
+    },
+    {
+      "id": "c50d0b52",
+      "index": 107,
+      "name": "可视化反垄断申报",
+      "category": "法律与合规",
+      "level": "入门",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 61
+    },
+    {
+      "id": "920a6008",
+      "index": 108,
+      "name": "保险精算",
+      "category": "金融与财务",
+      "level": "高级",
+      "description": "深入理解领域核心概念，可主导大型项目从 0 到 1 的搭建。",
+      "hot": 97
+    },
+    {
+      "id": "6f420948",
+      "index": 109,
+      "name": "容器化公众演讲",
+      "category": "语言与沟通",
+      "level": "初级",
+      "description": "能结合业务场景灵活应用，持续推动效率提升与价值创造。",
+      "hot": 96
+    },
+    {
+      "id": "14f9e7d9",
+      "index": 110,
+      "name": "智能KYC 客户尽调",
+      "category": "金融与财务",
+      "level": "高级",
+      "description": "具备扎实的理论基础与丰富的项目落地经验，善于解决复杂问题。",
+      "hot": 77
+    },
+    {
+      "id": "6ecce685",
+      "index": 111,
+      "name": "估值建模",
+      "category": "金融与财务",
+      "level": "高级",
+      "description": "能够将复杂问题拆解为可执行步骤并持续交付结果。",
+      "hot": 45
+    },
+    {
+      "id": "6f088cc7",
+      "index": 112,
+      "name": "可扩展ESG 报告",
+      "category": "法律与合规",
+      "level": "专家",
+      "description": "能结合业务场景灵活应用，持续推动效率提升与价值创造。",
+      "hot": 43
+    },
+    {
+      "id": "ff76ca0e",
+      "index": 113,
+      "name": "教研管理",
+      "category": "教育与培训",
+      "level": "初级",
+      "description": "具备扎实的理论基础与丰富的项目落地经验，善于解决复杂问题。",
+      "hot": 92
+    },
+    {
+      "id": "462f8e51",
+      "index": 114,
+      "name": "心理咨询",
+      "category": "医疗与健康",
+      "level": "入门",
+      "description": "能结合业务场景灵活应用，持续推动效率提升与价值创造。",
+      "hot": 48
+    },
+    {
+      "id": "a60eeb93",
+      "index": 115,
+      "name": "韩语 TOPIK",
+      "category": "语言与沟通",
+      "level": "中级",
+      "description": "掌握从基础到精通的全链路实践，能独立交付企业级方案。",
+      "hot": 79
+    },
+    {
+      "id": "c5399b87",
+      "index": 116,
+      "name": "法律咨询",
+      "category": "法律与合规",
+      "level": "专家",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 83
+    },
+    {
+      "id": "ebba8d8b",
+      "index": 117,
+      "name": "高级健康体检管理",
+      "category": "医疗与健康",
+      "level": "入门",
+      "description": "能够将复杂问题拆解为可执行步骤并持续交付结果。",
+      "hot": 98
+    },
+    {
+      "id": "c55ef18b",
+      "index": 118,
+      "name": "财务共享中心",
+      "category": "金融与财务",
+      "level": "高级",
+      "description": "具备较强的跨部门协作与影响力，推动变革发生。",
+      "hot": 46
+    },
+    {
+      "id": "a600b8de",
+      "index": 119,
+      "name": "高并发内部控制",
+      "category": "金融与财务",
+      "level": "高级",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 84
+    },
+    {
+      "id": "606cd9fe",
+      "index": 120,
+      "name": "高并发通讯录维护",
+      "category": "行政与办公",
+      "level": "专家",
+      "description": "掌握从基础到精通的全链路实践，能独立交付企业级方案。",
+      "hot": 42
+    },
+    {
+      "id": "175efa31",
+      "index": 121,
+      "name": "自动化在线教育运营",
+      "category": "教育与培训",
+      "level": "入门",
+      "description": "兼具战略视野与执行能力，能够赋能团队共同成长。",
+      "hot": 55
+    },
+    {
+      "id": "cf982f15",
+      "index": 122,
+      "name": "活动运营",
+      "category": "产品与运营",
+      "level": "入门",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 91
+    },
+    {
+      "id": "095ea187",
+      "index": 123,
+      "name": "容器化客户关系维护",
+      "category": "销售与商务",
+      "level": "专家",
+      "description": "兼具战略视野与执行能力，能够赋能团队共同成长。",
+      "hot": 93
+    },
+    {
+      "id": "a5756035",
+      "index": 124,
+      "name": "实时灵活用工管理",
+      "category": "人力资源",
+      "level": "中级",
+      "description": "能结合业务场景灵活应用，持续推动效率提升与价值创造。",
+      "hot": 56
+    },
+    {
+      "id": "4e6da984",
+      "index": 125,
+      "name": "资深手术室配合",
+      "category": "医疗与健康",
+      "level": "入门",
+      "description": "具备较强的跨部门协作与影响力，推动变革发生。",
+      "hot": 68
+    },
+    {
+      "id": "0526057d",
+      "index": 126,
+      "name": "低代码合同管理",
+      "category": "销售与商务",
+      "level": "专家",
+      "description": "具备较强的跨部门协作与影响力，推动变革发生。",
+      "hot": 52
+    },
+    {
+      "id": "11c1f584",
+      "index": 127,
+      "name": "高并发PMO 建设",
+      "category": "项目管理",
+      "level": "中级",
+      "description": "兼具战略视野与执行能力，能够赋能团队共同成长。",
+      "hot": 69
+    },
+    {
+      "id": "0fdc7cc5",
+      "index": 128,
+      "name": "故事化表达",
+      "category": "语言与沟通",
+      "level": "高级",
+      "description": "掌握从基础到精通的全链路实践，能独立交付企业级方案。",
+      "hot": 47
+    },
+    {
+      "id": "f904795d",
+      "index": 129,
+      "name": "模块化技术文档写作",
+      "category": "语言与沟通",
+      "level": "高级",
+      "description": "具备较强的跨部门协作与影响力，推动变革发生。",
+      "hot": 95
+    },
+    {
+      "id": "6b3ac1b4",
+      "index": 130,
+      "name": "企业级远程团队管理",
+      "category": "人力资源",
+      "level": "中级",
+      "description": "掌握从基础到精通的全链路实践，能独立交付企业级方案。",
+      "hot": 96
+    },
+    {
+      "id": "b410e77a",
+      "index": 131,
+      "name": "跨平台招投标管理",
+      "category": "销售与商务",
+      "level": "初级",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 69
+    },
+    {
+      "id": "311cfeb2",
+      "index": 132,
+      "name": "现代化设计系统建设",
+      "category": "设计与创意",
+      "level": "入门",
+      "description": "深入理解领域核心概念，可主导大型项目从 0 到 1 的搭建。",
+      "hot": 87
+    },
+    {
+      "id": "15ca6bc6",
+      "index": 133,
+      "name": "高可用游戏化学习",
+      "category": "教育与培训",
+      "level": "专家",
+      "description": "掌握从基础到精通的全链路实践，能独立交付企业级方案。",
+      "hot": 40
+    },
+    {
+      "id": "9fed6da0",
+      "index": 134,
+      "name": "智能PHP Web 开发",
+      "category": "编程开发",
+      "level": "中级",
+      "description": "深入理解领域核心概念，可主导大型项目从 0 到 1 的搭建。",
+      "hot": 86
+    },
+    {
+      "id": "dff75410",
+      "index": 135,
+      "name": "云原生用户增长",
+      "category": "产品与运营",
+      "level": "初级",
+      "description": "具备扎实的理论基础与丰富的项目落地经验，善于解决复杂问题。",
+      "hot": 52
+    },
+    {
+      "id": "3b96c80f",
+      "index": 136,
+      "name": "高并发客户旅程地图",
+      "category": "设计与创意",
+      "level": "专家",
+      "description": "熟悉主流工具与最佳实践，注重性能、可维护性与团队协作。",
+      "hot": 79
+    },
+    {
+      "id": "e2a8ffdd",
+      "index": 137,
+      "name": "教学评估",
+      "category": "教育与培训",
+      "level": "中级",
+      "description": "掌握从基础到精通的全链路实践，能独立交付企业级方案。",
+      "hot": 72
+    },
+    {
+      "id": "f5440658",
+      "index": 138,
+      "name": "低代码项目启动",
+      "category": "项目管理",
+      "level": "入门",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 79
+    },
+    {
+      "id": "31f62aab",
+      "index": 139,
+      "name": "企业级危机公关处理",
+      "category": "市场营销",
+      "level": "高级",
+      "description": "能够将复杂问题拆解为可执行步骤并持续交付结果。",
+      "hot": 97
+    },
+    {
+      "id": "82339a32",
+      "index": 140,
+      "name": "分布式原型设计",
+      "category": "设计与创意",
+      "level": "初级",
+      "description": "具备扎实的理论基础与丰富的项目落地经验，善于解决复杂问题。",
+      "hot": 91
+    },
+    {
+      "id": "b22c60d2",
+      "index": 141,
+      "name": "Flutter 跨端开发",
+      "category": "编程开发",
+      "level": "中级",
+      "description": "具备较强的跨部门协作与影响力，推动变革发生。",
+      "hot": 59
+    },
+    {
+      "id": "f3357a6c",
+      "index": 142,
+      "name": "可扩展预算编制",
+      "category": "金融与财务",
+      "level": "入门",
+      "description": "兼具战略视野与执行能力，能够赋能团队共同成长。",
+      "hot": 68
+    },
+    {
+      "id": "96c24608",
+      "index": 143,
+      "name": "云原生德语 TestDaF",
+      "category": "语言与沟通",
+      "level": "初级",
+      "description": "熟悉主流工具与最佳实践，注重性能、可维护性与团队协作。",
+      "hot": 86
+    },
+    {
+      "id": "640aa8a0",
+      "index": 144,
+      "name": "低代码报价策略",
+      "category": "销售与商务",
+      "level": "高级",
+      "description": "具备较强的跨部门协作与影响力，推动变革发生。",
+      "hot": 84
+    },
+    {
+      "id": "35c785d4",
+      "index": 145,
+      "name": "低代码无障碍设计",
+      "category": "设计与创意",
+      "level": "入门",
+      "description": "能够将复杂问题拆解为可执行步骤并持续交付结果。",
+      "hot": 49
+    },
+    {
+      "id": "1c9a3b58",
+      "index": 146,
+      "name": "现代化渲染与材质",
+      "category": "设计与创意",
+      "level": "中级",
+      "description": "深入理解领域核心概念，可主导大型项目从 0 到 1 的搭建。",
+      "hot": 71
+    },
+    {
+      "id": "19e01ff1",
+      "index": 147,
+      "name": "计算机视觉",
+      "category": "数据与AI",
+      "level": "高级",
+      "description": "掌握从基础到精通的全链路实践，能独立交付企业级方案。",
+      "hot": 69
+    },
+    {
+      "id": "1e563b46",
+      "index": 148,
+      "name": "现代化进度管理",
+      "category": "项目管理",
+      "level": "初级",
+      "description": "兼具战略视野与执行能力，能够赋能团队共同成长。",
+      "hot": 63
+    },
+    {
+      "id": "defe91b6",
+      "index": 149,
+      "name": "实时行动学习",
+      "category": "教育与培训",
+      "level": "高级",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 62
+    },
+    {
+      "id": "f471efa4",
+      "index": 150,
+      "name": "流行病学调查",
+      "category": "医疗与健康",
+      "level": "高级",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 61
+    },
+    {
+      "id": "4301a8fc",
+      "index": 151,
+      "name": "现代化蓝绿部署",
+      "category": "项目管理",
+      "level": "初级",
+      "description": "具备较强的跨部门协作与影响力，推动变革发生。",
+      "hot": 42
+    },
+    {
+      "id": "abbffefb",
+      "index": 152,
+      "name": "可视化Figma 协作设计",
+      "category": "设计与创意",
+      "level": "入门",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 92
+    },
+    {
+      "id": "77a63c6b",
+      "index": 153,
+      "name": "容器化FastAPI 接口设计",
+      "category": "编程开发",
+      "level": "初级",
+      "description": "能够将复杂问题拆解为可执行步骤并持续交付结果。",
+      "hot": 65
+    },
+    {
+      "id": "9652afab",
+      "index": 155,
+      "name": "响应式供应链管理",
+      "category": "工程与制造",
+      "level": "高级",
+      "description": "掌握从基础到精通的全链路实践，能独立交付企业级方案。",
+      "hot": 43
+    },
+    {
+      "id": "3af7d456",
+      "index": 156,
+      "name": "模块化客户成功管理",
+      "category": "销售与商务",
+      "level": "初级",
+      "description": "能够将复杂问题拆解为可执行步骤并持续交付结果。",
+      "hot": 97
+    },
+    {
+      "id": "05754d93",
+      "index": 157,
+      "name": "自动化会议组织",
+      "category": "行政与办公",
+      "level": "专家",
+      "description": "具备较强的跨部门协作与影响力，推动变革发生。",
+      "hot": 46
+    },
+    {
+      "id": "4b8ede35",
+      "index": 158,
+      "name": "高级Airflow 任务调度",
+      "category": "数据与AI",
+      "level": "专家",
+      "description": "兼具战略视野与执行能力，能够赋能团队共同成长。",
+      "hot": 64
+    },
+    {
+      "id": "61684898",
+      "index": 159,
+      "name": "高并发PLC 编程",
+      "category": "工程与制造",
+      "level": "初级",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 99
+    },
+    {
+      "id": "2e813abf",
+      "index": 160,
+      "name": "跨平台推荐系统",
+      "category": "数据与AI",
+      "level": "高级",
+      "description": "能结合业务场景灵活应用，持续推动效率提升与价值创造。",
+      "hot": 91
+    },
+    {
+      "id": "539f6928",
+      "index": 161,
+      "name": "企业级客户成功管理",
+      "category": "销售与商务",
+      "level": "中级",
+      "description": "具备扎实的理论基础与丰富的项目落地经验，善于解决复杂问题。",
+      "hot": 74
+    },
+    {
+      "id": "6365dd65",
+      "index": 162,
+      "name": "高级原型设计",
+      "category": "设计与创意",
+      "level": "专家",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 62
+    },
+    {
+      "id": "d489c727",
+      "index": 163,
+      "name": "跨平台律师执业管理",
+      "category": "法律与合规",
+      "level": "高级",
+      "description": "具备扎实的理论基础与丰富的项目落地经验，善于解决复杂问题。",
+      "hot": 52
+    },
+    {
+      "id": "6e52df3d",
+      "index": 164,
+      "name": "公司治理",
+      "category": "法律与合规",
+      "level": "高级",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 96
+    },
+    {
+      "id": "15f5a33d",
+      "index": 165,
+      "name": "高并发特征工程",
+      "category": "数据与AI",
+      "level": "中级",
+      "description": "深入理解领域核心概念，可主导大型项目从 0 到 1 的搭建。",
+      "hot": 81
+    },
+    {
+      "id": "b681034a",
+      "index": 166,
+      "name": "资深年会组织",
+      "category": "行政与办公",
+      "level": "中级",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 40
+    },
+    {
+      "id": "66f035b3",
+      "index": 167,
+      "name": "资深急救技能",
+      "category": "医疗与健康",
+      "level": "高级",
+      "description": "能结合业务场景灵活应用，持续推动效率提升与价值创造。",
+      "hot": 43
+    },
+    {
+      "id": "2d4ccf0d",
+      "index": 168,
+      "name": "企业级产品规划",
+      "category": "产品与运营",
+      "level": "初级",
+      "description": "深入理解领域核心概念，可主导大型项目从 0 到 1 的搭建。",
+      "hot": 68
+    },
+    {
+      "id": "ec509e79",
+      "index": 169,
+      "name": "分布式推荐系统",
+      "category": "数据与AI",
+      "level": "入门",
+      "description": "能结合业务场景灵活应用，持续推动效率提升与价值创造。",
+      "hot": 49
+    },
+    {
+      "id": "92b5dffc",
+      "index": 170,
+      "name": "模块化新闻写作",
+      "category": "语言与沟通",
+      "level": "中级",
+      "description": "能结合业务场景灵活应用，持续推动效率提升与价值创造。",
+      "hot": 91
+    },
+    {
+      "id": "fe41711f",
+      "index": 171,
+      "name": "云原生Kafka 消息流",
+      "category": "数据与AI",
+      "level": "中级",
+      "description": "掌握从基础到精通的全链路实践，能独立交付企业级方案。",
+      "hot": 69
+    },
+    {
+      "id": "f4ad3271",
+      "index": 172,
+      "name": "商业化设计",
+      "category": "产品与运营",
+      "level": "初级",
+      "description": "熟悉主流工具与最佳实践，注重性能、可维护性与团队协作。",
+      "hot": 58
+    },
+    {
+      "id": "8aa3f4f8",
+      "index": 173,
+      "name": "高级邮件营销自动化",
+      "category": "市场营销",
+      "level": "中级",
+      "description": "具备较强的跨部门协作与影响力，推动变革发生。",
+      "hot": 52
+    },
+    {
+      "id": "01d7537d",
+      "index": 174,
+      "name": "After Effects 特效",
+      "category": "设计与创意",
+      "level": "专家",
+      "description": "深入理解领域核心概念，可主导大型项目从 0 到 1 的搭建。",
+      "hot": 77
+    },
+    {
+      "id": "1e9f1046",
+      "index": 175,
+      "name": "容器化档案管理",
+      "category": "行政与办公",
+      "level": "高级",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 67
+    },
+    {
+      "id": "a176c0b0",
+      "index": 176,
+      "name": "可扩展固定资产管理",
+      "category": "行政与办公",
+      "level": "初级",
+      "description": "熟悉主流工具与最佳实践，注重性能、可维护性与团队协作。",
+      "hot": 61
+    },
+    {
+      "id": "6414ce44",
+      "index": 177,
+      "name": "故障应急响应",
+      "category": "项目管理",
+      "level": "专家",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 66
+    },
+    {
+      "id": "972bf3cc",
+      "index": 178,
+      "name": "可扩展React 前端架构",
+      "category": "编程开发",
+      "level": "高级",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 95
+    },
+    {
+      "id": "c8ff08e4",
+      "index": 179,
+      "name": "股权架构设计",
+      "category": "法律与合规",
+      "level": "入门",
+      "description": "掌握从基础到精通的全链路实践，能独立交付企业级方案。",
+      "hot": 91
+    },
+    {
+      "id": "8e14a9d8",
+      "index": 180,
+      "name": "俄语商务",
+      "category": "语言与沟通",
+      "level": "初级",
+      "description": "兼具战略视野与执行能力，能够赋能团队共同成长。",
+      "hot": 78
+    },
+    {
+      "id": "d230b730",
+      "index": 181,
+      "name": "自动化差旅安排",
+      "category": "行政与办公",
+      "level": "中级",
+      "description": "兼具战略视野与执行能力，能够赋能团队共同成长。",
+      "hot": 78
+    },
+    {
+      "id": "68095236",
+      "index": 182,
+      "name": "容器化活动运营",
+      "category": "产品与运营",
+      "level": "专家",
+      "description": "兼具战略视野与执行能力，能够赋能团队共同成长。",
+      "hot": 84
+    },
+    {
+      "id": "1e8ed0e1",
+      "index": 183,
+      "name": "实时客户分层运营",
+      "category": "销售与商务",
+      "level": "中级",
+      "description": "兼具战略视野与执行能力，能够赋能团队共同成长。",
+      "hot": 81
+    },
+    {
+      "id": "d7a5e97e",
+      "index": 184,
+      "name": "智能Final Cut Pro 剪辑",
+      "category": "设计与创意",
+      "level": "中级",
+      "description": "具备较强的跨部门协作与影响力，推动变革发生。",
+      "hot": 84
+    },
+    {
+      "id": "81a24b35",
+      "index": 185,
+      "name": "云原生信息流广告",
+      "category": "市场营销",
+      "level": "高级",
+      "description": "兼具战略视野与执行能力，能够赋能团队共同成长。",
+      "hot": 55
+    },
+    {
+      "id": "7d9170d2",
+      "index": 186,
+      "name": "可视化继任计划",
+      "category": "人力资源",
+      "level": "入门",
+      "description": "兼具战略视野与执行能力，能够赋能团队共同成长。",
+      "hot": 79
+    },
+    {
+      "id": "21950e37",
+      "index": 187,
+      "name": "高级固定收益分析",
+      "category": "金融与财务",
+      "level": "专家",
+      "description": "具备扎实的理论基础与丰富的项目落地经验，善于解决复杂问题。",
+      "hot": 68
+    },
+    {
+      "id": "83ab178c",
+      "index": 188,
+      "name": "低代码大客户销售",
+      "category": "销售与商务",
+      "level": "入门",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 61
+    },
+    {
+      "id": "a9ec4f72",
+      "index": 189,
+      "name": "用户故事地图",
+      "category": "产品与运营",
+      "level": "初级",
+      "description": "具备较强的跨部门协作与影响力，推动变革发生。",
+      "hot": 65
+    },
+    {
+      "id": "bc5374f1",
+      "index": 190,
+      "name": "可扩展在线教育运营",
+      "category": "教育与培训",
+      "level": "初级",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 42
+    },
+    {
+      "id": "3a2ca1ee",
+      "index": 191,
+      "name": "资深社会招聘",
+      "category": "人力资源",
+      "level": "高级",
+      "description": "掌握从基础到精通的全链路实践，能独立交付企业级方案。",
+      "hot": 72
+    },
+    {
+      "id": "7471c4dd",
+      "index": 192,
+      "name": "模块化风险管理",
+      "category": "金融与财务",
+      "level": "中级",
+      "description": "兼具战略视野与执行能力，能够赋能团队共同成长。",
+      "hot": 67
+    },
+    {
+      "id": "1c9686eb",
+      "index": 193,
+      "name": "现代化精益创业",
+      "category": "项目管理",
+      "level": "高级",
+      "description": "掌握从基础到精通的全链路实践，能独立交付企业级方案。",
+      "hot": 71
+    },
+    {
+      "id": "8d195ab0",
+      "index": 194,
+      "name": "安全安保管理",
+      "category": "行政与办公",
+      "level": "入门",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 54
+    },
+    {
+      "id": "398573dd",
+      "index": 195,
+      "name": "实时IT 资产管理",
+      "category": "行政与办公",
+      "level": "中级",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 69
+    },
+    {
+      "id": "4e92f0ef",
+      "index": 196,
+      "name": "自动化学习社群运营",
+      "category": "教育与培训",
+      "level": "高级",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 52
+    },
+    {
+      "id": "21dda628",
+      "index": 197,
+      "name": "现代化课堂教学",
+      "category": "教育与培训",
+      "level": "初级",
+      "description": "具备较强的跨部门协作与影响力，推动变革发生。",
+      "hot": 89
+    },
+    {
+      "id": "4da1b215",
+      "index": 198,
+      "name": "企业级Django 全栈开发",
+      "category": "编程开发",
+      "level": "初级",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 75
+    },
+    {
+      "id": "335074e1",
+      "index": 199,
+      "name": "智能日语 N1 水平",
+      "category": "语言与沟通",
+      "level": "初级",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 93
+    },
+    {
+      "id": "0693961a",
+      "index": 200,
+      "name": "场景化设计",
+      "category": "产品与运营",
+      "level": "高级",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 69
+    },
+    {
+      "id": "3b3b6362",
+      "index": 201,
+      "name": "现代化数据可视化",
+      "category": "数据与AI",
+      "level": "入门",
+      "description": "深入理解领域核心概念，可主导大型项目从 0 到 1 的搭建。",
+      "hot": 73
+    },
+    {
+      "id": "b05dbae3",
+      "index": 202,
+      "name": "现代化微博运营",
+      "category": "市场营销",
+      "level": "初级",
+      "description": "能结合业务场景灵活应用，持续推动效率提升与价值创造。",
+      "hot": 42
+    },
+    {
+      "id": "3b0ff832",
+      "index": 203,
+      "name": "响应式学习数据分析",
+      "category": "教育与培训",
+      "level": "中级",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 83
+    },
+    {
+      "id": "b92eca5d",
+      "index": 204,
+      "name": "企业内训",
+      "category": "教育与培训",
+      "level": "高级",
+      "description": "熟悉主流工具与最佳实践，注重性能、可维护性与团队协作。",
+      "hot": 54
+    },
+    {
+      "id": "e567b546",
+      "index": 205,
+      "name": "低代码内容运营",
+      "category": "产品与运营",
+      "level": "入门",
+      "description": "掌握从基础到精通的全链路实践，能独立交付企业级方案。",
+      "hot": 89
+    },
+    {
+      "id": "acf37b32",
+      "index": 206,
+      "name": "实时课程设计",
+      "category": "教育与培训",
+      "level": "专家",
+      "description": "兼具战略视野与执行能力，能够赋能团队共同成长。",
+      "hot": 50
+    },
+    {
+      "id": "e1ceee1d",
+      "index": 207,
+      "name": "项目启动",
+      "category": "项目管理",
+      "level": "中级",
+      "description": "能够将复杂问题拆解为可执行步骤并持续交付结果。",
+      "hot": 58
+    },
+    {
+      "id": "27831432",
+      "index": 208,
+      "name": "高级食堂运营",
+      "category": "行政与办公",
+      "level": "入门",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 88
+    },
+    {
+      "id": "1cceab4e",
+      "index": 209,
+      "name": "响应式会员体系",
+      "category": "产品与运营",
+      "level": "初级",
+      "description": "熟悉主流工具与最佳实践，注重性能、可维护性与团队协作。",
+      "hot": 68
+    },
+    {
+      "id": "c930950d",
+      "index": 210,
+      "name": "分布式PMP 认证实践",
+      "category": "项目管理",
+      "level": "专家",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 76
+    },
+    {
+      "id": "65f8e550",
+      "index": 211,
+      "name": "自动化智能制造",
+      "category": "工程与制造",
+      "level": "中级",
+      "description": "能结合业务场景灵活应用，持续推动效率提升与价值创造。",
+      "hot": 87
+    },
+    {
+      "id": "06d514f4",
+      "index": 212,
+      "name": "高级留存运营",
+      "category": "产品与运营",
+      "level": "中级",
+      "description": "能结合业务场景灵活应用，持续推动效率提升与价值创造。",
+      "hot": 73
+    },
+    {
+      "id": "c01f7b7e",
+      "index": 214,
+      "name": "高级灵活用工管理",
+      "category": "人力资源",
+      "level": "中级",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 44
+    },
+    {
+      "id": "ffc6aa14",
+      "index": 215,
+      "name": "公众演讲",
+      "category": "语言与沟通",
+      "level": "中级",
+      "description": "能够将复杂问题拆解为可执行步骤并持续交付结果。",
+      "hot": 74
+    },
+    {
+      "id": "be43c053",
+      "index": 216,
+      "name": "自动化仲裁代理",
+      "category": "法律与合规",
+      "level": "初级",
+      "description": "兼具战略视野与执行能力，能够赋能团队共同成长。",
+      "hot": 90
+    },
+    {
+      "id": "a3622f02",
+      "index": 217,
+      "name": "跨平台印章刻制",
+      "category": "行政与办公",
+      "level": "中级",
+      "description": "掌握从基础到精通的全链路实践，能独立交付企业级方案。",
+      "hot": 78
+    },
+    {
+      "id": "79e9a2d2",
+      "index": 218,
+      "name": "低代码Logo 标识设计",
+      "category": "设计与创意",
+      "level": "高级",
+      "description": "掌握从基础到精通的全链路实践，能独立交付企业级方案。",
+      "hot": 44
+    },
+    {
+      "id": "c6ee79ac",
+      "index": 219,
+      "name": "资深人才盘点",
+      "category": "人力资源",
+      "level": "初级",
+      "description": "掌握从基础到精通的全链路实践，能独立交付企业级方案。",
+      "hot": 61
+    },
+    {
+      "id": "d3c0831a",
+      "index": 220,
+      "name": "高可用批处理",
+      "category": "数据与AI",
+      "level": "入门",
+      "description": "能结合业务场景灵活应用，持续推动效率提升与价值创造。",
+      "hot": 58
+    },
+    {
+      "id": "d8be69dc",
+      "index": 221,
+      "name": "商标注册",
+      "category": "法律与合规",
+      "level": "入门",
+      "description": "具备扎实的理论基础与丰富的项目落地经验，善于解决复杂问题。",
+      "hot": 40
+    },
+    {
+      "id": "e449be4e",
+      "index": 222,
+      "name": "高级英语写作",
+      "category": "语言与沟通",
+      "level": "初级",
+      "description": "深入理解领域核心概念，可主导大型项目从 0 到 1 的搭建。",
+      "hot": 75
+    },
+    {
+      "id": "ce7ef913",
+      "index": 223,
+      "name": "高级量化交易",
+      "category": "金融与财务",
+      "level": "入门",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 84
+    },
+    {
+      "id": "81c8c705",
+      "index": 224,
+      "name": "响应式数据挖掘",
+      "category": "数据与AI",
+      "level": "初级",
+      "description": "具备扎实的理论基础与丰富的项目落地经验，善于解决复杂问题。",
+      "hot": 43
+    },
+    {
+      "id": "914f91d5",
+      "index": 225,
+      "name": "智能课堂教学",
+      "category": "教育与培训",
+      "level": "入门",
+      "description": "能够将复杂问题拆解为可执行步骤并持续交付结果。",
+      "hot": 92
+    },
+    {
+      "id": "f1ffd13b",
+      "index": 227,
+      "name": "云原生数据仓库",
+      "category": "数据与AI",
+      "level": "入门",
+      "description": "掌握从基础到精通的全链路实践，能独立交付企业级方案。",
+      "hot": 66
+    },
+    {
+      "id": "f9e3be11",
+      "index": 228,
+      "name": "跨平台直销管理",
+      "category": "销售与商务",
+      "level": "入门",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 46
+    },
+    {
+      "id": "ee72c4c5",
+      "index": 229,
+      "name": "资深用户运营",
+      "category": "产品与运营",
+      "level": "中级",
+      "description": "熟悉主流工具与最佳实践，注重性能、可维护性与团队协作。",
+      "hot": 85
+    },
+    {
+      "id": "20ca68b7",
+      "index": 230,
+      "name": "SQL 调优",
+      "category": "数据与AI",
+      "level": "高级",
+      "description": "在多个真实项目中历练出可复用的方法论与模板。",
+      "hot": 83
+    },
+    {
+      "id": "e645d475",
+      "index": 231,
+      "name": "可视化员工敬业度",
+      "category": "人力资源",
+      "level": "专家",
+      "description": "能够将复杂问题拆解为可执行步骤并持续交付结果。",
+      "hot": 70
+    },
+    {
+      "id": "8ff84d35",
+      "index": 232,
+      "name": "实时劳动仲裁",
+      "category": "法律与合规",
+      "level": "专家",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 63
+    },
+    {
+      "id": "89dca2e4",
+      "index": 233,
+      "name": "安全数据治理",
+      "category": "数据与AI",
+      "level": "专家",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 58
+    },
+    {
+      "id": "3e364290",
+      "index": 234,
+      "name": "客户关系维护",
+      "category": "销售与商务",
+      "level": "中级",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 61
+    },
+    {
+      "id": "95915f28",
+      "index": 235,
+      "name": "响应式办公室装修",
+      "category": "行政与办公",
+      "level": "入门",
+      "description": "具备扎实的理论基础与丰富的项目落地经验，善于解决复杂问题。",
+      "hot": 73
+    },
+    {
+      "id": "c91ea4a3",
+      "index": 236,
+      "name": "模块化录播课程制作",
+      "category": "教育与培训",
+      "level": "专家",
+      "description": "熟悉主流工具与最佳实践，注重性能、可维护性与团队协作。",
+      "hot": 65
+    },
+    {
+      "id": "5aefb473",
+      "index": 237,
+      "name": "容器化流行病学调查",
+      "category": "医疗与健康",
+      "level": "高级",
+      "description": "熟悉主流工具与最佳实践，注重性能、可维护性与团队协作。",
+      "hot": 98
+    },
+    {
+      "id": "51da138e",
+      "index": 238,
+      "name": "实时直销管理",
+      "category": "销售与商务",
+      "level": "高级",
+      "description": "具备较强的跨部门协作与影响力，推动变革发生。",
+      "hot": 62
+    },
+    {
+      "id": "e0018988",
+      "index": 239,
+      "name": "跨平台设计思维工作坊",
+      "category": "设计与创意",
+      "level": "高级",
+      "description": "熟悉主流工具与最佳实践，注重性能、可维护性与团队协作。",
+      "hot": 42
+    },
+    {
+      "id": "38cb16d3",
+      "index": 240,
+      "name": "模块化Power BI 报表",
+      "category": "数据与AI",
+      "level": "入门",
+      "description": "具备扎实的理论基础与丰富的项目落地经验，善于解决复杂问题。",
+      "hot": 42
+    },
+    {
+      "id": "b1fb08f8",
+      "index": 241,
+      "name": "企业级MES 系统实施",
+      "category": "工程与制造",
+      "level": "高级",
+      "description": "熟悉行业最新趋势，善于将前沿方法落地到具体业务中。",
+      "hot": 48
+    },
+    {
+      "id": "ed235c83",
+      "index": 242,
+      "name": "跨平台英语笔译",
+      "category": "语言与沟通",
+      "level": "初级",
+      "description": "掌握从基础到精通的全链路实践，能独立交付企业级方案。",
+      "hot": 90
+    },
+    {
+      "id": "e0febc23",
+      "index": 243,
+      "name": "高可用工艺工程",
+      "category": "工程与制造",
+      "level": "初级",
+      "description": "具备较强的跨部门协作与影响力，推动变革发生。",
+      "hot": 50
+    }
+  ]
+}
