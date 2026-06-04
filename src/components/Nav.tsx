@@ -1,5 +1,5 @@
 import { NavLink, Link } from 'react-router-dom';
-import { Hammer, BarChart3, BookOpen } from 'lucide-react';
+import { Hammer, BarChart3, BookOpen, Image } from 'lucide-react';
 
 export default function Nav() {
   return (
@@ -16,6 +16,9 @@ export default function Nav() {
         </Link>
         <nav className="flex items-center gap-1 md:gap-2 font-mono text-sm">
           <NavLink to="/" end className={({isActive}) => `px-2 md:px-3 py-1.5 transition-colors ${isActive ? 'text-volt' : 'hover:text-volt'}`}>工具</NavLink>
+          <NavLink to="/exhibition" className={({isActive}) => `px-2 md:px-3 py-1.5 transition-colors flex items-center gap-1 ${isActive ? 'text-volt' : 'hover:text-volt'}`}>
+            <Image size={12} className="hidden md:inline" /> 展览
+          </NavLink>
           <NavLink to="/distribution" className={({isActive}) => `px-2 md:px-3 py-1.5 transition-colors flex items-center gap-1 ${isActive ? 'text-volt' : 'hover:text-volt'}`}>
             <BarChart3 size={12} className="hidden md:inline" /> 分布
           </NavLink>

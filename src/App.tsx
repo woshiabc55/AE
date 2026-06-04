@@ -4,6 +4,7 @@ import ToolDetail from './pages/ToolDetail';
 import About from './pages/About';
 import Distribution from './pages/Distribution';
 import Standards from './pages/Standards';
+import Exhibition from './pages/Exhibition';
 import Nav from './components/Nav';
 
 export default function App() {
@@ -17,6 +18,7 @@ export default function App() {
           <Route path="/category/:name" element={<Home />} />
           <Route path="/distribution" element={<Distribution />} />
           <Route path="/standards" element={<Standards />} />
+          <Route path="/exhibition" element={<Exhibition />} />
           <Route path="/about" element={<About />} />
         </Routes>
       </main>
