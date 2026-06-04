@@ -2,17 +2,21 @@ import { Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import ToolDetail from './pages/ToolDetail';
 import About from './pages/About';
+import Distribution from './pages/Distribution';
+import Standards from './pages/Standards';
 import Nav from './components/Nav';
 
 export default function App() {
   return (
     <div className="min-h-screen flex flex-col">
       <Nav />
-      <main className="flex-1">
+      <main className="flex-1 animate-fade-in">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/tool/:slug" element={<ToolDetail />} />
           <Route path="/category/:name" element={<Home />} />
+          <Route path="/distribution" element={<Distribution />} />
+          <Route path="/standards" element={<Standards />} />
           <Route path="/about" element={<About />} />
         </Routes>
       </main>
