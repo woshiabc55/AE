@@ -90,7 +90,7 @@ export default function Home({ forcedCategory }: Props) {
         {filtered.length === 0 ? (
           <div className="py-32 text-center font-mono text-bone/50">NO TOOLS FOUND / 没有匹配的工具</div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 stagger">
             {filtered.map(t => <ToolCard key={t.slug} tool={t} />)}
           </div>
         )}
@@ -104,7 +104,7 @@ function ToolCard({ tool }: { tool: typeof tools[number] }) {
   return (
     <Link
       to={`/tool/${tool.slug}`}
-      className="group block border-2 border-bone/20 hover:border-bone bg-ink overflow-hidden focus:outline-none focus:border-volt"
+      className="group block border-2 border-bone/20 hover:border-bone bg-ink overflow-hidden focus:outline-none focus:border-volt hover-lift"
     >
       <div className="aspect-[4/3] relative overflow-hidden border-b-2 border-bone/20">
         <tool.Preview />

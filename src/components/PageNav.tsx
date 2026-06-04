@@ -10,6 +10,7 @@ const ROUTES = [
   { path: '/design-system', label: '设计系统' },
   { path: '/font-garden', label: '字体花园' },
   { path: '/schemes', label: '方案' },
+  { path: '/game-schemes', label: 'IP' },
   { path: '/arknights', label: '方舟' },
   { path: '/about', label: '关于' },
 ];
