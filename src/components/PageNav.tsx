@@ -9,6 +9,7 @@ const ROUTES = [
   { path: '/standards', label: '条例' },
   { path: '/design-system', label: '设计系统' },
   { path: '/font-garden', label: '字体花园' },
+  { path: '/arknights', label: '方舟' },
   { path: '/about', label: '关于' },
 ];
 
