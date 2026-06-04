@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>文本对比 Diff · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">🆚 文本对比 Diff</div>
+    <div class="page-desc">逐行比较两段文本的差异（基于最长公共子序列）。</div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="panel">
+      <div class="panel-title">原始文本 (A)</div>
+      <textarea id="a" style="min-height:300px">苹果
+香蕉
+橙子
+葡萄
+西瓜
+哈密瓜</textarea>
+    </div>
+    <div class="panel">
+      <div class="panel-title">修改后 (B)</div>
+      <textarea id="b" style="min-height:300px">苹果
+香蕉
+橘子
+葡萄
+西瓜
+哈密瓜
+火龙果</textarea>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="row" style="align-items:center;">
+      <div class="panel-title" style="margin:0">差异</div>
+      <div style="margin-left:auto; color:var(--muted); font-size:12px;">
+        <span class="tag tag-accent" style="background:rgba(74,217,145,0.15); color:#4ad991;">新增</span>
+        <span class="tag" style="background:rgba(255,107,107,0.18); color:#ff6b6b;">删除</span>
+      </div>
+    </div>
+    <div id="diff" style="font-size:13px;"></div>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/text/diff.html");
+const $ = id => document.getElementById(id);
+
+// LCS diff
+function diff(a, b) {
+  const A = a.split(/\r?\n/), B = b.split(/\r?\n/);
+  const n = A.length, m = B.length;
+  const dp = Array.from({length:n+1}, () => new Array(m+1).fill(0));
+  for (let i = n-1; i >= 0; i--)
+    for (let j = m-1; j >= 0; j--)
+      dp[i][j] = A[i] === B[j] ? dp[i+1][j+1] + 1 : Math.max(dp[i+1][j], dp[i][j+1]);
+  const out = [];
+  let i=0, j=0;
+  while (i<n && j<m) {
+    if (A[i] === B[j]) { out.push(["=", A[i]]); i++; j++; }
+    else if (dp[i+1][j] >= dp[i][j+1]) { out.push(["-", A[i]]); i++; }
+    else { out.push(["+", B[j]]); j++; }
+  }
+  while (i<n) out.push(["-", A[i++]]);
+  while (j<m) out.push(["+", B[j++]]);
+  return out;
+}
+
+function render() {
+  const result = diff($("a").value, $("b").value);
+  $("diff").innerHTML = result.map(([op, line]) => {
+    const cls = op === "+" ? "diff-add" : op === "-" ? "diff-del" : "diff-ctx";
+    const sign = op === "+" ? "+ " : op === "-" ? "- " : "  ";
+    return `<div class="diff-line ${cls}">${sign}${line.replace(/</g,"&lt;")}</div>`;
+  }).join("");
+}
+["a","b"].forEach(id => $(id).addEventListener("input", render));
+render();
+</script>
+</body></html>

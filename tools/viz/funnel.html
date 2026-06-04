@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>漏斗图 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">🔻 漏斗图</div>
+    <div class="page-desc">展示用户转化、销售流程等环节的逐级递减。</div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="panel">
+      <div class="panel-title">数据（每行 步骤,数值）</div>
+      <textarea id="csv" style="min-height:200px; font-family:monospace">访问,1000
+注册,650
+激活,420
+付费,180
+续费,95</textarea>
+      <button class="btn btn-primary" style="margin-top:10px" onclick="render()">▶ 渲染</button>
+    </div>
+    <div class="panel" style="min-height:480px">
+      <div class="panel-title">图表</div>
+      <div id="chart" style="width:100%; height:420px;"></div>
+    </div>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/viz/funnel.html");
+let chart = echarts.init(document.getElementById("chart"));
+window.addEventListener("resize", () => chart.resize());
+
+function render() {
+  const data = document.getElementById("csv").value.trim().split(/\r?\n/).map(l => {
+    const [n, v] = l.split(",").map(s => s.trim());
+    return { name: n, value: Number(v) };
+  });
+  chart.setOption({
+    backgroundColor: "transparent",
+    tooltip: { trigger: "item", formatter: "{b}: {c}" },
+    legend: { textStyle: { color: "#cdd3e0" }, bottom: 0 },
+    series: [{
+      type: "funnel",
+      left: "10%", top: 20, bottom: 40, width: "80%",
+      sort: "descending",
+      gap: 2,
+      label: { color: "#fff", show: true, position: "inside" },
+      itemStyle: { borderColor: "#161a22", borderWidth: 1 },
+      data
+    }]
+  });
+}
+render();
+</script>
+</body></html>

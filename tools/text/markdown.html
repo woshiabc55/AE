@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>Markdown 实时预览 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+<style>
+  .md-preview h1, .md-preview h2, .md-preview h3 { color: #fff; margin: 0.6em 0 0.3em; }
+  .md-preview h1 { font-size: 1.8em; border-bottom: 1px solid var(--border); padding-bottom: 6px;}
+  .md-preview h2 { font-size: 1.4em; }
+  .md-preview p, .md-preview li { line-height: 1.7; color: #d8dce6; }
+  .md-preview code { background: var(--bg-2); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+  .md-preview pre { background: var(--bg-2); padding: 12px; border-radius: 8px; overflow:auto; }
+  .md-preview pre code { background: transparent; padding:0; }
+  .md-preview blockquote { border-left: 3px solid var(--accent); padding-left: 12px; color: var(--muted); margin: 8px 0; }
+  .md-preview table { border-collapse: collapse; margin: 8px 0; }
+  .md-preview th, .md-preview td { border: 1px solid var(--border); padding: 6px 10px; }
+  .md-preview a { color: var(--accent); }
+  .md-preview ul, .md-preview ol { padding-left: 24px; }
+  .md-preview hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+</style>
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">📝 Markdown 实时预览</div>
+    <div class="page-desc">左写右看，支持导出 HTML。</div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="panel">
+      <div class="panel-title">Markdown</div>
+      <textarea id="md" style="min-height:500px"># Hello SkillBox
+
+这是一个 **Markdown** 实时预览工具。
+
+## 功能列表
+- 实时渲染
+- 支持 GFM 表格
+- 支持代码高亮
+- 支持导出 HTML
+
+## 代码示例
+```js
+function hello() {
+  console.log("Hello, world!");
+}
+```
+
+## 表格
+| 工具 | 数量 |
+| :-- | --: |
+| 文本 | 10 |
+| 可视化 | 10 |
+| 实用 | 10 |
+
+> 这是一个引用。
+
+[SkillBox 主页](/)</textarea>
+    </div>
+    <div class="panel">
+      <div class="panel-title">预览
+        <button class="btn btn-sm" style="float:right" onclick="exportHTML()">⬇ 导出 HTML</button>
+      </div>
+      <div id="preview" class="md-preview" style="min-height:500px; padding:0 8px;"></div>
+    </div>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+<script>
+renderSidebar("/tools/text/markdown.html");
+const $ = id => document.getElementById(id);
+
+function render() {
+  $("preview").innerHTML = marked.parse($("md").value, { gfm: true, breaks: true });
+}
+function exportHTML() {
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>导出文档</title>
+    <style>body{font-family:system-ui;max-width:800px;margin:40px auto;padding:0 20px;line-height:1.7;color:#222}
+    h1,h2,h3{margin-top:1em} pre{background:#f4f4f4;padding:12px;border-radius:6px;overflow:auto}
+    code{background:#f4f4f4;padding:2px 6px;border-radius:4px} table{border-collapse:collapse}
+    th,td{border:1px solid #ddd;padding:6px 10px} blockquote{border-left:3px solid #6aa6ff;padding-left:12px;color:#666}
+    </style></head><body>${marked.parse($("md").value)}</body></html>`;
+  downloadFile("document.html", html, "text/html");
+}
+$("md").addEventListener("input", render);
+render();
+</script>
+</body></html>

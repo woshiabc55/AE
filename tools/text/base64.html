@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>Base64 编解码 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">🔐 Base64 编解码</div>
+    <div class="page-desc">支持 UTF-8 文本与图片 Base64 互转。</div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="panel">
+      <div class="panel-title">原文</div>
+      <textarea id="src" style="min-height:300px">Hello, SkillBox! 你好，世界！</textarea>
+      <div style="margin-top:10px" class="row">
+        <button class="btn btn-primary" onclick="encode()">编码 →</button>
+        <button class="btn" onclick="decode()">← 解码</button>
+        <button class="btn" onclick="src.value='';dst.value=''">清空</button>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Base64</div>
+      <textarea id="dst" style="min-height:300px" readonly></textarea>
+      <div style="margin-top:10px"><button class="btn" onclick="copyText(dst.value)">📋 复制</button></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">图片 → Base64 DataURL</div>
+    <input type="file" id="file" accept="image/*" />
+    <div id="preview" style="margin-top:10px"></div>
+    <textarea id="imgOut" style="min-height:160px; margin-top:10px" placeholder="data:image/...;base64,..." readonly></textarea>
+    <button class="btn" style="margin-top:10px" onclick="copyText(imgOut.value)">📋 复制 DataURL</button>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/text/base64.html");
+const $ = id => document.getElementById(id);
+
+function encode() {
+  try {
+    const bytes = new TextEncoder().encode($("src").value);
+    let bin = "";
+    bytes.forEach(b => bin += String.fromCharCode(b));
+    $("dst").value = btoa(bin);
+  } catch (e) { toast("编码失败"); }
+}
+function decode() {
+  try {
+    const bin = atob($("src").value);
+    const bytes = new Uint8Array(bin.length);
+    for (let i=0; i<bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    $("dst").value = new TextDecoder().decode(bytes);
+  } catch (e) { toast("解码失败：输入不是有效的 Base64"); }
+}
+
+$("file").addEventListener("change", e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    $("imgOut").value = r.result;
+    $("preview").innerHTML = `<img src="${r.result}" style="max-width:240px; border-radius:8px; border:1px solid var(--border);" />`;
+  };
+  r.readAsDataURL(f);
+});
+</script>
+</body></html>

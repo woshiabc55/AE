@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>雷达图 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">🛡 雷达图</div>
+    <div class="page-desc">多维度指标对比（如能力评估）。</div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="panel">
+      <div class="panel-title">数据</div>
+      <div style="margin-bottom:8px; color:var(--muted); font-size:12px">指标（逗号分隔）</div>
+      <input id="dims" type="text" value="攻击力,防御力,速度,智力,生命,暴击" />
+      <div style="margin:10px 0; color:var(--muted); font-size:12px">每行：对象名,值1,值2...</div>
+      <textarea id="csv" style="min-height:140px; font-family:monospace">战士,90,85,60,55,95,40
+法师,55,40,70,95,60,75
+刺客,75,45,90,70,65,95</textarea>
+      <button class="btn btn-primary" style="margin-top:10px" onclick="render()">▶ 渲染</button>
+    </div>
+    <div class="panel" style="min-height:480px">
+      <div class="panel-title">图表</div>
+      <div id="chart" style="width:100%; height:420px;"></div>
+    </div>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/viz/radar.html");
+let chart = echarts.init(document.getElementById("chart"));
+window.addEventListener("resize", () => chart.resize());
+
+function render() {
+  const dims = document.getElementById("dims").value.split(",").map(s => s.trim());
+  const lines = document.getElementById("csv").value.trim().split(/\r?\n/);
+  const series = lines.map(l => {
+    const c = l.split(",").map(s => s.trim());
+    return { name: c[0], value: c.slice(1).map(Number) };
+  });
+  chart.setOption({
+    backgroundColor: "transparent",
+    tooltip: {},
+    legend: { textStyle: { color: "#cdd3e0" }, bottom: 0 },
+    radar: {
+      indicator: dims.map(d => ({ name: d, max: 100 })),
+      axisName: { color: "#cdd3e0" },
+      splitLine: { lineStyle: { color: "#2c3346" } },
+      splitArea: { areaStyle: { color: ["rgba(106,166,255,0.04)", "rgba(106,166,255,0.02)"] } }
+    },
+    series: [{ type: "radar", data: series, areaStyle: { opacity: 0.2 } }]
+  });
+}
+render();
+</script>
+</body></html>

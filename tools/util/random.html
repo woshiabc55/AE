@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>随机数 / 抽样 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">🎲 随机数 / 抽样</div>
+    <div class="page-desc">生成指定范围的随机数、随机抽签、从列表中抽样。</div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="panel">
+      <div class="panel-title">随机数</div>
+      <div class="row">
+        <div class="col"><div class="panel-title" style="font-size:12px">最小</div><input id="min" type="number" value="1" /></div>
+        <div class="col"><div class="panel-title" style="font-size:12px">最大</div><input id="max" type="number" value="100" /></div>
+        <div class="col"><div class="panel-title" style="font-size:12px">数量</div><input id="count" type="number" value="10" min="1" max="500" /></div>
+      </div>
+      <div style="margin-top:12px" class="row">
+        <label class="tag" style="cursor:pointer"><input id="unique" type="checkbox" /> 不重复</label>
+        <label class="tag" style="cursor:pointer"><input id="sort" type="checkbox" /> 排序输出</label>
+        <button class="btn btn-primary" style="margin-left:auto" onclick="randNum()">▶ 生成</button>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">从列表中抽样</div>
+      <textarea id="pool" style="min-height:160px" placeholder="每行一项，或用逗号分隔">张三
+李四
+王五
+赵六
+钱七
+孙八
+周九
+吴十</textarea>
+      <div class="row" style="margin-top:10px">
+        <div class="col"><div class="panel-title" style="font-size:12px">抽几个</div><input id="pick" type="number" value="3" min="1" /></div>
+        <label class="tag" style="align-self:end; cursor:pointer"><input id="weighted" type="checkbox" /> 加权 (权重:项)</label>
+        <button class="btn btn-primary" style="align-self:end" onclick="sample()">▶ 抽样</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">结果</div>
+    <textarea id="out" style="min-height:200px" readonly></textarea>
+    <div style="margin-top:10px">
+      <button class="btn" onclick="copyText(out.value)">📋 复制</button>
+      <button class="btn" onclick="downloadFile('result.txt', out.value)">⬇ 下载</button>
+    </div>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/util/random.html");
+const $ = id => document.getElementById(id);
+
+function randNum() {
+  const min = +$("min").value, max = +$("max").value;
+  const n = Math.max(1, Math.min(500, +$("count").value));
+  const uniq = $("unique").checked, sort = $("sort").checked;
+  const arr = [];
+  if (uniq) {
+    const pool = [];
+    for (let i = min; i <= max; i++) pool.push(i);
+    for (let i = 0; i < n && pool.length; i++) {
+      const k = Math.floor(Math.random() * pool.length);
+      arr.push(pool.splice(k, 1)[0]);
+    }
+  } else {
+    for (let i = 0; i < n; i++) arr.push(min + Math.floor(Math.random() * (max - min + 1)));
+  }
+  if (sort) arr.sort((a,b) => a-b);
+  $("out").value = arr.join("\n");
+}
+
+function sample() {
+  const raw = $("pool").value.trim();
+  if (!raw) return toast("请输入列表");
+  const lines = raw.split(/\r?\n|,/).map(s => s.trim()).filter(Boolean);
+  let items = lines;
+  if ($("weighted").checked) {
+    items = [];
+    lines.forEach(l => {
+      const m = l.match(/^(.+?)[:：]\s*(\d+(?:\.\d+)?)$/);
+      if (m) {
+        const w = +m[2];
+        for (let i = 0; i < Math.round(w); i++) items.push(m[1]);
+      } else items.push(l);
+    });
+  }
+  const k = Math.max(1, Math.min(items.length, +$("pick").value));
+  const arr = [];
+  const pool = items.slice();
+  for (let i = 0; i < k && pool.length; i++) {
+    const idx = Math.floor(Math.random() * pool.length);
+    arr.push(pool.splice(idx, 1)[0]);
+  }
+  $("out").value = arr.map((v, i) => `#${i+1}  ${v}`).join("\n");
+}
+randNum();
+</script>
+</body></html>

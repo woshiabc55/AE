@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>柱状图 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">📊 柱状图</div>
+    <div class="page-desc">输入 CSV（首行类别名，其余为数据行），自动渲染。</div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="panel">
+      <div class="panel-title">数据（CSV，每行一个系列）</div>
+      <textarea id="csv" style="min-height:200px; font-family:monospace">类别,一月,二月,三月,四月,五月,六月
+产品A,120,132,101,134,90,230
+产品B,200,182,191,234,290,330
+产品C,150,212,201,154,190,110</textarea>
+      <div style="margin-top:10px" class="row">
+        <label class="tag"><input id="horiz" type="checkbox" /> 横向</label>
+        <label class="tag"><input id="stack" type="checkbox" /> 堆叠</label>
+        <button class="btn btn-primary" style="margin-left:auto" onclick="render()">▶ 渲染</button>
+      </div>
+    </div>
+    <div class="panel" style="min-height:480px">
+      <div class="panel-title">图表</div>
+      <div id="chart" style="width:100%; height:420px;"></div>
+    </div>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/viz/bar.html");
+let chart = echarts.init(document.getElementById("chart"), null, { renderer: "canvas" });
+window.addEventListener("resize", () => chart.resize());
+
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/);
+  const header = lines[0].split(",").map(s => s.trim());
+  const cats = header.slice(1);
+  const series = lines.slice(1).map(l => {
+    const cells = l.split(",").map(s => s.trim());
+    const name = cells[0];
+    const data = cells.slice(1).map(Number);
+    return { name, data };
+  });
+  return { cats, series };
+}
+
+function render() {
+  const { cats, series } = parseCSV(document.getElementById("csv").value);
+  const horiz = document.getElementById("horiz").checked;
+  const stack = document.getElementById("stack").checked;
+  chart.setOption({
+    backgroundColor: "transparent",
+    tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
+    legend: { textStyle: { color: "#cdd3e0" } },
+    grid: { left: 50, right: 30, top: 50, bottom: 40 },
+    xAxis: horiz ? { type: "value", axisLabel: { color: "#9aa3b2" } } : { type: "category", data: cats, axisLabel: { color: "#9aa3b2" } },
+    yAxis: horiz ? { type: "category", data: cats, axisLabel: { color: "#9aa3b2" } } : { type: "value", axisLabel: { color: "#9aa3b2" } },
+    series: series.map(s => ({
+      ...s, type: "bar", stack: stack ? "total" : undefined,
+      itemStyle: { borderRadius: [4, 4, 0, 0] }
+    }))
+  });
+}
+render();
+</script>
+</body></html>

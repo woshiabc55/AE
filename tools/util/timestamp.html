@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>时间戳转换 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">⏰ 时间戳转换</div>
+    <div class="page-desc">Unix 时间戳 ⇄ 日期时间，支持毫秒 / 秒。</div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="panel">
+      <div class="panel-title">时间戳 → 日期</div>
+      <div class="row">
+        <input id="ts" type="text" placeholder="时间戳" style="flex:1" />
+        <select id="unit" style="max-width:120px">
+          <option value="s">秒</option>
+          <option value="ms" selected>毫秒</option>
+        </select>
+        <button class="btn btn-primary" onclick="ts2date()">转换</button>
+      </div>
+      <div style="margin-top:14px">
+        <div class="panel-title" style="font-size:12px">结果</div>
+        <input id="tsOut" type="text" readonly />
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">日期 → 时间戳</div>
+      <div class="row">
+        <input id="date" type="datetime-local" style="flex:1" />
+        <button class="btn btn-primary" onclick="date2ts()">转换</button>
+        <button class="btn" onclick="now()">现在</button>
+      </div>
+      <div style="margin-top:14px">
+        <div class="panel-title" style="font-size:12px">结果（毫秒 / 秒）</div>
+        <input id="dateOutMs" type="text" readonly />
+        <input id="dateOutS" type="text" readonly style="margin-top:6px" />
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">常用对照</div>
+    <table class="tbl">
+      <thead><tr><th>名称</th><th>ISO</th><th>时间戳(秒)</th><th>时间戳(毫秒)</th></tr></thead>
+      <tbody id="preset"></tbody>
+    </table>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/util/timestamp.html");
+function now() {
+  const d = new Date();
+  const pad = n => String(n).padStart(2,"0");
+  document.getElementById("date").value = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  date2ts();
+}
+function ts2date() {
+  const v = +document.getElementById("ts").value;
+  const unit = document.getElementById("unit").value;
+  if (!v) return toast("请输入时间戳");
+  const d = new Date(unit === "s" ? v * 1000 : v);
+  document.getElementById("tsOut").value = d.toISOString() + "  |  " + d.toLocaleString("zh-CN");
+}
+function date2ts() {
+  const v = document.getElementById("date").value;
+  if (!v) return toast("请选择日期");
+  const d = new Date(v);
+  document.getElementById("dateOutMs").value = d.getTime();
+  document.getElementById("dateOutS").value = Math.floor(d.getTime() / 1000);
+}
+const presets = [
+  ["Unix 起点 (1970-01-01)", new Date(0)],
+  ["Y2K (2000-01-01)", new Date("2000-01-01T00:00:00Z")],
+  ["2025-01-01", new Date("2025-01-01T00:00:00Z")],
+  ["2038-01-19 (32 位溢出)", new Date("2038-01-19T03:14:07Z")]
+];
+document.getElementById("preset").innerHTML = presets.map(([n,d]) => `
+  <tr>
+    <td>${n}</td>
+    <td>${d.toISOString()}</td>
+    <td>${Math.floor(d.getTime()/1000)}</td>
+    <td>${d.getTime()}</td>
+  </tr>`).join("");
+document.getElementById("ts").value = Date.now();
+ts2date();
+now();
+</script>
+</body></html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>饼图 / 环形图 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">🥧 饼图 / 环形图</div>
+    <div class="page-desc">展示各部分占整体的比例关系。</div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="panel">
+      <div class="panel-title">数据（每行 名称,数值）</div>
+      <textarea id="csv" style="min-height:200px; font-family:monospace">Chrome,65
+Safari,19
+Edge,9
+Firefox,5
+其他,2</textarea>
+      <div style="margin-top:10px" class="row">
+        <label class="tag"><input id="ring" type="checkbox" checked /> 环形图</label>
+        <label class="tag"><input id="rose" type="checkbox" /> 玫瑰图</label>
+        <button class="btn btn-primary" style="margin-left:auto" onclick="render()">▶ 渲染</button>
+      </div>
+    </div>
+    <div class="panel" style="min-height:480px">
+      <div class="panel-title">图表</div>
+      <div id="chart" style="width:100%; height:420px;"></div>
+    </div>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/viz/pie.html");
+let chart = echarts.init(document.getElementById("chart"));
+window.addEventListener("resize", () => chart.resize());
+
+function render() {
+  const data = document.getElementById("csv").value.trim().split(/\r?\n/).map(l => {
+    const [n, v] = l.split(",").map(s => s.trim());
+    return { name: n, value: Number(v) };
+  });
+  const ring = document.getElementById("ring").checked;
+  const rose = document.getElementById("rose").checked;
+  chart.setOption({
+    backgroundColor: "transparent",
+    tooltip: { trigger: "item", formatter: "{b}: {c} ({d}%)" },
+    legend: { textStyle: { color: "#cdd3e0" }, bottom: 0 },
+    series: [{
+      type: "pie",
+      radius: ring ? ["45%", "70%"] : "70%",
+      roseType: rose ? "radius" : undefined,
+      itemStyle: { borderRadius: 6, borderColor: "#161a22", borderWidth: 2 },
+      label: { color: "#cdd3e0" },
+      data
+    }]
+  });
+}
+render();
+</script>
+</body></html>

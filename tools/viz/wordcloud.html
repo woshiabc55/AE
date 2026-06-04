@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>词云 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts-wordcloud@2.1.0/dist/echarts-wordcloud.min.js"></script>
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">☁️ 词云</div>
+    <div class="page-desc">粘贴任意文本，自动分词并生成词云（基于内置中文停用词）。</div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="panel">
+      <div class="panel-title">输入文本</div>
+      <textarea id="src" style="min-height:280px">SkillBox 是一个免费、开源的在线工具箱，包含文本处理、数据可视化和实用工具三大类。我们希望提供简单、优雅、即开即用的工具，让日常的小任务变得轻松。无论是开发者、设计师还是学生，都能在 SkillBox 中找到自己需要的工具。
+
+我们相信好的工具应该：尊重隐私（数据不上传）、开箱即用（无需登录）、界面美观（深色主题）、功能扎实（持续打磨）。</textarea>
+      <div style="margin-top:10px" class="row">
+        <input id="topN" type="number" value="60" min="10" max="200" style="max-width:120px" />
+        <button class="btn btn-primary" style="margin-left:auto" onclick="render()">▶ 生成词云</button>
+      </div>
+    </div>
+    <div class="panel" style="min-height:480px">
+      <div class="panel-title">词云</div>
+      <div id="chart" style="width:100%; height:420px;"></div>
+    </div>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/viz/wordcloud.html");
+let chart = echarts.init(document.getElementById("chart"));
+window.addEventListener("resize", () => chart.resize());
+
+// 简易中文分词：两两组合 + 简单停用词
+const stops = new Set("的 了 是 在 我 你 他 她 它 们 和 与 或 也 都 就 把 被 让 使 而 但 一 一个 一些 这 那 这个 那个 这些 那些 以及 因为 所以 如果 那么 然后 接着 于是 因此 而且 并且 之 于 以 为 吧 呢 吗 啊 哦 嗯 哈 是 的".split(/\s+/));
+function tokenize(text) {
+  // 清洗
+  text = text.replace(/[\d\p{P}\s]+/gu, " ");
+  const words = [];
+  // 单字 + 2-gram
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (/[\u4e00-\u9fa5]/.test(c)) {
+      words.push(c);
+      if (i < text.length - 1 && /[\u4e00-\u9fa5]/.test(text[i+1])) {
+        words.push(c + text[i+1]);
+      }
+      if (i < text.length - 2 && /[\u4e00-\u9fa5]/.test(text[i+2])) {
+        words.push(c + text[i+1] + text[i+2]);
+      }
+    }
+  }
+  return words.filter(w => !stops.has(w) && w.length > 0);
+}
+
+function render() {
+  const tokens = tokenize(document.getElementById("src").value);
+  const map = new Map();
+  tokens.forEach(t => map.set(t, (map.get(t) || 0) + 1));
+  const top = [...map.entries()].sort((a,b) => b[1] - a[1]).slice(0, +document.getElementById("topN").value)
+    .map(([name, value]) => ({ name, value, textStyle: { fontFamily: "sans-serif" } }));
+  chart.setOption({
+    backgroundColor: "transparent",
+    tooltip: { show: true },
+    series: [{
+      type: "wordCloud",
+      shape: "circle",
+      sizeRange: [12, 56],
+      rotationRange: [-30, 30],
+      gridSize: 8,
+      drawOutOfBound: false,
+      textStyle: { color: () => "hsl(" + Math.round(Math.random()*360) + ",80%,70%)" },
+      data: top
+    }]
+  });
+}
+render();
+</script>
+</body></html>

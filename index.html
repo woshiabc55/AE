@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkillBox · 多功能在线工具箱</title>
+  <link rel="stylesheet" href="/assets/style.css" />
+</head>
+<body>
+  <aside id="sidebar" class="sidebar"></aside>
+
+  <main class="main">
+    <div class="page-header">
+      <div class="page-title">⚡ SkillBox 工具箱</div>
+      <div class="page-desc">无需登录、无需联网（首次加载后），所有计算均在本地完成。</div>
+    </div>
+
+    <div class="panel">
+      <div class="row">
+        <div class="stat" style="flex:1"><div class="stat-num" id="cTotal">30</div><div class="stat-lbl">在线工具</div></div>
+        <div class="stat" style="flex:1"><div class="stat-num">3</div><div class="stat-lbl">分类</div></div>
+        <div class="stat" style="flex:1"><div class="stat-num">0</div><div class="stat-lbl">数据上传</div></div>
+        <div class="stat" style="flex:1"><div class="stat-num">∞</div><div class="stat-lbl">使用次数</div></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">📂 文本处理（10）</div>
+      <div class="grid grid-4" id="catText"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">📊 数据可视化（10，基于 ECharts）</div>
+      <div class="grid grid-4" id="catViz"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">🛠 实用工具（10）</div>
+      <div class="grid grid-4" id="catUtil"></div>
+    </div>
+
+    <div class="panel" style="text-align:center; color:var(--muted); font-size:13px;">
+      💡 提示：所有页面共享左侧导航，使用 <span class="kbd">Ctrl</span> + <span class="kbd">K</span>（或顶部的搜索框）可快速定位工具。
+    </div>
+  </main>
+
+  <script src="/assets/app.js"></script>
+  <script>
+    renderSidebar("/index.html");
+
+    function renderCards(targetId, items, descMap) {
+      const el = document.getElementById(targetId);
+      el.innerHTML = items.map(it => `
+        <a class="tool-card" href="${it.href}">
+          <div class="tool-card-icon">${it.icon}</div>
+          <div class="tool-card-name">${it.name}</div>
+          <div class="tool-card-desc">${descMap[it.name] || ""}</div>
+        </a>
+      `).join("");
+    }
+
+    const descText = {
+      "字符统计": "统计字符数、词数、行数、字节数",
+      "格式转换": "JSON / YAML / CSV / XML 互转",
+      "文本对比 Diff": "逐行比较两段文本的差异",
+      "Markdown 实时预览": "左写右看，支持导出 HTML",
+      "大小写转换": "全大写 / 全小写 / 标题大小写等",
+      "批量查找替换": "支持正则的批量文本替换",
+      "Base64 编解码": "文本与 Base64 互转（UTF-8）",
+      "URL 编解码": "URL 编码 / 百分比编码",
+      "正则测试": "实时高亮匹配结果",
+      "文本去重 / 排序": "按行去重、按字典 / 长度排序"
+    };
+    const descViz = {
+      "柱状图": "对比不同类别的数值",
+      "折线图": "展示数据随时间的变化趋势",
+      "饼图 / 环形图": "展示各部分占总体的比例",
+      "散点图": "观察两个变量之间的相关性",
+      "雷达图": "多维度指标对比",
+      "热力图": "矩阵数据的颜色密度",
+      "词云": "高频词汇可视化",
+      "漏斗图": "展示转化流程",
+      "桑基图": "流量 / 能量分布流向",
+      "仪表盘": "单个核心指标的进度"
+    };
+    const descUtil = {
+      "调色器": "颜色选择、HEX/RGB/HSL 互转",
+      "二维码生成": "文本 / URL 转二维码并下载",
+      "JSON 格式化": "美化、压缩、校验 JSON",
+      "时间戳转换": "Unix 时间戳 ⇄ 日期时间",
+      "UUID 生成": "v1 / v4 UUID 批量生成",
+      "密码生成": "高强度随机密码",
+      "图片→Base64": "本地图片转 DataURL",
+      "计算器": "标准 / 科学计算器",
+      "番茄钟": "25/5 分钟专注计时",
+      "随机数 / 抽样": "指定范围、区间、抽样数量"
+    };
+
+    const textItems = NAV[1].items;
+    const vizItems  = NAV[2].items;
+    const utilItems = NAV[3].items;
+
+    renderCards("catText", textItems, descText);
+    renderCards("catViz",  vizItems,  descViz);
+    renderCards("catUtil", utilItems, descUtil);
+  </script>
+</body>
+</html>

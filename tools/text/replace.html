@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>批量查找替换 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">🔍 批量查找替换</div>
+    <div class="page-desc">支持普通文本与正则模式，可全局忽略大小写。</div>
+  </div>
+
+  <div class="panel">
+    <div class="row">
+      <div class="col">
+        <div class="panel-title">查找</div>
+        <input id="find" type="text" value="foo" />
+      </div>
+      <div class="col">
+        <div class="panel-title">替换为</div>
+        <input id="rep" type="text" value="BAR" />
+      </div>
+    </div>
+    <div style="margin-top:10px" class="row">
+      <label class="tag" style="cursor:pointer">
+        <input id="regex" type="checkbox" /> 使用正则
+      </label>
+      <label class="tag" style="cursor:pointer">
+        <input id="ci" type="checkbox" /> 忽略大小写
+      </label>
+      <label class="tag" style="cursor:pointer">
+        <input id="global" type="checkbox" checked /> 全局替换
+      </label>
+      <button class="btn btn-primary" style="margin-left:auto" onclick="run()">▶ 执行替换</button>
+    </div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="panel">
+      <div class="panel-title">输入</div>
+      <textarea id="src" style="min-height:300px">foo bar foo
+hello FOO world
+this is foo, again
+foobar foofoo</textarea>
+    </div>
+    <div class="panel">
+      <div class="panel-title">结果（<span id="cnt">0</span> 处替换）</div>
+      <textarea id="dst" style="min-height:300px" readonly></textarea>
+      <div style="margin-top:10px"><button class="btn" onclick="copyText(dst.value)">📋 复制</button>
+      <button class="btn" onclick="downloadFile('replaced.txt', dst.value)">⬇ 下载</button></div>
+    </div>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/text/replace.html");
+const $ = id => document.getElementById(id);
+function run() {
+  let find = $("find").value;
+  if (!$("regex").checked) find = find.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const flags = ($("global").checked ? "g" : "") + ($("ci").checked ? "i" : "");
+  try {
+    const re = new RegExp(find, flags);
+    const out = $("src").value.replace(re, $("rep").value);
+    $("dst").value = out;
+    $("cnt").textContent = (out.match(new RegExp(find, "g" + ($("ci").checked ? "i":""))) || []).length;
+  } catch (e) {
+    toast("正则错误：" + e.message);
+  }
+}
+</script>
+</body></html>

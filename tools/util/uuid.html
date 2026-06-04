@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>UUID 生成 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">🆔 UUID 生成</div>
+    <div class="page-desc">支持 v1 / v4，可批量生成、大写、连字符开关。</div>
+  </div>
+
+  <div class="panel">
+    <div class="row">
+      <div class="col" style="min-width:120px">
+        <div class="panel-title" style="font-size:12px">数量</div>
+        <input id="n" type="number" value="10" min="1" max="500" />
+      </div>
+      <div class="col" style="min-width:120px">
+        <div class="panel-title" style="font-size:12px">版本</div>
+        <select id="ver">
+          <option value="v4" selected>v4 (随机)</option>
+          <option value="v1">v1 (时间)</option>
+        </select>
+      </div>
+      <div class="col" style="min-width:120px">
+        <div class="panel-title" style="font-size:12px">格式</div>
+        <select id="fmt">
+          <option value="std" selected>标准 (带连字符)</option>
+          <option value="plain">无连字符</option>
+          <option value="braces">{花括号}</option>
+        </select>
+      </div>
+      <label class="tag" style="align-self:end; cursor:pointer"><input id="upper" type="checkbox" /> 大写</label>
+      <button class="btn btn-primary" style="align-self:end" onclick="render()">▶ 生成</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">结果（<span id="cnt">0</span>）</div>
+    <textarea id="out" style="min-height:380px; font-family:monospace" readonly></textarea>
+    <div style="margin-top:10px">
+      <button class="btn" onclick="copyText(out.value)">📋 复制全部</button>
+      <button class="btn" onclick="downloadFile('uuids.txt', out.value)">⬇ 下载</button>
+    </div>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/util/uuid.html");
+
+function uuidv4() {
+  if (crypto.randomUUID) return crypto.randomUUID();
+  const b = crypto.getRandomValues(new Uint8Array(16));
+  b[6] = (b[6] & 0x0f) | 0x40;
+  b[8] = (b[8] & 0x3f) | 0x80;
+  const h = [...b].map(x => x.toString(16).padStart(2,"0"));
+  return `${h.slice(0,4).join("")}-${h.slice(4,6).join("")}-${h.slice(6,8).join("")}-${h.slice(8,10).join("")}-${h.slice(10,16).join("")}`;
+}
+function uuidv1() {
+  const now = Date.now();
+  const b = new Uint8Array(16);
+  crypto.getRandomValues(b);
+  b[0] = (now / 2**32) & 0xff;
+  b[1] = (now / 2**24) & 0xff;
+  b[2] = (now / 2**16) & 0xff;
+  b[3] = (now / 2**8) & 0xff;
+  b[4] = now & 0xff;
+  // 简单伪造 MAC 段
+  const h = [...b].map(x => x.toString(16).padStart(2,"0"));
+  return `${h.slice(0,4).join("")}-${h.slice(4,6).join("")}-1${h.slice(6,8).join("").slice(1)}-${h.slice(8,10).join("")}-${h.slice(10,16).join("")}`;
+}
+function format(u, fmt) {
+  if (fmt === "plain") u = u.replace(/-/g, "");
+  if (fmt === "braces") u = "{" + u + "}";
+  return u;
+}
+
+function render() {
+  const n = Math.min(500, Math.max(1, +document.getElementById("n").value));
+  const ver = document.getElementById("ver").value;
+  const fmt = document.getElementById("fmt").value;
+  const upper = document.getElementById("upper").checked;
+  const fn = ver === "v4" ? uuidv4 : uuidv1;
+  const list = Array.from({length: n}, () => format(fn(), fmt));
+  const out = upper ? list.map(s => s.toUpperCase()) : list;
+  document.getElementById("out").value = out.join("\n");
+  document.getElementById("cnt").textContent = n;
+}
+render();
+</script>
+</body></html>

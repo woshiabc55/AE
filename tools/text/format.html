@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>格式转换 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">🔁 格式转换</div>
+    <div class="page-desc">JSON ⇄ YAML ⇄ CSV ⇄ XML 互转（轻量本地实现）。</div>
+  </div>
+
+  <div class="panel">
+    <div class="row">
+      <div class="col">
+        <div class="panel-title">从（输入格式）</div>
+        <select id="from">
+          <option value="json">JSON</option>
+          <option value="yaml">YAML（简单键值）</option>
+          <option value="csv">CSV</option>
+          <option value="xml">XML</option>
+        </select>
+      </div>
+      <div class="col">
+        <div class="panel-title">到（输出格式）</div>
+        <select id="to">
+          <option value="yaml">YAML</option>
+          <option value="json">JSON</option>
+          <option value="csv">CSV</option>
+          <option value="xml">XML</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="panel">
+      <div class="panel-title">输入</div>
+      <textarea id="input" style="min-height:280px">{
+  "name": "SkillBox",
+  "version": "1.0",
+  "tools": 30,
+  "categories": ["text", "viz", "util"]
+}</textarea>
+    </div>
+    <div class="panel">
+      <div class="panel-title">输出</div>
+      <textarea id="output" style="min-height:280px" readonly></textarea>
+      <div style="margin-top:10px"><button class="btn" onclick="copyText(output.value)">📋 复制</button>
+      <button class="btn" onclick="downloadFile('out.'+to.value, output.value)">⬇ 下载</button></div>
+    </div>
+  </div>
+
+  <div id="err" style="color:var(--danger); margin-top:10px; font-size:13px;"></div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/text/format.html");
+const $ = id => document.getElementById(id);
+
+function csvToArray(csv) {
+  const lines = csv.trim().split(/\r?\n/);
+  const headers = lines[0].split(",").map(s => s.trim());
+  return lines.slice(1).map(l => {
+    const cells = l.split(",").map(s => s.trim());
+    const o = {};
+    headers.forEach((h, i) => o[h] = cells[i] ?? "");
+    return o;
+  });
+}
+function arrayToCSV(arr) {
+  if (!arr.length) return "";
+  const headers = Object.keys(arr[0]);
+  const esc = v => /[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
+  return [headers.join(","), ...arr.map(o => headers.map(h => esc(o[h] ?? "")).join(","))].join("\n");
+}
+function yamlToObject(y) {
+  const obj = {};
+  y.split(/\r?\n/).forEach(l => {
+    const m = l.match(/^([A-Za-z0-9_\-\u4e00-\u9fa5]+):\s*(.*)$/);
+    if (m) {
+      let v = m[2].trim();
+      if (/^\[.*\]$/.test(v)) {
+        try { v = JSON.parse(v); } catch {}
+      }
+      obj[m[1]] = v;
+    }
+  });
+  return obj;
+}
+function objectToYAML(o, indent = 0) {
+  return Object.entries(o).map(([k, v]) => {
+    if (Array.isArray(v)) return " ".repeat(indent) + k + ":\n" + v.map(x => " ".repeat(indent + 2) + "- " + x).join("\n");
+    if (typeof v === "object" && v) return " ".repeat(indent) + k + ":\n" + objectToYAML(v, indent + 2);
+    return " ".repeat(indent) + k + ": " + v;
+  }).join("\n");
+}
+function objectToXML(o, root = "root") {
+  const build = (k, v) => {
+    if (v === null || v === undefined) return `<${k}/>`;
+    if (Array.isArray(v)) return v.map(x => `<${k}>${typeof x === "object" ? build("item", x).replace(/^<[^>]+>|<\/.+>$/g, "") : x}</${k}>`).join("");
+    if (typeof v === "object") return `<${k}>\n` + Object.entries(v).map(([k2, v2]) => build(k2, v2)).join("\n") + `\n</${k}>`;
+    return `<${k}>${v}</${k}>`;
+  };
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<${root}>\n` + Object.entries(o).map(([k, v]) => build(k, v)).join("\n") + `\n</${root}>`;
+}
+
+function parse(from, input) {
+  if (from === "json") return JSON.parse(input);
+  if (from === "yaml") return yamlToObject(input);
+  if (from === "csv")  return csvToArray(input);
+  if (from === "xml") {
+    const dom = new DOMParser().parseFromString(input, "text/xml");
+    const err = dom.querySelector("parsererror");
+    if (err) throw new Error("XML 解析错误");
+    const obj = {};
+    [...dom.documentElement.children].forEach(ch => { obj[ch.tagName] = ch.textContent; });
+    return obj;
+  }
+}
+function emit(to, data) {
+  if (to === "json") return JSON.stringify(data, null, 2);
+  if (to === "yaml") return objectToYAML(data);
+  if (to === "csv")  return Array.isArray(data) ? arrayToCSV(data) : arrayToCSV([data]);
+  if (to === "xml")  return objectToXML(data);
+}
+
+function convert() {
+  $("err").textContent = "";
+  try {
+    const data = parse($("from").value, $("input").value);
+    $("output").value = emit($("to").value, data);
+  } catch (e) { $("err").textContent = "转换失败：" + e.message; }
+}
+["from","to","input"].forEach(id => $(id).addEventListener("input", convert));
+convert();
+</script>
+</body></html>

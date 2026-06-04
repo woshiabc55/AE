@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>JSON 格式化 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">{ }  JSON 格式化</div>
+    <div class="page-desc">美化、压缩、校验、转为树形视图。</div>
+  </div>
+
+  <div class="panel">
+    <div class="row">
+      <button class="btn btn-primary" onclick="format()">美化</button>
+      <button class="btn" onclick="minify()">压缩</button>
+      <button class="btn" onclick="validate()">校验</button>
+      <button class="btn" onclick="escape()">转义</button>
+      <button class="btn" onclick="unescape()">反转义</button>
+      <select id="indent" style="max-width:120px">
+        <option value="2">2 空格</option>
+        <option value="4" selected>4 空格</option>
+        <option value="tab">Tab</option>
+      </select>
+      <span id="status" style="margin-left:auto; color:var(--muted); font-size:12px;"></span>
+    </div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="panel">
+      <div class="panel-title">输入</div>
+      <textarea id="src" style="min-height:380px; font-family:monospace">{"name":"SkillBox","version":"1.0","tools":30,"categories":["text","viz","util"],"author":{"name":"Dev","year":2025,"tags":["opensource","free","local-only"]}}</textarea>
+    </div>
+    <div class="panel">
+      <div class="panel-title">输出</div>
+      <textarea id="dst" style="min-height:380px; font-family:monospace" readonly></textarea>
+      <div style="margin-top:10px">
+        <button class="btn" onclick="copyText(dst.value)">📋 复制</button>
+        <button class="btn" onclick="downloadFile('data.json', dst.value, 'application/json')">⬇ 下载</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/util/json.html");
+const $ = id => document.getElementById(id);
+function indentChar() {
+  const v = $("indent").value;
+  return v === "tab" ? "\t" : " ".repeat(+v);
+}
+function format() {
+  try {
+    const obj = JSON.parse($("src").value);
+    $("dst").value = JSON.stringify(obj, null, indentChar());
+    $("status").textContent = "✅ 有效 JSON · " + (JSON.stringify(obj).length) + " 字节";
+    $("status").style.color = "var(--success)";
+  } catch (e) { $("status").textContent = "❌ " + e.message; $("status").style.color = "var(--danger)"; }
+}
+function minify() {
+  try { $("dst").value = JSON.stringify(JSON.parse($("src").value)); toast("已压缩"); }
+  catch (e) { toast("解析失败"); }
+}
+function validate() {
+  try { JSON.parse($("src").value); toast("JSON 有效"); }
+  catch (e) { toast("无效：" + e.message); }
+}
+function escape() { $("dst").value = JSON.stringify($("src").value); }
+function unescape() {
+  try { $("dst").value = JSON.parse('"' + $("src").value + '"'); }
+  catch (e) { toast("反转义失败"); }
+}
+format();
+</script>
+</body></html>

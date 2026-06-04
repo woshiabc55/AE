@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>文本去重 / 排序 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">🧹 文本去重 / 排序</div>
+    <div class="page-desc">按行处理，去除重复、空白、排序。</div>
+  </div>
+
+  <div class="panel">
+    <textarea id="src" style="min-height:240px">banana
+apple
+  apple
+cherry
+banana
+date
+apple</textarea>
+    <div style="margin-top:10px" class="row">
+      <label class="tag" style="cursor:pointer"><input id="trim" type="checkbox" checked /> 去除首尾空白</label>
+      <label class="tag" style="cursor:pointer"><input id="empty" type="checkbox" checked /> 删除空行</label>
+      <label class="tag" style="cursor:pointer"><input id="case" type="checkbox" /> 忽略大小写</label>
+      <select id="order" style="max-width:160px">
+        <option value="orig">保持原顺序</option>
+        <option value="az">字典序 A→Z</option>
+        <option value="za">字典序 Z→A</option>
+        <option value="len">按长度升序</option>
+        <option value="lenr">按长度降序</option>
+        <option value="random">随机</option>
+      </select>
+      <button class="btn btn-primary" style="margin-left:auto" onclick="run()">▶ 处理</button>
+    </div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="panel">
+      <div class="panel-title">原行数 <span id="srcN">0</span> → 去重 <span id="dstN">0</span></div>
+      <textarea id="dst" style="min-height:300px" readonly></textarea>
+      <div style="margin-top:10px">
+        <button class="btn" onclick="copyText(dst.value)">📋 复制</button>
+        <button class="btn" onclick="downloadFile('deduped.txt', dst.value)">⬇ 下载</button>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">统计</div>
+      <div id="stats"></div>
+    </div>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/text/dedup.html");
+const $ = id => document.getElementById(id);
+function run() {
+  let lines = $("src").value.split(/\r?\n/);
+  $("srcN").textContent = lines.length;
+  if ($("trim").checked) lines = lines.map(l => l.trim());
+  if ($("empty").checked) lines = lines.filter(l => l.length);
+  const seen = new Set();
+  const out = [];
+  for (const l of lines) {
+    const k = $("case").checked ? l.toLowerCase() : l;
+    if (!seen.has(k)) { seen.add(k); out.push(l); }
+  }
+  const order = $("order").value;
+  if (order === "az")     out.sort((a,b) => a.localeCompare(b));
+  if (order === "za")     out.sort((a,b) => b.localeCompare(a));
+  if (order === "len")    out.sort((a,b) => a.length - b.length);
+  if (order === "lenr")   out.sort((a,b) => b.length - a.length);
+  if (order === "random") out.sort(() => Math.random() - 0.5);
+  $("dst").value = out.join("\n");
+  $("dstN").textContent = out.length;
+  // 统计
+  const max = out.reduce((m, l) => Math.max(m, l.length), 0);
+  const avg = out.length ? (out.reduce((s,l) => s+l.length, 0) / out.length).toFixed(1) : 0;
+  $("stats").innerHTML = `
+    <div class="stat" style="margin-bottom:8px"><div class="stat-num">${out.length}</div><div class="stat-lbl">唯一行数</div></div>
+    <div class="stat" style="margin-bottom:8px"><div class="stat-num">${max}</div><div class="stat-lbl">最长行长度</div></div>
+    <div class="stat"><div class="stat-num">${avg}</div><div class="stat-lbl">平均行长度</div></div>
+  `;
+}
+run();
+</script>
+</body></html>

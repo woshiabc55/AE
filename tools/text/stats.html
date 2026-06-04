@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>字符统计 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">🔢 字符统计</div>
+    <div class="page-desc">实时统计字符、词、行、字节、汉字与英文词数。</div>
+  </div>
+
+  <div class="panel">
+    <textarea id="text" placeholder="在此输入或粘贴文本...">Hello, 世界！
+SkillBox 是一个多功能在线工具箱。
+支持 30+ 工具，3 大分类：文本处理、数据可视化、实用工具。</textarea>
+  </div>
+
+  <div class="grid grid-4">
+    <div class="stat"><div class="stat-num" id="chars">0</div><div class="stat-lbl">字符（含空格）</div></div>
+    <div class="stat"><div class="stat-num" id="charsNo">0</div><div class="stat-lbl">字符（去空格）</div></div>
+    <div class="stat"><div class="stat-num" id="lines">0</div><div class="stat-lbl">行数</div></div>
+    <div class="stat"><div class="stat-num" id="bytes">0</div><div class="stat-lbl">字节数 (UTF-8)</div></div>
+    <div class="stat"><div class="stat-num" id="cn">0</div><div class="stat-lbl">汉字数</div></div>
+    <div class="stat"><div class="stat-num" id="en">0</div><div class="stat-lbl">英文词数</div></div>
+    <div class="stat"><div class="stat-num" id="digits">0</div><div class="stat-lbl">数字个数</div></div>
+    <div class="stat"><div class="stat-num" id="punc">0</div><div class="stat-lbl">标点符号</div></div>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/text/stats.html");
+const $ = id => document.getElementById(id);
+const text = $("text");
+function count() {
+  const v = text.value;
+  $("chars").textContent = v.length;
+  $("charsNo").textContent = v.replace(/\s/g, "").length;
+  $("lines").textContent = v === "" ? 0 : v.split(/\r?\n/).length;
+  $("bytes").textContent = new Blob([v]).size;
+  $("cn").textContent = (v.match(/[\u4e00-\u9fa5]/g) || []).length;
+  $("en").textContent = (v.match(/[A-Za-z]+/g) || []).length;
+  $("digits").textContent = (v.match(/\d/g) || []).length;
+  $("punc").textContent = (v.match(/[，。！？、；：""''《》（）…—·.,!?;:'"()\-]/g) || []).length;
+}
+text.addEventListener("input", count);
+count();
+</script>
+</body></html>
