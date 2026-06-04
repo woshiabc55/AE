@@ -1,5 +1,5 @@
 import { NavLink, Link } from 'react-router-dom';
-import { Hammer, BarChart3, BookOpen, Image } from 'lucide-react';
+import { Hammer, BarChart3, BookOpen, Image, Palette, Type } from 'lucide-react';
 
 export default function Nav() {
   return (
@@ -24,6 +24,12 @@ export default function Nav() {
           </NavLink>
           <NavLink to="/standards" className={({isActive}) => `px-2 md:px-3 py-1.5 transition-colors flex items-center gap-1 ${isActive ? 'text-volt' : 'hover:text-volt'}`}>
             <BookOpen size={12} className="hidden md:inline" /> 条例
+          </NavLink>
+          <NavLink to="/design-system" className={({isActive}) => `px-2 md:px-3 py-1.5 transition-colors flex items-center gap-1 ${isActive ? 'text-volt' : 'hover:text-volt'}`}>
+            <Palette size={12} className="hidden md:inline" /> 设计
+          </NavLink>
+          <NavLink to="/font-garden" className={({isActive}) => `px-2 md:px-3 py-1.5 transition-colors flex items-center gap-1 ${isActive ? 'text-volt' : 'hover:text-volt'}`}>
+            <Type size={12} className="hidden md:inline" /> 字体
           </NavLink>
           <NavLink to="/about" className={({isActive}) => `px-2 md:px-3 py-1.5 transition-colors ${isActive ? 'text-volt' : 'hover:text-volt'}`}>关于</NavLink>
           <a href="https://github.com" target="_blank" rel="noreferrer" className="hidden md:inline-block ml-2 px-3 py-1.5 bg-bone text-ink border-2 border-bone hover:bg-volt hover:border-volt transition-colors font-bold">
