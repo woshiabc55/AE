@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>HTTP 状态码 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+<style>
+  .code-row { padding: 10px 12px; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 60px 80px 1fr 60px; gap: 10px; align-items: center; }
+  .code-row:hover { background: var(--bg-2); }
+  .code-num { font-weight: 700; font-size: 16px; font-family: monospace; }
+  .code-cat { font-size: 11px; padding: 2px 6px; border-radius: 4px; }
+  .info    { color: #6aa6ff; } .info .code-cat    { background: rgba(106,166,255,0.18); }
+  .success { color: #4ad991; } .success .code-cat { background: rgba(74,217,145,0.18); }
+  .redir   { color: #cfd86b; } .redir .code-cat   { background: rgba(207,216,107,0.18); }
+  .client  { color: #ffb86b; } .client .code-cat  { background: rgba(255,184,107,0.18); }
+  .server  { color: #ff6b6b; } .server .code-cat  { background: rgba(255,107,107,0.18); }
+</style>
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">🩺 HTTP 状态码</div>
+    <div class="page-desc">完整 HTTP 状态码参考表，支持搜索。</div>
+  </div>
+
+  <div class="panel"><input id="q" placeholder="🔎 搜索状态码或描述（如 404 / not found / 重定向）" /></div>
+
+  <div class="panel"><div id="list"></div></div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/net/http.html");
+const CODES = [
+  [100,"信息","Continue","继续"], [101,"信息","Switching Protocols","协议切换"],
+  [200,"成功","OK","请求成功"], [201,"成功","Created","已创建"], [202,"成功","Accepted","已接受"], [204,"成功","No Content","无内容"],
+  [301,"重定向","Moved Permanently","永久移动"], [302,"重定向","Found","临时移动"], [303,"重定向","See Other","参见其他"],
+  [304,"重定向","Not Modified","未修改"], [307,"重定向","Temporary Redirect","临时重定向（保留方法）"], [308,"重定向","Permanent Redirect","永久重定向（保留方法）"],
+  [400,"客户端","Bad Request","请求语法错误"], [401,"客户端","Unauthorized","未授权"], [403,"客户端","Forbidden","禁止访问"],
+  [404,"客户端","Not Found","资源不存在"], [405,"客户端","Method Not Allowed","方法不被允许"], [408,"客户端","Request Timeout","请求超时"],
+  [409,"客户端","Conflict","冲突"], [410,"客户端","Gone","已删除"], [413,"客户端","Payload Too Large","请求体过大"],
+  [418,"客户端","I'm a teapot","我是一个茶壶 ☕"], [422,"客户端","Unprocessable Entity","无法处理的实体"], [429,"客户端","Too Many Requests","请求过多"],
+  [500,"服务器","Internal Server Error","服务器内部错误"], [501,"服务器","Not Implemented","未实现"], [502,"服务器","Bad Gateway","网关错误"],
+  [503,"服务器","Service Unavailable","服务不可用"], [504,"服务器","Gateway Timeout","网关超时"], [505,"服务器","HTTP Version Not Supported","HTTP 版本不支持"]
+];
+
+function cat(n) { return n<200?"info":n<300?"success":n<400?"redir":n<500?"client":"server"; }
+
+function render() {
+  const q = document.getElementById("q").value.toLowerCase();
+  const html = CODES.filter(([n,k,e,c]) =>
+    !q || String(n).includes(q) || k.toLowerCase().includes(q) || e.toLowerCase().includes(q) || c.includes(q)
+  ).map(([n,k,e,c]) => {
+    const cls = cat(n);
+    return `<div class="code-row ${cls}">
+      <div class="code-num">${n}</div>
+      <span class="code-cat">${k}</span>
+      <div><div style="color:#fff; font-weight:600">${e}</div><div style="color:var(--muted); font-size:12px">${c}</div></div>
+      <button class="btn btn-sm" onclick="copyText('${n} ${e}')">复制</button>
+    </div>`;
+  }).join("");
+  document.getElementById("list").innerHTML = html || `<div style="color:var(--muted); padding:20px; text-align:center">无匹配</div>`;
+}
+document.getElementById("q").addEventListener("input", render);
+render();
+</script>
+</body></html>

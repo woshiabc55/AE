@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>进制转换 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">🔢 进制转换</div>
+    <div class="page-desc">2 / 8 / 10 / 16 / 32 进制互转，支持批量。</div>
+  </div>
+
+  <div class="panel">
+    <div class="row">
+      <input id="src" type="text" value="255" style="flex:1" />
+      <select id="from" style="max-width:140px">
+        <option value="2">二进制</option><option value="8">八进制</option>
+        <option value="10" selected>十进制</option><option value="16">十六进制</option>
+        <option value="32">三十二进制</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="grid grid-3">
+    <div class="panel"><div class="panel-title">2 进制</div><input id="b2"  readonly /><button class="btn btn-sm" style="margin-top:6px" onclick="copyText(b2.value)">📋</button></div>
+    <div class="panel"><div class="panel-title">8 进制</div><input id="b8"  readonly /><button class="btn btn-sm" style="margin-top:6px" onclick="copyText(b8.value)">📋</button></div>
+    <div class="panel"><div class="panel-title">10 进制</div><input id="b10" readonly /><button class="btn btn-sm" style="margin-top:6px" onclick="copyText(b10.value)">📋</button></div>
+    <div class="panel"><div class="panel-title">16 进制</div><input id="b16" readonly /><button class="btn btn-sm" style="margin-top:6px" onclick="copyText(b16.value)">📋</button></div>
+    <div class="panel"><div class="panel-title">32 进制</div><input id="b32" readonly /><button class="btn btn-sm" style="margin-top:6px" onclick="copyText(b32.value)">📋</button></div>
+    <div class="panel"><div class="panel-title">字节序 (Big Endian, Hex)</div><input id="be"   readonly /><button class="btn btn-sm" style="margin-top:6px" onclick="copyText(be.value)">📋</button></div>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/dev/base.html");
+const $ = id => document.getElementById(id);
+const B32 = "0123456789ABCDEFGHIJKLMNOPQRSTUV";
+
+function toBase(n, b) {
+  if (b === 10) return String(n);
+  if (b === 16) return n.toString(16).toUpperCase();
+  if (b === 8)  return n.toString(8);
+  if (b === 2)  return n.toString(2);
+  if (b === 32) { let s = ""; do { s = B32[n % 32] + s; n = Math.floor(n/32); } while (n > 0); return s; }
+}
+
+function run() {
+  const v = $("src").value.trim();
+  const from = +$("from").value;
+  let n;
+  try {
+    if (from === 16) n = parseInt(v, 16);
+    else if (from === 32) {
+      n = 0;
+      for (const c of v.toUpperCase()) {
+        const i = B32.indexOf(c);
+        if (i < 0) throw 0;
+        n = n * 32 + i;
+      }
+    } else n = parseInt(v, from);
+    if (isNaN(n)) throw 0;
+  } catch { return; }
+  $("b2").value  = toBase(n, 2);
+  $("b8").value  = toBase(n, 8);
+  $("b10").value = toBase(n, 10);
+  $("b16").value = toBase(n, 16);
+  $("b32").value = toBase(n, 32);
+  if (n >= 0 && n <= 0xFFFFFFFF) {
+    const bytes = [(n>>>24)&255, (n>>>16)&255, (n>>>8)&255, n&255];
+    $("be").value = bytes.map(b => b.toString(16).padStart(2,"0").toUpperCase()).join(" ");
+  } else $("be").value = "(超出 32 位)";
+}
+$("src").addEventListener("input", run);
+$("from").addEventListener("input", run);
+run();
+</script>
+</body></html>

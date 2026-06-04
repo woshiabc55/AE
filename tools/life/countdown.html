@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>倒计时 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+<style>
+  .countdown { text-align: center; padding: 30px 0; }
+  .cd-time { font-size: 72px; font-weight: 800; color: #fff; font-family: monospace; }
+  .cd-lbl  { color: var(--muted); font-size: 14px; margin-top: 6px; }
+  .cd-bar  { height: 6px; background: var(--bg-2); border-radius: 999px; margin: 20px 0; overflow: hidden; }
+  .cd-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+  .preset { display: inline-block; margin: 4px; padding: 6px 12px; background: var(--panel-2); border-radius: 999px; cursor: pointer; font-size: 12.5px; }
+  .preset:hover { background: var(--accent); color: #0b0e14; }
+</style>
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">⏳ 倒计时</div>
+    <div class="page-desc">设置目标日期/时间，实时显示剩余时间，支持多个事件。</div>
+  </div>
+
+  <div class="panel">
+    <div class="row">
+      <input id="title" type="text" placeholder="事件名（如 项目上线）" style="flex:1" />
+      <input id="when" type="datetime-local" />
+      <button class="btn btn-primary" onclick="add()">➕ 添加</button>
+    </div>
+    <div style="margin-top:10px">
+      <span class="preset" onclick="setPreset(1,'今天')">1 天</span>
+      <span class="preset" onclick="setPreset(7,'一周后')">7 天</span>
+      <span class="preset" onclick="setPreset(30,'一个月后')">30 天</span>
+      <span class="preset" onclick="setPreset(100,'100 天')">100 天</span>
+      <span class="preset" onclick="setNY()">🎊 跨年</span>
+    </div>
+  </div>
+
+  <div id="list"></div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/life/countdown.html");
+let events = JSON.parse(localStorage.getItem("cd_events") || "[]");
+
+function save() { localStorage.setItem("cd_events", JSON.stringify(events)); }
+function add() {
+  const t = document.getElementById("title").value || "未命名";
+  const w = document.getElementById("when").value;
+  if (!w) return toast("请选择时间");
+  events.push({ id: Date.now(), title: t, when: new Date(w).getTime() });
+  save(); tick();
+}
+function remove(id) { events = events.filter(e => e.id !== id); save(); tick(); }
+function setPreset(days, label) {
+  const d = new Date(); d.setDate(d.getDate() + days);
+  document.getElementById("title").value = label;
+  const pad = n => String(n).padStart(2,"0");
+  document.getElementById("when").value = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T12:00`;
+}
+function setNY() {
+  const d = new Date(new Date().getFullYear() + 1, 0, 1);
+  document.getElementById("title").value = "🎊 新年";
+  const pad = n => String(n).padStart(2,"0");
+  document.getElementById("when").value = `${d.getFullYear()}-01-01T00:00`;
+}
+function fmt(ms) {
+  if (ms < 0) return { txt: "已过去", pct: 0 };
+  const d = Math.floor(ms / 86400000);
+  const h = Math.floor(ms % 86400000 / 3600000);
+  const m = Math.floor(ms % 3600000 / 60000);
+  const s = Math.floor(ms % 60000 / 1000);
+  return { txt: `${d} 天 ${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`, d, h, m, s, pct: 0 };
+}
+
+function tick() {
+  const now = Date.now();
+  document.getElementById("list").innerHTML = events.length === 0
+    ? `<div class="panel" style="text-align:center; color:var(--muted)">还没有事件，添加一个吧 👆</div>`
+    : events.map(e => {
+        const ms = e.when - now;
+        const f = fmt(ms);
+        return `<div class="panel countdown">
+          <div style="color:#fff; font-size:18px; font-weight:600; margin-bottom:8px">${e.title} <span style="color:var(--muted); font-size:13px; font-weight:400; margin-left:6px">${new Date(e.when).toLocaleString("zh-CN")}</span></div>
+          <div class="cd-time">${f.txt}</div>
+          <button class="btn btn-sm" style="margin-top:10px" onclick="remove(${e.id})">删除</button>
+        </div>`;
+      }).join("");
+}
+setInterval(tick, 1000);
+tick();
+</script>
+</body></html>

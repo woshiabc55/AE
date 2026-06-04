@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>工作日计算 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">🗓 工作日计算</div>
+    <div class="page-desc">计算两个日期之间的工作日天数（自动跳过周末）。</div>
+  </div>
+
+  <div class="panel">
+    <div class="row">
+      <div class="col"><div class="panel-title" style="font-size:12px">开始日期</div><input id="d1" type="date" /></div>
+      <div class="col"><div class="panel-title" style="font-size:12px">结束日期</div><input id="d2" type="date" /></div>
+      <div class="col" style="min-width:120px"><div class="panel-title" style="font-size:12px">操作</div>
+        <select id="op">
+          <option value="count">工作日数量</option>
+          <option value="add">+N 工作日</option>
+          <option value="sub">-N 工作日</option>
+        </select>
+      </div>
+      <div class="col" style="min-width:120px" id="nCol" style="display:none"><div class="panel-title" style="font-size:12px">N</div><input id="n" type="number" value="10" /></div>
+      <button class="btn btn-primary" onclick="run()">▶ 计算</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">结果</div>
+    <div id="out"></div>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/life/workdays.html");
+function daysBetween(a, b) {
+  let n = 0;
+  const cur = new Date(a);
+  while (cur <= b) {
+    const dow = cur.getDay();
+    if (dow !== 0 && dow !== 6) n++;
+    cur.setDate(cur.getDate() + 1);
+  }
+  return n;
+}
+function addWorkdays(d, n) {
+  const r = new Date(d);
+  let added = 0;
+  while (added < n) {
+    r.setDate(r.getDate() + 1);
+    const dow = r.getDay();
+    if (dow !== 0 && dow !== 6) added++;
+  }
+  return r;
+}
+function subWorkdays(d, n) {
+  const r = new Date(d);
+  let sub = 0;
+  while (sub < n) {
+    r.setDate(r.getDate() - 1);
+    const dow = r.getDay();
+    if (dow !== 0 && dow !== 6) sub++;
+  }
+  return r;
+}
+const today = new Date();
+document.getElementById("d1").value = today.toISOString().slice(0,10);
+const end = new Date(); end.setDate(end.getDate() + 30);
+document.getElementById("d2").value = end.toISOString().slice(0,10);
+const $ = id => document.getElementById(id);
+
+function run() {
+  const d1 = new Date($("d1").value);
+  const d2 = new Date($("d2").value);
+  const op = $("op").value;
+  let html = "";
+  if (op === "count") {
+    const n = daysBetween(d1, d2);
+    const total = Math.round((d2 - d1) / 86400000) + 1;
+    html = `
+      <div class="stat"><div class="stat-num">${n}</div><div class="stat-lbl">工作日</div></div>
+      <div class="stat" style="margin-top:8px"><div class="stat-num">${total - n}</div><div class="stat-lbl">周末天数</div></div>
+      <div class="stat" style="margin-top:8px"><div class="stat-num">${total}</div><div class="stat-lbl">总日历天</div></div>
+    `;
+  } else {
+    const n = +$("n").value;
+    const r = op === "add" ? addWorkdays(d1, n) : subWorkdays(d1, n);
+    html = `<div class="stat"><div class="stat-num">${r.toISOString().slice(0,10)}</div><div class="stat-lbl">${op === "add" ? "开始 +" : "开始 -"} ${n} 工作日</div></div>`;
+  }
+  $("out").innerHTML = html;
+}
+["d1","d2","op","n"].forEach(id => $(id).addEventListener("input", run));
+run();
+</script>
+</body></html>

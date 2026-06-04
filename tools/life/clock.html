@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>世界时钟 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+<style>
+  .clock-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .clock-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+  .clock-time { font-size: 28px; font-weight: 700; color: #fff; font-family: monospace; }
+  .clock-date { color: var(--muted); font-size: 12px; margin-top: 4px; }
+  .clock-name { font-weight: 600; margin-bottom: 6px; }
+</style>
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">🌍 世界时钟</div>
+    <div class="page-desc">多时区实时显示，可自定义添加。</div>
+  </div>
+
+  <div class="panel">
+    <div class="row">
+      <input id="zone" type="text" placeholder="IANA 时区，如 Asia/Tokyo、Europe/London" style="flex:1" />
+      <input id="label" type="text" placeholder="别名（可选）" style="max-width:200px" />
+      <button class="btn btn-primary" onclick="add()">➕ 添加</button>
+    </div>
+    <div style="margin-top:10px">
+      <span class="hot-tag" onclick="quickAdd('Asia/Shanghai','北京')">北京</span>
+      <span class="hot-tag" onclick="quickAdd('Asia/Tokyo','东京')">东京</span>
+      <span class="hot-tag" onclick="quickAdd('America/New_York','纽约')">纽约</span>
+      <span class="hot-tag" onclick="quickAdd('Europe/London','伦敦')">伦敦</span>
+      <span class="hot-tag" onclick="quickAdd('Europe/Paris','巴黎')">巴黎</span>
+      <span class="hot-tag" onclick="quickAdd('America/Los_Angeles','洛杉矶')">洛杉矶</span>
+      <span class="hot-tag" onclick="quickAdd('Australia/Sydney','悉尼')">悉尼</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="clock-grid" id="grid"></div>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/life/clock.html");
+let zones = JSON.parse(localStorage.getItem("zones") || '[]');
+if (zones.length === 0) zones = [["Asia/Shanghai","北京"], ["America/New_York","纽约"], ["Europe/London","伦敦"]];
+function save() { localStorage.setItem("zones", JSON.stringify(zones)); }
+function add() {
+  const z = document.getElementById("zone").value.trim();
+  const l = document.getElementById("label").value.trim();
+  if (!z) return toast("请输入时区");
+  try { new Intl.DateTimeFormat("zh-CN", { timeZone: z }); } catch { return toast("无效时区"); }
+  zones.push([z, l || z]);
+  save(); document.getElementById("zone").value = ""; document.getElementById("label").value = ""; tick();
+}
+function quickAdd(z, l) { zones.push([z, l]); save(); tick(); }
+function remove(i) { zones.splice(i, 1); save(); tick(); }
+function tick() {
+  const now = new Date();
+  document.getElementById("grid").innerHTML = zones.map(([z, l], i) => {
+    let t, d;
+    try {
+      t = new Intl.DateTimeFormat("zh-CN", { timeZone: z, hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }).format(now);
+      d = new Intl.DateTimeFormat("zh-CN", { timeZone: z, year: "numeric", month: "short", day: "numeric", weekday: "short" }).format(now);
+    } catch (e) { return ""; }
+    return `<div class="clock-card">
+      <div class="clock-name">${l} <span style="color:var(--muted); font-size:11px; font-weight:400">${z}</span>
+        <button class="btn btn-sm" style="float:right" onclick="remove(${i})">✕</button></div>
+      <div class="clock-time">${t}</div>
+      <div class="clock-date">${d}</div>
+    </div>`;
+  }).join("");
+}
+setInterval(tick, 1000);
+tick();
+</script>
+<style>.hot-tag{display:inline-block;margin:4px;padding:4px 10px;background:var(--panel-2);border-radius:999px;cursor:pointer;font-size:12px}.hot-tag:hover{background:var(--accent);color:#0b0e14}</style>
+</body></html>

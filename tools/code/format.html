@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>代码格式化 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">✨ 代码格式化</div>
+    <div class="page-desc">JS / JSON / CSS / HTML 简单美化（基于正则与内置解析器）。</div>
+  </div>
+
+  <div class="panel">
+    <div class="row">
+      <select id="lang" style="max-width:160px">
+        <option value="js">JavaScript</option>
+        <option value="css">CSS</option>
+        <option value="html">HTML</option>
+        <option value="sql">SQL</option>
+      </select>
+      <div class="col" style="min-width:120px">
+        <div class="panel-title" style="font-size:12px">缩进</div>
+        <select id="ind"><option value="2">2 空格</option><option value="4" selected>4 空格</option></select>
+      </div>
+      <button class="btn btn-primary" onclick="run()">▶ 格式化</button>
+    </div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="panel"><div class="panel-title">输入</div><textarea id="src" style="min-height:380px; font-family:monospace">function foo(a,b){if(a>b){return a*b}else{return a+b}}const x=foo(2,3)</textarea></div>
+    <div class="panel"><div class="panel-title">输出</div><textarea id="out" style="min-height:380px; font-family:monospace" readonly></textarea>
+      <div style="margin-top:8px"><button class="btn" onclick="copyText(out.value)">📋 复制</button></div>
+    </div>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/code/format.html");
+const $ = id => document.getElementById(id);
+
+function fmtJS(code, ind) {
+  let out = ""; let depth = 0;
+  code = code.replace(/\s+/g, " ").replace(/\s*([{};,:])\s*/g, "$1");
+  for (let i = 0; i < code.length; i++) {
+    const c = code[i];
+    if (c === "{") { out += " {\n" + ind.repeat(++depth); }
+    else if (c === "}") { out = out.trimEnd() + "\n" + ind.repeat(--depth) + "}"; }
+    else if (c === ";") { out += ";\n" + ind.repeat(depth); }
+    else if (c === ",") { out += ",\n" + ind.repeat(depth); }
+    else if (c === ":") { out += ": "; }
+    else out += c;
+  }
+  return out.split("\n").map(l => l.trimEnd() ? l.replace(/^ +/, m => m) : l).join("\n");
+}
+function fmtCSS(c, ind) {
+  return c.replace(/\s*{\s*/g, " {\n").replace(/;\s*/g, ";\n").replace(/\s*}\s*/g, "\n}\n")
+    .split("\n").map(l => {
+      if (l.includes("{")) return l;
+      if (l.startsWith("}")) return l;
+      return ind + l;
+    }).join("\n");
+}
+function fmtHTML(c, ind) {
+  // 简化：标签换行
+  return c.replace(/>\s*</g, ">\n<").split("\n").map(l => {
+    let d = 0; for (const ch of l) if (ch === "<") d++;
+    return ind.repeat(Math.max(0, d - 1)) + l.trim();
+  }).join("\n");
+}
+function fmtSQL(c, ind) {
+  return c.replace(/\s+/g, " ")
+    .replace(/\b(SELECT|FROM|WHERE|GROUP BY|ORDER BY|LIMIT|INSERT INTO|VALUES|UPDATE|SET|DELETE FROM|JOIN|LEFT JOIN|RIGHT JOIN|INNER JOIN|ON|AND|OR)\b/gi, "\n$1")
+    .replace(/^\s+/gm, "").replace(/,/g, ",\n  ").split("\n").map(l => l.trim() ? l : l).join("\n");
+}
+function run() {
+  const v = $("src").value;
+  const ind = " ".repeat(+$("ind").value);
+  const lang = $("lang").value;
+  if (lang === "js")   $("out").value = fmtJS(v, ind);
+  if (lang === "css")  $("out").value = fmtCSS(v, ind);
+  if (lang === "html") $("out").value = fmtHTML(v, ind);
+  if (lang === "sql")  $("out").value = fmtSQL(v, ind);
+}
+$("lang").addEventListener("change", run);
+$("src").addEventListener("input", run);
+run();
+</script>
+</body></html>

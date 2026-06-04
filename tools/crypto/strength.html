@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>密码强度评估 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">💪 密码强度评估</div>
+    <div class="page-desc">基于 zxcvbn 风格的简易评分：长度、字符集、常见模式、暴力破解时间估算。</div>
+  </div>
+
+  <div class="panel">
+    <input id="pwd" type="text" placeholder="输入密码" />
+    <label class="tag" style="margin-left:8px; cursor:pointer"><input id="show" type="checkbox" /> 显示明文</label>
+  </div>
+
+  <div class="grid grid-4">
+    <div class="stat"><div class="stat-num" id="len">0</div><div class="stat-lbl">长度</div></div>
+    <div class="stat"><div class="stat-num" id="entropy">0</div><div class="stat-lbl">熵 (bit)</div></div>
+    <div class="stat"><div class="stat-num" id="crack">—</div><div class="stat-lbl">破解时间</div></div>
+    <div class="stat"><div class="stat-num" id="score">—</div><div class="stat-lbl">评分</div></div>
+  </div>
+
+  <div class="panel" style="margin-top:16px">
+    <div class="panel-title">改进建议</div>
+    <ul id="tips" style="color:var(--muted); line-height:1.8; padding-left:20px;"></ul>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/crypto/strength.html");
+$ = id => document.getElementById(id);
+
+const common = new Set(["password","123456","qwerty","admin","letmein","welcome","monkey","dragon","111111","abc123","iloveyou","skillbox"]);
+const patterns = [
+  { r: /^(.)\1+$/,         n: "重复字符" },
+  { r: /^(012|123|234|345|456|567|678|789|890|abc|qwe|asd|zxc)+$/i, n: "顺序字符" },
+  { r: /^[a-z]+$/,          n: "全小写" },
+  { r: /^[0-9]+$/,          n: "纯数字" }
+];
+
+function charsetSize(p) {
+  let s = 0;
+  if (/[a-z]/.test(p)) s += 26;
+  if (/[A-Z]/.test(p)) s += 26;
+  if (/[0-9]/.test(p)) s += 10;
+  if (/[^a-zA-Z0-9]/.test(p)) s += 33;
+  return s || 1;
+}
+
+function crackTime(entropy) {
+  // 假设 1e10 次/秒
+  const sec = Math.pow(2, entropy) / 1e10;
+  if (sec < 1) return "< 1 秒";
+  if (sec < 60) return sec.toFixed(0) + " 秒";
+  if (sec < 3600) return (sec/60).toFixed(0) + " 分钟";
+  if (sec < 86400) return (sec/3600).toFixed(1) + " 小时";
+  if (sec < 31536000) return (sec/86400).toFixed(0) + " 天";
+  if (sec < 31536000*1000) return (sec/31536000).toFixed(0) + " 年";
+  if (sec < 31536000*1e6) return (sec/31536000/1000).toFixed(0) + " 千年";
+  return "∞ 极久";
+}
+
+function score(entropy, len, hasCommon) {
+  if (hasCommon || len < 6) return { txt: "极弱", color: "#ff6b6b", n: 0 };
+  if (entropy < 28)  return { txt: "弱",   color: "#ff8a6b", n: 1 };
+  if (entropy < 50)  return { txt: "一般", color: "#ffb86b", n: 2 };
+  if (entropy < 70)  return { txt: "良好", color: "#cfd86b", n: 3 };
+  if (entropy < 100) return { txt: "强",   color: "#6bd991", n: 4 };
+  return                    { txt: "极强", color: "#4ad991", n: 5 };
+}
+
+function run() {
+  const p = $("pwd").value;
+  $("pwd").type = $("show").checked ? "text" : "password";
+  const len = p.length;
+  const cs = charsetSize(p);
+  const entropy = Math.round(len * Math.log2(cs));
+  const hasCommon = common.has(p.toLowerCase()) || patterns.some(x => x.r.test(p));
+
+  $("len").textContent = len;
+  $("entropy").textContent = entropy;
+  $("crack").textContent = len ? crackTime(entropy) : "—";
+  const s = len ? score(entropy, len, hasCommon) : { txt: "—", color: "#9aa3b2" };
+  $("score").innerHTML = `<span style="color:${s.color}">${s.txt}</span>`;
+
+  const tips = [];
+  if (len < 8) tips.push("长度不足 8 位，建议 ≥ 12 位");
+  if (!/[A-Z]/.test(p)) tips.push("缺少大写字母");
+  if (!/[a-z]/.test(p)) tips.push("缺少小写字母");
+  if (!/[0-9]/.test(p)) tips.push("缺少数字");
+  if (!/[^a-zA-Z0-9]/.test(p)) tips.push("缺少特殊字符（如 !@#$%）");
+  if (hasCommon) tips.push("包含常见弱密码 / 顺序字符模式");
+  if (/(.)\1{2,}/.test(p)) tips.push("存在连续重复字符");
+  if (tips.length === 0 && len) tips.push("✅ 这是一个强密码");
+  $("tips").innerHTML = tips.map(t => `<li>${t}</li>`).join("");
+}
+["pwd","show"].forEach(id => $(id).addEventListener("input", run));
+run();
+</script>
+</body></html>

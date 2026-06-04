@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>JWT 解码 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">🎫 JWT 解码</div>
+    <div class="page-desc">解析 JWT 三段式，查看 Header / Payload / 签名信息（不验证签名）。</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Token</div>
+    <textarea id="tok" style="min-height:120px; font-family:monospace">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IlNraWxsQm94IiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c</textarea>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="panel">
+      <div class="panel-title">Header</div>
+      <pre id="hdr" style="background:var(--bg-2); padding:12px; border-radius:8px; font-size:12.5px; overflow:auto; max-height:200px;"></pre>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Payload</div>
+      <pre id="pld" style="background:var(--bg-2); padding:12px; border-radius:8px; font-size:12.5px; overflow:auto; max-height:200px;"></pre>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">签名信息</div>
+    <div id="sig"></div>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/crypto/jwt.html");
+$ = id => document.getElementById(id);
+function b64urlDecode(s) {
+  s = s.replace(/-/g, "+").replace(/_/g, "/");
+  while (s.length % 4) s += "=";
+  try { return atob(s); } catch { return null; }
+}
+function decode() {
+  const tok = $("tok").value.trim();
+  const parts = tok.split(".");
+  if (parts.length !== 3) { $("hdr").textContent = "无效 JWT（应有 3 段）"; $("pld").textContent = ""; $("sig").textContent = ""; return; }
+  const h = b64urlDecode(parts[0]);
+  const p = b64urlDecode(parts[1]);
+  try { $("hdr").textContent = JSON.stringify(JSON.parse(h || "{}"), null, 2); } catch { $("hdr").textContent = h; }
+  try { $("pld").textContent = JSON.stringify(JSON.parse(p || "{}"), null, 2); } catch { $("pld").textContent = p; }
+  $("sig").innerHTML = `
+    <div>算法：<code class="kbd">${(JSON.parse(h || "{}").alg || "?")}</code></div>
+    <div>类型：<code class="kbd">${(JSON.parse(h || "{}").typ || "?")}</code></div>
+    <div>签名长度：${parts[2].length} 字符</div>
+    <div style="color:var(--muted); font-size:12px; margin-top:6px">⚠️ 本工具仅<strong>解码</strong>，不验证签名。客户端切勿使用此工具判断 token 有效性。</div>
+  `;
+}
+$("tok").addEventListener("input", decode);
+decode();
+</script>
+</body></html>

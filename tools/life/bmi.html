@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>BMI 计算 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">⚖ BMI 计算</div>
+    <div class="page-desc">体重 / 身高²，参考 WHO 亚洲成人标准。</div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="panel">
+      <div class="panel-title">输入</div>
+      <div class="row">
+        <div class="col"><div class="panel-title" style="font-size:12px">身高 (cm)</div><input id="h" type="number" value="170" /></div>
+        <div class="col"><div class="panel-title" style="font-size:12px">体重 (kg)</div><input id="w" type="number" value="65" /></div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <label class="tag" style="cursor:pointer"><input id="asian" type="checkbox" checked /> 亚洲标准</label>
+      </div>
+      <button class="btn btn-primary" style="margin-top:14px" onclick="run()">▶ 计算</button>
+    </div>
+    <div class="panel">
+      <div class="panel-title">结果</div>
+      <div id="out"></div>
+    </div>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/life/bmi.html");
+const WHO  = [{max:18.5,t:"偏瘦",c:"#6aa6ff"},{max:25,t:"正常",c:"#4ad991"},{max:30,t:"超重",c:"#ffb86b"},{max:Infinity,t:"肥胖",c:"#ff6b6b"}];
+const ASIA = [{max:18.5,t:"偏瘦",c:"#6aa6ff"},{max:24,t:"正常",c:"#4ad991"},{max:28,t:"超重",c:"#ffb86b"},{max:Infinity,t:"肥胖",c:"#ff6b6b"}];
+function run() {
+  const h = +document.getElementById("h").value / 100;
+  const w = +document.getElementById("w").value;
+  const asian = document.getElementById("asian").checked;
+  const bmi = w / (h*h);
+  const ranges = asian ? ASIA : WHO;
+  const r = ranges.find(x => bmi < x.max);
+  const ideal = asian ? 22 : 22;
+  const idealW = (ideal * h * h).toFixed(1);
+  const diff = (w - idealW).toFixed(1);
+  document.getElementById("out").innerHTML = `
+    <div class="stat" style="margin-bottom:10px"><div class="stat-num" style="color:${r.c}">${bmi.toFixed(1)}</div><div class="stat-lbl">BMI 指数</div></div>
+    <div class="stat" style="margin-bottom:10px"><div class="stat-num" style="color:${r.c}">${r.t}</div><div class="stat-lbl">评估结果（${asian?"亚洲":"WHO"}）</div></div>
+    <div class="stat" style="margin-bottom:10px"><div class="stat-num">${idealW} kg</div><div class="stat-lbl">参考标准体重 (BMI=22)</div></div>
+    <div class="stat"><div class="stat-num" style="color:${diff>0?"var(--warn)":"var(--success)"}">${diff > 0 ? "+"+diff : diff} kg</div><div class="stat-lbl">与标准体重的差距</div></div>
+  `;
+}
+["h","w","asian"].forEach(id => document.getElementById(id).addEventListener("input", run));
+run();
+</script>
+</body></html>

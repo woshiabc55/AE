@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>颜色代码转换 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">🎯 颜色代码转换</div>
+    <div class="page-desc">HEX / RGB / HSL / HSV / CMYK 多格式互转 + 取色器。</div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="panel">
+      <div class="panel-title">取色</div>
+      <input id="color" type="color" value="#6aa6ff" style="width:100%; height:140px; cursor:pointer; border-radius:8px; border:1px solid var(--border); background:transparent" />
+    </div>
+    <div class="panel">
+      <div class="panel-title">预览</div>
+      <div id="prev" style="height:140px; border-radius:8px; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; text-shadow: 0 1px 4px rgba(0,0,0,0.5);">Sample</div>
+    </div>
+  </div>
+
+  <div class="grid grid-3">
+    <div class="panel"><div class="panel-title">HEX</div><input id="hex" readonly /><button class="btn btn-sm" style="margin-top:6px" onclick="copyText(hex.value)">📋</button></div>
+    <div class="panel"><div class="panel-title">RGB</div><input id="rgb" readonly /><button class="btn btn-sm" style="margin-top:6px" onclick="copyText(rgb.value)">📋</button></div>
+    <div class="panel"><div class="panel-title">RGBA</div><input id="rgba" readonly /><button class="btn btn-sm" style="margin-top:6px" onclick="copyText(rgba.value)">📋</button></div>
+    <div class="panel"><div class="panel-title">HSL</div><input id="hsl" readonly /><button class="btn btn-sm" style="margin-top:6px" onclick="copyText(hsl.value)">📋</button></div>
+    <div class="panel"><div class="panel-title">HSV/HSB</div><input id="hsv" readonly /><button class="btn btn-sm" style="margin-top:6px" onclick="copyText(hsv.value)">📋</button></div>
+    <div class="panel"><div class="panel-title">CMYK</div><input id="cmyk" readonly /><button class="btn btn-sm" style="margin-top:6px" onclick="copyText(cmyk.value)">📋</button></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">CSS 变量</div>
+    <input id="css" readonly />
+    <div style="margin-top:6px"><button class="btn btn-sm" onclick="copyText(css.value)">📋 复制</button></div>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/code/colorcode.html");
+const $ = id => document.getElementById(id);
+
+function clamp(n,a,b) { return Math.max(a, Math.min(b, n)); }
+function rgb2hsl(r,g,b) { r/=255; g/=255; b/=255; const mx=Math.max(r,g,b), mn=Math.min(r,g,b); let h,s,l=(mx+mn)/2;
+  if (mx===mn) h=s=0; else { const d=mx-mn; s=l>0.5?d/(2-mx-mn):d/(mx+mn);
+    if (mx===r) h=(g-b)/d+(g<b?6:0); else if (mx===g) h=(b-r)/d+2; else h=(r-g)/d+4; h/=6; }
+  return [Math.round(h*360), Math.round(s*100), Math.round(l*100)];
+}
+function rgb2hsv(r,g,b) { r/=255; g/=255; b/=255; const mx=Math.max(r,g,b), mn=Math.min(r,g,b); let h,s,v=mx;
+  const d=mx-mn; s=mx===0?0:d/mx;
+  if (mx===mn) h=0; else if (mx===r) h=(g-b)/d+(g<b?6:0); else if (mx===g) h=(b-r)/d+2; else h=(r-g)/d+4;
+  return [Math.round(h*360), Math.round(s*100), Math.round(v*100)];
+}
+function rgb2cmyk(r,g,b) { const rr=r/255, gg=g/255, bb=b/255; const k=1-Math.max(rr,gg,bb);
+  if (k===1) return [0,0,0,100];
+  return [Math.round((1-rr-k)/(1-k)*100), Math.round((1-gg-k)/(1-k)*100), Math.round((1-bb-k)/(1-k)*100), Math.round(k*100)];
+}
+function hexToRgb(h) { h=h.replace("#",""); if (h.length===3) h=h.split("").map(c=>c+c).join("");
+  return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)]; }
+
+function sync() {
+  const hex = $("color").value;
+  const [r,g,b] = hexToRgb(hex);
+  const [h,s,l] = rgb2hsl(r,g,b);
+  const [hh,ss,vv] = rgb2hsv(r,g,b);
+  const [c,m,y,k] = rgb2cmyk(r,g,b);
+  $("hex").value = hex.toUpperCase();
+  $("rgb").value = `rgb(${r}, ${g}, ${b})`;
+  $("rgba").value = `rgba(${r}, ${g}, ${b}, 1)`;
+  $("hsl").value = `hsl(${h}, ${s}%, ${l}%)`;
+  $("hsv").value = `hsv(${hh}, ${ss}%, ${vv}%)`;
+  $("cmyk").value = `cmyk(${c}%, ${m}%, ${y}%, ${k}%)`;
+  $("css").value = `--color: ${hex};\n--rgb: ${r}, ${g}, ${b};\n--hsl: ${h}, ${s}%, ${l}%;`;
+  $("prev").style.background = hex;
+  $("prev").textContent = hex.toUpperCase();
+}
+$("color").addEventListener("input", sync);
+sync();
+</script>
+</body></html>

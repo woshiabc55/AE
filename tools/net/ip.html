@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>IP 信息查询 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">📍 IP 信息查询</div>
+    <div class="page-desc">查询本机公网 IP / 解析域名 / 判断 IP 类型。</div>
+  </div>
+
+  <div class="panel">
+    <div class="row">
+      <input id="ip" type="text" placeholder="输入 IP 或域名" value="8.8.8.8" style="flex:1" />
+      <button class="btn btn-primary" onclick="lookup()">▶ 查询</button>
+      <button class="btn" onclick="myIP()">🌐 我的 IP</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">结果</div>
+    <div id="out" style="line-height:1.8;"></div>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/net/ip.html");
+const $ = id => document.getElementById(id);
+
+function classify(ip) {
+  if (ip.includes(":")) return "IPv6";
+  const p = ip.split(".").map(Number);
+  if (p.length !== 4 || p.some(n => isNaN(n) || n<0 || n>255)) return "无效";
+  if (p[0] === 10) return "私有 (A类)";
+  if (p[0] === 172 && p[1] >= 16 && p[1] <= 31) return "私有 (B类)";
+  if (p[0] === 192 && p[1] === 168) return "私有 (C类)";
+  if (p[0] === 127) return "回环";
+  if (p[0] === 169 && p[1] === 254) return "链路本地";
+  if (p[0] >= 224) return "组播/保留";
+  return "公网";
+}
+function reverseDNS(ip) {
+  return ip.split(".").reverse().join(".") + ".in-addr.arpa";
+}
+function integerFromIp(ip) {
+  if (ip.includes(":")) return null;
+  return ip.split(".").reduce((s,n) => s*256 + (+n), 0);
+}
+function hexFromIp(ip) {
+  return ip.split(".").map(n => (+n).toString(16).padStart(2,"0")).join("").toUpperCase();
+}
+
+async function lookup() {
+  const target = $("ip").value.trim();
+  if (!target) return;
+  let ip = target;
+  if (!/^[\d.:a-fA-F]+$/.test(target)) {
+    // 域名解析
+    try {
+      $("out").innerHTML = `<div style="color:var(--muted)">正在解析域名…</div>`;
+      const r = await fetch(`https://dns.google/resolve?name=${target}&type=A`);
+      const d = await r.json();
+      const ans = (d.Answer || []).filter(a => a.type === 1).map(a => a.data);
+      if (!ans.length) { $("out").innerHTML = `<div style="color:var(--danger)">未找到 A 记录</div>`; return; }
+      ip = ans[0];
+    } catch (e) { $("out").innerHTML = `<div style="color:var(--danger)">DNS 解析失败（可能跨域）</div>`; return; }
+  }
+  const int = integerFromIp(ip);
+  $("out").innerHTML = `
+    <div>IP 地址：<code class="kbd" style="font-size:14px">${ip}</code></div>
+    <div>类型：<span class="tag tag-accent">${classify(ip)}</span></div>
+    ${int !== null ? `<div>整数形式：<code class="kbd">${int}</code></div>` : ""}
+    <div>十六进制：<code class="kbd">${hexFromIp(ip)}</code></div>
+    <div>反向 DNS（PTR）：<code class="kbd" style="word-break:break-all">${reverseDNS(ip)}</code></div>
+    <div>二进制：<code class="kbd" style="word-break:break-all">${ip.split(".").map(n => (+n).toString(2).padStart(8,"0")).join(".")}</code></div>
+  `;
+}
+
+async function myIP() {
+  try {
+    const r = await fetch("https://api.ipify.org?format=json");
+    const d = await r.json();
+    $("ip").value = d.ip;
+    lookup();
+  } catch { toast("无法获取（需要联网）"); }
+}
+</script>
+</body></html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>JSON → 代码 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">🧬 JSON → 代码</div>
+    <div class="page-desc">将 JSON 转换为 TypeScript / Go / Java / Python / C# / Rust 类。</div>
+  </div>
+
+  <div class="panel">
+    <div class="row">
+      <select id="lang" style="max-width:200px">
+        <option value="ts">TypeScript</option>
+        <option value="go">Go</option>
+        <option value="java">Java</option>
+        <option value="py">Python (dataclass)</option>
+        <option value="cs">C#</option>
+        <option value="rs">Rust</option>
+      </select>
+      <input id="name" type="text" value="User" style="max-width:200px" />
+    </div>
+    <div style="margin-top:10px" class="row">
+      <textarea id="src" style="min-height:200px; font-family:monospace; flex:1">{
+  "id": 1,
+  "name": "Alice",
+  "email": "alice@example.com",
+  "isActive": true,
+  "tags": ["admin", "user"],
+  "profile": {
+    "age": 28,
+    "city": "Shanghai"
+  }
+}</textarea>
+    </div>
+    <div style="margin-top:10px"><button class="btn btn-primary" onclick="run()">▶ 生成</button></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">生成代码</div>
+    <textarea id="out" style="min-height:300px; font-family:monospace" readonly></textarea>
+    <div style="margin-top:10px">
+      <button class="btn" onclick="copyText(out.value)">📋 复制</button>
+      <button class="btn" onclick="downloadFile(name.value + '.' + ext(), out.value)">⬇ 下载</button>
+    </div>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/code/json2code.html");
+function typeOf(v) {
+  if (v === null) return "null";
+  if (Array.isArray(v)) return "array";
+  return typeof v;
+}
+function tsType(v) {
+  if (v === null) return "any | null";
+  if (Array.isArray(v)) return tsType(v[0]) + "[]";
+  if (typeof v === "object") return "{\n" + Object.entries(v).map(([k,v]) => `  ${k}: ${tsType(v)};`).join("\n") + "\n}";
+  return { string: "string", number: "number", boolean: "boolean" }[typeof v] || "any";
+}
+
+function flat(obj, prefix = "") {
+  const out = {};
+  for (const [k, v] of Object.entries(obj)) {
+    const key = prefix ? prefix + "." + k : k;
+    if (v && typeof v === "object" && !Array.isArray(v)) Object.assign(out, flat(v, key));
+    else out[key] = v;
+  }
+  return out;
+}
+
+function run() {
+  let data;
+  try { data = JSON.parse(document.getElementById("src").value); }
+  catch (e) { return toast("JSON 错误：" + e.message); }
+  const name = document.getElementById("name").value || "Root";
+  const lang = document.getElementById("lang").value;
+  const f = flat(data);
+
+  let out = "";
+  if (lang === "ts") {
+    out = `interface ${name} {\n` + Object.entries(f).map(([k,v]) => `  ${k}: ${tsType(v)};`).join("\n") + "\n}";
+  } else if (lang === "go") {
+    out = `type ${name} struct {\n` + Object.entries(f).map(([k,v]) => {
+      const G = k.split(".").map(p => p[0].toUpperCase() + p.slice(1)).join("");
+      const t = Array.isArray(v) ? "[]" + goType(v[0]) : goType(v);
+      return `  ${G} ${t} \`json:"${k}"\``;
+    }).join("\n") + "\n}";
+  } else if (lang === "java") {
+    out = `public class ${name} {\n` + Object.entries(f).map(([k,v]) => {
+      const t = Array.isArray(v) ? "List<" + javaType(v[0]) + ">" : javaType(v);
+      const G = k.split(".").map(p => p[0].toUpperCase() + p.slice(1)).join("");
+      return `  private ${t} ${k};\n  public ${t} get${G}() { return ${k}; }`;
+    }).join("\n\n") + "\n}";
+  } else if (lang === "py") {
+    out = `from dataclasses import dataclass\nfrom typing import Optional, List\n\n@dataclass\nclass ${name}:\n` +
+      Object.entries(f).map(([k,v]) => {
+        const t = Array.isArray(v) ? "List[" + pyType(v[0]) + "]" : "Optional[" + pyType(v) + "]";
+        return `    ${k}: ${t}`;
+      }).join("\n");
+  } else if (lang === "cs") {
+    out = `public class ${name} {\n` + Object.entries(f).map(([k,v]) => {
+      const t = Array.isArray(v) ? "List<" + csType(v[0]) + ">" : csType(v);
+      const P = k.split(".").map(p => p[0].toUpperCase() + p.slice(1)).join("");
+      return `    public ${t} ${P} { get; set; }`;
+    }).join("\n") + "\n}";
+  } else if (lang === "rs") {
+    out = `#[derive(Debug, Serialize, Deserialize)]\npub struct ${name} {\n` + Object.entries(f).map(([k,v]) => {
+      const t = Array.isArray(v) ? "Vec<" + rsType(v[0]) + ">" : rsType(v);
+      return `    pub ${k}: ${t},`;
+    }).join("\n") + "\n}";
+  }
+  document.getElementById("out").value = out;
+}
+function goType(v) { return {string:"string",number:"float64",boolean:"bool"}[typeof v] || "interface{}"; }
+function javaType(v) { return {string:"String",number:"Double",boolean:"Boolean"}[typeof v] || "Object"; }
+function pyType(v) { return {string:"str",number:"float",boolean:"bool"}[typeof v] || "dict"; }
+function csType(v) { return {string:"string",number:"double",boolean:"bool"}[typeof v] || "object"; }
+function rsType(v) { return {string:"String",number:"f64",boolean:"bool"}[typeof v] || "serde_json::Value"; }
+function ext() { return {ts:"ts",go:"go",java:"java",py:"py",cs:"cs",rs:"rs"}[document.getElementById("lang").value]; }
+document.getElementById("lang").addEventListener("change", run);
+document.getElementById("name").addEventListener("input", run);
+document.getElementById("src").addEventListener("input", run);
+run();
+</script>
+</body></html>

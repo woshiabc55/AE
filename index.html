@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SkillBox · 多功能在线工具箱</title>
   <link rel="stylesheet" href="/assets/style.css" />
+  <style>
+    .cat-bar { height: 8px; border-radius: 4px; background: var(--bg-2); overflow: hidden; }
+    .cat-bar-fill { height: 100%; }
+  </style>
 </head>
 <body>
   <aside id="sidebar" class="sidebar"></aside>
@@ -17,30 +21,28 @@
 
     <div class="panel">
       <div class="row">
-        <div class="stat" style="flex:1"><div class="stat-num" id="cTotal">30</div><div class="stat-lbl">在线工具</div></div>
-        <div class="stat" style="flex:1"><div class="stat-num">3</div><div class="stat-lbl">分类</div></div>
-        <div class="stat" style="flex:1"><div class="stat-num">0</div><div class="stat-lbl">数据上传</div></div>
-        <div class="stat" style="flex:1"><div class="stat-num">∞</div><div class="stat-lbl">使用次数</div></div>
+        <a href="/search.html" style="text-decoration:none; flex:1; display:flex; align-items:center; gap:14px; padding:14px 18px; background:linear-gradient(135deg, rgba(106,166,255,0.15), rgba(139,109,255,0.15)); border:1px solid var(--border); border-radius:10px;">
+          <span style="font-size:28px">🔍</span>
+          <div style="flex:1">
+            <div style="color:#fff; font-weight:700; font-size:15px">同质化检索（新功能）</div>
+            <div style="color:var(--muted); font-size:12px">输入关键词，自动聚类功能相近的工具</div>
+          </div>
+          <span style="color:var(--accent);">→</span>
+        </a>
       </div>
     </div>
 
-    <div class="panel">
-      <div class="panel-title">📂 文本处理（10）</div>
-      <div class="grid grid-4" id="catText"></div>
+    <div class="grid grid-4">
+      <div class="stat"><div class="stat-num" id="cTotal">0</div><div class="stat-lbl">在线工具</div></div>
+      <div class="stat"><div class="stat-num" id="cCat">0</div><div class="stat-lbl">分类</div></div>
+      <div class="stat"><div class="stat-num">0</div><div class="stat-lbl">数据上传</div></div>
+      <div class="stat"><div class="stat-num">∞</div><div class="stat-lbl">使用次数</div></div>
     </div>
 
-    <div class="panel">
-      <div class="panel-title">📊 数据可视化（10，基于 ECharts）</div>
-      <div class="grid grid-4" id="catViz"></div>
-    </div>
-
-    <div class="panel">
-      <div class="panel-title">🛠 实用工具（10）</div>
-      <div class="grid grid-4" id="catUtil"></div>
-    </div>
+    <div id="cats"></div>
 
     <div class="panel" style="text-align:center; color:var(--muted); font-size:13px;">
-      💡 提示：所有页面共享左侧导航，使用 <span class="kbd">Ctrl</span> + <span class="kbd">K</span>（或顶部的搜索框）可快速定位工具。
+      💡 提示：所有页面共享左侧导航，使用 <span class="kbd">Ctrl</span> + <span class="kbd">F</span>（或顶部搜索框）可快速定位工具。
     </div>
   </main>
 
@@ -48,61 +50,39 @@
   <script>
     renderSidebar("/index.html");
 
-    function renderCards(targetId, items, descMap) {
-      const el = document.getElementById(targetId);
-      el.innerHTML = items.map(it => `
-        <a class="tool-card" href="${it.href}">
-          <div class="tool-card-icon">${it.icon}</div>
-          <div class="tool-card-name">${it.name}</div>
-          <div class="tool-card-desc">${descMap[it.name] || ""}</div>
-        </a>
-      `).join("");
-    }
-
-    const descText = {
-      "字符统计": "统计字符数、词数、行数、字节数",
-      "格式转换": "JSON / YAML / CSV / XML 互转",
-      "文本对比 Diff": "逐行比较两段文本的差异",
-      "Markdown 实时预览": "左写右看，支持导出 HTML",
-      "大小写转换": "全大写 / 全小写 / 标题大小写等",
-      "批量查找替换": "支持正则的批量文本替换",
-      "Base64 编解码": "文本与 Base64 互转（UTF-8）",
-      "URL 编解码": "URL 编码 / 百分比编码",
-      "正则测试": "实时高亮匹配结果",
-      "文本去重 / 排序": "按行去重、按字典 / 长度排序"
-    };
-    const descViz = {
-      "柱状图": "对比不同类别的数值",
-      "折线图": "展示数据随时间的变化趋势",
-      "饼图 / 环形图": "展示各部分占总体的比例",
-      "散点图": "观察两个变量之间的相关性",
-      "雷达图": "多维度指标对比",
-      "热力图": "矩阵数据的颜色密度",
-      "词云": "高频词汇可视化",
-      "漏斗图": "展示转化流程",
-      "桑基图": "流量 / 能量分布流向",
-      "仪表盘": "单个核心指标的进度"
-    };
-    const descUtil = {
-      "调色器": "颜色选择、HEX/RGB/HSL 互转",
-      "二维码生成": "文本 / URL 转二维码并下载",
-      "JSON 格式化": "美化、压缩、校验 JSON",
-      "时间戳转换": "Unix 时间戳 ⇄ 日期时间",
-      "UUID 生成": "v1 / v4 UUID 批量生成",
-      "密码生成": "高强度随机密码",
-      "图片→Base64": "本地图片转 DataURL",
-      "计算器": "标准 / 科学计算器",
-      "番茄钟": "25/5 分钟专注计时",
-      "随机数 / 抽样": "指定范围、区间、抽样数量"
+    const colors = ["#6aa6ff","#8b6dff","#4ad991","#ffb86b","#ff6b6b","#cfd86b","#5dd5d5","#e08fff","#ff8aa6","#7cf28f"];
+    const descs = {
+      "文本处理": "字符统计、Markdown、正则、Diff、Base64、URL...",
+      "数据可视化": "柱状图、折线、饼图、雷达、词云、桑基...",
+      "实用工具": "调色器、二维码、JSON、UUID、计算器、番茄钟...",
+      "图片工具": "压缩、缩放、格式转换、裁剪、水印（本地处理）",
+      "加解密": "MD5/SHA、HMAC、AES-GCM/CBC、JWT 解码、密码强度",
+      "网络 / 开发": "URL 解析、IP、HTTP 状态码、子网、Cron、进制、ASCII",
+      "代码 / 数据": "JSON→代码、代码格式化/压缩、CSV↔JSON、表格查看、颜色",
+      "数学 / 生活": "统计、BMI、BMR、工作日、世界时钟、倒计时"
     };
 
-    const textItems = NAV[1].items;
-    const vizItems  = NAV[2].items;
-    const utilItems = NAV[3].items;
+    const cats = NAV.filter(g => g.title !== "概览" && g.items.length > 0);
+    document.getElementById("cTotal").textContent = totalTools();
+    document.getElementById("cCat").textContent = cats.length;
 
-    renderCards("catText", textItems, descText);
-    renderCards("catViz",  vizItems,  descViz);
-    renderCards("catUtil", utilItems, descUtil);
+    document.getElementById("cats").innerHTML = cats.map((g, i) => {
+      const c = colors[i % colors.length];
+      return `<div class="panel">
+        <div class="row" style="align-items:center;">
+          <div class="panel-title" style="margin:0">${g.title}（${g.items.length}）</div>
+          <div class="cat-bar" style="width:120px; margin-left:auto;"><div class="cat-bar-fill" style="width:${g.items.length*8}%; background:${c}"></div></div>
+        </div>
+        <div class="page-desc" style="margin:4px 0 12px">${descs[g.title] || ""}</div>
+        <div class="grid grid-4">
+          ${g.items.map(it => `<a class="tool-card" href="${it.href}">
+            <div class="tool-card-icon" style="background:linear-gradient(135deg, ${c}, ${colors[(i+1)%colors.length]})">${it.icon}</div>
+            <div class="tool-card-name">${it.name}</div>
+            <div class="tool-card-desc">${(it.tags || []).slice(0, 3).join(" · ")}</div>
+          </a>`).join("")}
+        </div>
+      </div>`;
+    }).join("");
   </script>
 </body>
 </html>

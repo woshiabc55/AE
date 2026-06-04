@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>统计计算器 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">📐 统计计算器</div>
+    <div class="page-desc">输入数字（空格/换行/逗号分隔），自动计算均值、中位数、众数、方差、标准差、极值。</div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="panel">
+      <div class="panel-title">数据</div>
+      <textarea id="src" style="min-height:240px; font-family:monospace">12 15 18 22 22 25 28 30 30 30 35 40 45 50 50 60 75 100</textarea>
+    </div>
+    <div class="panel">
+      <div class="panel-title">结果</div>
+      <div id="out" class="grid grid-2"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">分布直方图</div>
+    <div id="chart" style="width:100%; height:300px;"></div>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/math/stats.html");
+let chart;
+function stats(arr) {
+  const n = arr.length;
+  const sum = arr.reduce((s,v) => s+v, 0);
+  const mean = sum / n;
+  const sorted = arr.slice().sort((a,b) => a-b);
+  const median = n%2 ? sorted[n>>1] : (sorted[n/2-1] + sorted[n/2]) / 2;
+  // 众数
+  const map = {}; arr.forEach(v => map[v] = (map[v]||0)+1);
+  const maxC = Math.max(...Object.values(map));
+  const modes = Object.entries(map).filter(([k,v]) => v === maxC).map(([k]) => +k);
+  const variance = arr.reduce((s,v) => s + (v-mean)**2, 0) / n;
+  const std = Math.sqrt(variance);
+  return { n, sum, mean, median, modes, maxC, variance, std, min: sorted[0], max: sorted[n-1] };
+}
+function run() {
+  const arr = $("src").value.split(/[\s,;]+/).map(Number).filter(n => !isNaN(n));
+  const s = stats(arr);
+  $("out").innerHTML = `
+    <div class="stat"><div class="stat-num">${s.n}</div><div class="stat-lbl">数量 n</div></div>
+    <div class="stat"><div class="stat-num">${s.sum.toFixed(2)}</div><div class="stat-lbl">总和</div></div>
+    <div class="stat"><div class="stat-num">${s.mean.toFixed(2)}</div><div class="stat-lbl">均值</div></div>
+    <div class="stat"><div class="stat-num">${s.median.toFixed(2)}</div><div class="stat-lbl">中位数</div></div>
+    <div class="stat"><div class="stat-num">${s.modes.join(", ")}</div><div class="stat-lbl">众数（${s.maxC}次）</div></div>
+    <div class="stat"><div class="stat-num">${s.variance.toFixed(2)}</div><div class="stat-lbl">方差 σ²</div></div>
+    <div class="stat"><div class="stat-num">${s.std.toFixed(2)}</div><div class="stat-lbl">标准差 σ</div></div>
+    <div class="stat"><div class="stat-num">${s.min} / ${s.max}</div><div class="stat-lbl">最小 / 最大</div></div>
+  `;
+  // 直方图
+  if (!chart) chart = echarts.init(document.getElementById("chart"));
+  const min = s.min, max = s.max;
+  const bins = 10;
+  const w = (max - min) / bins || 1;
+  const hist = new Array(bins).fill(0).map((_, i) => ({
+    x: [(min + i*w).toFixed(1), (min + (i+1)*w).toFixed(1)],
+    n: 0
+  }));
+  arr.forEach(v => { const i = Math.min(bins-1, Math.floor((v - min) / w)); hist[i].n++; });
+  chart.setOption({
+    backgroundColor: "transparent",
+    tooltip: { trigger: "item", formatter: p => `${p.data.x[0]} ~ ${p.data.x[1]}<br/>频次: ${p.data.n}` },
+    xAxis: { type: "category", data: hist.map(h => h.x.join("~")), axisLabel: { color: "#9aa3b2", rotate: 30 } },
+    yAxis: { type: "value", axisLabel: { color: "#9aa3b2" } },
+    series: [{ type: "bar", data: hist, itemStyle: { color: "#6aa6ff", borderRadius: [4,4,0,0] } }]
+  });
+}
+const $ = id => document.getElementById(id);
+$("src").addEventListener("input", run);
+window.addEventListener("resize", () => chart && chart.resize());
+run();
+</script>
+</body></html>

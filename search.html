@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>同质化检索 · SkillBox</title>
+  <link rel="stylesheet" href="/assets/style.css" />
+  <style>
+    .search-hero {
+      background: linear-gradient(135deg, rgba(106,166,255,0.12), rgba(139,109,255,0.12));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 28px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .search-hero h1 { font-size: 28px; margin-bottom: 10px; color: #fff; }
+    .search-hero p  { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+    .search-input {
+      width: 100%; max-width: 640px; margin: 0 auto;
+      background: var(--bg-2);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 20px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .search-input:focus { border-color: var(--accent); }
+    .hot-tags { margin-top: 14px; color: var(--muted); font-size: 12px; }
+    .hot-tag {
+      display: inline-block; margin: 4px; padding: 4px 12px;
+      background: var(--panel-2); border-radius: 999px;
+      cursor: pointer; font-size: 12.5px; transition: all 0.1s;
+    }
+    .hot-tag:hover { background: var(--accent); color: #0b0e14; }
+    .result-section { margin-bottom: 24px; }
+    .result-title { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+    .cluster {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+    }
+    .cluster-tag { color: var(--accent); font-weight: 700; font-size: 14px; }
+    .cluster-count { color: var(--muted); font-size: 12px; margin-left: 8px; }
+    .cluster-tools { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
+    .empty { color: var(--muted); text-align: center; padding: 40px; }
+    .result-tool {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 8px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 13px;
+      transition: all 0.1s;
+    }
+    .result-tool:hover { border-color: var(--accent); color: var(--accent); }
+    mark { background: rgba(255, 184, 107, 0.4); color: #fff; padding: 0 2px; border-radius: 2px; }
+  </style>
+</head>
+<body>
+  <aside id="sidebar" class="sidebar"></aside>
+
+  <main class="main">
+    <div class="search-hero">
+      <h1>🔍 同质化检索</h1>
+      <p>输入关键词，自动聚类出<strong>功能相近</strong>的工具。例如：<code class="kbd">编码</code>、<code class="kbd">图片</code>、<code class="kbd">json</code>、<code class="kbd">密码</code>、<code class="kbd">时间</code></p>
+      <input id="q" class="search-input" placeholder="试试：编码 / json / 图片 / 颜色 / hash..." />
+      <div class="hot-tags" id="hotTags"></div>
+    </div>
+
+    <div id="result"></div>
+  </main>
+
+  <script src="/assets/app.js"></script>
+  <script>
+    renderSidebar("/search.html");
+
+    const hotList = ["编码", "JSON", "图片", "颜色", "密码", "时间", "Base64", "正则", "随机", "加密", "Markdown", "图表"];
+    document.getElementById("hotTags").innerHTML = "🔥 热门：" + hotList.map(t =>
+      `<span class="hot-tag" onclick="document.getElementById('q').value='${t}';document.getElementById('q').dispatchEvent(new Event('input'))">${t}</span>`
+    ).join("");
+
+    const $ = id => document.getElementById(id);
+    function esc(s) { return String(s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]); }
+    function highlight(name, q) {
+      const i = name.toLowerCase().indexOf(q.toLowerCase());
+      if (i < 0) return esc(name);
+      return esc(name.slice(0, i)) + "<mark>" + esc(name.slice(i, i + q.length)) + "</mark>" + esc(name.slice(i + q.length));
+    }
+
+    function render() {
+      const q = $("q").value.trim();
+      const r = homogenizedSearch(q);
+      const out = $("result");
+
+      if (!q) {
+        out.innerHTML = `
+          <div class="panel">
+            <div class="panel-title">💡 同质化检索说明</div>
+            <p style="color:var(--muted); line-height:1.7;">
+              不同于按名称模糊搜索，<strong>同质化检索</strong>会自动把
+              <span class="tag tag-accent">功能相近</span>
+              <span class="tag tag-accent">用途相似</span>
+              <span class="tag tag-accent">操作互替</span>
+              的工具聚合到一个分组里，方便你快速对比选择。
+            </p>
+            <hr class="divider" />
+            <p style="color:var(--muted); font-size:13px;">当前共收录 <strong>${totalTools()}</strong> 个工具，覆盖 8 大分类。</p>
+          </div>
+        `;
+        return;
+      }
+
+      let html = "";
+      const total = r.exact.length + r.tag.length + r.fuzzy.length;
+
+      if (total === 0) {
+        out.innerHTML = `<div class="empty">没有找到与 <code class="kbd">${esc(q)}</code> 相关的工具。<br/>试试其他关键词，或点击上方热门标签。</div>`;
+        return;
+      }
+
+      // 1. 同质化聚类
+      const clusterKeys = Object.keys(r.byCluster);
+      if (clusterKeys.length) {
+        html += `<div class="result-section">
+          <div class="result-title">🧲 同质化聚类（${clusterKeys.length} 个相关功能簇）</div>`;
+        clusterKeys.forEach(tag => {
+          const tools = r.byCluster[tag];
+          html += `<div class="cluster">
+            <span class="cluster-tag"># ${esc(tag)}</span>
+            <span class="cluster-count">${tools.length} 个同质工具</span>
+            <div class="cluster-tools">
+              ${tools.map(t => `<a class="result-tool" href="${t.href}">${t.icon} ${esc(t.name)}</a>`).join("")}
+            </div>
+          </div>`;
+        });
+        html += `</div>`;
+      }
+
+      // 2. 精确匹配
+      if (r.exact.length) {
+        html += `<div class="result-section">
+          <div class="result-title">🎯 精确匹配（${r.exact.length}）</div>
+          <div class="cluster-tools">${r.exact.map(it =>
+            `<a class="result-tool" href="${it.href}">${it.icon} ${highlight(it.name, q)}</a>`
+          ).join("")}</div>
+        </div>`;
+      }
+
+      // 3. 标签匹配
+      if (r.tag.length) {
+        html += `<div class="result-section">
+          <div class="result-title">🏷 标签命中（${r.tag.length}）</div>
+          <div class="cluster-tools">${r.tag.map(it =>
+            `<a class="result-tool" href="${it.href}">${it.icon} ${esc(it.name)}</a>`
+          ).join("")}</div>
+        </div>`;
+      }
+
+      // 4. 模糊匹配
+      if (r.fuzzy.length) {
+        html += `<div class="result-section">
+          <div class="result-title">🔎 模糊相关（${r.fuzzy.length}）</div>
+          <div class="cluster-tools">${r.fuzzy.map(it =>
+            `<a class="result-tool" href="${it.href}">${it.icon} ${esc(it.name)}</a>`
+          ).join("")}</div>
+        </div>`;
+      }
+
+      out.innerHTML = html;
+    }
+
+    $("q").addEventListener("input", render);
+    // 默认示例
+    $("q").value = "编码";
+    render();
+  </script>
+</body>
+</html>

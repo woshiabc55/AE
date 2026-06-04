@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>子网计算 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">🕸 子网计算</div>
+    <div class="page-desc">CIDR 表示法 ↔ 子网掩码，计算网络地址、广播地址、可用主机数。</div>
+  </div>
+
+  <div class="panel">
+    <div class="row">
+      <input id="ip" type="text" value="192.168.1.100" placeholder="IP 地址" />
+      <div class="col" style="min-width:140px">
+        <div class="panel-title" style="font-size:12px">CIDR 位数</div>
+        <input id="cidr" type="number" value="24" min="0" max="32" />
+      </div>
+      <button class="btn btn-primary" onclick="calc()">▶ 计算</button>
+    </div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="panel">
+      <div class="panel-title">子网信息</div>
+      <table class="tbl" id="info"></table>
+    </div>
+    <div class="panel">
+      <div class="panel-title">范围</div>
+      <table class="tbl" id="range"></table>
+    </div>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/net/subnet.html");
+function ipToInt(ip) { return ip.split(".").reduce((s,n) => s*256 + (+n), 0) >>> 0; }
+function intToIp(n) { return [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].join("."); }
+
+function calc() {
+  const ip = document.getElementById("ip").value;
+  const cidr = +document.getElementById("cidr").value;
+  const mask = cidr === 0 ? 0 : (0xFFFFFFFF << (32 - cidr)) >>> 0;
+  const ipInt = ipToInt(ip);
+  const network = (ipInt & mask) >>> 0;
+  const broadcast = (network | (~mask >>> 0)) >>> 0;
+  const total = 2 ** (32 - cidr);
+  const usable = Math.max(0, total - 2);
+
+  document.getElementById("info").innerHTML = `
+    <tr><th>IP 地址</th><td><code>${ip}</code> = <code>${ipInt}</code></td></tr>
+    <tr><th>子网掩码</th><td><code>${intToIp(mask)}</code> = <code>/${cidr}</code></td></tr>
+    <tr><th>反掩码</th><td><code>${intToIp((~mask)>>>0)}</code></td></tr>
+    <tr><th>网络地址</th><td><code>${intToIp(network)}</code></td></tr>
+    <tr><th>广播地址</th><td><code>${intToIp(broadcast)}</code></td></tr>
+    <tr><th>总地址数</th><td>${total.toLocaleString()}</td></tr>
+    <tr><th>可用主机数</th><td>${usable.toLocaleString()}</td></tr>
+    <tr><th>通配符</th><td><code>0.0.${(255-((mask>>>8)&255))}.${255-(mask&255)}</code></td></tr>
+  `;
+  document.getElementById("range").innerHTML = `
+    <tr><th>第一个可用</th><td><code>${cidr >= 31 ? intToIp(network) : intToIp(network + 1)}</code></td></tr>
+    <tr><th>最后一个可用</th><td><code>${cidr >= 31 ? intToIp(broadcast) : intToIp(broadcast - 1)}</code></td></tr>
+    <tr><th>IP 所属类</th><td>${ipInt >>> 24 < 128 ? "A" : ipInt >>> 24 < 192 ? "B" : ipInt >>> 24 < 224 ? "C" : "D/E"}</td></tr>
+    <tr><th>类型</th><td>${cidr >= 24 ? "小型子网（适合办公室）" : cidr >= 16 ? "中型子网（园区/企业）" : "大型子网（ISP）"}</td></tr>
+  `;
+}
+document.getElementById("ip").addEventListener("input", calc);
+document.getElementById("cidr").addEventListener("input", calc);
+calc();
+</script>
+</body></html>

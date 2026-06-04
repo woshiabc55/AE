@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8" />
+<title>Cron 解析 · SkillBox</title>
+<link rel="stylesheet" href="/assets/style.css" />
+</head><body>
+<aside id="sidebar" class="sidebar"></aside>
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">⏱ Cron 解析</div>
+    <div class="page-desc">5 段标准 Cron 表达式：分 时 日 月 周  →  自然语言 + 下次执行时间。</div>
+  </div>
+
+  <div class="panel">
+    <div class="row">
+      <input id="cron" type="text" value="0 9 * * 1-5" style="flex:1; font-family:monospace" />
+      <button class="btn btn-primary" onclick="parse()">▶ 解析</button>
+    </div>
+    <div style="margin-top:8px" class="row">
+      <span class="hot-tag" onclick="document.getElementById('cron').value='0 9 * * 1-5';parse()">0 9 * * 1-5 (工作日 9 点)</span>
+      <span class="hot-tag" onclick="document.getElementById('cron').value='*/15 * * * *';parse()">*/15 * * * * (每 15 分钟)</span>
+      <span class="hot-tag" onclick="document.getElementById('cron').value='0 0 1 * *';parse()">0 0 1 * * (每月 1 日)</span>
+      <span class="hot-tag" onclick="document.getElementById('cron').value='30 2 * * 0';parse()">30 2 * * 0 (周日深夜)</span>
+    </div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="panel"><div class="panel-title">字段含义</div><table class="tbl" id="desc"></table></div>
+    <div class="panel"><div class="panel-title">下次 5 次执行</div><table class="tbl" id="next"></table></div>
+  </div>
+</main>
+
+<script src="/assets/app.js"></script>
+<script>
+renderSidebar("/tools/dev/cron.html");
+const $ = id => document.getElementById(id);
+const FIELDS = [
+  { name: "分", min: 0, max: 59 },
+  { name: "时", min: 0, max: 23 },
+  { name: "日", min: 1, max: 31 },
+  { name: "月", min: 1, max: 12 },
+  { name: "周", min: 0, max: 6 }
+];
+const WEEK = ["日","一","二","三","四","五","六"];
+
+function parseField(f, mn, mx) {
+  if (f === "*") return { all: true, vals: range(mn, mx) };
+  if (f.includes(",")) return { all: false, vals: f.split(",").flatMap(x => parseField(x, mn, mx).vals), multi: true };
+  if (f.includes("/")) {
+    const [a, b] = f.split("/"); const step = +b;
+    const start = a === "*" ? mn : +a;
+    const vals = []; for (let i = start; i <= mx; i += step) vals.push(i);
+    return { all: false, vals };
+  }
+  if (f.includes("-")) {
+    const [a, b] = f.split("-").map(Number);
+    return { all: false, vals: range(a, b) };
+  }
+  return { all: false, vals: [+f] };
+}
+function range(a, b) { const r = []; for (let i = a; i <= b; i++) r.push(i); return r; }
+function matchIn(v, list) { return list.includes(v); }
+
+function describeExpr(expr) {
+  const parts = expr.trim().split(/\s+/);
+  if (parts.length !== 5) return { err: "需要 5 段（分 时 日 月 周）" };
+  try {
+    const [m, h, d, mo, w] = parts.map((p, i) => parseField(p, FIELDS[i].min, FIELDS[i].max));
+    let txt = "每";
+    if (!m.all) txt = `在${m.vals.join("、")}分`;
+    if (!h.all) txt += ` ${h.vals.join("、")}时`;
+    if (!d.all) txt += ` ${d.vals.join("、")}日`;
+    if (!mo.all) txt += ` ${mo.vals.join("、")}月`;
+    if (!w.all) txt += ` 周${w.vals.map(x => WEEK[x]).join("、")}`;
+    return { parts, m, h, d, mo, w, txt: txt.replace(/(每)在/, "$1在").replace("每  ", "每") };
+  } catch (e) { return { err: e.message }; }
+}
+
+function nextRuns(expr, n = 5) {
+  const d = describeExpr(expr); if (d.err) return [];
+  const out = [];
+  let t = new Date(); t.setSeconds(0, 0); t.setMinutes(t.getMinutes() + 1);
+  while (out.length < n && out.length < 366) {
+    if (d.m.vals.includes(t.getMinutes()) &&
+        d.h.vals.includes(t.getHours()) &&
+        d.d.vals.includes(t.getDate()) &&
+        d.mo.vals.includes(t.getMonth() + 1) &&
+        d.w.vals.includes(t.getDay())) {
+      out.push(new Date(t));
+    }
+    t.setMinutes(t.getMinutes() + 1);
+  }
+  return out;
+}
+
+function parse() {
+  const expr = $("cron").value;
+  const d = describeExpr(expr);
+  if (d.err) { $("desc").innerHTML = `<tr><td style="color:var(--danger)">${d.err}</td></tr>`; $("next").innerHTML = ""; return; }
+  $("desc").innerHTML = `
+    <tr><th>分</th><td>${d.parts[0]}</td><td>${d.m.vals.slice(0, 8).join(",")}${d.m.vals.length>8?"...":""}</td></tr>
+    <tr><th>时</th><td>${d.parts[1]}</td><td>${d.h.vals.slice(0, 8).join(",")}${d.h.vals.length>8?"...":""}</td></tr>
+    <tr><th>日</th><td>${d.parts[2]}</td><td>${d.d.vals.slice(0, 8).join(",")}${d.d.vals.length>8?"...":""}</td></tr>
+    <tr><th>月</th><td>${d.parts[3]}</td><td>${d.mo.vals.join(",")}</td></tr>
+    <tr><th>周</th><td>${d.parts[4]}</td><td>${d.w.vals.join(",")}</td></tr>
+    <tr><th>含义</th><td colspan="2" style="color:var(--accent)">${d.txt}</td></tr>
+  `;
+  const runs = nextRuns(expr, 5);
+  $("next").innerHTML = runs.map(t => {
+    const pad = n => String(n).padStart(2,"0");
+    return `<tr><td><code>${t.getFullYear()}-${pad(t.getMonth()+1)}-${pad(t.getDate())} ${pad(t.getHours())}:${pad(t.getMinutes())}</code></td><td style="color:var(--muted)">周${WEEK[t.getDay()]}</td></tr>`;
+  }).join("") || `<tr><td colspan="2" style="color:var(--muted)">未来 366 天内无匹配</td></tr>`;
+}
+$("cron").addEventListener("input", parse);
+parse();
+</script>
+<style>.hot-tag{display:inline-block;margin:4px;padding:4px 10px;background:var(--panel-2);border-radius:999px;cursor:pointer;font-size:12px}.hot-tag:hover{background:var(--accent);color:#0b0e14}</style>
+</body></html>
