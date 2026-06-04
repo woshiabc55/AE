@@ -1,5 +1,5 @@
 import { NavLink, Link } from 'react-router-dom';
-import { Hammer, BarChart3, BookOpen, Image, Palette, Type, Crosshair } from 'lucide-react';
+import { Hammer, BarChart3, BookOpen, Image, Palette, Type, Layers, Crosshair } from 'lucide-react';
 
 export default function Nav() {
   return (
@@ -30,6 +30,9 @@ export default function Nav() {
           </NavLink>
           <NavLink to="/font-garden" className={({isActive}) => `px-2 md:px-3 py-1.5 transition-colors flex items-center gap-1 ${isActive ? 'text-volt' : 'hover:text-volt'}`}>
             <Type size={12} className="hidden md:inline" /> 字体
+          </NavLink>
+          <NavLink to="/schemes" className={({isActive}) => `px-2 md:px-3 py-1.5 transition-colors flex items-center gap-1 ${isActive ? 'text-volt' : 'hover:text-volt'}`}>
+            <Layers size={12} className="hidden md:inline" /> 方案
           </NavLink>
           <NavLink to="/arknights" className={({isActive}) => `px-2 md:px-3 py-1.5 transition-colors flex items-center gap-1 ${isActive ? 'text-pink' : 'hover:text-pink'}`}>
             <Crosshair size={12} className="hidden md:inline" /> 方舟

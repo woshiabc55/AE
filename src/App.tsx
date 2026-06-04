@@ -7,6 +7,7 @@ import Standards from './pages/Standards';
 import Exhibition from './pages/Exhibition';
 import DesignSystem from './pages/DesignSystem';
 import FontGarden from './pages/FontGarden';
+import Schemes from './pages/Schemes';
 import Arknights from './pages/Arknights';
 import Nav from './components/Nav';
 import PageNav from './components/PageNav';
@@ -25,6 +26,7 @@ export default function App() {
           <Route path="/exhibition" element={<Exhibition />} />
           <Route path="/design-system" element={<DesignSystem />} />
           <Route path="/font-garden" element={<FontGarden />} />
+          <Route path="/schemes" element={<Schemes />} />
           <Route path="/arknights" element={<Arknights />} />
           <Route path="/about" element={<About />} />
         </Routes>
