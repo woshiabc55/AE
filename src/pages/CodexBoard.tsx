@@ -145,21 +145,26 @@ const COMPONENTS: Component[] = [
 
 /* ---------- 组件族概览 ---------- */
 const FAMILIES = [
-  { id: 'principle', t: '原则',  en: 'PRINCIPLE', n: 9,  color: 'volt', icon: <Sparkles size={12} />, desc: '工坊的 9 条不可妥协法则', type: 'atom'     as const },
-  { id: 'rule',      t: '规则',  en: 'RULE',      n: 18, color: 'cyan', icon: <ShieldCheck size={12} />, desc: '9 应当 + 9 避免',           type: 'molecule' as const },
-  { id: 'rubric',    t: '评分',  en: 'RUBRIC',    n: 9,  color: 'pink', icon: <Layers size={12} />,    desc: '9 维度 1-5 分对照',          type: 'organism' as const },
-  { id: 'module',    t: '模块',  en: 'MODULE',    n: 9,  color: 'volt', icon: <Boxes size={12} />,    desc: '页面 9 块预制砖',            type: 'template' as const },
-  { id: 'tag',       t: '标签',  en: 'TAG',       n: 9,  color: 'plum', icon: <Hash size={12} />,     desc: '9 类目色板语言',             type: 'atom'     as const },
+  { id: 'principle', t: '原则',  en: 'PRINCIPLE', n: 9,  color: 'visual',  icon: <Sparkles size={12} />,    desc: '工坊的 9 条不可妥协法则', type: 'atom'     as const },
+  { id: 'rule',      t: '规则',  en: 'RULE',      n: 18, color: 'type',    icon: <ShieldCheck size={12} />, desc: '9 应当 + 9 避免',           type: 'molecule' as const },
+  { id: 'rubric',    t: '评分',  en: 'RUBRIC',    n: 9,  color: 'motion',  icon: <Layers size={12} />,      desc: '9 维度 1-5 分对照',          type: 'organism' as const },
+  { id: 'module',    t: '模块',  en: 'MODULE',    n: 9,  color: 'layout',  icon: <Boxes size={12} />,       desc: '页面 9 块预制砖',            type: 'template' as const },
+  { id: 'tag',       t: '标签',  en: 'TAG',       n: 9,  color: 'color',   icon: <Hash size={12} />,        desc: '9 类目色板语言',             type: 'atom'     as const },
 ];
 
 /* ---------- 类型层级展示 ---------- */
-const TYPE_HIER = [
-  { t: 'ATOM',     cn: '原子',   en: 'Indivisible', n: 27, desc: '不可再分 · 单属性 · 一行可写',   color: 'volt' },
-  { t: 'MOLECULE', cn: '分子',   en: 'Composites',  n: 10, desc: '2-3 原子组合 · 一卡可写',         color: 'cyan' },
-  { t: 'ORGANISM', cn: '有机体', en: 'Composite',   n: 9,  desc: '完整 9 块组件 · 一段可写',         color: 'pink' },
-  { t: 'TEMPLATE', cn: '模板',   en: 'Layout',      n: 9,  desc: '9 块 + 数据 · 一页可写',         color: 'volt' },
-  { t: 'PAGE',     cn: '页面',   en: 'Page',        n: 17, desc: '完整路由 · 一站可写',             color: 'cyan' },
+const TYPE_HIER: { t: string; cn: string; en: string; n: number; desc: string; color: TagCategory }[] = [
+  { t: 'ATOM',     cn: '原子',   en: 'Indivisible', n: 27, desc: '不可再分 · 单属性 · 一行可写',   color: 'visual'  },
+  { t: 'MOLECULE', cn: '分子',   en: 'Composites',  n: 10, desc: '2-3 原子组合 · 一卡可写',         color: 'type'    },
+  { t: 'ORGANISM', cn: '有机体', en: 'Composite',   n: 9,  desc: '完整 9 块组件 · 一段可写',         color: 'motion'  },
+  { t: 'TEMPLATE', cn: '模板',   en: 'Layout',      n: 9,  desc: '9 块 + 数据 · 一页可写',         color: 'layout'  },
+  { t: 'PAGE',     cn: '页面',   en: 'Page',        n: 17, desc: '完整路由 · 一站可写',             color: 'color'   },
 ];
+
+/* ---------- 安全读取 TAG_META（带 fallback） ---------- */
+function safeMeta(key: string): { id: string; cn: string; en: string; hex: string; ink: string } {
+  return TAG_META[key as TagCategory] ?? { id: '??', cn: '?', en: 'UNKNOWN', hex: '#888888', ink: '#0a0a0a' };
+}
 
 /* ---------- 单组件卡（可交互演示） ---------- */
 function CompCard({ c, onSelect, active }: { c: Component; onSelect: () => void; active: boolean }) {
@@ -285,7 +290,7 @@ export default function CodexBoard() {
             </p>
             <div className="mt-6 grid grid-cols-2 md:grid-cols-5 gap-1.5 max-w-2xl">
               {TYPE_HIER.map(t => {
-                const meta = TAG_META[t.color as TagCategory];
+                const meta = safeMeta(t.color);
                 return (
                   <div key={t.t} className="border-2 p-2" style={{ borderColor: meta.hex }}>
                     <div className="font-display font-black text-lg" style={{ color: meta.hex }}>{t.t}</div>
@@ -300,9 +305,9 @@ export default function CodexBoard() {
             <div className="font-mono text-[10px] text-bone/60 mb-3">▸ 5 组件族 / 5 FAMILIES</div>
             <div className="space-y-1.5">
               {FAMILIES.map(f => {
-                const meta = TAG_META[f.color as TagCategory];
-                return (
-                  <div key={f.id} className="border-2 border-bone/30 p-2 hover:border-volt transition-colors" style={{ background: meta.hex + '10' }}>
+              const meta = safeMeta(f.color);
+              return (
+                <div key={f.id} className="border-2 border-bone/30 p-2 hover:border-volt transition-colors" style={{ background: meta.hex + '10' }}>
                     <div className="flex items-center justify-between mb-1">
                       <div className="flex items-center gap-1.5">
                         <span className="font-mono text-[9px] font-bold px-1.5 py-0.5" style={{ background: meta.hex, color: meta.ink }}>{f.n}</span>
@@ -381,7 +386,7 @@ export default function CodexBoard() {
           <div className="font-mono text-xs text-bone/60 mb-3">▸ 5 FAMILIES × 9 VARIANTS / 5×9 = 45 组件骨架</div>
           <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
             {FAMILIES.map(f => {
-              const meta = TAG_META[f.color as TagCategory];
+              const meta = safeMeta(f.color);
               return (
                 <div key={f.id} className="border-2 border-bone/30">
                   <div className="px-2 py-1.5 flex items-center justify-between" style={{ background: meta.hex, color: meta.ink }}>
@@ -412,7 +417,7 @@ export default function CodexBoard() {
           <div className="font-mono text-xs text-bone/60 mb-3">▸ 5 TYPES / 原子 → 分子 → 有机体 → 模板 → 页面</div>
           <div className="grid grid-cols-5 gap-1.5">
             {TYPE_HIER.map((t, i) => {
-              const meta = TAG_META[t.color as TagCategory];
+              const meta = safeMeta(t.color);
               return (
                 <div key={t.t} className="border-2 p-3" style={{ borderColor: meta.hex }}>
                   <div className="font-mono text-[9px] text-bone/40">L{i + 1} / 5</div>
