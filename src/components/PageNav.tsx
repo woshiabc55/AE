@@ -17,6 +17,7 @@ const ROUTES = [
   { path: '/arknights', label: '方舟' },
   { path: '/plum', label: '梅' },
   { path: '/themes', label: '主题' },
+  { path: '/halftone', label: '展' },
   { path: '/about', label: '关于' },
 ];
 
