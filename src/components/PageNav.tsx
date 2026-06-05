@@ -11,6 +11,7 @@ const ROUTES = [
   { path: '/font-garden', label: '字体花园' },
   { path: '/schemes', label: '方案' },
   { path: '/game-schemes', label: 'IP' },
+  { path: '/packs', label: '包' },
   { path: '/arknights', label: '方舟' },
   { path: '/about', label: '关于' },
 ];

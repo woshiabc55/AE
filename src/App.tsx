@@ -9,6 +9,7 @@ import DesignSystem from './pages/DesignSystem';
 import FontGarden from './pages/FontGarden';
 import Schemes from './pages/Schemes';
 import GameSchemes from './pages/GameSchemes';
+import Packs from './pages/Packs';
 import Arknights from './pages/Arknights';
 import Nav from './components/Nav';
 import PageNav from './components/PageNav';
