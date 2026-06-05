@@ -3,6 +3,7 @@
    - Hardcoded storyboard data (from user's source script)
    - Builds the timeline rail ticks
    - Renders shot cards
+   - Renders concept gallery + sound design
    - Drives IntersectionObserver reveal + AI image loading
    - Listens to scroll for rail cursor + top progress
    ========================================================= */
@@ -31,7 +32,7 @@ const STORYBOARD = [
       "no hard cut, sacred geometry, Makoto Shinkai color " +
       "palette, 8k, cinematic",
     imageSize: "landscape_16_9",
-    cueSeconds: 4, // midpoint of this shot, used to light the rail
+    cueSeconds: 4,
   },
   {
     id: "02",
@@ -53,6 +54,119 @@ const STORYBOARD = [
       "purple-gold sky, fantasy anime aesthetic, 8k",
     imageSize: "landscape_16_9",
     cueSeconds: 12,
+  },
+];
+
+const GALLERY = [
+  {
+    title: "算穹 · 数学天球仪",
+    meta: "Key Visual · 01",
+    prompt:
+      "A gigantic mathematical celestial sphere as the sky, " +
+      "covered with golden equations and purple nebula, Riemann " +
+      "surfaces as floating mountain ranges below, fantasy " +
+      "anime, Makoto Shinkai palette, 8k, cinematic, dramatic " +
+      "lighting",
+    size: "landscape_16_9",
+  },
+  {
+    title: "黎曼山脉",
+    meta: "Environment",
+    prompt:
+      "Floating mountain ranges made of purple-gold Riemann " +
+      "surfaces, impossible geometry, soft volumetric light, " +
+      "anime concept art, 8k",
+    size: "square_hd",
+  },
+  {
+    title: "晶体平原",
+    meta: "Environment",
+    prompt:
+      "Endless crystalline plain with subtle reflections, " +
+      "purple-gold sky, single tiny silhouette walking in the " +
+      "distance, fantasy anime wide shot, 8k",
+    size: "square_hd",
+  },
+  {
+    title: "公式石碑",
+    meta: "Key Prop",
+    prompt:
+      "A tilted giant stone stele carved with glowing " +
+      "mathematical formulas, covered with crystal moss, " +
+      "anime concept art, dramatic fog, 8k",
+    size: "square_hd",
+  },
+  {
+    title: "朔 · 背影",
+    meta: "Character · Back",
+    prompt:
+      "Back view of a japanese high school boy with backpack " +
+      "walking slowly on a crystalline plain, school uniform, " +
+      "short black hair, purple-gold sky, fantasy anime, " +
+      "Makoto Shinkai style, 8k",
+    size: "square_hd",
+  },
+  {
+    title: "晶体苔藓",
+    meta: "Texture Study",
+    prompt:
+      "Macro shot of crystal moss growing on a stone surface, " +
+      "frosty blue and gold, soft bokeh, anime background " +
+      "art, 8k",
+    size: "square_hd",
+  },
+  {
+    title: "天则运转 · 神圣嗡鸣",
+    meta: "Atmosphere",
+    prompt:
+      "A massive cosmic mechanism of floating equations and " +
+      "rings, sacred geometry, purple and gold, anime " +
+      "illustration, dramatic scale, 8k",
+    size: "landscape_16_9",
+  },
+  {
+    title: "钟楼",
+    meta: "Key Prop",
+    prompt:
+      "A distant bell tower made of crystal and brass, foggy " +
+      "morning, fantasy anime background art, 8k",
+    size: "landscape_16_9",
+  },
+  {
+    title: "黄昏与放学路",
+    meta: "Moodboard",
+    prompt:
+      "Golden hour on a crystalline plain, a tiny student " +
+      "silhouette walking away, Makoto Shinkai sunset, " +
+      "lens flare, anime, 8k",
+    size: "landscape_16_9",
+  },
+];
+
+const SOUND_LAYERS = [
+  {
+    name: "天则 · 神圣嗡鸣",
+    tag: "Drone · 24/96",
+    desc: "管风琴 + 钟楼混合的低频基础层，贯穿全片，承担世界仍在运转的暗示。",
+    seed: 1,
+  },
+  {
+    name: "晶体 · 共鸣",
+    tag: "Texture · Field",
+    desc: "每一步脚步在晶面上激发的高频反射，作为环境的心跳使用。",
+    seed: 2,
+  },
+  {
+    name: "笔尖 · 纸面",
+    tag: "Foley · Close",
+    desc: "几乎听不见的铅笔记录声，暗示朔在观察。音量随视角切换而起伏。",
+    seed: 3,
+  },
+  {
+    name: "风 · 经幡",
+    tag: "Ambience",
+    desc: "低空掠过的气流感，只在画面空旷时出现，填满留白。",
+    seed: 4,
   },
 ];
 
@@ -202,7 +316,7 @@ function attachObserver() {
     },
     { threshold: 0.18 }
   );
-  $$(".shot").forEach((el) => io.observe(el));
+  $$(".shot, .reveal").forEach((el) => io.observe(el));
 }
 
 function attachImageFallbacks() {
@@ -239,6 +353,94 @@ function setHeroBg() {
   $("#heroBg").style.backgroundImage = `url('${url}')`;
 }
 
+/* ============== render gallery ============== */
+function renderGallery() {
+  const root = $("#galleryGrid");
+  if (!root) return;
+  root.innerHTML = GALLERY.map(
+    (g) => `
+    <figure class="gallery__item" tabindex="0">
+      <div
+        class="gallery__item-img"
+        style="background-image:url('${buildImageUrl(g.prompt, g.size)}')"
+      ></div>
+      <div class="gallery__item-placeholder" data-placeholder>
+        ${icon("aperture")}
+        <span>${g.meta.toUpperCase()}</span>
+      </div>
+      <figcaption class="gallery__item-caption">
+        <div class="gallery__item-caption-title">${g.title}</div>
+        <div class="gallery__item-caption-meta">${g.meta}</div>
+      </figcaption>
+    </figure>
+  `
+  ).join("");
+}
+
+function attachGalleryFallbacks() {
+  $$(".gallery__item-img").forEach((el) => {
+    const img = new Image();
+    const url = el.style.backgroundImage
+      .replace(/^url\(['"]?/, "")
+      .replace(/['"]?\)$/, "");
+    img.onload = () => {
+      const ph = el.parentElement.querySelector("[data-placeholder]");
+      if (ph) ph.style.display = "none";
+      el.classList.add("is-loaded");
+    };
+    img.onerror = () => {
+      el.style.background =
+        "linear-gradient(135deg, #1a1639, #0a0a1a)";
+      el.classList.add("is-loaded");
+      const ph = el.parentElement.querySelector("[data-placeholder]");
+      if (ph) {
+        ph.style.opacity = "1";
+        ph.innerHTML = `
+          ${icon("sparkle")}
+          <span>PROMPT RETAINED · ${img.naturalWidth || "—"}×${img.naturalHeight || "—"}</span>
+        `;
+      }
+    };
+    img.src = url;
+  });
+}
+
+/* ============== render sound design ============== */
+function renderSound() {
+  const root = $("#soundGrid");
+  if (!root) return;
+  root.innerHTML = SOUND_LAYERS.map(
+    (l) => `
+    <div class="sound__layer">
+      <div class="sound__layer-head">
+        <div class="sound__layer-name">${l.name}</div>
+        <div class="sound__layer-tag">${l.tag}</div>
+      </div>
+      <p class="sound__layer-desc">${l.desc}</p>
+      <div class="sound__layer-wave" aria-hidden="true">
+        ${makeWaveBars(l.seed + 10)}
+      </div>
+    </div>
+  `
+  ).join("");
+}
+
+/* ============== portrait fallback ============== */
+function attachPortraitFallback() {
+  const el = $("[data-portrait]");
+  if (!el) return;
+  const img = new Image();
+  const url = el.style.backgroundImage
+    .replace(/^url\(['"]?/, "")
+    .replace(/['"]?\)$/, "");
+  img.onload = () => el.classList.add("is-loaded");
+  img.onerror = () => {
+    el.style.background = `linear-gradient(160deg, #2a1f55 0%, #0a0a1a 100%)`;
+    el.style.opacity = "0.6";
+  };
+  img.src = url;
+}
+
 /* ============== scroll-driven rail + progress ============== */
 function updateRail() {
   const doc = document.documentElement;
@@ -273,8 +475,12 @@ function updateRail() {
 function init() {
   renderRail();
   renderShots();
+  renderGallery();
+  renderSound();
   attachObserver();
   attachImageFallbacks();
+  attachGalleryFallbacks();
+  attachPortraitFallback();
   setHeroBg();
   updateRail();
 

@@ -60,6 +60,20 @@ interface Shot {
   aiPrompt: string;      // 英文 AI 提示词
   imageSize: string;     // landscape_16_9 / square_hd
 }
+
+interface GalleryItem {
+  title: string;         // 中文标题
+  meta: string;          // 英文小标签
+  prompt: string;        // 英文 AI 提示词
+  size: "landscape_16_9" | "square_hd";
+}
+
+interface SoundLayer {
+  name: string;          // 中文层名
+  tag: string;           // 英文声学标签
+  desc: string;          // 中文描述
+  seed: number;          // 波形种子
+}
 ```
 
-数据来源：用户原始 `user_input` 提供的两段分镜原文，**不做字段改动**。
+数据来源：用户原始 `user_input` 提供的两段分镜原文（**不做字段改动**）；其余概念图、声音层为根据分镜氛围衍生出的设定集。

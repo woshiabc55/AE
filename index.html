@@ -763,6 +763,495 @@
         margin-top: 12px;
       }
 
+      /* ===================================================
+         NEW SECTIONS — director's notes / character / gallery / sound
+         =================================================== */
+
+      /* ----- DIRECTOR'S NOTES ----- */
+      .notes {
+        padding: 120px 8vw 60px;
+        max-width: var(--max-w);
+        display: grid;
+        grid-template-columns: 1fr 1.6fr;
+        gap: 80px;
+        align-items: start;
+      }
+      .notes__sticky {
+        position: sticky;
+        top: 80px;
+      }
+      .notes__quote {
+        font-family: var(--font-display);
+        font-weight: 400;
+        font-style: italic;
+        font-size: clamp(28px, 3.2vw, 44px);
+        line-height: 1.25;
+        color: var(--ink-0);
+        letter-spacing: -0.005em;
+        position: relative;
+        padding-left: 28px;
+        border-left: 1px solid var(--gold);
+      }
+      .notes__quote::before {
+        content: "“";
+        position: absolute;
+        left: -8px;
+        top: -22px;
+        font-size: 80px;
+        color: var(--gold);
+        opacity: 0.5;
+        font-family: var(--font-display);
+        line-height: 1;
+      }
+      .notes__attr {
+        margin-top: 28px;
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.3em;
+        color: var(--ink-2);
+        text-transform: uppercase;
+      }
+      .notes__attr b {
+        color: var(--gold);
+        font-weight: 500;
+        display: block;
+        margin-top: 6px;
+        letter-spacing: 0.18em;
+      }
+      .notes__body p {
+        font-size: 16px;
+        line-height: 1.95;
+        color: var(--ink-1);
+        margin-bottom: 24px;
+      }
+      .notes__body p strong {
+        color: var(--gold);
+        font-weight: 500;
+      }
+      .notes__body p em {
+        color: var(--frost);
+        font-style: italic;
+      }
+
+      /* ----- CHARACTER CARD ----- */
+      .character {
+        padding: 60px 8vw 100px;
+        max-width: var(--max-w);
+      }
+      .character__grid {
+        margin-top: 48px;
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 56px;
+        align-items: start;
+      }
+      .character__portrait {
+        position: relative;
+        aspect-ratio: 3 / 4;
+        border: 1px solid var(--line);
+        background: linear-gradient(160deg, #1a1639 0%, #0a0a1a 100%);
+        overflow: hidden;
+      }
+      .character__portrait-img {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center 25%;
+        opacity: 0;
+        transition: opacity 1.4s ease;
+        filter: saturate(0.9) contrast(1.05) brightness(0.95);
+      }
+      .character__portrait-img.is-loaded {
+        opacity: 1;
+      }
+      .character__portrait-frame {
+        position: absolute;
+        inset: 18px;
+        border: 1px solid rgba(212, 162, 76, 0.4);
+        pointer-events: none;
+        z-index: 2;
+      }
+      .character__portrait-caption {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 24px 18px;
+        z-index: 3;
+        background: linear-gradient(
+          180deg,
+          transparent,
+          rgba(7, 6, 15, 0.85) 60%
+        );
+        color: var(--ink-0);
+      }
+      .character__portrait-name {
+        font-family: var(--font-display);
+        font-size: 32px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        color: var(--gold);
+      }
+      .character__portrait-role {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.3em;
+        color: var(--ink-1);
+        text-transform: uppercase;
+        margin-top: 6px;
+      }
+      .character__info {
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+      }
+      .character__row {
+        display: grid;
+        grid-template-columns: 110px 1fr;
+        gap: 24px;
+        padding-bottom: 20px;
+        border-bottom: 1px dashed var(--line-soft);
+      }
+      .character__row-label {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.3em;
+        color: var(--gold);
+        text-transform: uppercase;
+        padding-top: 4px;
+      }
+      .character__row-value {
+        font-size: 15px;
+        color: var(--ink-0);
+        line-height: 1.75;
+      }
+      .character__row-value--muted {
+        color: var(--ink-1);
+        font-size: 14px;
+      }
+      .character__quote {
+        font-family: var(--font-display);
+        font-style: italic;
+        font-size: 20px;
+        line-height: 1.5;
+        color: var(--frost);
+        padding: 24px 28px;
+        border-left: 2px solid var(--gold);
+        background: var(--glass);
+        backdrop-filter: blur(6px);
+        border-radius: 0 4px 4px 0;
+      }
+
+      /* ----- CONCEPT GALLERY ----- */
+      .gallery {
+        padding: 60px 8vw 100px;
+        max-width: var(--max-w);
+      }
+      .gallery__grid {
+        margin-top: 48px;
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        grid-auto-rows: 180px;
+        gap: 18px;
+      }
+      .gallery__item {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, #1a1639, #0a0a1a);
+        border: 1px solid var(--line-soft);
+        cursor: pointer;
+        transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1),
+          box-shadow 0.6s ease;
+      }
+      .gallery__item:hover {
+        transform: scale(1.015);
+        z-index: 2;
+        box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.7);
+        border-color: var(--line);
+      }
+      .gallery__item-img {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        opacity: 0;
+        transition: opacity 1.4s ease, transform 1.6s ease;
+      }
+      .gallery__item-img.is-loaded {
+        opacity: 1;
+      }
+      .gallery__item:hover .gallery__item-img {
+        transform: scale(1.05);
+      }
+      .gallery__item-placeholder {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 10px;
+        color: var(--ink-2);
+        font-family: var(--font-mono);
+        font-size: 9px;
+        letter-spacing: 0.25em;
+      }
+      .gallery__item-caption {
+        position: absolute;
+        inset: auto 0 0 0;
+        padding: 16px 18px;
+        background: linear-gradient(180deg, transparent, rgba(7, 6, 15, 0.95));
+        transform: translateY(20%);
+        opacity: 0;
+        transition: transform 0.5s ease, opacity 0.5s ease;
+        z-index: 3;
+      }
+      .gallery__item:hover .gallery__item-caption,
+      .gallery__item:focus-within .gallery__item-caption {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      .gallery__item-caption-title {
+        font-family: var(--font-display);
+        font-size: 16px;
+        color: var(--gold);
+        font-weight: 500;
+        letter-spacing: 0.04em;
+      }
+      .gallery__item-caption-meta {
+        font-family: var(--font-mono);
+        font-size: 9px;
+        color: var(--ink-1);
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        margin-top: 4px;
+      }
+      /* asymmetric layout */
+      .gallery__item:nth-child(1) {
+        grid-column: span 7;
+        grid-row: span 2;
+      }
+      .gallery__item:nth-child(2) {
+        grid-column: span 5;
+      }
+      .gallery__item:nth-child(3) {
+        grid-column: span 5;
+      }
+      .gallery__item:nth-child(4) {
+        grid-column: span 4;
+      }
+      .gallery__item:nth-child(5) {
+        grid-column: span 4;
+      }
+      .gallery__item:nth-child(6) {
+        grid-column: span 4;
+      }
+      .gallery__item:nth-child(7) {
+        grid-column: span 6;
+        grid-row: span 2;
+      }
+      .gallery__item:nth-child(8) {
+        grid-column: span 6;
+      }
+      .gallery__item:nth-child(9) {
+        grid-column: span 6;
+      }
+
+      /* ----- SOUND DESIGN ----- */
+      .sound {
+        padding: 80px 8vw 100px;
+        max-width: var(--max-w);
+      }
+      .sound__grid {
+        margin-top: 48px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px;
+      }
+      .sound__layer {
+        position: relative;
+        padding: 28px 28px 24px;
+        background: var(--glass);
+        border: 1px solid var(--line-soft);
+        backdrop-filter: blur(8px);
+        transition: border-color 0.4s ease, transform 0.4s ease;
+      }
+      .sound__layer:hover {
+        border-color: var(--line);
+        transform: translateY(-2px);
+      }
+      .sound__layer-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .sound__layer-name {
+        font-family: var(--font-display);
+        font-size: 18px;
+        color: var(--ink-0);
+        font-weight: 500;
+        letter-spacing: 0.04em;
+      }
+      .sound__layer-tag {
+        font-family: var(--font-mono);
+        font-size: 9px;
+        letter-spacing: 0.25em;
+        color: var(--gold);
+        text-transform: uppercase;
+        padding: 3px 8px;
+        border: 1px solid var(--line);
+      }
+      .sound__layer-desc {
+        font-size: 14px;
+        color: var(--ink-1);
+        line-height: 1.75;
+        margin-bottom: 20px;
+      }
+      .sound__layer-wave {
+        display: flex;
+        align-items: flex-end;
+        gap: 2px;
+        height: 56px;
+      }
+      .sound__layer-wave span {
+        flex: 1;
+        background: linear-gradient(180deg, var(--gold), var(--violet));
+        border-radius: 1px;
+        animation: waveBeat 2.6s ease-in-out infinite;
+        opacity: 0.7;
+      }
+      .sound__layer:hover .sound__layer-wave span {
+        opacity: 1;
+      }
+
+      /* ----- NEXT EPISODE TEASER ----- */
+      .next {
+        padding: 120px 8vw 100px;
+        max-width: var(--max-w);
+        text-align: center;
+        position: relative;
+      }
+      .next__ring {
+        margin: 0 auto 36px;
+        width: 88px;
+        height: 88px;
+        border-radius: 50%;
+        border: 1px solid var(--gold);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        animation: ringSpin 16s linear infinite;
+      }
+      .next__ring::before {
+        content: "";
+        position: absolute;
+        inset: -10px;
+        border: 1px dashed var(--line-soft);
+        border-radius: 50%;
+      }
+      .next__ring svg {
+        animation: ringSpinReverse 16s linear infinite;
+      }
+      @keyframes ringSpin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes ringSpinReverse {
+        to {
+          transform: rotate(-360deg);
+        }
+      }
+      .next__index {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--gold);
+        letter-spacing: 0.4em;
+        text-transform: uppercase;
+        margin-bottom: 18px;
+      }
+      .next__title {
+        font-family: var(--font-display);
+        font-size: clamp(36px, 5vw, 64px);
+        font-weight: 500;
+        line-height: 1.1;
+        color: var(--ink-0);
+        max-width: 18ch;
+        margin: 0 auto 24px;
+      }
+      .next__title em {
+        font-style: italic;
+        color: var(--gold);
+      }
+      .next__lede {
+        max-width: 56ch;
+        margin: 0 auto 40px;
+        color: var(--ink-1);
+        font-size: 15px;
+        line-height: 1.8;
+      }
+      .next__cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px 32px;
+        background: transparent;
+        color: var(--gold);
+        border: 1px solid var(--gold);
+        font-family: var(--font-mono);
+        font-size: 11px;
+        letter-spacing: 0.32em;
+        text-transform: uppercase;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      .next__cta::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--gold);
+        transform: translateX(-101%);
+        transition: transform 0.4s cubic-bezier(0.7, 0, 0.3, 1);
+        z-index: -1;
+      }
+      .next__cta:hover {
+        color: var(--bg-0);
+      }
+      .next__cta:hover::before {
+        transform: translateX(0);
+      }
+      .next__cta svg {
+        transition: transform 0.4s ease;
+      }
+      .next__cta:hover svg {
+        transform: translateX(4px);
+      }
+      .next__hint {
+        margin-top: 24px;
+        font-family: var(--font-mono);
+        font-size: 9px;
+        letter-spacing: 0.3em;
+        color: var(--ink-2);
+        text-transform: uppercase;
+      }
+
+      /* reveal base for new sections */
+      .reveal {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: opacity 1s cubic-bezier(0.2, 0.7, 0.2, 1),
+          transform 1s cubic-bezier(0.2, 0.7, 0.2, 1);
+      }
+      .reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
       /* ----- responsive ----- */
       @media (max-width: 1100px) {
         .shot,
@@ -775,6 +1264,45 @@
         }
         .shot:nth-child(even) .shot__field {
           order: 2;
+        }
+        .notes {
+          grid-template-columns: 1fr;
+          gap: 40px;
+        }
+        .notes__sticky {
+          position: static;
+        }
+        .character__grid {
+          grid-template-columns: 1fr;
+          gap: 32px;
+        }
+        .character__portrait {
+          max-width: 360px;
+        }
+        .gallery__grid {
+          grid-template-columns: repeat(6, 1fr);
+        }
+        .gallery__item:nth-child(1) {
+          grid-column: span 6;
+          grid-row: span 2;
+        }
+        .gallery__item:nth-child(2),
+        .gallery__item:nth-child(3),
+        .gallery__item:nth-child(4),
+        .gallery__item:nth-child(5),
+        .gallery__item:nth-child(6) {
+          grid-column: span 3;
+        }
+        .gallery__item:nth-child(7) {
+          grid-column: span 6;
+          grid-row: span 1;
+        }
+        .gallery__item:nth-child(8),
+        .gallery__item:nth-child(9) {
+          grid-column: span 3;
+        }
+        .sound__grid {
+          grid-template-columns: 1fr;
         }
       }
       @media (max-width: 720px) {
@@ -795,7 +1323,12 @@
         }
         .section,
         .shots,
-        .foot {
+        .foot,
+        .notes,
+        .character,
+        .gallery,
+        .sound,
+        .next {
           padding-left: 24px;
           padding-right: 24px;
         }
@@ -813,6 +1346,31 @@
         .hero__meta {
           gap: 28px;
           flex-wrap: wrap;
+        }
+        .character__row {
+          grid-template-columns: 1fr;
+          gap: 6px;
+        }
+        .gallery__grid {
+          grid-template-columns: 1fr 1fr;
+          grid-auto-rows: 160px;
+        }
+        .gallery__item:nth-child(1) {
+          grid-column: span 2;
+          grid-row: span 2;
+        }
+        .gallery__item:nth-child(2),
+        .gallery__item:nth-child(3),
+        .gallery__item:nth-child(4),
+        .gallery__item:nth-child(5),
+        .gallery__item:nth-child(6),
+        .gallery__item:nth-child(7),
+        .gallery__item:nth-child(8),
+        .gallery__item:nth-child(9) {
+          grid-column: span 2;
+        }
+        .gallery__item:nth-child(7) {
+          grid-row: span 1;
         }
       }
 
@@ -885,6 +1443,141 @@
       <!-- SHOTS -->
       <section class="shots" id="shots">
         <!-- Shot 01 card and Shot 02 card rendered by app.js -->
+      </section>
+
+      <!-- DIRECTOR'S NOTES -->
+      <section class="notes reveal" id="notes">
+        <div class="notes__sticky">
+          <div class="section__index">III · Director's Cut</div>
+          <p class="notes__quote">
+            镜头不需要解释世界——它只需要让观众<em>听见</em>自己走进这片晶体平原时的呼吸。
+          </p>
+          <div class="notes__attr">
+            导演阐述
+            <b>Yui Shiori · 主创笔记</b>
+          </div>
+        </div>
+        <div class="notes__body">
+          <p>
+            故事的核心不是一个宏大的末世设定，而是<strong>一个普通学生上学路上多看了石碑一眼</strong>。
+            从万米到三米的"置换差沉降"不是炫技，而是用镜头节奏模拟"从概念到具体"的认知折叠——
+            你以为自己在仰望数学的天空，下一秒已经被扔到它脚下。
+          </p>
+          <p>
+            朔不回头，不解释。他只说<em>"今天也要好好记录"</em>，然后继续走。
+            这种克制是我们对动画叙事的全部理解：<strong>让环境说话，让人沉默</strong>。
+          </p>
+          <p>
+            视觉上拒绝任何"废墟"式的灾难符号。黎曼曲面、斐波那契螺旋、公式石碑——
+            它们既不是神的遗物，也不是人的成就，而是<em>世界本身的语法</em>。
+            朔走过的不是废墟，是仍在运行的宇宙。
+          </p>
+        </div>
+      </section>
+
+      <!-- CHARACTER PROFILE -->
+      <section class="character reveal" id="character">
+        <div class="section__index">IV · Cast</div>
+        <h2 class="section__title">主要角色</h2>
+        <p class="section__lede">本卷仅登场一名可见角色。其余皆为环境本身。</p>
+        <div class="section__rule"></div>
+
+        <div class="character__grid">
+          <div class="character__portrait">
+            <div
+              class="character__portrait-img"
+              data-portrait
+              style="background-image:url('https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=portrait%20of%20a%20quiet%20japanese%20high%20school%20boy%20in%20navy%20uniform%20with%20backpack%2C%20short%20black%20hair%2C%20calm%20eyes%2C%20anime%20style%2C%20crystalline%20plain%20background%2C%20purple-gold%20sky%2C%20Makoto%20Shinkai%20lighting%2C%208k%2C%20cinematic&image_size=portrait_4_3')"
+            ></div>
+            <div class="character__portrait-frame"></div>
+            <div class="character__portrait-caption">
+              <div class="character__portrait-name">朔</div>
+              <div class="character__portrait-role">Shuo · Narrator · Age 16</div>
+            </div>
+          </div>
+
+          <div class="character__info">
+            <div class="character__row">
+              <div class="character__row-label">姓名</div>
+              <div class="character__row-value">朔（Shuo）</div>
+            </div>
+            <div class="character__row">
+              <div class="character__row-label">年龄</div>
+              <div class="character__row-value">16</div>
+            </div>
+            <div class="character__row">
+              <div class="character__row-label">身份</div>
+              <div class="character__row-value">算穹学院高一学生 · 业余观测记录者</div>
+            </div>
+            <div class="character__row">
+              <div class="character__row-label">特征</div>
+              <div class="character__row-value character__row-value--muted">
+                校服、书包、黑短发。走路不快不慢，从不回头。在算穹学院，
+                朔是少数仍坚持用手写笔记替代晶体簿的学生。
+              </div>
+            </div>
+            <div class="character__row">
+              <div class="character__row-label">口头禅</div>
+              <div class="character__row-value">"今天也要好好记录。"</div>
+            </div>
+            <div class="character__row">
+              <div class="character__row-label">内在</div>
+              <div class="character__row-value character__row-value--muted">
+                不是冷漠，是<em>精度</em>。他对世界的反应单位是毫米和秒，
+                不是形容词。
+              </div>
+            </div>
+            <div class="character__quote">
+              "公式石碑不是用来读的，是用来记的。"
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONCEPT GALLERY -->
+      <section class="gallery reveal" id="gallery">
+        <div class="section__index">V · Key Visuals</div>
+        <h2 class="section__title">概念图廊</h2>
+        <p class="section__lede">九帧关键气氛，全部由 AI 提示词直出，可用于概念美术、分镜参考、宣发主视觉。</p>
+        <div class="section__rule"></div>
+
+        <div class="gallery__grid" id="galleryGrid">
+          <!-- injected by app.js -->
+        </div>
+      </section>
+
+      <!-- SOUND DESIGN -->
+      <section class="sound reveal" id="sound">
+        <div class="section__index">VI · Sonic Architecture</div>
+        <h2 class="section__title">声音设计</h2>
+        <p class="section__lede">四层声音彼此独立、动态混合，构成全片不可见的"空间层"。</p>
+        <div class="section__rule"></div>
+
+        <div class="sound__grid" id="soundGrid">
+          <!-- injected by app.js -->
+        </div>
+      </section>
+
+      <!-- NEXT EPISODE -->
+      <section class="next reveal" id="next">
+        <div class="next__ring">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--gold);">
+            <path d="M5 12h14M13 6l6 6-6 6"/>
+          </svg>
+        </div>
+        <div class="next__index">VII · Coming Next</div>
+        <h2 class="next__title">Vol. 02 · <em>The Stele</em> Speaks</h2>
+        <p class="next__lede">
+          第二卷，朔停在了公式石碑前。石碑表面的晶体苔藓开始以他的笔迹生长。
+          算穹的钟楼，第一次为一个人敲响。
+        </p>
+        <a class="next__cta" href="#hero">
+          返回首帧
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M13 6l6 6-6 6"/>
+          </svg>
+        </a>
+        <div class="next__hint">Storyboard Vol. 02 — Pre-production</div>
       </section>
 
       <!-- FOOTER -->
