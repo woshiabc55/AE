@@ -65,12 +65,57 @@ function renderMeta() {
   status.dataset.state = TRAE.name === "TRAE-SDK-MOCK" ? "ready" : "ready";
 }
 
+function renderTimelineRuler() {
+  const ruler = $("#timelineRuler");
+  if (state.view !== "timeline") { ruler.hidden = true; return; }
+  ruler.hidden = false;
+  const total = state.shots.reduce((a, s) => a + (Number(s.duration) || 0), 0) || 1;
+  let acc = 0;
+  const segs = state.shots.map(s => {
+    const start = acc;
+    acc += Number(s.duration) || 0;
+    return { start, end: acc, shot: s };
+  });
+  const ticks = [];
+  for (let t = 0; t <= total; t += Math.max(1, Math.ceil(total / 8))) {
+    ticks.push(`<span style="left:${(t / total) * 100}%;position:absolute;top:-2px;font-size:9.5px;color:var(--ink-3);transform:translateX(-50%)">${fmtTime(t)}</span>`);
+  }
+  ruler.innerHTML = `
+    <div class="timeline-ruler__head">
+      <span>TIMELINE · ${state.shots.length} 镜头</span>
+      <span class="total">TOTAL ${fmtTime(total)}</span>
+    </div>
+    <div class="timeline-ruler__bar">
+      ${segs.map(({ start, end, shot }) => `
+        <div class="timeline-ruler__seg"
+             data-state="${shot._verdict || 'idle'}"
+             data-id="${shot.id}"
+             style="left:${(start / total) * 100}%; width:${((end - start) / total) * 100}%;"
+             title="${shot.scene || ''} · ${shot.duration}s · score ${shot._score ?? '—'}">${shot.seq}</div>
+      `).join("")}
+      ${ticks.join("")}
+    </div>
+  `;
+  ruler.querySelectorAll(".timeline-ruler__seg").forEach(seg => {
+    seg.addEventListener("click", () => {
+      const id = seg.dataset.id;
+      const node = $(`.shot[data-id="${id}"]`);
+      if (node) {
+        node.scrollIntoView({ behavior: "smooth", block: "center" });
+        state.activeId = id;
+        runValidation(id);
+      }
+    });
+  });
+}
+
 function renderBoard() {
   const board = $("#board");
   board.dataset.view = state.view;
   board.innerHTML = "";
   if (!state.shots.length) {
     board.classList.add("is-empty");
+    renderTimelineRuler();
     return;
   }
   board.classList.remove("is-empty");
@@ -82,6 +127,7 @@ function renderBoard() {
     bindShotEvents(node, shot);
     board.appendChild(node);
   });
+  renderTimelineRuler();
 }
 
 function populateShot(node, shot) {
@@ -109,6 +155,11 @@ function populateShot(node, shot) {
     shot.sfx ? `♪ ${shot.sfx}` : ""
   ].filter(Boolean).join("  ·  ") || "—";
   node.querySelector(".summary__line").textContent = line;
+  // TC 起播时间
+  const idx = state.shots.findIndex(s => s.id === shot.id);
+  const tcStart = state.shots.slice(0, idx).reduce((a, s) => a + (Number(s.duration) || 0), 0);
+  const sb = node.querySelector(".summary__body");
+  if (sb) sb.dataset.tc = fmtTime(tcStart) + " → " + fmtTime(tcStart + (Number(shot.duration) || 0));
   node.querySelector(".m-dur").textContent = `⏱ ${shot.duration}s`;
   node.querySelector(".m-sfx").textContent = shot.sfx ? `♪ ${shot.sfx}` : "";
 
@@ -131,6 +182,27 @@ function bindShotEvents(node, shot) {
     if (state.expanded.has(shot.id)) state.expanded.delete(shot.id);
     else state.expanded.add(shot.id);
     populateShot(node, shot);
+  });
+
+  // 拖拽排序
+  node.draggable = true;
+  node.addEventListener("dragstart", (e) => {
+    e.dataTransfer.setData("text/plain", shot.id);
+    e.dataTransfer.effectAllowed = "move";
+    node.classList.add("is-dragging");
+  });
+  node.addEventListener("dragend", () => node.classList.remove("is-dragging"));
+  node.addEventListener("dragover", (e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; });
+  node.addEventListener("drop", (e) => {
+    e.preventDefault();
+    const dragId = e.dataTransfer.getData("text/plain");
+    if (!dragId || dragId === shot.id) return;
+    const from = state.shots.findIndex(s => s.id === dragId);
+    const to = state.shots.findIndex(s => s.id === shot.id);
+    const [moved] = state.shots.splice(from, 1);
+    state.shots.splice(to, 0, moved);
+    reseq(); renderBoard(); renderMeta(); save();
+    toast("已重排镜头", "ok");
   });
 
   node.addEventListener("click", (e) => {
@@ -165,6 +237,7 @@ function bindShotEvents(node, shot) {
       shot[k] = v;
       populateShot(node, shot);
       renderMeta();
+      if (k === "duration") renderTimelineRuler();
       save();
       // 编辑后自动校验
       runValidation(shot.id, { silent: true });
@@ -225,6 +298,51 @@ function renderSDKPanel(res) {
     ? `<div class="mono" style="color:var(--ink-3);font-size:10.5px;letter-spacing:.18em">AI SUGGEST</div><ul>${res.suggestions.map(s => `<li>${s}</li>`).join("")}</ul>`
     : "";
   $("#sdkLog").textContent = `// TRAE.validateShot(prev,cur,next) → score=${res.score} ok=${res.ok} issues=${res.issues.length}`;
+}
+
+// ===== 全量校验 =====
+async function runBatchValidation() {
+  if (!state.shots.length) { toast("没有可校验的镜头", "err"); return; }
+  const list = $("#aiStreamList");
+  list.innerHTML = "";
+  const li0 = document.createElement("li");
+  li0.className = "ai-stream__item";
+  li0.textContent = `开始扫描 ${state.shots.length} 个镜头…`;
+  list.appendChild(li0);
+
+  let totalScore = 0, okCount = 0, warnCount = 0, errCount = 0;
+  const issueCount = {};
+  for (let i = 0; i < state.shots.length; i++) {
+    const li = document.createElement("li");
+    li.className = "ai-stream__item";
+    li.textContent = `校验 #${String(i + 1).padStart(2, "0")} ${state.shots[i].scene || ""}…`;
+    list.appendChild(li);
+    await runValidation(state.shots[i].id, { silent: true });
+    const s = state.shots[i];
+    totalScore += s._score || 0;
+    if (s._verdict === "ok") okCount++;
+    else if (s._verdict === "warn") warnCount++;
+    else errCount++;
+    if (s._verdictDetail) {
+      for (const m of s._verdictDetail.split("\n")) {
+        const tag = m.match(/\[(\w+)\]/);
+        if (tag) issueCount[tag[1]] = (issueCount[tag[1]] || 0) + 1;
+      }
+    }
+    li.classList.add(s._verdict === "ok" ? "is-done" : "is-warn");
+    li.textContent = `${s._verdict === "ok" ? "✓" : s._verdict === "warn" ? "!" : "✗"} #${String(i + 1).padStart(2, "0")} ${s.scene || ""} · ${s._score}`;
+    await new Promise(r => setTimeout(r, 60));
+  }
+  const avg = Math.round(totalScore / state.shots.length);
+  const summary = document.createElement("li");
+  summary.className = "ai-stream__item is-done";
+  summary.textContent = `全量完成 · 平均分 ${avg} · ✓${okCount} !${warnCount} ✗${errCount}`;
+  list.appendChild(summary);
+  toast(`全量校验完成 · 平均分 ${avg}`, avg >= 80 ? "ok" : "err");
+  renderBoard();
+  // 把综合结果写入右侧 sdkLog
+  $("#sdkLog").textContent = `// batch(${state.shots.length}) avg=${avg} ok=${okCount} warn=${warnCount} err=${errCount}\n` +
+    Object.entries(issueCount).map(([k, v]) => `//   ${k}: ${v}`).join("\n");
 }
 
 // ===== AI 拆解 =====
@@ -312,6 +430,7 @@ function bind() {
     toast("脚本已清空");
   });
   $("#btnDecompose").addEventListener("click", runDecompose);
+  $("#btnBatchValidate").addEventListener("click", runBatchValidation);
 
   $("#btnAddShot").addEventListener("click", () => {
     const last = state.shots[state.shots.length - 1];
@@ -348,6 +467,7 @@ function bind() {
       btn.classList.add("is-active");
       state.view = btn.dataset.view;
       $("#board").dataset.view = state.view;
+      renderTimelineRuler();
       save();
     });
   });
@@ -367,6 +487,17 @@ function bind() {
     w.document.close();
     w.focus();
     setTimeout(() => w.print(), 200);
+  });
+
+  // 键盘快捷键
+  document.addEventListener("keydown", (e) => {
+    const inField = e.target.matches("input, textarea, select");
+    const meta = e.metaKey || e.ctrlKey;
+    if (meta && e.key === "Enter") { e.preventDefault(); runDecompose(); return; }
+    if (meta && e.shiftKey && (e.key === "v" || e.key === "V")) { e.preventDefault(); runBatchValidation(); return; }
+    if (meta && (e.key === "p" || e.key === "P")) { e.preventDefault(); $("#btnPrint").click(); return; }
+    if (meta && (e.key === "j" || e.key === "J")) { e.preventDefault(); navigator.clipboard.writeText(exportJSON()).then(() => toast("JSON 已复制", "ok")); return; }
+    if (!inField && e.key === "Escape") { state.expanded.clear(); renderBoard(); return; }
   });
 }
 

@@ -88,12 +88,22 @@
     <section class="panel panel--board" aria-label="分镜表">
       <div class="panel__head">
         <h2><span class="num">02</span> 分镜表 <span class="sub">— 点击镜头展开</span></h2>
+        <div class="shortcut-hint mono" aria-label="键盘快捷键提示">
+           <span class="kbd">⌘↵</span> 拆解
+           <span class="kbd">⌘⇧V</span> 全量校验
+           <span class="kbd">⌘P</span> 打印
+           <span class="kbd">⌘J</span> 复制 JSON
+           <span class="kbd">ESC</span> 折叠
+         </div>
         <div class="board__toolbar">
           <div class="view-toggle" role="tablist">
             <button class="vt is-active" data-view="grid" type="button">网格</button>
             <button class="vt" data-view="list" type="button">序列</button>
             <button class="vt" data-view="timeline" type="button">时间轴</button>
           </div>
+          <button class="btn btn--ghost" id="btnBatchValidate" type="button" title="TRAE 全量扫描">
+            <span class="mono" style="color:var(--orange)">⟳</span> 全量校验
+          </button>
           <button class="btn btn--ghost" id="btnAddShot" type="button">+ 新增镜头</button>
           <button class="btn btn--ghost" id="btnExpandAll" type="button">全部展开</button>
           <button class="btn btn--ghost" id="btnCollapseAll" type="button">全部折叠</button>
@@ -103,6 +113,8 @@
       <div class="board" id="board" data-view="grid">
         <!-- JS 注入 -->
       </div>
+
+      <div class="timeline-ruler mono" id="timelineRuler" hidden></div>
 
       <div class="board__empty" id="boardEmpty">
         <div class="board__empty-art" aria-hidden="true">
