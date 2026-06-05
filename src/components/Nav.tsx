@@ -66,6 +66,17 @@ const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
+    id: 'forge', label: '制作', en: 'FORGE', color: 'pink',
+    icon: <Hammer size={12} />,
+    items: [
+      { to: '/productions',       label: '制作中心',  en: 'PRODUCTIONS',icon: <Hammer size={11} />,        badge: '9×9' },
+      { to: '/forge/components',  label: '组件工坊',  en: 'COMPONENTS', icon: <Component size={11} />,    badge: '81' },
+      { to: '/forge/patterns',    label: '模式工坊',  en: 'PATTERNS',   icon: <LayoutGrid size={11} />,   badge: '81' },
+      { to: '/forge/animations',  label: '动效工坊',  en: 'ANIMATIONS', icon: <Sparkles size={11} />,     badge: '81' },
+      { to: '/forge/tokens',      label: '令牌工坊',  en: 'TOKENS',     icon: <Frame size={11} />,        badge: '81' },
+    ],
+  },
+  {
     id: 'codex', label: '守则', en: 'CODEX', color: 'volt',
     icon: <BookOpen size={12} />,
     items: [

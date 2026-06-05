@@ -21,6 +21,11 @@ import Borders from './pages/Borders';
 import Modular from './pages/Modular';
 import CodexBoard from './pages/CodexBoard';
 import CodexStudio from './pages/CodexStudio';
+import Productions from './pages/Productions';
+import ComponentForge from './pages/ComponentForge';
+import PatternForge from './pages/PatternForge';
+import AnimationForge from './pages/AnimationForge';
+import TokenForge from './pages/TokenForge';
 import Nav from './components/Nav';
 import PageNav from './components/PageNav';
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -52,6 +57,11 @@ function AnimatedRoutes() {
           <Route path="/modular" element={<Modular />} />
           <Route path="/codex" element={<CodexBoard />} />
           <Route path="/codex-studio" element={<CodexStudio />} />
+          <Route path="/productions" element={<Productions />} />
+          <Route path="/forge/components" element={<ComponentForge />} />
+          <Route path="/forge/patterns" element={<PatternForge />} />
+          <Route path="/forge/animations" element={<AnimationForge />} />
+          <Route path="/forge/tokens" element={<TokenForge />} />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
