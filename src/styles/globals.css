@@ -2,6 +2,9 @@
    主题系统 — 6 套完整主题（V.09 → V.10 大规模重塑）
    通过 [data-theme] 在 <html> 上切换，全站 CSS 变量实时换肤
 ==================================================================== */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root,
 [data-theme='forge'] {
