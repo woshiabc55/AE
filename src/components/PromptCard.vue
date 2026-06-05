@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import CopyButton from './CopyButton.vue'
+import PromptHighlighter from './PromptHighlighter.vue'
 
 defineProps<{ prompt: string; color: string; title: string; keywords: string[] }>()
 </script>
@@ -16,7 +17,7 @@ defineProps<{ prompt: string; color: string; title: string; keywords: string[] }
     <div class="prompt-card-keywords">
       <span v-for="k in keywords" :key="k" class="kw-chip mono">{{ k }}</span>
     </div>
-    <pre class="prompt-card-body mono">{{ prompt }}</pre>
+    <PromptHighlighter :prompt="prompt" :color="color" />
   </div>
 </template>
 
@@ -69,19 +70,5 @@ defineProps<{ prompt: string; color: string; title: string; keywords: string[] }
   font-size: 10px;
   letter-spacing: 0.08em;
   border-radius: 2px;
-}
-.prompt-card-body {
-  margin: 0;
-  padding: 18px 22px 22px;
-  color: #D6CFBD;
-  font-size: 13px;
-  line-height: 1.7;
-  white-space: pre-wrap;
-  word-break: break-word;
-  font-family: var(--f-mono);
-  position: relative;
-  z-index: 1;
-  max-height: 320px;
-  overflow-y: auto;
 }
 </style>

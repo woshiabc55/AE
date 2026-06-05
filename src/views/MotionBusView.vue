@@ -1,10 +1,14 @@
 <script setup lang="ts">
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useStoryboardStore } from '@/stores/storyboard'
 import { RouterLink } from 'vue-router'
 
 const store = useStoryboardStore()
+const hoverShotId = ref<string | null>(null)
+const playProgress = ref(0)
+let raf = 0
+let last = 0
 
-// 节奏路径生成
 function beatPath(shape: string): string {
   switch (shape) {
     case '双波峰（蓄力→释放→二次释放）':
@@ -18,6 +22,22 @@ function beatPath(shape: string): string {
       return 'M 0 100 C 60 100, 80 80, 120 80 S 200 60, 240 60 S 320 30, 400 18'
   }
 }
+
+// 让波形在屏幕中流动
+let playStart = 0
+function loop(t: number) {
+  if (!last) { last = t; playStart = t }
+  const dt = t - last
+  last = t
+  const phase = ((t - playStart) % 12000) / 12000
+  playProgress.value = phase
+  raf = requestAnimationFrame(loop)
+}
+onMounted(() => { raf = requestAnimationFrame(loop) })
+onBeforeUnmount(() => cancelAnimationFrame(raf))
+
+// 当前 hover 的分镜
+const hoverShot = computed(() => hoverShotId.value ? store.shotById(hoverShotId.value) : null)
 </script>
 
 <template>
@@ -25,14 +45,14 @@ function beatPath(shape: string): string {
     <header class="head fade-up">
       <div class="head-meta mono">MOTION BUS · 60s</div>
       <h1 class="head-title display">四镜动态总线</h1>
-      <p class="head-sub serif">横向 60 格时间线 + 节奏波形 + 视觉导向 + 粒子主轨迹的四线对照视图。</p>
+      <p class="head-sub serif">横向 60 格时间线 + 节奏波形 + 视觉导向 + 粒子主轨迹的四线对照视图。波形会持续流动，悬停分镜段可高亮所有相关行。</p>
     </header>
 
     <section class="section fade-up delay-1">
       <div class="section-head">
         <span class="section-mark display">I</span>
         <h2 class="section-title serif">时间线 · Timeline</h2>
-        <span class="section-note muted">0 — 60s</span>
+        <span class="section-note muted">悬停分镜段高亮 · 0 — 60s</span>
       </div>
 
       <div class="timeline">
@@ -52,29 +72,31 @@ function beatPath(shape: string): string {
         ]" :key="ri">
           <div class="timeline-track-label mono">{{ row.label }}</div>
           <div class="timeline-track-content">
-            <!-- 分镜分段 -->
             <template v-if="row.kind === 'shots'">
               <RouterLink
                 v-for="shot in store.shots"
                 :key="shot.id"
                 :to="`/scene/${shot.id}`"
                 class="track-shot"
+                :class="{ dim: hoverShotId && hoverShotId !== shot.id }"
                 :style="{
                   left: (shot.range[0] / 60 * 100) + '%',
                   width: ((shot.range[1] - shot.range[0]) / 60 * 100) + '%',
                   '--c': shot.color
                 }"
+                @mouseenter="hoverShotId = shot.id"
+                @mouseleave="hoverShotId = null"
               >
                 <span class="track-shot-name serif">分镜{{ shot.index }} · {{ shot.title }}</span>
               </RouterLink>
             </template>
 
-            <!-- 动作轴 -->
             <template v-if="row.kind === 'axis'">
               <div
                 v-for="shot in store.shots"
                 :key="shot.id"
                 class="track-axis"
+                :class="{ dim: hoverShotId && hoverShotId !== shot.id, on: hoverShotId === shot.id }"
                 :style="{
                   left: (shot.range[0] / 60 * 100) + '%',
                   width: ((shot.range[1] - shot.range[0]) / 60 * 100) + '%',
@@ -85,12 +107,12 @@ function beatPath(shape: string): string {
               </div>
             </template>
 
-            <!-- 视觉导向 -->
             <template v-if="row.kind === 'guide'">
               <div
                 v-for="shot in store.shots"
                 :key="shot.id"
                 class="track-guide"
+                :class="{ dim: hoverShotId && hoverShotId !== shot.id }"
                 :style="{
                   left: (shot.range[0] / 60 * 100) + '%',
                   width: ((shot.range[1] - shot.range[0]) / 60 * 100) + '%',
@@ -101,12 +123,12 @@ function beatPath(shape: string): string {
               </div>
             </template>
 
-            <!-- 节奏波形 -->
             <template v-if="row.kind === 'beat'">
               <svg
                 v-for="shot in store.shots"
                 :key="shot.id"
                 class="track-beat"
+                :class="{ dim: hoverShotId && hoverShotId !== shot.id, on: hoverShotId === shot.id }"
                 :viewBox="`${shot.range[0] * (400/60)} 0 ${(shot.range[1]-shot.range[0]) * (400/60)} 100`"
                 preserveAspectRatio="none"
                 :style="{
@@ -117,15 +139,32 @@ function beatPath(shape: string): string {
               >
                 <line :x1="0" :y1="50" :x2="(shot.range[1]-shot.range[0]) * (400/60)" :y2="50" stroke="currentColor" stroke-opacity="0.18" stroke-dasharray="2 4" />
                 <path :d="beatPath(shot.beatShape)" fill="none" stroke="currentColor" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+                <!-- 流动扫描线 -->
+                <line
+                  :x1="(shot.range[0] + (shot.range[1]-shot.range[0]) * playProgress) * (400/60)"
+                  :y1="0"
+                  :x2="(shot.range[0] + (shot.range[1]-shot.range[0]) * playProgress) * (400/60)"
+                  :y2="100"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-opacity="0.85"
+                />
+                <circle
+                  :cx="(shot.range[0] + (shot.range[1]-shot.range[0]) * playProgress) * (400/60)"
+                  :cy="50"
+                  r="6"
+                  fill="currentColor"
+                  fill-opacity="0.15"
+                />
               </svg>
             </template>
 
-            <!-- 粒子主轨迹 -->
             <template v-if="row.kind === 'particle'">
               <div
                 v-for="shot in store.shots"
                 :key="shot.id"
                 class="track-particle"
+                :class="{ dim: hoverShotId && hoverShotId !== shot.id }"
                 :style="{
                   left: (shot.range[0] / 60 * 100) + '%',
                   width: ((shot.range[1] - shot.range[0]) / 60 * 100) + '%',
@@ -138,6 +177,20 @@ function beatPath(shape: string): string {
           </div>
         </div>
       </div>
+
+      <transition name="shot-info">
+        <div v-if="hoverShot" class="shot-info" :style="{ '--c': hoverShot.color }">
+          <div class="shot-info-bar"></div>
+          <div class="shot-info-content">
+            <div class="shot-info-head">
+              <span class="mono shot-info-num">SHOT {{ hoverShot.index }}</span>
+              <span class="serif shot-info-title">{{ hoverShot.title }}</span>
+            </div>
+            <div class="shot-info-bus">{{ hoverShot.bus }}</div>
+            <RouterLink :to="`/scene/${hoverShot.id}`" class="shot-info-link">查看详情 →</RouterLink>
+          </div>
+        </div>
+      </transition>
     </section>
 
     <section class="section fade-up delay-2">
@@ -179,6 +232,9 @@ function beatPath(shape: string): string {
           <div class="bus-chain-num display">0{{ i + 1 }}</div>
           <div class="bus-chain-title serif">分镜{{ shot.index }} · {{ shot.title }}</div>
           <div class="bus-chain-bus">{{ shot.bus }}</div>
+          <div class="bus-chain-dots" aria-hidden="true">
+            <span v-for="d in 5" :key="d" :style="{ animationDelay: (d * 0.15) + 's' }"></span>
+          </div>
           <svg v-if="i < store.shots.length - 1" class="bus-chain-arrow" viewBox="0 0 40 40" aria-hidden="true">
             <path d="M 0 20 L 30 20 M 22 12 L 30 20 L 22 28" stroke="currentColor" stroke-width="1.5" fill="none" />
           </svg>
@@ -192,12 +248,7 @@ function beatPath(shape: string): string {
 .motion-bus { display: flex; flex-direction: column; gap: var(--s-8); }
 
 .head { border-bottom: 1px solid var(--c-line); padding-bottom: var(--s-5); }
-.head-meta {
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  color: var(--c-ash);
-  margin-bottom: var(--s-3);
-}
+.head-meta { font-size: 11px; letter-spacing: 0.2em; color: var(--c-ash); margin-bottom: var(--s-3); }
 .head-title {
   font-size: clamp(40px, 5vw, 64px);
   font-weight: 800;
@@ -230,21 +281,8 @@ function beatPath(shape: string): string {
   transform: translateX(-50%);
   top: 0;
 }
-.ruler-mark {
-  display: block;
-  width: 1px;
-  height: 6px;
-  background: var(--c-line-strong);
-  margin: 0 auto;
-}
-.ruler-label {
-  display: block;
-  font-family: var(--f-mono);
-  font-size: 9px;
-  color: var(--c-ash);
-  margin-top: 2px;
-  letter-spacing: 0.08em;
-}
+.ruler-mark { display: block; width: 1px; height: 6px; background: var(--c-line-strong); margin: 0 auto; }
+.ruler-label { display: block; font-family: var(--f-mono); font-size: 9px; color: var(--c-ash); margin-top: 2px; letter-spacing: 0.08em; }
 
 .timeline-track {
   display: flex;
@@ -284,10 +322,11 @@ function beatPath(shape: string): string {
   color: #E8E1D4;
   font-size: 11px;
   letter-spacing: 0.04em;
-  transition: transform var(--t-fast);
+  transition: transform var(--t-fast), opacity var(--t-fast);
   overflow: hidden;
 }
-.track-shot:hover { transform: scale(1.02); z-index: 2; }
+.track-shot:hover { transform: scale(1.04); z-index: 2; box-shadow: 0 0 16px color-mix(in srgb, var(--c) 50%, transparent); }
+.track-shot.dim { opacity: 0.3; }
 .track-shot-name { white-space: nowrap; }
 
 .track-axis {
@@ -299,7 +338,10 @@ function beatPath(shape: string): string {
   padding: 0 10px;
   border-left: 2px solid var(--c);
   background: color-mix(in srgb, var(--c) 5%, transparent);
+  transition: opacity var(--t-fast), background var(--t-fast);
 }
+.track-axis.on { background: color-mix(in srgb, var(--c) 18%, transparent); }
+.track-axis.dim { opacity: 0.3; }
 .track-axis-text {
   font-size: 10px;
   color: color-mix(in srgb, var(--c) 70%, white);
@@ -318,13 +360,10 @@ function beatPath(shape: string): string {
   padding: 0 10px;
   background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--c) 12%, transparent));
   border-bottom: 1px dashed color-mix(in srgb, var(--c) 50%, transparent);
+  transition: opacity var(--t-fast);
 }
-.track-guide-text {
-  font-family: var(--f-serif);
-  font-size: 12px;
-  color: #E8E1D4;
-  letter-spacing: 0.06em;
-}
+.track-guide.dim { opacity: 0.3; }
+.track-guide-text { font-family: var(--f-serif); font-size: 12px; color: #E8E1D4; letter-spacing: 0.06em; }
 
 .track-beat {
   position: absolute;
@@ -332,7 +371,10 @@ function beatPath(shape: string): string {
   bottom: 4px;
   color: var(--c);
   pointer-events: none;
+  transition: opacity var(--t-fast);
 }
+.track-beat.dim { opacity: 0.3; }
+.track-beat.on { filter: drop-shadow(0 0 6px color-mix(in srgb, var(--c) 60%, transparent)); }
 
 .track-particle {
   position: absolute;
@@ -342,7 +384,9 @@ function beatPath(shape: string): string {
   align-items: center;
   padding: 0 10px;
   background: radial-gradient(ellipse at center, color-mix(in srgb, var(--c) 12%, transparent), transparent 70%);
+  transition: opacity var(--t-fast);
 }
+.track-particle.dim { opacity: 0.3; }
 .track-particle-text {
   font-size: 10px;
   color: var(--c-spark-bright);
@@ -351,6 +395,43 @@ function beatPath(shape: string): string {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.shot-info {
+  position: relative;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--c) 10%, var(--c-ink-2)) 0%, var(--c-ink-2) 100%);
+  border: 1px solid color-mix(in srgb, var(--c) 35%, var(--c-line));
+  padding: var(--s-3) var(--s-4);
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+}
+.shot-info-bar {
+  width: 4px;
+  align-self: stretch;
+  background: var(--c);
+  box-shadow: 0 0 12px var(--c);
+}
+.shot-info-content { flex: 1; }
+.shot-info-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+.shot-info-num { font-size: 11px; color: var(--c); letter-spacing: 0.2em; font-weight: 600; }
+.shot-info-title { font-size: 16px; color: #E8E1D4; }
+.shot-info-bus { font-size: 12px; color: #C8BFAE; letter-spacing: 0.04em; }
+.shot-info-link {
+  display: inline-block;
+  margin-top: 4px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--c);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-bottom: 1px dashed var(--c);
+  padding-bottom: 2px;
+  transition: all var(--t-fast);
+}
+.shot-info-link:hover { color: var(--c-bronze-glow); }
+.shot-info-enter-active, .shot-info-leave-active { transition: all .3s cubic-bezier(0.4, 0, 0.2, 1); }
+.shot-info-enter-from, .shot-info-leave-to { opacity: 0; transform: translateY(-6px); }
 
 .cmp-table {
   background: var(--c-ink-2);
@@ -379,13 +460,7 @@ function beatPath(shape: string): string {
   color: #D6CFBD;
   transition: background var(--t-fast);
 }
-.cmp-table-row::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 2px;
-  background: var(--c);
-}
+.cmp-table-row::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--c); }
 .cmp-table-row:hover { background: rgba(255,255,255,0.03); }
 .cmp-table-row:last-child { border-bottom: 0; }
 .cmp-shot { display: flex; flex-direction: column; gap: 2px; }
@@ -404,7 +479,7 @@ function beatPath(shape: string): string {
 }
 .bus-chain-node {
   flex: 1;
-  min-width: 200px;
+  min-width: 220px;
   padding: var(--s-4) var(--s-4) var(--s-3);
   background: color-mix(in srgb, var(--c) 8%, transparent);
   border: 1px solid color-mix(in srgb, var(--c) 30%, transparent);
@@ -418,15 +493,26 @@ function beatPath(shape: string): string {
   color: var(--c);
   font-weight: 700;
 }
-.bus-chain-title {
-  font-size: 14px;
-  color: #E8E1D4;
+.bus-chain-title { font-size: 14px; color: #E8E1D4; }
+.bus-chain-bus { font-size: 12px; color: #C8BFAE; line-height: 1.6; }
+
+.bus-chain-dots {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
 }
-.bus-chain-bus {
-  font-size: 12px;
-  color: #C8BFAE;
-  line-height: 1.6;
+.bus-chain-dots span {
+  width: 6px;
+  height: 6px;
+  background: var(--c);
+  border-radius: 50%;
+  animation: dotPulse 1.2s ease-in-out infinite;
 }
+@keyframes dotPulse {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
 .bus-chain-arrow {
   flex: 0 0 40px;
   align-self: center;

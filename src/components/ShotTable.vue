@@ -2,6 +2,7 @@
 import type { ShotRow } from '@/stores/storyboard'
 
 defineProps<{ rows: ShotRow[]; color: string }>()
+const active = defineModel<number | null>('active', { default: null })
 </script>
 
 <template>
@@ -14,7 +15,14 @@ defineProps<{ rows: ShotRow[]; color: string }>()
       <span class="col col-fx">特效 / 粒子轨迹</span>
     </div>
     <div class="shot-table-body">
-      <div class="shot-table-row" v-for="(row, i) in rows" :key="i">
+      <div
+        class="shot-table-row"
+        v-for="(row, i) in rows"
+        :key="i"
+        :class="{ active: active === i }"
+        @mouseenter="active = i"
+        @mouseleave="active = null"
+      >
         <div class="col col-time">
           <span class="time-pill mono">{{ row.time }}</span>
         </div>
@@ -69,20 +77,25 @@ defineProps<{ rows: ShotRow[]; color: string }>()
   transition: background var(--t-fast);
 }
 .shot-table-row:last-child { border-bottom: 0; }
-.shot-table-row:hover { background: rgba(255,255,255,0.025); }
+.shot-table-row:hover,
+.shot-table-row.active {
+  background: color-mix(in srgb, var(--c) 8%, transparent);
+}
 .shot-table-row::before {
   content: '';
   position: absolute;
   left: 0;
   top: 0;
   bottom: 0;
-  width: 2px;
+  width: 3px;
   background: var(--c);
   transform: scaleY(0);
   transform-origin: top;
   transition: transform var(--t-med);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--c) 50%, transparent);
 }
-.shot-table-row:hover::before { transform: scaleY(1); }
+.shot-table-row:hover::before,
+.shot-table-row.active::before { transform: scaleY(1); }
 
 .col {
   padding: 14px 16px;
@@ -103,6 +116,13 @@ defineProps<{ rows: ShotRow[]; color: string }>()
   font-size: 11px;
   letter-spacing: 0.05em;
   font-weight: 500;
+  transition: all var(--t-fast);
+}
+.shot-table-row:hover .time-pill,
+.shot-table-row.active .time-pill {
+  background: var(--c);
+  color: var(--c-ink);
+  font-weight: 600;
 }
 .action-text { color: #E8E1D4; font-weight: 500; }
 .visual-text { color: color-mix(in srgb, var(--c) 70%, white); }
@@ -114,14 +134,5 @@ defineProps<{ rows: ShotRow[]; color: string }>()
   .shot-table-row { grid-template-columns: 1fr; gap: 0; }
   .col { border-right: 0; border-bottom: 1px dashed rgba(255,255,255,0.05); }
   .col:last-child { border-bottom: 0; }
-  .col::before {
-    content: attr(data-label);
-    font-family: var(--f-mono);
-    font-size: 9px;
-    letter-spacing: 0.16em;
-    color: var(--c-ash);
-    display: block;
-    margin-bottom: 4px;
-  }
 }
 </style>

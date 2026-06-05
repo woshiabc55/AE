@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterView, RouterLink, useRoute } from 'vue-router'
 import { computed } from 'vue'
+import ShortcutLayer from '@/components/ShortcutLayer.vue'
 
 const route = useRoute()
 
@@ -61,6 +62,7 @@ const activeKey = computed(() => {
     </aside>
 
     <main class="main">
+      <ShortcutLayer />
       <RouterView v-slot="{ Component }">
         <transition name="page" mode="out-in">
           <component :is="Component" />

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useStoryboardStore } from '@/stores/storyboard'
 import ShotTable from '@/components/ShotTable.vue'
@@ -16,10 +16,21 @@ const shotIndex = computed(() => store.shots.findIndex((s) => s.id === shotId.va
 const prevId = computed(() => (shotIndex.value > 0 ? store.shots[shotIndex.value - 1].id : null))
 const nextId = computed(() => (shotIndex.value < store.shots.length - 1 ? store.shots[shotIndex.value + 1].id : null))
 
+const activeRow = ref<number | null>(null)
+const activeCam = ref<number | null>(null)
+
 const keywords = computed(() => {
   if (!shot.value) return []
   const t = shot.value.prompt
   return Array.from(new Set(t.match(/[A-Z][a-zA-Z]+/g)?.slice(0, 8) || [])).filter((w) => w.length > 3)
+})
+
+// 计算当前 hover 行的具体时间（用于 mini timecode）
+const activeTimecode = computed(() => {
+  if (!shot.value || activeRow.value === null) return null
+  const r = shot.value.rows[activeRow.value]
+  if (!r) return null
+  return r.time
 })
 </script>
 
@@ -43,6 +54,26 @@ const keywords = computed(() => {
           <span class="scene-title-en">SHOT {{ shot.index.toUpperCase() }} · {{ shot.title.toUpperCase() }}</span>
         </h1>
         <p class="scene-bus serif">动态导向总线 · <em>{{ shot.bus }}</em></p>
+        <!-- Mini 时间线：分镜内分段进度 -->
+        <div class="mini-bar">
+          <div
+            v-for="(row, i) in shot.rows"
+            :key="i"
+            class="mini-bar-cell"
+            :class="{ active: activeRow === i }"
+            :style="{ flex: 1 }"
+            @mouseenter="activeRow = i"
+            @mouseleave="activeRow = null"
+          >
+            <div class="mini-bar-fill"></div>
+            <span class="mini-bar-label mono">{{ row.time }}</span>
+          </div>
+        </div>
+        <transition name="fade">
+          <div v-if="activeTimecode" class="active-timecode mono">
+            <span class="at-pulse"></span>NOW · {{ activeTimecode }}
+          </div>
+        </transition>
       </div>
       <div class="scene-head-right">
         <RouterLink v-if="prevId" :to="`/scene/${prevId}`" class="nav-arrow">
@@ -60,18 +91,18 @@ const keywords = computed(() => {
       <div class="section-head">
         <span class="section-mark display">I</span>
         <h2 class="section-title serif">分镜表 · Shot Table</h2>
-        <span class="section-note muted">{{ shot.rows.length }} 段</span>
+        <span class="section-note muted">悬停行高亮同步时间轴 · {{ shot.rows.length }} 段</span>
       </div>
-      <ShotTable :rows="shot.rows" :color="shot.color" />
+      <ShotTable v-model:active="activeRow" :rows="shot.rows" :color="shot.color" />
     </section>
 
     <section class="section fade-up delay-2">
       <div class="section-head">
         <span class="section-mark display">II</span>
         <h2 class="section-title serif">运镜图示 · Camera Moves</h2>
-        <span class="section-note muted">{{ shot.cameraMoves.length }} 种</span>
+        <span class="section-note muted">悬停查看运镜说明 · {{ shot.cameraMoves.length }} 种</span>
       </div>
-      <CameraDiagram :moves="shot.cameraMoves" :color="shot.color" />
+      <CameraDiagram v-model:active="activeCam" :moves="shot.cameraMoves" :color="shot.color" />
     </section>
 
     <section class="section fade-up delay-3">
@@ -100,7 +131,7 @@ const keywords = computed(() => {
       <div class="section-head">
         <span class="section-mark display">IV</span>
         <h2 class="section-title serif">AI 提示词 · Prompt</h2>
-        <span class="section-note muted">Runway · Pika · Sora</span>
+        <span class="section-note muted">Runway · Pika · Sora · 已语法高亮</span>
       </div>
       <PromptCard :prompt="shot.prompt" :color="shot.color" :title="`分镜${shot.index} · ${shot.title}`" :keywords="keywords" />
     </section>
@@ -155,6 +186,74 @@ const keywords = computed(() => {
   letter-spacing: 0.04em;
 }
 .scene-bus em { color: var(--c-bronze-glow); font-style: normal; font-weight: 500; }
+
+.mini-bar {
+  display: flex;
+  gap: 4px;
+  margin-top: var(--s-4);
+  max-width: 800px;
+  height: 26px;
+  position: relative;
+}
+.mini-bar-cell {
+  position: relative;
+  height: 100%;
+  border: 1px solid var(--c-line);
+  cursor: pointer;
+  transition: all var(--t-fast);
+  overflow: hidden;
+}
+.mini-bar-cell:hover,
+.mini-bar-cell.active {
+  border-color: var(--c);
+  background: color-mix(in srgb, var(--c) 12%, transparent);
+}
+.mini-bar-fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--c) 25%, transparent), color-mix(in srgb, var(--c) 8%, transparent));
+  opacity: 0;
+  transition: opacity var(--t-med);
+}
+.mini-bar-cell.active .mini-bar-fill { opacity: 1; }
+.mini-bar-label {
+  position: relative;
+  z-index: 1;
+  display: block;
+  text-align: center;
+  line-height: 24px;
+  font-size: 9px;
+  color: var(--c-ash);
+  letter-spacing: 0.08em;
+  transition: color var(--t-fast);
+}
+.mini-bar-cell.active .mini-bar-label { color: var(--c-bronze-glow); font-weight: 600; }
+
+.active-timecode {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: var(--s-3);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--c-bronze-glow);
+  padding: 4px 10px;
+  background: color-mix(in srgb, var(--c) 8%, transparent);
+  border-left: 2px solid var(--c);
+}
+.at-pulse {
+  width: 6px;
+  height: 6px;
+  background: var(--c-blood);
+  border-radius: 50%;
+  animation: pulseDot 1s ease-in-out infinite;
+}
+@keyframes pulseDot {
+  0%, 100% { opacity: 0.4; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+.fade-enter-active, .fade-leave-active { transition: all .25s ease; }
+.fade-enter-from, .fade-leave-to { opacity: 0; transform: translateX(-8px); }
 
 .scene-head-right { display: flex; gap: var(--s-3); flex: 0 0 auto; }
 .nav-arrow {

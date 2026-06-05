@@ -2,8 +2,10 @@
 import { useStoryboardStore } from '@/stores/storyboard'
 import TimelineBar from '@/components/TimelineBar.vue'
 import BeatCard from '@/components/BeatCard.vue'
+import KeyVisual from '@/components/KeyVisual.vue'
+import SmokeBackground from '@/components/SmokeBackground.vue'
 import { useRouter } from 'vue-router'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 const store = useStoryboardStore()
 const router = useRouter()
@@ -13,40 +15,66 @@ const allPrompts = computed(() => store.shots.map((s) => s.prompt).join('\n\n'))
 async function copyAll() {
   try {
     await navigator.clipboard.writeText(allPrompts.value)
-    alert('已复制四镜完整提示词到剪贴板')
+    copyToast.value = '已复制 4 段提示词'
   } catch {
-    alert('复制失败，请手动选择')
+    copyToast.value = '复制失败，请手动选择'
   }
+  window.setTimeout(() => (copyToast.value = ''), 1800)
 }
+
+const copyToast = ref('')
 </script>
 
 <template>
   <div class="overview">
     <header class="hero fade-up">
-      <div class="hero-meta mono">
-        <span>RUNWAY · PIKA · SORA</span>
-        <span class="serif-divider"></span>
-        <span>60s · IMAX · 24/48fps</span>
-        <span class="serif-divider"></span>
-        <span>FOUR-SHOT SEQUENCE</span>
+      <SmokeBackground />
+      <div class="hero-content">
+        <div class="hero-meta mono">
+          <span>RUNWAY · PIKA · SORA</span>
+          <span class="serif-divider"></span>
+          <span>60s · IMAX · 24/48fps</span>
+          <span class="serif-divider"></span>
+          <span>FOUR-SHOT SEQUENCE</span>
+        </div>
+        <h1 class="hero-title display fade-up delay-1">
+          <span class="char" style="--i:0">铁</span>
+          <span class="char" style="--i:1">链</span>
+          <span class="char" style="--i:2">惊</span>
+          <span class="char" style="--i:3">蛰</span>
+          <span class="hero-dot" style="--i:4">·</span>
+          <span class="char hero-sub" style="--i:5">黄</span>
+          <span class="char hero-sub" style="--i:6">忌</span>
+          <span class="char hero-sub" style="--i:7">出</span>
+          <span class="char hero-sub" style="--i:8">阵</span>
+        </h1>
+        <p class="hero-subtitle serif fade-up delay-2">
+          四镜 · <span class="glow">60 秒</span> IMAX 战斗分镜 —— 蓄力、释放、坠毁、绝对静止。
+        </p>
+        <div class="hero-actions fade-up delay-3">
+          <button class="btn btn-primary" @click="router.push('/scene/one')">从分镜一开始</button>
+          <button class="btn btn-ghost" @click="copyAll">复制全部提示词</button>
+        </div>
+        <transition name="toast">
+          <div v-if="copyToast" class="copy-toast mono">{{ copyToast }}</div>
+        </transition>
       </div>
-      <h1 class="hero-title display fade-up delay-1">
-        <span class="char" style="--i:0">铁</span>
-        <span class="char" style="--i:1">链</span>
-        <span class="char" style="--i:2">惊</span>
-        <span class="char" style="--i:3">蛰</span>
-        <span class="hero-dot" style="--i:4">·</span>
-        <span class="char hero-sub" style="--i:5">黄</span>
-        <span class="char hero-sub" style="--i:6">忌</span>
-        <span class="char hero-sub" style="--i:7">出</span>
-        <span class="char hero-sub" style="--i:8">阵</span>
-      </h1>
-      <p class="hero-subtitle serif fade-up delay-2">
-        四镜 · <span class="glow">60 秒</span> IMAX 战斗分镜 —— 蓄力、释放、坠毁、绝对静止。
-      </p>
-      <div class="hero-actions fade-up delay-3">
-        <button class="btn btn-primary" @click="router.push('/scene/one')">从分镜一开始</button>
-        <button class="btn btn-ghost" @click="copyAll">复制全部提示词</button>
+
+      <!-- Key visual 角标：右下角四格小图 -->
+      <div class="hero-thumbs fade-up delay-4">
+        <div
+          v-for="shot in store.shots"
+          :key="shot.id"
+          class="hero-thumb"
+          :style="{ '--c': shot.color }"
+          @click="router.push(`/scene/${shot.id}`)"
+        >
+          <KeyVisual :shot="shot" />
+          <div class="hero-thumb-label">
+            <span class="mono">SHOT {{ shot.index }}</span>
+            <span class="serif">{{ shot.title }}</span>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -54,7 +82,7 @@ async function copyAll() {
       <div class="section-head">
         <span class="section-mark display">I</span>
         <h2 class="section-title serif">时序条 · Time Axis</h2>
-        <span class="section-note muted">0:00 — 1:00 · 60 格刻度</span>
+        <span class="section-note muted">悬停查看具体时间 · 点击跳转分镜</span>
       </div>
       <TimelineBar />
     </section>
@@ -126,7 +154,8 @@ async function copyAll() {
   gap: var(--s-8);
 }
 
-.hero { position: relative; padding-top: var(--s-6); }
+.hero { position: relative; padding-top: var(--s-6); padding-bottom: var(--s-7); min-height: 360px; }
+.hero-content { position: relative; z-index: 2; }
 .hero-meta {
   display: flex;
   align-items: center;
@@ -167,7 +196,7 @@ async function copyAll() {
   max-width: 720px;
   letter-spacing: 0.04em;
 }
-.hero-actions { display: flex; gap: var(--s-3); }
+.hero-actions { display: flex; gap: var(--s-3); position: relative; }
 .btn {
   padding: 12px 22px;
   border: 1px solid var(--c-line-strong);
@@ -190,6 +219,66 @@ async function copyAll() {
   box-shadow: 0 8px 24px rgba(176, 141, 87, 0.4);
 }
 .btn-ghost:hover { color: var(--c-bronze-glow); border-color: var(--c-bronze-glow); }
+
+.copy-toast {
+  position: absolute;
+  left: 220px;
+  top: 12px;
+  padding: 6px 12px;
+  background: var(--c-ink-3);
+  border: 1px solid var(--c-spark);
+  color: var(--c-spark-bright);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+.toast-enter-active, .toast-leave-active { transition: all .3s ease; }
+.toast-enter-from, .toast-leave-to { opacity: 0; transform: translateY(-4px); }
+
+.hero-thumbs {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-top: var(--s-6);
+}
+.hero-thumb {
+  position: relative;
+  height: 110px;
+  cursor: pointer;
+  overflow: hidden;
+  border: 1px solid var(--c-line);
+  transition: transform var(--t-fast), border-color var(--t-fast);
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+}
+.hero-thumb:hover {
+  transform: translateY(-3px);
+  border-color: var(--c);
+  box-shadow: 0 0 0 1px var(--c);
+}
+.hero-thumb-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  background: linear-gradient(0deg, rgba(0,0,0,0.85), rgba(0,0,0,0));
+  font-size: 10px;
+  color: color-mix(in srgb, var(--c) 80%, white);
+  letter-spacing: 0.12em;
+}
+.hero-thumb-label .serif {
+  font-size: 12px;
+  color: #E8E1D4;
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 1024px) {
+  .hero-thumbs { grid-template-columns: repeat(2, 1fr); }
+}
 
 .section { display: flex; flex-direction: column; gap: var(--s-4); }
 .section-head { display: flex; align-items: baseline; gap: var(--s-4); border-bottom: 1px solid var(--c-line); padding-bottom: var(--s-3); }
