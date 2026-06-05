@@ -1,0 +1,327 @@
+{
+  "project": {
+    "title": "铁链惊蛰 · 黄忌出阵",
+    "subtitle": "四镜 · 60 秒 IMAX 战斗分镜",
+    "total": 60,
+    "label": "Runway / Pika / Sora Prompt Workshop"
+  },
+  "shots": [
+    {
+      "id": "one",
+      "index": "一",
+      "title": "铁链惊蛰",
+      "range": [0, 15],
+      "timeLabel": "0:00 – 0:15",
+      "beatShape": "双波峰（蓄力→释放→二次释放）",
+      "motionAxis": "Z 轴（纵深）+ Y 轴（跃升）",
+      "visualGuide": "对角线 ↘",
+      "particleTrail": "烟尘 ↑ · 火星 ↗ · 冲击波 ○",
+      "bus": "刀柄（起点）→ 面部（转向）→ 马背（跃升）→ 铁链（抛物线）→ 马蹄（爆发）→ 刀锋（终点）",
+      "color": "#B08D57",
+      "rows": [
+        {
+          "time": "0:00-0:02",
+          "action": "静止→爆发（Z 轴纵深）",
+          "camera": "前冲式推轨（→）",
+          "visual": "刀柄→虎口→小臂→肩甲缝隙（对角线↘）",
+          "content": "黄忌背对，右手握刀柄，指节泛白。肩甲缝隙渗出黑色烟尘",
+          "fx": "黑色烟尘受虚拟风力场影响，向上飘移（↑），遇光分解为金/铜双色微粒，悬浮轨迹呈螺旋上升（↺）"
+        },
+        {
+          "time": "0:02-0:04",
+          "action": "头部旋转（↻ 90°）",
+          "camera": "甩镜（→↘）",
+          "visual": "刀柄→面部→瞳孔（快速锁定）",
+          "content": "猛然转头，左颊伤疤受拉扯变宽，瞳孔收缩",
+          "fx": "镜头光晕从暖黄骤变冷白，径向扩散（○→）"
+        },
+        {
+          "time": "0:04-0:07",
+          "action": "上马（Y 轴跃起→Z 轴纵深）",
+          "camera": "长焦拉远（← 后退）",
+          "visual": "人→马→地平线（压缩感层级）",
+          "content": "翻身上马，乌骓扬蹄，俯身贴马颈大喊",
+          "fx": "声波呈同心圆气浪（○→○→○）扩散，震散尘埃；马鬃受冲击波向后倒伏（→）"
+        },
+        {
+          "time": "0:07-0:10",
+          "action": "铁链甩出（↗抛物线→↘砸地→→拖行）",
+          "camera": "手持乱点（随机抖动↗↘←→）",
+          "visual": "手部→铁链→刺球→木牌→碎片（弧线引导）",
+          "content": "甩出刺球，砸地弹起，缠住木牌，马腿拽链拖行",
+          "fx": "铁链与地面摩擦溅射青色火星（↗↗↗）；木牌碎片局部时间膨胀：以 1/10 速度放射飞散（↗↘←→）"
+        },
+        {
+          "time": "0:10-0:13",
+          "action": "马跃（Y 轴↑→Z 轴纵深→Y 轴↓）",
+          "camera": "低角度仰冲（↑→）",
+          "visual": "马蹄→地面裂缝→尘墙（垂直层级↓↑）",
+          "content": "乌骓踏碎木牌跃起，踩过碎牌，身体前倾",
+          "fx": "惊蛰·空爆：地面放射龟裂（↗↘←→），环形冲击波垂直掀起三丈尘墙（↑）"
+        },
+        {
+          "time": "0:13-0:15",
+          "action": "抽刀（X 轴横拉→Z 轴前指）",
+          "camera": "贴地横移（→）",
+          "visual": "马侧→刀身→刀锋→眼神（直线锁定→）",
+          "content": "从马侧抽扑刀，刀身反射冷光，侧脸紧绷",
+          "fx": "刀身残像拖影（→→→），背景尘墙放射状模糊（↗↘）"
+        }
+      ],
+      "cameraMoves": [
+        { "label": "前冲式推轨", "icon": "push" },
+        { "label": "甩镜 90°", "icon": "whip" },
+        { "label": "长焦拉远", "icon": "pull" },
+        { "label": "手持乱点", "icon": "shake" },
+        { "label": "低角度仰冲", "icon": "tilt" },
+        { "label": "贴地横移", "icon": "dolly" }
+      ],
+      "prompt": "Cinematic IMAX motion sequence, 24fps: A warrior in dark iron armor back-facing camera, right hand gripping sword hilt (static→burst Z-axis), head turns 90 degrees (↻), mounts black war horse (Y-axis leap→Z-axis gallop), throws chain with spiked ball in parabolic arc (↗→↘), horse leaps with ground cracking in radial pattern (↗↘←→), shockwave dust wall rises vertically (↑), draws broad blade from saddle (X-axis pull→Z-axis point), blade leaves 3-frame afterimage trail (→→→), volumetric golden dust spiraling upward (↺), teal sparks flying radially (↗↘), handheld camera shake, anamorphic lens flare, photorealistic 8k"
+    },
+    {
+      "id": "two",
+      "index": "二",
+      "title": "血换血",
+      "range": [15, 30],
+      "timeLabel": "0:15 – 0:30",
+      "beatShape": "波浪形（扩散→交汇→螺旋→跃升→凝聚）",
+      "motionAxis": "X 轴（水平）+ ↻（旋转）",
+      "visualGuide": "圆形 ↺ + 对插 ↔",
+      "particleTrail": "血雾 → · 残像 ↔ · 声波 ○",
+      "bus": "斩击（水平波）→ 交换（对插）→ 旋转刺（螺旋）→ 跃壕（垂直波）→ 面部（微观爆发）",
+      "color": "#C5302B",
+      "rows": [
+        {
+          "time": "0:15-0:18",
+          "action": "扑刀横斩（X 轴→）→旋身（↻）→后探（Z 轴→）",
+          "camera": "360° 环绕（↺）",
+          "visual": "刀刃→敌兵胸甲→血雾→长刀（圆形扩散→中心）",
+          "content": "扑刀横斩三名敌兵，旋身抓长刀刀柄",
+          "fx": "黑色血雾高粘度飞溅（→→），拉丝 20-30cm 后凝固成珠（↓）"
+        },
+        {
+          "time": "0:18-0:21",
+          "action": "掷刀（↗抛物线）→接刀（↓）→夺缰（→）→拍肩（→）",
+          "camera": "3 镜头硬切（跳跃剪辑）",
+          "visual": "黄忌→战友→交错→分离（X 轴对冲→）",
+          "content": "掷出扑刀，战友接刀，夺马缰拍肩：「你先走！」",
+          "fx": "交换残像：两人身影重叠曝光（↔），半透明双重影像延迟 0.5 秒"
+        },
+        {
+          "time": "0:21-0:25",
+          "action": "转刀（↻）→偏导（↗15°）→绕膝（↻半圆）→后刺（Z 轴→）",
+          "camera": "慢动作特写（静态→）",
+          "visual": "刀身→膝盖→后方追兵（弧线引导↻）",
+          "content": "单手持长刀，转刀偏导绕膝后刺追兵咽喉",
+          "fx": "刀身旋转螺旋气纹（↺）；敌兵瞳孔放大轨迹（○→○○）"
+        },
+        {
+          "time": "0:25-0:28",
+          "action": "策马跃壕（Y 轴↑→↓）→贴马背（→）",
+          "camera": "鸟瞰俯冲（↓→）",
+          "visual": "马→壕沟→箭矢→落地（垂直层级）",
+          "content": "大喊，策马跃过壕沟，马腹下箭矢齐飞",
+          "fx": "声波红色涟漪（○→○→○）；马蹄踏空刹那定格（‖→）"
+        },
+        {
+          "time": "0:28-0:30",
+          "action": "面部肌肉逐帧变形（静态→动态）",
+          "camera": "微距面部（→）",
+          "visual": "左眼→右眼→嘴角→下颌（对角线↘）",
+          "content": "面部青筋暴起，左眼眯起，右眼圆睁，嘴角撕裂张开",
+          "fx": "汗珠/血沫悬停 0.8 秒（‖）后坠落（↓）；皮肤纹理逐帧扫描"
+        }
+      ],
+      "cameraMoves": [
+        { "label": "360° 环绕", "icon": "orbit" },
+        { "label": "3 镜头硬切", "icon": "cut" },
+        { "label": "慢动作特写", "icon": "macro" },
+        { "label": "鸟瞰俯冲", "icon": "dive" },
+        { "label": "微距面部", "icon": "face" }
+      ],
+      "prompt": "IMAX slow-motion battle, 48fps: Warrior executes horizontal blade slash (X-axis→) with black viscous blood spraying in slow arcs (→→) and solidifying into beads (↓), 360-degree camera orbit (↺) around spinning warrior, exchanges weapon with ally in double exposure ghosting (↔), close-up on dilating pupils (○→○○), horse leaps over trench (Y-axis↑→↓), red soundwave ripples emanating from mouth (○→○→○), extreme facial close-up with veins bulging frame by frame, spiral air trails around rotating sword (↺), photorealistic war scene"
+    },
+    {
+      "id": "three",
+      "index": "三",
+      "title": "坠与起",
+      "range": [30, 45],
+      "timeLabel": "0:30 – 0:45",
+      "beatShape": "V 型反弹（上升→坠毁→挣扎→爆发）",
+      "motionAxis": "Y 轴（坠毁 ↻）+ 反弹 ↑",
+      "visualGuide": "对角线 ↘ → 弧线 ↻",
+      "particleTrail": "沙尘 → · 箭矢 → · 木刺 ↗↘ · 血滴 ↗↘",
+      "bus": "跃起（↑）→ 撞击（↔）→ 坠落（↓↻）→ 爬起（↑）→ 中箭（→）→ 折断（↻）→ 环砍（↺）",
+      "color": "#7A7368",
+      "rows": [
+        {
+          "time": "0:30-0:33",
+          "action": "骑马扬跃（Y 轴↑）→撞击（X 轴↔）",
+          "camera": "长焦侧拍（→）→偏移（↗30°）",
+          "visual": "剪影→敌骑→撞击点→偏移（水平对冲）",
+          "content": "骑马扬跃剪影，侧面敌骑冲出撞击",
+          "fx": "画面剧烈偏移 30°（→）后弹性回正（←）；地平线凸面畸变（∩）"
+        },
+        {
+          "time": "0:33-0:36",
+          "action": "翻滚（↻×3）→撑地（↓）→爬起（↑）",
+          "camera": "地面跟拍（↗↘←→）",
+          "visual": "地面→手部→面部→脊柱（垂直上升）",
+          "content": "被撞下马翻滚三圈，单手撑地，爬起来",
+          "fx": "沙尘遮镜 40%（→→）；面部肌肉逐帧变形（松弛→紧绷→愤怒）"
+        },
+        {
+          "time": "0:36-0:38",
+          "action": "抬头（↑）→侧身（↻30°）→闪避（→）",
+          "camera": "子弹时间（静态→慢速→）",
+          "visual": "瞳孔→箭矢倒影→闪避轨迹（直线→弧线）",
+          "content": "抬头瞳孔倒映箭矢，侧身闪避，第二支箭飞过",
+          "fx": "箭矢残像：箭杆虚影（→）+箭头实体（→）+发光轨迹线（→）"
+        },
+        {
+          "time": "0:38-0:40",
+          "action": "中箭（→）→低头（↓）→握箭（→）→折断（↻90°）",
+          "camera": "硬切特写（→）",
+          "visual": "肩部→箭杆→手部→断裂点（中心聚焦）",
+          "content": "左肩中箭，低头看箭，右手折断木柄",
+          "fx": "断木纤维爆裂：12 根主刺 + 36 根细刺放射炸开（↗↘←→）；血液渗出（↓）"
+        },
+        {
+          "time": "0:40-0:43",
+          "action": "左挡（←）→踢倒（→）→左劈（↙）→右上挑（↗）",
+          "camera": "左右环轨（↺ 逆时针）",
+          "visual": "正面→右侧→上方（螺旋上升）",
+          "content": "主刀开战，左挡，踢倒右侧敌兵，左劈砍转右上挑",
+          "fx": "残像冥视：3 帧黑色虚影延迟 0.3 秒消散（→→）；刀光青色弧线留存 1 秒（↙↗）"
+        },
+        {
+          "time": "0:43-0:45",
+          "action": "回身（↻180°）→转刀（↻360°）→大砍（↓）",
+          "camera": "快速剪辑 4 镜头（跳跃）",
+          "visual": "刀身→刀锋→血滴（扇形扩散）",
+          "content": "快速回身，转刀大砍，刀锋划破三人咽喉",
+          "fx": "刀光几何光痕（○+｜）；血滴扇形分布（↗↘），每滴独立抛物线"
+        }
+      ],
+      "cameraMoves": [
+        { "label": "长焦侧拍", "icon": "side" },
+        { "label": "地面跟拍", "icon": "ground" },
+        { "label": "子弹时间", "icon": "bullet" },
+        { "label": "硬切特写", "icon": "cut" },
+        { "label": "环轨逆时针", "icon": "orbit" },
+        { "label": "快速剪辑", "icon": "jump" }
+      ],
+      "prompt": "IMAX action sequence: Horseback silhouette against horizon (Y-axis↑), side impact from enemy cavalry (X-axis↔), camera violently shakes 30 degrees (→), warrior falls and rolls three times (↻×3), pushes up from ground (↓→↑), arrow pierces shoulder in bullet time (→), wooden shaft breaks with fibers exploding radially (↗↘←→), 360-degree orbit camera (↺) around sword fighting, black afterimages trailing movements (→→), cyan geometric light trails from blade slashes (↙↗), blood droplets fanning in independent parabolas (↗↘), photorealistic 8k"
+    },
+    {
+      "id": "four",
+      "index": "四",
+      "title": "千米绞杀",
+      "range": [45, 60],
+      "timeLabel": "0:45 – 1:00",
+      "beatShape": "螺旋上升（蓄势→爆发→绝对静止）",
+      "motionAxis": "Z 轴（纵深）+ Y 轴（指天）",
+      "visualGuide": "螺旋上升 → 中心对称",
+      "particleTrail": "热浪 ∩ · 血雾 ↗↘ · 火浪 →→ · 灰烬 ↓",
+      "bus": "滑步（→）→ 中箭（→）→ 上马（↑）→ 呐喊（↑）→ 冲锋（→）→ 勒马（↑）",
+      "color": "#E0A82E",
+      "rows": [
+        {
+          "time": "0:45-0:48",
+          "action": "滑步（→2m）→停顿（‖）→抬头（↑）",
+          "camera": "侧环低角度（↺）",
+          "visual": "尸堆→脚步→远处人影（水平→纵深）",
+          "content": "脚步支点动移，突然停顿，抬头看见远处声影",
+          "fx": "景深扭曲：远景人影周围热浪扭曲（∩∩）；色彩分离红/蓝 0.5px"
+        },
+        {
+          "time": "0:48-0:51",
+          "action": "抬手（↑）→发射（→）→击中（→）",
+          "camera": "急速变焦（拉伸）",
+          "visual": "人影→弩→箭→腿部（直线穿透→）",
+          "content": "弩箭发射，镜头急拉至腿部，击中右腿",
+          "fx": "镜头拉伸畸变：边缘鱼眼扭曲（∩）；中箭瞬间画面泛红（→）；血雾锥形喷出（↗↘）"
+        },
+        {
+          "time": "0:51-0:55",
+          "action": "折断（↻）→上马（↑）→俯身（↓）",
+          "camera": "马背跟拍（颠簸↗↘）",
+          "visual": "箭杆→手→马背→眼神（凝聚）",
+          "content": "折断箭杆，翻身上马，俯身贴马背，眼神从恍惚到凶光",
+          "fx": "心绪追加：瞳孔倒映火光（○）；虹膜血丝网络放大可见；景深呼吸焦点交替（2Hz）"
+        },
+        {
+          "time": "0:55-0:57",
+          "action": "眉心锁死（→）→嘴角下撇（↓）→张开（↑）→大喊（→）",
+          "camera": "微距面部（→）",
+          "visual": "眉心→嘴角→口腔（垂直打开）",
+          "content": "眉心锁死，嘴角下撇后突然张开大喊",
+          "fx": "声波震落头盔积尘（↓）；面部血管搏动（→→）"
+        },
+        {
+          "time": "0:57-0:59",
+          "action": "单骑冲锋（→）→勒马（‖）→刀指天（↑）",
+          "camera": "无人机拉升（↑→100m）",
+          "visual": "人→火弹→冲击波→天际线（垂直层级）",
+          "content": "单骑冲敌阵，身后千米级火弹落地，冲击波席卷",
+          "fx": "镜像差·呲爆：画面左右分裂（←→）后重合；火浪双层残像（→→）；天空暗红（↑）"
+        },
+        {
+          "time": "0:59-1:00",
+          "action": "静止（‖）",
+          "camera": "定格（‖）",
+          "visual": "剪影→刀锋→火浪（中心对称）",
+          "content": "勒马，长刀指天，剪影。画面瞬间黑白",
+          "fx": "IMAX 终极帧：仅刀锋和火浪保留红色（→）；黑边内嵌灰烬飘落（↓）"
+        }
+      ],
+      "cameraMoves": [
+        { "label": "侧环低角度", "icon": "low" },
+        { "label": "急速变焦", "icon": "zoom" },
+        { "label": "马背跟拍", "icon": "horseback" },
+        { "label": "微距面部", "icon": "face" },
+        { "label": "无人机拉升", "icon": "drone" },
+        { "label": "定格", "icon": "still" }
+      ],
+      "prompt": "Epic IMAX finale, drone shot: Warrior slides in corpse pile (→2m), pauses (‖), looks up at distant figure (↑), crossbow fires (→), arrow hits leg in lens stretch distortion (∩), warrior breaks arrow (↻), mounts horse (↑), leans forward (↓), face close-up from locked brows to open mouth (→→↑), lone charge toward army (→), kilometer-scale fireball explosion with shockwave (→→), horse rears up silhouetted (Y-axis↑), longsword points to sky (Z-axis↑), frame splits left-right (←→) then merges, selective color red on blade only, black and white final frame, ashes falling in letterbox bars (↓), photorealistic cinematic 8k"
+    }
+  ],
+  "particles": [
+    {
+      "id": "smoke",
+      "name": "螺旋上升烟尘",
+      "spec": "受虚拟风力场上飘，遇光分解金/铜双色微粒",
+      "trail": "↺"
+    },
+    {
+      "id": "spark",
+      "name": "径向青色火星",
+      "spec": "铁链摩擦地面，溅射 1/10 速度放射飞散",
+      "trail": "↗↘"
+    },
+    {
+      "id": "shockwave",
+      "name": "同心圆冲击波",
+      "spec": "马蹄踏碎木牌，环形气浪垂直掀起尘墙",
+      "trail": "○→○"
+    },
+    {
+      "id": "blood",
+      "name": "黑色血珠拉丝",
+      "spec": "高粘度飞溅 20-30cm 后凝固成珠",
+      "trail": "→→↓"
+    },
+    {
+      "id": "arrow",
+      "name": "箭矢三段残像",
+      "spec": "箭杆虚影 + 箭头实体 + 发光轨迹线",
+      "trail": "→→→"
+    },
+    {
+      "id": "ash",
+      "name": "灰烬飘落",
+      "spec": "IMAX 终极帧黑边内嵌灰烬坠落",
+      "trail": "↓"
+    }
+  ]
+}

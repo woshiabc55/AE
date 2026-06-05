@@ -1,0 +1,57 @@
+:root {
+  /* === 战火 / 战甲 / 硝烟色调 === */
+  --c-ink: #0B0B0F;
+  --c-ink-2: #15151B;
+  --c-ink-3: #1E1E26;
+  --c-ink-4: #2A2A33;
+  --c-ash: #7A7368;
+  --c-ash-2: #A39A8A;
+
+  --c-bronze: #B08D57;
+  --c-bronze-deep: #9A7A45;
+  --c-bronze-glow: #E0A82E;
+  --c-blood: #C5302B;
+  --c-blood-deep: #7A1B17;
+  --c-blade: #E6F0FF;
+  --c-spark: #3FB8AF;
+  --c-spark-bright: #6FE6DD;
+
+  --c-line: rgba(176, 141, 87, 0.18);
+  --c-line-strong: rgba(176, 141, 87, 0.4);
+
+  /* === 字体 === */
+  --f-display: 'Cinzel', 'Noto Serif SC', serif;
+  --f-serif: 'Noto Serif SC', 'Songti SC', serif;
+  --f-sans: 'Inter', 'PingFang SC', system-ui, sans-serif;
+  --f-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* === 节奏间距 === */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+  --s-9: 96px;
+
+  /* === 阴影 / 光晕 === */
+  --shadow-1: 0 4px 24px rgba(0, 0, 0, 0.45);
+  --shadow-2: 0 12px 40px rgba(0, 0, 0, 0.6);
+  --shadow-bronze: 0 0 24px rgba(176, 141, 87, 0.25);
+  --shadow-blood: 0 0 28px rgba(197, 48, 43, 0.3);
+
+  /* === 半径 / 切角 === */
+  --r-1: 2px;
+  --r-2: 6px;
+  --r-3: 12px;
+  --r-4: 18px;
+
+  --clip-shard: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+  --clip-notch: polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%);
+
+  --t-fast: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  --t-med: 0.36s cubic-bezier(0.4, 0, 0.2, 1);
+  --t-slow: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
