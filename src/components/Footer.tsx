@@ -23,7 +23,7 @@ export const Footer = () => {
           <ul className="space-y-2 text-silk-300/80">
             <li>· 雅物柜</li>
             <li>· 典藏阁</li>
-            <li>· 私藏墨宝</li>
+            <li>· 模版设计</li>
             <li>· 卷末寄语</li>
           </ul>
         </div>

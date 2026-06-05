@@ -18,13 +18,13 @@ export const TopBar: React.FC<Props> = ({ onJump }) => {
           </div>
         </button>
         <nav className="hidden md:flex items-center gap-1 text-sm">
-          {['卷一', '卷二', '卷三', '卷四', '目录', '雅物', '典籍', '卷末'].map((label, i) => (
+          {['卷一', '卷二', '卷三', '卷四', '目录', '雅物', '典籍', '设计', '卷末'].map((label, i) => (
             <button
               key={label}
               onClick={() => {
                 if (i < 4) onJump(i + 1)
                 else {
-                  const map = ['catalog', 'catalog', 'cabinet', 'library', 'seal']
+                  const map = ['catalog', 'catalog', 'cabinet', 'library', 'design', 'seal']
                   document.getElementById(map[i - 4])?.scrollIntoView({ behavior: 'smooth' })
                 }
               }}

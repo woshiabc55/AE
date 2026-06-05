@@ -9,6 +9,7 @@ import { ChapterSection } from './components/ChapterSection'
 import { JianghuDirectory } from './components/JianghuDirectory'
 import { Cabinet } from './components/Cabinet'
 import { Library } from './components/Library'
+import { DesignModule } from './components/DesignModule'
 import { SealNote } from './components/SealNote'
 import { Footer } from './components/Footer'
 import { CinemaBar } from './components/CinemaBar'
@@ -83,7 +84,10 @@ export default function App() {
         <section id="library" className="relative bg-paper py-32 px-8 border-t border-gold-700/30">
           <Library />
         </section>
-        <section id="seal" className="relative bg-ink-950 py-32 px-8 border-t border-gold-700/30">
+        <section id="design" className="relative bg-ink-950 py-32 px-8 border-t border-gold-700/30">
+          <DesignModule />
+        </section>
+        <section id="seal" className="relative bg-ricepaper py-32 px-8 border-t border-gold-700/30">
           <SealNote />
         </section>
       </main>
