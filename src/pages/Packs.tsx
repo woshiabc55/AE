@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { PACKS, PACK_TOOLS } from '../components/preview/Packs';
 import { Layers, Box, ChevronRight } from 'lucide-react';
+import { TagLegend, type TagCategory, TAG_META } from '../components/Tag';
 
 interface Pack {
   readonly id: string;
@@ -28,6 +29,18 @@ const LEVEL_LABEL: Record<number, { name: string; sub: string }> = {
   5: { name: 'L5 顶级', sub: 'MASTERY' },
 };
 
+// 每个 Pack 关联 1-3 个 9-tag（贯通 Standards F 与模块化9）
+const PACK_TAGS: Record<string, ReadonlyArray<TagCategory>> = {
+  audio:    ['motion', 'interact'],
+  kinetic:  ['motion', 'type'],
+  depth:    ['visual', 'layout'],
+  color:    ['color',  'visual'],
+  layout:   ['layout', 'visual'],
+  motion:   ['motion', 'interact'],
+  micro:    ['interact', 'motion'],
+  pattern:  ['visual', 'color'],
+};
+
 const PACK_LIST: Pack[] = PACKS.map(p => ({
   id: p.id, name: p.name, cn: p.cn, level: p.level, color: p.color,
   icon: p.icon, description: p.description, tools: p.tools as Pack['tools'],
@@ -42,23 +55,36 @@ export default function Packs() {
     <div className="max-w-[1600px] mx-auto">
       {/* HERO */}
       <section className="border-b-2 border-bone/20 px-6 py-12 md:py-16 relative overflow-hidden">
-        <div className="max-w-[1400px] mx-auto">
-          <div className="flex items-center gap-3 mb-6 font-mono text-xs">
-            <Layers size={14} className="text-volt" />
-            <span className="text-bone/60">8 PACKS / {PACK_TOOLS.length} UI ATOMS / 5 LEVELS</span>
+        <div className="max-w-[1400px] mx-auto grid md:grid-cols-3 gap-6">
+          <div className="md:col-span-2">
+            <div className="flex items-center gap-3 mb-6 font-mono text-xs">
+              <Layers size={14} className="text-volt" />
+              <span className="text-bone/60">8 PACKS / {PACK_TOOLS.length} UI ATOMS / 5 LEVELS / 9 TAGS</span>
+            </div>
+            <h1 className="font-display font-black text-[12vw] md:text-[8vw] leading-[0.85] tracking-tighter">
+              <span className="block">SKILL</span>
+              <span className="block relative">
+                <span className="relative z-10">PACKS.</span>
+                <span className="absolute -bottom-2 left-0 w-2/5 h-5 md:h-8 bg-pink -z-0" />
+              </span>
+            </h1>
+            <p className="mt-8 text-lg text-bone/80 max-w-3xl">
+              按主题打包的 UI 工具集，每个包内含 <span className="text-volt font-bold">4-5 个</span> 同主题的精细化组件，
+              共享 <span className="text-pink font-bold">规范化外壳</span> 与 <span className="text-cyan font-bold">5 级装饰密度</span>。
+              精细度按 L1→L5 逐级上升。
+            </p>
           </div>
-          <h1 className="font-display font-black text-[12vw] md:text-[8vw] leading-[0.85] tracking-tighter">
-            <span className="block">SKILL</span>
-            <span className="block relative">
-              <span className="relative z-10">PACKS.</span>
-              <span className="absolute -bottom-2 left-0 w-2/5 h-5 md:h-8 bg-pink -z-0" />
-            </span>
-          </h1>
-          <p className="mt-8 text-lg text-bone/80 max-w-3xl">
-            按主题打包的 UI 工具集，每个包内含 <span className="text-volt font-bold">4-5 个</span> 同主题的精细化组件，
-            共享 <span className="text-pink font-bold">规范化外壳</span> 与 <span className="text-cyan font-bold">5 级装饰密度</span>。
-            精细度按 L1→L5 逐级上升。
-          </p>
+          {/* 9 tag 色板 — hero 第 3 列 */}
+          <aside className="border-2 border-bone/30 p-3 bg-bone/5 h-fit">
+            <div className="font-mono text-[10px] text-bone/60 mb-2 flex items-center gap-2">
+              <span className="text-pink">▣</span> 9 TAGS / 模块化9
+            </div>
+            <TagLegend size="xs" />
+            <div className="mt-2 font-mono text-[9px] text-bone/40 leading-relaxed">
+              ▸ 每个 Pack 覆盖 1-3 个 tag。
+              ▸ 9 tag 与 [codex]→F 同源。
+            </div>
+          </aside>
         </div>
       </section>
 
@@ -103,6 +129,20 @@ export default function Packs() {
                 </span>
               </div>
               <p className="text-bone/70 text-sm max-w-2xl">{activePack.description}</p>
+              {/* 关联 9-tag */}
+              <div className="mt-3 flex items-center gap-1.5 flex-wrap">
+                <span className="font-mono text-[9px] text-bone/40">TAGS</span>
+                {(PACK_TAGS[activePack.id] ?? []).map(t => {
+                  const m = TAG_META[t];
+                  return (
+                    <span
+                      key={t}
+                      className="font-mono text-[9px] font-bold px-1.5 py-0.5 border-2 leading-none"
+                      style={{ backgroundColor: m.hex, color: m.ink, borderColor: m.hex }}
+                    >{m.id} {m.cn}</span>
+                  );
+                })}
+              </div>
             </div>
             <div className="font-mono text-[10px] text-bone/40 space-y-1">
               <div>PACK ID: <span className={colors.text}>{activePack.id.toUpperCase()}</span></div>
@@ -173,7 +213,18 @@ export default function Packs() {
                   </div>
                   <div className="font-display font-black text-lg leading-tight">{p.cn}</div>
                   <div className="text-[10px] font-mono opacity-60 mt-1">{p.name}</div>
-                  <div className="text-[10px] font-mono opacity-40 mt-2">
+                  {/* 关联 9-tag 小条 */}
+                  <div className="flex gap-0.5 mt-2">
+                    {(PACK_TAGS[p.id] ?? []).map(t => (
+                      <span
+                        key={t}
+                        className="font-mono text-[8px] font-bold w-5 h-3.5 flex items-center justify-center leading-none"
+                        style={{ backgroundColor: TAG_META[t].hex, color: TAG_META[t].ink }}
+                        title={`${TAG_META[t].cn} / ${TAG_META[t].en}`}
+                      >{TAG_META[t].id}</span>
+                    ))}
+                  </div>
+                  <div className="text-[10px] font-mono opacity-40 mt-1.5">
                     {p.tools.length} tools
                   </div>
                 </button>
