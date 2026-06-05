@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>分镜表 · AI 镜头设计工作台</title>
+<meta name="description" content="输入脚本，AI 自动拆解为可展开的分镜表，并通过 TRAE SDK 验证镜头参数一致性。" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Noto+Serif+SC:wght@400;600&display=swap" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- 噪点 + 扫描线氛围层 -->
+  <div class="atmosphere" aria-hidden="true">
+    <div class="grain"></div>
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+  </div>
+
+  <!-- 顶部胶片条 -->
+  <header class="filmstrip" aria-label="顶部状态栏">
+    <div class="filmstrip__holes" aria-hidden="true"></div>
+    <div class="filmstrip__content">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6">
+            <circle cx="12" cy="12" r="9" />
+            <circle cx="12" cy="12" r="3.5" />
+            <path d="M3 12h3M18 12h3M12 3v3M12 18v3" />
+          </svg>
+        </span>
+        <div class="brand__text">
+          <h1>STORYBOARD<span class="dot">·</span>AI</h1>
+          <p>镜头分镜 · TRAE 验证</p>
+        </div>
+      </div>
+      <div class="meta">
+        <div class="meta__pill" id="metaProject" title="项目名">— UNTITLED —</div>
+        <div class="meta__pill mono" id="metaShots">00 SHOTS</div>
+        <div class="meta__pill meta__pill--runtime mono" id="metaRuntime">00:00:00:00</div>
+        <div class="meta__pill meta__pill--status" id="metaStatus" data-state="idle">
+          <span class="dot-led"></span><span class="label">SDK: MOCK</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主体三栏 -->
+  <main class="stage">
+    <!-- 左：脚本舱 -->
+    <section class="panel panel--script" aria-label="脚本舱">
+      <div class="panel__head">
+        <h2><span class="num">01</span> 脚本舱</h2>
+        <div class="panel__hint mono">SCRIPT.IN</div>
+      </div>
+      <div class="script">
+        <textarea id="scriptInput" spellcheck="false" placeholder="把脚本粘贴到这里——每行一个镜头或场景…"></textarea>
+        <div class="script__toolbar">
+          <div class="legend">
+            <span class="chip chip--scene">场景</span>
+            <span class="chip chip--action">动作</span>
+            <span class="chip chip--dialog">对白</span>
+            <span class="chip chip--sfx">音效</span>
+          </div>
+          <div class="actions">
+            <button class="btn btn--ghost" id="btnLoadSample" type="button">载入示例</button>
+            <button class="btn btn--ghost" id="btnClearScript" type="button">清空</button>
+            <button class="btn btn--primary" id="btnDecompose" type="button">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              AI 拆解
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="ai-stream" id="aiStream" aria-live="polite">
+        <div class="ai-stream__head">
+          <span class="led led--ai"></span>
+          <span class="mono">AI · 拆解进度</span>
+        </div>
+        <ol class="ai-stream__list" id="aiStreamList">
+          <li class="ai-stream__item muted">等待脚本输入…</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 中：分镜表 -->
+    <section class="panel panel--board" aria-label="分镜表">
+      <div class="panel__head">
+        <h2><span class="num">02</span> 分镜表 <span class="sub">— 点击镜头展开</span></h2>
+        <div class="board__toolbar">
+          <div class="view-toggle" role="tablist">
+            <button class="vt is-active" data-view="grid" type="button">网格</button>
+            <button class="vt" data-view="list" type="button">序列</button>
+            <button class="vt" data-view="timeline" type="button">时间轴</button>
+          </div>
+          <button class="btn btn--ghost" id="btnAddShot" type="button">+ 新增镜头</button>
+          <button class="btn btn--ghost" id="btnExpandAll" type="button">全部展开</button>
+          <button class="btn btn--ghost" id="btnCollapseAll" type="button">全部折叠</button>
+        </div>
+      </div>
+
+      <div class="board" id="board" data-view="grid">
+        <!-- JS 注入 -->
+      </div>
+
+      <div class="board__empty" id="boardEmpty">
+        <div class="board__empty-art" aria-hidden="true">
+          <svg viewBox="0 0 240 140" width="240" height="140">
+            <rect x="6" y="14" width="228" height="112" rx="3" fill="none" stroke="currentColor" stroke-dasharray="4 4" opacity=".4"/>
+            <path d="M30 90 L80 50 L130 80 L180 40 L210 70" fill="none" stroke="currentColor" stroke-width="1.2"/>
+            <circle cx="30" cy="90" r="3" fill="currentColor"/>
+            <circle cx="80" cy="50" r="3" fill="currentColor"/>
+            <circle cx="130" cy="80" r="3" fill="currentColor"/>
+            <circle cx="180" cy="40" r="3" fill="currentColor"/>
+            <circle cx="210" cy="70" r="3" fill="currentColor"/>
+          </svg>
+        </div>
+        <p>把脚本粘进左侧，点 <b>AI 拆解</b>，这里就会出现分镜表。</p>
+      </div>
+    </section>
+
+    <!-- 右：TRAE 验证 + 导出 -->
+    <aside class="panel panel--side" aria-label="TRAE 验证侧栏">
+      <div class="panel__head">
+        <h2><span class="num">03</span> TRAE 验证</h2>
+        <div class="panel__hint mono">SDK.VALIDATE</div>
+      </div>
+
+      <div class="sdk-card">
+        <div class="sdk-card__top">
+          <div class="sdk-card__title">
+            <span class="led led--sdk"></span>
+            <span>当前镜头校验</span>
+          </div>
+          <div class="sdk-card__score mono" id="sdkScore">—</div>
+        </div>
+        <div class="sdk-card__issues" id="sdkIssues">
+          <p class="muted">点击分镜表中的任意镜头以校验…</p>
+        </div>
+        <div class="sdk-card__suggest" id="sdkSuggest"></div>
+        <div class="sdk-card__log mono" id="sdkLog">// 等待镜头</div>
+      </div>
+
+      <div class="export-card">
+        <div class="export-card__title">导出舱</div>
+        <div class="export-card__row">
+          <button class="btn btn--ghost" id="btnCopyJson" type="button">复制 JSON</button>
+          <button class="btn btn--ghost" id="btnDownloadHtml" type="button">下载 HTML</button>
+          <button class="btn btn--ghost" id="btnPrint" type="button">打印</button>
+        </div>
+        <div class="export-card__hint mono">v0.1 · TRAE-SDK-ADAPTER</div>
+      </div>
+
+      <div class="legend-card">
+        <div class="legend-card__title">镜头图例</div>
+        <ul class="legend-card__list">
+          <li><span class="badge badge--size" data-size="ECU">ECU</span> 大特写</li>
+          <li><span class="badge badge--size" data-size="CU">CU</span> 特写</li>
+          <li><span class="badge badge--size" data-size="MS">MS</span> 中景</li>
+          <li><span class="badge badge--size" data-size="WS">WS">WS</span> 全景</li>
+          <li><span class="badge badge--size" data-size="EWS">EWS</span> 远景</li>
+        </ul>
+        <ul class="legend-card__list legend-card__list--mv">
+          <li><span class="badge badge--mv">⤓</span> dolly</li>
+          <li><span class="badge badge--mv">↔</span> pan</li>
+          <li><span class="badge badge--mv">↕</span> tilt</li>
+          <li><span class="badge badge--mv">⟳</span> crane</li>
+          <li><span class="badge badge--mv">○</span> static</li>
+        </ul>
+      </div>
+    </aside>
+  </main>
+
+  <!-- 镜头详情模板（展开卡片） -->
+  <template id="tplShot">
+    <article class="shot" data-id="">
+      <header class="shot__head">
+        <div class="shot__seq">
+          <span class="seq__num"></span>
+          <span class="seq__time mono"></span>
+        </div>
+        <div class="shot__title">
+          <div class="shot__scene"></div>
+          <div class="shot__chips">
+            <span class="badge badge--size" data-size=""></span>
+            <span class="badge badge--mv"></span>
+            <span class="badge badge--angle"></span>
+          </div>
+        </div>
+        <button class="shot__toggle" type="button" aria-expanded="false">
+          <span class="caret"></span>
+          <span class="lbl">展开</span>
+        </button>
+        <div class="shot__verdict" data-state="idle" title="TRAE 校验">
+          <span class="led"></span><span class="txt mono">—</span>
+        </div>
+      </header>
+
+      <!-- 折叠态：胶片缩略 + 摘要 -->
+      <div class="shot__summary">
+        <div class="thumb" aria-hidden="true">
+          <div class="thumb__film"></div>
+          <div class="thumb__art"></div>
+        </div>
+        <div class="summary__body">
+          <p class="summary__comp"></p>
+          <p class="summary__line mono"></p>
+        </div>
+        <div class="summary__meta mono">
+          <span class="m-dur"></span>
+          <span class="m-sfx"></span>
+        </div>
+      </div>
+
+      <!-- 展开态：HTML 详情网格 -->
+      <div class="shot__detail" hidden>
+        <div class="grid">
+          <div class="cell">
+            <label>景别 <span class="req">*</span></label>
+            <select data-k="shotSize">
+              <option value="ECU">ECU 大特写</option>
+              <option value="CU">CU 特写</option>
+              <option value="MS">MS 中景</option>
+              <option value="WS">WS 全景</option>
+              <option value="EWS">EWS 远景</option>
+            </select>
+          </div>
+          <div class="cell">
+            <label>运镜 <span class="req">*</span></label>
+            <select data-k="movement">
+              <option value="static">static 固定</option>
+              <option value="pan">pan 横摇</option>
+              <option value="tilt">tilt 俯仰</option>
+              <option value="dolly">dolly 推拉</option>
+              <option value="track">track 横移</option>
+              <option value="crane">crane 摇臂</option>
+              <option value="handheld">handheld 手持</option>
+            </select>
+          </div>
+          <div class="cell">
+            <label>机位角度</label>
+            <select data-k="cameraAngle">
+              <option value="平视">平视</option>
+              <option value="俯拍">俯拍</option>
+              <option value="仰拍">仰拍</option>
+              <option value="荷兰角">荷兰角</option>
+            </select>
+          </div>
+          <div class="cell">
+            <label>时长(秒) <span class="req">*</span></label>
+            <input type="number" min="0.5" max="15" step="0.1" data-k="duration" />
+          </div>
+          <div class="cell cell--wide">
+            <label>构图</label>
+            <input type="text" data-k="composition" placeholder="例如：主体居中，三分法左线…" />
+          </div>
+          <div class="cell">
+            <label>对白</label>
+            <input type="text" data-k="dialogue" placeholder="(可选)" />
+          </div>
+          <div class="cell">
+            <label>音效</label>
+            <input type="text" data-k="sfx" placeholder="(可选)" />
+          </div>
+          <div class="cell cell--wide">
+            <label>场景</label>
+            <input type="text" data-k="scene" />
+          </div>
+          <div class="cell cell--full">
+            <label>AI 注释</label>
+            <textarea data-k="aiNote" rows="2" readonly placeholder="AI 将根据校验自动写入建议…"></textarea>
+          </div>
+        </div>
+        <footer class="shot__foot">
+          <div class="foot__left">
+            <span class="mono">ID·<span data-id-tag></span></span>
+            <span class="mono">SCORE·<span data-score>—</span></span>
+          </div>
+          <div class="foot__right">
+            <button class="btn btn--ghost btn--sm" data-act="duplicate" type="button">复制</button>
+            <button class="btn btn--ghost btn--sm" data-act="delete" type="button">删除</button>
+            <button class="btn btn--primary btn--sm" data-act="validate" type="button">TRAE 校验</button>
+          </div>
+        </footer>
+      </div>
+    </article>
+  </template>
+
+  <!-- 浮动 toast -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
