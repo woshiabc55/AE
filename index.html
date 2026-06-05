@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>数学天穹 · 朔行 — Storyboard Concept</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --c-night:      #07031a;
+    --c-deep:       #0e0628;
+    --c-purple:     #1a0b2e;
+    --c-violet:     #4a1d6e;
+    --c-magenta:    #7a2d8f;
+    --c-gold:       #c9a86a;
+    --c-gold-soft:  #e8c97a;
+    --c-crystal:    #e6e1ff;
+    --c-galaxy:     #fff3c4;
+    --c-line:       rgba(201, 168, 106, 0.35);
+    --c-line-soft:  rgba(230, 225, 255, 0.12);
+    --c-panel-bg:   rgba(10, 4, 24, 0.55);
+    --c-panel-bd:   rgba(201, 168, 106, 0.25);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: var(--c-night); color: var(--c-crystal); }
+  body { font-family: 'Noto Serif SC', 'Cormorant Garamond', serif; font-weight: 300; }
+
+  /* ====================== 3D Canvas ====================== */
+  #scene { position: fixed; inset: 0; z-index: 0; display: block; }
+
+  /* ====================== Post FX Overlays ====================== */
+  .post-fx { position: fixed; inset: 0; z-index: 5; pointer-events: none; mix-blend-mode: screen; }
+  .grain {
+    position: fixed; inset: -10%; z-index: 6; pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.85 0 0 0 0 0.78 0 0 0 0 0.55 0 0 0 0.45 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: 0.06; animation: grainShift 0.8s steps(6) infinite;
+  }
+  @keyframes grainShift {
+    0%   { transform: translate(0, 0); }
+    20%  { transform: translate(-2%, 1%); }
+    40%  { transform: translate(1%, -2%); }
+    60%  { transform: translate(-1%, 2%); }
+    80%  { transform: translate(2%, 1%); }
+    100% { transform: translate(0, 0); }
+  }
+  .vignette {
+    position: fixed; inset: 0; z-index: 4; pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.55) 85%, rgba(0,0,0,0.85) 100%);
+  }
+  .chromatic {
+    position: fixed; inset: 0; z-index: 7; pointer-events: none;
+    box-shadow: inset 0 0 200px rgba(122, 45, 143, 0.15), inset 0 0 80px rgba(201, 168, 106, 0.05);
+  }
+
+  /* ====================== Loading ====================== */
+  #loading {
+    position: fixed; inset: 0; z-index: 100; background: var(--c-night);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transition: opacity 1.4s ease, visibility 1.4s ease;
+  }
+  #loading.hidden { opacity: 0; visibility: hidden; }
+  #loading .symbol {
+    font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+    font-size: 64px; color: var(--c-gold); letter-spacing: 0.1em; line-height: 1;
+  }
+  #loading .symbol::after {
+    content: 'ℝ → 𝒮ℯ𝓇ℯ𝓃𝒾𝓉𝓎';
+    display: block; font-size: 22px; margin-top: 12px; color: var(--c-crystal); opacity: 0.7;
+  }
+  #loading .bar {
+    width: 200px; height: 1px; background: var(--c-line-soft); margin-top: 48px; position: relative; overflow: hidden;
+  }
+  #loading .bar::after {
+    content: ''; position: absolute; top: 0; left: 0; height: 100%; width: 0;
+    background: linear-gradient(90deg, transparent, var(--c-gold), transparent);
+    animation: loadBar 1.6s ease-in-out infinite;
+  }
+  @keyframes loadBar { 0% { width: 0; left: 0; } 50% { width: 100%; left: 0; } 100% { width: 0; left: 100%; } }
+  #loading .note {
+    margin-top: 18px; font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--c-crystal); opacity: 0.4; letter-spacing: 0.3em;
+  }
+
+  /* ====================== Top Title ====================== */
+  .title {
+    position: fixed; top: 24px; left: 0; right: 0; z-index: 20;
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+    pointer-events: none;
+  }
+  .title .line { flex: 0 0 auto; width: 80px; height: 1px; background: var(--c-line); }
+  .title h1 {
+    font-family: 'Cormorant Garamond', serif; font-weight: 300; font-style: italic;
+    font-size: 13px; letter-spacing: 0.45em; color: var(--c-gold);
+    text-transform: uppercase;
+  }
+  .title .cn {
+    font-family: 'Noto Serif SC', serif; font-size: 11px; letter-spacing: 0.4em;
+    color: var(--c-crystal); opacity: 0.5; margin-left: 4px;
+  }
+
+  /* ====================== Shot HUD (top-left) ====================== */
+  .shot-hud {
+    position: fixed; top: 64px; left: 28px; z-index: 20;
+    width: 280px;
+    background: var(--c-panel-bg); border: 1px solid var(--c-panel-bd);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    padding: 18px 20px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .shot-hud .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 4px 10px; border: 1px solid var(--c-line); border-radius: 2px;
+    font-size: 10px; letter-spacing: 0.3em; color: var(--c-gold);
+    background: rgba(201, 168, 106, 0.06);
+  }
+  .shot-hud .badge .dot { width: 6px; height: 6px; background: var(--c-gold); border-radius: 50%; }
+  .shot-hud .row { display: flex; justify-content: space-between; margin-top: 14px; font-size: 10.5px; }
+  .shot-hud .row .k { color: var(--c-crystal); opacity: 0.45; letter-spacing: 0.15em; }
+  .shot-hud .row .v { color: var(--c-gold-soft); letter-spacing: 0.05em; }
+  .shot-hud .timeline {
+    margin-top: 16px; height: 1px; background: var(--c-line-soft); position: relative;
+  }
+  .shot-hud .timeline .fill {
+    position: absolute; top: -1px; left: 0; height: 3px; width: 0%;
+    background: linear-gradient(90deg, var(--c-gold), var(--c-magenta));
+    box-shadow: 0 0 8px var(--c-gold);
+  }
+  .shot-hud .time {
+    display: flex; justify-content: space-between; margin-top: 8px;
+    font-size: 10px; color: var(--c-crystal); opacity: 0.5;
+  }
+  .shot-hud .time .now { color: var(--c-gold); opacity: 1; }
+
+  /* ====================== Bottom Description ====================== */
+  .desc-panel {
+    position: fixed; bottom: 32px; left: 28px; z-index: 20;
+    max-width: 520px;
+    background: var(--c-panel-bg); border: 1px solid var(--c-panel-bd);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    padding: 18px 22px;
+  }
+  .desc-panel .label {
+    font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.4em;
+    color: var(--c-gold); margin-bottom: 8px;
+  }
+  .desc-panel .zh {
+    font-family: 'Noto Serif SC', serif; font-size: 13px; line-height: 1.85;
+    color: var(--c-crystal); font-weight: 300;
+  }
+  .desc-panel .en {
+    margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--c-line-soft);
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; line-height: 1.7;
+    color: var(--c-crystal); opacity: 0.55; font-weight: 300;
+  }
+
+  /* ====================== Monologue (center bottom) ====================== */
+  .monologue {
+    position: fixed; bottom: 130px; left: 50%; transform: translateX(-50%); z-index: 20;
+    max-width: 640px; text-align: center; padding: 0 24px;
+    opacity: 0; transition: opacity 1.2s ease;
+  }
+  .monologue.visible { opacity: 1; }
+  .monologue::before {
+    content: '"'; font-family: 'Cormorant Garamond', serif; font-size: 36px; color: var(--c-gold);
+    position: absolute; top: -22px; left: 0;
+  }
+  .monologue::after {
+    content: '"'; font-family: 'Cormorant Garamond', serif; font-size: 36px; color: var(--c-gold);
+    position: absolute; bottom: -28px; right: 0;
+  }
+  .monologue .text {
+    font-family: 'Noto Serif SC', serif; font-size: 16px; line-height: 1.9;
+    color: var(--c-galaxy); font-weight: 300; letter-spacing: 0.05em;
+    text-shadow: 0 0 16px rgba(201, 168, 106, 0.4);
+  }
+  .monologue .text .cursor {
+    display: inline-block; width: 1px; height: 1em; background: var(--c-gold);
+    margin-left: 2px; vertical-align: middle; animation: blink 0.9s infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ====================== Director Panel (bottom-right) ====================== */
+  .director {
+    position: fixed; bottom: 32px; right: 28px; z-index: 20;
+    background: var(--c-panel-bg); border: 1px solid var(--c-panel-bd);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    padding: 16px 18px; min-width: 240px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .director .head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .director .head .label {
+    font-size: 9.5px; letter-spacing: 0.4em; color: var(--c-gold);
+  }
+  .director .head .shot-no { font-size: 10px; color: var(--c-crystal); opacity: 0.5; }
+  .director .controls { display: flex; align-items: center; gap: 12px; }
+  .director .play {
+    width: 32px; height: 32px; border: 1px solid var(--c-gold);
+    background: transparent; color: var(--c-gold); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s ease; border-radius: 50%;
+  }
+  .director .play:hover { background: var(--c-gold); color: var(--c-night); box-shadow: 0 0 16px var(--c-gold); }
+  .director .play svg { width: 12px; height: 12px; }
+  .director .timeline-wrap {
+    flex: 1; height: 1px; background: var(--c-line-soft); position: relative; cursor: pointer;
+  }
+  .director .timeline-wrap .fill {
+    position: absolute; top: -1px; left: 0; height: 3px; width: 0%;
+    background: linear-gradient(90deg, var(--c-gold), var(--c-magenta));
+    box-shadow: 0 0 8px var(--c-gold);
+  }
+  .director .timeline-wrap .knob {
+    position: absolute; top: 50%; left: 0; transform: translate(-50%, -50%);
+    width: 8px; height: 8px; border-radius: 50%; background: var(--c-gold-soft);
+    box-shadow: 0 0 8px var(--c-gold);
+  }
+  .director .toggles {
+    display: flex; gap: 8px; margin-top: 14px; padding-top: 12px;
+    border-top: 1px dashed var(--c-line-soft);
+  }
+  .director .toggle {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+    cursor: pointer; user-select: none;
+  }
+  .director .toggle .led {
+    width: 18px; height: 18px; border: 1px solid var(--c-line); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.25s ease;
+  }
+  .director .toggle.active .led {
+    background: var(--c-gold); box-shadow: 0 0 10px var(--c-gold);
+    border-color: var(--c-gold-soft);
+  }
+  .director .toggle .led::after {
+    content: ''; width: 6px; height: 6px; background: var(--c-night);
+    border-radius: 50%; opacity: 0; transition: opacity 0.2s;
+  }
+  .director .toggle.active .led::after { opacity: 1; }
+  .director .toggle .name {
+    font-size: 8.5px; letter-spacing: 0.2em; color: var(--c-crystal); opacity: 0.55;
+  }
+  .director .toggle.active .name { color: var(--c-gold); opacity: 1; }
+
+  /* ====================== Audio Spectrum (top-right) ====================== */
+  .spectrum {
+    position: fixed; top: 64px; right: 28px; z-index: 20;
+    width: 200px; height: 70px;
+    background: var(--c-panel-bg); border: 1px solid var(--c-panel-bd);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    padding: 12px 14px;
+  }
+  .spectrum .head {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 9px;
+    letter-spacing: 0.3em; color: var(--c-gold); margin-bottom: 8px;
+  }
+  .spectrum .head .freq { color: var(--c-crystal); opacity: 0.4; }
+  .spectrum canvas { display: block; width: 100%; height: 36px; }
+
+  /* ====================== Corner Markers ====================== */
+  .corner {
+    position: fixed; width: 18px; height: 18px; z-index: 15; pointer-events: none;
+    border: 1px solid var(--c-line);
+  }
+  .corner.tl { top: 12px; left: 12px; border-right: none; border-bottom: none; }
+  .corner.tr { top: 12px; right: 12px; border-left: none; border-bottom: none; }
+  .corner.bl { bottom: 12px; left: 12px; border-right: none; border-top: none; }
+  .corner.br { bottom: 12px; right: 12px; border-left: none; border-top: none; }
+
+  /* ====================== Shot Transition Marker ====================== */
+  .shot-mark {
+    position: fixed; top: 50%; right: 38px; z-index: 18;
+    transform: translateY(-50%) rotate(90deg); transform-origin: right center;
+    font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.5em;
+    color: var(--c-crystal); opacity: 0.3; pointer-events: none;
+  }
+  .shot-mark span { color: var(--c-gold); }
+
+  /* ====================== Responsive ====================== */
+  @media (max-width: 1100px) {
+    .spectrum, .shot-hud { display: none; }
+    .desc-panel { max-width: 60vw; }
+  }
+  @media (max-width: 720px) {
+    .desc-panel { left: 12px; right: 12px; max-width: none; }
+    .director { right: 12px; bottom: 12px; min-width: 200px; }
+    .monologue { bottom: 200px; }
+  }
+
+  /* ====================== Hidden Scene Canvas ====================== */
+  #scene { width: 100vw; height: 100vh; }
+</style>
+</head>
+<body>
+  <canvas id="scene"></canvas>
+  <div class="vignette"></div>
+  <div class="chromatic"></div>
+  <div class="grain"></div>
+
+  <div class="corner tl"></div>
+  <div class="corner tr"></div>
+  <div class="corner bl"></div>
+  <div class="corner br"></div>
+
+  <!-- Loading -->
+  <div id="loading">
+    <div class="symbol">𝒮</div>
+    <div class="bar"></div>
+    <div class="note">CALIBRATING RIEMANN SURFACE</div>
+  </div>
+
+  <!-- Title -->
+  <div class="title">
+    <div class="line"></div>
+    <h1>Mathematical Celestial · Storyboard 01</h1>
+    <div class="cn">数学天穹</div>
+    <div class="line"></div>
+  </div>
+
+  <!-- Shot HUD -->
+  <div class="shot-hud">
+    <div class="badge"><span class="dot"></span>SHOT · 01</div>
+    <div class="row"><span class="k">TC</span><span class="v" id="tc">0:00 — 0:08</span></div>
+    <div class="row"><span class="k">FRAMING</span><span class="v">EWS → FS</span></div>
+    <div class="row"><span class="k">MOTION</span><span class="v">DISPLACEMENT DESCENT</span></div>
+    <div class="row"><span class="k">LENS</span><span class="v">35mm · 8K</span></div>
+    <div class="timeline"><div class="fill" id="hudFill"></div></div>
+    <div class="time"><span class="now" id="timeNow">0:00.0</span><span>0:15.0</span></div>
+  </div>
+
+  <!-- Audio Spectrum -->
+  <div class="spectrum">
+    <div class="head">
+      <span>HARMONIC FIELD</span><span class="freq" id="freqHz">42.0 HZ</span>
+    </div>
+    <canvas id="spec" width="200" height="36"></canvas>
+  </div>
+
+  <!-- Shot transition mark -->
+  <div class="shot-mark">SHOT 01 · <span>0:08</span> → SHOT 02 · HANDHELD FOLLOW</div>
+
+  <!-- Monologue -->
+  <div class="monologue" id="monologue">
+    <div class="text" id="monoText">今天也要好好记录。<span class="cursor"></span></div>
+  </div>
+
+  <!-- Description -->
+  <div class="desc-panel">
+    <div class="label">· ACTION · 01A</div>
+    <div class="zh">
+      镜头从算穹万米高空瞬间沉降至地面，无过渡，空间如折叠。
+      天空是巨大的数学天球仪，黎曼曲面如紫金山脉悬浮，斐波那契螺旋如银河运转。
+      地面是晶体平原。画面底部，<span style="color:var(--c-gold);">朔（校服）</span>作为微小黑点行走，不足画面 1/50。
+    </div>
+    <div class="en">
+      Fantasy apocalyptic anime, extreme wide shot, gigantic mathematical celestial sphere as purple-gold sky,
+      Riemann surfaces as floating mountain ranges, Fibonacci spiral as galaxy, tiny school student in uniform
+      walking on crystalline plain, figure less than 1/50 of frame, displacement difference lens descent from
+      sky to ground, no hard cut, sacred geometry, Makoto Shinkai color palette, 8k, cinematic
+    </div>
+  </div>
+
+  <!-- Director Panel -->
+  <div class="director">
+    <div class="head">
+      <span class="label">· DIRECTOR ·</span>
+      <span class="shot-no" id="directorShot">01 / 02</span>
+    </div>
+    <div class="controls">
+      <button class="play" id="playBtn" title="Play / Pause">
+        <svg viewBox="0 0 12 12" fill="currentColor"><polygon points="2,1 11,6 2,11"></polygon></svg>
+      </button>
+      <div class="timeline-wrap" id="tlWrap">
+        <div class="fill" id="tlFill"></div>
+        <div class="knob" id="tlKnob"></div>
+      </div>
+    </div>
+    <div class="toggles">
+      <div class="toggle active" data-key="bloom">
+        <div class="led"></div>
+        <div class="name">BLOOM</div>
+      </div>
+      <div class="toggle active" data-key="aurora">
+        <div class="led"></div>
+        <div class="name">AURORA</div>
+      </div>
+      <div class="toggle" data-key="vignette">
+        <div class="led"></div>
+        <div class="name">VIGNETTE</div>
+      </div>
+    </div>
+  </div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+
+// ============================================================
+//  CONFIG
+// ============================================================
+const CFG = {
+  bloom:  true,
+  aurora: true,
+  vignette: false, // off by default (CSS vignette always on)
+  shot1End: 8.0,   // seconds
+  shot2End: 15.0,  // seconds
+  total:    15.0,
+  descY0:   800,   // camera y at t=0 (高空)
+  descY1:   1.6,   // camera y at t=8s (地面)
+};
+
+// ============================================================
+//  THREE.JS SCENE
+// ============================================================
+const canvas = document.getElementById('scene');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor(0x07031a, 1);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.1;
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x1a0b2e, 0.0035);
+
+const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 5000);
+camera.position.set(0, CFG.descY0, 30);
+camera.lookAt(0, 0, 0);
+
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.minDistance = 0.3;
+controls.maxDistance = 30;
+controls.minPolarAngle = Math.PI * 0.18;
+controls.maxPolarAngle = Math.PI * 0.48;
+controls.enabled = false; // 自动运镜时禁用
+
+// ============================================================
+//  LIGHTS — 紫金主光 + 冷白补光
+// ============================================================
+const sunLight = new THREE.DirectionalLight(0xe8c97a, 1.4);
+sunLight.position.set(40, 120, 30);
+scene.add(sunLight);
+
+const violetFill = new THREE.DirectionalLight(0x7a2d8f, 0.6);
+violetFill.position.set(-30, 20, -20);
+scene.add(violetFill);
+
+const hemi = new THREE.HemisphereLight(0x4a1d6e, 0x0e0628, 0.5);
+scene.add(hemi);
+
+const ambient = new THREE.AmbientLight(0x1a0b2e, 0.3);
+scene.add(ambient);
+
+// ============================================================
+//  MATHEMATICAL CELESTIAL SPHERE (天球仪)
+//  SphereGeometry with custom shader: 黎曼起伏 + 数学符号噪声
+// ============================================================
+const sphereGeo = new THREE.SphereGeometry(800, 96, 64);
+const sphereMat = new THREE.ShaderMaterial({
+  side: THREE.BackSide,
+  uniforms: {
+    uTime:     { value: 0 },
+    uColorA:   { value: new THREE.Color('#0e0628') },
+    uColorB:   { value: new THREE.Color('#4a1d6e') },
+    uColorC:   { value: new THREE.Color('#c9a86a') },
+  },
+  vertexShader: /* glsl */`
+    varying vec3 vWorldPos;
+    varying vec3 vNormal;
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      vNormal = normalize(normalMatrix * normal);
+      vec4 wp = modelMatrix * vec4(position, 1.0);
+      vWorldPos = wp.xyz;
+      gl_Position = projectionMatrix * viewMatrix * wp;
+    }
+  `,
+  fragmentShader: /* glsl */`
+    precision highp float;
+    uniform float uTime;
+    uniform vec3 uColorA;
+    uniform vec3 uColorB;
+    uniform vec3 uColorC;
+    varying vec3 vWorldPos;
+    varying vec3 vNormal;
+    varying vec2 vUv;
+
+    // 黎曼曲面噪声
+    float riemann(vec2 p) {
+      float z = 0.0;
+      z += sin(p.x * 0.4 + uTime * 0.02) * 0.5;
+      z += cos(p.y * 0.3) * 0.3;
+      z += sin((p.x + p.y) * 0.2) * 0.4;
+      z += sin(p.x * 0.05) * cos(p.y * 0.07) * 0.8;
+      return z;
+    }
+
+    // 数学符号 SDF（用 sin 阵列模拟刻线）
+    float symbolField(vec2 p) {
+      vec2 g = fract(p * 8.0) - 0.5;
+      float d = length(g);
+      return smoothstep(0.42, 0.40, d);
+    }
+
+    void main() {
+      // 球坐标归一
+      vec2 sphUv = vec2(atan(vWorldPos.x, vWorldPos.z), asin(normalize(vWorldPos).y));
+      sphUv *= 40.0;
+
+      // 黎曼起伏
+      float r = riemann(sphUv * 0.1);
+      float pattern = 0.5 + 0.5 * r;
+      pattern = pow(pattern, 1.4);
+
+      // 数学符号
+      float sym = symbolField(sphUv);
+      sym *= 0.15;
+
+      // 基础色：紫 → 金
+      vec3 base = mix(uColorA, uColorB, pattern);
+      base = mix(base, uColorC, smoothstep(0.6, 0.95, pattern));
+
+      // 符号提亮
+      base += vec3(1.0, 0.95, 0.7) * sym;
+
+      // 距离衰减（顶部更亮，地平线更暗）
+      float horizon = 1.0 - abs(normalize(vWorldPos).y);
+      base *= mix(0.35, 1.1, horizon);
+
+      // 顶部紫色辉光
+      float topGlow = pow(max(0.0, normalize(vWorldPos).y), 2.0);
+      base += uColorC * topGlow * 0.25;
+
+      gl_FragColor = vec4(base, 1.0);
+    }
+  `,
+});
+const celestialSphere = new THREE.Mesh(sphereGeo, sphereMat);
+scene.add(celestialSphere);
+
+// ============================================================
+//  RIEMANN MOUNTAINS (黎曼山脉)
+//  围绕地平线一圈的低多边形山脉，紫金渐变
+// ============================================================
+const mountains = new THREE.Group();
+const mtnCount = 14;
+for (let i = 0; i < mtnCount; i++) {
+  const angle = (i / mtnCount) * Math.PI * 2;
+  const dist = 180 + Math.random() * 80;
+  const peakH = 35 + Math.random() * 55;
+  const rad = 18 + Math.random() * 18;
+  const geo = new THREE.ConeGeometry(rad, peakH, 6 + Math.floor(Math.random() * 4), 1);
+  // 顶点位移：模拟黎曼曲面
+  const pos = geo.attributes.position;
+  for (let v = 0; v < pos.count; v++) {
+    const x = pos.getX(v), y = pos.getY(v), z = pos.getZ(v);
+    const ny = y / peakH;
+    const ripple = Math.sin(x * 0.3) * Math.cos(z * 0.3) * 4 * (1 - Math.abs(ny));
+    pos.setY(v, y + ripple);
+  }
+  geo.computeVertexNormals();
+  const mat = new THREE.MeshStandardMaterial({
+    color: new THREE.Color().setHSL(0.78 + Math.random() * 0.08, 0.55, 0.18 + Math.random() * 0.1),
+    emissive: new THREE.Color(0x4a1d6e),
+    emissiveIntensity: 0.25,
+    metalness: 0.3,
+    roughness: 0.55,
+    flatShading: true,
+  });
+  const m = new THREE.Mesh(geo, mat);
+  m.position.set(Math.cos(angle) * dist, peakH * 0.5 - 2, Math.sin(angle) * dist);
+  m.rotation.y = Math.random() * Math.PI;
+  mountains.add(m);
+}
+scene.add(mountains);
+
+// ============================================================
+//  FIBONACCI SPIRAL GALAXY (斐波那契螺旋银河)
+//  50000 粒子沿黄金螺旋
+// ============================================================
+function fibonacciGalaxy() {
+  const count = 50000;
+  const positions = new Float32Array(count * 3);
+  const colors    = new Float32Array(count * 3);
+  const sizes     = new Float32Array(count);
+  const phi = (1 + Math.sqrt(5)) / 2; // 黄金比
+  const goldenAngle = Math.PI * 2 / (phi * phi);
+
+  for (let i = 0; i < count; i++) {
+    const t = i / count;
+    // 黄金螺旋：r 随 θ 增长
+    const r = 90 * Math.sqrt(t);
+    const theta = i * goldenAngle;
+    const armOffset = (i % 3) * 0.0; // 单臂螺旋更明显
+    // 厚度
+    const yJitter = (Math.random() - 0.5) * 4 * (1 - t);
+    const radialJ = (Math.random() - 0.5) * 3 * (1 - t);
+
+    positions[i * 3 + 0] = Math.cos(theta) * (r + radialJ);
+    positions[i * 3 + 1] = 600 - t * 350 + yJitter; // 高空 → 半空
+    positions[i * 3 + 2] = Math.sin(theta) * (r + radialJ) - 100;
+
+    // 紫金渐变 → 暖白核
+    const core = Math.pow(1 - t, 2);
+    const gold = 0.7 + 0.3 * Math.sin(theta * 2);
+    colors[i * 3 + 0] = (0.78 + 0.22 * core) * gold;
+    colors[i * 3 + 1] = (0.45 + 0.4 * core) * gold;
+    colors[i * 3 + 2] = (0.25 + 0.6 * core) * gold;
+
+    sizes[i] = 0.6 + Math.random() * 1.4 + core * 1.2;
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geo.setAttribute('color',    new THREE.BufferAttribute(colors, 3));
+  geo.setAttribute('aSize',    new THREE.BufferAttribute(sizes, 1));
+
+  const mat = new THREE.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    uniforms: {
+      uTime: { value: 0 },
+      uAurora: { value: CFG.aurora ? 1.0 : 0.0 },
+    },
+    vertexShader: /* glsl */`
+      attribute float aSize;
+      varying vec3 vColor;
+      varying float vSize;
+      uniform float uTime;
+      uniform float uAurora;
+      void main() {
+        vColor = color;
+        vec3 p = position;
+        // 缓慢公转
+        float a = uTime * 0.005 * uAurora;
+        float c = cos(a), s = sin(a);
+        p.xz = mat2(c, -s, s, c) * p.xz;
+        vec4 mv = modelViewMatrix * vec4(p, 1.0);
+        gl_Position = projectionMatrix * mv;
+        vSize = aSize;
+        gl_PointSize = aSize * (300.0 / -mv.z);
+      }
+    `,
+    fragmentShader: /* glsl */`
+      varying vec3 vColor;
+      varying float vSize;
+      void main() {
+        vec2 c = gl_PointCoord - 0.5;
+        float d = length(c);
+        float a = smoothstep(0.5, 0.0, d);
+        a = pow(a, 2.0);
+        gl_FragColor = vec4(vColor, a);
+      }
+    `,
+    vertexColors: true,
+  });
+
+  const points = new THREE.Points(geo, mat);
+  return { points, mat };
+}
+const galaxy = fibonacciGalaxy();
+scene.add(galaxy.points);
+
+// ============================================================
+//  CRYSTAL PLAIN (晶体平原)
+//  2000×2000 平面，fbm 噪声 + 紫金反光
+// ============================================================
+const planeGeo = new THREE.PlaneGeometry(2000, 2000, 256, 256);
+const planeMat = new THREE.ShaderMaterial({
+  uniforms: {
+    uTime:     { value: 0 },
+    uColorA:   { value: new THREE.Color('#1a0b2e') },
+    uColorB:   { value: new THREE.Color('#4a1d6e') },
+    uColorC:   { value: new THREE.Color('#c9a86a') },
+  },
+  vertexShader: /* glsl */`
+    varying vec2 vUv;
+    varying vec3 vWorldPos;
+    varying vec3 vNormal;
+    void main() {
+      vUv = uv;
+      vec4 wp = modelMatrix * vec4(position, 1.0);
+      vWorldPos = wp.xyz;
+      vNormal = normalize(normalMatrix * normal);
+      gl_Position = projectionMatrix * viewMatrix * wp;
+    }
+  `,
+  fragmentShader: /* glsl */`
+    precision highp float;
+    uniform float uTime;
+    uniform vec3 uColorA, uColorB, uColorC;
+    varying vec2 vUv;
+    varying vec3 vWorldPos;
+    varying vec3 vNormal;
+
+    // 2D fbm
+    float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+    float noise(vec2 p) {
+      vec2 i = floor(p), f = fract(p);
+      float a = hash(i);
+      float b = hash(i + vec2(1.0, 0.0));
+      float c = hash(i + vec2(0.0, 1.0));
+      float d = hash(i + vec2(1.0, 1.0));
+      vec2 u = f * f * (3.0 - 2.0 * f);
+      return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
+    }
+    float fbm(vec2 p) {
+      float v = 0.0, a = 0.5;
+      for (int i = 0; i < 5; i++) {
+        v += a * noise(p);
+        p *= 2.1; a *= 0.5;
+      }
+      return v;
+    }
+
+    void main() {
+      // 晶格距离（距原点）
+      float dist = length(vWorldPos.xz);
+      // 法线方向 → 模拟晶体折射条纹
+      float crystals = fbm(vWorldPos.xz * 0.08);
+      float fineGrain = fbm(vWorldPos.xz * 1.2);
+
+      // 颜色：远暗近亮 + 紫金条纹
+      vec3 base = mix(uColorA, uColorB, crystals);
+      base = mix(base, uColorC, smoothstep(0.55, 0.85, fineGrain) * 0.5);
+
+      // 距相机距离淡出
+      float fade = smoothstep(800.0, 60.0, dist);
+      base *= mix(0.25, 1.0, fade);
+
+      // 中央高光
+      float glow = exp(-dist * 0.012);
+      base += uColorC * glow * 0.3;
+
+      gl_FragColor = vec4(base, 1.0);
+    }
+  `,
+});
+const crystalPlain = new THREE.Mesh(planeGeo, planeMat);
+crystalPlain.rotation.x = -Math.PI / 2;
+crystalPlain.position.y = 0;
+scene.add(crystalPlain);
+
+// ============================================================
+//  FORMULA STELE (公式石碑) — 倾倒 45°
+// ============================================================
+function makeFormulaTexture() {
+  const c = document.createElement('canvas');
+  c.width = 256; c.height = 1024;
+  const g = c.getContext('2d');
+  // 背景：紫金渐变
+  const grd = g.createLinearGradient(0, 0, 0, 1024);
+  grd.addColorStop(0, '#2a1248');
+  grd.addColorStop(0.5, '#4a1d6e');
+  grd.addColorStop(1, '#1a0b2e');
+  g.fillStyle = grd; g.fillRect(0, 0, 256, 1024);
+
+  // 数学符号
+  g.fillStyle = '#e8c97a';
+  g.font = 'italic 36px "Cormorant Garamond", serif';
+  g.textAlign = 'center';
+  const formulas = [
+    '∮_S ℛ · dS = χ',
+    'f(z) = Σ aₙzⁿ',
+    '∂u/∂t = κ∇²u',
+    'ζ(s) = Σ n⁻ˢ',
+    '∫_γ ω = 2πi',
+    'e^(iπ) + 1 = 0',
+    '∇ × E = -∂B/∂t',
+    'g_μν dx^μ dx^ν',
+    '∂ℒ/∂φ = 0',
+    'ℋ|ψ⟩ = E|ψ⟩',
+    '∇·B = 0',
+    'S = k ln Ω',
+  ];
+  for (let i = 0; i < formulas.length; i++) {
+    g.fillText(formulas[i], 128, 80 + i * 80);
+  }
+  // 边缘蚀刻
+  g.strokeStyle = 'rgba(201, 168, 106, 0.5)';
+  g.lineWidth = 2;
+  g.strokeRect(8, 8, 240, 1008);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+const steleGeo = new THREE.BoxGeometry(20, 80, 5);
+const steleMat = new THREE.MeshStandardMaterial({
+  map: makeFormulaTexture(),
+  emissive: new THREE.Color(0x4a1d6e),
+  emissiveIntensity: 0.4,
+  emissiveMap: makeFormulaTexture(),
+  metalness: 0.4,
+  roughness: 0.4,
+});
+const stele = new THREE.Mesh(steleGeo, steleMat);
+stele.position.set(40, 30, -10);
+stele.rotation.z = Math.PI / 4; // 倾倒 45°
+stele.rotation.y = 0.3;
+scene.add(stele);
+
+// 石碑晶体苔藓
+const mossCount = 600;
+const mossPos = new Float32Array(mossCount * 3);
+for (let i = 0; i < mossCount; i++) {
+  const face = Math.floor(Math.random() * 2); // 0=front, 1=top
+  const y = (Math.random() - 0.5) * 80;
+  const x = (Math.random() - 0.5) * 20;
+  if (face === 0) {
+    mossPos[i * 3 + 0] = stele.position.x + x;
+    mossPos[i * 3 + 1] = stele.position.y + y;
+    mossPos[i * 3 + 2] = stele.position.z + (Math.random() - 0.5) * 5;
+  } else {
+    mossPos[i * 3 + 0] = stele.position.x + x;
+    mossPos[i * 3 + 1] = stele.position.y + y;
+    mossPos[i * 3 + 2] = stele.position.z + 2.5;
+  }
+}
+const mossGeo = new THREE.BufferGeometry();
+mossGeo.setAttribute('position', new THREE.BufferAttribute(mossPos, 3));
+const mossMat = new THREE.PointsMaterial({
+  color: 0xc9a86a,
+  size: 0.3,
+  transparent: true,
+  opacity: 0.7,
+  blending: THREE.AdditiveBlending,
+  depthWrite: false,
+});
+const moss = new THREE.Points(mossGeo, mossMat);
+moss.position.copy(stele.position);
+moss.rotation.copy(stele.rotation);
+scene.add(moss);
+
+// ============================================================
+//  STUDENT 朔 (校服学生)
+//  极简人形：身体胶囊 + 头球 + 书包方块
+// ============================================================
+const shuo = new THREE.Group();
+
+// 身体
+const bodyGeo = new THREE.CapsuleGeometry(0.18, 0.55, 4, 8);
+const bodyMat = new THREE.MeshStandardMaterial({ color: 0x1a2a4a, roughness: 0.7 });
+const body = new THREE.Mesh(bodyGeo, bodyMat);
+body.position.y = 0.55;
+shuo.add(body);
+
+// 头
+const headGeo = new THREE.SphereGeometry(0.13, 16, 16);
+const headMat = new THREE.MeshStandardMaterial({ color: 0xe6c8a8, roughness: 0.6 });
+const head = new THREE.Mesh(headGeo, headMat);
+head.position.y = 1.05;
+shuo.add(head);
+
+// 头发（深色半球）
+const hairGeo = new THREE.SphereGeometry(0.135, 16, 16, 0, Math.PI * 2, 0, Math.PI / 2);
+const hairMat = new THREE.MeshStandardMaterial({ color: 0x0a0414, roughness: 0.8 });
+const hair = new THREE.Mesh(hairGeo, hairMat);
+hair.position.y = 1.05;
+shuo.add(hair);
+
+// 书包
+const bagGeo = new THREE.BoxGeometry(0.3, 0.4, 0.12);
+const bagMat = new THREE.MeshStandardMaterial({ color: 0x2a3a5a, roughness: 0.7 });
+const bag = new THREE.Mesh(bagGeo, bagMat);
+bag.position.set(0, 0.6, -0.18);
+shuo.add(bag);
+
+// 影子（地面圆）
+const shadowGeo = new THREE.CircleGeometry(0.35, 24);
+const shadowMat = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.4 });
+const shadow = new THREE.Mesh(shadowGeo, shadowMat);
+shadow.rotation.x = -Math.PI / 2;
+shadow.position.y = 0.01;
+shuo.add(shadow);
+
+shuo.position.set(0, 0, 0);
+shuo.scale.set(1.0, 1.0, 1.0);
+scene.add(shuo);
+
+// ============================================================
+//  POST-PROCESSING
+// ============================================================
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+
+const bloomPass = new UnrealBloomPass(
+  new THREE.Vector2(window.innerWidth, window.innerHeight),
+  0.85,  // strength
+  0.6,   // radius
+  0.55   // threshold
+);
+composer.addPass(bloomPass);
+
+// 自定义 ShaderPass：颗粒 + 色差 + 暗角
+const filmShader = {
+  uniforms: {
+    tDiffuse:   { value: null },
+    uTime:      { value: 0 },
+    uGrain:     { value: 0.08 },
+    uAberration:{ value: 0.0015 },
+    uVignette:  { value: 1.0 },
+  },
+  vertexShader: `
+    varying vec2 vUv;
+    void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }
+  `,
+  fragmentShader: `
+    precision highp float;
+    uniform sampler2D tDiffuse;
+    uniform float uTime;
+    uniform float uGrain;
+    uniform float uAberration;
+    uniform float uVignette;
+    varying vec2 vUv;
+
+    float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+
+    void main() {
+      vec2 uv = vUv;
+      vec2 c = uv - 0.5;
+
+      // 色差
+      float r = texture2D(tDiffuse, uv + c * uAberration).r;
+      float g = texture2D(tDiffuse, uv).g;
+      float b = texture2D(tDiffuse, uv - c * uAberration).b;
+      vec3 col = vec3(r, g, b);
+
+      // 暗角
+      float v = 1.0 - dot(c, c) * uVignette;
+      col *= v;
+
+      // 颗粒
+      float n = hash(uv * 1024.0 + fract(uTime) * 100.0);
+      col += (n - 0.5) * uGrain;
+
+      gl_FragColor = vec4(col, 1.0);
+    }
+  `,
+};
+const filmPass = new ShaderPass(filmShader);
+composer.addPass(filmPass);
+
+// ============================================================
+//  CAMERA RIG — 置换差沉降 + 手持跟随
+// ============================================================
+function easeInOutCubic(t) {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+function easeOutQuint(t) { return 1 - Math.pow(1 - t, 5); }
+
+const camRig = {
+  // 平滑插值的"目标"位置和注视点
+  targetPos: new THREE.Vector3(0, CFG.descY0, 30),
+  targetLook: new THREE.Vector3(0, 0, 0),
+  pos: new THREE.Vector3(0, CFG.descY0, 30),
+  look: new THREE.Vector3(0, 0, 0),
+  // shot 切换淡入
+  shotAlpha: 0,
+};
+
+function updateCamera(t, dt) {
+  // 计算理想目标
+  const tmpPos = new THREE.Vector3();
+  const tmpLook = new THREE.Vector3();
+
+  if (t < CFG.shot1End) {
+    // === Shot 1: 置换差沉降 (0–8s) ===
+    const u = t / CFG.shot1End;
+    const eu = easeInOutCubic(u);
+
+    // 高速下沉 + 一些 Z 推进
+    const y = THREE.MathUtils.lerp(CFG.descY0, CFG.descY1, eu);
+    const z = THREE.MathUtils.lerp(30, 6, eu);
+
+    // 沉降过程中看向地平线（天球仪中心）
+    const lookY = THREE.MathUtils.lerp(0, 0.5, eu);
+
+    tmpPos.set(0, y, z);
+    tmpLook.set(0, lookY, 0);
+  } else {
+    // === Shot 2: 手持跟随 (8–15s) ===
+    const u = (t - CFG.shot1End) / (CFG.shot2End - CFG.shot1End);
+    const eu = easeOutQuint(u);
+
+    // 朔行走路径（朝向石碑方向）
+    const walkX = THREE.MathUtils.lerp(0, -8, eu);
+    const walkZ = THREE.MathUtils.lerp(0, -6, eu);
+    shuo.position.set(walkX, 0, walkZ);
+    // 朔朝向石碑
+    shuo.lookAt(40, 1, -10);
+
+    // 相机在朔身后 3 米
+    const camX = walkX + 0.5;
+    const camY = 1.4 + Math.sin(t * 1.2) * 0.04;  // 手持上下
+    const camZ = walkZ + 3.0 + Math.cos(t * 0.9) * 0.05;
+
+    // 手持微晃
+    const shakeX = Math.sin(t * 7.0) * 0.03;
+    const shakeY = Math.cos(t * 5.3) * 0.025;
+
+    tmpPos.set(camX + shakeX, camY + shakeY, camZ);
+    tmpLook.set(walkX, 1.0, walkZ);
+  }
+
+  // 平滑插值
+  const lerpRate = 1 - Math.exp(-dt * 6);
+  camRig.pos.lerp(tmpPos, lerpRate);
+  camRig.look.lerp(tmpLook, lerpRate);
+
+  camera.position.copy(camRig.pos);
+  camera.lookAt(camRig.look);
+}
+
+// ============================================================
+//  AUDIO SPECTRUM (顶部右)
+//  程序化生成"低频嗡鸣"频谱动画
+// ============================================================
+const specCanvas = document.getElementById('spec');
+const specCtx = specCanvas.getContext('2d');
+function drawSpectrum(t) {
+  const w = specCanvas.width, h = specCanvas.height;
+  specCtx.clearRect(0, 0, w, h);
+  // 42 Hz 基频 + 谐波
+  const baseHz = 42;
+  const bars = 48;
+  for (let i = 0; i < bars; i++) {
+    const f = baseHz + i * 6;
+    const amp = 0.5 + 0.5 * Math.sin(t * 0.6 + i * 0.3);
+    const amp2 = 0.5 + 0.5 * Math.cos(t * 1.2 + i * 0.5);
+    const v = (amp * 0.6 + amp2 * 0.4);
+    const bh = v * h * 0.9 * (1 - i / bars * 0.4);
+    // 渐变
+    const hue = 30 + i * 1.5;
+    specCtx.fillStyle = `hsla(${hue}, 60%, ${50 + i * 0.3}%, 0.9)`;
+    specCtx.fillRect(i * (w / bars) + 1, h - bh, w / bars - 2, bh);
+  }
+  // 顶部细线
+  specCtx.fillStyle = '#c9a86a';
+  specCtx.font = '8px "JetBrains Mono"';
+  specCtx.fillText(baseHz.toFixed(1) + ' Hz', 4, 10);
+}
+
+// ============================================================
+//  ANIMATION LOOP
+// ============================================================
+let playing = true;
+let tGlobal = 0;
+let lastT = performance.now() / 1000;
+const clock = new THREE.Clock();
+
+const hudFill = document.getElementById('hudFill');
+const timeNow = document.getElementById('timeNow');
+const tc = document.getElementById('tc');
+const tlFill = document.getElementById('tlFill');
+const tlKnob = document.getElementById('tlKnob');
+const directorShot = document.getElementById('directorShot');
+const freqHz = document.getElementById('freqHz');
+const mono = document.getElementById('monologue');
+const monoText = document.getElementById('monoText');
+const playBtn = document.getElementById('playBtn');
+const tlWrap = document.getElementById('tlWrap');
+const loading = document.getElementById('loading');
+
+function fmtTime(s) {
+  const m = Math.floor(s / 60);
+  const sec = s - m * 60;
+  return `${m}:${sec.toFixed(1).padStart(4, '0')}`;
+}
+
+function animate() {
+  const dt = clock.getDelta();
+  if (playing) tGlobal = (tGlobal + dt) % (CFG.total + 1.5);
+
+  // === Shot transitions ===
+  const inShot2 = tGlobal >= CFG.shot1End;
+  if (inShot2) {
+    if (mono.classList.contains('visible') === false) {
+      mono.classList.add('visible');
+    }
+    tc.textContent = '0:08 — 0:15';
+    directorShot.textContent = '02 / 02';
+  } else {
+    mono.classList.remove('visible');
+    tc.textContent = '0:00 — 0:08';
+    directorShot.textContent = '01 / 02';
+  }
+
+  // === Camera ===
+  updateCamera(tGlobal, dt);
+
+  // === Update shader time ===
+  sphereMat.uniforms.uTime.value = tGlobal;
+  planeMat.uniforms.uTime.value = tGlobal;
+  galaxy.mat.uniforms.uTime.value = tGlobal;
+  filmPass.uniforms.uTime.value = tGlobal;
+
+  // === Bloom toggle ===
+  bloomPass.enabled = CFG.bloom;
+
+  // === Aurora (galaxy rotation speed) ===
+  galaxy.mat.uniforms.uAurora.value = CFG.aurora ? 1.0 : 0.0;
+
+  // === Vignette on film pass ===
+  filmPass.uniforms.uVignette.value = CFG.vignette ? 1.6 : 0.0;
+
+  // === HUD update ===
+  const progress = tGlobal / CFG.total;
+  hudFill.style.width = (progress * 100) + '%';
+  tlFill.style.width = (progress * 100) + '%';
+  tlKnob.style.left = (progress * 100) + '%';
+  timeNow.textContent = fmtTime(tGlobal);
+
+  // 频谱基频随时间微变
+  const baseHz = 42 + Math.sin(tGlobal * 0.2) * 3;
+  freqHz.textContent = baseHz.toFixed(1) + ' HZ';
+
+  // === Spectrum ===
+  drawSpectrum(tGlobal);
+
+  // === Render ===
+  composer.render(dt);
+
+  requestAnimationFrame(animate);
+}
+
+// ============================================================
+//  EVENTS
+// ============================================================
+playBtn.addEventListener('click', () => {
+  playing = !playing;
+  playBtn.innerHTML = playing
+    ? '<svg viewBox="0 0 12 12" fill="currentColor"><polygon points="2,1 11,6 2,11"></polygon></svg>'
+    : '<svg viewBox="0 0 12 12" fill="currentColor"><rect x="2" y="1" width="3" height="10"></rect><rect x="7" y="1" width="3" height="10"></rect></svg>';
+});
+
+tlWrap.addEventListener('click', (e) => {
+  const rect = tlWrap.getBoundingClientRect();
+  const p = (e.clientX - rect.left) / rect.width;
+  tGlobal = THREE.MathUtils.clamp(p, 0, 1) * CFG.total;
+});
+
+document.querySelectorAll('.toggle').forEach(el => {
+  el.addEventListener('click', () => {
+    el.classList.toggle('active');
+    const k = el.dataset.key;
+    CFG[k] = el.classList.contains('active');
+  });
+});
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  composer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// ============================================================
+//  BOOT
+// ============================================================
+// 给 2 帧让浏览器先画 loading，再隐藏
+requestAnimationFrame(() => {
+  setTimeout(() => {
+    loading.classList.add('hidden');
+    animate();
+  }, 800);
+});
+</script>
+</body>
+</html>
