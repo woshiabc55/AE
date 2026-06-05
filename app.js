@@ -301,14 +301,6 @@ function buildPrintableHTML() {
   </body></html>`;
 }
 
-function downloadFile(name, mime, content) {
-  const blob = new Blob([content], { type: mime });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url; a.download = name; a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
 // ===== 事件绑定 =====
 function bind() {
   $("#btnLoadSample").addEventListener("click", () => {
@@ -367,11 +359,6 @@ function bind() {
     } catch {
       toast("复制失败：浏览器拒绝访问剪贴板", "err");
     }
-  });
-  $("#btnDownloadHtml").addEventListener("click", () => {
-    if (!state.shots.length) { toast("没有可导出的镜头", "err"); return; }
-    downloadFile(`${state.project.title || "storyboard"}.html`, "text/html;charset=utf-8", buildPrintableHTML());
-    toast("HTML 已下载", "ok");
   });
   $("#btnPrint").addEventListener("click", () => {
     if (!state.shots.length) { toast("没有可打印的镜头", "err"); return; }
