@@ -1,0 +1,223 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;500;700&display=swap");
+
+:root {
+  font-family: "Rajdhani", "Noto Sans SC", -apple-system, BlinkMacSystemFont, sans-serif;
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  background: #050810;
+  color: #d6dee9;
+  overflow-x: hidden;
+}
+
+body {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer base {
+  :root {
+    --ark-bg-0: #050810;
+    --ark-bg-1: #0a0e1a;
+    --ark-bg-2: #111a2e;
+    --ark-bg-3: #1a2540;
+    --ark-line: #3a4458;
+    --ark-line-soft: #232b3d;
+    --ark-cyan: #5ee3ff;
+    --ark-cyan-soft: rgba(94, 227, 255, 0.35);
+    --ark-amber: #ff8a3d;
+    --ark-gold: #e8c477;
+    --ark-violet: #c15bff;
+    --ark-silver: #d6dee9;
+    --ark-white: #f2f5fa;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: "Orbitron", "Noto Sans SC", sans-serif;
+    letter-spacing: 0.06em;
+  }
+  .font-mono {
+    font-family: "JetBrains Mono", "Orbitron", monospace;
+  }
+
+  /* 直角切角（左上 + 右下） */
+  .clip-corner {
+    clip-path: polygon(
+      0 10px,
+      10px 0,
+      100% 0,
+      100% calc(100% - 10px),
+      calc(100% - 10px) 100%,
+      0 100%
+    );
+  }
+  .clip-corner-sm {
+    clip-path: polygon(
+      0 6px,
+      6px 0,
+      100% 0,
+      100% calc(100% - 6px),
+      calc(100% - 6px) 100%,
+      0 100%
+    );
+  }
+  .clip-tag {
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  }
+
+  /* 描边切角（在 clip-path 外做 1px 边框的近似效果） */
+  .corner-frame {
+    position: relative;
+  }
+  .corner-frame::before,
+  .corner-frame::after {
+    content: "";
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border: 1.5px solid currentColor;
+    pointer-events: none;
+  }
+  .corner-frame::before {
+    top: 0;
+    left: 0;
+    border-right: none;
+    border-bottom: none;
+  }
+  .corner-frame::after {
+    bottom: 0;
+    right: 0;
+    border-left: none;
+    border-top: none;
+  }
+
+  .text-ark-cyan { color: var(--ark-cyan); }
+  .text-ark-amber { color: var(--ark-amber); }
+  .text-ark-gold { color: var(--ark-gold); }
+  .text-ark-violet { color: var(--ark-violet); }
+  .text-ark-silver { color: var(--ark-silver); }
+  .text-ark-white { color: var(--ark-white); }
+
+  .bg-ark-0 { background-color: var(--ark-bg-0); }
+  .bg-ark-1 { background-color: var(--ark-bg-1); }
+  .bg-ark-2 { background-color: var(--ark-bg-2); }
+  .bg-ark-3 { background-color: var(--ark-bg-3); }
+
+  .border-ark-line { border-color: var(--ark-line); }
+  .border-ark-line-soft { border-color: var(--ark-line-soft); }
+  .border-ark-cyan { border-color: var(--ark-cyan); }
+
+  .glow-cyan {
+    box-shadow: 0 0 0 1px rgba(94, 227, 255, 0.55), 0 0 22px rgba(94, 227, 255, 0.35);
+  }
+  .glow-cyan-soft {
+    box-shadow: 0 0 0 1px rgba(94, 227, 255, 0.25), 0 0 14px rgba(94, 227, 255, 0.2);
+  }
+  .glow-gold {
+    box-shadow: 0 0 0 1px rgba(232, 196, 119, 0.6), 0 0 26px rgba(232, 196, 119, 0.32);
+  }
+  .glow-violet {
+    box-shadow: 0 0 0 1px rgba(193, 91, 255, 0.55), 0 0 22px rgba(193, 91, 255, 0.32);
+  }
+
+  .scanlines::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.04) 0,
+      rgba(255, 255, 255, 0.04) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
+
+  .grain::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 3px 3px;
+    opacity: 0.35;
+    pointer-events: none;
+  }
+}
+
+/* 关键帧动画 */
+@keyframes ark-rise {
+  from { opacity: 0; transform: translateY(18px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+@keyframes ark-scan {
+  0%   { transform: translateY(-110%); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translateY(110%); opacity: 0; }
+}
+@keyframes ark-blink {
+  0%, 100% { opacity: 0.85; }
+  50%      { opacity: 0.35; }
+}
+@keyframes ark-burst {
+  0%   { transform: scale(0.4); opacity: 0; }
+  20%  { opacity: 0.95; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+@keyframes ark-cone {
+  0%   { transform: scale(0.2) rotate(0deg);   opacity: 0; }
+  25%  { opacity: 0.7; }
+  100% { transform: scale(1.6) rotate(90deg);  opacity: 0; }
+}
+@keyframes ark-float {
+  0%   { transform: translateY(0) translateX(0); }
+  50%  { transform: translateY(-12px) translateX(4px); }
+  100% { transform: translateY(0) translateX(0); }
+}
+@keyframes ark-fill {
+  from { width: 0%; }
+  to   { width: var(--sp-fill, 100%); }
+}
+@keyframes ark-fadein {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes ark-sweep {
+  0%   { transform: translateX(-120%); }
+  100% { transform: translateX(220%); }
+}
+
+.animate-rise { animation: ark-rise 0.6s ease both; }
+.animate-scan { animation: ark-scan 4.2s linear infinite; }
+.animate-blink { animation: ark-blink 1.6s ease-in-out infinite; }
+.animate-burst { animation: ark-burst 1.2s cubic-bezier(.2,.7,.2,1) forwards; }
+.animate-cone { animation: ark-cone 1.4s cubic-bezier(.2,.7,.2,1) forwards; }
+.animate-float { animation: ark-float 6s ease-in-out infinite; }
+.animate-fadein { animation: ark-fadein 0.45s ease both; }
+.animate-sweep { animation: ark-sweep 0.7s linear; }
+
+::selection { background: rgba(94, 227, 255, 0.35); color: #f2f5fa; }
+
+/* 自定义滚动条 */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(94,227,255,0.45), rgba(58,68,88,0.45));
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(94, 227, 255, 0.7); }
