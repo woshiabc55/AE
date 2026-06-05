@@ -1,8 +1,14 @@
 import { NavLink, Link } from 'react-router-dom';
 import { Hammer, BarChart3, BookOpen, Image, Palette, Type, Layers, Gamepad2, Crosshair, Boxes, ShieldCheck, ScrollText, Grid3x3 } from 'lucide-react';
 import { TagLegend } from './Tag';
+import { ThemeSwitcherInline, useThemeModal, ThemeSwitcherModal } from './ThemeSwitcher';
+import { THEMES, useTheme } from './Theme';
 
 export default function Nav() {
+  const { theme } = useTheme();
+  const { open, openModal, closeModal } = useThemeModal();
+  const m = THEMES[theme];
+
   return (
     <header className="border-b-2 border-bone/30 sticky top-0 z-50 bg-ink/90 backdrop-blur">
       <div className="max-w-[1400px] mx-auto flex items-center justify-between px-6 py-4">
@@ -12,7 +18,7 @@ export default function Nav() {
           </span>
           <div className="leading-none">
             <div className="font-display text-2xl font-black tracking-tight">SKILL FORGE</div>
-            <div className="font-mono text-[10px] text-bone/60">大量 HTML 技能工具 / V.01</div>
+            <div className="font-mono text-[10px] text-bone/60">大量 HTML 技能工具 / V.10 · THEME: {m.name}</div>
           </div>
         </Link>
         <nav className="flex items-center gap-1 md:gap-2 font-mono text-sm">
@@ -57,8 +63,17 @@ export default function Nav() {
           <a href="https://github.com" target="_blank" rel="noreferrer" className="hidden md:inline-block ml-2 px-3 py-1.5 bg-bone text-ink border-2 border-bone hover:bg-volt hover:border-volt transition-colors font-bold">
             ★ STAR
           </a>
+          <ThemeSwitcherInline />
+          <button
+            onClick={openModal}
+            className="ml-1 px-2 py-1.5 border-2 border-bone/30 hover:border-volt font-mono text-[10px] font-bold"
+            title="THEMES"
+          >
+            <Palette size={12} className="inline mr-1" />THEMES
+          </button>
         </nav>
       </div>
+      <ThemeSwitcherModal open={open} onClose={closeModal} />
       {/* 9 类目色板条 — 模块化9 的标准色规 */}
       <div className="border-t border-bone/20 bg-ink overflow-x-auto">
         <div className="max-w-[1400px] mx-auto px-6 py-1.5 flex items-center gap-2 min-w-min">

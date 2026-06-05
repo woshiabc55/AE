@@ -20,6 +20,12 @@ import {
   LoremGen, NameGen, Waveform,
   HoloCard, PixelDissolve, LensDistort,
 } from '../components/preview/Previews3';
+import {
+  CheckboxFlip, StickerPeel, BouncingAvatar, TagsCloud,
+  GradientTextPreview, MorphingShape, Cube3DPreview, RetroTv,
+  PixelAvatar, ShineButton, DatePicker, SpinnerDots,
+  HeartIcon, ScrollProgress, RandomBar, Scribble,
+} from '../components/preview/Previews4';
 
 export type Category = 'visual' | 'interaction' | 'animation' | 'generator' | 'experiment';
 
@@ -777,6 +783,169 @@ let c=0;const t=9999;const id=setInterval(()=>{c+=Math.ceil((t-c)*.1);if(c>=t){c
 </div>
 <style>@keyframes bu{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.3) rotate(20deg)}}</style>`),
     createdAt: '2026-06-01',
+  },
+  {
+    slug: 'checkbox-flip', name: 'Checkbox Flip', category: 'interaction', tags: ['3d', 'toggle', 'check'],
+    description: '3D 翻转复选框，Y 轴 360° 旋转入场。',
+    Preview: CheckboxFlip, code: html(`<div style="height:100vh;background:#0a0a0a;display:grid;place-items:center">
+  <input type="checkbox" onchange="this.nextElementSibling.style.transform=this.checked?'rotateY(360deg)':'rotateY(0)'" style="display:none">
+  <div onclick="this.previousElementSibling.click()" style="width:80px;height:80px;border:4px solid #f5f1e8;display:grid;place-items:center;font:900 32px/1 serif;cursor:pointer;transition:transform .5s"></div>
+</div>`),
+    createdAt: '2026-06-02',
+  },
+  {
+    slug: 'sticker-peel', name: 'Sticker Peel', category: 'visual', tags: ['sticker', 'layer', 'tilt'],
+    description: '撕纸贴纸，多层倾斜 hover 抬升。',
+    Preview: StickerPeel, code: html(`<div style="height:100vh;background:#0a0a0a;display:grid;place-items:center">
+  <div style="position:relative;width:120px;height:120px;cursor:pointer">
+    <div style="position:absolute;inset:0;background:#f0ff00;transform:rotate(-5deg)"></div>
+    <div style="position:absolute;inset:0;background:#ff3da5;transform:rotate(3deg)"></div>
+    <div style="position:absolute;inset:0;display:grid;place-items:center;font:900 36px/1 serif;color:#0a0a0a">★</div>
+  </div>
+</div>`),
+    createdAt: '2026-06-02',
+  },
+  {
+    slug: 'bouncing-avatar', name: 'Bouncing Avatar', category: 'animation', tags: ['avatar', 'bounce', 'gradient'],
+    description: '头像弹跳动画，渐变填充。',
+    Preview: BouncingAvatar, code: html(`<div style="height:100vh;background:#0a0a0a;display:grid;place-items:center">
+  <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#f0ff00,#00e5ff);color:#0a0a0a;font:900 28px/1 serif;display:grid;place-items:center;animation:bounce 1.2s ease-in-out infinite">A</div>
+</div>
+<style>@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}</style>`),
+    createdAt: '2026-06-02',
+  },
+  {
+    slug: 'tags-cloud', name: 'Tags Cloud', category: 'visual', tags: ['tags', 'floating', 'cloud'],
+    description: '浮动标签云，多键帧错位飘动。',
+    Preview: TagsCloud, code: html(`<div style="height:100vh;background:#0a0a0a;display:grid;place-items:center">
+  <div style="display:flex;flex-wrap:wrap;gap:4px;max-width:160px;justify-content:center">
+    ${['FORGE','CRAFT','NEON','GRID','GLOW','PIXEL'].map((t,i)=>'<span style="font:11px/1 ui-monospace;padding:2px 6px;border:1px solid #f5f1e8;color:'+(i%2?'#f0ff00':'#f5f1e8')+';animation:fc 2s ease-in-out '+i*0.2+'s infinite">'+t+'</span>').join('')}
+  </div>
+</div>
+<style>@keyframes fc{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}</style>`),
+    createdAt: '2026-06-02',
+  },
+  {
+    slug: 'gradient-text', name: 'Gradient Text', category: 'visual', tags: ['gradient', 'text', 'css'],
+    description: '渐变文字，三色斜向 sweep。',
+    Preview: GradientTextPreview, code: html(`<div style="height:100vh;background:#0a0a0a;display:grid;place-items:center">
+  <div style="font:900 96px/1 serif;font-weight:900;background:linear-gradient(90deg,#f0ff00,#ff3da5,#00e5ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-3px">Aa</div>
+</div>`),
+    createdAt: '2026-06-03',
+  },
+  {
+    slug: 'morphing-shape', name: 'Morphing Shape', category: 'animation', tags: ['blob', 'morph', 'organic'],
+    description: '有机形变矩形，border-radius 插值。',
+    Preview: MorphingShape, code: html(`<div style="height:100vh;background:#0a0a0a;display:grid;place-items:center">
+  <div style="width:120px;height:120px;background:linear-gradient(45deg,#f0ff00,#00e5ff);animation:mr 6s ease-in-out infinite;border-radius:60% 40% 30% 70%/60% 30% 70% 40%"></div>
+</div>
+<style>@keyframes mr{0%,100%{border-radius:60% 40% 30% 70%/60% 30% 70% 40%;transform:rotate(0)}50%{border-radius:30% 60% 70% 40%/50% 60% 30% 60%;transform:rotate(180deg)}}</style>`),
+    createdAt: '2026-06-03',
+  },
+  {
+    slug: 'cube-3d', name: '3D Cube', category: 'experiment', tags: ['3d', 'cube', 'rotate'],
+    description: '6 面立方体，多轴旋转。',
+    Preview: Cube3DPreview, code: html(`<div style="height:100vh;background:#0a0a0a;display:grid;place-items:center;perspective:600px">
+  <div style="width:80px;height:80px;position:relative;transform-style:preserve-3d;animation:cu 4s linear infinite">
+    ${['front','back','right','left','top','bottom'].map((f,i)=>'<div style="position:absolute;inset:0;background:'+['#f0ff00','#ff3da5','#00e5ff','#f5f1e8','#f0ff00','#ff3da5'][i]+';border:2px solid #f5f1e8;transform:'+(f==='front'?'translateZ(40px)':f==='back'?'rotateY(180deg) translateZ(40px)':f==='right'?'rotateY(90deg) translateZ(40px)':f==='left'?'rotateY(-90deg) translateZ(40px)':f==='top'?'rotateX(90deg) translateZ(40px)':'rotateX(-90deg) translateZ(40px)')+'"></div>').join('')}
+  </div>
+</div>
+<style>@keyframes cu{0%{transform:rotateX(0) rotateY(0)}100%{transform:rotateX(360deg) rotateY(360deg)}}</style>`),
+    createdAt: '2026-06-03',
+  },
+  {
+    slug: 'retro-tv', name: 'Retro TV', category: 'visual', tags: ['retro', 'scanline', 'tv'],
+    description: '复古电视，扫描线 + 单色文字。',
+    Preview: RetroTv, code: html(`<div style="height:100vh;background:#0a0a0a;display:grid;place-items:center">
+  <div style="border:6px solid #f5f1e8;padding:8px;background:#f5f1e8">
+    <div style="width:140px;height:90px;background:#000;position:relative;overflow:hidden">
+      <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(240,255,0,.15) 0 1px,transparent 1px 3px)"></div>
+      <div style="position:absolute;inset:0;display:grid;place-items:center;font:900 28px/1 serif;color:#f0ff00">ON</div>
+    </div>
+  </div>
+</div>`),
+    createdAt: '2026-06-03',
+  },
+  {
+    slug: 'pixel-avatar', name: 'Pixel Avatar', category: 'generator', tags: ['pixel', 'avatar', '8bit'],
+    description: '8×8 像素头像生成，3 段配色。',
+    Preview: PixelAvatar, code: html(`<div style="height:100vh;background:#0a0a0a;display:grid;place-items:center">
+  <div style="display:grid;grid-template-columns:repeat(8,12px);gap:1px">
+    ${'00111100,01111110,11100111,11111111,11000011,01111110,00111100,00011000'.split(',').map((row,y)=>row.split('').map((c,x)=>'<div style="width:12px;height:12px;background:'+(c==='1'?(y<3?'#f5f1e8':y<5?'#ff3da5':'#f0ff00'):'transparent')+'"></div>').join('')).join('')}
+  </div>
+</div>`),
+    createdAt: '2026-06-04',
+  },
+  {
+    slug: 'shine-button', name: 'Shine Button', category: 'interaction', tags: ['shine', 'hover', 'effect'],
+    description: 'Hover 触发高光横扫按钮。',
+    Preview: ShineButton, code: html(`<div style="height:100vh;background:#0a0a0a;display:grid;place-items:center">
+  <button onmouseenter="this.querySelector('span').style.left='100%'" onmouseleave="this.querySelector('span').style.left='-50%'" style="position:relative;overflow:hidden;padding:8px 24px;border:2px solid #f5f1e8;background:transparent;color:#f5f1e8;font:700 14px/1 ui-monospace;cursor:pointer">
+    SHINE
+    <span style="position:absolute;top:0;left:-50%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(240,255,0,.5),transparent);transition:left .7s"></span>
+  </button>
+</div>`),
+    createdAt: '2026-06-04',
+  },
+  {
+    slug: 'date-picker', name: 'Date Picker', category: 'interaction', tags: ['date', 'calendar', 'mini'],
+    description: '极简日期选择，6 行 × 7 列网格。',
+    Preview: DatePicker, code: html(`<div style="height:100vh;background:#0a0a0a;display:grid;place-items:center">
+  <div style="border:2px solid #f5f1e8;color:#f5f1e8;padding:8px;width:200px">
+    <div style="font:11px/1 ui-monospace;display:flex;justify-content:space-between;margin-bottom:4px"><span>JUN 2026</span><span style="color:#f0ff00">●</span></div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;font:10px/1 ui-monospace">
+      ${Array.from({length:35},(_,i)=>{const d=i-2;return d>0&&d<=30?d:''}).map((d,i)=>'<div style="aspect:1;display:grid;place-items:center;background:'+(d===5?'#f0ff00;color:#0a0a0a;':'transparent')+'">'+d+'</div>').join('')}
+    </div>
+  </div>
+</div>`),
+    createdAt: '2026-06-04',
+  },
+  {
+    slug: 'spinner-dots', name: 'Spinner Dots', category: 'animation', tags: ['loading', 'dots', 'pulse'],
+    description: '4 圆点 loading，错相缩放。',
+    Preview: SpinnerDots, code: html(`<div style="height:100vh;background:#0a0a0a;display:grid;place-items:center;gap:8px">
+  ${[0,1,2,3].map(i=>'<div style="width:12px;height:12px;border-radius:50%;background:'+['#f0ff00','#ff3da5','#00e5ff','#f5f1e8'][i]+';animation:sd 1.2s ease-in-out '+i*0.15+'s infinite"></div>').join('')}
+</div>
+<style>@keyframes sd{0%,80%,100%{transform:scale(.4);opacity:.4}40%{transform:scale(1);opacity:1}}</style>`),
+    createdAt: '2026-06-04',
+  },
+  {
+    slug: 'heart-icon', name: 'Heart Pulse', category: 'animation', tags: ['heart', 'svg', 'love'],
+    description: '心形图标 1.2s 脉动。',
+    Preview: HeartIcon, code: html(`<div style="height:100vh;background:#0a0a0a;display:grid;place-items:center">
+  <svg viewBox="0 0 24 24" style="width:64px;height:64px;color:#ff3da5;animation:hp 1.2s ease-in-out infinite"><path fill="currentColor" d="M12 21s-7-4.5-9.5-9.5C0 7 3 3 6.5 3 9 3 11 4.5 12 6c1-1.5 3-3 5.5-3C21 3 24 7 21.5 11.5 19 16.5 12 21 12 21z"/></svg>
+</div>
+<style>@keyframes hp{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}</style>`),
+    createdAt: '2026-06-04',
+  },
+  {
+    slug: 'scroll-progress', name: 'Scroll Progress', category: 'interaction', tags: ['scroll', 'progress', 'indicator'],
+    description: '页面滚动百分比实时显示。',
+    Preview: ScrollProgress, code: html(`<div style="height:100vh;background:#0a0a0a;display:grid;place-items:center;gap:8px">
+  <div id="pct" style="font:900 48px/1 serif;color:#f0ff00">0%</div>
+  <div style="width:160px;height:6px;border:2px solid #f5f1e8"><div id="bar" style="height:100%;width:0%;background:#f0ff00"></div></div>
+</div>
+<script>window.addEventListener('scroll',()=>{const s=window.scrollY/(document.body.scrollHeight-window.innerHeight)*100;document.getElementById('pct').textContent=Math.round(s)+'%';document.getElementById('bar').style.width=s+'%'})</script>`),
+    createdAt: '2026-06-04',
+  },
+  {
+    slug: 'random-bar', name: 'Random Bar', category: 'generator', tags: ['bar', 'chart', 'random'],
+    description: '12 条 sin 波随机柱状图。',
+    Preview: RandomBar, code: html(`<div style="height:100vh;background:#0a0a0a;display:flex;align-items:flex-end;justify-content:center;gap:4px;padding:24px">
+  ${Array.from({length:12}).map((_,i)=>'<div style="width:10px;height:'+(30+Math.abs(Math.sin(i*1.7))*70)+'%;background:'+(i%3===0?'#f0ff00':i%3===1?'#ff3da5':'#00e5ff')+'"></div>').join('')}
+</div>`),
+    createdAt: '2026-06-05',
+  },
+  {
+    slug: 'scribble', name: 'Scribble Path', category: 'animation', tags: ['svg', 'draw', 'scribble'],
+    description: '手绘线条 stroke-dashoffset 动画。',
+    Preview: Scribble, code: html(`<div style="height:100vh;background:#0a0a0a;display:grid;place-items:center">
+  <svg viewBox="0 0 100 100" style="width:120px;height:120px">
+    <path d="M 10,50 Q 25,10 50,50 T 90,50 Q 75,90 50,50 T 10,50" fill="none" stroke="#f0ff00" stroke-width="3" stroke-linecap="round" style="stroke-dasharray:300;stroke-dashoffset:0;animation:dr 3s ease-in-out infinite"/>
+  </svg>
+</div>
+<style>@keyframes dr{0%{stroke-dashoffset:300}50%,100%{stroke-dashoffset:0}}</style>`),
+    createdAt: '2026-06-05',
   },
 ];
 

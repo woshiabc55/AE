@@ -15,6 +15,7 @@ import Manifesto from './pages/Manifesto';
 import NotFound from './pages/NotFound';
 import Arknights from './pages/Arknights';
 import PlumGrid from './pages/PlumGrid';
+import Themes from './pages/Themes';
 import Nav from './components/Nav';
 import PageNav from './components/PageNav';
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -39,6 +40,8 @@ function AnimatedRoutes() {
           <Route path="/qa" element={<QA />} />
           <Route path="/manifesto" element={<Manifesto />} />
           <Route path="/arknights" element={<Arknights />} />
+          <Route path="/plum" element={<PlumGrid />} />
+          <Route path="/themes" element={<Themes />} />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

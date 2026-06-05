@@ -4,16 +4,18 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        display: ['"Fraunces"', 'serif'],
-        sans: ['"Inter Tight"', 'sans-serif'],
-        mono: ['"JetBrains Mono"', 'monospace'],
+        display: ['var(--font-display)', 'serif'],
+        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-mono)', 'monospace'],
       },
+      // 颜色继续以 hex 形式提供 fallback，主要颜色也通过 CSS 变量实时切换
       colors: {
-        ink: '#0a0a0a',
-        bone: '#f5f1e8',
-        volt: '#f0ff00',
-        pink: '#ff3da5',
-        cyan: '#00e5ff',
+        ink: 'var(--bg)',
+        bone: 'var(--fg)',
+        volt: 'var(--volt)',
+        pink: 'var(--pink)',
+        cyan: 'var(--cyan)',
+        plum: 'var(--plum)',
       },
     },
   },
