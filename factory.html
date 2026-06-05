@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkillBox · 工具库 (1000+)</title>
+  <link rel="stylesheet" href="/assets/style.css" />
+  <style>
+    .filter-bar {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      padding: 12px;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 14px;
+    }
+    .filter-chip {
+      padding: 6px 14px; background: var(--panel); border: 1px solid var(--border);
+      border-radius: 999px; font-size: 12.5px; color: var(--text); cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-chip:hover { border-color: var(--accent); }
+    .filter-chip.active {
+      background: var(--accent); color: #0b0e14; border-color: var(--accent); font-weight: 600;
+    }
+    .sort-bar {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .sort-bar select {
+      width: auto; min-width: 140px;
+    }
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
+    }
+    .tool-item {
+      display: block;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      text-decoration: none;
+      color: var(--text);
+      transition: all 0.15s;
+      cursor: pointer;
+    }
+    .tool-item:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(106, 166, 255, 0.12);
+    }
+    .tool-item-head {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+    }
+    .tool-item-icon {
+      width: 32px; height: 32px;
+      border-radius: 7px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .tool-item-name {
+      font-weight: 600; font-size: 14px;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .tool-item-cat {
+      font-size: 11px; color: var(--muted); margin-bottom: 4px;
+    }
+    .tool-item-desc {
+      font-size: 12px; color: var(--muted);
+      line-height: 1.45;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 34px;
+    }
+    .tool-item-tags {
+      display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px;
+    }
+    .tool-item-tag {
+      font-size: 10.5px; padding: 1px 6px;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+    }
+    .pagination {
+      display: flex; align-items: center; justify-content: center;
+      gap: 6px; flex-wrap: wrap; margin-top: 18px;
+    }
+    .pagination button {
+      min-width: 36px; height: 36px;
+      padding: 0 10px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .pagination button:hover:not(:disabled) {
+      border-color: var(--accent);
+    }
+    .pagination button.active {
+      background: var(--accent); color: #0b0e14; border-color: var(--accent); font-weight: 700;
+    }
+    .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .summary-bar {
+      display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+      padding: 10px 14px;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 14px;
+      font-size: 13px; color: var(--muted);
+    }
+    .summary-bar strong { color: var(--accent); }
+    .random-pick {
+      background: linear-gradient(135deg, rgba(106,166,255,0.15), rgba(139,109,255,0.15));
+      border: 1px solid var(--border);
+    }
+    .cat-section {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .cat-section-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .cat-section-title {
+      font-size: 16px; font-weight: 700;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .cat-section-count {
+      font-size: 12px; color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <aside id="sidebar" class="sidebar"></aside>
+
+  <main class="main">
+    <div class="page-header">
+      <div class="breadcrumb" style="color:var(--muted); font-size:12px; margin-bottom:8px">
+        <a href="/index.html" style="color:var(--muted)">首页</a> /
+        <span>工具库</span>
+      </div>
+      <div class="page-title">📚 工具库 <span id="totalCount" style="color:var(--accent)"></span></div>
+      <div class="page-desc">所有 <strong>1000+</strong> 工具由统一引擎驱动 · 工厂模式生成 · 无需逐个手写</div>
+    </div>
+
+    <div class="panel random-pick">
+      <div class="row" style="align-items:center;">
+        <div style="flex:1">
+          <div style="color:#fff; font-weight:700; font-size:15px">🎲 不知道用什么？</div>
+          <div style="color:var(--muted); font-size:12px; margin-top:4px">随机推荐一个工具，盲盒玩法</div>
+        </div>
+        <button class="btn btn-primary" onclick="randomPick()">🎲 抽一个</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="row" style="align-items:center;">
+        <input id="q" type="text" placeholder="🔎 搜索工具名 / 标签 / 描述...（输入即过滤）" style="flex:1; min-width:280px" />
+        <select id="pageSize">
+          <option value="30">30 / 页</option>
+          <option value="60" selected>60 / 页</option>
+          <option value="120">120 / 页</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="filter-bar" id="catBar"></div>
+
+    <div class="sort-bar">
+      <span style="color:var(--muted); font-size:13px">排序：</span>
+      <select id="sortBy">
+        <option value="default">默认（分类→名称）</option>
+        <option value="name">名称 A→Z</option>
+        <option value="nameDesc">名称 Z→A</option>
+        <option value="cat">分类</option>
+        <option value="id">ID 顺序</option>
+      </select>
+      <div style="flex:1"></div>
+      <span id="resultCount" style="color:var(--muted); font-size:13px"></span>
+    </div>
+
+    <div id="content"></div>
+    <div class="pagination" id="pagination"></div>
+  </main>
+
+  <script src="/assets/app.js"></script>
+  <script src="/assets/catalog.js"></script>
+  <script>
+    renderSidebar("/factory.html");
+
+    // 统计分类
+    const catMap = {};
+    TOOL_DEFS.forEach(t => {
+      if (!catMap[t.cat]) catMap[t.cat] = { count: 0, icon: t.icon || "📦" };
+      catMap[t.cat].count++;
+    });
+    const cats = Object.entries(catMap).sort((a, b) => b[1].count - a[1].count);
+    document.getElementById("totalCount").textContent = "（" + TOOL_DEFS.length + " 个）";
+
+    // URL 参数
+    const urlParams = new URLSearchParams(location.search);
+    let state = {
+      q: urlParams.get("q") || "",
+      cat: urlParams.get("cat") || "全部",
+      sort: urlParams.get("sort") || "default",
+      page: parseInt(urlParams.get("page") || "1"),
+      size: parseInt(urlParams.get("size") || "60")
+    };
+
+    // 分类筛选条
+    function renderCatBar() {
+      const total = TOOL_DEFS.length;
+      const html = [
+        `<span class="filter-chip ${state.cat === '全部' ? 'active' : ''}" data-cat="全部">📦 全部 (${total})</span>`
+      ].concat(cats.map(([c, info]) =>
+        `<span class="filter-chip ${state.cat === c ? 'active' : ''}" data-cat="${esc(c)}">${info.icon} ${esc(c)} (${info.count})</span>`
+      )).join("");
+      document.getElementById("catBar").innerHTML = html;
+      document.querySelectorAll(".filter-chip").forEach(chip => {
+        chip.addEventListener("click", () => {
+          state.cat = chip.dataset.cat;
+          state.page = 1;
+          sync();
+        });
+      });
+    }
+
+    function esc(s) {
+      return String(s ?? "").replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"})[c]);
+    }
+
+    // 过滤
+    function applyFilter() {
+      let list = TOOL_DEFS.slice();
+      if (state.cat !== "全部") list = list.filter(t => t.cat === state.cat);
+      if (state.q) {
+        const q = state.q.toLowerCase();
+        list = list.filter(t =>
+          (t.name || "").toLowerCase().includes(q) ||
+          (t.desc || "").toLowerCase().includes(q) ||
+          (t.cat || "").toLowerCase().includes(q) ||
+          (t.tags || []).some(tg => tg.toLowerCase().includes(q))
+        );
+      }
+      // 排序
+      if (state.sort === "name") list.sort((a, b) => a.name.localeCompare(b.name, "zh-CN"));
+      else if (state.sort === "nameDesc") list.sort((a, b) => b.name.localeCompare(a.name, "zh-CN"));
+      else if (state.sort === "cat") list.sort((a, b) => (a.cat + a.name).localeCompare(b.cat + b.name, "zh-CN"));
+      else if (state.sort === "id") list.sort((a, b) => +a.id.slice(1) - +b.id.slice(1));
+      return list;
+    }
+
+    function renderList() {
+      const list = applyFilter();
+      const total = list.length;
+      const size = state.size;
+      const pages = Math.max(1, Math.ceil(total / size));
+      if (state.page > pages) state.page = pages;
+      const start = (state.page - 1) * size;
+      const slice = list.slice(start, start + size);
+
+      document.getElementById("resultCount").innerHTML =
+        total === 0
+          ? `无匹配结果`
+          : `共 <strong>${total}</strong> 个 · 第 <strong>${state.page}</strong> / <strong>${pages}</strong> 页`;
+
+      // 渲染网格 / 分类视图
+      const content = document.getElementById("content");
+      if (state.cat !== "全部" || state.q) {
+        // 网格视图
+        if (slice.length === 0) {
+          content.innerHTML = `<div class="panel" style="text-align:center;color:var(--muted);padding:60px 20px">🔍 没有匹配的工具<br/><br/><button class="btn" onclick="resetFilter()">重置筛选</button></div>`;
+        } else {
+          content.innerHTML = `<div class="tool-grid">${slice.map(renderItem).join("")}</div>`;
+        }
+      } else {
+        // 分类分组视图
+        const groups = {};
+        slice.forEach(t => {
+          if (!groups[t.cat]) groups[t.cat] = [];
+          groups[t.cat].push(t);
+        });
+        const ordered = cats.filter(([c]) => groups[c] && groups[c].length).map(([c, info]) => [c, info, groups[c]]);
+        content.innerHTML = ordered.length === 0
+          ? `<div class="panel" style="text-align:center;color:var(--muted)">无数据</div>`
+          : ordered.map(([c, info, items]) => `
+            <div class="cat-section">
+              <div class="cat-section-head">
+                <div class="cat-section-title">${info.icon} ${esc(c)}</div>
+                <div class="cat-section-count">${items.length} 个</div>
+              </div>
+              <div class="tool-grid">${items.map(renderItem).join("")}</div>
+            </div>
+          `).join("");
+      }
+
+      renderPagination(pages);
+    }
+
+    function renderItem(t) {
+      return `<a class="tool-item" href="/tool.html?id=${encodeURIComponent(t.id)}">
+        <div class="tool-item-head">
+          <div class="tool-item-icon">${t.icon || "🛠"}</div>
+          <div style="flex:1; min-width:0">
+            <div class="tool-item-name">${esc(t.name)}</div>
+            <div class="tool-item-cat">${esc(t.cat)}</div>
+          </div>
+        </div>
+        <div class="tool-item-desc">${esc(t.desc || "—")}</div>
+        <div class="tool-item-tags">${(t.tags || []).slice(0, 4).map(tg => `<span class="tool-item-tag">${esc(tg)}</span>`).join("")}</div>
+      </a>`;
+    }
+
+    function renderPagination(pages) {
+      const p = state.page;
+      const buttons = [];
+      buttons.push(`<button onclick="gotoPage(${p-1})" ${p===1?'disabled':''}>‹ 上一页</button>`);
+      // 数字按钮：最多显示 7 个
+      const max = 7;
+      let from = Math.max(1, p - Math.floor(max/2));
+      let to = Math.min(pages, from + max - 1);
+      from = Math.max(1, to - max + 1);
+      if (from > 1) buttons.push(`<button onclick="gotoPage(1)">1</button>` + (from > 2 ? `<span style="color:var(--muted)">…</span>` : ""));
+      for (let i = from; i <= to; i++) {
+        buttons.push(`<button class="${i===p?'active':''}" onclick="gotoPage(${i})">${i}</button>`);
+      }
+      if (to < pages) buttons.push((to < pages - 1 ? `<span style="color:var(--muted)">…</span>` : "") + `<button onclick="gotoPage(${pages})">${pages}</button>`);
+      buttons.push(`<button onclick="gotoPage(${p+1})" ${p===pages?'disabled':''}>下一页 ›</button>`);
+      document.getElementById("pagination").innerHTML = buttons.join("");
+    }
+
+    function gotoPage(n) {
+      state.page = n;
+      sync();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function resetFilter() {
+      state = { q: "", cat: "全部", sort: "default", page: 1, size: state.size };
+      $("q").value = "";
+      $("sortBy").value = "default";
+      sync();
+    }
+
+    function randomPick() {
+      const t = TOOL_DEFS[Math.floor(Math.random() * TOOL_DEFS.length)];
+      location.href = "/tool.html?id=" + encodeURIComponent(t.id);
+    }
+
+    // 同步 URL
+    function sync() {
+      const p = new URLSearchParams();
+      if (state.q) p.set("q", state.q);
+      if (state.cat !== "全部") p.set("cat", state.cat);
+      if (state.sort !== "default") p.set("sort", state.sort);
+      if (state.page !== 1) p.set("page", state.page);
+      if (state.size !== 60) p.set("size", state.size);
+      const qs = p.toString();
+      history.replaceState(null, "", location.pathname + (qs ? "?" + qs : ""));
+      renderCatBar();
+      renderList();
+    }
+
+    // 事件绑定
+    let timer;
+    $("q").value = state.q;
+    $("q").addEventListener("input", e => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        state.q = e.target.value;
+        state.page = 1;
+        sync();
+      }, 200);
+    });
+    $("sortBy").value = state.sort;
+    $("sortBy").addEventListener("change", e => { state.sort = e.target.value; state.page = 1; sync(); });
+    $("pageSize").value = state.size;
+    $("pageSize").addEventListener("change", e => { state.size = +e.target.value; state.page = 1; sync(); });
+
+    function $(id) { return document.getElementById(id); }
+
+    // 首次渲染
+    sync();
+  </script>
+</body>
+</html>

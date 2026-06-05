@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkillBox · 工具详情</title>
+  <link rel="stylesheet" href="/assets/style.css" />
+  <style>
+    .tool-meta {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;
+    }
+    .breadcrumb {
+      display: flex; gap: 6px; align-items: center; color: var(--muted); font-size: 12px; margin-bottom: 8px;
+    }
+    .breadcrumb a { color: var(--muted); }
+    .breadcrumb a:hover { color: var(--accent); }
+    .related {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;
+    }
+    .related a {
+      padding: 4px 10px; background: var(--panel-2); border: 1px solid var(--border);
+      border-radius: 999px; font-size: 12px; color: var(--text); text-decoration: none;
+    }
+    .related a:hover { border-color: var(--accent); color: var(--accent); }
+  </style>
+</head>
+<body>
+  <aside id="sidebar" class="sidebar"></aside>
+
+  <main class="main">
+    <div id="root"></div>
+
+    <div class="panel" id="relatedPanel" style="display:none">
+      <div class="panel-title">🔗 同质化 / 相关工具</div>
+      <div class="related" id="relatedList"></div>
+    </div>
+  </main>
+
+  <script src="/assets/app.js"></script>
+  <script src="/assets/catalog.js"></script>
+  <script src="/assets/factory.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <script>
+    // 渲染左侧导航
+    renderSidebar(window.location.pathname);
+
+    // 解析 id
+    const params = new URLSearchParams(location.search);
+    const id = params.get("id");
+    const def = TOOL_DEFS.find(t => t.id === id);
+
+    if (!def) {
+      document.getElementById("root").innerHTML = `
+        <div class="page-header">
+          <div class="breadcrumb">
+            <a href="/index.html">首页</a> /
+            <a href="/factory.html">工具库</a> /
+            <span>未找到</span>
+          </div>
+          <div class="page-title">❌ 工具未找到</div>
+          <div class="page-desc">id = "${esc(id || '')}" 不存在</div>
+        </div>
+        <div class="panel">
+          <a class="btn btn-primary" href="/factory.html">← 返回工具库</a>
+        </div>
+      `;
+    } else {
+      // 标题
+      document.title = `SkillBox · ${def.name}`;
+      // 在 root 上方插入面包屑
+      const root = document.getElementById("root");
+      const crumb = document.createElement("div");
+      crumb.className = "breadcrumb";
+      crumb.innerHTML = `
+        <a href="/index.html">首页</a> /
+        <a href="/factory.html">工具库</a> /
+        <a href="/factory.html?cat=${encodeURIComponent(def.cat)}">${esc(def.cat)}</a> /
+        <span style="color:var(--text)">${esc(def.name)}</span>
+      `;
+      root.parentNode.insertBefore(crumb, root);
+
+      // 渲染工具
+      renderTool(def);
+
+      // 同质化：基于 tag 找相关工具
+      const relatedPanel = document.getElementById("relatedPanel");
+      const relatedList = document.getElementById("relatedList");
+      const seen = new Set([def.id]);
+      const related = [];
+      (def.tags || []).forEach(t => {
+        TOOL_DEFS.forEach(o => {
+          if (seen.has(o.id)) return;
+          if ((o.tags || []).includes(t) && o.cat === def.cat) {
+            seen.add(o.id);
+            related.push(o);
+          }
+        });
+      });
+      if (related.length) {
+        relatedPanel.style.display = "";
+        relatedList.innerHTML = related.slice(0, 24).map(o =>
+          `<a href="/tool.html?id=${encodeURIComponent(o.id)}">${o.icon} ${esc(o.name)}</a>`
+        ).join("");
+      }
+    }
+  </script>
+</body>
+</html>
