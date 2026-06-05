@@ -8,7 +8,7 @@ import {
   Hammer, Wrench, Image, BookOpen, Compass, Sparkles, ChevronDown,
   Layers, Boxes, ShieldCheck, ScrollText, Grid3x3, Crosshair, Palette, Type,
   Frame, LayoutGrid, BookText, Camera, Database, FileCode, BarChart3, Hexagon,
-  Command,
+  Command, Component,
 } from 'lucide-react';
 import { TagLegend } from './Tag';
 import { ThemeSwitcherInline, useThemeModal, ThemeSwitcherModal } from './ThemeSwitcher';
