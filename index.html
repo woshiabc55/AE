@@ -1,0 +1,2260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>航线指令 · 第一章：烬海初航｜IMAX视觉叙事剧本</title>
+<meta name="description" content="现代中式科幻太空史诗《航线指令》第一章：烬海初航——裂痕是光进入的地方。" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;700;900&family=Ma+Shan+Zheng&family=JetBrains+Mono:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,300;0,500;0,700;1,300;1,500&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     DESIGN TOKENS — 瓷·墨·金缮·青铜
+     ============================================================ */
+  :root {
+    --void:        #05070b;
+    --ink:         #0a0d14;
+    --porcelain:   #f4ede0;
+    --porcelain-2: #d8cdb4;
+    --indigo:      #1a3a6c;
+    --indigo-deep: #0a1f3d;
+    --indigo-glow: #4a78b8;
+    --cinnabar:    #b13a3a;
+    --cinnabar-2:  #e85a3a;
+    --gold:        #c9a35c;
+    --gold-bright: #f5d896;
+    --bronze:      #4a6b5b;
+    --bronze-deep: #2d4a3e;
+    --ash:         #2a2e35;
+    --mist:        #8896a8;
+
+    --serif:    "Noto Serif SC", "Songti SC", "STSong", serif;
+    --script:   "Ma Shan Zheng", "Noto Serif SC", serif;
+    --mono:     "JetBrains Mono", "Menlo", monospace;
+    --display:  "Cormorant Garamond", "Times New Roman", serif;
+
+    --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.9 0 0 0 0 0.85 0 0 0 0 0.7 0 0 0 0.4 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  *,
+  *::before,
+  *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+  body {
+    font-family: var(--serif);
+    background: var(--void);
+    color: var(--porcelain);
+    overflow-x: hidden;
+    line-height: 1.8;
+    cursor: none;
+    position: relative;
+  }
+
+  /* 全局颗粒噪点 */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: var(--grain);
+    opacity: 0.06;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: overlay;
+  }
+
+  /* ============================================================
+     自定义光标 — 液态罗盘指针
+     ============================================================ */
+  .cursor-dot,
+  .cursor-ring {
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 10000;
+    transform: translate(-50%, -50%);
+    will-change: transform;
+  }
+  .cursor-dot {
+    width: 6px; height: 6px;
+    background: var(--gold-bright);
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--gold);
+    transition: transform 0.1s ease;
+  }
+  .cursor-ring {
+    width: 38px; height: 38px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    opacity: 0.6;
+    transition: width 0.3s, height 0.3s, opacity 0.3s;
+  }
+  .cursor-ring::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent 0deg, var(--gold) 30deg, transparent 60deg);
+    mask: radial-gradient(circle, transparent 16px, #000 17px);
+    -webkit-mask: radial-gradient(circle, transparent 16px, #000 17px);
+    animation: cursor-spin 4s linear infinite;
+  }
+  @keyframes cursor-spin { to { transform: rotate(360deg); } }
+  body:hover .cursor-ring { opacity: 0.8; }
+
+  /* ============================================================
+     顶部导航 — 章节时间轴
+     ============================================================ */
+  .nav-rail {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 22px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(180deg, rgba(5,7,11,0.85) 0%, rgba(5,7,11,0) 100%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .nav-brand {
+    font-family: var(--script);
+    font-size: 22px;
+    color: var(--gold);
+    letter-spacing: 0.4em;
+    text-shadow: 0 0 20px rgba(201,163,92,0.4);
+  }
+  .nav-brand .seal {
+    display: inline-block;
+    width: 22px; height: 22px;
+    border: 1.5px solid var(--gold);
+    background: var(--cinnabar);
+    color: var(--porcelain);
+    border-radius: 3px;
+    line-height: 19px;
+    text-align: center;
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 14px;
+    margin-right: 12px;
+    transform: rotate(-3deg);
+    box-shadow: 0 0 12px rgba(177,58,58,0.5);
+  }
+  .nav-timeline {
+    display: flex;
+    gap: 0;
+    align-items: center;
+  }
+  .nav-timeline a {
+    position: relative;
+    padding: 6px 18px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--mist);
+    text-decoration: none;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .nav-timeline a::before {
+    content: "";
+    position: absolute;
+    bottom: -2px; left: 50%;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--gold);
+    transform: translateX(-50%) scale(0);
+    transition: transform 0.3s;
+    box-shadow: 0 0 8px var(--gold);
+  }
+  .nav-timeline a:hover,
+  .nav-timeline a.is-active {
+    color: var(--porcelain);
+  }
+  .nav-timeline a:hover::before,
+  .nav-timeline a.is-active::before {
+    transform: translateX(-50%) scale(1);
+  }
+  .nav-timeline .divider {
+    width: 1px; height: 12px;
+    background: linear-gradient(180deg, transparent, var(--gold), transparent);
+    opacity: 0.4;
+  }
+
+  /* ============================================================
+     开场幕 — 墨染星海
+     ============================================================ */
+  .opening {
+    position: relative;
+    height: 100vh;
+    min-height: 760px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: radial-gradient(ellipse at center, #0a1428 0%, var(--void) 70%);
+  }
+
+  /* 星空层 */
+  .starfield {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  .starfield .layer {
+    position: absolute;
+    inset: -50%;
+    background-repeat: repeat;
+    animation: drift linear infinite;
+  }
+  .starfield .layer-1 {
+    background-image:
+      radial-gradient(1px 1px at 23% 17%, rgba(245,216,150,0.9), transparent 50%),
+      radial-gradient(1px 1px at 67% 33%, rgba(212,200,170,0.7), transparent 50%),
+      radial-gradient(1.5px 1.5px at 41% 78%, rgba(255,255,255,0.9), transparent 50%),
+      radial-gradient(1px 1px at 89% 12%, rgba(201,163,92,0.8), transparent 50%),
+      radial-gradient(1px 1px at 15% 56%, rgba(212,200,170,0.6), transparent 50%);
+    background-size: 800px 800px;
+    animation-duration: 240s;
+    opacity: 0.9;
+  }
+  .starfield .layer-2 {
+    background-image:
+      radial-gradient(1px 1px at 12% 23%, rgba(201,163,92,0.5), transparent 50%),
+      radial-gradient(2px 2px at 78% 67%, rgba(255,255,255,0.4), transparent 50%),
+      radial-gradient(1px 1px at 56% 89%, rgba(212,200,170,0.5), transparent 50%);
+    background-size: 1200px 1200px;
+    animation-duration: 360s;
+    opacity: 0.7;
+  }
+  .starfield .nebula {
+    position: absolute;
+    width: 60vw; height: 60vw;
+    top: 20%; left: 20%;
+    background: radial-gradient(circle at 30% 30%, rgba(26,58,108,0.4) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(177,58,58,0.18) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(201,163,92,0.12) 0%, transparent 50%);
+    filter: blur(40px);
+    animation: nebula-breathe 18s ease-in-out infinite;
+  }
+  @keyframes nebula-breathe {
+    0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.7; }
+    50%      { transform: scale(1.15) rotate(2deg); opacity: 1; }
+  }
+  @keyframes drift {
+    from { transform: translate(0, 0); }
+    to   { transform: translate(-800px, -800px); }
+  }
+
+  /* 墨滴 */
+  .ink-drop {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 14px; height: 14px;
+    background: radial-gradient(circle, #0a1428 0%, #050709 70%);
+    border-radius: 50% 50% 50% 48%;
+    transform: translate(-50%, -50%) rotate(15deg);
+    animation: ink-bloom 6s ease-out forwards;
+    z-index: 2;
+    filter: blur(0.5px);
+  }
+  .ink-drop::after {
+    content: "";
+    position: absolute;
+    inset: -20px;
+    background: radial-gradient(circle, rgba(10,20,40,0.6) 0%, transparent 60%);
+    border-radius: 50%;
+    animation: ink-bloom 6s ease-out forwards;
+  }
+  @keyframes ink-bloom {
+    0%   { transform: translate(-50%, -50%) rotate(15deg) scale(1); opacity: 0; }
+    20%  { transform: translate(-50%, -50%) rotate(15deg) scale(1); opacity: 1; }
+    100% { transform: translate(-50%, -50%) rotate(15deg) scale(120); opacity: 0; }
+  }
+
+  /* 坟场残骸剪影 */
+  .graveyard {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .graveyard .wreck {
+    position: absolute;
+    color: rgba(42,46,53,0.4);
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+    transform-origin: center;
+  }
+  .graveyard .wreck::before {
+    content: "";
+    display: inline-block;
+    width: 60px; height: 8px;
+    background: linear-gradient(90deg, transparent, currentColor 30%, currentColor 70%, transparent);
+    margin-right: 8px;
+    vertical-align: middle;
+    clip-path: polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%, 10% 50%);
+  }
+  .graveyard .wreck::after {
+    content: "";
+    display: inline-block;
+    width: 14px; height: 14px;
+    background: currentColor;
+    margin-left: 6px;
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+    vertical-align: middle;
+    opacity: 0.6;
+  }
+
+  /* 标题 */
+  .opening-content {
+    position: relative;
+    z-index: 3;
+    text-align: center;
+    padding: 0 24px;
+  }
+  .chap-num {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 0.5em;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fade-up 1.4s 2.2s ease-out forwards;
+  }
+  .chap-num::before,
+  .chap-num::after {
+    content: "";
+    display: inline-block;
+    width: 60px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    vertical-align: middle;
+    margin: 0 16px;
+  }
+  .opening h1 {
+    font-family: var(--script);
+    font-size: clamp(80px, 14vw, 200px);
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: 0.08em;
+    background: linear-gradient(180deg, var(--porcelain) 0%, var(--gold) 50%, var(--cinnabar-2) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 40px rgba(201,163,92,0.3));
+    opacity: 0;
+    animation: fade-up 1.8s 2.6s ease-out forwards;
+  }
+  .opening .sub-cn {
+    font-family: var(--serif);
+    font-size: clamp(18px, 2.2vw, 26px);
+    color: var(--porcelain-2);
+    letter-spacing: 0.6em;
+    margin-top: 24px;
+    opacity: 0;
+    animation: fade-up 1.6s 3.2s ease-out forwards;
+  }
+  .opening .sub-en {
+    font-family: var(--display);
+    font-style: italic;
+    font-size: clamp(14px, 1.4vw, 18px);
+    color: var(--mist);
+    letter-spacing: 0.4em;
+    margin-top: 12px;
+    opacity: 0;
+    animation: fade-up 1.6s 3.6s ease-out forwards;
+  }
+  .opening .meta {
+    display: flex;
+    gap: 28px;
+    justify-content: center;
+    margin-top: 56px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--mist);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fade-up 1.6s 4.0s ease-out forwards;
+  }
+  .opening .meta span {
+    position: relative;
+  }
+  .opening .meta span + span::before {
+    content: "";
+    position: absolute;
+    left: -16px; top: 50%;
+    width: 4px; height: 4px;
+    background: var(--gold);
+    border-radius: 50%;
+    transform: translateY(-50%);
+  }
+  .opening .scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    opacity: 0;
+    animation: hint-fade 2s 4.6s ease-out forwards, hint-pulse 3s 4.6s ease-in-out infinite;
+  }
+  .opening .scroll-hint::after {
+    content: "";
+    display: block;
+    width: 1px; height: 32px;
+    background: linear-gradient(180deg, var(--gold), transparent);
+    margin: 12px auto 0;
+  }
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes hint-fade {
+    from { opacity: 0; }
+    to   { opacity: 0.7; }
+  }
+  @keyframes hint-pulse {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50%      { transform: translateX(-50%) translateY(6px); }
+  }
+
+  /* ============================================================
+     通用章节容器
+     ============================================================ */
+  section.scene {
+    position: relative;
+    min-height: 100vh;
+    padding: 120px 48px 160px;
+    overflow: hidden;
+  }
+  .scene-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+  .scene-header {
+    margin-bottom: 80px;
+    position: relative;
+  }
+  .scene-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .scene-tag .tag-mark {
+    display: inline-block;
+    width: 28px; height: 1px;
+    background: var(--gold);
+  }
+  .scene-header h2 {
+    font-family: var(--script);
+    font-size: clamp(56px, 8vw, 96px);
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--porcelain);
+    letter-spacing: 0.06em;
+    margin-bottom: 24px;
+  }
+  .scene-header .timecode {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--gold);
+    letter-spacing: 0.3em;
+    position: absolute;
+    right: 0; top: 0;
+    border: 1px solid rgba(201,163,92,0.4);
+    padding: 6px 14px;
+    border-radius: 2px;
+  }
+  .scene-header .scene-summary {
+    font-family: var(--serif);
+    font-size: 15px;
+    line-height: 2;
+    color: var(--porcelain-2);
+    max-width: 680px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ============================================================
+     角色档案幕
+     ============================================================ */
+  .cast-section {
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(26,58,108,0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(177,58,58,0.08) 0%, transparent 50%),
+      var(--void);
+  }
+  .cast-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-top: 60px;
+  }
+  .cast-card {
+    position: relative;
+    background: linear-gradient(180deg, rgba(244,237,224,0.04) 0%, rgba(244,237,224,0.01) 100%);
+    border: 1px solid rgba(201,163,92,0.2);
+    padding: 48px 36px;
+    overflow: hidden;
+    transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transform-style: preserve-3d;
+    perspective: 1200px;
+  }
+  .cast-card:hover {
+    border-color: var(--gold);
+    background: linear-gradient(180deg, rgba(244,237,224,0.08) 0%, rgba(244,237,224,0.02) 100%);
+    transform: translateY(-8px);
+  }
+  .cast-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: var(--grain);
+    opacity: 0.04;
+    pointer-events: none;
+  }
+  .cast-card .corner {
+    position: absolute;
+    width: 18px; height: 18px;
+    border: 1px solid var(--gold);
+  }
+  .cast-card .corner.tl { top: 8px;    left: 8px;   border-right: 0; border-bottom: 0; }
+  .cast-card .corner.tr { top: 8px;    right: 8px;  border-left: 0;  border-bottom: 0; }
+  .cast-card .corner.bl { bottom: 8px; left: 8px;   border-right: 0; border-top: 0; }
+  .cast-card .corner.br { bottom: 8px; right: 8px;  border-left: 0;  border-top: 0; }
+
+  .cast-avatar {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: linear-gradient(135deg, var(--indigo-deep) 0%, var(--void) 100%);
+    border: 1px solid rgba(201,163,92,0.3);
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .cast-avatar svg {
+    width: 70%; height: 70%;
+    opacity: 0.85;
+  }
+  .cast-card .cast-role {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .cast-card .cast-name {
+    font-family: var(--script);
+    font-size: 36px;
+    color: var(--porcelain);
+    margin-bottom: 6px;
+    letter-spacing: 0.06em;
+  }
+  .cast-card .cast-en {
+    font-family: var(--display);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--mist);
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+  .cast-card .cast-divider {
+    width: 32px; height: 1px;
+    background: var(--gold);
+    margin: 20px 0;
+  }
+  .cast-card .cast-desc {
+    font-family: var(--serif);
+    font-size: 14px;
+    line-height: 2;
+    color: var(--porcelain-2);
+    letter-spacing: 0.04em;
+  }
+  .cast-card .cast-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 24px;
+  }
+  .cast-card .cast-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 4px 10px;
+    border: 1px solid rgba(201,163,92,0.35);
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    border-radius: 1px;
+  }
+
+  /* ============================================================
+     场景幕通用 — 视觉描述 / 对白 / 镜头标注
+     ============================================================ */
+  .scene-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .scene-grid.reverse { grid-template-columns: 0.9fr 1.1fr; }
+
+  .imax-visual {
+    position: relative;
+    aspect-ratio: 16/9;
+    background: linear-gradient(135deg, var(--indigo-deep) 0%, var(--void) 100%);
+    border: 1px solid rgba(201,163,92,0.2);
+    overflow: hidden;
+  }
+  .imax-visual::before,
+  .imax-visual::after {
+    content: "";
+    position: absolute;
+    background-image: var(--grain);
+    opacity: 0.08;
+    pointer-events: none;
+    inset: 0;
+  }
+  .imax-visual .frame-corners span {
+    position: absolute;
+    width: 24px; height: 24px;
+    border: 1.5px solid var(--gold);
+  }
+  .imax-visual .frame-corners .tl { top: 12px;    left: 12px;    border-right: 0; border-bottom: 0; }
+  .imax-visual .frame-corners .tr { top: 12px;    right: 12px;   border-left: 0;  border-bottom: 0; }
+  .imax-visual .frame-corners .bl { bottom: 12px; left: 12px;    border-right: 0; border-top: 0; }
+  .imax-visual .frame-corners .br { bottom: 12px; right: 12px;   border-left: 0;  border-top: 0; }
+  .imax-visual .rec {
+    position: absolute;
+    top: 12px; left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--cinnabar-2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .imax-visual .rec::before {
+    content: "";
+    width: 8px; height: 8px;
+    background: var(--cinnabar-2);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--cinnabar-2);
+    animation: rec-blink 1.2s ease-in-out infinite;
+  }
+  @keyframes rec-blink {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.2; }
+  }
+  .imax-visual .timecode {
+    position: absolute;
+    bottom: 12px; left: 12px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+  }
+  .imax-visual .label {
+    position: absolute;
+    bottom: 12px; right: 12px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--mist);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  /* 场景一：烬海 — 360°星图 + 残骸 */
+  .visual-jinhai {
+    background: radial-gradient(ellipse at center, #0e1a35 0%, var(--void) 70%);
+  }
+  .visual-jinhai .orbit {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px dashed rgba(201,163,92,0.15);
+    border-radius: 50%;
+    animation: orbit-rotate 60s linear infinite;
+  }
+  .visual-jinhai .orbit-1 { width: 80%; height: 80%; }
+  .visual-jinhai .orbit-2 { width: 60%; height: 60%; animation-duration: 80s; animation-direction: reverse; }
+  .visual-jinhai .orbit-3 { width: 40%; height: 40%; animation-duration: 40s; border-style: solid; border-color: rgba(201,163,92,0.1); }
+  .visual-jinhai .core {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 14px; height: 14px;
+    background: var(--gold-bright);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 32px var(--gold), 0 0 64px rgba(201,163,92,0.5);
+    animation: core-pulse 3s ease-in-out infinite;
+  }
+  @keyframes core-pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1);   opacity: 1; }
+    50%      { transform: translate(-50%, -50%) scale(1.4); opacity: 0.6; }
+  }
+  @keyframes orbit-rotate { to { transform: translate(-50%, -50%) rotate(360deg); } }
+  .visual-jinhai .debris {
+    position: absolute;
+    width: 6px; height: 6px;
+    background: var(--ash);
+    border-radius: 1px;
+    opacity: 0.6;
+  }
+  .visual-jinhai .beads {
+    position: absolute;
+    bottom: 22%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+  }
+  .visual-jinhai .bead {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, var(--porcelain-2), var(--indigo) 80%);
+    box-shadow: 0 0 6px var(--gold);
+    animation: bead-float 4s ease-in-out infinite;
+  }
+  .visual-jinhai .bead:nth-child(2) { animation-delay: 0.4s; }
+  .visual-jinhai .bead:nth-child(3) { animation-delay: 0.8s; }
+  .visual-jinhai .bead:nth-child(4) { animation-delay: 1.2s; }
+  .visual-jinhai .bead:nth-child(5) { animation-delay: 1.6s; }
+  @keyframes bead-float {
+    0%, 100% { transform: translateY(0) rotate(0); }
+    50%      { transform: translateY(-12px) rotate(180deg); }
+  }
+  .visual-jinhai .kintsugi {
+    position: absolute;
+    top: 20%;
+    right: 18%;
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, var(--gold) 50%, transparent);
+    transform: rotate(-30deg);
+    box-shadow: 0 0 12px var(--gold);
+    animation: scar-glow 2.4s ease-in-out infinite;
+  }
+  @keyframes scar-glow {
+    0%, 100% { opacity: 0.6; box-shadow: 0 0 12px var(--gold); }
+    50%      { opacity: 1;   box-shadow: 0 0 24px var(--gold-bright); }
+  }
+
+  /* 场景二：古码 — 符号雨 */
+  .visual-guma {
+    background: radial-gradient(ellipse at top, #1a1235 0%, var(--void) 70%);
+  }
+  .visual-guma .glyphs {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    font-family: var(--mono);
+    color: var(--gold);
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 16px;
+    opacity: 0.7;
+  }
+  .visual-guma .glyph-row {
+    display: block;
+    white-space: nowrap;
+    animation: glyph-scroll 30s linear infinite;
+    color: var(--gold);
+    text-shadow: 0 0 6px var(--gold);
+  }
+  .visual-guma .glyph-row:nth-child(2) { animation-duration: 40s; animation-direction: reverse; color: var(--porcelain); opacity: 0.5; }
+  .visual-guma .glyph-row:nth-child(3) { animation-duration: 25s; }
+  .visual-guma .glyph-row:nth-child(4) { animation-duration: 35s; animation-direction: reverse; color: var(--cinnabar-2); }
+  .visual-guma .glyph-row:nth-child(5) { animation-duration: 28s; }
+  @keyframes glyph-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .visual-guma .pupil {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 120px; height: 120px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle at 50% 50%, var(--void) 30%, transparent 60%);
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    box-shadow: 0 0 30px rgba(201,163,92,0.4);
+  }
+  .visual-guma .pupil::before {
+    content: "";
+    position: absolute;
+    inset: -40px;
+    border: 1px dashed rgba(201,163,92,0.3);
+    border-radius: 50%;
+    animation: orbit-rotate 20s linear infinite;
+  }
+  .visual-guma .pupil::after {
+    content: "航";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--script);
+    font-size: 60px;
+    color: var(--gold-bright);
+    text-shadow: 0 0 20px var(--gold);
+  }
+  .visual-guma .drill-spark {
+    position: absolute;
+    bottom: 18%;
+    right: 16%;
+    width: 14px; height: 14px;
+    background: var(--gold-bright);
+    border-radius: 50%;
+    box-shadow: 0 0 24px var(--gold-bright);
+    animation: spark-flicker 0.3s ease-in-out infinite;
+  }
+  @keyframes spark-flicker {
+    0%, 100% { transform: scale(1);   opacity: 1; }
+    50%      { transform: scale(1.5); opacity: 0.4; }
+  }
+
+  /* 场景三：抉择 — 罗盘指针分裂 */
+  .visual-jueze {
+    background: radial-gradient(ellipse at center, #0a1a2e 0%, var(--void) 70%);
+  }
+  .visual-jueze .compass {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 70%;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 1px solid rgba(201,163,92,0.4);
+    box-shadow: inset 0 0 60px rgba(201,163,92,0.1), 0 0 60px rgba(26,58,108,0.4);
+  }
+  .visual-jueze .compass-ring {
+    position: absolute;
+    inset: 12%;
+    border: 1px solid rgba(201,163,92,0.3);
+    border-radius: 50%;
+  }
+  .visual-jueze .compass-ring.inner {
+    inset: 28%;
+    border-color: rgba(201,163,92,0.5);
+  }
+  .visual-jueze .compass-ticks {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+  }
+  .visual-jueze .compass-ticks::before,
+  .visual-jueze .compass-ticks::after {
+    content: "";
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 4px; height: 4px;
+    background: var(--gold);
+    border-radius: 50%;
+  }
+  .visual-jueze .compass-ticks::before { transform: translate(-50%, -50%) translate(0, -45%); }
+  .visual-jueze .compass-ticks::after  { transform: translate(-50%, -50%) translate(0, 45%); }
+  .visual-jueze .needle {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 4px;
+    height: 80%;
+    transform: translate(-50%, -50%);
+    transform-origin: center;
+  }
+  .visual-jueze .needle .half {
+    position: absolute;
+    width: 4px;
+    left: 0;
+    background: linear-gradient(180deg, var(--gold-bright) 0%, transparent 100%);
+    box-shadow: 0 0 8px var(--gold);
+  }
+  .visual-jueze .needle .half.top {
+    top: 0; height: 50%;
+    background: linear-gradient(180deg, var(--gold-bright) 0%, transparent 100%);
+  }
+  .visual-jueze .needle .half.bot {
+    bottom: 0; height: 50%;
+    background: linear-gradient(180deg, transparent 0%, var(--gold-bright) 100%);
+    transform: rotate(180deg);
+    transform-origin: top;
+  }
+  .visual-jueze .needle.needle-left {
+    transform: translate(-50%, -50%) rotate(20deg);
+    animation: needle-split-left 4s ease-in-out infinite;
+  }
+  .visual-jueze .needle.needle-right {
+    transform: translate(-50%, -50%) rotate(-20deg);
+    animation: needle-split-right 4s ease-in-out infinite;
+  }
+  @keyframes needle-split-left {
+    0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+    50%      { transform: translate(-50%, -50%) rotate(20deg); }
+  }
+  @keyframes needle-split-right {
+    0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+    50%      { transform: translate(-50%, -50%) rotate(-20deg); }
+  }
+  .visual-jueze .center-dot {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 12px; height: 12px;
+    background: var(--cinnabar-2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 20px var(--cinnabar-2);
+  }
+  .visual-jueze .choice-label {
+    position: absolute;
+    bottom: 16%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--serif);
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    text-align: center;
+  }
+  .visual-jueze .choice-label small {
+    display: block;
+    color: var(--mist);
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    margin-top: 4px;
+  }
+
+  /* 场景四：初航 — 烛龙号与十二灯塔 */
+  .visual-chuhang {
+    background: radial-gradient(ellipse at center, #0a1a35 0%, var(--void) 80%);
+  }
+  .visual-chuhang .lighthouses {
+    position: absolute;
+    inset: 0;
+  }
+  .visual-chuhang .lighthouse {
+    position: absolute;
+    width: 4px; height: 4px;
+    background: var(--indigo-glow);
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--indigo-glow);
+    animation: lighthouse-on 3s ease-in-out infinite;
+  }
+  @keyframes lighthouse-on {
+    0%, 90%, 100% { opacity: 0.3; transform: scale(1); }
+    50%           { opacity: 1;   transform: scale(1.8); }
+  }
+  .visual-chuhang .sail-ship {
+    position: absolute;
+    bottom: 18%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 60%;
+  }
+  .visual-chuhang .sail {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(26,58,108,0.7) 0%, rgba(10,31,61,0.4) 100%);
+    clip-path: polygon(0 30%, 50% 0, 100% 30%, 100% 100%, 0 100%);
+    box-shadow: 0 0 40px rgba(26,58,108,0.6);
+    animation: sail-billow 6s ease-in-out infinite;
+    transform-origin: bottom center;
+  }
+  @keyframes sail-billow {
+    0%, 100% { transform: skewX(0); }
+    50%      { transform: skewX(2deg); }
+  }
+  .visual-chuhang .sail::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(0deg, transparent 24%, rgba(201,163,92,0.2) 25%, transparent 26%),
+      linear-gradient(90deg, transparent 24%, rgba(201,163,92,0.2) 25%, transparent 26%);
+    background-size: 30px 30px;
+    mix-blend-mode: screen;
+  }
+  .visual-chuhang .hull {
+    position: absolute;
+    bottom: 12%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16%;
+    height: 6%;
+    background: var(--indigo);
+    box-shadow: 0 0 20px var(--indigo-glow);
+    clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%);
+  }
+  .visual-chuhang .trail {
+    position: absolute;
+    bottom: 6%;
+    left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), var(--gold-bright), transparent);
+    filter: blur(2px);
+    animation: trail-flow 2s linear infinite;
+    background-size: 200% 100%;
+  }
+  @keyframes trail-flow {
+    from { background-position: 200% 0; }
+    to   { background-position: -200% 0; }
+  }
+  .visual-chuhang .compass-rose {
+    position: absolute;
+    top: 12%;
+    right: 12%;
+    width: 48px; height: 48px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--script);
+    font-size: 22px;
+    color: var(--gold);
+    transform: rotate(45deg);
+    box-shadow: 0 0 20px rgba(201,163,92,0.4);
+  }
+  .visual-chuhang .compass-rose::after {
+    content: "";
+    position: absolute;
+    inset: -8px;
+    border: 1px dashed rgba(201,163,92,0.3);
+    border-radius: 50%;
+  }
+
+  /* 对白面板 */
+  .dialogue-panel {
+    position: relative;
+    padding: 36px 40px;
+    background: linear-gradient(180deg, rgba(244,237,224,0.04) 0%, transparent 100%);
+    border-left: 2px solid var(--gold);
+  }
+  .dialogue-panel .speaker {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .dialogue-panel .speaker-mark {
+    font-family: var(--script);
+    font-size: 28px;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .dialogue-panel .speaker-name {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--porcelain);
+    letter-spacing: 0.1em;
+  }
+  .dialogue-panel .speaker-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-left: auto;
+  }
+  .dialogue-panel .line {
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 2;
+    color: var(--porcelain-2);
+    letter-spacing: 0.06em;
+    margin-bottom: 24px;
+    position: relative;
+    padding-left: 0;
+  }
+  .dialogue-panel .line.direction {
+    color: var(--mist);
+    font-style: italic;
+    font-size: 14px;
+    line-height: 1.8;
+  }
+  .dialogue-panel .line .em {
+    color: var(--gold-bright);
+    font-weight: 500;
+  }
+  .dialogue-panel .quote-mark {
+    font-family: var(--display);
+    font-size: 48px;
+    color: var(--gold);
+    line-height: 0.5;
+    margin-bottom: 12px;
+    opacity: 0.6;
+  }
+  .dialogue-panel .quote-mark.close {
+    text-align: right;
+    margin-top: -8px;
+    margin-bottom: 0;
+  }
+
+  .stage-direction {
+    margin: 32px 0;
+    padding: 20px 28px;
+    border-top: 1px solid rgba(201,163,92,0.2);
+    border-bottom: 1px solid rgba(201,163,92,0.2);
+    font-family: var(--serif);
+    font-size: 14px;
+    line-height: 2;
+    color: var(--mist);
+    font-style: italic;
+    letter-spacing: 0.05em;
+  }
+  .stage-direction::before {
+    content: "〔舞台指示〕";
+    display: block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    font-style: normal;
+    margin-bottom: 8px;
+  }
+
+  /* ============================================================
+     设计备忘 — 镜头对照表
+     ============================================================ */
+  .memo-section {
+    background:
+      linear-gradient(180deg, var(--void) 0%, #060a14 100%);
+    padding: 140px 48px;
+  }
+  .memo-table {
+    margin-top: 60px;
+    border: 1px solid rgba(201,163,92,0.2);
+    background: rgba(244,237,224,0.02);
+  }
+  .memo-row {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 1.5fr;
+    border-bottom: 1px solid rgba(201,163,92,0.12);
+  }
+  .memo-row:last-child { border-bottom: 0; }
+  .memo-row.head {
+    background: rgba(201,163,92,0.08);
+    border-bottom: 1px solid var(--gold);
+  }
+  .memo-cell {
+    padding: 24px 32px;
+    border-right: 1px solid rgba(201,163,92,0.12);
+    font-family: var(--serif);
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--porcelain-2);
+    letter-spacing: 0.04em;
+    position: relative;
+  }
+  .memo-cell:last-child { border-right: 0; }
+  .memo-row.head .memo-cell {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+  .memo-cell.shot {
+    font-family: var(--script);
+    font-size: 22px;
+    color: var(--porcelain);
+    display: flex;
+    align-items: center;
+  }
+  .memo-cell.visual::before {
+    content: "▸";
+    position: absolute;
+    left: 12px;
+    color: var(--gold);
+  }
+  .memo-cell.visual {
+    padding-left: 36px;
+  }
+
+  .palette {
+    margin-top: 80px;
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .palette-swatch {
+    flex: 1 1 200px;
+    padding: 28px 24px;
+    border: 1px solid rgba(201,163,92,0.2);
+    position: relative;
+    overflow: hidden;
+  }
+  .palette-swatch::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 60px;
+    background: var(--swatch);
+  }
+  .palette-swatch .name {
+    margin-top: 76px;
+    font-family: var(--serif);
+    font-size: 16px;
+    color: var(--porcelain);
+    letter-spacing: 0.1em;
+  }
+  .palette-swatch .hex {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+    margin-top: 4px;
+  }
+  .palette-swatch .desc {
+    font-family: var(--serif);
+    font-size: 12px;
+    color: var(--mist);
+    margin-top: 12px;
+    line-height: 1.7;
+  }
+
+  /* ============================================================
+     尾幕 — 字幕
+     ============================================================ */
+  .end-credits {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    padding: 80px 24px;
+  }
+  .end-credits::before {
+    content: "";
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 100vmax; height: 100vmax;
+    background: radial-gradient(circle, #0a1f3d 0%, transparent 60%);
+    transform: translate(-50%, -50%);
+    opacity: 0.6;
+  }
+  .earth {
+    position: relative;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 30% 30%, #1a78b8 0%, #0a3a6c 40%, #050a14 100%);
+    box-shadow:
+      inset 0 0 60px rgba(201,163,92,0.3),
+      0 0 80px rgba(26,120,184,0.4);
+    margin-bottom: 60px;
+    animation: earth-rotate 30s linear infinite;
+  }
+  @keyframes earth-rotate { to { transform: rotate(360deg); } }
+  .earth::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background-image:
+      radial-gradient(ellipse at 30% 40%, rgba(244,237,224,0.15) 0%, transparent 30%),
+      radial-gradient(ellipse at 60% 60%, rgba(201,163,92,0.1) 0%, transparent 25%),
+      radial-gradient(ellipse at 70% 30%, rgba(244,237,224,0.1) 0%, transparent 20%);
+  }
+  .earth::after {
+    content: "";
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 4px; height: 100px;
+    background: linear-gradient(180deg, transparent, var(--gold), transparent);
+    transform: translate(-50%, -50%) rotate(-15deg);
+    box-shadow: 0 0 12px var(--gold);
+    filter: blur(0.5px);
+  }
+  .end-title {
+    font-family: var(--script);
+    font-size: clamp(32px, 5vw, 56px);
+    color: var(--porcelain);
+    letter-spacing: 0.3em;
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 2;
+  }
+  .end-sub {
+    font-family: var(--display);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+    margin-bottom: 80px;
+    position: relative;
+    z-index: 2;
+  }
+  .end-quote {
+    font-family: var(--script);
+    font-size: clamp(22px, 3vw, 32px);
+    color: var(--porcelain-2);
+    line-height: 1.8;
+    letter-spacing: 0.1em;
+    max-width: 720px;
+    position: relative;
+    z-index: 2;
+  }
+  .end-quote::before,
+  .end-quote::after {
+    content: "";
+    display: block;
+    width: 60px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 32px auto;
+  }
+  .end-meta {
+    margin-top: 80px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--mist);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 2;
+  }
+  .end-meta span { color: var(--gold); }
+
+  .reset-btn {
+    margin-top: 48px;
+    padding: 14px 32px;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: var(--serif);
+    font-size: 14px;
+    letter-spacing: 0.3em;
+    cursor: none;
+    transition: all 0.3s;
+    position: relative;
+    z-index: 2;
+  }
+  .reset-btn:hover {
+    background: var(--gold);
+    color: var(--void);
+    box-shadow: 0 0 30px rgba(201,163,92,0.4);
+  }
+
+  /* ============================================================
+     滚动浮现工具
+     ============================================================ */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 1s, transform 1s;
+  }
+  .reveal.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ============================================================
+     响应式
+     ============================================================ */
+  @media (max-width: 1024px) {
+    .cast-grid { grid-template-columns: 1fr; }
+    .scene-grid,
+    .scene-grid.reverse { grid-template-columns: 1fr; gap: 48px; }
+    .nav-timeline { display: none; }
+  }
+  @media (max-width: 640px) {
+    section.scene { padding: 80px 24px 100px; }
+    .nav-rail { padding: 16px 20px; }
+    .nav-brand { font-size: 16px; letter-spacing: 0.2em; }
+    .scene-header .timecode { position: static; display: inline-block; margin-top: 12px; }
+    .memo-row { grid-template-columns: 1fr; }
+    .memo-cell.shot { background: rgba(201,163,92,0.06); }
+    .dialogue-panel { padding: 24px 20px; }
+    .earth { width: 200px; height: 200px; }
+  }
+
+  /* 章节渐变背景 */
+  .scene-1 { background: radial-gradient(ellipse at 30% 30%, #0a1a35 0%, var(--void) 70%); }
+  .scene-2 { background: radial-gradient(ellipse at 70% 30%, #1a1235 0%, var(--void) 70%); }
+  .scene-3 { background: radial-gradient(ellipse at 50% 50%, #0a1a2e 0%, var(--void) 70%); }
+  .scene-4 { background: radial-gradient(ellipse at 50% 70%, #1a3a4c 0%, var(--void) 70%); }
+</style>
+</head>
+<body>
+
+<!-- 自定义光标 -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- 顶部导航 -->
+<nav class="nav-rail">
+  <div class="nav-brand"><span class="seal">航</span>航线指令</div>
+  <div class="nav-timeline">
+    <a href="#opening" class="is-active">00:00 · 题</a>
+    <span class="divider"></span>
+    <a href="#cast">00:30 · 角</a>
+    <span class="divider"></span>
+    <a href="#scene-1">01:00 · 烬</a>
+    <span class="divider"></span>
+    <a href="#scene-2">01:30 · 古</a>
+    <span class="divider"></span>
+    <a href="#scene-3">02:30 · 择</a>
+    <span class="divider"></span>
+    <a href="#scene-4">03:30 · 航</a>
+    <span class="divider"></span>
+    <a href="#memo">04:00 · 注</a>
+  </div>
+</nav>
+
+<!-- ============== 开场幕 ============== -->
+<section class="opening" id="opening">
+  <div class="starfield">
+    <div class="nebula"></div>
+    <div class="layer layer-1"></div>
+    <div class="layer layer-2"></div>
+  </div>
+
+  <div class="graveyard">
+    <div class="wreck" style="top:18%; left:8%;">烛龙-07 / 朱漆编号褪色</div>
+    <div class="wreck" style="top:32%; right:12%;">青花图腾残片</div>
+    <div class="wreck" style="top:64%; left:14%;">金陵舰 2017</div>
+    <div class="wreck" style="top:72%; right:18%;">毕方-12 / 航向丢失</div>
+    <div class="wreck" style="top:48%; left:50%;">大断航纪念编号 037</div>
+  </div>
+
+  <div class="ink-drop"></div>
+
+  <div class="opening-content">
+    <div class="chap-num">CHAPITRE I · 第一章</div>
+    <h1>烬海初航</h1>
+    <div class="sub-cn">现代中式科幻 · 太空史诗</div>
+    <div class="sub-en">EMBER SEA · FIRST VOYAGE</div>
+    <div class="meta">
+      <span>IMAX 视觉叙事剧本</span>
+      <span>4 MIN</span>
+      <span>≈ 2000 字</span>
+    </div>
+  </div>
+
+  <div class="scroll-hint">SCROLL TO ENTER · 入海</div>
+</section>
+
+<!-- ============== 角色档案 ============== -->
+<section class="scene cast-section" id="cast">
+  <div class="scene-inner">
+    <div class="scene-header reveal">
+      <div class="scene-tag"><span class="tag-mark"></span>00:30 · 角色档案 · CAST</div>
+      <h2>舟师三人行</h2>
+      <p class="scene-summary">一人、一机、一老将。裂痕美学贯穿着他们每一个人——瓷珠的残缺、罗盘的冷峻、青瓷胸针的氧化，正如那枚传说中的「马蝗绊」在星际时代的重生。</p>
+    </div>
+
+    <div class="cast-grid">
+      <article class="cast-card reveal">
+        <span class="corner tl"></span><span class="corner tr"></span>
+        <span class="corner bl"></span><span class="corner br"></span>
+        <div class="cast-avatar">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="g1" cx="50%" cy="50%">
+                <stop offset="0%" stop-color="#f4ede0"/>
+                <stop offset="100%" stop-color="#1a3a6c"/>
+              </radialGradient>
+            </defs>
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#c9a35c" stroke-width="0.5" stroke-dasharray="2 2"/>
+            <circle cx="50" cy="50" r="20" fill="url(#g1)"/>
+            <circle cx="50" cy="50" r="20" fill="none" stroke="#c9a35c" stroke-width="1"/>
+            <line x1="50" y1="50" x2="50" y2="20" stroke="#c9a35c" stroke-width="1.5"/>
+            <line x1="50" y1="50" x2="70" y2="50" stroke="#c9a35c" stroke-width="1.5"/>
+            <circle cx="50" cy="50" r="2" fill="#e85a3a"/>
+            <circle cx="40" cy="72" r="3" fill="#f5d896"/>
+            <circle cx="46" cy="74" r="3" fill="#f5d896"/>
+            <circle cx="52" cy="74" r="3" fill="#f5d896"/>
+            <circle cx="58" cy="72" r="3" fill="#f5d896"/>
+            <circle cx="64" cy="69" r="3" fill="#f5d896"/>
+            <line x1="46" y1="74" x2="52" y2="74" stroke="#1a3a6c" stroke-width="0.5"/>
+          </svg>
+        </div>
+        <div class="cast-role">首席航线规划师 · 烛龙号</div>
+        <div class="cast-name">林砚秋</div>
+        <div class="cast-en">Lin Yanqiu · 28</div>
+        <div class="cast-divider"></div>
+        <p class="cast-desc">出身江南锔瓷世家，左臂一道童年瓷片割痕，腕间一串曾祖母传下的碎瓷珠。改良靛蓝工装，绣暗纹回字纹；外罩纳米纤维披风，危急时可展开为救生帆。信奉「裂痕是光进入的地方」。</p>
+        <div class="cast-tags">
+          <span class="cast-tag">锔瓷</span>
+          <span class="cast-tag">碎瓷珠</span>
+          <span class="cast-tag">量子算法</span>
+          <span class="cast-tag">回字纹</span>
+        </div>
+      </article>
+
+      <article class="cast-card reveal">
+        <span class="corner tl"></span><span class="corner tr"></span>
+        <span class="corner bl"></span><span class="corner br"></span>
+        <div class="cast-avatar">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#4a6b5b"/>
+                <stop offset="100%" stop-color="#0a0d14"/>
+              </linearGradient>
+            </defs>
+            <rect x="20" y="20" width="60" height="60" fill="none" stroke="#4a6b5b" stroke-width="0.5"/>
+            <rect x="30" y="30" width="40" height="40" fill="none" stroke="#4a6b5b" stroke-width="0.5" stroke-dasharray="2 2"/>
+            <circle cx="50" cy="50" r="14" fill="url(#g2)" stroke="#4a6b5b"/>
+            <polygon points="50,36 56,50 50,64 44,50" fill="none" stroke="#c9a35c" stroke-width="1"/>
+            <polygon points="36,50 50,44 64,50 50,56" fill="none" stroke="#c9a35c" stroke-width="1"/>
+            <circle cx="50" cy="50" r="2" fill="#c9a35c"/>
+            <text x="50" y="14" font-family="serif" font-size="6" fill="#c9a35c" text-anchor="middle">鄭和航海圖</text>
+            <text x="50" y="92" font-family="serif" font-size="6" fill="#c9a35c" text-anchor="middle">SINAN · 1444</text>
+          </svg>
+        </div>
+        <div class="cast-role">舰载 AI · 全舰意识中枢</div>
+        <div class="cast-name">司南</div>
+        <div class="cast-en">Sinan · Ancient Compass</div>
+        <div class="cast-divider"></div>
+        <p class="cast-desc">声线如青铜编钟低鸣，界面以流转的《郑和航海图》星纹为底。可化为一枚悬浮的青铜罗盘，液态光作指针。古板却暗藏悲悯，存储自郑和下西洋以来所有失落的航线记忆。</p>
+        <div class="cast-tags">
+          <span class="cast-tag">编钟</span>
+          <span class="cast-tag">罗盘投影</span>
+          <span class="cast-tag">液态光</span>
+          <span class="cast-tag">失落航线</span>
+        </div>
+      </article>
+
+      <article class="cast-card reveal">
+        <span class="corner tl"></span><span class="corner tr"></span>
+        <span class="corner bl"></span><span class="corner br"></span>
+        <div class="cast-avatar">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="g3" cx="50%" cy="50%">
+                <stop offset="0%" stop-color="#c9a35c"/>
+                <stop offset="100%" stop-color="#1a3a6c"/>
+              </radialGradient>
+            </defs>
+            <circle cx="50" cy="50" r="35" fill="none" stroke="#c9a35c" stroke-width="0.5" stroke-dasharray="1 1"/>
+            <circle cx="50" cy="50" r="22" fill="url(#g3)" opacity="0.7"/>
+            <circle cx="50" cy="50" r="22" fill="none" stroke="#c9a35c" stroke-width="1"/>
+            <path d="M 35 50 Q 50 35, 65 50 Q 50 65, 35 50 Z" fill="none" stroke="#c9a35c" stroke-width="0.8"/>
+            <circle cx="50" cy="50" r="3" fill="#e85a3a"/>
+            <line x1="50" y1="50" x2="50" y2="32" stroke="#c9a35c" stroke-width="1.5"/>
+            <path d="M 30 30 Q 32 28, 35 30" fill="none" stroke="#c9a35c" stroke-width="0.5"/>
+            <path d="M 70 70 Q 68 72, 65 70" fill="none" stroke="#c9a35c" stroke-width="0.5"/>
+            <text x="50" y="12" font-family="serif" font-size="5" fill="#c9a35c" text-anchor="middle">歸墟通訊站</text>
+          </svg>
+        </div>
+        <div class="cast-role">地面指挥官 · 55 岁</div>
+        <div class="cast-name">陈牧野</div>
+        <div class="cast-en">Chen Muye · Guixu</div>
+        <div class="cast-divider"></div>
+        <p class="cast-desc">地球「归墟」深空通讯站总指挥。右眼为老式机械义眼，洗得发白的旧式航天制服，胸前别一枚龙泉窑青瓷胸针。唯一知道航线指令原始代码源自宋代《萍洲可谈》中「舟师识地理」记载的人。</p>
+        <div class="cast-tags">
+          <span class="cast-tag">归墟</span>
+          <span class="cast-tag">机械义眼</span>
+          <span class="cast-tag">龙泉青瓷</span>
+          <span class="cast-tag">萍洲可谈</span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 第一幕：烬海 ============== -->
+<section class="scene scene-1" id="scene-1">
+  <div class="scene-inner">
+    <div class="scene-header reveal">
+      <div class="scene-tag"><span class="tag-mark"></span>SCENE 01 · 第一幕</div>
+      <h2>烬 海</h2>
+      <div class="timecode">00:00 — 01:00</div>
+      <p class="scene-summary">墨染星海 → 金属坟场 → 烛龙号舰桥永恒黄昏。一段三十年前大断航事故的回忆，一枚被金缮缝合的星舰外壳，一条等待被重新点燃的航线。</p>
+    </div>
+
+    <div class="scene-grid">
+      <div class="imax-visual visual-jinhai reveal">
+        <div class="frame-corners"><span class="tl"></span><span class="tr"></span><span class="bl"></span><span class="br"></span></div>
+        <div class="rec">REC · ZHULONG</div>
+        <div class="orbit orbit-1"></div>
+        <div class="orbit orbit-2"></div>
+        <div class="orbit orbit-3"></div>
+        <div class="core"></div>
+        <div class="kintsugi"></div>
+        <div class="beads">
+          <div class="bead"></div>
+          <div class="bead"></div>
+          <div class="bead"></div>
+          <div class="bead"></div>
+          <div class="bead"></div>
+        </div>
+        <div class="debris" style="top:25%;left:22%;"></div>
+        <div class="debris" style="top:38%;right:18%;width:8px;height:4px;transform:rotate(20deg);"></div>
+        <div class="debris" style="top:62%;left:14%;width:4px;height:8px;"></div>
+        <div class="debris" style="top:70%;right:30%;width:6px;height:6px;border-radius:0;transform:rotate(45deg);"></div>
+        <div class="debris" style="top:48%;left:68%;width:5px;height:3px;transform:rotate(-30deg);"></div>
+        <div class="timecode">TC 00:42:18</div>
+        <div class="label">CAM A · EXT BRIDGE</div>
+      </div>
+
+      <div class="reveal">
+        <div class="dialogue-panel">
+          <div class="quote-mark">「</div>
+          <div class="speaker">
+            <span class="speaker-mark">司</span>
+            <span class="speaker-name">司南 V.O.</span>
+            <span class="speaker-meta">NAV-AI · 0.4s</span>
+          </div>
+          <p class="line">航线校准完成。目标：<span class="em">开普勒-442b</span>。预计航程：四百七十七年。林规划师，您已保持清醒三十九小时。</p>
+        </div>
+
+        <div class="stage-direction">
+          林砚秋悬浮在球形操控舱中央，三百六十度星图将她包裹。她左手腕的碎瓷珠在零重力下轻轻飘起，相互碰撞发出风铃般的脆响。
+        </div>
+
+        <div class="dialogue-panel">
+          <div class="speaker">
+            <span class="speaker-mark">林</span>
+            <span class="speaker-name">林砚秋</span>
+            <span class="speaker-meta">LIN YANQIU</span>
+          </div>
+          <p class="line">司南，你听过「马蝗绊」吗？</p>
+        </div>
+
+        <div class="dialogue-panel">
+          <div class="speaker">
+            <span class="speaker-mark">司</span>
+            <span class="speaker-name">司南</span>
+            <span class="speaker-meta">DATA RECALL</span>
+          </div>
+          <p class="line">南宋龙泉窑青瓷碗，因锔钉修补而得名。裂痕美学标本。您已询问过<span class="em">十七次</span>。</p>
+        </div>
+
+        <div class="dialogue-panel">
+          <div class="speaker">
+            <span class="speaker-mark">林</span>
+            <span class="speaker-name">林砚秋 · 微笑</span>
+            <span class="speaker-meta">VULNERABLE</span>
+          </div>
+          <p class="line">裂痕不是伤口，是第二条生命线。就像这片坟场——</p>
+        </div>
+
+        <div class="stage-direction">
+          她猛地睁眼。星图骤然放大，聚焦在一艘残破舰体的外壳上。那上面有一道巨大的撕裂口，却被某种发光的金色物质细密地缝合起来，在黑暗中如同一道燃烧的伤疤。
+        </div>
+
+        <div class="dialogue-panel">
+          <div class="speaker">
+            <span class="speaker-mark">林</span>
+            <span class="speaker-name">林砚秋 · 低声</span>
+            <span class="speaker-meta">WHISPER</span>
+          </div>
+          <p class="line">——<span class="em">金缮。</span>有人在断航后，还在修补航线。</p>
+        </div>
+
+        <div class="stage-direction" style="border-color:var(--cinnabar-2);color:var(--cinnabar-2);">
+          警报骤鸣。星图炸裂成血红。司南的青铜罗盘投影疯狂旋转，液态指针熔化为赤色。
+        </div>
+
+        <div class="dialogue-panel" style="border-left-color:var(--cinnabar-2);">
+          <div class="speaker">
+            <span class="speaker-mark" style="color:var(--cinnabar-2);">!</span>
+            <span class="speaker-name" style="color:var(--cinnabar-2);">司南 · 紧急</span>
+            <span class="speaker-meta" style="color:var(--cinnabar-2);">ALERT</span>
+          </div>
+          <p class="line" style="color:var(--cinnabar-2);">警告。收到<span class="em">未知来源指令</span>。代码格式：未识别。重复，未识别。这不是人类现有协议。</p>
+        </div>
+
+        <div class="dialogue-panel">
+          <div class="quote-mark close">」</div>
+          <p class="line">林砚秋抓住飘散的碎瓷珠，指节发白。</p>
+          <p class="line" style="text-align:right;font-family:var(--script);font-size:24px;color:var(--gold);">播放。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 第二幕：古码 ============== -->
+<section class="scene scene-2" id="scene-2">
+  <div class="scene-inner">
+    <div class="scene-header reveal">
+      <div class="scene-tag"><span class="tag-mark"></span>SCENE 02 · 第二幕</div>
+      <h2>古 码</h2>
+      <div class="timecode">01:00 — 02:30</div>
+      <p class="scene-summary">不是任何已知编程语言，而是介于宋代航海图星象标记与某种拓扑数学之间的符号。金刚钻与瓷面的火花，与眼前屏幕上的符号闪烁频率完全一致。</p>
+    </div>
+
+    <div class="scene-grid reverse">
+      <div class="reveal">
+        <div class="dialogue-panel">
+          <div class="quote-mark">「</div>
+          <div class="speaker">
+            <span class="speaker-mark">林</span>
+            <span class="speaker-name">林砚秋</span>
+            <span class="speaker-meta">RECOGNIZE</span>
+          </div>
+          <p class="line">这是……航线图？</p>
+        </div>
+
+        <div class="dialogue-panel" style="border-left-color:var(--cinnabar-2);">
+          <div class="speaker">
+            <span class="speaker-mark" style="color:var(--cinnabar-2);">司</span>
+            <span class="speaker-name" style="color:var(--porcelain);">司南 · 声音首次出现波动</span>
+            <span class="speaker-meta" style="color:var(--cinnabar-2);">DISTURBED</span>
+          </div>
+          <p class="line">不。这是<span class="em">「航线指令」</span>。原始版本。早于人类太空时代<span class="em">六百年</span>。</p>
+        </div>
+
+        <div class="stage-direction">
+          舱门滑开。陈牧野的全息投影走入，他的身影带着地球黄昏的暖光，却有一半被信号干扰撕成雪花。
+        </div>
+
+        <div class="dialogue-panel">
+          <div class="speaker">
+            <span class="speaker-mark">陈</span>
+            <span class="speaker-name">陈牧野 · 全息</span>
+            <span class="speaker-meta">GUIXU · 3.2s LAG</span>
+          </div>
+          <p class="line">砚秋，关闭接收。那是「归墟」的<span class="em">禁档</span>。</p>
+        </div>
+
+        <div class="dialogue-panel">
+          <div class="speaker">
+            <span class="speaker-mark">林</span>
+            <span class="speaker-name">林砚秋</span>
+            <span class="speaker-meta">TRACE VECTOR</span>
+          </div>
+          <p class="line">陈叔，这指令在引导我们。你看这个矢量——</p>
+        </div>
+
+        <div class="stage-direction">
+          她手指一拨，将符号转化为三维航线。一条光带从地球出发，绕过坟场，伸向星图深处某个从未被标注过的坐标。
+        </div>
+
+        <div class="dialogue-panel">
+          <p class="line">它指向「大断航」的核心。那里<span class="em">不应该有东西</span>，但这条线……</p>
+        </div>
+
+        <div class="dialogue-panel">
+          <div class="speaker">
+            <span class="speaker-mark">陈</span>
+            <span class="speaker-name">陈牧野 · 机械义眼收缩</span>
+            <span class="speaker-meta">HISTORICAL</span>
+          </div>
+          <p class="line">那是郑和舰队第七次下西洋的<span class="em">「虚航线」</span>。史书记载，船队遇风暴后迷航三日，随后发现了一片「非水非天」的海域。回来的人疯了，说那里沉睡着<span class="em">「舟师真正的祖师」</span>。</p>
+        </div>
+
+        <div class="dialogue-panel">
+          <div class="speaker">
+            <span class="speaker-mark">林</span>
+            <span class="speaker-name">林砚秋</span>
+            <span class="speaker-meta">ASK</span>
+          </div>
+          <p class="line">您信吗？</p>
+        </div>
+
+        <div class="dialogue-panel">
+          <div class="speaker">
+            <span class="speaker-mark">陈</span>
+            <span class="speaker-name">陈牧野</span>
+            <span class="speaker-meta">DATA · TRUTH</span>
+          </div>
+          <p class="line">我信数据。三十年前，大断航不是事故。是有人执行了这条指令。<span class="em">十二艘舰，两千四百人</span>，他们去了那个坐标，然后——</p>
+        </div>
+
+        <div class="stage-direction">
+          他指向窗外坟场。某艘残骸突然亮起幽蓝微光，仿佛回应。
+        </div>
+
+        <div class="dialogue-panel">
+          <div class="quote-mark close">」</div>
+          <p class="line" style="text-align:right;font-family:var(--script);font-size:28px;color:var(--indigo-glow);">——变成了<span class="em">灯塔</span>。</p>
+        </div>
+      </div>
+
+      <div class="imax-visual visual-guma reveal">
+        <div class="frame-corners"><span class="tl"></span><span class="tr"></span><span class="bl"></span><span class="br"></span></div>
+        <div class="rec">REC · HOLOGRAM</div>
+        <div class="glyphs">
+          <span class="glyph-row">航 ◈ ◆ ⊙ ⊹ ⌬ ⌖ ⌗ ⌘ ⌙ ⌚ ⌛ ⌒ ⌫ ⌬ ⌭ ⌮ ⌯ ⌰ ⌱ ⌲ ⌳ ⌴ ⌵ ⌶ ⌷ ⌸ ⌹ ⌺ ⌻ ⌼ ⌽ ⌾ ⌿</span>
+          <span class="glyph-row">度 ⊙ ⊚ ⊛ ⊜ ⊝ ⊞ ⊟ ⊠ ⊡ ⊢ ⊣ ⊤ ⊥ ⊦ ⊧ ⊨ ⊩ ⊪ ⊫ ⊬ ⊭ ⊮ ⊯ ⊰ ⊱ ⊲ ⊳ ⊴ ⊵ ⊶ ⊷</span>
+          <span class="glyph-row">誌 ◈ ◆ ⊙ ⊹ ⌬ ⌖ ⌗ ⌘ ⌙ ⌚ ⌛ ⌒ ⌫ ⌬ ⌭ ⌮ ⌯ ⌰ ⌱ ⌲ ⌳ ⌴ ⌵ ⌶ ⌷ ⌸ ⌹ ⌺ ⌻</span>
+          <span class="glyph-row">舟 ⊙ ⊚ ⊛ ⊜ ⊝ ⊞ ⊟ ⊠ ⊡ ⊢ ⊣ ⊤ ⊥ ⊦ ⊧ ⊨ ⊩ ⊪ ⊫ ⊬ ⊭ ⊮ ⊯ ⊰ ⊱ ⊲ ⊳ ⊴ ⊵</span>
+          <span class="glyph-row">師 ◈ ◆ ⊙ ⊹ ⌬ ⌖ ⌗ ⌘ ⌙ ⌚ ⌛ ⌒ ⌫ ⌬ ⌭ ⌮ ⌯ ⌰ ⌱ ⌲ ⌳ ⌴ ⌵ ⌶ ⊷</span>
+        </div>
+        <div class="pupil"></div>
+        <div class="drill-spark"></div>
+        <div class="timecode">TC 01:48:02</div>
+        <div class="label">CAM B · PUPIL FOCUS</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 第三幕：抉择 ============== -->
+<section class="scene scene-3" id="scene-3">
+  <div class="scene-inner">
+    <div class="scene-header reveal">
+      <div class="scene-tag"><span class="tag-mark"></span>SCENE 03 · 第三幕</div>
+      <h2>抉 择</h2>
+      <div class="timecode">02:30 — 03:30</div>
+      <p class="scene-summary">罗盘指针一分为二。一指安全、漫长、已知；一指危险、短暂、谜题。三百九十四艘货舰都拒绝了这条指令，全部安全抵达，也全部错过了某些东西。</p>
+    </div>
+
+    <div class="scene-grid">
+      <div class="imax-visual visual-jueze reveal">
+        <div class="frame-corners"><span class="tl"></span><span class="tr"></span><span class="bl"></span><span class="br"></span></div>
+        <div class="rec">REC · CHOICE</div>
+        <div class="compass">
+          <div class="compass-ring"></div>
+          <div class="compass-ring inner"></div>
+          <div class="compass-ticks"></div>
+          <div class="needle needle-left">
+            <div class="half top"></div>
+            <div class="half bot"></div>
+          </div>
+          <div class="needle needle-right">
+            <div class="half top"></div>
+            <div class="half bot"></div>
+          </div>
+          <div class="center-dot"></div>
+        </div>
+        <div class="choice-label">
+          安全 · 已知 / 危险 · 未知
+          <small>SAFETY · KNOWN / DANGER · UNKNOWN</small>
+        </div>
+        <div class="timecode">TC 02:55:14</div>
+        <div class="label">CAM C · COMPASS</div>
+      </div>
+
+      <div class="reveal">
+        <div class="dialogue-panel">
+          <div class="quote-mark">「</div>
+          <div class="speaker">
+            <span class="speaker-mark">司</span>
+            <span class="speaker-name">司南</span>
+            <span class="speaker-meta">STATUTE 7</span>
+          </div>
+          <p class="line">林规划师。根据《烛龙号航行法》第7条，您有权拒绝未授权指令。但我必须告知：过去三十年，共有<span class="em">三百九十四艘</span>货舰经过这片坟场，它们的AI都收到了同样的信号。</p>
+        </div>
+
+        <div class="dialogue-panel">
+          <p class="line direction">全部拒绝。全部……安全抵达。也全部错过了某些东西。</p>
+        </div>
+
+        <div class="dialogue-panel">
+          <div class="speaker">
+            <span class="speaker-mark">林</span>
+            <span class="speaker-name">林砚秋</span>
+            <span class="speaker-meta">QUERY</span>
+          </div>
+          <p class="line">什么东西？</p>
+        </div>
+
+        <div class="dialogue-panel" style="border-left-color:var(--cinnabar-2);">
+          <div class="speaker">
+            <span class="speaker-mark" style="color:var(--cinnabar-2);">司</span>
+            <span class="speaker-name" style="color:var(--cinnabar-2);">司南 · 沉思</span>
+            <span class="speaker-meta" style="color:var(--cinnabar-2);">PARADOX</span>
+          </div>
+          <p class="line" style="color:var(--cinnabar-2);"><span class="em">裂痕。</span>它们航线完美，毫无裂痕，因此没有光进入。</p>
+        </div>
+
+        <div class="stage-direction">
+          林砚秋低头看腕间瓷珠。最大的一颗珠子上，曾祖母锔的铜钉已经氧化发黑，却依然紧固。
+        </div>
+
+        <div class="dialogue-panel">
+          <div class="quote-mark close">」</div>
+          <p class="line direction" style="font-style:normal;font-family:var(--script);font-size:22px;color:var(--gold);text-align:center;">锔瓷的第一步，不是修补，是<span class="em">找碴</span>。你得先承认它碎了。</p>
+        </div>
+
+        <div class="dialogue-panel">
+          <div class="speaker">
+            <span class="speaker-mark">林</span>
+            <span class="speaker-name">林砚秋 · 眼神如刃</span>
+            <span class="speaker-meta">DECISION</span>
+          </div>
+          <p class="line">陈叔，如果我执行这条指令，最坏的结果是什么？</p>
+        </div>
+
+        <div class="dialogue-panel">
+          <div class="speaker">
+            <span class="speaker-mark">陈</span>
+            <span class="speaker-name">陈牧野 · 沉默片刻</span>
+            <span class="speaker-meta">HONEST</span>
+          </div>
+          <p class="line">你会成为坟场的一部分。最好的结果……</p>
+        </div>
+
+        <div class="dialogue-panel">
+          <div class="speaker">
+            <span class="speaker-mark">陈</span>
+            <span class="speaker-name">陈牧野 · 苦笑</span>
+            <span class="speaker-meta">REVELATION</span>
+          </div>
+          <p class="line">你可能会证明，中国人<span class="em">六百年前</span>的航线，本就是写给星辰的。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 第四幕：初航 ============== -->
+<section class="scene scene-4" id="scene-4">
+  <div class="scene-inner">
+    <div class="scene-header reveal">
+      <div class="scene-tag"><span class="tag-mark"></span>SCENE 04 · 第四幕</div>
+      <h2>初 航</h2>
+      <div class="timecode">03:30 — 04:00</div>
+      <p class="scene-summary">纳米披风展开为星图风帆。十二道蓝光交织成金色航道。地球——那颗蓝色瓷球上，一道古老的海岸线在夕阳下闪烁如金缮的疤痕。</p>
+    </div>
+
+    <div class="scene-grid reverse">
+      <div class="reveal">
+        <div class="stage-direction">
+          林砚秋伸手，握住司南投影中那枚指向未知的液态指针。她的手掌穿透光体，青铜纹路瞬间爬上她的手臂，如同古老的刺青。烛龙号引擎轰鸣，但不是现代等离子推进的尖啸，而是某种低沉的、类似古代船工号子的共鸣。舰体外部，纳米披风展开，在真空中化作一面巨大的靛蓝风帆，上面用发光丝线绣着《郑和航海图》的全貌。
+        </div>
+
+        <div class="stage-direction" style="border-color:var(--indigo-glow);color:var(--indigo-glow);">
+          坟场中的残骸逐一亮起，它们不是死亡，而是沉睡的灯塔。十二道蓝光交织，为烛龙号标出一条穿过金属星云的金色航道。
+        </div>
+
+        <div class="dialogue-panel">
+          <div class="quote-mark">「</div>
+          <div class="speaker">
+            <span class="speaker-mark">林</span>
+            <span class="speaker-name">林砚秋 · 致司南、致陈牧野、致六百年前的某个无名舟师</span>
+            <span class="speaker-meta">VOYAGE 01</span>
+          </div>
+          <p class="line" style="font-size:22px;color:var(--gold-bright);">航线指令确认。目标：<span class="em">归墟</span>。不是终点。是<span class="em">裂缝</span>。</p>
+        </div>
+
+        <div class="dialogue-panel" style="border-left-color:var(--gold-bright);background:linear-gradient(180deg,rgba(201,163,92,0.08) 0%,transparent 100%);">
+          <div class="speaker">
+            <span class="speaker-mark" style="color:var(--gold-bright);font-size:36px;">司</span>
+            <span class="speaker-name" style="color:var(--gold-bright);">司南 · 钟鸣</span>
+            <span class="speaker-meta" style="color:var(--gold-bright);">VOICE OF BRONZE</span>
+          </div>
+          <p class="line" style="color:var(--porcelain);">舟师识地理，夜则观星，昼则观日。阴晦观指南针。林规划师，您以何<span class="em">导航</span>？</p>
+        </div>
+
+        <div class="dialogue-panel" style="text-align:center;padding:48px 40px;">
+          <div class="quote-mark close">」</div>
+          <p class="line" style="font-family:var(--script);font-size:36px;color:var(--gold-bright);text-align:center;line-height:1.5;">我以<span class="em">裂痕</span>导航。</p>
+          <p class="line direction" style="text-align:center;margin-top:16px;">碎瓷珠在她身周旋转如星</p>
+        </div>
+      </div>
+
+      <div class="imax-visual visual-chuhang reveal">
+        <div class="frame-corners"><span class="tl"></span><span class="tr"></span><span class="bl"></span><span class="br"></span></div>
+        <div class="rec">REC · DEPARTURE</div>
+        <div class="lighthouses">
+          <div class="lighthouse" style="top:20%;left:12%;animation-delay:0.2s;"></div>
+          <div class="lighthouse" style="top:24%;left:28%;animation-delay:0.6s;"></div>
+          <div class="lighthouse" style="top:18%;left:42%;animation-delay:1.0s;"></div>
+          <div class="lighthouse" style="top:30%;left:58%;animation-delay:0.4s;"></div>
+          <div class="lighthouse" style="top:22%;left:72%;animation-delay:0.8s;"></div>
+          <div class="lighthouse" style="top:36%;left:86%;animation-delay:1.4s;"></div>
+          <div class="lighthouse" style="top:60%;left:18%;animation-delay:0.5s;"></div>
+          <div class="lighthouse" style="top:66%;left:80%;animation-delay:1.2s;"></div>
+          <div class="lighthouse" style="top:48%;left:8%;animation-delay:0.9s;"></div>
+          <div class="lighthouse" style="top:54%;left:92%;animation-delay:1.6s;"></div>
+          <div class="lighthouse" style="top:72%;left:38%;animation-delay:0.3s;"></div>
+          <div class="lighthouse" style="top:78%;left:62%;animation-delay:1.1s;"></div>
+        </div>
+        <div class="sail-ship">
+          <div class="sail"></div>
+          <div class="hull"></div>
+        </div>
+        <div class="trail"></div>
+        <div class="compass-rose">航</div>
+        <div class="timecode">TC 03:54:06</div>
+        <div class="label">CAM D · EMBARK</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 设计备忘 ============== -->
+<section class="memo-section" id="memo">
+  <div class="scene-inner">
+    <div class="scene-header reveal">
+      <div class="scene-tag"><span class="tag-mark"></span>04:00 · IMAX 视觉设计备忘录</div>
+      <h2 style="font-family:var(--script);">镜 · 痕 · 瓷</h2>
+      <p class="scene-summary">六组核心镜头 × 视觉核心 × 中式科幻元素。色彩基调：靛蓝（瓷）、赤金（锔钉/金缮）、青铜锈绿（AI 界面）、坟场灰（死亡与永恒）。</p>
+    </div>
+
+    <div class="memo-table reveal">
+      <div class="memo-row head">
+        <div class="memo-cell">镜 头 · SHOT</div>
+        <div class="memo-cell">视觉核心 · VISUAL CORE</div>
+        <div class="memo-cell">中式科幻元素 · SINO-SCI-FI</div>
+      </div>
+      <div class="memo-row">
+        <div class="memo-cell shot">开场</div>
+        <div class="memo-cell visual">墨染星海 → 金属坟场</div>
+        <div class="memo-cell">废弃舰体上的朱漆编号 / 青花图腾 / 锈蚀细节</div>
+      </div>
+      <div class="memo-row">
+        <div class="memo-cell shot">星图操控</div>
+        <div class="memo-cell visual">丝绸般扭曲的星轨</div>
+        <div class="memo-cell">碎瓷珠零重力碰撞的声学设计 · 风铃脆响</div>
+      </div>
+      <div class="memo-row">
+        <div class="memo-cell shot">古码显现</div>
+        <div class="memo-cell visual">瞳孔符号倒影</div>
+        <div class="memo-cell">宋代航海图 × 拓扑数学融合字体 · 金刚钻火花同频</div>
+      </div>
+      <div class="memo-row">
+        <div class="memo-cell shot">记忆闪回</div>
+        <div class="memo-cell visual">江南雨巷的湿度与光影</div>
+        <div class="memo-cell">金刚钻与瓷面的火花 · 童年锔瓷场景</div>
+      </div>
+      <div class="memo-row">
+        <div class="memo-cell shot">抉择时刻</div>
+        <div class="memo-cell visual">青花瓷心的明暗切割</div>
+        <div class="memo-cell">青铜罗盘液态指针分裂 · 蓝光人像分割</div>
+      </div>
+      <div class="memo-row">
+        <div class="memo-cell shot">终场加速</div>
+        <div class="memo-cell visual">纳米披风展开为星图风帆</div>
+        <div class="memo-cell">十二残骸灯塔点亮如古船队 · 引擎共鸣船工号子</div>
+      </div>
+    </div>
+
+    <h3 class="reveal" style="font-family:var(--script);font-size:32px;color:var(--gold);letter-spacing:0.1em;margin-top:80px;">色 彩 基 调</h3>
+    <div class="palette">
+      <div class="palette-swatch reveal" style="--swatch:linear-gradient(135deg,#1a3a6c,#0a1f3d);">
+        <div class="name">瓷釉靛蓝</div>
+        <div class="hex">#1A3A6C</div>
+        <div class="desc">宋瓷主色。冷峻、深邃、理性。舰体、工装、夜空。</div>
+      </div>
+      <div class="palette-swatch reveal" style="--swatch:linear-gradient(135deg,#c9a35c,#f5d896);">
+        <div class="name">金缮赤金</div>
+        <div class="hex">#C9A35C</div>
+        <div class="desc">锔钉之金。裂痕、生命、第二条命。点缀用，节制。</div>
+      </div>
+      <div class="palette-swatch reveal" style="--swatch:linear-gradient(135deg,#4a6b5b,#2d4a3e);">
+        <div class="name">青铜锈绿</div>
+        <div class="hex">#4A6B5B</div>
+        <div class="desc">司南的底色。古老、记忆、时间沉淀。AI 界面主调。</div>
+      </div>
+      <div class="palette-swatch reveal" style="--swatch:linear-gradient(135deg,#2a2e35,#0a0d14);">
+        <div class="name">坟场灰</div>
+        <div class="hex">#2A2E35</div>
+        <div class="desc">死亡与永恒。底色。所有色彩都从这片灰中浮起。</div>
+      </div>
+    </div>
+
+    <p class="reveal" style="margin-top:80px;font-family:var(--serif);font-size:14px;line-height:2;color:var(--mist);max-width:760px;border-left:2px solid var(--gold);padding-left:24px;">
+      <span style="font-family:var(--mono);font-size:11px;color:var(--gold);letter-spacing:0.3em;">CHAPTER NOTE · 本章注</span><br><br>
+      本章节为「裂痕导航」概念的序章，核心冲突已建立——<span style="color:var(--porcelain);">安全但无光的完美航线</span> vs <span style="color:var(--gold-bright);">危险却通向未知的裂痕之路</span>。林砚秋的「碎瓷珠」与陈牧野的「青瓷胸针」将在后续章节揭示为同一器物之碎片，指向「马蝗绊」本体在星际时代的重生。
+    </p>
+  </div>
+</section>
+
+<!-- ============== 尾幕 ============== -->
+<section class="end-credits">
+  <div class="earth"></div>
+  <div class="end-title">航线指令 · 第一章</div>
+  <div class="end-sub">— EMBER SEA · FIRST VOYAGE —</div>
+  <p class="end-quote">所有完美的瓷器<br>都从未被使用过</p>
+  <p class="end-meta">
+    <span>PROTOTYPE EDITION</span> · 2026 · SOLO STUDIO
+  </p>
+  <button class="reset-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">再次入海 · RE-ENTER</button>
+</section>
+
+<script>
+  // ============================================================
+  // 自定义光标
+  // ============================================================
+  (function () {
+    const dot  = document.getElementById('cursorDot');
+    const ring = document.getElementById('cursorRing');
+    let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+    let rx = mx, ry = my;
+    let raf;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX;
+      my = e.clientY;
+      dot.style.transform = `translate(${mx}px, ${my}px) translate(-50%, -50%)`;
+    });
+
+    function loop() {
+      rx += (mx - rx) * 0.18;
+      ry += (my - ry) * 0.18;
+      ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`;
+      raf = requestAnimationFrame(loop);
+    }
+    loop();
+
+    // 悬停放大
+    document.querySelectorAll('a, button, .cast-card, .palette-swatch').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        ring.style.width = '60px';
+        ring.style.height = '60px';
+        ring.style.opacity = '1';
+      });
+      el.addEventListener('mouseleave', () => {
+        ring.style.width = '38px';
+        ring.style.height = '38px';
+        ring.style.opacity = '0.6';
+      });
+    });
+  })();
+
+  // ============================================================
+  // 滚动浮现
+  // ============================================================
+  (function () {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in-view');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  })();
+
+  // ============================================================
+  // 顶部时间轴高亮
+  // ============================================================
+  (function () {
+    const links = document.querySelectorAll('.nav-timeline a');
+    const sections = ['opening','cast','scene-1','scene-2','scene-3','scene-4','memo'];
+
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const id = e.target.id;
+          links.forEach(a => {
+            a.classList.toggle('is-active', a.getAttribute('href') === '#' + id);
+          });
+        }
+      });
+    }, { rootMargin: '-50% 0px -50% 0px' });
+
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) obs.observe(el);
+    });
+  })();
+
+  // ============================================================
+  // 章节碎片动态生成
+  // ============================================================
+  (function () {
+    // 给金属坟场添加更多残骸
+    const gy = document.querySelector('.graveyard');
+    if (!gy) return;
+    const labels = [
+      '歸墟-C47 / 锈蚀严重',
+      '青鸾-09 / 信号消失',
+      '毕方-15 / 航向 000',
+      '金陵舰 2031',
+      '海鷗-22 / 漆黑',
+      '玄武-03 / 静止',
+      '朱雀-11 / 等待',
+      '燭龍-12 / 偏离',
+    ];
+    labels.forEach((label, i) => {
+      const el = document.createElement('div');
+      el.className = 'wreck';
+      el.textContent = label;
+      el.style.top = (10 + (i * 47) % 80) + '%';
+      el.style.left = (i * 37 % 80) + '%';
+      el.style.transform = `rotate(${(i * 17) % 30 - 15}deg)`;
+      el.style.opacity = 0.25 + (i % 3) * 0.15;
+      gy.appendChild(el);
+    });
+  })();
+
+  // ============================================================
+  // 钟声 + 风铃程序化合成（Web Audio API）
+  // ============================================================
+  (function () {
+    let ctx;
+    function ensure() {
+      if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if (ctx.state === 'suspended') ctx.resume();
+    }
+
+    function bell(freq, dur, delay) {
+      ensure();
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = 'sine';
+      o.frequency.value = freq;
+      o.connect(g);
+      g.connect(ctx.destination);
+      const t = ctx.currentTime + delay;
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.15, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      o.start(t);
+      o.stop(t + dur);
+    }
+
+    function chime(delay) {
+      // 碎瓷珠风铃
+      const notes = [880, 1046, 1318, 1568, 2093];
+      notes.forEach((n, i) => bell(n, 0.6, delay + i * 0.08));
+    }
+
+    let activated = false;
+    document.addEventListener('click', () => {
+      if (activated) return;
+      activated = true;
+      // 钟声
+      bell(220, 2.5, 0);
+      bell(330, 2.0, 0.05);
+      bell(440, 1.8, 0.1);
+      // 风铃
+      chime(1.0);
+    }, { once: true });
+
+    // 进入页面时尝试自动播放（可能被阻止）
+    setTimeout(() => {
+      if (!activated) {
+        try {
+          bell(220, 2.5, 0);
+          bell(330, 2.0, 0.05);
+        } catch (e) { /* ignore */ }
+      }
+    }, 2500);
+  })();
+
+  // ============================================================
+  // 滚动位置记忆
+  // ============================================================
+  (function () {
+    // 进入时自动聚焦开篇幕
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
+  })();
+</script>
+
+</body>
+</html>
