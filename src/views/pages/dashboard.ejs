@@ -1,0 +1,18 @@
+<%
+  // 页面：dashboard
+  // 接收: { groups, active, hud, events, isObserver, title }
+%>
+<%- await include('partials/_hud', { hud: hud }) %>
+<div class="layout">
+  <%- await include('partials/_groupRoster', { groups: groups, activeId: active.id, isObserver: isObserver }) %>
+  <%- await include('partials/_skillMatrix', { active: active }) %>
+  <%- await include('partials/_actionConsole', { active: active, hud: hud, isObserver: isObserver }) %>
+</div>
+<%- await include('partials/_timeline', { events: events }) %>
+<%- await include('partials/_inspector') %>
+
+<script>
+  window.__GROUP_ID__ = <%- json(active.id) %>;
+  window.__IS_OBSERVER__ = <%- json(isObserver) %>;
+  window.__PACKS__ = <%- json(active.packs) %>;
+</script>

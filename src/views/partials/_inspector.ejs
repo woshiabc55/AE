@@ -1,0 +1,49 @@
+<%#
+  Inspector 详情浮层（初始隐藏，由 JS 填充）
+  props: 无
+%>
+<div class="inspector" id="inspector" hidden>
+  <div class="inspector__backdrop" data-close="1"></div>
+  <div class="inspector__panel">
+    <div class="inspector__head">
+      <div>
+        <div class="inspector__sub">SKILL // INSPECTOR</div>
+        <div class="inspector__title" id="insp-code">--</div>
+      </div>
+      <button type="button" class="inspector__close" data-close="1">
+        <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <line x1="3" y1="3" x2="13" y2="13" />
+          <line x1="13" y1="3" x2="3" y2="13" />
+        </svg>
+      </button>
+    </div>
+    <div class="inspector__body" id="insp-body">
+      <!-- 由 JS 动态填充 -->
+    </div>
+    <div class="inspector__foot">
+      <button type="button" class="action-btn action-btn--lg action-btn--amber" id="insp-apply-all">
+        <span class="action-btn__corner action-btn__corner--tl"></span>
+        <span class="action-btn__corner action-btn__corner--br"></span>
+        <div class="action-btn__row">
+          <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5">
+            <polyline points="2 8 5 11 14 3" />
+          </svg>
+          <span class="action-btn__label">APPLY TO ALL</span>
+        </div>
+        <span class="action-btn__sub">等级 +2</span>
+      </button>
+      <button type="button" class="action-btn action-btn--danger" id="insp-remove">
+        <span class="action-btn__corner action-btn__corner--tl"></span>
+        <span class="action-btn__corner action-btn__corner--br"></span>
+        <div class="action-btn__row">
+          <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5">
+            <polyline points="3 4 13 4 12 14 4 14 3 4" />
+            <line x1="6" y1="7" x2="6" y2="11" />
+            <line x1="10" y1="7" x2="10" y2="11" />
+          </svg>
+          <span class="action-btn__label">REMOVE FROM GROUP</span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>

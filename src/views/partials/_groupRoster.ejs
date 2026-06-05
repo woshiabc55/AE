@@ -1,0 +1,62 @@
+<%#
+  GroupRoster 侧栏
+  props: groups [{ id, code, name, stats: { total, equipped, t6 } }], activeId
+%>
+<aside class="roster">
+  <div class="roster__head">
+    <div>
+      <div class="roster__head-sub">SKILL PACK // ROSTER</div>
+      <div class="roster__head-title">技能包组目录</div>
+    </div>
+    <button class="roster__add" title="新建组">
+      <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5">
+        <line x1="8" y1="3" x2="8" y2="13" />
+        <line x1="3" y1="8" x2="13" y2="8" />
+      </svg>
+    </button>
+  </div>
+  <div class="roster__list">
+    <% for (let i = 0; i < groups.length; i++) { %>
+      <% const g = groups[i]; %>
+      <% const isActive = g.id === activeId; %>
+      <a href="/?group=<%= g.id %><%= isObserver ? '&mode=observe' : '' %>"
+         class="roster__item <%= isActive ? 'is-active' : '' %>">
+        <% if (isActive) { %>
+          <span class="roster__item-strip"></span>
+          <span class="roster__item-corner roster__item-corner--tl"></span>
+          <span class="roster__item-corner roster__item-corner--br"></span>
+        <% } %>
+        <div class="roster__item-row">
+          <div class="roster__item-left">
+            <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M1 5 L8 1 L15 5 L15 11 L8 15 L1 11 Z" />
+              <path d="M1 5 L8 9 L15 5" />
+              <line x1="8" y1="9" x2="8" y2="15" />
+            </svg>
+            <span class="roster__item-code"><%= g.code %></span>
+          </div>
+          <svg class="roster__item-arrow" viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5">
+            <polyline points="5 3 11 8 5 13" />
+          </svg>
+        </div>
+        <div class="roster__item-name"><%= g.name %>编队</div>
+        <div class="roster__item-bar">
+          <div class="roster__item-bar-fill" style="width: <%= (g.stats.equipped / g.stats.total * 100).toFixed(0) %>%"></div>
+        </div>
+        <div class="roster__item-meta">
+          <span class="roster__item-meta-num"><%= g.stats.equipped %>/<%= g.stats.total %></span>
+          <% if (g.stats.t6 > 0) { %>
+            <span class="roster__item-tag roster__item-tag--t6">T6 ×<%= g.stats.t6 %></span>
+          <% } %>
+          <% if (isActive) { %>
+            <span class="roster__item-tag roster__item-tag--active">ACTIVE</span>
+          <% } %>
+        </div>
+      </a>
+    <% } %>
+  </div>
+  <div class="roster__foot">
+    <div class="roster__foot-line">ROSTER.SYNC.STATUS</div>
+    <div class="roster__foot-line roster__foot-line--ok">// ALL GROUPS OPERATIONAL</div>
+  </div>
+</aside>

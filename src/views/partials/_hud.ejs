@@ -1,0 +1,97 @@
+<%#
+  HUD 状态栏
+  props: hud { operator, security, power, sync }, clock
+%>
+<header class="hud">
+  <div class="hud__top-line"></div>
+  <div class="hud__row">
+    <!-- 系统标识 -->
+    <div class="hud__brand">
+      <div class="hud__brand-mark">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="1.5">
+          <rect x="4" y="4" width="16" height="16" rx="1" />
+          <rect x="8" y="8" width="8" height="8" />
+          <line x1="2" y1="8" x2="4" y2="8" />
+          <line x1="2" y1="12" x2="4" y2="12" />
+          <line x1="2" y1="16" x2="4" y2="16" />
+          <line x1="20" y1="8" x2="22" y2="8" />
+          <line x1="20" y1="12" x2="22" y2="12" />
+          <line x1="20" y1="16" x2="22" y2="16" />
+          <line x1="8" y1="2" x2="8" y2="4" />
+          <line x1="12" y1="2" x2="12" y2="4" />
+          <line x1="16" y1="2" x2="16" y2="4" />
+          <line x1="8" y1="20" x2="8" y2="22" />
+          <line x1="12" y1="20" x2="12" y2="22" />
+          <line x1="16" y1="20" x2="16" y2="22" />
+        </svg>
+        <span class="hud__brand-dot"></span>
+      </div>
+      <div class="hud__brand-text">
+        <span class="hud__brand-sub">RHODES // TERMINAL</span>
+        <span class="hud__brand-title">BATCH-OPS · v4.2.1</span>
+      </div>
+    </div>
+
+    <!-- 中：神经同步率 -->
+    <div class="hud__sync">
+      <div class="hud__sync-row">
+        <span class="hud__sync-label">
+          <svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M2 8 L5 11 L14 3" />
+            <path d="M2 13 L4 15 L8 11" opacity="0.5" />
+          </svg>
+          NEURAL SYNC
+        </span>
+        <span class="hud__sync-value" id="sync-value"><%= hud.sync.toFixed(1) %>%</span>
+      </div>
+      <div class="hud__sync-bar">
+        <div class="hud__sync-bar-fill" id="sync-bar" style="width: <%= hud.sync %>%"></div>
+        <div class="hud__sync-bar-ticks">
+          <% for (let i = 0; i < 10; i++) { %><span></span><% } %>
+        </div>
+      </div>
+    </div>
+
+    <!-- 中右：操作员 / 权限 / 电力 -->
+    <div class="hud__stats">
+      <div class="hud__stat">
+        <div class="hud__stat-tag">
+          <svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M8 1 L13 4 L13 9 C13 12 8 15 8 15 C8 15 3 12 3 9 L3 4 Z" />
+          </svg>
+          OPERATOR
+        </div>
+        <span class="hud__stat-val hud__stat-val--cyan"><%= hud.operator %></span>
+      </div>
+      <div class="hud__stat">
+        <div class="hud__stat-tag">
+          <svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="8" cy="8" r="3" />
+            <path d="M8 1 L8 3 M8 13 L8 15 M1 8 L3 8 M13 8 L15 8 M3 3 L4.5 4.5 M11.5 11.5 L13 13 M13 3 L11.5 4.5 M4.5 11.5 L3 13" />
+          </svg>
+          CLEARANCE
+        </div>
+        <span class="hud__stat-val hud__stat-val--amber"><%= hud.security %></span>
+      </div>
+      <div class="hud__stat">
+        <div class="hud__stat-tag">
+          <svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M9 1 L4 9 L8 9 L7 15 L12 7 L8 7 Z" />
+          </svg>
+          POWER
+        </div>
+        <span class="hud__stat-val hud__stat-val--ok"><%= hud.power %>%</span>
+      </div>
+    </div>
+
+    <!-- 右：UTC 时钟 -->
+    <div class="hud__clock">
+      <div class="hud__clock-time" id="utc-clock"><%= clock() %></div>
+      <div class="hud__clock-date"><%= date() %></div>
+    </div>
+    <div class="hud__link">
+      <span class="hud__link-dot"></span>
+      <span class="hud__link-text">LINK OK</span>
+    </div>
+  </div>
+</header>

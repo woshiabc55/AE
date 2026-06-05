@@ -1,0 +1,134 @@
+<%#
+  ActionConsole 右侧操作面板
+  props: active { packs }, hud, isObserver
+%>
+<aside class="console" id="console">
+  <div class="console__head">
+    <div class="console__head-sub">ACTION // CONSOLE</div>
+    <div class="console__head-title">批量操作面板</div>
+  </div>
+
+  <div class="console__overview">
+    <div class="console__overview-top">
+      <div>
+        <div class="console__overview-sub">SELECTED TARGETS</div>
+        <div class="console__overview-num">
+          <span id="selected-display" class="console__overview-num-c">00</span>
+          <span class="console__overview-num-max">/ <%= len(active.packs) %></span>
+        </div>
+      </div>
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#4dd0ff" stroke-width="1.5">
+        <circle cx="12" cy="12" r="9" />
+        <circle cx="12" cy="12" r="4" />
+        <line x1="12" y1="1" x2="12" y2="4" />
+        <line x1="12" y1="20" x2="12" y2="23" />
+        <line x1="1" y1="12" x2="4" y2="12" />
+        <line x1="20" y1="12" x2="23" y2="12" />
+      </svg>
+    </div>
+    <div class="console__overview-stats" id="console-stats">
+      <div class="console__overview-stat">
+        <span class="console__overview-stat-label">AVG LV</span>
+        <span class="console__overview-stat-val" id="stat-avg">--</span>
+      </div>
+      <div class="console__overview-stat">
+        <span class="console__overview-stat-label">T6</span>
+        <span class="console__overview-stat-val console__overview-stat-val--amber" id="stat-t6">--</span>
+      </div>
+      <div class="console__overview-stat">
+        <span class="console__overview-stat-label">LOCK</span>
+        <span class="console__overview-stat-val console__overview-stat-val--danger" id="stat-lock">--</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="console__cost">
+    <div class="console__cost-top">
+      <span class="console__cost-label">
+        <svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M2 13 L8 3 L14 13 Z" />
+          <line x1="6" y1="9" x2="10" y2="9" />
+        </svg>
+        TOTAL COST
+      </span>
+      <span class="console__cost-val" id="total-cost">0</span>
+    </div>
+    <div class="console__cost-bar">
+      <div class="console__cost-bar-fill" id="cost-bar" style="width: 0%"></div>
+    </div>
+    <div class="console__cost-warn" id="cost-warn">
+      <svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M8 2 L15 14 L1 14 Z" />
+        <line x1="8" y1="6" x2="8" y2="10" />
+        <circle cx="8" cy="12" r="0.5" fill="currentColor" />
+      </svg>
+      WARNING · COST EXCEEDS BUDGET
+    </div>
+  </div>
+
+  <div class="console__buttons">
+    <button type="button" class="action-btn action-btn--lg action-btn--amber" data-action="upgrade" <%= isObserver ? 'disabled' : '' %>>
+      <span class="action-btn__corner action-btn__corner--tl"></span>
+      <span class="action-btn__corner action-btn__corner--br"></span>
+      <div class="action-btn__row">
+        <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="8" cy="8" r="6" />
+          <polyline points="8 4 8 8 11 9" />
+          <polyline points="5 12 7 10 5 8" />
+        </svg>
+        <span class="action-btn__label">BATCH UPGRADE</span>
+      </div>
+      <span class="action-btn__sub">批量升级</span>
+    </button>
+    <button type="button" class="action-btn action-btn--cyan" data-action="equip" <%= isObserver ? 'disabled' : '' %>>
+      <span class="action-btn__corner action-btn__corner--tl"></span>
+      <span class="action-btn__corner action-btn__corner--br"></span>
+      <div class="action-btn__row">
+        <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M3 13 L7 7 L9 9 L13 3" />
+          <circle cx="13" cy="3" r="1" />
+        </svg>
+        <span class="action-btn__label">BATCH EQUIP</span>
+      </div>
+      <span class="action-btn__sub">批量装配</span>
+    </button>
+    <button type="button" class="action-btn action-btn--ok" data-action="unlock" <%= isObserver ? 'disabled' : '' %>>
+      <span class="action-btn__corner action-btn__corner--tl"></span>
+      <span class="action-btn__corner action-btn__corner--br"></span>
+      <div class="action-btn__row">
+        <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="7" width="10" height="7" />
+          <path d="M5 7 L5 5 C5 3 6 1 8 1 C10 1 11 3 11 5" />
+        </svg>
+        <span class="action-btn__label">BATCH UNLOCK</span>
+      </div>
+      <span class="action-btn__sub">解除锁定</span>
+    </button>
+    <button type="button" class="action-btn action-btn--danger" data-action="lock" <%= isObserver ? 'disabled' : '' %>>
+      <span class="action-btn__corner action-btn__corner--tl"></span>
+      <span class="action-btn__corner action-btn__corner--br"></span>
+      <div class="action-btn__row">
+        <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="7" width="10" height="7" />
+          <path d="M5 7 L5 5 C5 3 6 1 8 1 C10 1 11 3 11 5 L11 7" />
+        </svg>
+        <span class="action-btn__label">BATCH LOCK</span>
+      </div>
+      <span class="action-btn__sub">批量锁定</span>
+    </button>
+  </div>
+
+  <div class="console__log">
+    <div class="console__log-head">
+      <span>// TACTICAL LOG</span>
+      <svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="#ffb547" stroke-width="1.5">
+        <path d="M9 1 L4 9 L8 9 L7 15 L12 7 L8 7 Z" />
+      </svg>
+    </div>
+    <div class="console__log-body">
+      <div>&gt; ready <span class="console__log-ok">[ok]</span></div>
+      <div>&gt; awaiting operator input…</div>
+      <div class="console__log-amber" id="log-armed">&gt; idle</div>
+    </div>
+  </div>
+</aside>

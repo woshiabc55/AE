@@ -1,0 +1,56 @@
+<%#
+  Timeline 底部时间轴
+  props: events [{ id, code, ts, level, message }]
+%>
+<%
+  const LEVEL_STYLE = {
+    INFO: { color: '#4dd0ff', border: 'border-cyan/40' },
+    OK:   { color: '#7cffb2', border: 'border-ok/40' },
+    WARN: { color: '#ffb547', border: 'border-amber/40' },
+    CRIT: { color: '#ff4d5e', border: 'border-danger/40' },
+  };
+%>
+<footer class="timeline">
+  <div class="timeline__top-line"></div>
+  <div class="timeline__row">
+    <div class="timeline__head">
+      <div class="timeline__head-sub">TIMELINE //</div>
+      <div class="timeline__head-title">战术时间轴</div>
+    </div>
+    <div class="timeline__scroll" id="timeline-scroll">
+      <% for (let i = 0; i < events.length; i++) { %>
+        <% const e = events[i]; %>
+        <% const s = LEVEL_STYLE[e.level] || LEVEL_STYLE.INFO; %>
+        <div class="timeline__item" style="animation-delay: <%= i * 40 %>ms; --ev-color: <%= s.color %>; --ev-border: <%= s.color.replace(')', ', 0.4)').replace('rgb', 'rgba') %>;">
+          <span class="timeline__dot <%= e.level !== 'INFO' ? 'is-pulse' : '' %>"></span>
+          <div class="timeline__item-head">
+            <span class="timeline__item-code"><%= e.code %></span>
+            <span class="timeline__item-time" style="color: <%= s.color %>;"><%= timeAgo(e.ts) %></span>
+          </div>
+          <div class="timeline__item-msg" style="color: <%= s.color %>;"><%= e.message %></div>
+          <div class="timeline__item-foot">
+            <span class="timeline__item-dot" style="background: <%= s.color %>; <%= e.level === 'CRIT' ? 'animation: pulseGlow 1.6s ease-in-out infinite;' : '' %>"></span>
+            <span class="timeline__item-level" style="color: <%= s.color %>;"><%= e.level %></span>
+          </div>
+        </div>
+      <% } %>
+      <% if (events.length === 0) { %>
+        <div class="timeline__empty">// NO EVENTS YET</div>
+      <% } %>
+    </div>
+    <div class="timeline__live">
+      <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="#ffb547" stroke-width="1.5">
+        <path d="M2 8 L4 8" />
+        <path d="M6 4 L6 12" />
+        <path d="M8 6 L8 10" />
+        <path d="M10 2 L10 14" />
+        <path d="M12 7 L12 9" />
+        <path d="M14 8 L14 8" />
+      </svg>
+      <div>
+        <span class="timeline__live-sub">FEED</span>
+        <span class="timeline__live-text">LIVE</span>
+      </div>
+    </div>
+  </div>
+</footer>

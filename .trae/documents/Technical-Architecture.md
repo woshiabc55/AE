@@ -1,42 +1,136 @@
-# 批量技能包组 — 技术架构
+# 批量技能包组 — 技术架构（Node.js 框架版）
 
 ## 1. 架构设计
 
-本项目是纯前端单页应用，目标是 1 屏 1 体验的"指挥终端"，因此采用 **Vite + React 18 + TypeScript + Tailwind** 的现代轻量栈，所有数据由前端 mock 驱动，避免外部服务依赖。
+采用自研轻量 **Node.js 模板框架**（基于 Express + EJS），分层清晰、约定优于配置。
 
 ```mermaid
 flowchart LR
-    subgraph Browser["浏览器 (Chrome 110+)"]
-        UI["React UI 组件树"]
-        Store["Zustand 状态中心<br/>- groups / skills / selectedIds<br/>- timelineEvents / hudStats"]
-        Mocks["静态 mock 数据<br/>(src/data/*.ts)"]
+    subgraph Browser["浏览器"]
+        UI["静态 HTML + 客户端 JS"]
     end
-    UI <--> Store
-    Store <--> Mocks
-    UI -->|"localStorage 持久化"| LS[("localStorage:<br/>rhodes.batchOps.v1")]
+    subgraph Node["Node.js 进程"]
+        FW["Framework Core<br/>App / Router / Component"]
+        MW["Express Middleware<br/>bodyParser / static / session"]
+        Routes["Routes<br/>/ , /api/groups/*"]
+        Controllers["Controllers<br/>dashboard / api"]
+        Services["Services<br/>skillGroup / timeline"]
+        Data["In-Memory Data<br/>(可替换 DB)"]
+        Views["EJS Templates<br/>layout + page + partials"]
+    end
+    UI -->|"HTTP 请求"| MW
+    MW --> FW
+    FW --> Routes --> Controllers --> Services --> Data
+    Controllers --> Views
+    Views -->|"rendered HTML"| UI
+    UI -->|"fetch JSON"| Routes
 ```
 
-## 2. 技术描述
+## 2. 技术栈
 
-- **构建工具**：Vite 5（esbuild + Rollup 双引擎）
-- **前端框架**：React 18 + TypeScript 5
-- **样式方案**：Tailwind CSS 3 + 少量手写 CSS（处理 clip-path / scanline / 蜂窝 grid）
-- **状态管理**：Zustand 4（轻量、零样板）
-- **图标**：自绘内联 SVG（线性棱角风）
-- **字体**：Google Fonts (Rajdhani / Orbitron / JetBrains Mono / Noto Sans SC)
-- **后端**：无（纯静态 mock）
-- **数据**：内置 `groups.ts` / `skills.ts` / `events.ts`，`localStorage` 持久化选中态
+| 类别 | 选型 | 说明 |
+|------|------|------|
+| 运行时 | Node.js ≥ 20 | LTS |
+| 框架核心 | 自研 `App / Router / Component` | 封装 Express |
+| Web 框架 | Express 4 | 成熟稳定 |
+| 模板引擎 | EJS 3 | `<%= %>` 风格易读 |
+| 静态资源 | `express.static` | CSS / JS / img |
+| 状态 | In-memory Map | 可平滑替换 Redis / DB |
+| 字体 | Google Fonts (CDN) | Rajdhani / Orbitron / Noto Sans SC |
+| 图标 | 内联 SVG | 线性棱角风 |
 
-## 3. 路由定义
+## 3. 目录结构
 
-| 路由 | 用途 |
-|------|------|
-| `/` | 主面板 — 批量技能包组管理 |
-| `/?mode=observe` | 观察员模式 — 隐藏批量操作按钮 |
+```
+/workspace
+├── package.json
+├── server.js                       # 入口
+├── README.md
+├── app/                            # 框架核心
+│   ├── App.js                      #   应用类
+│   ├── Router.js                   #   路由包装
+│   ├── Component.js                #   组件基类
+│   ├── render.js                   #   EJS 渲染器
+│   └── utils/
+│       ├── logger.js
+│       └── helpers.js
+├── config/
+│   └── index.js                    # 端口 / 路径 / 主题
+├── src/
+│   ├── routes/                     # 路由注册
+│   │   └── index.js
+│   ├── controllers/                # 业务控制器
+│   │   ├── dashboard.controller.js
+│   │   └── api.controller.js
+│   ├── services/                   # 服务层
+│   │   ├── skillGroup.service.js
+│   │   └── timeline.service.js
+│   ├── data/                       # 种子数据
+│   │   ├── groups.seed.js
+│   │   └── events.seed.js
+│   ├── views/                      # EJS 模板
+│   │   ├── layouts/
+│   │   │   └── base.ejs
+│   │   ├── pages/
+│   │   │   └── dashboard.ejs
+│   │   └── partials/
+│   │       ├── _hud.ejs
+│   │       ├── _groupRoster.ejs
+│   │       ├── _skillMatrix.ejs
+│   │       ├── _skillCard.ejs
+│   │       ├── _actionConsole.ejs
+│   │       ├── _inspector.ejs
+│   │       └── _timeline.ejs
+│   └── public/                     # 静态资源
+│       ├── css/
+│       │   └── app.css
+│       ├── js/
+│       │   ├── app.js
+│       │   ├── matrix.js
+│       │   ├── console.js
+│       │   └── inspector.js
+│       └── favicon.svg
+└── .trae/documents/
+    ├── PRD.md
+    └── Technical-Architecture.md
+```
 
-## 4. 数据模型
+## 4. 框架核心 API
 
-### 4.1 类型定义 (TypeScript)
+### 4.1 `App` 应用类
+```js
+const app = new App({ port: 3000, views: 'src/views', static: 'src/public' });
+app.use('/api', apiRouter);
+app.page('/', dashboardController.index);
+app.start();
+```
+
+### 4.2 `Component` 组件基类
+```js
+class HudComponent extends Component {
+  template = '_hud.ejs';
+  defaultData() { return { operator: 'DR-091' }; }
+  // 渲染输出 HTML 字符串
+}
+const html = HudComponent.render({ operator: 'DR-091' });
+```
+
+### 4.3 `render(template, data)`
+封装 `ejs.renderFile`，支持 partial include 与全局 helpers。
+
+## 5. 路由定义
+
+| Method | Path | Controller | 说明 |
+|--------|------|-----------|------|
+| GET | `/` | dashboardController.index | 渲染主面板 |
+| GET | `/api/groups` | apiController.listGroups | 返回所有组 |
+| GET | `/api/groups/:id` | apiController.getGroup | 返回单组 |
+| POST | `/api/groups/:id/batch` | apiController.batchAction | 批量动作 |
+| GET | `/api/timeline` | apiController.timeline | 获取时间轴 |
+| POST | `/api/inspector/:packId/apply-all` | apiController.applyToAll | 应用至全组 |
+| GET | `/api/export/:groupId` | apiController.exportConfig | 下载 JSON |
+
+## 6. 数据模型
 
 ```ts
 type Rarity = 'T1' | 'T2' | 'T3' | 'T4' | 'T5' | 'T6';
@@ -44,86 +138,49 @@ type Rarity = 'T1' | 'T2' | 'T3' | 'T4' | 'T5' | 'T6';
 interface SkillPack {
   id: string;          // 'SK-001'
   code: string;        // 'HOK-7 "铁誓"'
-  name: string;        // 中文名
+  name: string;
   rarity: Rarity;
   level: number;       // 1..90
-  tags: string[];      // ['物理', '近战', '爆发']
-  cost: number;        // 升级消耗
+  tags: string[];
+  cost: number;
   locked: boolean;
   equipped: boolean;
+  description: string;
 }
 
 interface SkillGroup {
   id: string;          // 'GROP-A'
   code: string;        // 'GROP A "破晓"'
-  capacity: number;    // 总槽位
-  packs: SkillPack[];  // 包含的技能包
+  name: string;
+  capacity: number;
+  packs: SkillPack[];
 }
 
 interface TimelineEvent {
   id: string;
   code: string;        // 'EVT-001'
-  ts: number;          // 写入时间戳
+  ts: number;
   level: 'INFO' | 'WARN' | 'CRIT' | 'OK';
   message: string;
 }
 ```
 
-### 4.2 初始数据规模
-- 7 个技能包组 (GROP A..G)
-- 每组 18~30 个技能包，共 ~180 个
-- 时间轴预置 6 条事件用于演示滚动效果
-
-## 5. 组件结构
-
-```
-src/
-├── App.tsx                 // 顶层布局 (HUD / Sidebar / Main / Inspector / Timeline)
-├── main.tsx                // 入口
-├── index.css               // Tailwind + 自定义 (scanline / hex / clip-path)
-├── store/
-│   └── useOpsStore.ts      // Zustand store
-├── data/
-│   ├── groups.ts
-│   └── events.ts
-├── components/
-│   ├── HudBar.tsx          // 顶部状态栏
-│   ├── GroupRoster.tsx     // 左侧组列表
-│   ├── SkillMatrix.tsx     // 中央蜂窝矩阵
-│   ├── SkillCard.tsx       // 单个技能包卡片
-│   ├── ActionConsole.tsx   // 右侧批量操作面板
-│   ├── Inspector.tsx       // 详情抽屉
-│   ├── Timeline.tsx        // 底部时间轴
-│   └── Toast.tsx           // 全局提示
-└── lib/
-    ├── cn.ts               // className 合并
-    └── format.ts           // 数字 / 时间格式化
-```
-
-## 6. 关键交互实现要点
+## 7. 关键交互实现要点
 
 | 交互 | 实现 |
 |------|------|
-| 蜂窝网格 | CSS `clip-path: polygon(...)` + `nth-child` 错位 transform |
-| 框选 | 透明 `<div>` 跟随鼠标，命中检测用 `getBoundingClientRect` |
-| 全选 | Zustand 一次性 set `selectedIds` |
-| 批量升级 | store action `batchUpgrade`，写一条 TimelineEvent |
-| 导出 | `Blob` + `URL.createObjectURL` 下载 JSON |
-| 持久化 | `zustand/middleware` 的 `persist` 写入 `rhodes.batchOps.v1` |
-| 扫描线 | `@keyframes scanline` 8s 线性循环，固定到背景层 |
-
-## 7. 性能与质量
-
-- 180 个卡片使用 `React.memo` 避免无效重渲染
-- 选中态存储为 `Set<string>` 保证 O(1) 查询
-- 动画优先 `transform / opacity`，不触发布局
-- 暗色主题统一使用 CSS 变量，避免运行时计算
-- 关键文字 contrast ≥ 4.5:1（已对照 WCAG）
+| 蜂窝网格 | 服务端按 6 列等宽渲染，CSS `clip-path` 切角 + nth-child 错位 |
+| 框选 | 客户端 `mouseup` 计算矩形 → 取所有命中卡片 → 维护 `Set<id>` |
+| 全选 | 客户端 `SELECT_ALL` 按钮 → 调 store |
+| 批量升级 | `fetch POST /api/groups/:id/batch` body `{action:'upgrade'}` |
+| 时间轴 | 事件写入 in-memory array，客户端每 5s 拉取一次 |
+| 导出 | 服务端生成 JSON 返回 `Content-Disposition: attachment` |
+| 持久化 | v1 版本只 in-memory，v2 可接入 SQLite (`better-sqlite3`) |
 
 ## 8. 运行方式
 
 ```bash
 npm install
-npm run dev     # http://localhost:5173
-npm run build   # 输出 dist/
+npm start             # http://localhost:3000
+npm run dev           # nodemon 自动重启
 ```
