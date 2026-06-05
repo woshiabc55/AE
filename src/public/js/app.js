@@ -75,6 +75,22 @@ async function api(path, opts = {}) {
   return data.data;
 }
 
+// HTML 转义（避免 description / message / code 中含特殊字符破坏模板）
+function escHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+// HEX -> RGBA
+function hexToRgba(hex, alpha = 1) {
+  let h = String(hex).replace('#', '').trim();
+  if (h.length === 3) h = h.split('').map((c) => c + c).join('');
+  if (h.length !== 6) return hex;
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 // ---- 渲染：选择状态 ----
 function renderSelection() {
   // 卡片
@@ -309,7 +325,7 @@ async function openInspector(packId) {
       <div class="inspector__lv-bar"><div class="inspector__lv-bar-fill" style="width: ${(pack.level/90*100).toFixed(0)}%"></div></div>
       <div class="inspector__lv-meta">
         <span style="color:var(--line-strong)">RARITY</span>
-        <span class="rarity-${pack.rarity.toLowerCase()}" style="font-weight:700;color:var(--rarity-${pack.rarity.toLowerCase()})">${pack.rarity}</span>
+        <span class="rarity-${escHtml(pack.rarity.toLowerCase())}" style="font-weight:700;color:var(--rarity-${escHtml(pack.rarity.toLowerCase())})">${escHtml(pack.rarity)}</span>
         <span style="color:var(--line-strong)">COST</span>
         <span style="color:var(--cyan)">${pack.cost}</span>
       </div>
@@ -317,12 +333,12 @@ async function openInspector(packId) {
     <div>
       <div class="inspector__section-title">// TAGS</div>
       <div class="inspector__tags">
-        ${pack.tags.map((t) => `<span class="inspector__tag">${t}</span>`).join('')}
+        ${pack.tags.map((t) => `<span class="inspector__tag">${escHtml(t)}</span>`).join('')}
       </div>
     </div>
     <div>
       <div class="inspector__section-title">// DESCRIPTION</div>
-      <div class="inspector__desc">${pack.description}</div>
+      <div class="inspector__desc">${escHtml(pack.description)}</div>
     </div>
     <div class="inspector__stats">
       <div class="inspector__stat ${pack.equipped ? 'is-on' : ''}">
@@ -369,6 +385,12 @@ document.addEventListener('click', (e) => {
     closeInspector();
   }
 });
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const ins = document.getElementById('inspector');
+    if (ins && !ins.hidden) closeInspector();
+  }
+});
 
 // ---- 刷新当前组 ----
 async function refreshGroup() {
@@ -390,19 +412,19 @@ function cardHtml(p, i) {
   const delay = Math.min(i * 18, 540);
   return `
     <button type="button" class="card ${p.locked ? 'is-locked' : ''} ${p.equipped ? 'is-equipped' : ''}"
-            data-pack-id="${p.id}" data-rarity="${p.rarity}" data-level="${p.level}"
+            data-pack-id="${escHtml(p.id)}" data-rarity="${escHtml(p.rarity)}" data-level="${p.level}"
             style="--card-rarity: ${color}; animation-delay: ${delay}ms;">
       <span class="card__corner card__corner--tl"></span>
       <span class="card__corner card__corner--br"></span>
       <div class="card__top">
-        <span class="card__rarity" style="color: ${color};">${p.rarity}</span>
+        <span class="card__rarity" style="color: ${color};">${escHtml(p.rarity)}</span>
         <div class="card__top-right">
           ${p.equipped ? '<span class="card__zap" title="已装备"><svg viewBox="0 0 16 16" width="9" height="9" fill="currentColor"><path d="M9 1 L3 9 L7 9 L6 15 L13 6 L9 6 Z" /></svg></span>' : ''}
           ${p.locked ? '<svg class="card__lock" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="#ff4d5e" stroke-width="1.5"><rect x="3" y="7" width="10" height="7" /><path d="M5 7 L5 5 C5 3 6 1 8 1 C10 1 11 3 11 5 L11 7" /></svg>' : ''}
         </div>
       </div>
-      <div class="card__code-id">${p.id}</div>
-      <div class="card__code" title="${p.code}">${p.code}</div>
+      <div class="card__code-id">${escHtml(p.id)}</div>
+      <div class="card__code" title="${escHtml(p.code)}">${escHtml(p.code)}</div>
       <div class="card__bottom">
         <div class="card__lv">
           <span class="card__lv-num">${String(p.level).padStart(2, '0')}</span>
@@ -424,19 +446,20 @@ async function refreshTimeline() {
     wrap.innerHTML = list.map((e, i) => {
       const colorMap = { OK: '#7cffb2', INFO: '#4dd0ff', WARN: '#ffb547', CRIT: '#ff4d5e' };
       const c = colorMap[e.level] || '#4dd0ff';
+      const border = hexToRgba(c, 0.4);
       const t = Math.floor((Date.now() - e.ts) / 1000);
       const ago = t < 60 ? t + 's 前' : t < 3600 ? Math.floor(t/60) + 'm 前' : Math.floor(t/3600) + 'h 前';
       return `
-        <div class="timeline__item" style="animation-delay: ${i*40}ms; --ev-color: ${c}; --ev-border: ${c.replace(')',', 0.4)').replace('rgb','rgba')};">
+        <div class="timeline__item" style="animation-delay: ${i*40}ms; --ev-color: ${c}; --ev-border: ${border};">
           <span class="timeline__dot ${e.level !== 'INFO' ? 'is-pulse' : ''}"></span>
           <div class="timeline__item-head">
-            <span class="timeline__item-code">${e.code}</span>
+            <span class="timeline__item-code">${escHtml(e.code)}</span>
             <span class="timeline__item-time" style="color: ${c};">${ago}</span>
           </div>
-          <div class="timeline__item-msg" style="color: ${c};">${e.message}</div>
+          <div class="timeline__item-msg" style="color: ${c};">${escHtml(e.message)}</div>
           <div class="timeline__item-foot">
             <span class="timeline__item-dot" style="background: ${c}; ${e.level === 'CRIT' ? 'animation: pulseGlow 1.6s ease-in-out infinite;' : ''}"></span>
-            <span class="timeline__item-level" style="color: ${c};">${e.level}</span>
+            <span class="timeline__item-level" style="color: ${c};">${escHtml(e.level)}</span>
           </div>
         </div>
       `;
@@ -445,8 +468,12 @@ async function refreshTimeline() {
 }
 
 // ---- 启动 ----
-document.addEventListener('DOMContentLoaded', () => {
+let initialized = false;
+function boot() {
+  if (initialized) return;
+  initialized = true;
   tickClock();
+  if (store.clockTimer) clearInterval(store.clockTimer);
   store.clockTimer = setInterval(tickClock, 1000);
   setInterval(tickSync, 1500);
   setInterval(refreshTimeline, 5000);
@@ -458,4 +485,9 @@ document.addEventListener('DOMContentLoaded', () => {
   applyFilter();
   // 初始 toast
   setTimeout(() => toast('RHODES 终端已上线 · 操作员 DR-091', 'OK'), 600);
-});
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', boot, { once: true });
+} else {
+  boot();
+}

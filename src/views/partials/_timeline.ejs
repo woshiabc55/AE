@@ -21,7 +21,8 @@
       <% for (let i = 0; i < events.length; i++) { %>
         <% const e = events[i]; %>
         <% const s = LEVEL_STYLE[e.level] || LEVEL_STYLE.INFO; %>
-        <div class="timeline__item" style="animation-delay: <%= i * 40 %>ms; --ev-color: <%= s.color %>; --ev-border: <%= s.color.replace(')', ', 0.4)').replace('rgb', 'rgba') %>;">
+        <% const evBorder = hexToRgba(s.color, 0.4); %>
+        <div class="timeline__item" style="animation-delay: <%= i * 40 %>ms; --ev-color: <%= s.color %>; --ev-border: <%= evBorder %>;">
           <span class="timeline__dot <%= e.level !== 'INFO' ? 'is-pulse' : '' %>"></span>
           <div class="timeline__item-head">
             <span class="timeline__item-code"><%= e.code %></span>

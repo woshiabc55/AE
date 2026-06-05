@@ -48,6 +48,10 @@ export const skillGroupService = {
     if (!Array.isArray(packIds) || packIds.length === 0) {
       return { changed: 0, action };
     }
+    const VALID_ACTIONS = new Set(['upgrade', 'equip', 'unlock', 'lock']);
+    if (!VALID_ACTIONS.has(action)) {
+      throw new Error(`Unknown action: ${action}`);
+    }
     let changed = 0;
     for (const id of packIds) {
       const p = group.packs.find((p) => p.id === id);
@@ -67,8 +71,6 @@ export const skillGroupService = {
         case 'lock':
           p.locked = true;
           break;
-        default:
-          throw new Error(`Unknown action: ${action}`);
       }
       changed += 1;
     }
