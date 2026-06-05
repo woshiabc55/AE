@@ -70,6 +70,8 @@ const NAV_GROUPS: NavGroup[] = [
     icon: <BookOpen size={12} />,
     items: [
       { to: '/standards',         label: '工坊守则',  en: 'CODEX',    icon: <BookText size={11} />, badge: '9×9' },
+      { to: '/codex',             label: '守则见面',  en: 'BOARD',    icon: <Component size={11} />, badge: '81' },
+      { to: '/codex-studio',      label: '制作方案',  en: 'STUDIO',   icon: <Hammer size={11} />, badge: '9×9' },
       { to: '/manifesto',         label: '法典',      en: 'MANIFESTO',icon: <ScrollText size={11} />, badge: '24节' },
     ],
   },

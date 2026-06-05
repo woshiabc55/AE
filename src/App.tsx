@@ -20,6 +20,7 @@ import HalftoneExhibition from './pages/HalftoneExhibition';
 import Borders from './pages/Borders';
 import Modular from './pages/Modular';
 import CodexBoard from './pages/CodexBoard';
+import CodexStudio from './pages/CodexStudio';
 import Nav from './components/Nav';
 import PageNav from './components/PageNav';
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -50,6 +51,7 @@ function AnimatedRoutes() {
           <Route path="/borders" element={<Borders />} />
           <Route path="/modular" element={<Modular />} />
           <Route path="/codex" element={<CodexBoard />} />
+          <Route path="/codex-studio" element={<CodexStudio />} />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
