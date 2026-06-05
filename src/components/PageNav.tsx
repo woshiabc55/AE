@@ -12,6 +12,7 @@ const ROUTES = [
   { path: '/schemes', label: '方案' },
   { path: '/game-schemes', label: 'IP' },
   { path: '/packs', label: '包' },
+  { path: '/qa', label: 'QA' },
   { path: '/arknights', label: '方舟' },
   { path: '/about', label: '关于' },
 ];

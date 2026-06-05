@@ -20,24 +20,27 @@ export interface Pack {
 
 /* ====================================================================
    PACK 1 — AUDIO VISUALIZER (基础 L1)  4 件
+   使用 CSS keyframes 代替 Date.now() 避免 60fps React 重渲染
 ==================================================================== */
 export const AudioWaveform = () => (
   <DemoFrame title="Audio Waveform" pack="Audio" level={1} tags={['wave', 'svg', 'oscilloscope']}>
-    <svg viewBox="0 0 400 200" className="w-full h-full">
-      {Array.from({ length: 60 }).map((_, i) => {
-        const h = 10 + Math.abs(Math.sin(i * 0.4 + Date.now() / 200) * 80) + Math.random() * 10;
-        return <rect key={i} x={i * 6 + 4} y={100 - h / 2} width="3" height={h} fill="#f0ff00" />;
-      })}
-    </svg>
+    <style>{`@keyframes aw-bar { 0%,100%{height:10%} 50%{height:80%} }`}</style>
+    <div className="w-full h-full flex items-center justify-center gap-px">
+      {Array.from({ length: 60 }).map((_, i) => (
+        <div key={i} className="w-[3px] bg-volt"
+          style={{ height: '50%', animation: `aw-bar 0.8s ${i * 0.04}s ease-in-out infinite` }} />
+      ))}
+    </div>
   </DemoFrame>
 );
 
 export const AudioBars = () => (
   <DemoFrame title="Audio Bars" pack="Audio" level={1} tags={['bars', 'eq', 'rhythm']}>
+    <style>{`@keyframes ab-bar { 0%,100%{height:20%} 50%{height:90%} }`}</style>
     <div className="w-full h-full flex items-end justify-center gap-1 p-4">
       {Array.from({ length: 24 }).map((_, i) => (
         <div key={i} className="flex-1 bg-cyan"
-          style={{ height: `${20 + Math.abs(Math.sin(i * 0.5 + Date.now() / 300) * 70)}%` }} />
+          style={{ height: '50%', animation: `ab-bar 0.6s ${i * 0.05}s ease-in-out infinite` }} />
       ))}
     </div>
   </DemoFrame>
@@ -45,16 +48,18 @@ export const AudioBars = () => (
 
 export const AudioCircular = () => (
   <DemoFrame title="Audio Circular" pack="Audio" level={1} tags={['circular', 'radial']}>
+    <style>{`@keyframes ac-rotate { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+      @keyframes ac-pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }`}</style>
     <div className="w-full h-full flex items-center justify-center">
-      <svg viewBox="0 0 200 200" className="w-32 h-32">
+      <svg viewBox="0 0 200 200" className="w-32 h-32" style={{ animation: 'ac-rotate 8s linear infinite' }}>
         {Array.from({ length: 36 }).map((_, i) => {
           const a = (i / 36) * Math.PI * 2;
-          const r = 60 + Math.abs(Math.sin(i * 0.3 + Date.now() / 250) * 20);
           return (
             <line key={i}
               x1={100 + Math.cos(a) * 60} y1={100 + Math.sin(a) * 60}
-              x2={100 + Math.cos(a) * r} y2={100 + Math.sin(a) * r}
-              stroke="#ff3da5" strokeWidth="2" />
+              x2={100 + Math.cos(a) * 80} y2={100 + Math.sin(a) * 80}
+              stroke="#ff3da5" strokeWidth="2"
+              style={{ animation: `ac-pulse 0.6s ${i * 0.02}s ease-in-out infinite` }} />
           );
         })}
       </svg>
@@ -64,13 +69,15 @@ export const AudioCircular = () => (
 
 export const AudioParticle = () => (
   <DemoFrame title="Audio Particle" pack="Audio" level={1} tags={['particle', 'reactive']}>
+    <style>{`@keyframes ap-float { 0%,100%{transform:translate(0,0)} 25%{transform:translate(10px,-10px)} 50%{transform:translate(-10px,5px)} 75%{transform:translate(5px,10px)} }`}</style>
     <div className="w-full h-full relative">
       {Array.from({ length: 30 }).map((_, i) => (
         <div key={i} className="absolute w-1 h-1 bg-volt rounded-full"
           style={{
-            left: `${(i * 13 + Date.now() / 30) % 100}%`,
-            top: `${50 + Math.sin(i + Date.now() / 200) * 40}%`,
+            left: `${(i * 13) % 100}%`,
+            top: `${50 + (i % 9) * 5}%`,
             opacity: 0.4 + (i % 5) * 0.1,
+            animation: `ap-float ${2 + (i % 4) * 0.5}s ${i * 0.1}s ease-in-out infinite`,
           }} />
       ))}
     </div>
@@ -92,10 +99,11 @@ export const TypeGlitch = () => (
 
 export const TypeWave = () => (
   <DemoFrame title="Wave Type" pack="Kinetic" level={2} tags={['wave', 'sine', 'path']}>
+    <style>{`@keyframes tw-bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }`}</style>
     <div className="w-full h-full flex items-center justify-center">
       {['W', 'A', 'V', 'E'].map((c, i) => (
-        <span key={i} className="text-6xl font-display font-black text-volt"
-          style={{ transform: `translateY(${Math.sin(i + Date.now() / 300) * 8}px)` }}>
+        <span key={i} className="text-6xl font-display font-black text-volt mx-1"
+          style={{ animation: `tw-bob 1s ${i * 0.15}s ease-in-out infinite` }}>
           {c}
         </span>
       ))}
@@ -119,9 +127,10 @@ export const TypeBounce = () => (
 
 export const TypeRotate3D = () => (
   <DemoFrame title="3D Rotate Type" pack="Kinetic" level={2} tags={['3d', 'rotate', 'perspective']}>
+    <style>{`@keyframes tr3d-spin { from{transform:rotateY(0)} to{transform:rotateY(360deg)} }`}</style>
     <div className="w-full h-full flex items-center justify-center" style={{ perspective: 600 }}>
       <div className="text-5xl font-display font-black text-pink"
-        style={{ transform: `rotateY(${Date.now() / 20}deg)`, transformStyle: 'preserve-3d' }}>
+        style={{ animation: 'tr3d-spin 4s linear infinite', transformStyle: 'preserve-3d' }}>
         3D
       </div>
     </div>
@@ -356,12 +365,10 @@ export const MotionSpring = () => (
 export const MotionMorph = () => (
   <DemoFrame title="Morph" pack="Motion" level={4} tags={['morph', 'path', 'shape']}
     detail="形变动画：path 的 d 属性平滑插值">
+    <style>{`@keyframes mm-cycle { 0%,100%{d:path("M 50 10 L 90 50 L 50 90 L 10 50 Z")} 50%{d:path("M 10 50 Q 50 10 90 50 Q 50 90 10 50")} }`}</style>
     <div className="w-full h-full flex items-center justify-center">
       <svg viewBox="0 0 100 100" className="w-24 h-24">
-        <path fill="#f0ff00"
-          d={Math.sin(Date.now() / 500) > 0
-            ? 'M 10 50 Q 50 10 90 50 Q 50 90 10 50'
-            : 'M 50 10 L 90 50 L 50 90 L 10 50 Z'} />
+        <path fill="#f0ff00" d="M 50 10 L 90 50 L 50 90 L 10 50 Z" style={{ animation: 'mm-cycle 2s ease-in-out infinite' }} />
       </svg>
     </div>
   </DemoFrame>

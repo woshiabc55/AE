@@ -10,28 +10,36 @@ import FontGarden from './pages/FontGarden';
 import Schemes from './pages/Schemes';
 import GameSchemes from './pages/GameSchemes';
 import Packs from './pages/Packs';
+import QA from './pages/QA';
+import NotFound from './pages/NotFound';
 import Arknights from './pages/Arknights';
 import Nav from './components/Nav';
 import PageNav from './components/PageNav';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 function AnimatedRoutes() {
   const location = useLocation();
   return (
     <main key={location.pathname} className="flex-1 animate-fade-in pb-20">
-      <Routes location={location}>
-        <Route path="/" element={<Home />} />
-        <Route path="/tool/:slug" element={<ToolDetail />} />
-        <Route path="/category/:name" element={<Home />} />
-        <Route path="/distribution" element={<Distribution />} />
-        <Route path="/standards" element={<Standards />} />
-        <Route path="/exhibition" element={<Exhibition />} />
-        <Route path="/design-system" element={<DesignSystem />} />
-        <Route path="/font-garden" element={<FontGarden />} />
-        <Route path="/schemes" element={<Schemes />} />
-        <Route path="/game-schemes" element={<GameSchemes />} />
-        <Route path="/arknights" element={<Arknights />} />
-        <Route path="/about" element={<About />} />
-      </Routes>
+      <ErrorBoundary>
+        <Routes location={location}>
+          <Route path="/" element={<Home />} />
+          <Route path="/tool/:slug" element={<ToolDetail />} />
+          <Route path="/category/:name" element={<Home />} />
+          <Route path="/distribution" element={<Distribution />} />
+          <Route path="/standards" element={<Standards />} />
+          <Route path="/exhibition" element={<Exhibition />} />
+          <Route path="/design-system" element={<DesignSystem />} />
+          <Route path="/font-garden" element={<FontGarden />} />
+          <Route path="/schemes" element={<Schemes />} />
+          <Route path="/game-schemes" element={<GameSchemes />} />
+          <Route path="/packs" element={<Packs />} />
+          <Route path="/qa" element={<QA />} />
+          <Route path="/arknights" element={<Arknights />} />
+          <Route path="/about" element={<About />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </ErrorBoundary>
     </main>
   );
 }
