@@ -11,6 +11,7 @@ import Schemes from './pages/Schemes';
 import GameSchemes from './pages/GameSchemes';
 import Packs from './pages/Packs';
 import QA from './pages/QA';
+import Manifesto from './pages/Manifesto';
 import NotFound from './pages/NotFound';
 import Arknights from './pages/Arknights';
 import Nav from './components/Nav';
@@ -35,6 +36,7 @@ function AnimatedRoutes() {
           <Route path="/game-schemes" element={<GameSchemes />} />
           <Route path="/packs" element={<Packs />} />
           <Route path="/qa" element={<QA />} />
+          <Route path="/manifesto" element={<Manifesto />} />
           <Route path="/arknights" element={<Arknights />} />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<NotFound />} />
