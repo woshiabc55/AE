@@ -14,6 +14,7 @@ import QA from './pages/QA';
 import Manifesto from './pages/Manifesto';
 import NotFound from './pages/NotFound';
 import Arknights from './pages/Arknights';
+import PlumGrid from './pages/PlumGrid';
 import Nav from './components/Nav';
 import PageNav from './components/PageNav';
 import { ErrorBoundary } from './components/ErrorBoundary';

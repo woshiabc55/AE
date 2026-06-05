@@ -15,6 +15,7 @@ const ROUTES = [
   { path: '/qa', label: 'QA' },
   { path: '/manifesto', label: '法典' },
   { path: '/arknights', label: '方舟' },
+  { path: '/plum', label: '梅' },
   { path: '/about', label: '关于' },
 ];
 
