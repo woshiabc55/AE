@@ -1,5 +1,6 @@
 import { NavLink, Link } from 'react-router-dom';
 import { Hammer, BarChart3, BookOpen, Image, Palette, Type, Layers, Gamepad2, Crosshair, Boxes, ShieldCheck, ScrollText, Grid3x3 } from 'lucide-react';
+import { TagLegend } from './Tag';
 
 export default function Nav() {
   return (
@@ -57,6 +58,13 @@ export default function Nav() {
             ★ STAR
           </a>
         </nav>
+      </div>
+      {/* 9 类目色板条 — 模块化9 的标准色规 */}
+      <div className="border-t border-bone/20 bg-ink overflow-x-auto">
+        <div className="max-w-[1400px] mx-auto px-6 py-1.5 flex items-center gap-2 min-w-min">
+          <span className="font-mono text-[9px] text-bone/40 shrink-0">TAGS</span>
+          <TagLegend size="xs" />
+        </div>
       </div>
     </header>
   );
