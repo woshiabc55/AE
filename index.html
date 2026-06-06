@@ -1,0 +1,2317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>ARCADIA · 游戏IP衍生作品宇宙 · 2026.06.08</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter+Tight:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+/* =========================================================
+   ARCADIA — Game IP Derivative Works Universe Browser
+   Modern Editorial-Cyber Aesthetic
+   ========================================================= */
+
+:root {
+  --bg-0: #07070F;
+  --bg-1: #0E0E1C;
+  --bg-2: #14142A;
+  --bg-3: #1A1A36;
+  --ink-0: #F2F2F5;
+  --ink-1: #B8B8C8;
+  --ink-2: #6E6E84;
+  --ink-3: #3A3A4A;
+  --line: rgba(255,255,255,0.07);
+  --line-2: rgba(255,255,255,0.12);
+  --cyan: #7DF9FF;
+  --cyan-soft: #5BC4D6;
+  --magenta: #FF3CAC;
+  --amber: #FFB347;
+  --green: #2EE6A6;
+  --violet: #9D7BFF;
+  --crimson: #FF5C7C;
+  --shadow-1: 0 8px 32px -8px rgba(0,0,0,0.6);
+  --shadow-2: 0 16px 64px -16px rgba(125,249,255,0.18);
+  --font-display: 'Space Grotesk', 'Noto Serif SC', system-ui, sans-serif;
+  --font-body: 'Inter Tight', 'Noto Serif SC', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+}
+
+[data-theme="light"] {
+  --bg-0: #F5F2EC;
+  --bg-1: #ECE7DD;
+  --bg-2: #E1DBC9;
+  --bg-3: #D2CAB3;
+  --ink-0: #14141F;
+  --ink-1: #3F3F50;
+  --ink-2: #76768A;
+  --ink-3: #A8A8B8;
+  --line: rgba(0,0,0,0.08);
+  --line-2: rgba(0,0,0,0.15);
+  --shadow-1: 0 8px 32px -8px rgba(0,0,0,0.15);
+  --shadow-2: 0 16px 64px -16px rgba(0,0,0,0.15);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  background: var(--bg-0);
+  color: var(--ink-0);
+  font-family: var(--font-body);
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(125,249,255,0.08), transparent 50%),
+    radial-gradient(ellipse 60% 50% at 100% 30%, rgba(255,60,172,0.06), transparent 50%),
+    radial-gradient(ellipse 50% 40% at 50% 100%, rgba(157,123,255,0.05), transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0, transparent 2px, rgba(255,255,255,0.012) 2px, rgba(255,255,255,0.012) 3px);
+  pointer-events: none;
+  z-index: 1;
+  mix-blend-mode: overlay;
+}
+
+[data-theme="light"] body::after { background-image: none; }
+
+.app {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+/* ===== HEADER / NAV ===== */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 36px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(7,7,15,0.78);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+}
+
+[data-theme="light"] .nav { background: rgba(245,242,236,0.85); }
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: 0.18em;
+}
+
+.brand-logo {
+  width: 36px;
+  height: 36px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--cyan) 0%, var(--magenta) 100%);
+  box-shadow: 0 0 24px rgba(125,249,255,0.4);
+  flex-shrink: 0;
+}
+
+.brand-logo svg { width: 22px; height: 22px; color: #0A0A1F; }
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  line-height: 1;
+}
+
+.brand-text small {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.32em;
+  font-weight: 500;
+  color: var(--ink-2);
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.brand-tag {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border: 1px solid var(--line-2);
+  border-radius: 100px;
+  color: var(--ink-1);
+  margin-left: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.brand-tag .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-link {
+  background: none;
+  border: 0;
+  color: var(--ink-1);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.18s;
+  position: relative;
+}
+
+.nav-link:hover { color: var(--ink-0); background: var(--line); }
+.nav-link.active { color: var(--cyan); }
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 14px; right: 14px;
+  height: 1px;
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+}
+
+.nav-actions { display: flex; gap: 8px; }
+
+.icon-btn {
+  width: 36px; height: 36px;
+  display: grid; place-items: center;
+  background: transparent;
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--ink-1);
+  transition: all 0.18s;
+}
+
+.icon-btn:hover { color: var(--cyan); border-color: var(--cyan); }
+.icon-btn svg { width: 16px; height: 16px; }
+
+/* ===== MAIN CONTENT ===== */
+.main { padding: 0 36px; }
+
+/* ===== VIEWS ===== */
+.view { display: none; }
+.view.active { display: block; }
+
+/* ===== HERO ===== */
+.hero {
+  position: relative;
+  padding: 60px 0 48px;
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; right: -10%;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(125,249,255,0.06), transparent 60%);
+  pointer-events: none;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 48px;
+  align-items: end;
+}
+
+@media (max-width: 980px) { .hero-grid { grid-template-columns: 1fr; gap: 32px; } }
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  color: var(--cyan);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.hero-eyebrow::before {
+  content: '';
+  width: 24px; height: 1px;
+  background: var(--cyan);
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(48px, 6.5vw, 96px);
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  margin-bottom: 24px;
+}
+
+.hero-title .grad {
+  background: linear-gradient(135deg, var(--cyan) 0%, var(--magenta) 50%, var(--amber) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: italic;
+  font-weight: 600;
+}
+
+.hero-sub {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--ink-1);
+  max-width: 580px;
+}
+
+.hero-sub strong { color: var(--ink-0); font-weight: 500; }
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  padding: 24px;
+  background: var(--bg-1);
+  border: 1px solid var(--line-2);
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-stats::before {
+  content: '';
+  position: absolute;
+  top: -50%; right: -30%;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(125,249,255,0.12), transparent 60%);
+  pointer-events: none;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  z-index: 1;
+}
+
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.stat-value {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ink-0);
+}
+
+.stat-value .small { font-size: 16px; color: var(--ink-2); margin-left: 4px; }
+
+.stat-row-2 { display: flex; gap: 18px; align-items: baseline; flex-wrap: wrap; }
+
+.scroll-cue {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 40px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.32em;
+  color: var(--ink-2);
+  text-transform: uppercase;
+}
+
+.scroll-cue::after {
+  content: '';
+  flex: 0 0 80px;
+  height: 1px;
+  background: linear-gradient(to right, var(--ink-2), transparent);
+}
+
+/* ===== TOOLBAR ===== */
+.toolbar {
+  position: sticky;
+  top: 73px;
+  z-index: 50;
+  background: rgba(7,7,15,0.78);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+[data-theme="light"] .toolbar { background: rgba(245,242,236,0.85); }
+
+.search-wrap {
+  position: relative;
+  flex: 1 1 320px;
+  min-width: 240px;
+}
+
+.search-input {
+  width: 100%;
+  background: var(--bg-1);
+  border: 1px solid var(--line-2);
+  color: var(--ink-0);
+  font-family: var(--font-body);
+  font-size: 14px;
+  padding: 11px 14px 11px 42px;
+  border-radius: 10px;
+  outline: none;
+  transition: all 0.18s;
+}
+
+.search-input::placeholder { color: var(--ink-2); }
+.search-input:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(125,249,255,0.15); }
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink-2);
+  width: 16px; height: 16px;
+}
+
+.search-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: var(--ink-2);
+  padding: 6px;
+  border-radius: 6px;
+  display: none;
+}
+.search-clear:hover { color: var(--magenta); }
+
+.search-wrap.has-value .search-clear { display: block; }
+
+.filter-select {
+  background: var(--bg-1);
+  border: 1px solid var(--line-2);
+  color: var(--ink-0);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 11px 32px 11px 14px;
+  border-radius: 10px;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23B8B8C8' d='M5 6L0 0h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  transition: all 0.18s;
+}
+
+.filter-select:hover { border-color: var(--cyan); }
+
+.view-toggle {
+  display: flex;
+  background: var(--bg-1);
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.view-toggle button {
+  background: transparent;
+  border: 0;
+  color: var(--ink-2);
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 7px;
+  display: grid; place-items: center;
+  transition: all 0.15s;
+}
+
+.view-toggle button.active {
+  background: var(--bg-3);
+  color: var(--cyan);
+}
+
+.view-toggle button svg { width: 14px; height: 14px; }
+
+.result-count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  margin-left: auto;
+  padding: 0 12px;
+}
+
+.result-count strong { color: var(--cyan); font-weight: 600; }
+
+/* ===== IP CHIPS ===== */
+.chips-row {
+  display: flex;
+  gap: 8px;
+  padding: 16px 0 8px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-2) transparent;
+  flex-wrap: wrap;
+}
+
+.chips-row::-webkit-scrollbar { height: 4px; }
+.chips-row::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 2px; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-1);
+  padding: 7px 12px;
+  background: var(--bg-1);
+  border: 1px solid var(--line-2);
+  border-radius: 100px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.chip:hover { color: var(--ink-0); border-color: var(--ink-2); }
+.chip.active { background: var(--cyan); color: #0A0A1F; border-color: var(--cyan); font-weight: 600; }
+.chip .count { color: var(--ink-2); }
+.chip.active .count { color: rgba(10,10,31,0.7); }
+
+/* ===== GRID ===== */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 18px;
+  padding: 28px 0 64px;
+}
+
+.card {
+  background: var(--bg-1);
+  border: 1px solid var(--line-2);
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: var(--cyan);
+  box-shadow: var(--shadow-2);
+}
+
+.card-cover {
+  position: relative;
+  aspect-ratio: 16/9;
+  background: var(--bg-2);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--line);
+}
+
+.card-cover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--c1, #7DF9FF) 0%, var(--c2, #FF3CAC) 100%);
+  opacity: 0.85;
+  mix-blend-mode: multiply;
+}
+
+.card-cover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at top right, rgba(255,255,255,0.15), transparent 50%),
+    radial-gradient(ellipse at bottom left, rgba(0,0,0,0.3), transparent 50%);
+}
+
+.card-cover-text {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 42px;
+  letter-spacing: -0.04em;
+  color: rgba(255,255,255,0.95);
+  text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  line-height: 1;
+  text-align: center;
+  padding: 0 12px;
+}
+
+.card-cover-year {
+  position: absolute;
+  top: 12px; right: 12px;
+  z-index: 3;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  background: rgba(0,0,0,0.4);
+  color: rgba(255,255,255,0.9);
+  padding: 4px 8px;
+  border-radius: 100px;
+  backdrop-filter: blur(6px);
+}
+
+.card-cover-fav {
+  position: absolute;
+  top: 12px; left: 12px;
+  z-index: 3;
+  background: rgba(0,0,0,0.4);
+  color: rgba(255,255,255,0.8);
+  width: 28px; height: 28px;
+  border: 0;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  backdrop-filter: blur(6px);
+}
+
+.card-cover-fav:hover { color: var(--amber); }
+.card-cover-fav.active { color: var(--amber); background: rgba(0,0,0,0.6); }
+.card-cover-fav svg { width: 14px; height: 14px; }
+
+.card-body {
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.card-ip {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.card-ip::before {
+  content: '';
+  width: 14px; height: 1px;
+  background: var(--cyan);
+}
+
+.card-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.3;
+  color: var(--ink-0);
+  letter-spacing: -0.01em;
+}
+
+.card-desc {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-1);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-top: 2px;
+}
+
+.card-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  background: var(--bg-2);
+  color: var(--ink-1);
+  border-radius: 6px;
+  border: 1px solid var(--line);
+}
+
+.tag-type {
+  background: var(--bg-3);
+  color: var(--magenta);
+  border-color: var(--magenta);
+}
+
+/* ===== TABLE VIEW ===== */
+.table-wrap {
+  padding: 28px 0 64px;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table thead th {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--line-2);
+  background: var(--bg-1);
+  font-weight: 500;
+  position: sticky;
+  top: 130px;
+  z-index: 5;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+
+.table thead th:hover { color: var(--cyan); }
+.table thead th.sorted { color: var(--cyan); }
+.table thead th .sort-mark { color: var(--cyan); margin-left: 4px; }
+
+.table tbody tr {
+  border-bottom: 1px solid var(--line);
+  transition: all 0.15s;
+}
+
+.table tbody tr:hover {
+  background: var(--bg-1);
+  cursor: pointer;
+}
+
+.table td {
+  padding: 14px 16px;
+  vertical-align: middle;
+}
+
+.table .col-ip {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+.table .col-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  color: var(--ink-0);
+}
+
+.table .col-year {
+  font-family: var(--font-mono);
+  color: var(--ink-1);
+}
+
+.table .col-type {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.table .col-region { color: var(--ink-2); font-size: 12px; }
+
+.table .col-fav {
+  text-align: right;
+  width: 50px;
+}
+
+.table .col-fav button {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: var(--ink-2);
+  display: inline-grid;
+  place-items: center;
+  width: 30px; height: 30px;
+  border-radius: 6px;
+}
+
+.table .col-fav button:hover { color: var(--amber); background: var(--line); }
+.table .col-fav button.active { color: var(--amber); }
+.table .col-fav svg { width: 14px; height: 14px; }
+
+/* ===== EMPTY ===== */
+.empty {
+  padding: 80px 0;
+  text-align: center;
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.empty svg {
+  width: 48px; height: 48px;
+  margin-bottom: 16px;
+  color: var(--ink-3);
+}
+
+/* ===== DRAWER ===== */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(7,7,15,0.7);
+  backdrop-filter: blur(8px);
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.drawer-overlay.open { opacity: 1; pointer-events: auto; }
+
+.drawer {
+  position: fixed;
+  top: 0; right: 0;
+  width: min(560px, 100vw);
+  height: 100vh;
+  background: var(--bg-1);
+  border-left: 1px solid var(--line-2);
+  z-index: 201;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.drawer.open { transform: translateX(0); }
+
+.drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.drawer-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  display: flex; align-items: center; gap: 8px;
+}
+
+.drawer-eyebrow::before { content: ''; width: 20px; height: 1px; background: var(--cyan); }
+
+.drawer-close {
+  background: transparent;
+  border: 1px solid var(--line-2);
+  color: var(--ink-1);
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: grid; place-items: center;
+  transition: all 0.15s;
+}
+.drawer-close:hover { color: var(--magenta); border-color: var(--magenta); }
+.drawer-close svg { width: 16px; height: 16px; }
+
+.drawer-cover {
+  height: 200px;
+  position: relative;
+  background: var(--bg-2);
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.drawer-cover::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--c1, #7DF9FF) 0%, var(--c2, #FF3CAC) 100%);
+  opacity: 0.9;
+}
+
+.drawer-cover::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.4) 100%);
+}
+
+.drawer-cover-text {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 64px;
+  letter-spacing: -0.04em;
+  color: rgba(255,255,255,0.95);
+  text-shadow: 0 6px 24px rgba(0,0,0,0.4);
+  line-height: 1;
+  text-align: center;
+  padding: 0 24px;
+}
+
+.drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.drawer-ip {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  display: inline-flex; align-items: center; gap: 8px;
+  width: fit-content;
+  padding: 5px 10px;
+  border: 1px solid var(--cyan);
+  border-radius: 100px;
+  background: rgba(125,249,255,0.08);
+}
+
+.drawer-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: var(--ink-0);
+  margin-top: 12px;
+}
+
+.drawer-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.meta-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.meta-key {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.meta-val {
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: var(--ink-0);
+  font-weight: 500;
+}
+
+.drawer-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.section-body {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-1);
+}
+
+.tags-list {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tags-list .tag {
+  background: var(--bg-2);
+  color: var(--ink-1);
+}
+
+.drawer-actions {
+  display: flex;
+  gap: 10px;
+  padding: 18px 24px;
+  border-top: 1px solid var(--line);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 11px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid var(--line-2);
+  background: transparent;
+  color: var(--ink-1);
+  transition: all 0.15s;
+}
+
+.btn:hover { color: var(--ink-0); border-color: var(--ink-2); }
+.btn.btn-primary { background: var(--cyan); color: #0A0A1F; border-color: var(--cyan); font-weight: 600; }
+.btn.btn-primary:hover { background: var(--magenta); border-color: var(--magenta); color: white; }
+.btn svg { width: 14px; height: 14px; }
+
+/* ===== STATS VIEW ===== */
+.stats {
+  padding: 40px 0 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.stats-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.stats-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 56px;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+}
+
+.stats-title em {
+  font-style: italic;
+  background: linear-gradient(135deg, var(--cyan), var(--magenta));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stats-sub {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  max-width: 380px;
+  text-align: right;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.kpi {
+  background: var(--bg-1);
+  border: 1px solid var(--line-2);
+  border-radius: 14px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(to right, var(--c1, var(--cyan)), var(--c2, var(--magenta)));
+}
+
+.kpi-label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.kpi-value {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 48px;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  color: var(--ink-0);
+  margin-top: 4px;
+}
+
+.kpi-value .unit {
+  font-size: 16px;
+  color: var(--ink-2);
+  font-weight: 400;
+  margin-left: 6px;
+}
+
+.kpi-foot {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  margin-top: auto;
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 980px) { .chart-grid { grid-template-columns: 1fr; } }
+
+.chart-card {
+  background: var(--bg-1);
+  border: 1px solid var(--line-2);
+  border-radius: 14px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 340px;
+}
+
+.chart-card h3 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink-0);
+}
+
+.chart-card .desc {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--ink-2);
+  text-transform: uppercase;
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: 130px 1fr 60px;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+}
+
+.bar-name {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bar-track {
+  position: relative;
+  height: 22px;
+  background: var(--bg-2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  background: linear-gradient(to right, var(--c1, var(--cyan)), var(--c2, var(--magenta)));
+  border-radius: 4px;
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bar-val {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-0);
+  text-align: right;
+}
+
+.decade-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  flex: 1;
+  min-height: 240px;
+  padding: 16px 0;
+}
+
+.decade-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.decade-bar {
+  width: 100%;
+  background: linear-gradient(to top, var(--cyan), var(--magenta));
+  border-radius: 4px 4px 0 0;
+  transition: height 1s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  min-height: 4px;
+}
+
+.decade-bar::after {
+  content: attr(data-val);
+  position: absolute;
+  top: -22px; left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--ink-1);
+  font-weight: 600;
+}
+
+.decade-label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+/* ===== FAVORITES VIEW ===== */
+.fav-view {
+  padding: 40px 0 64px;
+}
+
+.fav-empty {
+  padding: 100px 20px;
+  text-align: center;
+  background: var(--bg-1);
+  border: 1px dashed var(--line-2);
+  border-radius: 18px;
+}
+
+.fav-empty svg {
+  width: 56px; height: 56px;
+  color: var(--ink-3);
+  margin-bottom: 16px;
+}
+
+.fav-empty p {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+/* ===== FOOTER ===== */
+.foot {
+  border-top: 1px solid var(--line);
+  padding: 30px 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.foot .left { display: flex; gap: 14px; align-items: center; }
+.foot .right { display: flex; gap: 18px; align-items: center; }
+.foot a, .foot button { color: var(--ink-2); text-decoration: none; background: 0; border: 0; cursor: pointer; }
+.foot a:hover, .foot button:hover { color: var(--cyan); }
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card { animation: fadeIn 0.4s ease-out; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .nav { padding: 14px 18px; }
+  .main { padding: 0 18px; }
+  .foot { padding: 24px 18px; }
+  .hero { padding: 36px 0 28px; }
+  .grid { grid-template-columns: 1fr; gap: 14px; }
+  .nav-link { padding: 6px 8px; font-size: 10.5px; letter-spacing: 0.1em; }
+  .brand-tag { display: none; }
+  .stats-title { font-size: 36px; }
+  .toolbar { top: 65px; padding: 14px 0; gap: 8px; }
+  .table { font-size: 12px; }
+  .table thead th { padding: 10px 8px; }
+  .table td { padding: 10px 8px; }
+  .drawer-cover-text { font-size: 44px; }
+  .drawer-title { font-size: 24px; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--ink-3); }
+
+/* Page loader */
+.boot {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-0);
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  flex-direction: column;
+  transition: opacity 0.5s, visibility 0.5s;
+}
+
+.boot.hidden { opacity: 0; visibility: hidden; }
+
+.boot-logo {
+  width: 72px; height: 72px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--cyan), var(--magenta));
+  display: grid; place-items: center;
+  box-shadow: 0 0 48px rgba(125,249,255,0.4);
+  margin-bottom: 24px;
+  animation: bootSpin 2s linear infinite;
+}
+
+@keyframes bootSpin {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+.boot-logo svg { width: 36px; height: 36px; color: #0A0A1F; }
+
+.boot-text {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.boot-bar {
+  width: 200px;
+  height: 2px;
+  background: var(--bg-2);
+  margin-top: 16px;
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.boot-bar::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -50%;
+  width: 50%; height: 100%;
+  background: linear-gradient(to right, transparent, var(--cyan), transparent);
+  animation: bootBar 1.5s infinite;
+}
+
+@keyframes bootBar {
+  0% { left: -50%; }
+  100% { left: 100%; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- BOOT LOADER -->
+<div class="boot" id="boot">
+  <div class="boot-logo">
+    <i data-lucide="gamepad-2"></i>
+  </div>
+  <div class="boot-text">Loading Arcadia Database</div>
+  <div class="boot-bar"></div>
+</div>
+
+<div class="app">
+
+  <!-- ============== NAV ============== -->
+  <header class="nav">
+    <div style="display:flex; align-items:center;">
+      <div class="brand">
+        <div class="brand-logo"><i data-lucide="gamepad-2"></i></div>
+        <div class="brand-text">
+          <span>ARCADIA</span>
+          <small>IP · DERIVATIVE · UNIVERSE</small>
+        </div>
+        <span class="brand-tag"><span class="dot"></span>截止 2026.06.08</span>
+      </div>
+    </div>
+    <nav class="nav-links">
+      <button class="nav-link" data-view="browse">浏览</button>
+      <button class="nav-link" data-view="stats">统计</button>
+      <button class="nav-link" data-view="favorites">收藏</button>
+    </nav>
+    <div class="nav-actions">
+      <button class="icon-btn" id="themeBtn" title="切换主题"><i data-lucide="moon"></i></button>
+      <button class="icon-btn" id="exportBtn" title="导出收藏"><i data-lucide="download"></i></button>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- ============== BROWSE ============== -->
+    <section class="view active" id="view-browse">
+
+      <!-- HERO -->
+      <div class="hero">
+        <div class="hero-grid">
+          <div>
+            <div class="hero-eyebrow">Game IP Derivative Universe · 2026</div>
+            <h1 class="hero-title">
+              一份<br/>
+              <span class="grad">游戏</span> 衍生作品的<br/>
+              完整宇宙志
+            </h1>
+            <p class="hero-sub">
+              从 <strong>动画剧集</strong> 到 <strong>真人电影</strong>，从 <strong>漫画</strong> 到 <strong>舞台剧</strong>，
+              从 <strong>联动手游</strong> 到 <strong>主题乐园</strong>，从 <strong>OST 专辑</strong> 到 <strong>跨界联名</strong>——
+              这是一座面向玩家、IP研究者和内容创作者的 <strong>一站式浏览窗口</strong>。
+            </p>
+            <div class="scroll-cue">向下浏览 · Scroll to Explore</div>
+          </div>
+          <div class="hero-stats">
+            <div class="stat">
+              <div class="stat-label">Total Entries</div>
+              <div class="stat-value" id="hero-total">0</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Unique IPs</div>
+              <div class="stat-value" id="hero-ips">0</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Derivative Types</div>
+              <div class="stat-value" id="hero-types">0<span class="small">类</span></div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Earliest → Latest</div>
+              <div class="stat-value"><span id="hero-yr1">—</span><span class="small">→</span><span id="hero-yr2">—</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOOLBAR -->
+      <div class="toolbar">
+        <div class="search-wrap" id="searchWrap">
+          <i data-lucide="search" class="search-icon"></i>
+          <input type="text" class="search-input" id="searchInput" placeholder="搜索 IP、标题、标签、出品方…" />
+          <button class="search-clear" id="searchClear"><i data-lucide="x"></i></button>
+        </div>
+        <select class="filter-select" id="ipSelect"><option value="">全部 IP</option></select>
+        <select class="filter-select" id="typeSelect"><option value="">全部类型</option></select>
+        <select class="filter-select" id="regionSelect"><option value="">全部地区</option></select>
+        <select class="filter-select" id="yearSelect"><option value="">全部年份</option></select>
+        <div class="view-toggle">
+          <button class="active" data-view-mode="grid" title="网格"><i data-lucide="layout-grid"></i></button>
+          <button data-view-mode="list" title="列表"><i data-lucide="rows-3"></i></button>
+        </div>
+        <div class="result-count" id="resultCount"><strong>0</strong> / 0</div>
+      </div>
+
+      <!-- CHIPS -->
+      <div class="chips-row" id="chipsRow"></div>
+
+      <!-- CARDS -->
+      <div class="grid" id="grid"></div>
+      <div class="table-wrap" id="tableWrap" style="display:none;">
+        <table class="table" id="table">
+          <thead>
+            <tr>
+              <th data-sort="ip">IP</th>
+              <th data-sort="title">作品名</th>
+              <th data-sort="type">类型</th>
+              <th data-sort="year">年份</th>
+              <th data-sort="region">地区</th>
+              <th>出品</th>
+              <th class="col-fav">★</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="empty" style="display:none;">
+        <i data-lucide="search-x"></i><br/>
+        没有匹配的衍生作品
+      </div>
+
+    </section>
+
+    <!-- ============== STATS ============== -->
+    <section class="view" id="view-stats">
+      <div class="stats">
+        <div class="stats-head">
+          <h2 class="stats-title">衍生 <em>分布</em> 与 <em>趋势</em></h2>
+          <p class="stats-sub">基于 ARCADIA 全量数据库的实时聚合分析 · All time</p>
+        </div>
+
+        <div class="kpi-grid" id="kpiGrid"></div>
+
+        <div class="chart-grid">
+          <div class="chart-card">
+            <h3>年度发布密度</h3>
+            <span class="desc">1959 — 2026 · 65 年 · 全部类型</span>
+            <div class="decade-bars" id="decadeChart"></div>
+          </div>
+          <div class="chart-card">
+            <h3>衍生类型 Top 12</h3>
+            <span class="desc">按条目数量排序</span>
+            <div id="typeChart" style="display:flex; flex-direction:column;"></div>
+          </div>
+        </div>
+
+        <div class="chart-grid">
+          <div class="chart-card">
+            <h3>头部 IP 衍生密度 Top 15</h3>
+            <span class="desc">按衍生作品总数</span>
+            <div id="ipChart" style="display:flex; flex-direction:column;"></div>
+          </div>
+          <div class="chart-card">
+            <h3>地区分布</h3>
+            <span class="desc">主出品地区</span>
+            <div id="regionChart" style="display:flex; flex-direction:column;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== FAVORITES ============== -->
+    <section class="view" id="view-favorites">
+      <div class="stats-head" style="padding: 40px 0 24px;">
+        <h2 class="stats-title">我的 <em>收藏夹</em></h2>
+        <p class="stats-sub" id="favSub">已收藏 0 条 · 本地存储</p>
+      </div>
+      <div class="fav-view">
+        <div class="grid" id="favGrid"></div>
+        <div class="fav-empty" id="favEmpty">
+          <i data-lucide="star"></i>
+          <p>尚无收藏 · 在浏览页点击 ☆ 收藏喜欢的衍生作品</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="foot">
+    <div class="left">
+      <span>ARCADIA · 2026.06.08</span>
+      <span style="color:var(--ink-3);">·</span>
+      <span>Data only · Not affiliated with any IP holder</span>
+    </div>
+    <div class="right">
+      <button id="resetFav">清空收藏</button>
+      <a href="#" id="topLink">回到顶部 ↑</a>
+    </div>
+  </footer>
+</div>
+
+<!-- ============== DETAIL DRAWER ============== -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <span class="drawer-eyebrow">Detail · 详情</span>
+    <button class="drawer-close" id="drawerClose"><i data-lucide="x"></i></button>
+  </div>
+  <div class="drawer-cover" id="drawerCover">
+    <div class="drawer-cover-text" id="drawerCoverText"></div>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-actions">
+    <button class="btn btn-primary" id="drawerFav"><i data-lucide="star"></i><span id="drawerFavText">收藏</span></button>
+    <button class="btn" id="drawerCopy"><i data-lucide="link"></i>复制 JSON</button>
+  </div>
+</aside>
+
+<!-- ============== SCRIPTS ============== -->
+<script src="data.js"></script>
+<script src="data_part2.js"></script>
+<script src="data_part3.js"></script>
+<script src="data_part4.js"></script>
+<script src="data_part5.js"></script>
+<script src="data_part6.js"></script>
+<script src="data_part7.js"></script>
+<script src="data_part8.js"></script>
+<script src="data_part9.js"></script>
+<script src="data_part10.js"></script>
+
+<script>
+/* ============================================================
+   ARCADIA — Application Logic
+   ============================================================ */
+(function(){
+  'use strict';
+
+  // ---------- DATA ----------
+  const DATA = window.DATA || [];
+  console.log('[ARCADIA] loaded entries:', DATA.length);
+
+  // ---------- TYPES ----------
+  const TYPE_LABELS = {
+    'anime':         '动画剧集',
+    'film-anime':    '动画电影',
+    'film-live':     '真人电影',
+    'tv':            '电视剧',
+    'manga':         '漫画',
+    'novel':         '小说',
+    'audio':         '广播剧',
+    'theater':       '舞台剧',
+    'concert':       '演唱会',
+    'merch-toy':     '玩具',
+    'merch-figure':  '手办',
+    'merch-cloth':   '服饰',
+    'merch-card':    '卡牌',
+    'game-board':    '桌游',
+    'game-mobile':   '手游',
+    'game-spinoff':  '衍生游戏',
+    'theme-park':    '主题乐园',
+    'cafe':          '主题咖啡',
+    'exhibition':    '展览',
+    'web-series':    '网络短剧',
+    'ost':           '原声碟',
+    'artbook':       '设定集',
+    'event':         '线下活动',
+    'collab':        '跨界联动',
+    'pachinko':      '柏青哥'
+  };
+  const TYPE_COLORS = {
+    'anime': ['#7DF9FF', '#5BC4D6'],
+    'film-anime': ['#9D7BFF', '#7DF9FF'],
+    'film-live': ['#FF3CAC', '#FFB347'],
+    'tv': ['#FF3CAC', '#9D7BFF'],
+    'manga': ['#FFB347', '#FF3CAC'],
+    'novel': ['#2EE6A6', '#7DF9FF'],
+    'audio': ['#5BC4D6', '#9D7BFF'],
+    'theater': ['#FF5C7C', '#FFB347'],
+    'concert': ['#9D7BFF', '#FF3CAC'],
+    'merch-toy': ['#FFB347', '#2EE6A6'],
+    'merch-figure': ['#7DF9FF', '#FF3CAC'],
+    'merch-cloth': ['#FF3CAC', '#FFB347'],
+    'merch-card': ['#2EE6A6', '#7DF9FF'],
+    'game-board': ['#FF5C7C', '#9D7BFF'],
+    'game-mobile': ['#5BC4D6', '#2EE6A6'],
+    'game-spinoff': ['#9D7BFF', '#5BC4D6'],
+    'theme-park': ['#FFB347', '#FF5C7C'],
+    'cafe': ['#FF3CAC', '#7DF9FF'],
+    'exhibition': ['#2EE6A6', '#9D7BFF'],
+    'web-series': ['#7DF9FF', '#FFB347'],
+    'ost': ['#5BC4D6', '#FFB347'],
+    'artbook': ['#9D7BFF', '#FF3CAC'],
+    'event': ['#FF5C7C', '#7DF9FF'],
+    'collab': ['#2EE6A6', '#FFB347'],
+    'pachinko': ['#FFB347', '#FF5C7C']
+  };
+
+  // ---------- HELPERS ----------
+  const $ = (s, p=document) => p.querySelector(s);
+  const $$ = (s, p=document) => Array.from(p.querySelectorAll(s));
+
+  function colorForType(t) { return TYPE_COLORS[t] || ['#7DF9FF', '#FF3CAC']; }
+  function labelForType(t) { return TYPE_LABELS[t] || t; }
+
+  function makeId(item) {
+    return (item.ip + '|' + item.title).replace(/\s+/g, '_');
+  }
+
+  function escapeHTML(s) {
+    return String(s||'').replace(/[&<>"']/g, c => ({
+      '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+    }[c]));
+  }
+
+  // ---------- FAVORITES ----------
+  const FAV_KEY = 'arcadia.favs.v1';
+  const THEME_KEY = 'arcadia.theme';
+  const VIEW_KEY = 'arcadia.view';
+  const VIEWMODE_KEY = 'arcadia.viewmode';
+
+  function getFavs() {
+    try { return new Set(JSON.parse(localStorage.getItem(FAV_KEY) || '[]')); }
+    catch(e){ return new Set(); }
+  }
+  function saveFavs(set) {
+    localStorage.setItem(FAV_KEY, JSON.stringify([...set]));
+  }
+  let favs = getFavs();
+
+  // ---------- STATE ----------
+  const state = {
+    view: 'browse',
+    viewMode: 'grid',
+    search: '',
+    ipFilter: '',
+    typeFilter: '',
+    regionFilter: '',
+    yearFilter: '',
+    chipIp: '',
+    sort: 'year',
+    sortDir: 'desc',
+    page: 0,
+    pageSize: 60
+  };
+
+  // ---------- URL SYNC ----------
+  function syncURL() {
+    const h = state.view;
+    if (h !== 'browse') location.hash = '#' + h;
+    else location.hash = '';
+  }
+
+  function loadURL() {
+    const h = (location.hash || '').replace('#','');
+    if (['browse','stats','favorites'].includes(h)) state.view = h;
+  }
+
+  // ---------- THEME ----------
+  function applyTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    localStorage.setItem(THEME_KEY, t);
+    const btn = $('#themeBtn');
+    btn.innerHTML = t === 'light' ? '<i data-lucide="moon"></i>' : '<i data-lucide="sun"></i>';
+    lucide.createIcons();
+  }
+  function initTheme() {
+    const t = localStorage.getItem(THEME_KEY) || 'dark';
+    applyTheme(t);
+  }
+
+  // ---------- INDEX ----------
+  const ipCounts = {}, typeCounts = {}, regionCounts = {};
+  let years = [];
+  DATA.forEach(d => {
+    ipCounts[d.ip] = (ipCounts[d.ip] || 0) + 1;
+    typeCounts[d.type] = (typeCounts[d.type] || 0) + 1;
+    regionCounts[d.region] = (regionCounts[d.region] || 0) + 1;
+    if (typeof d.year === 'number') years.push(d.year);
+  });
+  const ips = Object.keys(ipCounts).sort((a,b)=>ipCounts[b]-ipCounts[a]);
+  const types = Object.keys(typeCounts).sort((a,b)=>typeCounts[b]-typeCounts[a]);
+  const regions = Object.keys(regionCounts).sort();
+  years = years.filter(y=>y>=1950).sort((a,b)=>a-b);
+
+  // ---------- HERO ----------
+  function paintHero() {
+    $('#hero-total').textContent = DATA.length.toLocaleString();
+    $('#hero-ips').textContent = ips.length;
+    $('#hero-types').innerHTML = types.length + '<span class="small">类</span>';
+    $('#hero-yr1').textContent = Math.min(...years);
+    $('#hero-yr2').textContent = Math.max(...years);
+  }
+
+  // ---------- FILTER OPTIONS ----------
+  function fillSelects() {
+    const ipSel = $('#ipSelect');
+    ips.forEach(ip => {
+      const o = document.createElement('option');
+      o.value = ip; o.textContent = ip + ' (' + ipCounts[ip] + ')';
+      ipSel.appendChild(o);
+    });
+    const tySel = $('#typeSelect');
+    types.forEach(t => {
+      const o = document.createElement('option');
+      o.value = t; o.textContent = labelForType(t) + ' (' + typeCounts[t] + ')';
+      tySel.appendChild(o);
+    });
+    const reSel = $('#regionSelect');
+    regions.forEach(r => {
+      const o = document.createElement('option');
+      o.value = r; o.textContent = r;
+      reSel.appendChild(o);
+    });
+    const yrSel = $('#yearSelect');
+    const decades = new Set();
+    years.forEach(y => decades.add(Math.floor(y/10)*10));
+    [...decades].sort().forEach(d => {
+      const o = document.createElement('option');
+      o.value = d; o.textContent = d + 's';
+      yrSel.appendChild(o);
+    });
+  }
+
+  // ---------- CHIPS ----------
+  function buildChips() {
+    const row = $('#chipsRow');
+    row.innerHTML = '';
+    const top = ips.slice(0, 22);
+    const mk = (label, value, isActive) => {
+      const el = document.createElement('button');
+      el.className = 'chip' + (isActive ? ' active' : '');
+      el.innerHTML = label + (value ? ' <span class="count">' + ipCounts[value] + '</span>' : ' <span class="count">' + DATA.length + '</span>');
+      el.onclick = () => {
+        if (!value) state.chipIp = '';
+        else state.chipIp = state.chipIp === value ? '' : value;
+        state.ipFilter = state.chipIp;
+        $('#ipSelect').value = state.chipIp;
+        buildChips();
+        render();
+      };
+      return el;
+    };
+    row.appendChild(mk('全部', '', !state.chipIp));
+    top.forEach(ip => row.appendChild(mk(ip, ip, state.chipIp === ip)));
+  }
+
+  // ---------- FILTER + SORT ----------
+  function getFiltered() {
+    const q = state.search.trim().toLowerCase();
+    let arr = DATA.filter(d => {
+      if (state.ipFilter && d.ip !== state.ipFilter) return false;
+      if (state.typeFilter && d.type !== state.typeFilter) return false;
+      if (state.regionFilter && d.region !== state.regionFilter) return false;
+      if (state.yearFilter) {
+        const dStart = Math.floor(d.year/10)*10;
+        if (dStart !== parseInt(state.yearFilter,10)) return false;
+      }
+      if (q) {
+        const hay = (d.title + ' ' + d.ip + ' ' + (d.publisher||'') + ' ' + (d.tags||[]).join(' ') + ' ' + (d.region||'')).toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+    const dir = state.sortDir === 'asc' ? 1 : -1;
+    arr.sort((a,b) => {
+      let av, bv;
+      switch (state.sort) {
+        case 'ip':     av = a.ip; bv = b.ip; break;
+        case 'title':  av = a.title; bv = b.title; break;
+        case 'type':   av = a.type; bv = b.type; break;
+        case 'region': av = a.region; bv = b.region; break;
+        case 'year':
+        default:       av = a.year||0; bv = b.year||0; break;
+      }
+      if (typeof av === 'string') return av.localeCompare(bv) * dir;
+      return (av - bv) * dir;
+    });
+    return arr;
+  }
+
+  // ---------- RENDER ----------
+  function makeCoverText(item) {
+    const ini = (item.title || '?').slice(0,2).toUpperCase();
+    return ini;
+  }
+
+  function renderCard(item) {
+    const fav = favs.has(makeId(item));
+    const colors = colorForType(item.type);
+    const tags = (item.tags || []).slice(0,3);
+    return `
+      <article class="card" data-id="${escapeHTML(makeId(item))}">
+        <div class="card-cover" style="--c1:${colors[0]}; --c2:${colors[1]};">
+          <button class="card-cover-fav ${fav?'active':''}" data-fav-id="${escapeHTML(makeId(item))}" title="收藏">
+            <i data-lucide="star"></i>
+          </button>
+          <span class="card-cover-year">${item.year || '—'}</span>
+          <span class="card-cover-text">${escapeHTML(makeCoverText(item))}</span>
+        </div>
+        <div class="card-body">
+          <span class="card-ip">${escapeHTML(item.ip)}</span>
+          <h3 class="card-title">${escapeHTML(item.title)}</h3>
+          <p class="card-desc">${escapeHTML(item.desc || '')}</p>
+          <div class="card-foot">
+            <span class="tag tag-type">${escapeHTML(labelForType(item.type))}</span>
+            ${tags.map(t => `<span class="tag">${escapeHTML(t)}</span>`).join('')}
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function renderTableRow(item) {
+    const fav = favs.has(makeId(item));
+    return `
+      <tr data-id="${escapeHTML(makeId(item))}">
+        <td class="col-ip">${escapeHTML(item.ip)}</td>
+        <td class="col-title">${escapeHTML(item.title)}</td>
+        <td class="col-type">${escapeHTML(labelForType(item.type))}</td>
+        <td class="col-year">${item.year || '—'}</td>
+        <td class="col-region">${escapeHTML(item.region || '—')}</td>
+        <td style="color:var(--ink-2); font-size:12px; max-width:240px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHTML(item.publisher || '—')}</td>
+        <td class="col-fav"><button class="${fav?'active':''}" data-fav-id="${escapeHTML(makeId(item))}"><i data-lucide="star"></i></button></td>
+      </tr>
+    `;
+  }
+
+  function render() {
+    const all = getFiltered();
+    const total = DATA.length;
+    const slice = all.slice(0, state.pageSize);
+    $('#resultCount').innerHTML = '<strong>' + all.length.toLocaleString() + '</strong> / ' + total.toLocaleString();
+
+    if (all.length === 0) {
+      $('#grid').innerHTML = '';
+      $('#tableBody').innerHTML = '';
+      $('#empty').style.display = 'block';
+      $('#grid').style.display = 'none';
+      $('#tableWrap').style.display = 'none';
+      return;
+    }
+    $('#empty').style.display = 'none';
+
+    if (state.viewMode === 'grid') {
+      $('#grid').style.display = 'grid';
+      $('#tableWrap').style.display = 'none';
+      $('#grid').innerHTML = slice.map(renderCard).join('');
+    } else {
+      $('#grid').style.display = 'none';
+      $('#tableWrap').style.display = 'block';
+      $('#tableBody').innerHTML = slice.map(renderTableRow).join('');
+      // update sort marks
+      $$('.table thead th').forEach(th => {
+        th.classList.toggle('sorted', th.dataset.sort === state.sort);
+        const old = th.querySelector('.sort-mark');
+        if (old) old.remove();
+        if (th.dataset.sort === state.sort) {
+          const m = document.createElement('span');
+          m.className = 'sort-mark';
+          m.textContent = state.sortDir === 'asc' ? '↑' : '↓';
+          th.appendChild(m);
+        }
+      });
+    }
+    lucide.createIcons();
+  }
+
+  // ---------- FAVORITES VIEW ----------
+  function renderFavorites() {
+    const favList = DATA.filter(d => favs.has(makeId(d)));
+    $('#favSub').innerHTML = '已收藏 <strong style="color:var(--amber);">' + favList.length + '</strong> 条 · 本地存储';
+    if (favList.length === 0) {
+      $('#favGrid').innerHTML = '';
+      $('#favEmpty').style.display = 'block';
+      return;
+    }
+    $('#favEmpty').style.display = 'none';
+    $('#favGrid').innerHTML = favList.map(renderCard).join('');
+    lucide.createIcons();
+  }
+
+  // ---------- STATS VIEW ----------
+  function renderStats() {
+    const totalIPs = ips.length;
+    const totalTypes = types.length;
+    const yearMin = Math.min(...years);
+    const yearMax = Math.max(...years);
+    const yearSpan = yearMax - yearMin;
+
+    const topIp = ips[0];
+    const topType = types[0];
+
+    const kpis = [
+      { label:'总条目', val:DATA.length, unit:'条', c1:'#7DF9FF', c2:'#5BC4D6' },
+      { label:'覆盖 IP', val:totalIPs, unit:'个', c1:'#FF3CAC', c2:'#FFB347' },
+      { label:'衍生类型', val:totalTypes, unit:'类', c1:'#9D7BFF', c2:'#7DF9FF' },
+      { label:'覆盖年代', val:yearSpan, unit:'年', c1:'#FFB347', c2:'#FF5C7C' },
+      { label:'头部 IP', val:topIp, unit:'', c1:'#2EE6A6', c2:'#7DF9FF', isText:true },
+      { label:'头部类型', val:labelForType(topType), unit:'', c1:'#5BC4D6', c2:'#9D7BFF', isText:true },
+    ];
+    const kpiGrid = $('#kpiGrid');
+    kpiGrid.innerHTML = kpis.map(k => `
+      <div class="kpi" style="--c1:${k.c1}; --c2:${k.c2};">
+        <div class="kpi-label">${k.label}</div>
+        <div class="kpi-value" style="${k.isText ? 'font-size:24px;' : ''}">${k.val}<span class="unit">${k.unit}</span></div>
+        <div class="kpi-foot">${k.label} · ARCADIA 2026</div>
+      </div>
+    `).join('');
+
+    // Decades
+    const decadeMap = {};
+    DATA.forEach(d => {
+      if (typeof d.year === 'number') {
+        const dec = Math.floor(d.year/10)*10;
+        decadeMap[dec] = (decadeMap[dec] || 0) + 1;
+      }
+    });
+    const decades = Object.keys(decadeMap).map(Number).sort((a,b)=>a-b);
+    const maxD = Math.max(...Object.values(decadeMap));
+    $('#decadeChart').innerHTML = decades.map(d => `
+      <div class="decade-col">
+        <div class="decade-bar" style="height:${(decadeMap[d]/maxD)*100}%;" data-val="${decadeMap[d]}"></div>
+        <div class="decade-label">${d}s</div>
+      </div>
+    `).join('');
+
+    // Types
+    const topTypes = types.slice(0, 12);
+    const maxT = Math.max(...topTypes.map(t => typeCounts[t]));
+    $('#typeChart').innerHTML = topTypes.map(t => {
+      const c = colorForType(t);
+      return `
+        <div class="bar-row">
+          <div class="bar-name" title="${labelForType(t)}">${labelForType(t)}</div>
+          <div class="bar-track"><div class="bar-fill" style="--c1:${c[0]}; --c2:${c[1]}; width:${(typeCounts[t]/maxT)*100}%;"></div></div>
+          <div class="bar-val">${typeCounts[t]}</div>
+        </div>
+      `;
+    }).join('');
+
+    // IPs
+    const topIps = ips.slice(0, 15);
+    const maxI = Math.max(...topIps.map(ip => ipCounts[ip]));
+    $('#ipChart').innerHTML = topIps.map(ip => `
+      <div class="bar-row">
+        <div class="bar-name" title="${ip}">${ip}</div>
+        <div class="bar-track"><div class="bar-fill" style="--c1:#7DF9FF; --c2:#FF3CAC; width:${(ipCounts[ip]/maxI)*100}%;"></div></div>
+        <div class="bar-val">${ipCounts[ip]}</div>
+      </div>
+    `).join('');
+
+    // Regions
+    const topReg = regions.slice(0, 12);
+    const maxR = Math.max(...topReg.map(r => regionCounts[r]));
+    $('#regionChart').innerHTML = topReg.map((r, i) => {
+      const c = ['#7DF9FF','#FF3CAC','#FFB347','#9D7BFF','#2EE6A6','#FF5C7C','#5BC4D6','#FFB347','#7DF9FF','#FF3CAC','#9D7BFF','#2EE6A6'];
+      return `
+        <div class="bar-row">
+          <div class="bar-name" title="${r}">${r}</div>
+          <div class="bar-track"><div class="bar-fill" style="--c1:${c[i%c.length]}; --c2:#FF3CAC; width:${(regionCounts[r]/maxR)*100}%;"></div></div>
+          <div class="bar-val">${regionCounts[r]}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ---------- DRAWER ----------
+  const drawer = $('#drawer');
+  const drawerOverlay = $('#drawerOverlay');
+
+  function openDrawer(item) {
+    const colors = colorForType(item.type);
+    const id = makeId(item);
+    const fav = favs.has(id);
+    $('#drawerCover').style.setProperty('--c1', colors[0]);
+    $('#drawerCover').style.setProperty('--c2', colors[1]);
+    $('#drawerCoverText').textContent = makeCoverText(item);
+    $('#drawerFavText').textContent = fav ? '已收藏' : '收藏';
+    $('#drawerFav').classList.toggle('btn-primary', !fav);
+    drawer.dataset.id = id;
+
+    const tags = (item.tags || []).map(t => `<span class="tag">${escapeHTML(t)}</span>`).join('');
+    const html = `
+      <span class="drawer-ip">${escapeHTML(item.ip)}</span>
+      <h2 class="drawer-title">${escapeHTML(item.title)}</h2>
+      <div class="drawer-meta">
+        <div class="meta-cell"><span class="meta-key">类型</span><span class="meta-val">${escapeHTML(labelForType(item.type))}</span></div>
+        <div class="meta-cell"><span class="meta-key">年份</span><span class="meta-val">${item.year || '—'}</span></div>
+        <div class="meta-cell"><span class="meta-key">地区</span><span class="meta-val">${escapeHTML(item.region || '—')}</span></div>
+        <div class="meta-cell"><span class="meta-key">平台</span><span class="meta-val">${escapeHTML(item.platform || '—')}</span></div>
+        <div class="meta-cell" style="grid-column:1 / -1;"><span class="meta-key">出品 / 制作</span><span class="meta-val">${escapeHTML(item.publisher || '—')}</span></div>
+      </div>
+      <div class="drawer-section">
+        <span class="section-label">Synopsis</span>
+        <p class="section-body">${escapeHTML(item.desc || '—')}</p>
+      </div>
+      ${tags ? `
+      <div class="drawer-section">
+        <span class="section-label">Tags</span>
+        <div class="tags-list">${tags}</div>
+      </div>` : ''}
+    `;
+    $('#drawerBody').innerHTML = html;
+    drawer.classList.add('open');
+    drawerOverlay.classList.add('open');
+    lucide.createIcons();
+  }
+
+  function closeDrawer() {
+    drawer.classList.remove('open');
+    drawerOverlay.classList.remove('open');
+  }
+
+  // ---------- EVENTS ----------
+  function bindEvents() {
+    // nav
+    $$('.nav-link').forEach(b => b.onclick = () => {
+      const v = b.dataset.view;
+      state.view = v;
+      $$('.nav-link').forEach(x => x.classList.toggle('active', x === b));
+      $$('.view').forEach(x => x.classList.toggle('active', x.id === 'view-' + v));
+      if (v === 'stats') renderStats();
+      if (v === 'favorites') renderFavorites();
+      syncURL();
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+
+    // theme
+    $('#themeBtn').onclick = () => {
+      const t = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      applyTheme(t);
+    };
+
+    // search
+    const si = $('#searchInput');
+    let sDebounce;
+    si.oninput = (e) => {
+      const v = e.target.value;
+      state.search = v;
+      $('#searchWrap').classList.toggle('has-value', !!v);
+      clearTimeout(sDebounce);
+      sDebounce = setTimeout(render, 60);
+    };
+    $('#searchClear').onclick = () => {
+      si.value = '';
+      state.search = '';
+      $('#searchWrap').classList.remove('has-value');
+      render();
+    };
+
+    // filters
+    $('#ipSelect').onchange = e => { state.ipFilter = e.target.value; state.chipIp = e.target.value; buildChips(); render(); };
+    $('#typeSelect').onchange = e => { state.typeFilter = e.target.value; render(); };
+    $('#regionSelect').onchange = e => { state.regionFilter = e.target.value; render(); };
+    $('#yearSelect').onchange = e => { state.yearFilter = e.target.value; render(); };
+
+    // view mode
+    $$('.view-toggle button').forEach(b => b.onclick = () => {
+      $$('.view-toggle button').forEach(x => x.classList.toggle('active', x === b));
+      state.viewMode = b.dataset.viewMode;
+      render();
+    });
+
+    // table sort
+    $$('.table thead th[data-sort]').forEach(th => th.onclick = () => {
+      const k = th.dataset.sort;
+      if (state.sort === k) state.sortDir = state.sortDir === 'asc' ? 'desc' : 'asc';
+      else { state.sort = k; state.sortDir = 'desc'; }
+      render();
+    });
+
+    // card / row click — open drawer
+    document.addEventListener('click', e => {
+      const favBtn = e.target.closest('[data-fav-id]');
+      if (favBtn) {
+        e.stopPropagation();
+        const id = favBtn.dataset.favId;
+        if (favs.has(id)) favs.delete(id);
+        else favs.add(id);
+        saveFavs(favs);
+        // refresh
+        if (state.view === 'favorites') renderFavorites();
+        else render();
+        return;
+      }
+      const card = e.target.closest('[data-id]');
+      if (card && state.view !== 'favorites') {
+        const id = card.dataset.id;
+        const item = DATA.find(d => makeId(d) === id);
+        if (item) openDrawer(item);
+        return;
+      }
+      const row = e.target.closest('tr[data-id]');
+      if (row) {
+        const id = row.dataset.id;
+        const item = DATA.find(d => makeId(d) === id);
+        if (item) openDrawer(item);
+        return;
+      }
+    });
+
+    // drawer close
+    $('#drawerClose').onclick = closeDrawer;
+    drawerOverlay.onclick = closeDrawer;
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+
+    // drawer fav
+    $('#drawerFav').onclick = () => {
+      const id = drawer.dataset.id;
+      if (!id) return;
+      if (favs.has(id)) favs.delete(id);
+      else favs.add(id);
+      saveFavs(favs);
+      const fav = favs.has(id);
+      $('#drawerFavText').textContent = fav ? '已收藏' : '收藏';
+      $('#drawerFav').classList.toggle('btn-primary', !fav);
+      if (state.view === 'favorites') renderFavorites();
+      else render();
+    };
+
+    // drawer copy
+    $('#drawerCopy').onclick = () => {
+      const id = drawer.dataset.id;
+      const item = DATA.find(d => makeId(d) === id);
+      if (!item) return;
+      const json = JSON.stringify(item, null, 2);
+      navigator.clipboard?.writeText(json);
+      $('#drawerCopy').innerHTML = '<i data-lucide="check"></i>已复制';
+      setTimeout(() => { $('#drawerCopy').innerHTML = '<i data-lucide="link"></i>复制 JSON'; lucide.createIcons(); }, 1500);
+      lucide.createIcons();
+    };
+
+    // export
+    $('#exportBtn').onclick = () => {
+      const favList = DATA.filter(d => favs.has(makeId(d)));
+      const blob = new Blob([JSON.stringify(favList, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'arcadia_favorites_' + new Date().toISOString().slice(0,10) + '.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+
+    // reset fav
+    $('#resetFav').onclick = () => {
+      if (confirm('清空所有收藏？')) {
+        favs.clear();
+        saveFavs(favs);
+        if (state.view === 'favorites') renderFavorites();
+        else render();
+      }
+    };
+
+    // top link
+    $('#topLink').onclick = e => { e.preventDefault(); window.scrollTo({top:0, behavior:'smooth'}); };
+
+    // infinite scroll
+    window.addEventListener('scroll', () => {
+      if (state.view !== 'browse') return;
+      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 400) {
+        const cur = getFiltered();
+        if (state.pageSize < cur.length) {
+          state.pageSize = Math.min(state.pageSize + 60, cur.length);
+          render();
+        }
+      }
+    });
+  }
+
+  // ---------- INIT ----------
+  function init() {
+    paintHero();
+    fillSelects();
+    buildChips();
+    bindEvents();
+    loadURL();
+    $$('.nav-link').forEach(x => x.classList.toggle('active', x.dataset.view === state.view));
+    $$('.view').forEach(x => x.classList.toggle('active', x.id === 'view-' + state.view));
+    if (state.view === 'stats') renderStats();
+    if (state.view === 'favorites') renderFavorites();
+    if (state.view === 'browse') render();
+
+    // hide boot
+    setTimeout(() => { $('#boot').classList.add('hidden'); }, 400);
+  }
+
+  // Wait for data
+  document.addEventListener('DOMContentLoaded', () => {
+    lucide.createIcons();
+    initTheme();
+    init();
+  });
+})();
+</script>
+</body>
+</html>
