@@ -5,6 +5,7 @@ import DepthRuler from "@/components/DepthRuler";
 import LayerSwitcher from "@/components/LayerSwitcher";
 import FooterTimeline from "@/components/FooterTimeline";
 import EndScreen from "@/components/EndScreen";
+import SlideNav from "@/components/SlideNav";
 import { shots } from "@/data/shots";
 import { useAppStore } from "@/store";
 import type { ShotId } from "@/data/shots";
@@ -57,9 +58,48 @@ export default function Home() {
     }, 100);
   };
 
+  // Slide navigation
+  const goPrev = () => {
+    const idx = shots.findIndex((s) => s.id === activeShot);
+    if (idx > 0) jumpTo(shots[idx - 1].id);
+  };
+  const goNext = () => {
+    const idx = shots.findIndex((s) => s.id === activeShot);
+    if (idx < shots.length - 1) jumpTo(shots[idx + 1].id);
+  };
+  const goFirst = () => jumpTo(shots[0].id);
+  const goLast = () => jumpTo(shots[shots.length - 1].id);
+
+  // Keyboard navigation
+  useEffect(() => {
+    if (!hasEntered) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight" || e.key === "ArrowDown" || e.key === " ") {
+        e.preventDefault();
+        goNext();
+      } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        goPrev();
+      } else if (e.key === "Home") {
+        e.preventDefault();
+        goFirst();
+      } else if (e.key === "End") {
+        e.preventDefault();
+        goLast();
+      } else if (e.key === "m" || e.key === "M") {
+        toggleMute();
+      } else if (e.key === "1") setLayer("narrative");
+      else if (e.key === "2") setLayer("camera");
+      else if (e.key === "3") setLayer("audio");
+      else if (e.key === "4") setLayer("vfx");
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasEntered, activeShot]);
+
   return (
     <div className="grain relative">
-      {/* Stage wrapper */}
       <main>
         <Hero onEnter={enterSequence} />
 
@@ -67,6 +107,8 @@ export default function Home() {
           <ShotCard
             key={shot.id}
             shot={shot}
+            index={shot.index - 20}
+            total={shots.length}
             isActive={activeShot === shot.id}
             layer={activeLayer}
             onEnter={() => setShot(shot.id)}
@@ -76,11 +118,17 @@ export default function Home() {
         <EndScreen visible={scrollProgress > 0.92} />
       </main>
 
-      {/* Floating HUD elements */}
       {hasEntered && (
         <>
           <DepthRuler activeShotId={activeShot} />
           <LayerSwitcher active={activeLayer} onChange={setLayer} />
+          <SlideNav
+            activeShotId={activeShot}
+            onPrev={goPrev}
+            onNext={goNext}
+            onFirst={goFirst}
+            onLast={goLast}
+          />
           <FooterTimeline
             activeShotId={activeShot}
             scrollProgress={scrollProgress}
@@ -89,19 +137,6 @@ export default function Home() {
             onJump={jumpTo}
           />
         </>
-      )}
-
-      {/* Top HUD: persistent project meta */}
-      {hasEntered && (
-        <div className="fixed top-0 left-0 right-0 z-30 px-6 py-3 flex justify-between items-center pointer-events-none">
-          <div className="flex items-center gap-4 font-mono text-[10px] text-fog/70 tracking-widest">
-            <span className="text-blood">● REC</span>
-            <span>CHIXIAO / 21-25</span>
-          </div>
-          <div className="font-mono text-[10px] text-fog/70 tracking-widest">
-            IMAX 3D · 65MM
-          </div>
-        </div>
       )}
     </div>
   );
