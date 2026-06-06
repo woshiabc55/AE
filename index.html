@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>哨兵之桥 · 末日废土电影剧本</title>
+  <meta name="description" content="《哨兵之桥》—— 末日废土题材 · 12章节电影剧本 · 完整展开版" />
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Serif+SC:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-mood="wasteland-dusk">
+
+  <!-- 顶部阅读进度条 -->
+  <div class="progress-bar" id="progressBar" aria-hidden="true"></div>
+
+  <!-- 顶部固定导航 -->
+  <header class="topbar" id="topbar">
+    <a class="topbar__brand" href="#cover">
+      <span class="topbar__mark" aria-hidden="true"></span>
+      <span class="topbar__title">哨兵之桥</span>
+    </a>
+    <nav class="topbar__nav" aria-label="主导航">
+      <a href="#toc">目录</a>
+      <a href="#appendix">附录</a>
+      <a href="#credits">字幕</a>
+    </nav>
+    <button class="topbar__menu" id="menuBtn" aria-label="打开目录" aria-expanded="false">≡</button>
+  </header>
+
+  <!-- 移动端抽屉式目录 -->
+  <aside class="drawer" id="drawer" aria-label="章节目录" aria-hidden="true">
+    <div class="drawer__head">
+      <span>CHAPTERS</span>
+      <button id="drawerClose" aria-label="关闭目录">×</button>
+    </div>
+    <ol class="drawer__list" id="drawerList"></ol>
+  </aside>
+  <div class="drawer__mask" id="drawerMask" aria-hidden="true"></div>
+
+  <!-- 桌面端固定目录 -->
+  <nav class="sidenav" id="sidenav" aria-label="章节目录">
+    <div class="sidenav__head">
+      <span class="sidenav__label">CHAPTERS</span>
+      <span class="sidenav__sub">/ 12 章节</span>
+    </div>
+    <ol class="sidenav__list" id="sidenavList"></ol>
+  </nav>
+
+  <!-- 全屏尘埃粒子 -->
+  <canvas id="dustCanvas" aria-hidden="true"></canvas>
+
+  <main>
+
+    <!-- ============== 封面 ============== -->
+    <section class="cover" id="cover">
+      <div class="cover__bg" aria-hidden="true"></div>
+      <div class="cover__vignette" aria-hidden="true"></div>
+      <div class="cover__content">
+        <div class="cover__eyebrow">— A POST-APOCALYPTIC SCREENPLAY —</div>
+        <h1 class="cover__title">
+          <span class="cover__char" data-ch="哨">哨</span><span class="cover__char" data-ch="兵">兵</span>
+          <span class="cover__char cover__char--accent" data-ch="之">之</span><span class="cover__char" data-ch="桥">桥</span>
+        </h1>
+        <div class="cover__subtitle">THE SENTINEL'S BRIDGE</div>
+        <div class="cover__meta">
+          <span>末日废土</span><i></i>
+          <span>12 章节</span><i></i>
+          <span>电影剧本 · 完整展开版</span>
+        </div>
+        <a href="#toc" class="cover__cta">
+          <span>开始阅读</span>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </a>
+        <div class="cover__signature">— 谨以此剧，献给所有不愿放弃的人 —</div>
+      </div>
+      <div class="cover__hint">↓  向下滚动</div>
+    </section>
+
+    <!-- ============== 章节目录 ============== -->
+    <section class="toc" id="toc">
+      <div class="toc__head">
+        <div class="toc__eyebrow">CONTENTS</div>
+        <h2 class="toc__title">章节索引</h2>
+        <div class="toc__rule"></div>
+        <p class="toc__lead">十二道裂缝，十二种孤独。每一章都是一段灰烬中的对话 ——<br/>与人，与世界，与自己。</p>
+      </div>
+      <ol class="toc__list" id="tocList"></ol>
+    </section>
+
+    <!-- ============== 章节内容容器 ============== -->
+    <div id="chapters"></div>
+
+    <!-- ============== 附录 ============== -->
+    <section class="appendix" id="appendix">
+      <div class="appendix__head">
+        <div class="appendix__eyebrow">APPENDIX</div>
+        <h2 class="appendix__title">创作笔记</h2>
+        <div class="appendix__rule"></div>
+        <p class="appendix__lead">镜头语言、主题弧线、与那些在废土上依然响起的对白。</p>
+      </div>
+
+      <!-- 镜头语言 -->
+      <div class="apx-block">
+        <h3 class="apx-title">I. 完整镜头语言参考</h3>
+        <div class="apx-tablewrap">
+          <table class="apx-table">
+            <thead>
+              <tr><th>章节</th><th>关键镜头</th><th>技术要点</th><th>情绪功能</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>序章</td><td>无人机俯冲推近</td><td>IMAX 宽画幅，废土色调（灰黄+暗红）</td><td>建立世界观，孤独感</td></tr>
+              <tr><td>序章</td><td>Dolly Zoom 反向变焦</td><td>背景压缩，哨兵静态</td><td>压迫感，数量悬殊</td></tr>
+              <tr><td>序章</td><td>低角度跟拍战斗</td><td>手持微晃，贴地视角</td><td>瞬间反击，干脆</td></tr>
+              <tr><td>第一章</td><td>油灯闪烁</td><td>暖光 vs 冷环境，影子摇曳</td><td>战后疲惫，人性回归</td></tr>
+              <tr><td>第二章</td><td>记忆闪回</td><td>高饱和度 → 褪色 → 白光爆炸</td><td>希望 → 毁灭的断裂</td></tr>
+              <tr><td>第三章</td><td>背影离去</td><td>灰白天光，长矛冷光</td><td>拒绝连接，封闭</td></tr>
+              <tr><td>第四章</td><td>绿洲远景</td><td>绿色在灰白中的突兀</td><td>虚假希望，危险诱惑</td></tr>
+              <tr><td>第五章</td><td>照片特写</td><td>泛黄，褪色钢笔字</td><td>集体记忆，个人创伤</td></tr>
+              <tr><td>第六章</td><td>夜袭大远景</td><td>黑压压绿点，潮水涌来</td><td>绝望，压倒性</td></tr>
+              <tr><td>第七章</td><td>背靠背战斗</td><td>月光银色弧线，双人剪影</td><td>从孤独到并肩</td></tr>
+              <tr><td>第八章</td><td>晨光金色侧脸</td><td>废土罕见的温暖色调</td><td>希望诞生</td></tr>
+              <tr><td>第九章</td><td>石碑跪地</td><td>真正的绿色，粗糙字迹</td><td>释然，和解</td></tr>
+              <tr><td>第十章</td><td>吹灭油灯</td><td>青烟消散，关门吱呀</td><td>告别过去</td></tr>
+              <tr><td>第十一章</td><td>山丘俯瞰绿色</td><td>大面积连绵绿色</td><td>真正的希望</td></tr>
+              <tr><td>终章</td><td>新石碑 + 巡逻队</td><td>灰黄中的生机，传承</td><td>循环与新生</td></tr>
+              <tr><td>终章</td><td>三人影子融合</td><td>夕阳暖调，剪影</td><td>家的定义</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 主题关键词 -->
+      <div class="apx-block">
+        <h3 class="apx-title">II. 主题关键词 · 完整弧线</h3>
+        <div class="arc">
+          <div class="arc__stage" data-keyword="孤独">
+            <div class="arc__tag">孤独</div>
+            <div class="arc__range">序章 — 第三章</div>
+            <div class="arc__desc">单人 / 灰白 / 冷光</div>
+            <div class="arc__bar"><span style="--w:30%"></span></div>
+          </div>
+          <div class="arc__stage" data-keyword="连接">
+            <div class="arc__tag">连接</div>
+            <div class="arc__range">第四章 — 第六章</div>
+            <div class="arc__desc">双人 / 对话 / 背靠背</div>
+            <div class="arc__bar"><span style="--w:55%"></span></div>
+          </div>
+          <div class="arc__stage" data-keyword="传承">
+            <div class="arc__tag">传承</div>
+            <div class="arc__range">第七章 — 第九章</div>
+            <div class="arc__desc">婴儿 / 名字 / 石碑</div>
+            <div class="arc__bar"><span style="--w:75%"></span></div>
+          </div>
+          <div class="arc__stage arc__stage--final" data-keyword="新生">
+            <div class="arc__tag">新生</div>
+            <div class="arc__range">第十章 — 终章</div>
+            <div class="arc__desc">绿色 / 聚居地 / 影子融合</div>
+            <div class="arc__bar"><span style="--w:100%"></span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 核心对白 -->
+      <div class="apx-block">
+        <h3 class="apx-title">III. 核心对白索引</h3>
+        <ol class="quote-list">
+          <li>
+            <span class="quote-list__a">"桥那边什么都没有。只有辐射和畸变体。"</span>
+            <span class="quote-list__arrow">→</span>
+            <span class="quote-list__b">"我知道。但我没有别的地方可去。"</span>
+          </li>
+          <li>
+            <span class="quote-list__a">"我是最后一个。"</span>
+            <span class="quote-list__arrow">→</span>
+            <span class="quote-list__b">"那就再战斗。"</span>
+          </li>
+          <li>
+            <span class="quote-list__a">"我早就该死了。"</span>
+            <span class="quote-list__arrow">→</span>
+            <span class="quote-list__b">"两个人，总比一个人强。"</span>
+          </li>
+          <li>
+            <span class="quote-list__a">"这个世界需要新的名字。"</span>
+            <span class="quote-list__arrow">→</span>
+            <span class="quote-list__b">"陈桥。"</span>
+          </li>
+          <li>
+            <span class="quote-list__a">"任务已完成，可以回家了。"</span>
+            <span class="quote-list__arrow">→</span>
+            <span class="quote-list__b">"我的桥在这里。"</span>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============== 结尾字幕 ============== -->
+    <section class="credits" id="credits">
+      <div class="credits__inner">
+        <div class="credits__rule"></div>
+        <p class="credits__line">"在废土上，最坚固的桥梁不是混凝土，是人。"</p>
+        <div class="credits__end">— 全剧终 —</div>
+        <div class="credits__small">THE END · 2097 — 2103</div>
+      </div>
+      <div class="credits__back">
+        <a href="#cover">↑ 回到封面</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- 章节数据 -->
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
