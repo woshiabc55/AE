@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>提示词 MDK 框架图 · 水墨武侠版</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;500;700;900&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ============ 基础重置 ============ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', 'Noto Serif SC', sans-serif;
+    background: #0a0a0c;
+    color: #e8e6e1;
+    line-height: 1.6;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ============ 宣纸纹理背景 ============ */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(ellipse at 20% 10%, rgba(200, 16, 46, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(201, 169, 97, 0.06) 0%, transparent 50%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.05 0 0 0 0 0.05 0 0 0 0 0.05 0 0 0 0.4 0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.3'/></svg>");
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  /* ============ 导航栏 ============ */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    backdrop-filter: blur(20px);
+    background: rgba(10, 10, 12, 0.6);
+    border-bottom: 1px solid rgba(201, 169, 97, 0.1);
+  }
+  .nav-logo {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900; font-size: 20px;
+    color: #c9a961;
+    letter-spacing: 4px;
+  }
+  .nav-logo span { color: #c8102e; }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a {
+    color: #a8a59f; text-decoration: none; font-size: 14px;
+    letter-spacing: 1px; transition: color 0.3s;
+  }
+  .nav-links a:hover { color: #c9a961; }
+
+  /* ============ Hero ============ */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    padding: 120px 40px 80px;
+    position: relative;
+    text-align: center;
+  }
+  .hero-seal {
+    width: 80px; height: 80px;
+    background: #c8102e;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Noto Serif SC', serif;
+    color: #fff; font-weight: 900; font-size: 28px;
+    margin-bottom: 40px;
+    box-shadow: 0 8px 30px rgba(200, 16, 46, 0.4);
+    transform: rotate(-3deg);
+  }
+  .hero-title {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: clamp(48px, 8vw, 120px);
+    letter-spacing: 8px;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    background: linear-gradient(180deg, #e8e6e1 0%, #c9a961 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-subtitle {
+    font-size: 18px; color: #a8a59f;
+    letter-spacing: 6px;
+    margin-bottom: 16px;
+  }
+  .hero-desc {
+    max-width: 640px;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 16px;
+    color: #6e6b65;
+    line-height: 2;
+    margin-top: 32px;
+  }
+  .hero-cta {
+    margin-top: 48px;
+    display: inline-flex; gap: 16px;
+  }
+  .btn {
+    padding: 14px 32px;
+    border: 1px solid #c9a961;
+    background: transparent;
+    color: #c9a961;
+    text-decoration: none;
+    font-size: 14px; letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.4s;
+    position: relative; overflow: hidden;
+  }
+  .btn:hover { background: #c9a961; color: #0a0a0c; }
+  .btn-primary { background: #c8102e; color: #fff; border-color: #c8102e; }
+  .btn-primary:hover { background: transparent; color: #c8102e; }
+
+  .scroll-hint {
+    position: absolute; bottom: 40px;
+    left: 50%; transform: translateX(-50%);
+    color: #6e6b65; font-size: 12px;
+    letter-spacing: 4px;
+    animation: float 2s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.5; }
+    50% { transform: translateX(-50%) translateY(-10px); opacity: 1; }
+  }
+
+  /* ============ Section 通用 ============ */
+  section {
+    padding: 120px 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .section-head {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    color: #c9a961;
+    font-size: 14px;
+    letter-spacing: 4px;
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: clamp(32px, 4vw, 56px);
+    color: #e8e6e1;
+    letter-spacing: 4px;
+    margin-bottom: 16px;
+  }
+  .section-en {
+    font-family: 'JetBrains Mono', monospace;
+    color: #6e6b65;
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+  .section-line {
+    width: 60px; height: 1px;
+    background: linear-gradient(90deg, transparent, #c9a961, transparent);
+    margin: 32px auto 0;
+  }
+
+  /* ============ 七大模块网格 ============ */
+  .modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+  }
+  .module-card {
+    background: rgba(20, 20, 24, 0.6);
+    border: 1px solid rgba(201, 169, 97, 0.15);
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+  }
+  .module-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #c9a961, transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+  }
+  .module-card:hover {
+    border-color: rgba(200, 16, 46, 0.4);
+    background: rgba(28, 20, 22, 0.7);
+    transform: translateY(-4px);
+  }
+  .module-card:hover::before { transform: translateX(0); }
+
+  .module-num {
+    font-family: 'JetBrains Mono', monospace;
+    color: #c8102e;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 16px;
+    letter-spacing: 2px;
+  }
+  .module-title {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: #e8e6e1;
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+  }
+  .module-en {
+    font-family: 'JetBrains Mono', monospace;
+    color: #6e6b65;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .module-desc {
+    color: #a8a59f;
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 20px;
+  }
+  .module-tags {
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .tag {
+    padding: 4px 10px;
+    font-size: 11px;
+    color: #c9a961;
+    background: rgba(201, 169, 97, 0.08);
+    border: 1px solid rgba(201, 169, 97, 0.2);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px;
+  }
+
+  /* ============ 依赖图（SVG） ============ */
+  .graph-wrap {
+    background: rgba(20, 20, 24, 0.4);
+    border: 1px solid rgba(201, 169, 97, 0.15);
+    padding: 60px 40px;
+    position: relative;
+    overflow-x: auto;
+  }
+  .graph-svg { width: 100%; min-width: 900px; height: auto; }
+  .graph-legend {
+    display: flex; justify-content: center; gap: 32px;
+    margin-top: 32px; flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 8px;
+    color: #a8a59f; font-size: 13px;
+  }
+  .legend-dot { width: 12px; height: 12px; }
+  .legend-dot.audio { background: #4a9eff; }
+  .legend-dot.visual { background: #c9a961; }
+  .legend-dot.combat { background: #c8102e; }
+  .legend-dot.output { background: #7ad97a; }
+
+  /* ============ 提示词模板 ============ */
+  .template-wrap {
+    background: #0d0d10;
+    border: 1px solid rgba(201, 169, 97, 0.2);
+    overflow: hidden;
+  }
+  .template-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 24px;
+    background: rgba(201, 169, 97, 0.05);
+    border-bottom: 1px solid rgba(201, 169, 97, 0.1);
+  }
+  .template-title {
+    font-family: 'JetBrains Mono', monospace;
+    color: #c9a961;
+    font-size: 13px;
+    letter-spacing: 2px;
+  }
+  .copy-btn {
+    padding: 6px 14px;
+    background: transparent;
+    border: 1px solid #c9a961;
+    color: #c9a961;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+  }
+  .copy-btn:hover { background: #c9a961; color: #0a0a0c; }
+  .copy-btn.copied { background: #7ad97a; color: #0a0a0c; border-color: #7ad97a; }
+
+  .template-body {
+    padding: 32px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 2;
+    color: #d4d0c8;
+    overflow-x: auto;
+  }
+  .tk-bracket { color: #6e6b65; }
+  .tk-key { color: #c8102e; font-weight: 500; }
+  .tk-val { color: #c9a961; }
+  .tk-conn { color: #4a9eff; }
+  .tk-comment { color: #6e6b65; font-style: italic; }
+
+  /* ============ Changelog ============ */
+  .timeline {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+    padding-left: 40px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute; left: 12px; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg, #c9a961, transparent);
+  }
+  .timeline-item {
+    position: relative;
+    padding: 0 0 48px 24px;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute; left: -33px; top: 8px;
+    width: 10px; height: 10px;
+    background: #c8102e;
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.2);
+  }
+  .timeline-date {
+    font-family: 'JetBrains Mono', monospace;
+    color: #c9a961;
+    font-size: 12px;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+  .timeline-ver {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(201, 169, 97, 0.1);
+    color: #c9a961;
+    padding: 2px 8px;
+    font-size: 11px;
+    margin-left: 8px;
+    border: 1px solid rgba(201, 169, 97, 0.3);
+  }
+  .timeline-content {
+    font-family: 'Noto Serif SC', serif;
+    color: #d4d0c8;
+    font-size: 15px;
+  }
+
+  /* ============ Footer ============ */
+  footer {
+    padding: 60px 40px 40px;
+    text-align: center;
+    border-top: 1px solid rgba(201, 169, 97, 0.1);
+    margin-top: 60px;
+  }
+  footer p {
+    font-family: 'Noto Serif SC', serif;
+    color: #6e6b65;
+    font-size: 13px;
+    letter-spacing: 2px;
+  }
+  footer .red { color: #c8102e; }
+
+  /* ============ 响应式 ============ */
+  @media (max-width: 768px) {
+    .nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    section { padding: 80px 20px; }
+    .modules-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ============ 滚动显现动画 ============ */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s, transform 0.8s;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- 导航 -->
+<nav class="nav">
+  <div class="nav-logo">提示词<span>·</span>MDK</div>
+  <div class="nav-links">
+    <a href="#modules">七大模块</a>
+    <a href="#graph">依赖图</a>
+    <a href="#template">模板</a>
+    <a href="#changelog">更新</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<header class="hero">
+  <div class="hero-seal">墨</div>
+  <div class="hero-subtitle">PROMPT · FRAMEWORK · MDK</div>
+  <h1 class="hero-title">提示词 MDK<br/>框架图</h1>
+  <p class="hero-desc">
+    七大模块 · 一图贯通<br/>
+    专为水墨武侠 · 仙侠题材 AI 视频生成而设计
+  </p>
+  <div class="hero-cta">
+    <a href="#modules" class="btn btn-primary">开始探索</a>
+    <a href="#template" class="btn">查看模板</a>
+  </div>
+  <div class="scroll-hint">SCROLL ↓</div>
+</header>
+
+<!-- 模块总览 -->
+<section id="modules">
+  <div class="section-head reveal">
+    <div class="section-num">01 · OVERVIEW</div>
+    <h2 class="section-title">七大模块</h2>
+    <div class="section-en">SEVEN CORE MODULES</div>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="modules-grid">
+    <div class="module-card reveal">
+      <div class="module-num">01</div>
+      <div class="module-title">全局音乐效果</div>
+      <div class="module-en">Global Music</div>
+      <div class="module-desc">环境音调插值、基准幅度统一，去除冗余音轨，作为底层时间轴影响所有分镜。</div>
+      <div class="module-tags">
+        <span class="tag">AUDIO</span>
+        <span class="tag">TIMELINE</span>
+      </div>
+    </div>
+
+    <div class="module-card reveal">
+      <div class="module-num">02</div>
+      <div class="module-title">视觉纹理与风格</div>
+      <div class="module-en">Texture & Style</div>
+      <div class="module-desc">幻想纹理粒子、低饱和色调严格控制、纹理朝向流动，奠定画面整体视觉基调。</div>
+      <div class="module-tags">
+        <span class="tag">VISUAL</span>
+        <span class="tag">PALETTE</span>
+      </div>
+    </div>
+
+    <div class="module-card reveal">
+      <div class="module-num">03</div>
+      <div class="module-title">提示词剧本重构</div>
+      <div class="module-en">Prompt Reconstruct</div>
+      <div class="module-desc">抽象词转具象分镜，剧本切片为可独立推理的镜头单元，复用片段以减少 token 冗余。</div>
+      <div class="module-tags">
+        <span class="tag">SCRIPT</span>
+        <span class="tag">OPTIMIZE</span>
+      </div>
+    </div>
+
+    <div class="module-card reveal">
+      <div class="module-num">04</div>
+      <div class="module-title">视觉耦合与基准</div>
+      <div class="module-en">Visual Coupling</div>
+      <div class="module-desc">打击点与视觉冲击同步，所有特效的强度基准线统一，音效变化驱动画面参数微调。</div>
+      <div class="module-tags">
+        <span class="tag">SYNC</span>
+        <span class="tag">BASELINE</span>
+      </div>
+    </div>
+
+    <div class="module-card reveal">
+      <div class="module-num">05</div>
+      <div class="module-title">物理与瞬间打斗</div>
+      <div class="module-en">Physics & Combat</div>
+      <div class="module-desc">真实物理量约束，0.1~0.3s 爆发性动作窗口，蓄势帧 + 受力方向清晰可读。</div>
+      <div class="module-tags">
+        <span class="tag">PHYSICS</span>
+        <span class="tag">IMPACT</span>
+      </div>
+    </div>
+
+    <div class="module-card reveal">
+      <div class="module-num">06</div>
+      <div class="module-title">画面效果与空间</div>
+      <div class="module-en">Visual FX & Space</div>
+      <div class="module-desc">递进式视觉链：发力→变化→冲击→毁灭，冲击波径向扩散，空间瞬时畸变撕裂。</div>
+      <div class="module-tags">
+        <span class="tag">FX</span>
+        <span class="tag">SPATIAL</span>
+      </div>
+    </div>
+
+    <div class="module-card reveal">
+      <div class="module-num">07</div>
+      <div class="module-title">运镜与镜头语言</div>
+      <div class="module-en">Camera & Lens</div>
+      <div class="module-desc">水墨画打击 + 瞬间线条，镜头瞬间推拉摇移，动态模糊强化速度，光斑墨点残影叠加。</div>
+      <div class="module-tags">
+        <span class="tag">CAMERA</span>
+        <span class="tag">MOTION</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 依赖图 -->
+<section id="graph">
+  <div class="section-head reveal">
+    <div class="section-num">02 · DEPENDENCY</div>
+    <h2 class="section-title">模块依赖图</h2>
+    <div class="section-en">MODULE DEPENDENCY GRAPH</div>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="graph-wrap reveal">
+    <svg class="graph-svg" viewBox="0 0 1100 600" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+                markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#c9a961"/>
+        </marker>
+        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#4a9eff" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="#4a9eff" stop-opacity="0.05"/>
+        </linearGradient>
+        <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#c9a961" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="#c9a961" stop-opacity="0.05"/>
+        </linearGradient>
+        <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#c8102e" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="#c8102e" stop-opacity="0.05"/>
+        </linearGradient>
+      </defs>
+
+      <!-- 连线 -->
+      <g stroke="#c9a961" stroke-width="1.5" fill="none" opacity="0.6">
+        <path d="M 180 80 L 380 180" marker-end="url(#arrow)"/>
+        <path d="M 180 80 L 380 320" marker-end="url(#arrow)"/>
+        <path d="M 380 180 L 580 250" marker-end="url(#arrow)"/>
+        <path d="M 380 320 L 580 250" marker-end="url(#arrow)"/>
+        <path d="M 380 320 L 580 400" marker-end="url(#arrow)"/>
+        <path d="M 580 250 L 780 320" marker-end="url(#arrow)"/>
+        <path d="M 580 400 L 780 320" marker-end="url(#arrow)"/>
+        <path d="M 780 320 L 950 200" marker-end="url(#arrow)"/>
+      </g>
+
+      <!-- 节点 1: 音乐 -->
+      <g>
+        <rect x="60" y="40" width="240" height="80" rx="4" fill="url(#grad1)" stroke="#4a9eff" stroke-width="1.5"/>
+        <text x="180" y="75" text-anchor="middle" fill="#e8e6e1" font-family="'Noto Serif SC', serif" font-size="18" font-weight="700">全局音乐</text>
+        <text x="180" y="100" text-anchor="middle" fill="#6e6b65" font-family="JetBrains Mono" font-size="10" letter-spacing="2">GLOBAL MUSIC</text>
+      </g>
+
+      <!-- 节点 2: 纹理 -->
+      <g>
+        <rect x="260" y="140" width="240" height="80" rx="4" fill="url(#grad2)" stroke="#c9a961" stroke-width="1.5"/>
+        <text x="380" y="175" text-anchor="middle" fill="#e8e6e1" font-family="'Noto Serif SC', serif" font-size="18" font-weight="700">视觉纹理</text>
+        <text x="380" y="200" text-anchor="middle" fill="#6e6b65" font-family="JetBrains Mono" font-size="10" letter-spacing="2">TEXTURE & STYLE</text>
+      </g>
+
+      <!-- 节点 3: 剧本 -->
+      <g>
+        <rect x="260" y="280" width="240" height="80" rx="4" fill="url(#grad2)" stroke="#c9a961" stroke-width="1.5"/>
+        <text x="380" y="315" text-anchor="middle" fill="#e8e6e1" font-family="'Noto Serif SC', serif" font-size="18" font-weight="700">剧本重构</text>
+        <text x="380" y="340" text-anchor="middle" fill="#6e6b65" font-family="JetBrains Mono" font-size="10" letter-spacing="2">PROMPT RECONSTRUCT</text>
+      </g>
+
+      <!-- 节点 4: 视觉耦合 -->
+      <g>
+        <rect x="460" y="210" width="240" height="80" rx="4" fill="url(#grad2)" stroke="#c9a961" stroke-width="1.5"/>
+        <text x="580" y="245" text-anchor="middle" fill="#e8e6e1" font-family="'Noto Serif SC', serif" font-size="18" font-weight="700">视觉耦合</text>
+        <text x="580" y="270" text-anchor="middle" fill="#6e6b65" font-family="JetBrains Mono" font-size="10" letter-spacing="2">VISUAL COUPLING</text>
+      </g>
+
+      <!-- 节点 5: 物理打斗 -->
+      <g>
+        <rect x="460" y="360" width="240" height="80" rx="4" fill="url(#grad3)" stroke="#c8102e" stroke-width="1.5"/>
+        <text x="580" y="395" text-anchor="middle" fill="#e8e6e1" font-family="'Noto Serif SC', serif" font-size="18" font-weight="700">物理打斗</text>
+        <text x="580" y="420" text-anchor="middle" fill="#6e6b65" font-family="JetBrains Mono" font-size="10" letter-spacing="2">PHYSICS & COMBAT</text>
+      </g>
+
+      <!-- 节点 6: 画面 -->
+      <g>
+        <rect x="660" y="280" width="240" height="80" rx="4" fill="url(#grad3)" stroke="#c8102e" stroke-width="1.5"/>
+        <text x="780" y="315" text-anchor="middle" fill="#e8e6e1" font-family="'Noto Serif SC', serif" font-size="18" font-weight="700">画面效果</text>
+        <text x="780" y="340" text-anchor="middle" fill="#6e6b65" font-family="JetBrains Mono" font-size="10" letter-spacing="2">VISUAL FX & SPACE</text>
+      </g>
+
+      <!-- 节点 7: 运镜 -->
+      <g>
+        <rect x="860" y="160" width="200" height="80" rx="4" fill="url(#grad2)" stroke="#c9a961" stroke-width="1.5"/>
+        <text x="960" y="195" text-anchor="middle" fill="#e8e6e1" font-family="'Noto Serif SC', serif" font-size="18" font-weight="700">运镜镜头</text>
+        <text x="960" y="220" text-anchor="middle" fill="#6e6b65" font-family="JetBrains Mono" font-size="10" letter-spacing="2">CAMERA & LENS</text>
+      </g>
+    </svg>
+
+    <div class="graph-legend">
+      <div class="legend-item"><div class="legend-dot audio"></div>音频层</div>
+      <div class="legend-item"><div class="legend-dot visual"></div>视觉层</div>
+      <div class="legend-item"><div class="legend-dot combat"></div>打斗层</div>
+    </div>
+  </div>
+</section>
+
+<!-- 提示词模板 -->
+<section id="template">
+  <div class="section-head reveal">
+    <div class="section-num">03 · TEMPLATE</div>
+    <h2 class="section-title">提示词模板</h2>
+    <div class="section-en">PROMPT TEMPLATE</div>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="template-wrap reveal">
+    <div class="template-head">
+      <div class="template-title">MDK_PROMPT_v1.0.template</div>
+      <button class="copy-btn" onclick="copyTemplate(this)">COPY</button>
+    </div>
+    <pre class="template-body" id="template-body"><span class="tk-comment">[全局音乐效果]</span>
+  <span class="tk-key">配合</span>-<span class="tk-val">环境音调（插值）</span> | <span class="tk-key">基准</span>幅度效果 | <span class="tk-val">简</span>
+
+<span class="tk-comment">[视觉纹理]</span>
+  <span class="tk-val">幻想纹理</span> <span class="tk-conn">+</span> <span class="tk-key">色调严格</span><span class="tk-bracket">《--》</span><span class="tk-val">低饱和</span>
+
+<span class="tk-comment">[提示词剧本]</span>
+  <span class="tk-key">直观</span>-<span class="tk-val">镜头</span> <span class="tk-conn">+</span> <span class="tk-val">分镜展开</span><span class="tk-bracket">（ocind视觉展开）</span>
+
+<span class="tk-comment">[视觉耦合]</span>
+  <span class="tk-key">纹</span>-<span class="tk-val">朝向</span> <span class="tk-conn">+</span> <span class="tk-val">基准效果</span> <span class="tk-conn">+</span> <span class="tk-key">跟随</span><span class="tk-val">全局影响（音效）</span>
+
+<span class="tk-comment">[物理与打斗]</span>
+  <span class="tk-val">物理概念</span> <span class="tk-conn">+</span> <span class="tk-key">瞬间</span><span class="tk-val">打斗</span> <span class="tk-conn">+</span> <span class="tk-val">视觉定向</span>
+  <span class="tk-bracket">└─</span> 瞬间-发力-变化-冲击力-毁灭
+     <span class="tk-bracket">└─</span> <span class="tk-val">冲击波几何倍扩散</span>
+
+<span class="tk-comment">[画面效果]</span>
+  <span class="tk-val">画面瞬间空间</span> <span class="tk-conn">+</span> <span class="tk-key">空间割裂感</span>
+
+<span class="tk-comment">[运镜]</span>
+  <span class="tk-val">运镜展现力度</span> <span class="tk-conn">+</span> <span class="tk-val">水墨画打击</span> <span class="tk-conn">+</span> <span class="tk-val">瞬间线条</span>
+  <span class="tk-val">镜头瞬间变化</span> <span class="tk-conn">+</span> <span class="tk-val">模糊效果</span>
+
+<span class="tk-comment">[故事]</span>
+  <span class="tk-key">展开</span><span class="tk-val">故事</span></pre>
+  </div>
+</section>
+
+<!-- Changelog -->
+<section id="changelog">
+  <div class="section-head reveal">
+    <div class="section-num">04 · CHANGELOG</div>
+    <h2 class="section-title">更新日志</h2>
+    <div class="section-en">VERSION HISTORY</div>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="timeline">
+    <div class="timeline-item reveal">
+      <div class="timeline-date">2026-06-06<span class="timeline-ver">v1.0</span></div>
+      <div class="timeline-content">初始化 MDK 框架图（7 大模块 + 依赖图 + 模板 + HTML 化）</div>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-date">未来规划<span class="timeline-ver">v1.1</span></div>
+      <div class="timeline-content">增加具体提示词示例库，补充模块间的输入输出接口规范</div>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-date">未来规划<span class="timeline-ver">v2.0</span></div>
+      <div class="timeline-content">将依赖图改为可交互式（Mermaid / D3.js），支持在线编辑</div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p>提示词 <span class="red">·</span> MDK 框架图 <span class="red">·</span> 水墨武侠版</p>
+  <p style="margin-top:12px; font-size:11px; opacity:0.5;">Crafted for AI Video Generation · 2026</p>
+</footer>
+
+<script>
+  // 复制模板
+  function copyTemplate(btn) {
+    const text = document.getElementById('template-body').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const original = btn.textContent;
+      btn.textContent = 'COPIED ✓';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.classList.remove('copied');
+      }, 1800);
+    });
+  }
+
+  // 滚动显现
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
