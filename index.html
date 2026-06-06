@@ -556,6 +556,166 @@ input, select { font: inherit; color: inherit; }
 }
 .loadmore button:hover { color: var(--accent); border-color: var(--accent); }
 
+/* Featured (latest/popular/decade) */
+.featured-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+.ftab {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 10px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ftab:hover { color: var(--ink-1); border-color: var(--accent-2); }
+.ftab.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0a0a0a;
+  font-weight: 600;
+}
+.ftab-panel { display: none; }
+.ftab-panel.active { display: block; }
+.ftab-head {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--ink-3);
+  margin-bottom: 16px;
+}
+.ftab-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.latest-row, .pop-row {
+  display: grid;
+  grid-template-columns: 70px 60px 1fr 110px 120px;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.latest-row:hover, .pop-row:hover {
+  border-color: var(--accent);
+  transform: translateX(4px);
+}
+.lr-rank {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink-3);
+  letter-spacing: 0.05em;
+}
+.lr-type {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+}
+.lr-title { font-size: 15px; font-weight: 500; color: var(--ink-1); }
+.lr-ip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-3);
+  letter-spacing: 0.05em;
+}
+.lr-year {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 600;
+  text-align: right;
+}
+.pop-row {
+  grid-template-columns: 50px 1fr 80px 100px;
+}
+.pop-bar-wrap {
+  height: 8px;
+  background: var(--bg-1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.pop-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  border-radius: 4px;
+}
+.pop-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  color: var(--accent);
+  font-weight: 700;
+  text-align: right;
+}
+.decade-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+@media (max-width: 1180px) { .decade-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 760px) { .decade-grid { grid-template-columns: repeat(2, 1fr); } }
+.decade-col {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 18px;
+  min-height: 220px;
+}
+.decade-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 4px;
+  letter-spacing: 0.02em;
+}
+.decade-range {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 14px;
+}
+.decade-items { display: flex; flex-direction: column; gap: 8px; }
+.decade-item {
+  font-size: 12px;
+  color: var(--ink-2);
+  padding: 8px 10px;
+  background: var(--bg-1);
+  border-radius: 6px;
+  border-left: 2px solid var(--accent-2);
+  cursor: pointer;
+  transition: all 0.15s;
+  line-height: 1.4;
+}
+.decade-item:hover { color: var(--ink-1); background: var(--bg-3, var(--bg-1)); }
+.decade-item strong { color: var(--ink-1); font-weight: 500; }
+@media (max-width: 760px) {
+  .latest-row, .pop-row { grid-template-columns: 50px 1fr 90px; gap: 8px; padding: 12px; }
+  .lr-type, .pop-bar-wrap { display: none; }
+}
+
 /* Timeline */
 .timeline-wrap {
   display: grid;
@@ -876,6 +1036,36 @@ input, select { font: inherit; color: inherit; }
         <div class="value" id="statSpan">—<span class="unit"></span></div>
         <div class="delta">1986 → 2026.06.08</div>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="featured">
+  <div class="container">
+    <div class="section-head">
+      <h2 class="section-title"><span class="num">00 /</span>聚焦</h2>
+      <p class="section-sub">最新衍生作品、热门 IP 排行榜、按年代划分的代表作精选。</p>
+    </div>
+
+    <div class="featured-tabs">
+      <button class="ftab active" data-tab="latest">最新发布</button>
+      <button class="ftab" data-tab="popular">热门 IP</button>
+      <button class="ftab" data-tab="decade">年代精选</button>
+    </div>
+
+    <div class="ftab-panel active" data-panel="latest">
+      <div class="ftab-head">2024-2026 年最新衍生作品</div>
+      <div class="ftab-list" id="latestList"></div>
+    </div>
+
+    <div class="ftab-panel" data-panel="popular">
+      <div class="ftab-head">按衍生作品数排序的 Top 20 IP</div>
+      <div class="ftab-list" id="popularList"></div>
+    </div>
+
+    <div class="ftab-panel" data-panel="decade">
+      <div class="ftab-head">按年代 (80s/90s/00s/10s/20s) 精选代表作</div>
+      <div class="ftab-list decade-grid" id="decadeList"></div>
     </div>
   </div>
 </section>
@@ -1406,7 +1596,289 @@ const IP_POOL = [
   { name: '仙剑世界', en: 'Sword and Fairy World', region: 'CN', weight: 2 },
   { name: '轩辕剑7', en: 'Xuanyuan Sword 7', region: 'CN', weight: 2 },
   { name: '轩辕剑 柒', en: 'Xuanyuan Sword 7 Mobile', region: 'CN', weight: 1 },
-  { name: '古剑奇谭 木语人', year: 2021, region: 'CN', weight: 2 },
+  { name: '古剑奇谭 木语人', en: 'Gujian Muyu Ren', region: 'CN', weight: 2 },
+  { name: '完美世界', en: 'Perfect World', region: 'CN', weight: 4 },
+  { name: '完美世界 国际版', en: 'Perfect World International', region: 'CN', weight: 2 },
+  { name: '完美新世界', en: 'Perfect New World', region: 'CN', weight: 1 },
+  { name: '诛仙', en: 'Jade Dynasty', region: 'CN', weight: 4 },
+  { name: '诛仙 2', en: 'Jade Dynasty 2', region: 'CN', weight: 2 },
+  { name: '诛仙 手游', en: 'Jade Dynasty Mobile', region: 'CN', weight: 2 },
+  { name: '天龙八部', en: 'Tian Long Ba Bu', region: 'CN', weight: 4 },
+  { name: '天龙八部 2', en: 'TLBB 2', region: 'CN', weight: 2 },
+  { name: '新天龙八部', en: 'New TLBB', region: 'CN', weight: 1 },
+  { name: '倩女幽魂', en: 'A Chinese Ghost Story', region: 'CN', weight: 4 },
+  { name: '倩女幽魂 手游', en: 'ACGS Mobile', region: 'CN', weight: 2 },
+  { name: '逆水寒', en: 'Justice Online', region: 'CN', weight: 3 },
+  { name: '逆水寒 手游', en: 'Justice Online Mobile', region: 'CN', weight: 2 },
+  { name: '剑网3', en: 'JX3', region: 'CN', weight: 4 },
+  { name: '剑网3 缘起', en: 'JX3 Origin', region: 'CN', weight: 1 },
+  { name: '剑网3 无界', en: 'JX3 Universe', region: 'CN', weight: 1 },
+  { name: '天下3', en: 'Tianxia 3', region: 'CN', weight: 2 },
+  { name: '天下 贰', en: 'Tianxia 2', region: 'CN', weight: 1 },
+  { name: '大话西游', en: 'A Chinese Odyssey Online', region: 'CN', weight: 3 },
+  { name: '大话西游 2', en: 'A Chinese Odyssey 2', region: 'CN', weight: 2 },
+  { name: '大话西游 手游', en: 'A Chinese Odyssey Mobile', region: 'CN', weight: 2 },
+  { name: '梦幻西游', en: 'Fantasy Westward Journey', region: 'CN', weight: 4 },
+  { name: '梦幻西游 手游', en: 'Fantasy Westward Journey M', region: 'CN', weight: 3 },
+  { name: '梦幻西游 互通版', en: 'FWJ Interlink', region: 'CN', weight: 1 },
+  { name: '阴阳师', en: 'Onmyoji', region: 'CN', weight: 4 },
+  { name: '阴阳师 百闻牌', en: 'Onmyoji Kart', region: 'CN', weight: 2 },
+  { name: '阴阳师 妖怪屋', en: 'Onmyoji House', region: 'CN', weight: 1 },
+  { name: '第五人格', en: 'Identity V', region: 'CN', weight: 3 },
+  { name: '第五人格 联动', en: 'Identity V Crossover', region: 'CN', weight: 1 },
+  { name: '明日方舟', en: 'Arknights', region: 'CN', weight: 4 },
+  { name: '明日方舟 终末地', en: 'Arknights Endfield', region: 'CN', weight: 2 },
+  { name: '原神', en: 'Genshin Impact', region: 'CN', weight: 5 },
+  { name: '原神 漫画', en: 'Genshin Manga', region: 'CN', weight: 1 },
+  { name: '原神 音乐', en: 'Genshin OST', region: 'CN', weight: 1 },
+  { name: '崩坏3', en: 'Honkai Impact 3rd', region: 'CN', weight: 4 },
+  { name: '崩坏 星穹铁道', en: 'Honkai Star Rail', region: 'CN', weight: 4 },
+  { name: '崩坏 学园2', en: 'Honkai Gakuen 2', region: 'CN', weight: 2 },
+  { name: '绝区零', en: 'Zenless Zone Zero', region: 'CN', weight: 3 },
+  { name: '尘白禁区', en: 'Snowbreak', region: 'CN', weight: 2 },
+  { name: '战双帕弥什', en: 'Punishing Gray Raven', region: 'CN', weight: 3 },
+  { name: '白荆回廊', en: 'Path to Nowhere', region: 'CN', weight: 2 },
+  { name: '深空之眼', en: 'Aether Gazer', region: 'CN', weight: 2 },
+  { name: '鸣潮', en: 'Wuthering Waves', region: 'CN', weight: 3 },
+  { name: '幻塔', en: 'Tower of Fantasy', region: 'CN', weight: 2 },
+  { name: '幻塔 进化', en: 'Tower of Fantasy Evolution', region: 'CN', weight: 1 },
+  { name: '命运方舟', en: 'Lost Ark', region: 'KR', weight: 3 },
+  { name: '永恒之塔', en: 'Aion', region: 'KR', weight: 3 },
+  { name: '永恒之塔 2', en: 'Aion 2', region: 'KR', weight: 1 },
+  { name: '剑灵', en: 'Blade & Soul', region: 'KR', weight: 3 },
+  { name: '剑灵 2', en: 'Blade & Soul 2', region: 'KR', weight: 1 },
+  { name: '黑色沙漠', en: 'Black Desert', region: 'KR', weight: 3 },
+  { name: '黑色沙漠 移动版', en: 'BDO Mobile', region: 'KR', weight: 1 },
+  { name: '冒险岛', en: 'MapleStory', region: 'KR', weight: 4 },
+  { name: '冒险岛 2', en: 'MapleStory 2', region: 'KR', weight: 2 },
+  { name: '冒险岛 M', en: 'MapleStory M', region: 'KR', weight: 1 },
+  { name: '冒险岛 世界', en: 'MapleStory Worlds', region: 'KR', weight: 1 },
+  { name: '洛奇', en: 'Mabinogi', region: 'KR', weight: 3 },
+  { name: '洛奇 移动版', en: 'Mabinogi Mobile', region: 'KR', weight: 1 },
+  { name: '洛奇英雄传', en: 'Vindictus', region: 'KR', weight: 2 },
+  { name: '地下城与勇士', en: 'Dungeon & Fighter', region: 'KR', weight: 5 },
+  { name: 'DNF 手游', en: 'DNF Mobile', region: 'KR', weight: 2 },
+  { name: 'DNF 决斗', en: 'DNF Duel', region: 'KR', weight: 1 },
+  { name: '跑跑卡丁车', en: 'KartRider', region: 'KR', weight: 2 },
+  { name: '跑跑卡丁车 漂移', en: 'KartRider Drift', region: 'KR', weight: 1 },
+  { name: 'QQ飞车', en: 'QQ Speed', region: 'CN', weight: 3 },
+  { name: 'QQ飞车 手游', en: 'QQ Speed Mobile', region: 'CN', weight: 2 },
+  { name: 'QQ炫舞', en: 'QQ Dancer', region: 'CN', weight: 2 },
+  { name: '王者荣耀', en: 'Honor of Kings', region: 'CN', weight: 5 },
+  { name: '王者荣耀 世界', en: 'Honor of Kings World', region: 'CN', weight: 2 },
+  { name: '王者荣耀 动漫', en: 'Honor of Kings Anime', region: 'CN', weight: 1 },
+  { name: '星之破晓', en: 'Star Dawn', region: 'CN', weight: 1 },
+  { name: '曙光英雄', en: 'Dawn Heroes', region: 'CN', weight: 1 },
+  { name: '英雄联盟', en: 'League of Legends', region: 'US', weight: 5 },
+  { name: '英雄联盟 双城之战', en: 'Arcane', region: 'US', weight: 3 },
+  { name: '英雄联盟 手游', en: 'LoL Wild Rift', region: 'US', weight: 2 },
+  { name: '英雄联盟 格斗', en: 'LoL Fighting', region: 'US', weight: 1 },
+  { name: '云顶之弈', en: 'Teamfight Tactics', region: 'US', weight: 2 },
+  { name: '符文之地传奇', en: 'Legends of Runeterra', region: 'US', weight: 1 },
+  { name: '无畏契约', en: 'Valorant', region: 'US', weight: 3 },
+  { name: '无畏契约 移动版', en: 'Valorant Mobile', region: 'US', weight: 1 },
+  { name: 'DOTA 2', en: 'DOTA 2', region: 'US', weight: 4 },
+  { name: 'DOTA 血战之命', en: 'DOTA Blood War', region: 'US', weight: 1 },
+  { name: 'CS 2', en: 'Counter-Strike 2', region: 'US', weight: 3 },
+  { name: 'CSGO', en: 'CSGO', region: 'US', weight: 2 },
+  { name: '半条命 艾莉克斯', en: 'Half-Life Alyx', region: 'US', weight: 1 },
+  { name: '传送门 2', en: 'Portal 2', region: 'US', weight: 1 },
+  { name: '军团要塞2', en: 'Team Fortress 2', region: 'US', weight: 1 },
+  { name: '守望先锋', en: 'Overwatch', region: 'US', weight: 4 },
+  { name: '守望先锋2', en: 'Overwatch 2', region: 'US', weight: 2 },
+  { name: '暗黑破坏神2', en: 'Diablo 2', region: 'US', weight: 3 },
+  { name: '暗黑破坏神3', en: 'Diablo 3', region: 'US', weight: 3 },
+  { name: '暗黑破坏神4', en: 'Diablo 4', region: 'US', weight: 3 },
+  { name: '暗黑破坏神 不朽', en: 'Diablo Immortal', region: 'US', weight: 2 },
+  { name: '魔兽世界', en: 'World of Warcraft', region: 'US', weight: 5 },
+  { name: '魔兽 经典怀旧', en: 'WoW Classic', region: 'US', weight: 1 },
+  { name: '炉石传说', en: 'Hearthstone', region: 'US', weight: 3 },
+  { name: '风暴英雄', en: 'Heroes of the Storm', region: 'US', weight: 1 },
+  { name: '星际争霸 2', en: 'StarCraft 2', region: 'US', weight: 2 },
+  { name: '星际争霸 幽灵', en: 'StarCraft Ghost', region: 'US', weight: 1 },
+  { name: '魔兽世界 动画', en: 'WoW Animated', region: 'US', weight: 1 },
+  { name: '原魔兽 电影', en: 'Warcraft Movie', region: 'US', weight: 2 },
+  { name: '最终幻想 7', en: 'Final Fantasy 7', region: 'JP', weight: 5 },
+  { name: '最终幻想 7 重生', en: 'FF7 Rebirth', region: 'JP', weight: 2 },
+  { name: '最终幻想 7 危机', en: 'FF7 Crisis Core', region: 'JP', weight: 1 },
+  { name: '最终幻想 8', en: 'Final Fantasy 8', region: 'JP', weight: 3 },
+  { name: '最终幻想 9', en: 'Final Fantasy 9', region: 'JP', weight: 3 },
+  { name: '最终幻想 10', en: 'Final Fantasy 10', region: 'JP', weight: 3 },
+  { name: '最终幻想 12', en: 'Final Fantasy 12', region: 'JP', weight: 2 },
+  { name: '最终幻想 13', en: 'Final Fantasy 13', region: 'JP', weight: 2 },
+  { name: '最终幻想 15', en: 'Final Fantasy 15', region: 'JP', weight: 3 },
+  { name: '最终幻想 16', en: 'Final Fantasy 16', region: 'JP', weight: 3 },
+  { name: '最终幻想 战略版', en: 'FFT', region: 'JP', weight: 2 },
+  { name: '最终幻想 零式', en: 'FF Type-0', region: 'JP', weight: 1 },
+  { name: '最终幻想 14', en: 'FF14', region: 'JP', weight: 4 },
+  { name: '最终幻想 14 动画', en: 'FF14 Anime', region: 'JP', weight: 1 },
+  { name: '勇者斗恶龙 11', en: 'Dragon Quest 11', region: 'JP', weight: 3 },
+  { name: '勇者斗恶龙 达尔大冒险', en: 'DQ Adventure of Dai', region: 'JP', weight: 2 },
+  { name: '勇者斗恶龙 你的故事', en: 'DQ Your Story', region: 'JP', weight: 1 },
+  { name: '勇者斗恶龙 怪兽篇', en: 'DQ Monsters', region: 'JP', weight: 2 },
+  { name: '勇者斗恶龙 英雄', en: 'DQ Heroes', region: 'JP', weight: 1 },
+  { name: '勇者斗恶龙 步行', en: 'DQ Walk', region: 'JP', weight: 1 },
+  { name: '勇者斗恶龙 创世玩家', en: 'DQ Builders', region: 'JP', weight: 1 },
+  { name: '勇者斗恶龙 离线版', en: 'DQ Offline', region: 'JP', weight: 1 },
+  { name: '勇者斗恶龙 主题曲', en: 'DQ Music', region: 'JP', weight: 1 },
+  { name: '传说系列', en: 'Tales Series', region: 'JP', weight: 3 },
+  { name: '传说 幻想传说', en: 'Tales of Phantasia', region: 'JP', weight: 2 },
+  { name: '传说 宿命传说', en: 'Tales of Destiny', region: 'JP', weight: 2 },
+  { name: '传说 深渊传说', en: 'Tales of the Abyss', region: 'JP', weight: 1 },
+  { name: '传说 仙乐传说', en: 'Tales of Symphonia', region: 'JP', weight: 1 },
+  { name: '传说 传奇传说', en: 'Tales of Legendia', region: 'JP', weight: 1 },
+  { name: '传说 无限传说', en: 'Tales of Xillia', region: 'JP', weight: 1 },
+  { name: '传说 心灵传说', en: 'Tales of Hearts', region: 'JP', weight: 1 },
+  { name: '传说 热情传说', en: 'Tales of Zestiria', region: 'JP', weight: 1 },
+  { name: '传说 狂战传说', en: 'Tales of Berseria', region: 'JP', weight: 1 },
+  { name: '传说 破晓传说', en: 'Tales of Arise', region: 'JP', weight: 2 },
+  { name: '英雄传说 空之轨迹', en: 'Trails in the Sky', region: 'JP', weight: 3 },
+  { name: '英雄传说 零之轨迹', en: 'Trails from Zero', region: 'JP', weight: 2 },
+  { name: '英雄传说 碧之轨迹', en: 'Trails to Azure', region: 'JP', weight: 2 },
+  { name: '英雄传说 闪之轨迹', en: 'Trails of Cold Steel', region: 'JP', weight: 2 },
+  { name: '英雄传说 黎之轨迹', en: 'Trails into Reverie', region: 'JP', weight: 2 },
+  { name: '英雄传说 界之轨迹', en: 'Trails through Daybreak', region: 'JP', weight: 1 },
+  { name: '伊苏 系列', en: 'Ys Series', region: 'JP', weight: 3 },
+  { name: '伊苏 起源', en: 'Ys Origin', region: 'JP', weight: 1 },
+  { name: '伊苏 8', en: 'Ys 8', region: 'JP', weight: 1 },
+  { name: '伊苏 9', en: 'Ys 9', region: 'JP', weight: 1 },
+  { name: '伊苏 10', en: 'Ys 10', region: 'JP', weight: 1 },
+  { name: '轨迹 动画', en: 'Trails Anime', region: 'JP', weight: 1 },
+  { name: '轨迹 电影', en: 'Trails Movie', region: 'JP', weight: 1 },
+  { name: '赛马娘 闪耀', en: 'Uma Musume', region: 'JP', weight: 4 },
+  { name: '赛马娘 街头', en: 'Uma Musume Street', region: 'JP', weight: 1 },
+  { name: '赛马娘 Pretty Derby', en: 'Uma Musume PD', region: 'JP', weight: 2 },
+  { name: '初音未来', en: 'Hatsune Miku', region: 'JP', weight: 5 },
+  { name: '初音未来 歌姬计划', en: 'Project DIVA', region: 'JP', weight: 2 },
+  { name: '初音未来 V4', en: 'Miku V4', region: 'JP', weight: 1 },
+  { name: '初音未来 NT', en: 'Miku NT', region: 'JP', weight: 1 },
+  { name: '初音未来 演唱会', en: 'Miku Live', region: 'JP', weight: 2 },
+  { name: '初音未来 联动', en: 'Miku Collab', region: 'JP', weight: 1 },
+  { name: '初音未来 漫画', en: 'Miku Manga', region: 'JP', weight: 1 },
+  { name: '初音未来 设定集', en: 'Miku Artbook', region: 'JP', weight: 1 },
+  { name: 'Love Live 阳光', en: 'Love Live Sunshine', region: 'JP', weight: 3 },
+  { name: 'Love Live 虹咲', en: 'Love Live Nijigasaki', region: 'JP', weight: 2 },
+  { name: 'Love Live 超级', en: 'Love Live Superstar', region: 'JP', weight: 2 },
+  { name: 'Love Live 学园偶像', en: 'Love Live School Idol', region: 'JP', weight: 2 },
+  { name: 'Love Live 莲之空', en: 'Love Live Hasunosora', region: 'JP', weight: 1 },
+  { name: 'Love Live 歌谣', en: 'Love Live Songfest', region: 'JP', weight: 1 },
+  { name: 'BanG Dream', en: 'BanG Dream', region: 'JP', weight: 3 },
+  { name: 'BanG Dream 少女乐团', en: 'BanG Dream Girls Band', region: 'JP', weight: 2 },
+  { name: 'BanG Dream Ave Mujica', en: 'Ave Mujica', region: 'JP', weight: 1 },
+  { name: 'BanG Dream MyGO', en: 'MyGO', region: 'JP', weight: 1 },
+  { name: 'D4DJ', en: 'D4DJ', region: 'JP', weight: 2 },
+  { name: 'D4DJ 全明星', en: 'D4DJ All Mix', region: 'JP', weight: 1 },
+  { name: 'D4DJ 联动', en: 'D4DJ Collab', region: 'JP', weight: 1 },
+  { name: '偶像大师', en: 'Idolmaster', region: 'JP', weight: 4 },
+  { name: '偶像大师 灰姑娘', en: 'Idolmaster Cinderella', region: 'JP', weight: 2 },
+  { name: '偶像大师 百万', en: 'Idolmaster Million', region: 'JP', weight: 2 },
+  { name: '偶像大师 闪耀', en: 'Idolmaster Shiny Colors', region: 'JP', weight: 2 },
+  { name: '偶像大师 演唱会', en: 'Idolmaster Live', region: 'JP', weight: 1 },
+  { name: '咒术回战 手游', en: 'Jujutsu Kaisen Mobile', region: 'JP', weight: 2 },
+  { name: '咒术回战 战阵', en: 'JJK Battle', region: 'JP', weight: 1 },
+  { name: '咒术回战 漫画', en: 'JJK Manga', region: 'JP', weight: 1 },
+  { name: '咒术回战 展', en: 'JJK Exhibition', region: 'JP', weight: 1 },
+  { name: '咒术回战 0', en: 'JJK 0 Movie', region: 'JP', weight: 1 },
+  { name: '咒术回战 怀玉', en: 'JJK Hidden Inventory', region: 'JP', weight: 1 },
+  { name: '高达', en: 'Gundam', region: 'JP', weight: 5 },
+  { name: '高达 SEED', en: 'Gundam SEED', region: 'JP', weight: 3 },
+  { name: '高达 SEED 命运', en: 'Gundam SEED Destiny', region: 'JP', weight: 2 },
+  { name: '高达 00', en: 'Gundam 00', region: 'JP', weight: 2 },
+  { name: '高达 铁血', en: 'Gundam IBO', region: 'JP', weight: 2 },
+  { name: '高达 水星', en: 'Gundam Witch', region: 'JP', weight: 2 },
+  { name: '高达 独角兽', en: 'Gundam Unicorn', region: 'JP', weight: 2 },
+  { name: '高达 NT', en: 'Gundam NT', region: 'JP', weight: 1 },
+  { name: '高达 闪光之凯萨', en: 'Gundam Hathaway', region: 'JP', weight: 1 },
+  { name: '高达 SD', en: 'SD Gundam', region: 'JP', weight: 2 },
+  { name: '高达 创战者', en: 'Gundam Build', region: 'JP', weight: 1 },
+  { name: '高达 战斗行动', en: 'Gundam Battle', region: 'JP', weight: 1 },
+  { name: '瓦利欧制造', en: 'WarioWare', region: 'JP', weight: 2 },
+  { name: '瓦利欧 派对', en: 'Wario Party', region: 'JP', weight: 1 },
+  { name: '瓦利欧 移动', en: 'WarioWare Move', region: 'JP', weight: 1 },
+  { name: '瓦力欧 制造', en: 'WarioWare Get', region: 'JP', weight: 1 },
+  { name: '超级马里奥 制造', en: 'Mario Maker', region: 'JP', weight: 2 },
+  { name: '超级马里奥 奥德赛', en: 'Mario Odyssey', region: 'JP', weight: 1 },
+  { name: '超级马里奥 惊奇', en: 'Mario Wonder', region: 'JP', weight: 1 },
+  { name: '超级马里奥 银河', en: 'Mario Galaxy', region: 'JP', weight: 2 },
+  { name: '超级马里奥 RPG', en: 'Mario RPG', region: 'JP', weight: 1 },
+  { name: '马里奥赛车', en: 'Mario Kart', region: 'JP', weight: 3 },
+  { name: '马里奥赛车 8', en: 'Mario Kart 8', region: 'JP', weight: 1 },
+  { name: '马里奥网球', en: 'Mario Tennis', region: 'JP', weight: 1 },
+  { name: '马里奥派对', en: 'Mario Party', region: 'JP', weight: 1 },
+  { name: '星之卡比', en: 'Kirby', region: 'JP', weight: 3 },
+  { name: '星之卡比 探索', en: 'Kirby Discovery', region: 'JP', weight: 1 },
+  { name: '星之卡比 Wii', en: 'Kirby Wii', region: 'JP', weight: 1 },
+  { name: '星之卡比 美食家', en: 'Kirby Chef', region: 'JP', weight: 1 },
+  { name: '塞尔达传说 旷野之息', en: 'Zelda BOTW', region: 'JP', weight: 4 },
+  { name: '塞尔达传说 王国之泪', en: 'Zelda TOTK', region: 'JP', weight: 3 },
+  { name: '塞尔达传说 黄昏公主', en: 'Zelda Twilight', region: 'JP', weight: 2 },
+  { name: '塞尔达传说 风之杖', en: 'Zelda Wind Waker', region: 'JP', weight: 1 },
+  { name: '塞尔达传说 织梦岛', en: 'Zelda Link Awakening', region: 'JP', weight: 1 },
+  { name: '塞尔达传说 时之笛', en: 'Zelda Ocarina', region: 'JP', weight: 2 },
+  { name: '塞尔达传说 动画', en: 'Zelda Anime', region: 'JP', weight: 1 },
+  { name: '精灵宝可梦 Z-A', en: 'Pokemon Z-A', region: 'JP', weight: 1 },
+  { name: '精灵宝可梦 传说', en: 'Pokemon Legends', region: 'JP', weight: 1 },
+  { name: '宝可梦 卡牌 扩展', en: 'Pokemon TCG Expansion', region: 'JP', weight: 2 },
+  { name: '幻影异闻录', en: 'Persona 5 Strikers', region: 'JP', weight: 1 },
+  { name: '女神异闻录 5', en: 'Persona 5', region: 'JP', weight: 4 },
+  { name: '女神异闻录 4', en: 'Persona 4', region: 'JP', weight: 3 },
+  { name: '女神异闻录 3', en: 'Persona 3', region: 'JP', weight: 3 },
+  { name: '女神异闻录 5R', en: 'Persona 5 Royal', region: 'JP', weight: 2 },
+  { name: '女神异闻录 5 动画', en: 'P5A', region: 'JP', weight: 1 },
+  { name: '女神异闻录 5 乱战', en: 'P5 Strikers', region: 'JP', weight: 1 },
+  { name: '真 女神转生 V', en: 'SMT V', region: 'JP', weight: 2 },
+  { name: '真 女神转生 3', en: 'SMT 3', region: 'JP', weight: 1 },
+  { name: '真 女神转生 反转', en: 'SMT If', region: 'JP', weight: 1 },
+  { name: '女神转生 灵魂骇客', en: 'Devil Summoner', region: 'JP', weight: 1 },
+  { name: '凯瑟琳', en: 'Catherine', region: 'JP', weight: 1 },
+  { name: '凯瑟琳 全脂', en: 'Catherine FB', region: 'JP', weight: 1 },
+  { name: '真 女神转生 漫画', en: 'SMT Manga', region: 'JP', weight: 1 },
+  { name: '鬼泣 5', en: 'Devil May Cry 5', region: 'JP', weight: 3 },
+  { name: '鬼泣 4', en: 'Devil May Cry 4', region: 'JP', weight: 2 },
+  { name: '鬼泣 3', en: 'Devil May Cry 3', region: 'JP', weight: 2 },
+  { name: '鬼泣 1', en: 'Devil May Cry 1', region: 'JP', weight: 2 },
+  { name: '鬼泣 动画', en: 'DMC Anime', region: 'JP', weight: 1 },
+  { name: '鬼泣 巅峰之战', en: 'DMC Peak', region: 'JP', weight: 1 },
+  { name: '猎天使魔女 3', en: 'Bayonetta 3', region: 'JP', weight: 2 },
+  { name: '猎天使魔女 起源', en: 'Bayonetta Origin', region: 'JP', weight: 1 },
+  { name: '尼尔 自动人形', en: 'NieR Automata', region: 'JP', weight: 3 },
+  { name: '尼尔 人工生命', en: 'NieR Replicant', region: 'JP', weight: 2 },
+  { name: '尼尔 机械纪元 动画', en: 'NieR Anime', region: 'JP', weight: 1 },
+  { name: '龙之信条 2', en: 'Dragons Dogma 2', region: 'JP', weight: 2 },
+  { name: '龙之信条', en: 'Dragons Dogma', region: 'JP', weight: 1 },
+  { name: '黑暗之魂 3', en: 'Dark Souls 3', region: 'JP', weight: 3 },
+  { name: '黑暗之魂 2', en: 'Dark Souls 2', region: 'JP', weight: 2 },
+  { name: '黑暗之魂', en: 'Dark Souls 1', region: 'JP', weight: 3 },
+  { name: '艾尔登法环', en: 'Elden Ring', region: 'JP', weight: 4 },
+  { name: '艾尔登法环 黄金树', en: 'Elden Ring DLC', region: 'JP', weight: 1 },
+  { name: '只狼', en: 'Sekiro', region: 'JP', weight: 2 },
+  { name: '只狼 动画', en: 'Sekiro Anime', region: 'JP', weight: 1 },
+  { name: '血源诅咒', en: 'Bloodborne', region: 'JP', weight: 2 },
+  { name: '血源诅咒 漫画', en: 'Bloodborne Manga', region: 'JP', weight: 1 },
+  { name: '恶魔之魂 重制', en: 'Demons Souls', region: 'JP', weight: 1 },
+  { name: '装甲核心 6', en: 'Armored Core 6', region: 'JP', weight: 2 },
+  { name: '装甲核心 答案', en: 'AC Answer', region: 'JP', weight: 1 },
+  { name: '噬神者 3', en: 'God Eater 3', region: 'JP', weight: 2 },
+  { name: '噬神者 2', en: 'God Eater 2', region: 'JP', weight: 2 },
+  { name: '噬神者 动画', en: 'God Eater Anime', region: 'JP', weight: 1 },
+  { name: '噬神者 爆发', en: 'God Eater Burst', region: 'JP', weight: 1 },
+  { name: '噬神者 反抗', en: 'God Eater Reso', region: 'JP', weight: 1 },
+  { name: '噬神者 漫画', en: 'God Eater Manga', region: 'JP', weight: 1 },
+  { name: '噬神者 2 愤怒', en: 'GE2 Rage Burst', region: 'JP', weight: 1 },
+  { name: '噬神者 桌面', en: 'GE Boardgame', region: 'JP', weight: 1 },
+  { name: '噬神者 演唱会', en: 'GE Live', region: 'JP', weight: 1 },
+  { name: '噬神者 设定集', en: 'GE Artbook', region: 'JP', weight: 1 },
+  { name: '噬神者 联动', en: 'GE Collab', region: 'JP', weight: 1 },
+  { name: '噬神者 展', en: 'GE Exhibition', region: 'JP', weight: 1 },
+  { name: '噬神者 桌游', en: 'GE Tabletop', region: 'JP', weight: 1 },
+  { name: '噬神者 音乐剧', en: 'GE Musical', region: 'JP', weight: 1 },
+  { name: 'CODE VEIN', en: 'CODE VEIN', region: 'JP', weight: 1 },
+  { name: '噬血代码 动画', en: 'CODE VEIN Anime', region: 'JP', weight: 1 },
+  { name: '噬神者 风', en: 'God Eater Wind', region: 'JP', weight: 1 },
+  { name: '噬神者 火灾', en: 'God Eater Fire', region: 'JP', weight: 1 },
+  { name: '噬神者 水', en: 'God Eater Water', region: 'JP', weight: 1 },
+  { name: '噬神者 雷', en: 'God Eater Thunder', region: 'JP', weight: 1 },
+  { name: '噬神者 重生', en: 'God Eater Re', region: 'JP', weight: 1 },
 ];
 
 const SEED = {
@@ -2103,6 +2575,563 @@ const SEED = {
     { t: 'drama', title: '热血传奇 网络剧', year: 2021, platform: '网络剧集', desc: '热血传奇 IP 改编网络剧。' },
     { t: 'mobile', title: '热血传奇怀旧版', year: 2019, platform: 'iOS/Android', desc: '盛趣游戏推出的官方怀旧服手游。' },
   ],
+  '原神': [
+    { t: 'anime', title: '原神 动画 冬极白星', year: 2024, platform: 'Web/TV', desc: '原神官方长篇动画化企划。' },
+    { t: 'manga', title: '原神官方漫画', year: 2022, platform: '漫画', desc: '米哈游官方推出的原神衍生漫画。' },
+    { t: 'music', title: '原神 OST 专辑 褪色的月光', year: 2023, platform: '数字专辑', desc: '原神 4.0 枫丹主题曲合集。' },
+    { t: 'mobile', title: '原神 移动版', year: 2020, platform: 'iOS/Android', desc: '米哈游开发的开放世界冒险 RPG。' },
+    { t: 'drama', title: '原神 短剧 提瓦特假日', year: 2024, platform: '短剧', desc: '原神角色的日常生活短剧。' },
+    { t: 'novel', title: '原神 小说 尘世之锁', year: 2023, platform: '轻小说', desc: '原神衍生官方小说，讲述尘世之锁的秘密。' },
+    { t: 'figure', title: '原神 雷电将军 景品手办', year: 2023, platform: '景品', desc: '雷电将军 1/7 比例景品手办。' },
+    { t: 'exhibit', title: '原神 提瓦特世界巡展', year: 2023, platform: '巡展', desc: '原神官方主题巡展，2023 年全球开展。' },
+    { t: 'merch', title: '原神 官方周边礼盒', year: 2022, platform: '周边', desc: '包含徽章、明信片、贴纸的官方礼盒。' },
+    { t: 'music', title: '原神 演唱会 旅途的彼岸', year: 2024, platform: '演唱会', desc: '原神官方主题音乐会。' },
+  ],
+  '王者荣耀': [
+    { t: 'mobile', title: '王者荣耀', year: 2015, platform: 'iOS/Android', desc: '腾讯天美开发的国民 MOBA 手游。' },
+    { t: 'anime', title: '王者荣耀 动画', year: 2023, platform: 'Web', desc: '王者荣耀官方衍生动画。' },
+    { t: 'novel', title: '王者荣耀 小说 峡谷异闻录', year: 2018, platform: '小说', desc: '王者荣耀世界观衍生小说。' },
+    { t: 'manga', title: '王者荣耀 官方漫画', year: 2019, platform: '漫画', desc: '讲述王者英雄们的前世今生。' },
+    { t: 'music', title: '王者荣耀 五虎将主题曲', year: 2020, platform: '数字单曲', desc: '王者荣耀五虎将皮肤主题曲合集。' },
+    { t: 'drama', title: '王者荣耀 真·无双 真人剧', year: 2023, platform: '网络剧集', desc: '王者荣耀 IP 改编真人网剧。' },
+    { t: 'figure', title: '王者荣耀 李白 凤求凰 手办', year: 2021, platform: '景品', desc: '李白凤求凰皮肤的官方手办。' },
+    { t: 'exhibit', title: '王者荣耀 敦煌主题展', year: 2020, platform: '巡展', desc: '王者荣耀与敦煌研究院联名主题展。' },
+    { t: 'merch', title: '王者荣耀 官方手办套装', year: 2022, platform: '周边', desc: '包含多个热门英雄的官方景品套装。' },
+    { t: 'boardgame', title: '王者荣耀 实体卡牌', year: 2018, platform: '卡牌', desc: '官方推出的实体集换式卡牌。' },
+  ],
+  '英雄联盟': [
+    { t: 'drama', title: '双城之战 Arcane', year: 2021, platform: 'Netflix', desc: 'Riot 与 Fortiche 制作的获奖动画剧集。' },
+    { t: 'drama', title: '英雄联盟 奥术 第二季', year: 2024, platform: 'Netflix', desc: '双城之战续作，金克丝与蔚的命运终章。' },
+    { t: 'manga', title: '英雄联盟 真实伤害 漫画', year: 2019, platform: '漫画', desc: '真实伤害系列皮肤的衍生漫画。' },
+    { t: 'music', title: 'Warriors 五杀乐队', year: 2014, platform: '数字单曲', desc: '虚拟金属乐队五杀的首张单曲。' },
+    { t: 'novel', title: '英雄联盟 小说 诺克萨斯', year: 2016, platform: '轻小说', desc: '英雄联盟诺克萨斯城邦官方小说。' },
+    { t: 'anime', title: '英雄联盟 真实伤害 动画 MV', year: 2019, platform: 'MV', desc: '真实伤害系列皮肤的动画 MV。' },
+    { t: 'figure', title: '英雄联盟 亚托克斯雕像', year: 2020, platform: '雕像', desc: '亚托克斯 1/4 比例高端雕像。' },
+    { t: 'exhibit', title: '英雄联盟 世界赛主题展', year: 2022, platform: '巡展', desc: 'S12 期间举办的官方主题巡展。' },
+    { t: 'merch', title: '英雄联盟 召唤师公会社区周边', year: 2023, platform: '周边', desc: 'LPL 联名 T 恤与钥匙扣。' },
+    { t: 'mobile', title: '英雄联盟手游 激斗峡谷', year: 2020, platform: 'iOS/Android', desc: '英雄联盟官方手游版本。' },
+    { t: 'mobile', title: '云顶之弈 手游', year: 2020, platform: 'iOS/Android', desc: '自走棋玩法衍生手游。' },
+  ],
+  '最终幻想 7': [
+    { t: 'movie', title: '最终幻想7 降临之子', year: 2005, platform: '剧场', desc: 'FF7 故事延续的 CG 电影剧场版。' },
+    { t: 'anime', title: 'FF7 危机之前', year: 2024, platform: 'Web', desc: 'FF7 Rebirth 前传性质动画短片。' },
+    { t: 'novel', title: 'FF7 小說 通往微笑之路', year: 2010, platform: '轻小说', desc: 'FF7 补完计划小说。' },
+    { t: 'manga', title: 'FF7 危机之前 漫画版', year: 2024, platform: '漫画', desc: 'Square Enix 官方漫画。' },
+    { t: 'drama', title: 'FF7 电视剧 第一季', year: 2026, platform: '剧集', desc: '索尼与 Square Enix 联合制作的真人剧。' },
+    { t: 'figure', title: 'FF7 克劳德 1/6 手办', year: 2024, platform: '高端手办', desc: '克劳德 AC 造型高端可动手办。' },
+    { t: 'music', title: 'FF7 钢琴精选集', year: 2020, platform: '数字专辑', desc: 'FF7 系列经典配器钢琴版。' },
+    { t: 'exhibit', title: 'FF7 25周年主题展', year: 2022, platform: '巡展', desc: 'FF7 25 周年纪念巡展。' },
+    { t: 'merch', title: 'FF7 复刻主题周边套装', year: 2024, platform: '周边', desc: 'FF7 Rebirth 联动官方周边。' },
+    { t: 'stage', title: 'FF7 音乐剧 Eternal', year: 2025, platform: '音乐剧', desc: 'FF7 音乐剧化企划。' },
+  ],
+  '最终幻想 14': [
+    { t: 'anime', title: '最终幻想14 光之老爹', year: 2019, platform: 'Web', desc: 'FF14 衍生短动画。' },
+    { t: 'anime', title: '最终幻想14 幸福快车', year: 2021, platform: 'TV', desc: 'FF14 衍生 TV 短动画。' },
+    { t: 'music', title: 'FF14 主题音乐会 序章', year: 2018, platform: '音乐会', desc: 'FF14 官方主题音乐会。' },
+    { t: 'music', title: 'FF14 主题音乐会 星海之终', year: 2024, platform: '音乐会', desc: 'FF14 Dawntrail 主题音乐会。' },
+    { t: 'novel', title: 'FF14 小说 海德林与佐迪亚', year: 2016, platform: '轻小说', desc: 'FF14 1.0 时代背景小说。' },
+    { t: 'figure', title: 'FF14 雅·修特拉手办', year: 2019, platform: '景品', desc: 'FF14 雅·修特拉官方手办。' },
+    { t: 'exhibit', title: 'FF14 Fan Fest 主题展', year: 2023, platform: 'Fan Fest', desc: 'FF14 全球粉丝节巡展。' },
+    { t: 'merch', title: 'FF14 金碟游乐场周边', year: 2022, platform: '周边', desc: 'FF14 金碟游乐场主题周边。' },
+    { t: 'drama', title: 'FF14 真人音乐剧 终局之战', year: 2024, platform: '音乐剧', desc: 'FF14 末世之战音乐剧化。' },
+  ],
+  '高达': [
+    { t: 'anime', title: '机动战士高达', year: 1979, platform: 'TV', desc: '富野由悠季执导的初代高达 TV 动画。' },
+    { t: 'anime', title: '机动战士Z高达', year: 1985, platform: 'TV', desc: 'Z 时代的高达经典续作。' },
+    { t: 'anime', title: '机动战士高达 SEED', year: 2002, platform: 'TV', desc: '基拉大和与自由高达的世纪之作。' },
+    { t: 'anime', title: '机动战士高达 铁血的奥尔芬斯', year: 2015, platform: 'TV', desc: '三日月与巴巴托斯的冷峻故事。' },
+    { t: 'anime', title: '机动战士高达 水星的魔女', year: 2022, platform: 'TV', desc: '水星少女与风灵高达的新世代故事。' },
+    { t: 'movie', title: '机动战士高达 闪光的哈萨维', year: 2021, platform: '剧场', desc: '哈萨维·诺亚三部曲剧场版第一作。' },
+    { t: 'movie', title: '机动战士高达 NT', year: 2018, platform: '剧场', desc: '独角兽续作，独角兽高达与菲尼克斯。' },
+    { t: 'model', title: '高达 1/144 HG 模型', year: 1980, platform: '塑料模型', desc: '万代高达模型主力产品线。' },
+    { t: 'novel', title: '高达 闪光的哈萨维 小说', year: 1989, platform: '小说', desc: '富野由悠季原作小说。' },
+    { t: 'mobile', title: '高达 战斗行动 2', year: 2018, platform: 'PS4/手游', desc: '万代南梦宫的高达对战游戏。' },
+    { t: 'exhibit', title: '高达 横滨立像 12周年展', year: 2021, platform: '常设展', desc: '横滨高达工厂与周边展。' },
+  ],
+  '初音未来': [
+    { t: 'music', title: '初音未来 演唱会 39', year: 2020, platform: '演唱会', desc: '初音未来 39 演唱会。' },
+    { t: 'music', title: '初音未来 演唱会 16', year: 2026, platform: '演唱会', desc: '初音未来 16 周年演唱会。' },
+    { t: 'mobile', title: '初音未来 歌姬计划 Mega39s', year: 2019, platform: 'Switch', desc: '初音未来节奏游戏最新版本。' },
+    { t: 'manga', title: '初音未来 漫画 Blast', year: 2012, platform: '漫画', desc: '初音未来官方衍生漫画。' },
+    { t: 'novel', title: '初音未来 消失系列', year: 2012, platform: '小说', desc: '初音未来设定相关小说。' },
+    { t: 'figure', title: '初音未来 V4X 1/7 手办', year: 2018, platform: '景品', desc: '初音未来 V4X 造型景品。' },
+    { t: 'exhibit', title: '初音未来 艺术展', year: 2023, platform: '巡展', desc: '初音未来全球艺术巡展。' },
+    { t: 'merch', title: '初音未来 雪未来冬季周边', year: 2021, platform: '周边', desc: '雪未来冬季官方周边套装。' },
+    { t: 'drama', title: '初音未来 歌姬计划 动画', year: 2008, platform: 'OVA', desc: '初音未来衍生动画短片。' },
+    { t: 'artbook', title: '初音未来 10周年画集', year: 2017, platform: '画集', desc: '初音未来 10 周年纪念画集。' },
+  ],
+  '赛马娘 闪耀': [
+    { t: 'mobile', title: '赛马娘 Pretty Derby', year: 2021, platform: 'iOS/Android', desc: 'Cygames 开发的赛马拟人化手游。' },
+    { t: 'anime', title: '赛马娘 第一季', year: 2018, platform: 'TV', desc: '赛马拟人化动画的电视动画第一季。' },
+    { t: 'anime', title: '赛马娘 巅峰之路', year: 2018, platform: 'TV', desc: '赛马娘第二季动画。' },
+    { t: 'anime', title: '赛马娘 Rookie of the Year', year: 2023, platform: 'TV', desc: '赛马娘第三季动画。' },
+    { t: 'manga', title: '赛马娘 漫画 启程的乐符', year: 2018, platform: '漫画', desc: '赛马娘官方衍生漫画。' },
+    { t: 'manga', title: '赛马娘 漫画 Road to the Top', year: 2022, platform: '漫画', desc: '以目白麦昆为主角的官方漫画。' },
+    { t: 'music', title: '赛马娘 演唱会 5th', year: 2023, platform: '演唱会', desc: '赛马娘 5 周年纪念演唱会。' },
+    { t: 'figure', title: '赛马娘 无声铃鹿 手办', year: 2022, platform: '景品', desc: '无声铃鹿胜利演出手办。' },
+    { t: 'drama', title: '赛马娘 街道奔跑', year: 2022, platform: 'Web', desc: '赛马娘角色在现实街道的短剧。' },
+    { t: 'exhibit', title: '赛马娘 周年展', year: 2023, platform: '巡展', desc: '赛马娘 5 周年纪念巡展。' },
+  ],
+  '原魔兽 电影': [
+    { t: 'movie', title: '魔兽 电影', year: 2016, platform: '剧场', desc: '暴雪与传奇影业合作的真人电影。' },
+    { t: 'novel', title: '魔兽 电影 官方前传小说', year: 2016, platform: '小说', desc: '魔兽电影官方前传小说。' },
+    { t: 'manga', title: '魔兽 电影 漫画前传', year: 2016, platform: '漫画', desc: '魔兽电影相关漫画前传。' },
+    { t: 'figure', title: '魔兽 电影 杜隆坦雕像', year: 2016, platform: '雕像', desc: '杜隆坦的高端雕像。' },
+    { t: 'soundtrack', title: '魔兽 电影 配乐专辑', year: 2016, platform: '数字专辑', desc: 'Ramin Djawadi 作曲的电影原声。' },
+  ],
+  '噬神者 3': [
+    { t: 'anime', title: '噬神者 神之谜题', year: 2009, platform: 'TV', desc: '噬神者首部 TV 动画。' },
+    { t: 'anime', title: '噬神者 ARIA', year: 2016, platform: 'Web', desc: '噬神者外传短动画。' },
+    { t: 'manga', title: '噬神者 漫画 砂之王女', year: 2015, platform: '漫画', desc: '噬神者衍生外传漫画。' },
+    { t: 'manga', title: '噬神者 漫画 罗马之眼', year: 2015, platform: '漫画', desc: '噬神者衍生外传漫画。' },
+    { t: 'novel', title: '噬神者 小说 神之绊', year: 2014, platform: '轻小说', desc: '噬神者系列官方小说。' },
+    { t: 'drama', title: '噬神者 音乐剧 羁绊之歌', year: 2015, platform: '音乐剧', desc: '噬神者音乐剧化作品。' },
+    { t: 'figure', title: '噬神者 艾莉莎 1/7 手办', year: 2016, platform: '景品', desc: '艾莉莎莉莉丝 1/7 比例景品。' },
+    { t: 'exhibit', title: '噬神者 10周年展', year: 2020, platform: '巡展', desc: '噬神者 10 周年主题展。' },
+    { t: 'merch', title: '噬神者 15周年周边套装', year: 2025, platform: '周边', desc: '噬神者 15 周年官方周边。' },
+    { t: 'music', title: '噬神者 动画 OST', year: 2009, platform: '数字专辑', desc: '噬神者 TV 动画原声集。' },
+  ],
+  '女神异闻录 5': [
+    { t: 'anime', title: '女神异闻录5 动画', year: 2018, platform: 'TV', desc: 'P5 动画化的电视动画。' },
+    { t: 'movie', title: '女神异闻录5 皇家版 电影', year: 2022, platform: '剧场', desc: 'P5R 追加剧情剧场版。' },
+    { t: 'manga', title: 'P5 漫画', year: 2016, platform: '漫画', desc: 'P5 官方改编漫画。' },
+    { t: 'drama', title: 'P5 真人舞台剧', year: 2019, platform: '舞台剧', desc: 'P5 真人舞台剧化。' },
+    { t: 'mobile', title: 'P5 幻影异闻录FE', year: 2016, platform: 'Switch', desc: 'P5 衍生无双动作游戏。' },
+    { t: 'mobile', title: 'P5X 手游', year: 2024, platform: 'iOS/Android', desc: 'P5 系列国服衍生手游。' },
+    { t: 'music', title: 'P5 演唱会', year: 2017, platform: '演唱会', desc: 'P5 系列主题演唱会。' },
+    { t: 'figure', title: 'P5 JOKER 1/7 手办', year: 2019, platform: '景品', desc: 'JOKER 1/7 比例景品手办。' },
+    { t: 'exhibit', title: 'P5 主题展 2022', year: 2022, platform: '巡展', desc: 'P5 系列主题巡展。' },
+    { t: 'merch', title: 'P5 雨宫莲 公文包周边', year: 2018, platform: '周边', desc: 'P5 主角雨宫莲造型公文包。' },
+  ],
+  '黑暗之魂 3': [
+    { t: 'manga', title: '黑暗之魂 漫画 温暖的火', year: 2015, platform: '漫画', desc: 'FromSoftware 与集英社合作漫画。' },
+    { t: 'manga', title: '黑暗之魂 漫画 Age of Dark', year: 2020, platform: '漫画', desc: '黑暗之魂衍生外传漫画。' },
+    { t: 'artbook', title: '黑暗之魂 设定集 设计之魂', year: 2014, platform: '设定集', desc: '黑暗之魂系列官方设计设定集。' },
+    { t: 'figure', title: '黑暗之魂 深渊监视者 雕像', year: 2017, platform: '雕像', desc: '深渊监视者的高端雕像。' },
+    { t: 'soundtrack', title: '黑暗之魂 3 OST', year: 2016, platform: '数字专辑', desc: '黑暗之魂 3 原声音乐集。' },
+    { t: 'exhibit', title: 'FromSoftware 30周年主题展', year: 2016, platform: '巡展', desc: 'FromSoftware 30 周年主题展。' },
+    { t: 'merch', title: '黑暗之魂 篝火 烛台周边', year: 2018, platform: '周边', desc: '黑暗之魂篝火造型烛台。' },
+    { t: 'novel', title: '黑暗之魂 小说 火的时代', year: 2018, platform: '轻小说', desc: '黑暗之魂衍生官方小说。' },
+  ],
+  '艾尔登法环': [
+    { t: 'manga', title: '艾尔登法环 漫画 黄金树的阴影', year: 2024, platform: '漫画', desc: 'FromSoftware 与集英社合作漫画。' },
+    { t: 'artbook', title: '艾尔登法环 官方艺术设定集 Vol 1', year: 2023, platform: '设定集', desc: '艾尔登法环艺术设定集第一卷。' },
+    { t: 'artbook', title: '艾尔登法环 官方艺术设定集 Vol 2', year: 2024, platform: '设定集', desc: '艾尔登法环 DLC 黄金树幽影设定集。' },
+    { t: 'figure', title: '艾尔登法环 梅瑟莫雕像', year: 2024, platform: '雕像', desc: '黄金树幽影 DLC 角色雕像。' },
+    { t: 'soundtrack', title: '艾尔登法环 OST 完整版', year: 2023, platform: '数字专辑', desc: '艾尔登法环完整原声带。' },
+    { t: 'exhibit', title: '艾尔登法环 黄金树 主题展', year: 2024, platform: '巡展', desc: '艾尔登法环黄金树 DLC 主题展。' },
+    { t: 'merch', title: '艾尔登法环 黄金树 徽章套装', year: 2023, platform: '周边', desc: '艾尔登法环主题徽章套装。' },
+    { t: 'novel', title: '艾尔登法环 小说 褪色者之路', year: 2024, platform: '轻小说', desc: '艾尔登法环衍生小说。' },
+  ],
+  '咒术回战 手游': [
+    { t: 'mobile', title: '咒术回战 幻影夜行', year: 2023, platform: 'iOS/Android', desc: '咒术回战衍生手游。' },
+    { t: 'anime', title: '咒术回战 第一季', year: 2020, platform: 'TV', desc: '咒术回战 TV 动画第一季。' },
+    { t: 'anime', title: '咒术回战 怀玉·玉折', year: 2023, platform: 'TV', desc: '咒术回战 0 前传剧场版。' },
+    { t: 'movie', title: '咒术回战 0 剧场版', year: 2021, platform: '剧场', desc: '乙骨忧太前传剧场版。' },
+    { t: 'manga', title: '咒术回战 漫画', year: 2018, platform: '漫画', desc: '芥见下々原作漫画。' },
+    { t: 'figure', title: '咒术回战 五条悟 1/7 手办', year: 2023, platform: '景品', desc: '五条悟造型景品手办。' },
+    { t: 'exhibit', title: '咒术回战 涩谷事变展', year: 2023, platform: '巡展', desc: '涩谷事变主题巡展。' },
+    { t: 'merch', title: '咒术回战 宿傩之指周边', year: 2022, platform: '周边', desc: '咒术回战宿傩之指主题周边。' },
+  ],
+  '洛克人': [
+    { t: 'anime', title: '洛克人 第一季', year: 1994, platform: 'TV', desc: '洛克人 TV 动画系列。' },
+    { t: 'manga', title: '洛克人漫画 Megamix', year: 1996, platform: '漫画', desc: '岩本佳浩作画的洛克人长篇漫画。' },
+    { t: 'manga', title: '洛克人漫画 Gigamix', year: 2001, platform: '漫画', desc: 'Megamix 续作。' },
+    { t: 'novel', title: '洛克人 小说 苍之骑士团', year: 1995, platform: '小说', desc: '洛克人衍生小说。' },
+    { t: 'figure', title: '洛克人 1/1 模型', year: 2012, platform: '手办', desc: '洛克人 1/1 等身大模型。' },
+    { t: 'mobile', title: '洛克人 X Dive', year: 2020, platform: 'iOS/Android', desc: '洛克人 X 系列衍生手游。' },
+    { t: 'exhibit', title: '洛克人 30周年展', year: 2017, platform: '巡展', desc: '洛克人 30 周年纪念巡展。' },
+    { t: 'soundtrack', title: '洛克人 1-11 合集 OST', year: 2012, platform: '数字专辑', desc: '洛克人全系列原声集。' },
+  ],
+  '怪物猎人': [
+    { t: 'anime', title: '怪物猎人 边境日记', year: 2014, platform: 'OVA', desc: '怪物猎人衍生短动画。' },
+    { t: 'manga', title: '怪物猎人 漫画 闪光的狩猎', year: 2010, platform: '漫画', desc: '怪物猎人衍生漫画。' },
+    { t: 'manga', title: '怪物猎人 ORAGE 漫画', year: 2012, platform: '漫画', desc: '怪物猎人 ORAGE 短篇漫画。' },
+    { t: 'novel', title: '怪物猎人 小说 炎火记', year: 2012, platform: '小说', desc: '怪物猎人官方小说。' },
+    { t: 'figure', title: '怪物猎人 雄火龙 雕像', year: 2018, platform: '雕像', desc: '雄火龙高端雕像。' },
+    { t: 'mobile', title: '怪物猎人 物语', year: 2016, platform: 'iOS/Android', desc: '怪物猎人系列衍生 RPG 手游。' },
+    { t: 'exhibit', title: '怪物猎人 15周年展', year: 2019, platform: '巡展', desc: '怪物猎人 15 周年纪念巡展。' },
+    { t: 'merch', title: '怪物猎人 猫饭周边套装', year: 2020, platform: '周边', desc: '怪物猎人艾露猫主题周边。' },
+    { t: 'soundtrack', title: '怪物猎人 世界 OST', year: 2018, platform: '数字专辑', desc: '怪物猎人世界原声集。' },
+  ],
+  '恶魔城': [
+    { t: 'anime', title: '恶魔城 动画 第一季', year: 2017, platform: 'Netflix', desc: '恶魔城 Netflix 动画第一季。' },
+    { t: 'anime', title: '恶魔城 动画 第三季', year: 2020, platform: 'Netflix', desc: '恶魔城 Netflix 动画完结季。' },
+    { t: 'manga', title: '恶魔城 漫画 贝尔蒙特传说', year: 2005, platform: '漫画', desc: 'Konami 官方授权漫画。' },
+    { t: 'novel', title: '恶魔城 小说 叹息之印', year: 2018, platform: '轻小说', desc: '恶魔城衍生小说。' },
+    { t: 'figure', title: '恶魔城 阿鲁卡多 1/6 手办', year: 2021, platform: '高端手办', desc: '阿鲁卡多高端可动手办。' },
+    { t: 'soundtrack', title: '恶魔城 历代 OST 复刻', year: 2018, platform: '数字专辑', desc: '恶魔城历代原声集复刻版。' },
+    { t: 'exhibit', title: '恶魔城 30周年展', year: 2016, platform: '巡展', desc: '恶魔城 30 周年主题展。' },
+  ],
+  '恶魔之魂 重制': [
+    { t: 'figure', title: '恶魔之魂 弩手 雕像', year: 2020, platform: '雕像', desc: '恶魔之魂重制版弩手雕像。' },
+    { t: 'artbook', title: '恶魔之魂 重制 设定集', year: 2020, platform: '设定集', desc: '恶魔之魂重制版官方设计集。' },
+    { t: 'soundtrack', title: '恶魔之魂 重制 OST', year: 2020, platform: '数字专辑', desc: '恶魔之魂重制版原声集。' },
+    { t: 'exhibit', title: 'FromSoftware 历史展', year: 2020, platform: '巡展', desc: 'FromSoftware 30 周年展中恶魔之魂重制版专区。' },
+  ],
+  '黑暗之魂': [
+    { t: 'manga', title: '黑暗之魂 漫画 希望的意志', year: 2014, platform: '漫画', desc: 'FromSoftware 官方衍生漫画。' },
+    { t: 'manga', title: '黑暗之魂 漫画 漫步深渊', year: 2016, platform: '漫画', desc: '黑暗之魂衍生外传漫画。' },
+    { t: 'artbook', title: '黑暗之魂 设定集 I', year: 2013, platform: '设定集', desc: '黑暗之魂官方设计设定集第一卷。' },
+    { t: 'figure', title: '黑暗之魂 基亚罗斯雕像', year: 2015, platform: '雕像', desc: '基亚罗斯的高端雕像。' },
+    { t: 'soundtrack', title: '黑暗之魂 OST', year: 2011, platform: '数字专辑', desc: '黑暗之魂原声音乐集。' },
+    { t: 'exhibit', title: '黑暗之魂 主题展', year: 2014, platform: '巡展', desc: '黑暗之魂系列主题巡展。' },
+  ],
+  '瓦力欧制造': [
+    { t: 'mobile', title: '瓦力欧制造 移动版', year: 2021, platform: 'Switch', desc: '瓦力欧制造系列最新作。' },
+    { t: 'anime', title: '瓦力欧 动画 摇晃', year: 2008, platform: 'TV', desc: '瓦力欧短篇动画。' },
+    { t: 'figure', title: '瓦力欧 9 寸毛绒玩偶', year: 2018, platform: '周边', desc: '瓦力欧大号毛绒玩偶。' },
+    { t: 'novel', title: '瓦力欧 漫画 四格', year: 2004, platform: '漫画', desc: '瓦力欧四格漫画连载。' },
+    { t: 'exhibit', title: '瓦力欧 30周年展', year: 2020, platform: '巡展', desc: '瓦力欧 30 周年纪念展。' },
+  ],
+  '超级马里奥 制造': [
+    { t: 'mobile', title: '超级马里奥制造 2', year: 2019, platform: 'Switch', desc: '马里奥制造系列续作。' },
+    { t: 'anime', title: '超级马里奥 超级明星', year: 2023, platform: '剧场', desc: '马里奥 3D 动画电影。' },
+    { t: 'figure', title: '马里奥 碧奇公主雕像', year: 2023, platform: '雕像', desc: '碧奇公主造型雕像。' },
+    { t: 'novel', title: '超级马里奥 漫画 冒险家', year: 2023, platform: '漫画', desc: '马里奥系列衍生漫画。' },
+    { t: 'soundtrack', title: '马里奥 电影 OST', year: 2023, platform: '数字专辑', desc: '马里奥电影原声带。' },
+  ],
+  '暗区突围': [
+    { t: 'mobile', title: '暗区突围', year: 2022, platform: 'iOS/Android', desc: '腾讯魔方工作室开发的硬核 FPS 手游。' },
+    { t: 'exhibit', title: '暗区突围 主题展', year: 2023, platform: '巡展', desc: '暗区突围线下主题展。' },
+    { t: 'manga', title: '暗区突围 漫画', year: 2024, platform: '漫画', desc: '暗区突围官方衍生漫画。' },
+  ],
+  '诛仙': [
+    { t: 'novel', title: '诛仙 小说', year: 2003, platform: '小说', desc: '萧鼎原作玄幻小说。' },
+    { t: 'mobile', title: '诛仙 手游', year: 2016, platform: 'iOS/Android', desc: '完美世界开发的官方手游。' },
+    { t: 'manga', title: '诛仙 漫画', year: 2008, platform: '漫画', desc: '诛仙官方漫画版。' },
+    { t: 'drama', title: '诛仙 青云志 电视剧', year: 2016, platform: '剧集', desc: '李易峰赵丽颖主演电视剧。' },
+    { t: 'movie', title: '诛仙 电影', year: 2019, platform: '剧场', desc: '肖战主演诛仙电影版。' },
+    { t: 'figure', title: '诛仙 碧瑶手办', year: 2018, platform: '景品', desc: '诛仙碧瑶官方手办。' },
+    { t: 'exhibit', title: '诛仙 20周年展', year: 2023, platform: '巡展', desc: '诛仙 20 周年纪念展。' },
+  ],
+  '完美世界': [
+    { t: 'novel', title: '完美世界 小说', year: 2014, platform: '小说', desc: '辰东原作玄幻小说。' },
+    { t: 'mobile', title: '完美世界 手游', year: 2021, platform: 'iOS/Android', desc: '完美世界开发同名手游。' },
+    { t: 'manga', title: '完美世界 漫画', year: 2015, platform: '漫画', desc: '辰东小说改编漫画。' },
+    { t: 'drama', title: '完美世界 动画', year: 2021, platform: 'Web', desc: '完美世界改编网络动画。' },
+    { t: 'exhibit', title: '完美世界 主题展', year: 2023, platform: '巡展', desc: '完美世界 IP 主题展。' },
+  ],
+  '英雄联盟 双城之战': [
+    { t: 'drama', title: '双城之战 Arcane 第二季', year: 2024, platform: 'Netflix', desc: '双城之战第二季完结。' },
+    { t: 'soundtrack', title: '双城之战 配乐专辑', year: 2021, platform: '数字专辑', desc: '双城之战配乐专辑。' },
+    { t: 'figure', title: '金克丝 雕像', year: 2022, platform: '雕像', desc: '金克丝高端雕像。' },
+    { t: 'exhibit', title: '双城之战 艺术展', year: 2022, platform: '巡展', desc: '双城之战主题艺术展。' },
+  ],
+  '艾诺迪亚 4': [
+    { t: 'mobile', title: '艾诺迪亚 4 贝勒塞刺杀者', year: 2012, platform: 'iOS/Android', desc: '韩国 Com2uS 开发的 RPG 手游。' },
+    { t: 'novel', title: '艾诺迪亚 4 小说', year: 2013, platform: '小说', desc: '艾诺迪亚系列衍生小说。' },
+    { t: 'figure', title: '艾诺迪亚 凯恩 手办', year: 2014, platform: '景品', desc: '艾诺迪亚系列角色手办。' },
+  ],
+  '英雄联盟 手游': [
+    { t: 'mobile', title: '英雄联盟手游 激斗峡谷', year: 2020, platform: 'iOS/Android', desc: '英雄联盟手游版本。' },
+    { t: 'manga', title: '英雄联盟手游 漫画', year: 2021, platform: '漫画', desc: '英雄联盟手游衍生漫画。' },
+    { t: 'exhibit', title: '英雄联盟手游 主题展', year: 2022, platform: '巡展', desc: '英雄联盟手游主题展。' },
+  ],
+  '无畏契约': [
+    { t: 'mobile', title: '无畏契约 移动版', year: 2024, platform: 'iOS/Android', desc: 'Valorant 官方手游版本。' },
+    { t: 'manga', title: '无畏契约 漫画', year: 2024, platform: '漫画', desc: 'Valorant 衍生漫画。' },
+    { t: 'exhibit', title: '无畏契约 世界赛主题展', year: 2024, platform: '巡展', desc: 'VCT 主题巡展。' },
+  ],
+  '赛博朋克 2077': [
+    { t: 'anime', title: '赛博朋克 边缘行者', year: 2022, platform: 'Netflix', desc: 'CDPR 与 Trigger 合作的动画剧集。' },
+    { t: 'manga', title: '赛博朋克 2077 漫画', year: 2020, platform: '漫画', desc: 'Dark Horse 官方漫画。' },
+    { t: 'novel', title: '赛博朋克 2077 小说 夜城', year: 2021, platform: '小说', desc: '赛博朋克 2077 衍生小说。' },
+    { t: 'mobile', title: '赛博朋克 边缘行者 联动', year: 2023, platform: 'iOS/Android', desc: '赛博朋克 2077 边缘行者相关联动活动。' },
+    { t: 'figure', title: '赛博朋克 大卫 1/6 手办', year: 2023, platform: '高端手办', desc: '大卫造型高端手办。' },
+    { t: 'soundtrack', title: '赛博朋克 边缘行者 OST', year: 2022, platform: '数字专辑', desc: '赛博朋克边缘行者原声集。' },
+  ],
+  'CS 2': [
+    { t: 'mobile', title: 'CS 移动版', year: 2024, platform: 'iOS/Android', desc: 'CS 官方手游版本。' },
+    { t: 'exhibit', title: 'CS Major 主题展', year: 2023, platform: '巡展', desc: 'CS Major 期间主题展。' },
+  ],
+  'DOTA 2': [
+    { t: 'manga', title: 'DOTA 2 漫画', year: 2013, platform: '漫画', desc: 'Valve 与 DC 漫画合作漫画。' },
+    { t: 'novel', title: 'DOTA 2 小说', year: 2015, platform: '小说', desc: 'DOTA 2 衍生小说。' },
+    { t: 'exhibit', title: 'DOTA 2 TI 主题展', year: 2022, platform: '巡展', desc: 'The International 主题巡展。' },
+    { t: 'figure', title: 'DOTA 2 卡尔雕像', year: 2016, platform: '雕像', desc: '卡尔的高端雕像。' },
+  ],
+  '精灵宝可梦 Z-A': [
+    { t: 'mobile', title: '宝可梦 Z-A', year: 2025, platform: 'Switch', desc: '宝可梦全新 Z-A 主系列游戏。' },
+  ],
+  '雷索纳斯': [
+    { t: 'mobile', title: '雷索纳斯', year: 2024, platform: 'iOS/Android', desc: '雷索纳斯赛博朋克回合制 RPG。' },
+    { t: 'manga', title: '雷索纳斯 漫画', year: 2024, platform: '漫画', desc: '雷索纳斯官方漫画。' },
+  ],
+  '诛仙 手游': [
+    { t: 'mobile', title: '诛仙 2 手游', year: 2023, platform: 'iOS/Android', desc: '诛仙 2 续作手游。' },
+    { t: 'exhibit', title: '诛仙 手游 主题展', year: 2022, platform: '巡展', desc: '诛仙手游主题展。' },
+  ],
+  '剑网3': [
+    { t: 'mobile', title: '剑网3 指尖江湖', year: 2018, platform: 'iOS/Android', desc: '剑网3 官方手游。' },
+    { t: 'manga', title: '剑网3 官方漫画', year: 2014, platform: '漫画', desc: '剑网3 官方衍生漫画。' },
+    { t: 'novel', title: '剑网3 小说 梦付千秋星垂野', year: 2014, platform: '小说', desc: '剑网3 官方小说。' },
+    { t: 'drama', title: '剑网3 舞台剧 安史之乱', year: 2017, platform: '舞台剧', desc: '剑网3 安史之乱舞台剧。' },
+    { t: 'soundtrack', title: '剑网3 剑歌江湖 OST', year: 2016, platform: '数字专辑', desc: '剑网3 历代主题曲合集。' },
+    { t: 'exhibit', title: '剑网3 14周年庆', year: 2023, platform: '巡展', desc: '剑网3 14 周年纪念展。' },
+    { t: 'merch', title: '剑网3 兵人套装', year: 2018, platform: '周边', desc: '剑网3 角色兵人周边。' },
+    { t: 'figure', title: '剑网3 七秀手办', year: 2019, platform: '景品', desc: '剑网3 七秀角色手办。' },
+  ],
+  '明日方舟': [
+    { t: 'anime', title: '明日方舟 黎明前奏', year: 2022, platform: 'Web', desc: '明日方舟衍生动画第一季。' },
+    { t: 'mobile', title: '明日方舟 终末地', year: 2024, platform: 'iOS/Android', desc: '明日方舟续作手游。' },
+    { t: 'manga', title: '明日方舟 漫画', year: 2019, platform: '漫画', desc: '明日方舟官方衍生漫画。' },
+    { t: 'novel', title: '明日方舟 小说', year: 2020, platform: '小说', desc: '明日方舟衍生小说。' },
+    { t: 'music', title: '明日方舟 EP 黑暗时代', year: 2021, platform: '数字单曲', desc: '明日方舟 EP 专辑。' },
+    { t: 'exhibit', title: '明日方舟 5周年展', year: 2024, platform: '巡展', desc: '明日方舟 5 周年纪念展。' },
+    { t: 'figure', title: '明日方舟 阿米娅 1/7 手办', year: 2022, platform: '景品', desc: '明日方舟阿米娅造型手办。' },
+    { t: 'merch', title: '明日方舟 周边礼盒', year: 2023, platform: '周边', desc: '明日方舟 5 周年周边礼盒。' },
+  ],
+  '崩坏3': [
+    { t: 'anime', title: '崩坏3 动画 女武神的餐桌', year: 2018, platform: 'Web', desc: '崩坏3 衍生短动画。' },
+    { t: 'anime', title: '崩坏3 动画 黄金时代', year: 2024, platform: 'Web', desc: '崩坏3 动画新作。' },
+    { t: 'manga', title: '崩坏3 漫画', year: 2017, platform: '漫画', desc: '崩坏3 官方漫画。' },
+    { t: 'novel', title: '崩坏3 小说', year: 2019, platform: '小说', desc: '崩坏3 衍生小说。' },
+    { t: 'mobile', title: '崩坏 星穹铁道', year: 2023, platform: 'iOS/Android', desc: '米哈游崩坏系列续作。' },
+    { t: 'music', title: '崩坏3 印象曲 千年之羽', year: 2022, platform: '数字单曲', desc: '崩坏3 印象曲专辑。' },
+    { t: 'exhibit', title: '崩坏3 主题展', year: 2023, platform: '巡展', desc: '崩坏3 IP 主题展。' },
+    { t: 'figure', title: '崩坏3 爱莉希雅 手办', year: 2023, platform: '景品', desc: '崩坏3 爱莉希雅造型手办。' },
+  ],
+  '鸣潮': [
+    { t: 'mobile', title: '鸣潮', year: 2024, platform: 'iOS/Android', desc: '库洛游戏开发的开放世界动作 RPG。' },
+    { t: 'manga', title: '鸣潮 漫画', year: 2024, platform: '漫画', desc: '鸣潮官方衍生漫画。' },
+    { t: 'music', title: '鸣潮 OST', year: 2024, platform: '数字专辑', desc: '鸣潮原声带合集。' },
+    { t: 'exhibit', title: '鸣潮 主题展', year: 2024, platform: '巡展', desc: '鸣潮 IP 主题展。' },
+  ],
+  '黑神话 悟空': [
+    { t: 'novel', title: '黑神话 悟空 小说', year: 2024, platform: '小说', desc: '黑神话悟空衍生小说。' },
+    { t: 'manga', title: '黑神话 悟空 漫画', year: 2024, platform: '漫画', desc: '黑神话悟空衍生漫画。' },
+    { t: 'figure', title: '黑神话 悟空 天命人手办', year: 2024, platform: '景品', desc: '黑神话悟空天命人手办。' },
+    { t: 'exhibit', title: '黑神话 悟空 主题展', year: 2024, platform: '巡展', desc: '黑神话悟空线下主题展。' },
+    { t: 'soundtrack', title: '黑神话 悟空 OST', year: 2024, platform: '数字专辑', desc: '黑神话悟空原声集。' },
+  ],
+  '艾尔登法环 黄金树': [
+    { t: 'artbook', title: '黄金树幽影 设定集', year: 2024, platform: '设定集', desc: '黄金树幽影 DLC 艺术设定集。' },
+    { t: 'figure', title: '黄金树幽影 拉丹雕像', year: 2024, platform: '雕像', desc: '黄金树幽影 DLC 角色雕像。' },
+    { t: 'soundtrack', title: '黄金树幽影 OST', year: 2024, platform: '数字专辑', desc: '黄金树幽影 DLC 原声集。' },
+  ],
+  '原神 漫画': [
+    { t: 'manga', title: '原神 漫画 温迪篇', year: 2023, platform: '漫画', desc: '原神温迪篇官方漫画。' },
+    { t: 'manga', title: '原神 漫画 钟离篇', year: 2024, platform: '漫画', desc: '原神钟离篇官方漫画。' },
+  ],
+  'Love Live 阳光': [
+    { t: 'anime', title: 'LoveLive 阳光', year: 2016, platform: 'TV', desc: 'LoveLive 衍生 TV 动画。' },
+    { t: 'anime', title: 'LoveLive 阳光 剧场版', year: 2019, platform: '剧场', desc: 'LoveLive 阳光剧场版。' },
+    { t: 'manga', title: 'LoveLive 阳光 漫画', year: 2016, platform: '漫画', desc: 'LoveLive 阳光官方漫画。' },
+    { t: 'mobile', title: 'LoveLive 学园偶像祭', year: 2013, platform: 'iOS/Android', desc: 'LoveLive 官方节奏手游。' },
+    { t: 'figure', title: 'LoveLive 高海千歌 1/7 手办', year: 2018, platform: '景品', desc: '高海千歌造型手办。' },
+    { t: 'music', title: 'LoveLive 演唱会', year: 2017, platform: '演唱会', desc: 'LoveLive 主题演唱会。' },
+  ],
+  'BanG Dream': [
+    { t: 'anime', title: 'BanG Dream 第一季', year: 2017, platform: 'TV', desc: 'BanG Dream 第一季 TV 动画。' },
+    { t: 'anime', title: 'BanG Dream It\'s MyGO!!!!!', year: 2023, platform: 'TV', desc: 'BanG Dream 新作 MyGO 动画。' },
+    { t: 'mobile', title: 'BanG Dream 少女乐团派对', year: 2017, platform: 'iOS/Android', desc: 'BanG Dream 官方音乐手游。' },
+    { t: 'manga', title: 'BanG Dream 漫画', year: 2015, platform: '漫画', desc: 'BanG Dream 官方漫画。' },
+    { t: 'figure', title: 'BanG Dream 乐手手办套装', year: 2020, platform: '景品', desc: 'BanG Dream 主要角色手办套装。' },
+  ],
+  '黑魂 1': [
+    { t: 'manga', title: '黑暗之魂 漫画 火与剑', year: 2014, platform: '漫画', desc: '黑暗之魂衍生漫画。' },
+  ],
+  '魔兽世界': [
+    { t: 'anime', title: '魔兽世界 动画 战争之王', year: 2019, platform: 'Web', desc: '魔兽世界衍生短动画。' },
+    { t: 'mobile', title: '魔兽世界 手游', year: 2023, platform: 'iOS/Android', desc: '暴雪魔兽世界手游版。' },
+    { t: 'manga', title: '魔兽世界 漫画', year: 2007, platform: '漫画', desc: '魔兽世界官方漫画。' },
+    { t: 'novel', title: '魔兽世界 小说 巫妖王', year: 2014, platform: '小说', desc: '魔兽世界官方小说。' },
+    { t: 'figure', title: '魔兽世界 巫妖王雕像', year: 2019, platform: '雕像', desc: '巫妖王高端雕像。' },
+    { t: 'soundtrack', title: '魔兽世界 OST 完整版', year: 2016, platform: '数字专辑', desc: '魔兽世界历代言乐合集。' },
+    { t: 'exhibit', title: '魔兽世界 主题展', year: 2023, platform: '巡展', desc: '暴雪嘉年华魔兽世界主题展。' },
+    { t: 'merch', title: '魔兽世界 联盟部落公仔', year: 2020, platform: '周边', desc: '魔兽世界联盟与部落主题公仔。' },
+    { t: 'mobile', title: '炉石传说', year: 2014, platform: 'iOS/Android', desc: '魔兽世界衍生集换式卡牌游戏。' },
+  ],
+  '崩坏 星穹铁道': [
+    { t: 'mobile', title: '崩坏 星穹铁道', year: 2023, platform: 'iOS/Android', desc: '米哈游崩坏系列新作。' },
+    { t: 'manga', title: '崩坏 星穹铁道 漫画', year: 2023, platform: '漫画', desc: '崩坏星穹铁道衍生漫画。' },
+    { t: 'novel', title: '崩坏 星穹铁道 小说', year: 2024, platform: '小说', desc: '崩坏星穹铁道衍生小说。' },
+    { t: 'music', title: '崩坏 星穹铁道 OST', year: 2023, platform: '数字专辑', desc: '崩坏星穹铁道原声集。' },
+    { t: 'figure', title: '崩坏 星穹铁道 三月七 手办', year: 2024, platform: '景品', desc: '崩坏星穹铁道三月七造型手办。' },
+  ],
+  '战双帕弥什': [
+    { t: 'mobile', title: '战双帕弥什', year: 2019, platform: 'iOS/Android', desc: '库洛游戏开发的 ARPG 手游。' },
+    { t: 'manga', title: '战双帕弥什 漫画', year: 2020, platform: '漫画', desc: '战双帕弥什衍生漫画。' },
+    { t: 'anime', title: '战双帕弥什 动画', year: 2023, platform: 'Web', desc: '战双帕弥什衍生动画。' },
+    { t: 'music', title: '战双帕弥什 OST', year: 2020, platform: '数字专辑', desc: '战双帕弥什原声带合集。' },
+    { t: 'exhibit', title: '战双帕弥什 主题展', year: 2022, platform: '巡展', desc: '战双帕弥什 IP 主题展。' },
+  ],
+  '英雄联盟 格斗': [
+    { t: 'mobile', title: '英雄联盟 格斗', year: 2025, platform: 'PS5/PC', desc: '英雄联盟衍生格斗游戏。' },
+  ],
+  '英雄联盟 双城之战': [
+    { t: 'drama', title: '奥术 第二季', year: 2024, platform: 'Netflix', desc: '奥术完结季。' },
+  ],
+  '原神 音乐': [
+    { t: 'music', title: '原神 交响音乐会 2022', year: 2022, platform: '音乐会', desc: '原神官方交响音乐会。' },
+    { t: 'music', title: '原神 OST 须弥篇', year: 2023, platform: '数字专辑', desc: '原神须弥版本原声集。' },
+  ],
+  '皮卡丘': [
+    { t: 'movie', title: '皮卡丘与可可的冒险', year: 2020, platform: '剧场', desc: '宝可梦第 23 部剧场版。' },
+    { t: 'movie', title: '大侦探皮卡丘', year: 2019, platform: '剧场', desc: '真人 CGI 宝可梦电影。' },
+    { t: 'anime', title: '皮卡丘 短动画', year: 1998, platform: 'OVA', desc: '皮卡丘衍生短动画。' },
+    { t: 'figure', title: '皮卡丘 1/1 模型', year: 2018, platform: '雕像', desc: '皮卡丘等身雕像。' },
+    { t: 'exhibit', title: '皮卡丘 大量发生展', year: 2014, platform: '巡展', desc: '东京池袋皮卡丘大量发生展。' },
+  ],
+  '最终幻想 14': [
+    { t: 'mobile', title: 'FF14 官方音乐播放器', year: 2022, platform: 'iOS/Android', desc: 'FF14 官方音乐播放器应用。' },
+  ],
+  '最终幻想 15': [
+    { t: 'movie', title: '王者之剑 FFXV', year: 2016, platform: '剧场', desc: 'FFXV 故事前传 CG 电影。' },
+    { t: 'anime', title: '兄弟情 FFXV', year: 2016, platform: 'Web', desc: 'FFXV 衍生动画短片。' },
+    { t: 'novel', title: 'FFXV 小说', year: 2016, platform: '小说', desc: 'FFXV 官方前传小说。' },
+    { t: 'manga', title: 'FFXV 漫画', year: 2016, platform: '漫画', desc: 'FFXV 官方漫画。' },
+    { t: 'figure', title: '诺克提斯 1/6 手办', year: 2017, platform: '高端手办', desc: '诺克提斯高端手办。' },
+  ],
+  '最终幻想 16': [
+    { t: 'novel', title: 'FF16 官方设定集', year: 2023, platform: '设定集', desc: 'FF16 官方艺术设定集。' },
+    { t: 'figure', title: '克莱夫 1/6 手办', year: 2023, platform: '高端手办', desc: '克莱夫高端可动手办。' },
+    { t: 'soundtrack', title: 'FF16 OST', year: 2023, platform: '数字专辑', desc: 'FF16 原声集。' },
+  ],
+  '传说 破晓传说': [
+    { t: 'anime', title: '破晓传说 动画', year: 2023, platform: 'TV', desc: '破晓传说 25 周年纪念动画。' },
+  ],
+  '风来之国': [
+    { t: 'mobile', title: '风来之国 大叔与少女', year: 2021, platform: 'Switch/PC', desc: '风来之国原版游戏。' },
+    { t: 'manga', title: '风来之国 漫画', year: 2021, platform: '漫画', desc: '风来之国衍生漫画。' },
+  ],
+  '光与夜之恋': [
+    { t: 'mobile', title: '光与夜之恋', year: 2021, platform: 'iOS/Android', desc: '腾讯北极光开发的乙女手游。' },
+    { t: 'drama', title: '光与夜之恋 动画', year: 2024, platform: 'Web', desc: '光与夜之恋衍生动画。' },
+    { t: 'manga', title: '光与夜之恋 漫画', year: 2023, platform: '漫画', desc: '光与夜之恋官方漫画。' },
+  ],
+  '未定事件簿': [
+    { t: 'mobile', title: '未定事件簿', year: 2020, platform: 'iOS/Android', desc: '米哈游开发的律政推理手游。' },
+    { t: 'anime', title: '未定事件簿 动画', year: 2024, platform: 'Web', desc: '未定事件簿衍生动画。' },
+  ],
+  '恋与制作人': [
+    { t: 'mobile', title: '恋与制作人', year: 2017, platform: 'iOS/Android', desc: '叠纸游戏开发的乙女手游。' },
+    { t: 'anime', title: '恋与制作人 动画', year: 2020, platform: 'Web', desc: '恋与制作人衍生动画。' },
+  ],
+  '奇迹暖暖': [
+    { t: 'mobile', title: '奇迹暖暖', year: 2015, platform: 'iOS/Android', desc: '叠纸游戏开发的换装手游。' },
+    { t: 'manga', title: '奇迹暖暖 漫画', year: 2017, platform: '漫画', desc: '奇迹暖暖衍生漫画。' },
+  ],
+  '闪耀暖暖': [
+    { t: 'mobile', title: '闪耀暖暖', year: 2019, platform: 'iOS/Android', desc: '叠纸游戏开发的 3D 换装手游。' },
+    { t: 'exhibit', title: '闪耀暖暖 主题展', year: 2023, platform: '巡展', desc: '闪耀暖暖 IP 主题展。' },
+  ],
+  '阴阳师': [
+    { t: 'mobile', title: '阴阳师', year: 2016, platform: 'iOS/Android', desc: '网易游戏开发的和风卡牌 RPG。' },
+    { t: 'anime', title: '阴阳师 平安物语', year: 2018, platform: 'Web', desc: '阴阳师衍生泡面番。' },
+    { t: 'manga', title: '阴阳师 漫画', year: 2017, platform: '漫画', desc: '阴阳师官方漫画。' },
+    { t: 'novel', title: '阴阳师 小说', year: 2018, platform: '小说', desc: '阴阳师官方小说。' },
+    { t: 'mobile', title: '阴阳师 百闻牌', year: 2019, platform: 'iOS/Android', desc: '阴阳师卡牌衍生手游。' },
+    { t: 'music', title: '阴阳师 主题音乐', year: 2019, platform: '数字专辑', desc: '阴阳师主题音乐合集。' },
+    { t: 'exhibit', title: '阴阳师 主题展', year: 2020, platform: '巡展', desc: '阴阳师 IP 主题展。' },
+    { t: 'figure', title: '阴阳师 大天狗手办', year: 2019, platform: '景品', desc: '阴阳师大天狗造型手办。' },
+  ],
+  '第五人格': [
+    { t: 'mobile', title: '第五人格', year: 2018, platform: 'iOS/Android', desc: '网易游戏开发的非对称对抗手游。' },
+    { t: 'anime', title: '第五人格 动画', year: 2020, platform: 'Web', desc: '第五人格衍生动画。' },
+    { t: 'manga', title: '第五人格 漫画', year: 2019, platform: '漫画', desc: '第五人格官方漫画。' },
+    { t: 'music', title: '第五人格 角色歌', year: 2019, platform: '数字单曲', desc: '第五人格角色歌曲合集。' },
+    { t: 'exhibit', title: '第五人格 主题展', year: 2021, platform: '巡展', desc: '第五人格 IP 主题展。' },
+  ],
+  '赛马娘 Pretty Derby': [
+    { t: 'mobile', title: '赛马娘 Pretty Derby 手游', year: 2021, platform: 'iOS/Android', desc: 'Cygames 赛马拟人化手游。' },
+  ],
+  'BanG Dream Ave Mujica': [
+    { t: 'anime', title: 'BanG Dream Ave Mujica 动画', year: 2025, platform: 'TV', desc: 'BanG Dream Ave Mujica 衍生动画。' },
+  ],
+  'BanG Dream MyGO': [
+    { t: 'anime', title: 'MyGO!!!!! 动画', year: 2023, platform: 'TV', desc: 'BanG Dream MyGO 衍生动画。' },
+  ],
+  'D4DJ': [
+    { t: 'anime', title: 'D4DJ 动画', year: 2020, platform: 'TV', desc: 'D4DJ 系列 TV 动画。' },
+    { t: 'mobile', title: 'D4DJ 音乐手游', year: 2020, platform: 'iOS/Android', desc: 'D4DJ 官方音乐手游。' },
+  ],
+  'D4DJ 全明星': [
+    { t: 'anime', title: 'D4DJ 全明星 动画', year: 2022, platform: 'TV', desc: 'D4DJ 全明星 TV 动画。' },
+  ],
+  '偶像大师': [
+    { t: 'mobile', title: '偶像大师 灰姑娘女孩', year: 2011, platform: 'iOS/Android', desc: '偶像大师灰姑娘女孩衍生手游。' },
+    { t: 'mobile', title: '偶像大师 百万现场', year: 2013, platform: 'iOS/Android', desc: '偶像大师百万现场音乐手游。' },
+    { t: 'anime', title: '偶像大师 第一季', year: 2011, platform: 'TV', desc: '偶像大师 TV 动画第一季。' },
+    { t: 'manga', title: '偶像大师 漫画', year: 2006, platform: '漫画', desc: '偶像大师衍生漫画。' },
+    { t: 'figure', title: '偶像大师 春香手办', year: 2010, platform: '景品', desc: '偶像大师春香造型手办。' },
+  ],
+  '高达 SEED': [
+    { t: 'manga', title: '高达 SEED 漫画', year: 2002, platform: '漫画', desc: '高达 SEED 衍生漫画。' },
+    { t: 'novel', title: '高达 SEED 小说', year: 2003, platform: '小说', desc: '高达 SEED 衍生小说。' },
+    { t: 'figure', title: '高达 SEED 自由高达 PG', year: 2004, platform: '塑料模型', desc: 'PG 自由高达模型。' },
+  ],
+  '高达 独角兽': [
+    { t: 'novel', title: '高达 独角兽 小说', year: 2007, platform: '小说', desc: '福井晴敏原作独角兽小说。' },
+    { t: 'manga', title: '高达 独角兽 漫画', year: 2010, platform: '漫画', desc: '高达独角兽漫画版。' },
+  ],
+  '高达 SD': [
+    { t: 'anime', title: 'SD 高达 武者七人众篇', year: 1988, platform: 'OVA', desc: 'SD 高达武者七人众篇动画。' },
+    { t: 'mobile', title: 'SD 高达 手游', year: 2021, platform: 'iOS/Android', desc: 'SD 高达 G 世代手游。' },
+  ],
+  '星际争霸 2': [
+    { t: 'novel', title: '星际争霸 2 小说', year: 2010, platform: '小说', desc: '星际争霸 2 衍生小说。' },
+    { t: 'manga', title: '星际争霸 漫画', year: 2008, platform: '漫画', desc: '星际争霸衍生漫画。' },
+  ],
+  '暗黑破坏神4': [
+    { t: 'figure', title: '暗黑破坏神 莉莉丝雕像', year: 2023, platform: '雕像', desc: '暗黑破坏神 4 莉莉丝造型雕像。' },
+    { t: 'soundtrack', title: '暗黑破坏神 4 OST', year: 2023, platform: '数字专辑', desc: '暗黑破坏神 4 原声集。' },
+  ],
+  '暗黑破坏神 不朽': [
+    { t: 'mobile', title: '暗黑破坏神 不朽', year: 2022, platform: 'iOS/Android', desc: '暴雪与网易联合开发的暗黑手游。' },
+  ],
+  '最终幻想 9': [
+    { t: 'novel', title: 'FF9 小说', year: 2000, platform: '小说', desc: 'FF9 官方小说版。' },
+    { t: 'manga', title: 'FF9 漫画', year: 2000, platform: '漫画', desc: 'FF9 衍生漫画。' },
+  ],
+  '传说 宿命传说': [
+    { t: 'anime', title: '传说 宿命传说 动画', year: 1996, platform: 'OVA', desc: '传说宿命传说 OVA。' },
+  ],
+  '超级马里奥 奥德赛': [
+    { t: 'mobile', title: '超级马里奥 奥德赛', year: 2017, platform: 'Switch', desc: '马里奥 3D 沙盒续作。' },
+  ],
+  '超级马里奥 银河': [
+    { t: 'mobile', title: '超级马里奥 银河', year: 2007, platform: 'Switch', desc: '马里奥银河 3D 平台游戏。' },
+  ],
+  '塞尔达传说 王国之泪': [
+    { t: 'figure', title: '林克 1/6 手办', year: 2023, platform: '高端手办', desc: '王国之泪林克造型高端手办。' },
+    { t: 'novel', title: '塞尔达传说 漫画 智慧的黎明', year: 2024, platform: '漫画', desc: '王国之泪衍生漫画。' },
+  ],
+  '塞尔达传说 黄昏公主': [
+    { t: 'manga', title: '塞尔达 黄昏公主 漫画', year: 2017, platform: '漫画', desc: '黄昏公主衍生漫画。' },
+  ],
+  '鬼泣 5': [
+    { t: 'manga', title: '鬼泣 5 漫画', year: 2019, platform: '漫画', desc: '鬼泣 5 衍生漫画。' },
+    { t: 'figure', title: '但丁 1/6 手办', year: 2020, platform: '高端手办', desc: '鬼泣 5 但丁高端手办。' },
+  ],
+  '尼尔 自动人形': [
+    { t: 'anime', title: '尼尔 机械纪元 动画', year: 2023, platform: 'Web', desc: '尼尔机械纪元衍生动画。' },
+    { t: 'manga', title: '尼尔 机械纪元 漫画', year: 2017, platform: '漫画', desc: '尼尔机械纪元衍生漫画。' },
+    { t: 'novel', title: '尼尔 机械纪元 小说', year: 2018, platform: '小说', desc: '尼尔机械纪元衍生小说。' },
+    { t: 'mobile', title: '尼尔 Reincarnation', year: 2021, platform: 'iOS/Android', desc: '尼尔系列衍生手游。' },
+    { t: 'figure', title: '2B 1/7 手办', year: 2019, platform: '景品', desc: '尼尔机械纪元 2B 造型手办。' },
+    { t: 'music', title: '尼尔 机械纪元 OST', year: 2017, platform: '数字专辑', desc: '尼尔机械纪元原声集。' },
+  ],
+  '猎天使魔女 3': [
+    { t: 'figure', title: '贝优妮塔 1/6 手办', year: 2023, platform: '高端手办', desc: '贝优妮塔高端手办。' },
+  ],
+  '噬神者 2': [
+    { t: 'mobile', title: '噬神者 2 愤怒爆发', year: 2015, platform: 'PS4/PSV', desc: '噬神者 2 资料片。' },
+  ],
+  '只狼': [
+    { t: 'manga', title: '只狼 漫画', year: 2020, platform: '漫画', desc: '只狼衍生官方漫画。' },
+  ],
+  '血源诅咒': [
+    { t: 'manga', title: '血源诅咒 漫画 The Old Hunters', year: 2018, platform: '漫画', desc: '血源诅咒衍生漫画。' },
+  ],
+  '马里奥赛车': [
+    { t: 'mobile', title: '马里奥赛车 巡回赛', year: 2019, platform: 'iOS/Android', desc: '马里奥赛车官方手游。' },
+  ],
+  '星之卡比': [
+    { t: 'anime', title: '星之卡比 动画', year: 2001, platform: 'TV', desc: '星之卡比 TV 动画。' },
+    { t: 'manga', title: '星之卡比 漫画', year: 2000, platform: '漫画', desc: '星之卡比衍生漫画。' },
+  ],
 };
 
 const TYPE_LABELS_CN = {
@@ -2432,7 +3461,7 @@ function buildDataset() {
       });
     }
 
-    const targetCount = 22 + ip.weight * 10;
+    const targetCount = 30 + ip.weight * 12;
     const existingTitles = new Set(seedList.map(x => x.title));
     const typeUsage = {};
     for (const s of seedList) typeUsage[s.t] = (typeUsage[s.t] || 0) + 1;
@@ -2835,9 +3864,118 @@ function countUp(el, to) {
 }
 
 /* Boot */
+function buildFeatured() {
+  // Latest: 2024-2026 entries, sorted by year desc
+  const latest = DATA
+    .filter(d => d.year >= 2024)
+    .sort((a, b) => b.year - a.year || b.date - a.date)
+    .slice(0, 20);
+
+  const typeMap = {};
+  TYPES.forEach(t => { typeMap[t.id] = t; });
+
+  const latestList = document.getElementById('latestList');
+  latestList.innerHTML = latest.map((d, i) => {
+    const t = typeMap[d.type] || { name: d.type, color: '#888' };
+    return `
+      <div class="latest-row" data-id="${d.id}">
+        <div class="lr-rank">${String(i + 1).padStart(2, '0')}</div>
+        <div class="lr-type" style="background: ${t.color};">${t.name}</div>
+        <div>
+          <div class="lr-title">${d.title}</div>
+          <div class="lr-ip">${d.ip}</div>
+        </div>
+        <div class="lr-ip">${d.platform || ''}</div>
+        <div class="lr-year">${d.year}</div>
+      </div>
+    `;
+  }).join('');
+
+  // Popular: Top 20 IPs by derivative count
+  const ipCounts = {};
+  DATA.forEach(d => { ipCounts[d.ip] = (ipCounts[d.ip] || 0) + 1; });
+  const popular = Object.entries(ipCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 20);
+  const maxCount = popular[0][1];
+
+  const popularList = document.getElementById('popularList');
+  popularList.innerHTML = popular.map(([ip, count], i) => {
+    const pct = (count / maxCount * 100).toFixed(1);
+    return `
+      <div class="pop-row" data-ip="${ip}">
+        <div class="lr-rank">${String(i + 1).padStart(2, '0')}</div>
+        <div class="lr-title">${ip}</div>
+        <div class="pop-bar-wrap"><div class="pop-bar" style="width: ${pct}%"></div></div>
+        <div class="pop-count">${count}</div>
+      </div>
+    `;
+  }).join('');
+
+  // Decade: 80s/90s/00s/10s/20s top 6 entries per decade
+  const decades = [
+    { name: '80s', label: '1980-1989', from: 1980, to: 1989 },
+    { name: '90s', label: '1990-1999', from: 1990, to: 1999 },
+    { name: '00s', label: '2000-2009', from: 2000, to: 2009 },
+    { name: '10s', label: '2010-2019', from: 2010, to: 2019 },
+    { name: '20s', label: '2020-2026', from: 2020, to: 2026 },
+  ];
+
+  const decadeList = document.getElementById('decadeList');
+  decadeList.innerHTML = decades.map(dec => {
+    const items = DATA
+      .filter(d => d.year >= dec.from && d.year <= dec.to)
+      .sort((a, b) => b.year - a.year)
+      .slice(0, 6);
+    return `
+      <div class="decade-col">
+        <div class="decade-title">${dec.name}</div>
+        <div class="decade-range">${dec.label}</div>
+        <div class="decade-items">
+          ${items.map(it => `<div class="decade-item" data-id="${it.id}"><strong>${it.title}</strong><br><span style="color: var(--ink-3); font-size: 10px;">${it.ip} · ${it.year}</span></div>`).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Tabs
+  document.querySelectorAll('.ftab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      document.querySelectorAll('.ftab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.ftab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelector(`.ftab-panel[data-panel="${tab}"]`).classList.add('active');
+    });
+  });
+
+  // Row click → open drawer
+  document.querySelectorAll('.latest-row, .decade-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const id = el.dataset.id;
+      const item = DATA.find(d => d.id === id);
+      if (item) openDrawer(item);
+    });
+  });
+  document.querySelectorAll('.pop-row').forEach(el => {
+    el.addEventListener('click', () => {
+      const ip = el.dataset.ip;
+      // Pre-fill IP filter and scroll
+      const sel = document.getElementById('ipSelect');
+      Array.from(sel.options).forEach(o => {
+        if (o.value === ip) o.selected = true;
+        else o.selected = false;
+      });
+      document.getElementById('archive').scrollIntoView({ behavior: 'smooth' });
+      applyAndRender();
+    });
+  });
+}
+
 function boot() {
   initFilters();
   applyAndRender();
+  buildFeatured();
   buildTimeline();
   buildTopIp();
   buildDistribution('typeDist', 'type', 14);
