@@ -12,6 +12,7 @@ from pptx.enum.shapes import MSO_SHAPE, MSO_CONNECTOR
 from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
 from pptx.oxml.ns import qn
 from lxml import etree
+import math as _math
 
 # ================= 调色板 =================
 INK          = RGBColor(0x0E, 0x0D, 0x0B)   # 墨黑
@@ -126,6 +127,75 @@ def fill_background(slide, color=INK):
 def add_text_rect(slide, left, top, width, height, fill=None, line=None, line_w=0.5):
     rect = add_rect(slide, left, top, width, height, fill=fill if fill else INK, line=line, line_w=line_w)
     return rect
+
+# ================= 波形曲线（剧情曲线） =================
+def draw_audio_wave(slide, x_start, x_end, baseline_y, peak_h,
+                    n_samples=240, color=KILN_2, weight=1.2,
+                    envelope_points=None, opacity_alpha=None):
+    """
+    绘制一条类似音频波形的平滑曲线，呼应「哥=歌」主题。
+    envelope_points: [(t, amplitude_factor), ...]  用于在指定位置调节振幅
+    """
+    pts = []
+    for i in range(n_samples):
+        t = i / (n_samples - 1)
+        x = x_start + t * (x_end - x_start)
+        # 多频叠加 + 缓慢包络
+        wave = (
+            0.42 * _math.sin(t * _math.pi * 3.0) +
+            0.28 * _math.sin(t * _math.pi * 7.0 + 1.1) +
+            0.18 * _math.sin(t * _math.pi * 13.0 + 0.4) +
+            0.12 * _math.sin(t * _math.pi * 19.0)
+        )
+        # 自定义包络
+        env = 1.0
+        if envelope_points:
+            for j in range(len(envelope_points) - 1):
+                t0, a0 = envelope_points[j]
+                t1, a1 = envelope_points[j+1]
+                if t0 <= t <= t1:
+                    k = (t - t0) / (t1 - t0) if t1 > t0 else 0
+                    env = a0 * (1 - k) + a1 * k
+                    break
+        y_off = wave * env * 0.5  # 归一
+        y = baseline_y - y_off * peak_h
+        pts.append((int(x), int(y)))
+
+    # 画线段
+    for i in range(len(pts) - 1):
+        x1, y1 = pts[i]
+        x2, y2 = pts[i+1]
+        cn = slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT, x1, y1, x2, y2)
+        cn.line.color.rgb = color
+        cn.line.width = Pt(weight)
+
+    return pts
+
+# ================= 概念阶梯（金字塔层级） =================
+def draw_concept_ladder(slide, x_start, y_top, layer_height, total_width,
+                        layers, color_line=KILN, color_label=PAPER):
+    """
+    居中绘制一个由宽到窄的概念阶梯（自下而上）。
+    layers: [(label, sub, width_ratio, fill), ...]  从底到顶
+    """
+    n = len(layers)
+    cur_y = y_top
+    for i, (label, sub, ratio, fill) in enumerate(layers):
+        w = int(total_width * ratio)
+        x = int(x_start + (total_width - w) / 2)
+        h = layer_height
+        # 阶梯条
+        add_rect(slide, x, cur_y, w, h, fill=fill)
+        # 顶边高亮
+        add_rect(slide, x, cur_y, w, Emu(20000), fill=color_line)
+        # 文案
+        tb, tf = add_textbox(slide, x, cur_y, w, h, anchor='m')
+        p, r = add_para(tf, label, font=F_CN, size=13, bold=True,
+                        color=color_label, align=PP_ALIGN.CENTER)
+        p2, r2 = add_para(tf, sub, font=F_EN, size=9, italic=True,
+                          color=SMOKE, align=PP_ALIGN.CENTER, space_before=Pt(0))
+        cur_y += h + Emu(40000)  # 层间小间隙
+    return cur_y
 
 # ================= 演示文稿 =================
 prs = Presentation()
@@ -274,9 +344,9 @@ add_para(tf, "THESIS", font=F_EN, size=12, italic=True, color=KILN_2)
 tb, tf = add_textbox(s2, Inches(2.6), Inches(1.78), Inches(10), Inches(0.6), anchor='m')
 add_para(tf, "《哥窑》是关于「传承」的视觉史诗。", font=F_CN, size=18, color=PAPER)
 
-# 两张对比卡
-card_y = Inches(2.85)
-card_h = Inches(3.7)
+# 两张对比卡（紧凑）
+card_y = Inches(2.7)
+card_h = Inches(2.95)
 card_w = Inches(5.4)
 
 # 哥哥 卡
@@ -285,18 +355,18 @@ add_rect(s2, Inches(0.7), card_y, card_w, card_h, fill=INK_2, line=PAPER_THIN, l
 add_rect(s2, Inches(0.7), card_y, card_w, Emu(20000), fill=PLUM)
 
 # 角色标签
-tb, tf = add_textbox(s2, Inches(1.0), card_y + Inches(0.3), Inches(4), Inches(0.3))
+tb, tf = add_textbox(s2, Inches(1.0), card_y + Inches(0.2), Inches(4), Inches(0.3))
 add_para(tf, "持 灯 者  ·  守 护", font=F_CN, size=11, color=PLUM)
 
 # 大字"哥哥"
-tb, tf = add_textbox(s2, Inches(1.0), card_y + Inches(0.7), Inches(4), Inches(1.0))
-add_para(tf, "哥  哥", font=F_CN, size=54, bold=True, color=PLUM)
+tb, tf = add_textbox(s2, Inches(1.0), card_y + Inches(0.55), Inches(4), Inches(0.85))
+add_para(tf, "哥  哥", font=F_CN, size=46, bold=True, color=PLUM)
 
 # 名字
-tb, tf = add_textbox(s2, Inches(1.0), card_y + Inches(1.75), Inches(4), Inches(0.4))
-add_para(tf, "张   寄", font=F_CN, size=20, bold=True, color=PAPER)
+tb, tf = add_textbox(s2, Inches(1.0), card_y + Inches(1.4), Inches(4), Inches(0.35))
+add_para(tf, "张   寄", font=F_CN, size=18, bold=True, color=PAPER)
 # 分割
-add_rect(s2, Inches(1.0), card_y + Inches(2.25), Inches(3.5), Emu(10000), fill=PAPER_THIN)
+add_rect(s2, Inches(1.0), card_y + Inches(1.8), Inches(3.5), Emu(10000), fill=PAPER_THIN)
 
 # 特质
 traits_e = [
@@ -305,28 +375,28 @@ traits_e = [
     ("守护", "火候失控时拉住弟弟"),
 ]
 for i, (k, v) in enumerate(traits_e):
-    y = card_y + Inches(2.45 + i*0.32)
-    tb, tf = add_textbox(s2, Inches(1.0), y, Inches(4), Inches(0.3))
-    add_para(tf, f"▸ {k}", font=F_CN, size=12, color=PLUM_2)
-    tb, tf = add_textbox(s2, Inches(2.0), y, Inches(4), Inches(0.3))
-    add_para(tf, f"· {v}", font=F_CN, size=11, color=PAPER_MID)
+    y = card_y + Inches(1.92 + i*0.24)
+    tb, tf = add_textbox(s2, Inches(1.0), y, Inches(1.0), Inches(0.25))
+    add_para(tf, f"▸ {k}", font=F_CN, size=11, color=PLUM_2)
+    tb, tf = add_textbox(s2, Inches(2.0), y, Inches(3.0), Inches(0.25))
+    add_para(tf, f"· {v}", font=F_CN, size=10, color=PAPER_MID)
 
 # 引文
-tb, tf = add_textbox(s2, Inches(1.0), card_y + Inches(3.35), Inches(4.2), Inches(0.3))
-add_para(tf, "「等！现在开窑，全毁了！」", font=F_CN, size=11, italic=True, color=PAPER)
-tb, tf = add_textbox(s2, Inches(1.0), card_y + Inches(3.55), Inches(4.2), Inches(0.2))
-add_para(tf, "—— 镜号 53", font=F_MONO, size=9, color=SMOKE)
+tb, tf = add_textbox(s2, Inches(1.0), card_y + Inches(2.6), Inches(4.2), Inches(0.25))
+add_para(tf, "「等！现在开窑，全毁了！」", font=F_CN, size=10, italic=True, color=PAPER)
+tb, tf = add_textbox(s2, Inches(1.0), card_y + Inches(2.78), Inches(4.2), Inches(0.2))
+add_para(tf, "—— 镜号 53", font=F_MONO, size=8, color=SMOKE)
 
 # 中央轴
 ax_x = Inches(6.65)
-add_rect(s2, ax_x, card_y + Inches(0.4), Emu(10000), card_h - Inches(0.8), fill=KILN)
+add_rect(s2, ax_x, card_y + Inches(0.3), Emu(10000), card_h - Inches(0.6), fill=KILN)
 # 节点
-tb, tf = add_textbox(s2, ax_x - Inches(0.3), card_y + Inches(0.7), Inches(0.9), Inches(0.3), anchor='m')
+tb, tf = add_textbox(s2, ax_x - Inches(0.3), card_y + Inches(0.55), Inches(0.9), Inches(0.3), anchor='m')
 add_para(tf, "持 守", font=F_CN, size=10, color=KILN_2, align=PP_ALIGN.CENTER)
-tb, tf = add_textbox(s2, ax_x - Inches(0.3), card_y + Inches(3.0), Inches(0.9), Inches(0.3), anchor='m')
+tb, tf = add_textbox(s2, ax_x - Inches(0.3), card_y + Inches(2.4), Inches(0.9), Inches(0.3), anchor='m')
 add_para(tf, "开 创", font=F_CN, size=10, color=KILN_2, align=PP_ALIGN.CENTER)
 # 中心点
-dot = s2.shapes.add_shape(MSO_SHAPE.OVAL, ax_x - Inches(0.06), card_y + Inches(1.85) - Inches(0.06),
+dot = s2.shapes.add_shape(MSO_SHAPE.OVAL, ax_x - Inches(0.06), card_y + Inches(1.45) - Inches(0.06),
                            Inches(0.12), Inches(0.12))
 dot.fill.solid(); dot.fill.fore_color.rgb = KILN_2
 dot.line.fill.background()
@@ -335,15 +405,15 @@ dot.line.fill.background()
 add_rect(s2, Inches(7.2), card_y, card_w, card_h, fill=INK_2, line=PAPER_THIN, line_w=0.75)
 add_rect(s2, Inches(7.2), card_y, card_w, Emu(20000), fill=EARTH_2)
 
-tb, tf = add_textbox(s2, Inches(7.5), card_y + Inches(0.3), Inches(4), Inches(0.3))
+tb, tf = add_textbox(s2, Inches(7.5), card_y + Inches(0.2), Inches(4), Inches(0.3))
 add_para(tf, "行 路 人  ·  探 索", font=F_CN, size=11, color=EARTH_2)
 
-tb, tf = add_textbox(s2, Inches(7.5), card_y + Inches(0.7), Inches(4), Inches(1.0))
-add_para(tf, "弟  弟", font=F_CN, size=54, bold=True, color=EARTH_2)
+tb, tf = add_textbox(s2, Inches(7.5), card_y + Inches(0.55), Inches(4), Inches(0.85))
+add_para(tf, "弟  弟", font=F_CN, size=46, bold=True, color=EARTH_2)
 
-tb, tf = add_textbox(s2, Inches(7.5), card_y + Inches(1.75), Inches(4), Inches(0.4))
-add_para(tf, "张   志   元", font=F_CN, size=20, bold=True, color=PAPER)
-add_rect(s2, Inches(7.5), card_y + Inches(2.25), Inches(3.5), Emu(10000), fill=PAPER_THIN)
+tb, tf = add_textbox(s2, Inches(7.5), card_y + Inches(1.4), Inches(4), Inches(0.35))
+add_para(tf, "张   志   元", font=F_CN, size=18, bold=True, color=PAPER)
+add_rect(s2, Inches(7.5), card_y + Inches(1.8), Inches(3.5), Emu(10000), fill=PAPER_THIN)
 
 traits_y = [
     ("感性", "能听见「土在唱歌」"),
@@ -351,22 +421,80 @@ traits_y = [
     ("开创", "金丝铁线的引线人"),
 ]
 for i, (k, v) in enumerate(traits_y):
-    y = card_y + Inches(2.45 + i*0.32)
-    tb, tf = add_textbox(s2, Inches(7.5), y, Inches(4), Inches(0.3))
-    add_para(tf, f"▸ {k}", font=F_CN, size=12, color=EARTH_2)
-    tb, tf = add_textbox(s2, Inches(8.5), y, Inches(4), Inches(0.3))
-    add_para(tf, f"· {v}", font=F_CN, size=11, color=PAPER_MID)
+    y = card_y + Inches(1.92 + i*0.24)
+    tb, tf = add_textbox(s2, Inches(7.5), y, Inches(1.0), Inches(0.25))
+    add_para(tf, f"▸ {k}", font=F_CN, size=11, color=EARTH_2)
+    tb, tf = add_textbox(s2, Inches(8.5), y, Inches(3.0), Inches(0.25))
+    add_para(tf, f"· {v}", font=F_CN, size=10, color=PAPER_MID)
 
-tb, tf = add_textbox(s2, Inches(7.5), card_y + Inches(3.35), Inches(4.2), Inches(0.3))
-add_para(tf, "「哥，这土……在唱歌。」", font=F_CN, size=11, italic=True, color=PAPER)
-tb, tf = add_textbox(s2, Inches(7.5), card_y + Inches(3.55), Inches(4.2), Inches(0.2))
-add_para(tf, "—— 镜号 16", font=F_MONO, size=9, color=SMOKE)
+tb, tf = add_textbox(s2, Inches(7.5), card_y + Inches(2.6), Inches(4.2), Inches(0.25))
+add_para(tf, "「哥，这土……在唱歌。」", font=F_CN, size=10, italic=True, color=PAPER)
+tb, tf = add_textbox(s2, Inches(7.5), card_y + Inches(2.78), Inches(4.2), Inches(0.2))
+add_para(tf, "—— 镜号 16", font=F_MONO, size=8, color=SMOKE)
+
+# 底部：剧情曲线（音频波形）— 呼应「哥 = 歌」主题
+arc_label_y = Inches(5.7)
+tb, tf = add_textbox(s2, Inches(0.7), arc_label_y, Inches(4.0), Inches(0.3))
+add_para(tf, "三 幕  ·  情 绪 曲 线", font=F_CN, size=12, bold=True, color=KILN_2)
+tb, tf = add_textbox(s2, Inches(0.7), arc_label_y + Inches(0.25), Inches(4.0), Inches(0.25))
+add_para(tf, "THE  EMOTIONAL  WAVEFORM", font=F_EN, size=9, italic=True, color=SMOKE)
+
+# 基线
+baseline_y = Inches(6.15)
+peak_h = Inches(0.55)
+x_start = Inches(0.8)
+x_end = Inches(12.5)
+add_rect(s2, x_start, baseline_y, x_end - x_start, Emu(8000), fill=PAPER_THIN)
+
+# 绘制音频波
+# 包络: 序幕低 → 第一幕升 → 第二幕峰 → 第三幕先降后高 → 余韵平
+envelope = [
+    (0.00, 0.30),  # 序幕 - 离愁
+    (0.05, 0.30),
+    (0.15, 0.55),  # 探索
+    (0.30, 0.75),  # 第一幕 紫金土
+    (0.45, 0.70),  # 建窑
+    (0.55, 0.90),  # 第二幕 贡品 - 峰 1
+    (0.65, 0.95),
+    (0.72, 0.55),  # 火候危机 - 谷
+    (0.82, 0.50),
+    (0.88, 1.00),  # 第三幕 开片·并肩 - 峰 2
+    (0.95, 0.75),  # 余韵
+    (1.00, 0.65),
+]
+draw_audio_wave(s2, x_start, x_end, baseline_y, peak_h,
+                n_samples=300, color=KILN_2, weight=1.2,
+                envelope_points=envelope)
+
+# 关键节点标注
+beats = [
+    (0.05, "序幕",        "1-5",   "离愁",      PLUM,      Inches(-0.05)),
+    (0.32, "第一幕",      "6-35",  "南下·紫金土", PAPER,    Inches(-0.05)),
+    (0.58, "第二幕",      "36-47", "贡品之印", KILN_2,    Inches(-0.05)),
+    (0.85, "第三幕",      "48-66", "开片·并肩", EARTH_2,   Inches(-0.05)),
+]
+for t, name, mirror, mood, col, yoff in beats:
+    bx = Inches(0.8 + t * 11.7)
+    # 节点圆点
+    d = s2.shapes.add_shape(MSO_SHAPE.OVAL,
+                             int(bx - Inches(0.07)),
+                             int(baseline_y - Inches(0.07)),
+                             Inches(0.14), Inches(0.14))
+    d.fill.solid(); d.fill.fore_color.rgb = col
+    d.line.color.rgb = INK
+    d.line.width = Pt(1.5)
+    # 标签在波的上方
+    tb, tf = add_textbox(s2, int(bx - Inches(1.1)), int(baseline_y - Inches(0.65) + yoff),
+                         Inches(2.2), Inches(0.6), anchor='b')
+    p, r = add_para(tf, name, font=F_CN, size=11, bold=True, color=col, align=PP_ALIGN.CENTER)
+    p2, r2 = add_para(tf, mirror + "  ·  " + mood, font=F_CN, size=9, color=PAPER_MID,
+                      align=PP_ALIGN.CENTER, space_before=Pt(0))
 
 # 底部注脚
-tb, tf = add_textbox(s2, Inches(0.7), Inches(6.85), Inches(12), Inches(0.4))
-add_para(tf, "哥哥，是「歌」的定音鼓；弟弟，是「歌」的延长线。",
-         font=F_CN, size=13, italic=True, color=PAPER_MID, align=PP_ALIGN.CENTER)
-add_rect(s2, Inches(0.7), Inches(6.75), Inches(12), Emu(10000), fill=PAPER_THIN)
+tb, tf = add_textbox(s2, Inches(0.7), Inches(7.05), Inches(12), Inches(0.3))
+add_para(tf, "哥哥，是「歌」的定音鼓；弟弟，是「歌」的延长线 —— 整部短片，就是一首起伏绵长的歌。",
+         font=F_CN, size=12, italic=True, color=PAPER_MID, align=PP_ALIGN.CENTER)
+add_rect(s2, Inches(0.7), Inches(6.97), Inches(12), Emu(8000), fill=PAPER_THIN)
 
 add_page_indicator(s2, 2)
 
@@ -468,64 +596,120 @@ p2, r2 = add_para(tf, "  /  THE EPIPHANY", font=F_EN, size=13, italic=True, colo
 tb, tf = add_textbox(s4, Inches(1.5), Inches(1.05), Inches(10), Inches(0.3))
 add_para(tf, "哥  =  歌  =  兄", font=F_CN, size=12, color=PAPER_MID)
 
-# 左侧：字源图
+# 左侧：字源图（紧凑上移，留出底部阶梯区）
 # "哥" 大字
-tb, tf = add_textbox(s4, Inches(0.8), Inches(2.0), Inches(2.4), Inches(3.5), anchor='m')
-add_para(tf, "哥", font=F_CN, size=240, bold=True, color=PAPER, align=PP_ALIGN.CENTER)
+tb, tf = add_textbox(s4, Inches(0.8), Inches(1.4), Inches(2.4), Inches(2.4), anchor='m')
+add_para(tf, "哥", font=F_CN, size=160, bold=True, color=PAPER, align=PP_ALIGN.CENTER)
 # 装饰横线
-add_rect(s4, Inches(0.6), Inches(4.3), Inches(2.8), Emu(15000), fill=KILN)
+add_rect(s4, Inches(0.6), Inches(3.05), Inches(2.8), Emu(15000), fill=KILN)
 
 # "兄" 印章
-seal = s4.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(3.5), Inches(3.0), Inches(1.2), Inches(1.2))
+seal = s4.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(3.5), Inches(1.9), Inches(1.1), Inches(1.1))
 seal.fill.solid(); seal.fill.fore_color.rgb = EARTH
 seal.line.color.rgb = PAPER
 seal.line.width = Pt(1.5)
-tb, tf = add_textbox(s4, Inches(3.5), Inches(3.0), Inches(1.2), Inches(1.2), anchor='m')
-add_para(tf, "兄", font=F_CN, size=64, bold=True, color=PAPER, align=PP_ALIGN.CENTER)
+tb, tf = add_textbox(s4, Inches(3.5), Inches(1.9), Inches(1.1), Inches(1.1), anchor='m')
+add_para(tf, "兄", font=F_CN, size=58, bold=True, color=PAPER, align=PP_ALIGN.CENTER)
 
 # 等号
-tb, tf = add_textbox(s4, Inches(4.8), Inches(3.3), Inches(0.8), Inches(0.6), anchor='m')
-add_para(tf, "通", font=F_CN, size=24, bold=True, color=KILN_2, align=PP_ALIGN.CENTER)
+tb, tf = add_textbox(s4, Inches(4.7), Inches(2.2), Inches(0.8), Inches(0.6), anchor='m')
+add_para(tf, "通", font=F_CN, size=22, bold=True, color=KILN_2, align=PP_ALIGN.CENTER)
 # 箭头
-arrow = s4.shapes.add_shape(MSO_SHAPE.RIGHT_ARROW, Inches(5.0), Inches(3.55), Inches(0.8), Inches(0.2))
+arrow = s4.shapes.add_shape(MSO_SHAPE.RIGHT_ARROW, Inches(4.9), Inches(2.4), Inches(0.7), Inches(0.18))
 arrow.fill.solid(); arrow.fill.fore_color.rgb = KILN
 arrow.line.fill.background()
 
 # "歌" 古字
-tb, tf = add_textbox(s4, Inches(5.9), Inches(2.0), Inches(2.4), Inches(3.5), anchor='m')
-add_para(tf, "歌", font=F_CN, size=240, bold=True, color=KILN_2, align=PP_ALIGN.CENTER)
-add_rect(s4, Inches(5.7), Inches(4.3), Inches(2.8), Emu(15000), fill=KILN)
+tb, tf = add_textbox(s4, Inches(5.7), Inches(1.4), Inches(2.4), Inches(2.4), anchor='m')
+add_para(tf, "歌", font=F_CN, size=160, bold=True, color=KILN_2, align=PP_ALIGN.CENTER)
+add_rect(s4, Inches(5.5), Inches(3.05), Inches(2.8), Emu(15000), fill=KILN)
 
 # 字源说明
-tb, tf = add_textbox(s4, Inches(1.0), Inches(4.7), Inches(6.5), Inches(0.4))
+tb, tf = add_textbox(s4, Inches(1.0), Inches(3.2), Inches(6.5), Inches(0.3))
 add_para(tf, "古 字 相 通  ·  字 源 之 证", font=F_CN, size=11, color=SMOKE, align=PP_ALIGN.CENTER)
 
-# 右侧：三段升华文字
+# 右侧：三段升华文字（紧凑上移）
 lines = [
     ("壹", "「哥」通「歌」 —— 窑火如歌，是声音，是节奏，是无数次的开与合。"),
     ("贰", "「哥」亦为「兄」 —— 兄弟如线，一根拉直，便成釉面上的金丝铁线。"),
     ("叁", "真正的传承，从来不是一个人的独唱 —— 而是两双手按在同一方印上、两个背影在时光中重叠的二重唱。"),
 ]
-line_y0 = Inches(2.0)
+line_y0 = Inches(1.5)
 for i, (num, text) in enumerate(lines):
-    y = line_y0 + i * Inches(1.4)
+    y = line_y0 + i * Inches(0.85)
     # 序号
-    tb, tf = add_textbox(s4, Inches(8.5), y, Inches(0.8), Inches(0.8))
-    add_para(tf, num, font=F_CN, size=36, bold=True, color=KILN)
+    tb, tf = add_textbox(s4, Inches(8.4), y, Inches(0.7), Inches(0.8))
+    add_para(tf, num, font=F_CN, size=28, bold=True, color=KILN)
     # 文字
-    tb, tf = add_textbox(s4, Inches(9.4), y + Inches(0.05), Inches(3.6), Inches(1.3))
-    p, r = add_para(tf, text, font=F_CN, size=12, color=PAPER, space_after=Pt(0))
+    tb, tf = add_textbox(s4, Inches(9.2), y + Inches(0.05), Inches(3.8), Inches(0.85))
+    p, r = add_para(tf, text, font=F_CN, size=11, color=PAPER, space_after=Pt(0))
     # 分隔
     if i < 2:
-        add_rect(s4, Inches(8.5), y + Inches(1.2), Inches(4.5), Emu(8000), fill=PAPER_THIN)
+        add_rect(s4, Inches(8.4), y + Inches(0.75), Inches(4.6), Emu(6000), fill=PAPER_THIN)
 
-# 右下角印章
-seal2 = s4.shapes.add_shape(MSO_SHAPE.RECTANGLE, SW - Inches(1.6), SH - Inches(1.6), Inches(1.0), Inches(1.0))
+# 底部：概念阶梯（升华主旨）
+ladder_label_y = Inches(4.4)
+tb, tf = add_textbox(s4, Inches(0.7), ladder_label_y, Inches(6.0), Inches(0.3))
+add_para(tf, "概 念 阶 梯  ·  意 象 升 华", font=F_CN, size=12, bold=True, color=KILN_2)
+tb, tf = add_textbox(s4, Inches(0.7), ladder_label_y + Inches(0.25), Inches(6.0), Inches(0.25))
+add_para(tf, "THE  HIERARCHY  OF  INHERITANCE", font=F_EN, size=9, italic=True, color=SMOKE)
+
+# 阶梯 4 层
+ladder_layers = [
+    # (label, sub, width_ratio, fill)
+    ("传  ·  承",        "INHERITANCE  ·  哥窑之精神",  0.40, INK_3),
+    ("哥 = 歌 = 兄",     "TRIUNITY  ·  三位一体",         0.62, INK_2),
+    ("持 守  ×  开 创", "THE  DUET  ·  二重唱",         0.84, INK_2),
+    ("兄 弟 二 人",      "THE  BROTHERS  ·  具象的人",  1.00, INK_3),
+]
+ladder_y = Inches(4.95)
+ladder_h = Inches(0.4)
+ladder_gap = Emu(40000)
+ladder_total_w = Inches(10.0)
+ladder_x_start = Inches((13.333 - 10.0) / 2)
+
+# 绘制阶梯（自下而上：底层在最下，顶层在最上）
+for i, (label, sub, ratio, fill) in enumerate(ladder_layers):
+    w = int(ladder_total_w * ratio)
+    x = int(ladder_x_start + (ladder_total_w - w) / 2)
+    y = int(ladder_y + (len(ladder_layers) - 1 - i) * (ladder_h + ladder_gap))
+    # 阶梯条
+    add_rect(s4, x, y, w, ladder_h, fill=fill)
+    # 顶边高亮
+    add_rect(s4, x, y, w, Emu(20000), fill=KILN)
+    # 文案
+    tb, tf = add_textbox(s4, x, y, w, ladder_h, anchor='m')
+    p, r = add_para(tf, label, font=F_CN, size=12, bold=True, color=PAPER, align=PP_ALIGN.CENTER)
+    p2, r2 = add_para(tf, sub, font=F_EN, size=8, italic=True, color=KILN_2,
+                      align=PP_ALIGN.CENTER, space_before=Pt(0))
+
+# 阶梯上升箭头（左侧）
+arrow_x = Inches(0.85)
+arrow_y_start = Inches(7.0)
+arrow_y_end = Inches(5.0)
+add_rect(s4, arrow_x, arrow_y_start, Emu(20000), arrow_y_start - arrow_y_end, fill=KILN_2)
+# 箭头三角
+arrow_tip = s4.shapes.add_shape(MSO_SHAPE.UP_ARROW,
+                                 int(arrow_x - Inches(0.06)),
+                                 int(arrow_y_end - Inches(0.05)),
+                                 Inches(0.17), Inches(0.2))
+arrow_tip.fill.solid(); arrow_tip.fill.fore_color.rgb = KILN_2
+arrow_tip.line.fill.background()
+# 箭头旁注
+tb, tf = add_textbox(s4, Inches(0.4), Inches(5.9), Inches(0.6), Inches(1.0), anchor='m')
+add_para(tf, "升\n华", font=F_CN, size=10, bold=True, color=KILN_2, align=PP_ALIGN.CENTER)
+
+# 阶梯右侧注
+tb, tf = add_textbox(s4, Inches(11.5), Inches(5.8), Inches(1.6), Inches(1.2), anchor='m')
+add_para(tf, "从\n具\n象\n到\n本\n质", font=F_CN, size=9, color=SMOKE, align=PP_ALIGN.CENTER)
+
+# 印章融合进阶梯顶部"传承"层（中央印章感）
+seal2 = s4.shapes.add_shape(MSO_SHAPE.RECTANGLE, SW - Inches(1.55), Inches(7.0), Inches(0.85), Inches(0.4))
 seal2.fill.solid(); seal2.fill.fore_color.rgb = EARTH
 seal2.line.color.rgb = PAPER
-seal2.line.width = Pt(1)
-tb, tf = add_textbox(s4, SW - Inches(1.6), SH - Inches(1.6), Inches(1.0), Inches(1.0), anchor='m')
-p, r = add_para(tf, "龙\n泉\n章\n氏", font=F_CN, size=14, bold=True, color=PAPER, align=PP_ALIGN.CENTER)
+seal2.line.width = Pt(0.75)
+tb, tf = add_textbox(s4, SW - Inches(1.55), Inches(7.0), Inches(0.85), Inches(0.4), anchor='m')
+add_para(tf, "章  氏", font=F_CN, size=11, bold=True, color=PAPER, align=PP_ALIGN.CENTER)
 
 add_page_indicator(s4, 4)
 
