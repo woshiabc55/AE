@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>哥 · 歌 · 窑 — 《哥窑》主旨解读</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- 顶部进度条 -->
+  <div class="progress" id="progress"><span class="bar" id="progressBar"></span></div>
+
+  <!-- 页码指示 -->
+  <div class="page-indicator" id="pageIndicator">
+    <span class="cur" id="curPage">01</span>
+    <span class="sep">/</span>
+    <span class="tot">05</span>
+  </div>
+
+  <!-- 装饰：火星粒子层 -->
+  <div class="embers" id="embers" aria-hidden="true"></div>
+
+  <!-- 装饰：水墨晕染 -->
+  <svg class="ink-layer" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <radialGradient id="inkBlur" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#1a1815" stop-opacity="0.9"/>
+        <stop offset="60%" stop-color="#0e0d0b" stop-opacity="0.4"/>
+        <stop offset="100%" stop-color="#0e0d0b" stop-opacity="0"/>
+      </radialGradient>
+      <filter id="grain">
+        <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" />
+        <feColorMatrix values="0 0 0 0 0.95  0 0 0 0 0.92  0 0 0 0 0.85  0 0 0 0.05 0"/>
+      </filter>
+    </defs>
+    <ellipse cx="320" cy="720" rx="420" ry="180" fill="url(#inkBlur)"/>
+    <ellipse cx="1300" cy="220" rx="380" ry="160" fill="url(#inkBlur)"/>
+    <rect x="0" y="0" width="1600" height="900" filter="url(#grain)" opacity="0.5"/>
+  </svg>
+
+  <!-- 演示文稿容器 -->
+  <main class="deck" id="deck">
+
+    <!-- ============== Slide 0: 封面 ============== -->
+    <section class="slide slide-cover is-active" data-index="0">
+      <div class="cover-fire" aria-hidden="true"></div>
+      <div class="cover-frame">
+        <div class="cover-side cover-left">
+          <div class="vertical-label">DRAGON · KILN · CHRONICLE</div>
+          <div class="vertical-cn">龙泉青瓷 · 章氏兄弟</div>
+        </div>
+
+        <div class="cover-main">
+          <div class="cover-meta">
+            <span class="meta-dot"></span>
+            <span>主 旨 解 读 · 第 一 辑</span>
+          </div>
+
+          <h1 class="cover-title">
+            <span class="char ch1">哥</span>
+            <span class="dot">·</span>
+            <span class="char ch2">歌</span>
+            <span class="dot">·</span>
+            <span class="char ch3">窑</span>
+          </h1>
+
+          <div class="cover-en">GE &middot; SONG &middot; KILN</div>
+
+          <p class="cover-line">
+            <span class="line-mark">—</span>
+            哥窑之「哥」，非长幼之序，乃「歌」之古字。<br/>
+            窑火如歌，兄弟如线。
+          </p>
+
+          <div class="cover-meta-foot">
+            <span>修正版 · 人物重订</span>
+            <span class="meta-sep">·</span>
+            <span>哥哥&nbsp;=&nbsp;<em>张寄</em></span>
+            <span class="meta-sep">·</span>
+            <span>弟弟&nbsp;=&nbsp;<em>张志元</em></span>
+          </div>
+
+          <button class="cover-cta" id="startBtn">
+            <span>开始解读</span>
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M5 12h14M13 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="cover-side cover-right">
+          <div class="seal">
+            <span>章</span>
+          </div>
+          <div class="seal-text">龙泉章氏印</div>
+        </div>
+      </div>
+
+      <div class="cover-foot">
+        <span>壹 / 五</span>
+        <span class="dash">——</span>
+        <span>封面 · 缘起</span>
+      </div>
+    </section>
+
+    <!-- ============== Slide 1: 总纲 ============== -->
+    <section class="slide slide-overview" data-index="1">
+      <header class="slide-head">
+        <div class="head-no">壹</div>
+        <div class="head-text">
+          <h2>总&nbsp;纲<span class="head-en">/ THE THESIS</span></h2>
+          <p>核心主旨不变 · 人物标签互换</p>
+        </div>
+        <div class="head-rule"></div>
+      </header>
+
+      <div class="thesis-strip">
+        <span class="ts-label">主旨</span>
+        <p>《哥窑》是关于"传承"的视觉史诗。</p>
+      </div>
+
+      <div class="duet">
+        <article class="duet-card card-elder">
+          <div class="card-corner tl">兄</div>
+          <div class="card-corner br">長</div>
+          <div class="card-role">持 灯 者 · 守 护</div>
+          <h3>哥&nbsp;哥</h3>
+          <h4 class="card-name">张&nbsp;寄</h4>
+          <ul class="card-traits">
+            <li><span>理性</span><i>·</i>规划的锚点</li>
+            <li><span>承担</span><i>·</i>战火中接过嘱托</li>
+            <li><span>守护</span><i>·</i>火候失控时拉住弟弟</li>
+          </ul>
+          <div class="card-quote">
+            <span class="qt">"等！现在开窑，全毁了！"</span>
+            <span class="qa">—— 镜号 53</span>
+          </div>
+        </article>
+
+        <div class="duet-axis" aria-hidden="true">
+          <div class="axis-line"></div>
+          <div class="axis-node top">持守</div>
+          <div class="axis-node bot">开创</div>
+          <div class="axis-dot"></div>
+        </div>
+
+        <article class="duet-card card-younger">
+          <div class="card-corner tl">弟</div>
+          <div class="card-corner br">次</div>
+          <div class="card-role">行 路 人 · 探 索</div>
+          <h3>弟&nbsp;弟</h3>
+          <h4 class="card-name">张&nbsp;志&nbsp;元</h4>
+          <ul class="card-traits">
+            <li><span>感性</span><i>·</i>能听见"土在唱歌"</li>
+            <li><span>天赋</span><i>·</i>紫金土的发现者</li>
+            <li><span>开创</span><i>·</i>金丝铁线的引线人</li>
+          </ul>
+          <div class="card-quote">
+            <span class="qt">"哥，这土……在唱歌。"</span>
+            <span class="qa">—— 镜号 16</span>
+          </div>
+        </article>
+      </div>
+
+      <footer class="slide-foot">
+        <span>哥哥，是「歌」的定音鼓；弟弟，是「歌」的延长线。</span>
+      </footer>
+    </section>
+
+    <!-- ============== Slide 2: 证据链 ============== -->
+    <section class="slide slide-evidence" data-index="2">
+      <header class="slide-head">
+        <div class="head-no">贰</div>
+        <div class="head-text">
+          <h2>证&nbsp;据&nbsp;链<span class="head-en">/ FROM THE SCRIPT</span></h2>
+          <p>五处镜号 · 两重性格的彼此成就</p>
+        </div>
+        <div class="head-rule"></div>
+      </header>
+
+      <div class="evidence-grid">
+        <div class="ev-row">
+          <div class="ev-tag tag-elder">哥哥·持守</div>
+          <div class="ev-mirror">镜号 09</div>
+          <p class="ev-line">"往南走，找能烧窑的土地，不能丢。手艺不能断。志元，看好你弟弟。"</p>
+          <p class="ev-annot">战乱中接过嘱托，以兄长之名承担全族手艺。</p>
+        </div>
+
+        <div class="ev-row">
+          <div class="ev-tag tag-younger">弟弟·开创</div>
+          <div class="ev-mirror">镜号 16</div>
+          <p class="ev-line">"哥，这土……在唱歌。"</p>
+          <p class="ev-annot">紫金土的发现者——天赋的感性回响。</p>
+        </div>
+
+        <div class="ev-row">
+          <div class="ev-tag tag-elder">哥哥·持守</div>
+          <div class="ev-mirror">镜号 17</div>
+          <p class="ev-line">"那就这儿了。"</p>
+          <p class="ev-annot">以理性肯定弟弟的发现——是节拍，亦是锚。</p>
+        </div>
+
+        <div class="ev-row">
+          <div class="ev-tag tag-younger">弟弟·开创</div>
+          <div class="ev-mirror">镜号 56</div>
+          <p class="ev-line">"哥……成了。"</p>
+          <p class="ev-annot">金丝铁线开片，釉色如冰裂，释然之泪。</p>
+        </div>
+
+        <div class="ev-row ev-highlight">
+          <div class="ev-tag tag-younger">弟弟→兄</div>
+          <div class="ev-mirror">镜号 45</div>
+          <p class="ev-line">"哥，没有你这盏灯，我哪能坚持学业，这里都参着你的补贴呢。"</p>
+          <p class="ev-annot">两双手按在同一方印上——<strong>二重唱成立的瞬间</strong>。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== Slide 3: 主旨升华 ============== -->
+    <section class="slide slide-sublim" data-index="3">
+      <header class="slide-head">
+        <div class="head-no">叁</div>
+        <div class="head-text">
+          <h2>主&nbsp;旨&nbsp;升&nbsp;华<span class="head-en">/ THE EPIPHANY</span></h2>
+          <p>哥 = 歌 = 兄</p>
+        </div>
+        <div class="head-rule"></div>
+      </header>
+
+      <div class="sublim-stage">
+        <div class="char-anatomy">
+          <div class="big-char-wrap">
+            <div class="big-char">哥</div>
+            <div class="char-rubbing">
+              <span>兄</span>
+            </div>
+            <div class="char-arrow" aria-hidden="true">
+              <svg viewBox="0 0 80 12" width="80" height="12">
+                <path d="M2 6 L72 6 M66 1 L72 6 L66 11" fill="none" stroke="#c08a3e" stroke-width="1"/>
+              </svg>
+            </div>
+            <div class="char-equivalence">通</div>
+            <div class="big-char ancient">歌</div>
+          </div>
+          <p class="char-cap">古字相通 · 字源之证</p>
+        </div>
+
+        <div class="sublim-lines">
+          <div class="s-line">
+            <span class="s-no">壹</span>
+            <p>"哥"通"歌"——<em>窑火如歌</em>，是声音，是节奏，是无数次的开与合。</p>
+          </div>
+          <div class="s-line">
+            <span class="s-no">贰</span>
+            <p>"哥"亦为"兄"——<em>兄弟如线</em>，一根拉直，便成釉面上的金丝铁线。</p>
+          </div>
+          <div class="s-line">
+            <span class="s-no">叁</span>
+            <p>真正的传承，从来不是一个人的独唱——<br/>
+            而是<em>两双手按在同一方印上</em>、两个背影在时光中重叠的<em>二重唱</em>。</p>
+          </div>
+        </div>
+
+        <div class="seal-stamp" aria-hidden="true">
+          <div class="seal-square">
+            <span>龙</span><span>泉</span>
+            <span>章</span><span>氏</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== Slide 4: 结语 ============== -->
+    <section class="slide slide-closing" data-index="4">
+      <div class="closing-glow" aria-hidden="true"></div>
+
+      <div class="closing-inner">
+        <div class="closing-eyebrow">EPILOGUE &nbsp;/&nbsp; 鸣 谢 与 指 正</div>
+
+        <blockquote class="closing-quote">
+          <span class="quote-mark left">「</span>
+          窑火不灭，<br/>
+          兄弟如线。<br/>
+          一片瓷，<br/>
+          便是一首歌的余韵。
+          <span class="quote-mark right">」</span>
+        </blockquote>
+
+        <div class="closing-meta">
+          <div class="meta-block">
+            <span class="mb-label">人物设定 · 修正后</span>
+            <span class="mb-val">哥哥 = <em>张寄</em> &nbsp;·&nbsp; 弟弟 = <em>张志元</em></span>
+          </div>
+          <div class="meta-block">
+            <span class="mb-label">核心主旨</span>
+            <span class="mb-val">哥 = 歌 = 兄 &nbsp;·&nbsp; 持守 × 开创 的完美和弦</span>
+          </div>
+        </div>
+
+        <div class="closing-thanks">
+          <span class="th-divider"></span>
+          <p>非常感谢您的指正——这是至关重要的细节。</p>
+          <p class="th-sub">文末谨记 · 修订印记</p>
+          <span class="th-divider"></span>
+        </div>
+
+        <div class="closing-restart">
+          <button class="restart-btn" id="restartBtn">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/>
+            </svg>
+            <span>重读 · Return</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 导航条 -->
+  <nav class="nav" id="nav">
+    <button class="nav-btn nav-prev" id="prevBtn" aria-label="上一页">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M15 6l-6 6 6 6"/>
+      </svg>
+    </button>
+    <button class="nav-btn nav-next" id="nextBtn" aria-label="下一页">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M9 6l6 6-6 6"/>
+      </svg>
+    </button>
+  </nav>
+
+  <!-- 提示气泡 -->
+  <div class="hint" id="hint">使用 ← / → 键或点击翻页</div>
+
+  <script src="script.js"></script>
+</body>
+</html>
