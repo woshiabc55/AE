@@ -1,45 +1,65 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>游戏IP衍生宇宙 · GameIP Derivative Archive (2026.06)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/map/js/world.js"></script>
 <style>
-:root{
-  --bg-0:#070713;
-  --bg-1:#0c0c20;
-  --bg-2:#12122b;
-  --panel:rgba(20,20,45,0.55);
-  --panel-2:rgba(30,30,60,0.65);
-  --border:rgba(120,120,200,0.18);
-  --border-2:rgba(160,160,255,0.28);
-  --text-0:#f5f5ff;
-  --text-1:#c8c8e6;
-  --text-2:#8a8aab;
-  --text-3:#5a5a7a;
-  --accent-a:#7c5cff;
-  --accent-b:#22d3ee;
-  --accent-c:#ff5d8f;
-  --accent-d:#ffd166;
+/* ============================================================
+   THEME TOKENS
+   ============================================================ */
+:root, [data-theme="dark"]{
+  --bg-0:#070713; --bg-1:#0c0c20; --bg-2:#12122b;
+  --panel:rgba(20,20,45,0.55); --panel-2:rgba(30,30,60,0.65);
+  --border:rgba(120,120,200,0.18); --border-2:rgba(160,160,255,0.28);
+  --text-0:#f5f5ff; --text-1:#c8c8e6; --text-2:#8a8aab; --text-3:#5a5a7a;
+  --accent-a:#7c5cff; --accent-b:#22d3ee; --accent-c:#ff5d8f; --accent-d:#ffd166;
   --grad-1:linear-gradient(135deg,#7c5cff 0%,#22d3ee 100%);
   --grad-2:linear-gradient(135deg,#ff5d8f 0%,#ffd166 100%);
   --grad-3:linear-gradient(135deg,#22d3ee 0%,#10b981 100%);
   --grad-4:linear-gradient(135deg,#7c5cff 0%,#ff5d8f 100%);
+  --grad-5:linear-gradient(135deg,#f472b6 0%,#c084fc 100%);
   --shadow-1:0 8px 30px rgba(0,0,0,0.35);
   --shadow-2:0 12px 50px rgba(124,92,255,0.25);
+  --grid-line:rgba(255,255,255,0.025);
+  --noise:0;
 }
+[data-theme="light"]{
+  --bg-0:#f4f4fa; --bg-1:#eeeef8; --bg-2:#e6e6f0;
+  --panel:rgba(255,255,255,0.7); --panel-2:rgba(255,255,255,0.85);
+  --border:rgba(80,80,140,0.18); --border-2:rgba(120,120,200,0.32);
+  --text-0:#1a1a30; --text-1:#3a3a55; --text-2:#6a6a85; --text-3:#9a9ab0;
+  --accent-a:#5c3aff; --accent-b:#0891b2; --accent-c:#e11d48; --accent-d:#b45309;
+  --shadow-1:0 8px 30px rgba(60,60,140,0.10);
+  --shadow-2:0 12px 50px rgba(92,58,255,0.15);
+  --grid-line:rgba(0,0,0,0.04);
+}
+[data-theme="cyber"]{
+  --bg-0:#000510; --bg-1:#001020; --bg-2:#001a30;
+  --panel:rgba(0,30,60,0.55); --panel-2:rgba(0,40,80,0.65);
+  --border:rgba(0,255,255,0.25); --border-2:rgba(255,0,255,0.35);
+  --text-0:#00ffd5; --text-1:#80fff0; --text-2:#40c0c0; --text-3:#208080;
+  --accent-a:#ff00ff; --accent-b:#00ffff; --accent-c:#ffff00; --accent-d:#ff0080;
+  --grad-1:linear-gradient(135deg,#ff00ff 0%,#00ffff 100%);
+  --grad-2:linear-gradient(135deg,#ffff00 0%,#ff0080 100%);
+  --grid-line:rgba(0,255,255,0.06);
+}
+[data-density="compact"] .grid{gap:10px}
+[data-density="compact"] .card{padding:12px 12px 10px}
+[data-density="compact"] .hero{padding:36px 40px 44px}
+[data-anim="off"] *{animation-duration:0s!important;transition-duration:0s!important}
+
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 body{
   font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;
-  background:var(--bg-0);
-  color:var(--text-0);
-  overflow-x:hidden;
-  -webkit-font-smoothing:antialiased;
+  background:var(--bg-0); color:var(--text-0);
+  overflow-x:hidden; -webkit-font-smoothing:antialiased;
   position:relative;
 }
 body::before{
@@ -48,20 +68,68 @@ body::before{
     radial-gradient(60vw 50vh at 12% 8%, rgba(124,92,255,0.22), transparent 60%),
     radial-gradient(50vw 50vh at 88% 20%, rgba(34,211,238,0.18), transparent 60%),
     radial-gradient(60vw 60vh at 50% 100%, rgba(255,93,143,0.12), transparent 60%),
-    linear-gradient(180deg,#070713 0%,#0a0a1c 50%,#070713 100%);
+    linear-gradient(180deg,var(--bg-0) 0%,var(--bg-1) 50%,var(--bg-0) 100%);
+}
+[data-theme="light"] body::before{
+  background:
+    radial-gradient(60vw 50vh at 12% 8%, rgba(124,92,255,0.10), transparent 60%),
+    radial-gradient(50vw 50vh at 88% 20%, rgba(34,211,238,0.08), transparent 60%),
+    linear-gradient(180deg,var(--bg-0) 0%,var(--bg-1) 50%,var(--bg-0) 100%);
 }
 body::after{
   content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
   background-image:
-    linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);
+    linear-gradient(var(--grid-line) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);
   background-size:60px 60px;
   mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
   -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
 }
 a{color:inherit;text-decoration:none}
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
-.app{max-width:1480px;margin:0 auto;padding:24px 32px 80px}
+h1,h2,h3,h4{font-family:'Space Grotesk','Inter','PingFang SC',sans-serif;letter-spacing:-0.01em}
+.app{max-width:1480px;margin:0 auto;padding:0 32px 80px}
+
+/* === Top Nav === */
+.topnav{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;gap:18px;padding:14px 32px;
+  background:rgba(7,7,19,0.7);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+[data-theme="light"] .topnav{background:rgba(244,244,250,0.85)}
+.brand{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.brand .logo{
+  width:36px;height:36px;border-radius:11px;background:var(--grad-1);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:18px;color:#fff;
+  box-shadow:0 6px 20px rgba(124,92,255,0.45);
+  position:relative;overflow:hidden;
+}
+.brand .logo::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.4),transparent 50%)}
+.brand .name{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:0.01em}
+.brand .name small{display:block;font-size:10px;color:var(--text-2);font-family:'JetBrains Mono',monospace;letter-spacing:0.18em;text-transform:uppercase;font-weight:500}
+.navlinks{display:flex;gap:2px;flex:1;overflow-x:auto;scrollbar-width:none}
+.navlinks::-webkit-scrollbar{display:none}
+.navlinks a{
+  padding:8px 14px;border-radius:10px;font-size:13px;font-weight:500;
+  color:var(--text-2);transition:all 0.2s;white-space:nowrap;
+  display:flex;align-items:center;gap:6px;
+}
+.navlinks a:hover{color:var(--text-0);background:rgba(255,255,255,0.04)}
+.navlinks a.active{color:#fff;background:var(--grad-1);box-shadow:0 4px 14px rgba(124,92,255,0.35)}
+.navlinks a svg{width:14px;height:14px}
+.topnav-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.theme-btn,.topbtn{
+  width:36px;height:36px;border-radius:10px;background:var(--panel);
+  border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
+  color:var(--text-1);transition:all 0.2s;
+}
+.theme-btn:hover,.topbtn:hover{border-color:var(--accent-a);color:var(--text-0)}
+.theme-btn svg,.topbtn svg{width:16px;height:16px}
+.theme-dot{width:8px;height:8px;border-radius:50%;background:var(--grad-1);box-shadow:0 0 12px rgba(124,92,255,0.6);margin-left:4px}
+
+/* === Generic blocks === */
 .hero{
   position:relative;border-radius:28px;padding:48px 48px 56px;
   background:linear-gradient(135deg,rgba(124,92,255,0.12),rgba(34,211,238,0.06) 50%,rgba(255,93,143,0.10));
@@ -69,21 +137,14 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   margin-bottom:28px;
 }
 .hero-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px}
-.logo{
-  width:46px;height:46px;border-radius:14px;background:var(--grad-1);
-  display:flex;align-items:center;justify-content:center;
-  font-weight:800;font-size:22px;box-shadow:0 8px 24px rgba(124,92,255,0.45);
-  position:relative;overflow:hidden;
-}
-.logo::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.4),transparent 50%)}
-.crumb{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.18em;color:var(--text-2);text-transform:uppercase}
-.crumb b{color:var(--accent-b);font-weight:600}
-h1{
+.hero h1{
   font-size:48px;font-weight:800;letter-spacing:-0.02em;
   background:linear-gradient(120deg,#fff 20%,#c8b3ff 50%,#7ee0ff 90%);
   -webkit-background-clip:text;background-clip:text;color:transparent;
   line-height:1.1;margin-bottom:14px;
 }
+.hero h2{font-size:28px;font-weight:700;margin-bottom:10px;letter-spacing:-0.01em}
+.hero h3{font-size:18px;font-weight:600;margin-bottom:8px}
 .hero p.sub{color:var(--text-1);font-size:16px;line-height:1.6;max-width:780px}
 .hero .meta{display:flex;gap:18px;flex-wrap:wrap;margin-top:18px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-2)}
 .hero .meta span b{color:var(--text-0);font-weight:600}
@@ -91,6 +152,7 @@ h1{
 .tag{font-size:12px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text-1);font-family:'JetBrains Mono',monospace}
 .tag.live{color:var(--accent-d);border-color:rgba(255,209,102,0.4)}
 .tag.acc{color:var(--accent-b);border-color:rgba(34,211,238,0.4)}
+
 .stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-bottom:28px}
 .stat{
   position:relative;padding:18px 20px;border-radius:18px;
@@ -99,31 +161,53 @@ h1{
 }
 .stat::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--g,var(--grad-1)) 0%,transparent 60%);opacity:0.18;pointer-events:none}
 .stat .label{font-size:12px;color:var(--text-2);letter-spacing:0.12em;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
-.stat .val{font-size:32px;font-weight:800;margin-top:6px;letter-spacing:-0.02em}
-.stat .val small{font-size:14px;font-weight:500;color:var(--text-2);margin-left:6px}
+.stat .val{font-size:32px;font-weight:800;margin-top:6px;letter-spacing:-0.02em;font-family:'Space Grotesk',sans-serif}
+.stat .val small{font-size:14px;font-weight:500;color:var(--text-2);margin-left:6px;font-family:'Inter',sans-serif}
 .stat .delta{font-size:12px;color:var(--accent-b);margin-top:6px;font-family:'JetBrains Mono',monospace}
-.stat:nth-child(1){--g:var(--grad-1)}
-.stat:nth-child(2){--g:var(--grad-2)}
-.stat:nth-child(3){--g:var(--grad-3)}
-.stat:nth-child(4){--g:var(--grad-4)}
+.stat:nth-child(1){--g:var(--grad-1)} .stat:nth-child(2){--g:var(--grad-2)}
+.stat:nth-child(3){--g:var(--grad-3)} .stat:nth-child(4){--g:var(--grad-4)}
 .stat:nth-child(5){--g:var(--grad-1)}
-/* === Tabs === */
-.tabs{
-  display:flex;gap:4px;padding:5px;border-radius:16px;
+
+/* === Entry Grid (Home) === */
+.entry-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:28px}
+.entry-card{
+  position:relative;padding:22px 22px 24px;border-radius:20px;
   background:var(--panel);border:1px solid var(--border);
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  margin-bottom:18px;width:fit-content;
+  overflow:hidden;cursor:pointer;transition:all 0.25s;
+  text-align:left;display:flex;flex-direction:column;gap:10px;min-height:150px;
 }
-.tab{
-  padding:12px 22px;border-radius:12px;font-size:14px;font-weight:600;
-  color:var(--text-2);transition:all 0.2s;display:flex;align-items:center;gap:8px;
-  letter-spacing:0.02em;
+.entry-card::before{
+  content:'';position:absolute;left:0;top:0;right:0;height:2px;
+  background:var(--g,var(--grad-1));opacity:0.85;
 }
-.tab svg{width:16px;height:16px}
-.tab:hover{color:var(--text-0)}
-.tab.active{background:var(--grad-1);color:#fff;box-shadow:0 6px 20px rgba(124,92,255,0.4)}
-.tab .badge{font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,0.2)}
-.tab:not(.active) .badge{background:rgba(124,92,255,0.18);color:var(--accent-a)}
+.entry-card::after{
+  content:'';position:absolute;right:-30px;bottom:-30px;width:120px;height:120px;border-radius:50%;
+  background:var(--g,var(--grad-1));opacity:0.05;filter:blur(20px);
+  transition:all 0.3s;
+}
+.entry-card:hover{transform:translateY(-3px);border-color:var(--border-2);box-shadow:0 14px 40px rgba(0,0,0,0.4)}
+.entry-card:hover::after{opacity:0.12;transform:scale(1.2)}
+.entry-card .icon{
+  width:42px;height:42px;border-radius:12px;background:var(--g,var(--grad-1));
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 18px rgba(0,0,0,0.3);
+  position:relative;overflow:hidden;
+}
+.entry-card .icon::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.4),transparent 50%)}
+.entry-card .icon svg{width:20px;height:20px;color:#fff;position:relative;z-index:1}
+.entry-card h3{font-size:16px;font-weight:600;color:var(--text-0);line-height:1.3;display:flex;align-items:center;gap:8px}
+.entry-card h3 .arr{margin-left:auto;opacity:0.5;transition:transform 0.2s}
+.entry-card:hover .arr{transform:translateX(4px);opacity:1}
+.entry-card p{font-size:12px;color:var(--text-1);line-height:1.5;flex:1}
+.entry-card .ec{font-size:10px;color:var(--text-3);font-family:'JetBrains Mono',monospace;letter-spacing:0.1em;text-transform:uppercase;margin-top:4px}
+.entry-card.c1{--g:var(--grad-1)} .entry-card.c2{--g:var(--grad-2)}
+.entry-card.c3{--g:var(--grad-3)} .entry-card.c4{--g:var(--grad-4)}
+.entry-card.c5{--g:var(--grad-5)} .entry-card.c6{--g:linear-gradient(135deg,#4ade80,#22d3ee)}
+.entry-card.c7{--g:linear-gradient(135deg,#fb923c,#ff5d8f)} .entry-card.c8{--g:linear-gradient(135deg,#60a5fa,#7c5cff)}
+.entry-card.c9{--g:linear-gradient(135deg,#e879f9,#22d3ee)}
+
+/* === Toolbar (Browse) === */
 .toolbar{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;margin-bottom:18px}
 .search-wrap{position:relative}
 .search-wrap svg{position:absolute;left:18px;top:50%;transform:translateY(-50%);color:var(--text-2);width:18px;height:18px}
@@ -137,23 +221,26 @@ h1{
 .search:focus{border-color:var(--accent-a);box-shadow:0 0 0 4px rgba(124,92,255,0.15)}
 .toolbar-actions{display:flex;gap:10px;align-items:center}
 .btn{
-  padding:14px 18px;border-radius:14px;background:var(--panel);border:1px solid var(--border);
+  padding:12px 16px;border-radius:12px;background:var(--panel);border:1px solid var(--border);
   color:var(--text-1);font-size:13px;font-weight:500;
   display:flex;align-items:center;gap:8px;transition:all 0.2s;
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
 }
 .btn:hover{border-color:var(--accent-a);color:var(--text-0)}
-.btn svg{width:16px;height:16px}
+.btn svg{width:14px;height:14px}
 .btn.primary{background:var(--grad-1);border-color:transparent;color:#fff;font-weight:600}
 .btn.primary:hover{box-shadow:0 8px 24px rgba(124,92,255,0.4)}
+.btn.danger{color:var(--accent-c);border-color:rgba(255,93,143,0.3)}
+.btn.danger:hover{background:rgba(255,93,143,0.1);border-color:var(--accent-c)}
+
+/* === Body layout (Browse) === */
 .body{display:grid;grid-template-columns:280px 1fr;gap:24px;align-items:flex-start}
 .filters{
-  position:sticky;top:24px;background:var(--panel);border:1px solid var(--border);
+  position:sticky;top:80px;background:var(--panel);border:1px solid var(--border);
   border-radius:20px;padding:20px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  max-height:calc(100vh - 48px);overflow-y:auto;
+  max-height:calc(100vh - 104px);overflow-y:auto;
 }
 .filters::-webkit-scrollbar{width:6px}
-.filters::-webkit-scrollbar-track{background:transparent}
 .filters::-webkit-scrollbar-thumb{background:rgba(124,92,255,0.3);border-radius:3px}
 .f-group{margin-bottom:22px}
 .f-group:last-child{margin-bottom:0}
@@ -184,6 +271,8 @@ h1{
 .f-item:hover{background:rgba(255,255,255,0.04);color:var(--text-0)}
 .f-item.active{background:rgba(124,92,255,0.18);color:var(--text-0)}
 .f-item .n{color:var(--text-3);font-family:'JetBrains Mono',monospace;font-size:11px}
+
+/* === Results === */
 .results-head{
   display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;
 }
@@ -229,6 +318,16 @@ h1{
 .card-meta .ip{color:var(--accent-b);font-weight:600}
 .card-meta .year{color:var(--accent-d)}
 .card-desc{font-size:12px;color:var(--text-1);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-actions{position:absolute;top:8px;right:8px;display:flex;gap:4px;opacity:0;transition:opacity 0.2s}
+.card:hover .card-actions{opacity:1}
+.icon-btn{
+  width:26px;height:26px;border-radius:7px;background:rgba(0,0,0,0.5);
+  display:flex;align-items:center;justify-content:center;color:#fff;
+  backdrop-filter:blur(8px);transition:all 0.2s;
+}
+.icon-btn:hover{background:var(--accent-a)}
+.icon-btn.faved{background:var(--accent-c)}
+.icon-btn svg{width:12px;height:12px}
 .empty{
   grid-column:1/-1;padding:60px 20px;text-align:center;color:var(--text-2);
   background:var(--panel);border:1px dashed var(--border);border-radius:18px;
@@ -244,12 +343,15 @@ h1{
 .pager button:disabled{opacity:0.4;cursor:not-allowed}
 .pager button.active{background:var(--grad-1);border-color:transparent;color:#fff;font-weight:600}
 .pager .ellipsis{color:var(--text-3);padding:0 6px}
+
 .foot{
   margin-top:48px;padding-top:24px;border-top:1px solid var(--border);
   display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
   font-size:12px;color:var(--text-3);font-family:'JetBrains Mono',monospace;
 }
 .foot b{color:var(--accent-b);font-weight:600}
+
+/* === Modal === */
 .modal{
   position:fixed;inset:0;z-index:1000;background:rgba(7,7,19,0.7);
   backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
@@ -264,6 +366,7 @@ h1{
   position:relative;max-height:80vh;overflow-y:auto;
   box-shadow:0 30px 80px rgba(0,0,0,0.5);
 }
+[data-theme="light"] .modal-box{background:linear-gradient(180deg,#ffffff,#f0f0fa)}
 .modal-box::-webkit-scrollbar{width:6px}
 .modal-box::-webkit-scrollbar-thumb{background:rgba(124,92,255,0.3);border-radius:3px}
 .modal-close{
@@ -291,7 +394,15 @@ h1{
 .modal .modal-grid .cell .v{font-size:14px;color:var(--text-0);font-weight:500}
 .modal-desc{color:var(--text-1);font-size:14px;line-height:1.7}
 .modal-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
-/* === Visualization Tab === */
+.modal-related{margin-top:18px;padding-top:16px;border-top:1px solid var(--border)}
+.modal-related h4{font-size:12px;color:var(--text-2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;font-family:'JetBrains Mono',monospace}
+.modal-related .rel-item{
+  padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.03);
+  font-size:12px;color:var(--text-1);margin-bottom:4px;cursor:pointer;transition:all 0.15s;
+}
+.modal-related .rel-item:hover{background:rgba(124,92,255,0.15);color:var(--text-0)}
+
+/* === Viz === */
 .viz-controls{
   display:flex;gap:10px;flex-wrap:wrap;align-items:center;
   background:var(--panel);border:1px solid var(--border);border-radius:16px;
@@ -341,15 +452,152 @@ h1{
 }
 .insight::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--g,var(--grad-1)) 0%,transparent 60%);opacity:0.15;pointer-events:none}
 .insight .k{font-size:11px;color:var(--text-2);text-transform:uppercase;letter-spacing:0.12em;font-family:'JetBrains Mono',monospace}
-.insight .v{font-size:24px;font-weight:800;margin-top:4px}
-.insight .v small{font-size:12px;color:var(--text-2);font-weight:500;margin-left:4px}
+.insight .v{font-size:24px;font-weight:800;margin-top:4px;font-family:'Space Grotesk',sans-serif}
+.insight .v small{font-size:12px;color:var(--text-2);font-weight:500;margin-left:4px;font-family:'Inter',sans-serif}
 .insight .h{font-size:12px;color:var(--text-1);margin-top:6px;line-height:1.4}
-.insight:nth-child(1){--g:var(--grad-1)}
-.insight:nth-child(2){--g:var(--grad-2)}
-.insight:nth-child(3){--g:var(--grad-3)}
-.insight:nth-child(4){--g:var(--grad-4)}
-.tab-panel{display:none}
-.tab-panel.active{display:block}
+.insight:nth-child(1){--g:var(--grad-1)} .insight:nth-child(2){--g:var(--grad-2)}
+.insight:nth-child(3){--g:var(--grad-3)} .insight:nth-child(4){--g:var(--grad-4)}
+
+/* === IP Detail === */
+.ip-hero{
+  border-radius:24px;padding:36px 36px 32px;margin-bottom:24px;
+  background:linear-gradient(135deg,rgba(124,92,255,0.16),rgba(34,211,238,0.08) 50%,rgba(255,93,143,0.10));
+  border:1px solid var(--border-2);position:relative;overflow:hidden;
+}
+.ip-hero h1{font-size:36px;font-weight:800;margin-bottom:8px}
+.ip-hero .ip-sub{color:var(--text-1);font-size:14px;font-family:'JetBrains Mono',monospace;letter-spacing:0.08em}
+.ip-hero-actions{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
+.ip-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:18px;margin-bottom:18px}
+.ip-grid .viz-card.span-12{grid-column:span 12}
+.ip-grid .viz-card.span-8{grid-column:span 8}
+.ip-grid .viz-card.span-6{grid-column:span 6}
+.ip-grid .viz-card.span-4{grid-column:span 4}
+.back-btn{
+  display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;
+  background:var(--panel);border:1px solid var(--border);color:var(--text-1);
+  font-size:12px;margin-bottom:18px;transition:all 0.2s;
+}
+.back-btn:hover{border-color:var(--accent-a);color:var(--text-0)}
+
+/* === Rankings === */
+.rank-tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
+.rank-tab{
+  padding:10px 18px;border-radius:12px;background:var(--panel);border:1px solid var(--border);
+  color:var(--text-1);font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;
+  display:flex;align-items:center;gap:6px;
+}
+.rank-tab:hover{border-color:var(--border-2)}
+.rank-tab.active{background:var(--grad-1);border-color:transparent;color:#fff;font-weight:600}
+.rank-tab svg{width:14px;height:14px}
+.rank-list{display:flex;flex-direction:column;gap:4px}
+.rank-row{
+  display:grid;grid-template-columns:60px 1fr 100px 80px;align-items:center;gap:14px;
+  padding:10px 16px;border-radius:12px;background:var(--panel);border:1px solid var(--border);
+  transition:all 0.15s;cursor:pointer;
+}
+.rank-row:hover{border-color:var(--accent-a);background:rgba(124,92,255,0.08)}
+.rank-num{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--text-2);text-align:center}
+.rank-row:nth-child(1) .rank-num{color:#ffd166}
+.rank-row:nth-child(2) .rank-num{color:#c0c0d0}
+.rank-row:nth-child(3) .rank-num{color:#cd7f32}
+.rank-name{font-size:14px;color:var(--text-0);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rank-bar-wrap{height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;position:relative}
+.rank-bar{height:100%;background:var(--grad-1);border-radius:4px;transition:width 0.4s}
+.rank-val{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent-b);text-align:right;font-weight:600}
+
+/* === Compare === */
+.compare-picker{
+  background:var(--panel);border:1px solid var(--border);border-radius:18px;
+  padding:18px 20px;margin-bottom:20px;
+}
+.compare-picker h3{font-size:14px;margin-bottom:10px;color:var(--text-0)}
+.compare-picker p{font-size:12px;color:var(--text-2);margin-bottom:12px}
+.compare-chips{display:flex;flex-wrap:wrap;gap:6px;max-height:200px;overflow-y:auto;padding-right:4px}
+.compare-result{
+  background:var(--panel);border:1px solid var(--border);border-radius:18px;
+  padding:18px;margin-bottom:18px;
+}
+.compare-result h3{font-size:14px;margin-bottom:14px;color:var(--text-0);display:flex;align-items:center;gap:8px}
+.compare-table{width:100%;border-collapse:collapse;font-size:13px}
+.compare-table th{text-align:left;padding:10px 12px;font-size:11px;color:var(--text-2);text-transform:uppercase;letter-spacing:0.1em;font-family:'JetBrains Mono',monospace;font-weight:600;border-bottom:1px solid var(--border)}
+.compare-table td{padding:12px;border-bottom:1px solid var(--border);color:var(--text-0)}
+.compare-table tr:hover td{background:rgba(124,92,255,0.06)}
+.compare-bar{height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden}
+.compare-bar > div{height:100%;border-radius:3px}
+
+/* === Timeline === */
+.timeline-stage{
+  background:var(--panel);border:1px solid var(--border);border-radius:20px;
+  padding:24px 28px;margin-bottom:20px;
+}
+.timeline-year{font-size:64px;font-weight:800;background:var(--grad-1);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1;font-family:'Space Grotesk',sans-serif;text-align:center;margin:8px 0}
+.timeline-slider{width:100%;margin:18px 0 8px;appearance:none;height:6px;border-radius:3px;background:rgba(255,255,255,0.1);outline:none}
+.timeline-slider::-webkit-slider-thumb{appearance:none;width:22px;height:22px;border-radius:50%;background:var(--grad-1);cursor:pointer;box-shadow:0 0 0 4px rgba(124,92,255,0.25)}
+.timeline-slider::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--grad-1);cursor:pointer;border:none;box-shadow:0 0 0 4px rgba(124,92,255,0.25)}
+.timeline-scale{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-3);margin-top:4px}
+.timeline-events{margin-top:24px}
+.timeline-events h3{font-size:14px;margin-bottom:10px}
+.timeline-row{
+  display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);
+  font-size:13px;
+}
+.timeline-row:last-child{border-bottom:none}
+.timeline-row .yr{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent-d);width:50px;flex-shrink:0}
+.timeline-row .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-0)}
+.timeline-row .tp{font-size:10px;color:var(--text-2);font-family:'JetBrains Mono',monospace}
+
+/* === Map === */
+.region-grid{
+  display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:18px;margin-bottom:18px;
+}
+.region-card{
+  position:relative;background:var(--panel);border:1px solid var(--border);
+  border-radius:18px;padding:24px;backdrop-filter:blur(20px);
+  overflow:hidden;cursor:pointer;transition:all 0.2s;
+}
+.region-card:hover{transform:translateY(-3px);border-color:var(--border-2)}
+.region-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--g);
+}
+.region-card.r1{--g:var(--grad-1)} .region-card.r2{--g:var(--grad-2)}
+.region-card.r3{--g:var(--grad-3)} .region-card.r4{--g:var(--grad-4)}
+.region-card .rn{font-size:14px;color:var(--text-2);text-transform:uppercase;letter-spacing:0.1em;font-family:'JetBrains Mono',monospace;margin-bottom:4px}
+.region-card .rc{font-size:36px;font-weight:800;font-family:'Space Grotesk',sans-serif;letter-spacing:-0.02em}
+.region-card .rp{font-size:12px;color:var(--text-1);margin-top:4px}
+.region-card .rbar{height:6px;background:rgba(255,255,255,0.05);border-radius:3px;margin-top:14px;overflow:hidden}
+.region-card .rbar > div{height:100%;background:var(--g);border-radius:3px}
+
+/* === Collections === */
+.coll-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.coll-tags{display:flex;gap:6px;flex-wrap:wrap}
+.coll-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.coll-empty{padding:60px 20px;text-align:center;color:var(--text-2);background:var(--panel);border:1px dashed var(--border);border-radius:18px}
+.coll-empty h3{color:var(--text-1);margin-bottom:6px;font-size:18px}
+
+/* === Settings === */
+.settings-group{
+  background:var(--panel);border:1px solid var(--border);border-radius:18px;
+  padding:20px 24px;margin-bottom:16px;backdrop-filter:blur(20px);
+}
+.settings-group h3{font-size:14px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:8px;color:var(--text-0)}
+.settings-group h3 svg{width:16px;height:16px;color:var(--accent-a)}
+.settings-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.settings-row:last-child{border-bottom:none}
+.settings-row .lbl{color:var(--text-1)}
+.settings-row .desc{font-size:11px;color:var(--text-3);margin-top:2px}
+.settings-row .opts{display:flex;gap:6px}
+.toggle{
+  width:42px;height:24px;border-radius:12px;background:rgba(255,255,255,0.1);
+  position:relative;cursor:pointer;transition:all 0.2s;border:1px solid var(--border);
+}
+.toggle.on{background:var(--grad-1);border-color:transparent}
+.toggle::after{
+  content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;
+  background:#fff;transition:all 0.2s;
+}
+.toggle.on::after{left:20px}
+
+/* === Loader === */
 #loader{
   position:fixed;inset:0;z-index:9999;background:var(--bg-0);
   display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;
@@ -365,6 +613,25 @@ h1{
 #loader .lt{color:var(--text-1);font-size:14px;font-family:'JetBrains Mono',monospace;letter-spacing:0.1em}
 #loader .lp{color:var(--text-3);font-size:12px}
 #loader.hidden{opacity:0;pointer-events:none}
+
+/* === Featured / Spotlight === */
+.spotlight-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:18px}
+.spot-card{
+  position:relative;padding:18px 18px 20px;border-radius:18px;
+  background:var(--panel);border:1px solid var(--border);
+  cursor:pointer;transition:all 0.2s;overflow:hidden;
+}
+.spot-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--g,var(--grad-1)) 0%,transparent 70%);opacity:0.10;pointer-events:none}
+.spot-card:hover{transform:translateY(-2px);border-color:var(--border-2)}
+.spot-card h4{font-size:14px;font-weight:600;color:var(--text-0);line-height:1.4;margin-bottom:8px;position:relative;z-index:1}
+.spot-card .smeta{font-size:10px;color:var(--text-2);font-family:'JetBrains Mono',monospace;letter-spacing:0.06em;position:relative;z-index:1}
+
+/* === Page Heading === */
+.page-heading{margin-bottom:24px}
+.page-heading h1{font-size:36px;font-weight:800;letter-spacing:-0.02em;line-height:1.1;margin-bottom:6px;font-family:'Space Grotesk',sans-serif}
+.page-heading h1 .grad{background:linear-gradient(120deg,var(--accent-a),var(--accent-b));-webkit-background-clip:text;background-clip:text;color:transparent}
+.page-heading p{color:var(--text-1);font-size:14px;line-height:1.6;max-width:680px}
+
 @media (max-width:1100px){
   .stats{grid-template-columns:repeat(3,1fr)}
   .body{grid-template-columns:1fr}
@@ -373,11 +640,19 @@ h1{
   .viz-card.span-6{grid-column:span 12}
   .viz-card.span-4{grid-column:span 6}
   .viz-insights{grid-template-columns:repeat(2,1fr)}
+  .entry-grid{grid-template-columns:repeat(2,1fr)}
+  .region-grid .region-card{grid-column:span 6}
+  .ip-grid .viz-card.span-8{grid-column:span 12}
+  .ip-grid .viz-card.span-6{grid-column:span 12}
+  .ip-grid .viz-card.span-4{grid-column:span 6}
 }
 @media (max-width:680px){
-  .app{padding:16px 14px 60px}
+  .app{padding:0 14px 60px}
+  .topnav{padding:10px 14px;gap:8px}
+  .navlinks a{padding:7px 10px;font-size:12px}
+  .navlinks a span{display:none}
   .hero{padding:28px 22px 36px}
-  h1{font-size:32px}
+  .hero h1,.page-heading h1{font-size:32px}
   .stats{grid-template-columns:repeat(2,1fr);gap:10px}
   .stat .val{font-size:24px}
   .toolbar{grid-template-columns:1fr}
@@ -386,6 +661,12 @@ h1{
   .viz-card.span-4{grid-column:span 12}
   .viz-insights{grid-template-columns:1fr 1fr}
   .chart{height:260px}
+  .entry-grid{grid-template-columns:1fr}
+  .region-grid .region-card{grid-column:span 12}
+  .ip-grid .viz-card.span-4{grid-column:span 12}
+  .rank-row{grid-template-columns:50px 1fr 70px;gap:10px}
+  .rank-row .rank-bar-wrap{display:none}
+  .timeline-year{font-size:48px}
 }
 </style>
 </head>
@@ -393,183 +674,44 @@ h1{
 <div id="loader">
   <div class="ring"></div>
   <div class="lt" id="lt">LOADING DATABASE…</div>
-  <div class="lp" id="lp">正在加载 100,000+ 衍生作品数据</div>
+  <div class="lp" id="lp">正在加载 200,000+ 衍生作品数据</div>
 </div>
-<div class="app">
-  <header class="hero">
-    <div class="hero-top">
-      <div class="logo">G</div>
-      <div>
-        <div class="crumb">GameIP · <b>Derivative Universe Archive</b></div>
-        <div class="crumb" style="margin-top:4px">Updated 2026 · 06 · 08</div>
-      </div>
-    </div>
-    <h1>游戏 IP 衍生作品宇宙</h1>
-    <p class="sub">收录来自游戏原生 IP 衍生的动画、漫画、电影、电视剧、舞台剧、小说、衍生游戏、音乐剧与同人佳作。跨越 1985–2026，涵盖 30+ 个国家与地区，超过 200,000 项作品的资料库与现代化浏览与可视化体验。</p>
-    <div class="meta">
-      <span>Curated by <b>Gamers' Lore Lab</b></span>
-      <span>Snapshot <b>2026-06-08</b></span>
-      <span>Source <b>Wikipedia · MyAnimeList · Bangumi · AniDB</b></span>
-    </div>
-    <div class="tag-row">
-      <div class="tag live">● LIVE DATABASE</div>
-      <div class="tag acc">200,000+ ENTRIES</div>
-      <div class="tag">MULTI-REGION</div>
-      <div class="tag">1985 – 2026</div>
-      <div class="tag">REAL-TIME FILTER</div>
-      <div class="tag">6+ VISUALIZATIONS</div>
-    </div>
-  </header>
-  <section class="stats" id="stats">
-    <div class="stat"><div class="label">总收录作品</div><div class="val" id="s-total">—<small>条</small></div><div class="delta">+ 近期持续更新</div></div>
-    <div class="stat"><div class="label">游戏 IP 源</div><div class="val" id="s-ip">—<small>个</small></div><div class="delta">跨越多个时代</div></div>
-    <div class="stat"><div class="label">衍生类型</div><div class="val" id="s-type">—<small>类</small></div><div class="delta">全媒体覆盖</div></div>
-    <div class="stat"><div class="label">覆盖地区</div><div class="val" id="s-region">—<small>个</small></div><div class="delta">日本 · 美国 · 中国 · 欧洲</div></div>
-    <div class="stat"><div class="label">最早 / 最新</div><div class="val" id="s-year">—<small>—</small></div><div class="delta">跨度 40+ 年</div></div>
-  </section>
-  <div class="tabs">
-    <div class="tab active" data-tab="browse">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      浏览资料库 <span class="badge" id="b-count">0</span>
-    </div>
-    <div class="tab" data-tab="visualize">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 16l4-4 4 4 5-5"/></svg>
-      数据可视化 <span class="badge">6 图表</span>
-    </div>
+<nav class="topnav">
+  <a class="brand" href="#/">
+    <div class="logo">G</div>
+    <div class="name">GameIP Universe<small>DERIVATIVE ARCHIVE</small></div>
+  </a>
+  <div class="navlinks" id="navlinks">
+    <a href="#/" data-route="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg><span>首页</span></a>
+    <a href="#/browse" data-route="/browse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span>浏览</span></a>
+    <a href="#/visualize" data-route="/visualize"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 16l4-4 4 4 5-5"/></svg><span>可视化</span></a>
+    <a href="#/ip" data-route="/ip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg><span>IP详情</span></a>
+    <a href="#/rankings" data-route="/rankings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 21V10M12 21V3M18 21v-7"/></svg><span>排行榜</span></a>
+    <a href="#/compare" data-route="/compare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/><rect x="13" y="3" width="8" height="5"/><rect x="3" y="13" width="8" height="8"/></svg><span>对比</span></a>
+    <a href="#/timeline" data-route="/timeline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>时间轴</span></a>
+    <a href="#/regions" data-route="/regions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg><span>地区</span></a>
+    <a href="#/collections" data-route="/collections"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg><span>收藏</span></a>
+    <a href="#/settings" data-route="/settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg><span>设置</span></a>
   </div>
-  <div class="tab-panel active" data-panel="browse">
-    <div class="toolbar">
-      <div class="search-wrap">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-        <input id="search" class="search" placeholder="搜索作品名、IP、类型、地区、年份…">
-      </div>
-      <div class="toolbar-actions">
-        <button class="btn" id="btn-shuffle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>随机推荐</button>
-        <button class="btn primary" id="btn-top">↑ 回到顶部</button>
-      </div>
-    </div>
-    <div class="body">
-      <aside class="filters" id="filters">
-        <div class="f-group">
-          <div class="f-title">类型 <span class="clear" data-clear="type">清空</span></div>
-          <div class="f-chips" id="f-types"></div>
-        </div>
-        <div class="f-group">
-          <div class="f-title">地区 <span class="clear" data-clear="region">清空</span></div>
-          <div class="f-chips" id="f-regions"></div>
-        </div>
-        <div class="f-group">
-          <div class="f-title">年代 <span class="clear" data-clear="decade">清空</span></div>
-          <div class="f-chips" id="f-decades"></div>
-        </div>
-        <div class="f-group">
-          <div class="f-title">游戏 IP 源 <span class="clear" data-clear="ip">清空</span></div>
-          <div class="f-list" id="f-ips"></div>
-        </div>
-      </aside>
-      <main>
-        <div class="results-head">
-          <div class="results-count">共 <b id="r-count">0</b> 项作品匹配</div>
-          <div class="sort" id="sort">
-            <button class="active" data-sort="year-desc">最新优先</button>
-            <button data-sort="year-asc">最早优先</button>
-            <button data-sort="title-asc">名称 A→Z</button>
-            <button data-sort="ip-asc">按 IP</button>
-          </div>
-        </div>
-        <div class="grid" id="grid"></div>
-        <div class="pager" id="pager"></div>
-      </main>
-    </div>
+  <div class="topnav-actions">
+    <button class="theme-btn" id="theme-btn" title="切换主题">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+    </button>
   </div>
-  <div class="tab-panel" data-panel="visualize">
-    <div class="viz-controls">
-      <span class="label">过滤：</span>
-      <div class="viz-chip" data-viz-region="all">全部地区</div>
-      <div class="viz-chip active" data-viz-region="日本">日本</div>
-      <div class="viz-chip" data-viz-region="美国">美国</div>
-      <div class="viz-chip" data-viz-region="中国">中国</div>
-      <div class="viz-chip" data-viz-region="其他">其他</div>
-      <span class="label" style="margin-left:8px">规模：</span>
-      <div class="viz-chip active" data-viz-top="30">Top 30</div>
-      <div class="viz-chip" data-viz-top="50">Top 50</div>
-      <div class="viz-chip" data-viz-top="100">Top 100</div>
-    </div>
-    <div class="viz-insights" id="insights"></div>
-    <div class="viz-grid">
-      <div class="viz-card span-12">
-        <div class="vhead">
-          <h3>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 6-6"/></svg>
-            衍生作品年度时间线（1985 – 2026）
-          </h3>
-          <span class="vmeta" id="vmeta-timeline">—</span>
-        </div>
-        <div id="chart-timeline" class="chart tall"></div>
-      </div>
-      <div class="viz-card span-8">
-        <div class="vhead">
-          <h3>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18"/><path d="M3 9h18M9 21V9"/></svg>
-            头部 IP · 衍生作品数量排行
-          </h3>
-          <span class="vmeta" id="vmeta-ip">—</span>
-        </div>
-        <div id="chart-ip" class="chart tall"></div>
-      </div>
-      <div class="viz-card span-4">
-        <div class="vhead">
-          <h3>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path d="M12 3v9l5 3"/></svg>
-            衍生类型分布
-          </h3>
-          <span class="vmeta" id="vmeta-type">—</span>
-        </div>
-        <div id="chart-type" class="chart tall"></div>
-      </div>
-      <div class="viz-card span-4">
-        <div class="vhead">
-          <h3>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg>
-            地区分布
-          </h3>
-          <span class="vmeta" id="vmeta-region">—</span>
-        </div>
-        <div id="chart-region" class="chart"></div>
-      </div>
-      <div class="viz-card span-8">
-        <div class="vhead">
-          <h3>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
-            IP × 衍生类型 · 热力图
-          </h3>
-          <span class="vmeta" id="vmeta-heatmap">—</span>
-        </div>
-        <div id="chart-heatmap" class="chart tall"></div>
-      </div>
-      <div class="viz-card span-12">
-        <div class="vhead">
-          <h3>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 6h6M9 18h6M6 9v6M18 9v6"/></svg>
-            IP 关系网络 · 衍生类型共现
-          </h3>
-          <span class="vmeta" id="vmeta-network">节点 = 类型，边权重 = 与该 IP 共同出现频次</span>
-        </div>
-        <div id="chart-network" class="chart tall"></div>
-      </div>
-    </div>
-  </div>
-  <footer class="foot">
-    <div>GameIP Derivative Universe · <b>2026-06-08 SNAPSHOT</b></div>
-    <div>本资料库仅供浏览研究 · 版权归原作者与权利方所有</div>
-  </footer>
-</div>
+</nav>
+<div class="app" id="app"></div>
+<footer class="foot">
+  <div>GameIP Derivative Universe · <b>2026-06-08 SNAPSHOT</b></div>
+  <div>本资料库仅供浏览研究 · 版权归原作者与权利方所有</div>
+</footer>
 <div class="modal" id="modal">
   <div class="modal-box" id="modal-box"></div>
 </div>
 <script src="data.js"></script>
 <script>
-/* === Data Registry === */
+/* ============================================================
+   公共常量与工具
+   ============================================================ */
 const TYPE_MAP = {
   anime:"动画", manga:"漫画", film:"电影", tv:"电视剧", stage:"舞台剧",
   novel:"小说", game:"衍生游戏", music:"音乐", otaku:"周边", web:"网络剧",
@@ -580,17 +722,81 @@ const TYPE_CLS = {
   novel:"b-novel", game:"b-game", music:"b-music", otaku:"b-otaku", web:"b-web",
   radio:"b-radio", short:"b-short", live:"b-live"
 };
+const charts = {};
+const TYPE_LIST = Object.keys(TYPE_MAP);
+const PALETTE = ['#7c5cff','#22d3ee','#ff5d8f','#ffd166','#10b981','#c084fc','#4ade80','#f472b6','#fb923c','#60a5fa','#2dd4bf','#e879f9','#f87171','#fde047','#94a3b8'];
+const NAV_ICONS = {
+  '/':'home','/browse':'grid','/visualize':'chart','/ip':'globe','/rankings':'trending',
+  '/compare':'split','/timeline':'clock','/regions':'map','/collections':'bookmark','/settings':'cog'
+};
 const RAW = (typeof window !== "undefined" && window.WORKS_DATA) || [];
 let WORKS = [];
 let IP_LIST = [];
-let IP_BY_NAME = {};
 let typeCounts = {}, regionCounts = {}, decadeCounts = {};
 let yearRange = [9999, 0];
 let allIPs = [];
 
-/* === Build works (efficient) === */
+/* === Storage === */
+const storage = {
+  get(k, fb){
+    try { const v = localStorage.getItem('gip:'+k); return v ? JSON.parse(v) : fb; } catch(e){ return fb; }
+  },
+  set(k, v){ try { localStorage.setItem('gip:'+k, JSON.stringify(v)); } catch(e){} },
+  remove(k){ try { localStorage.removeItem('gip:'+k); } catch(e){} }
+};
+
+/* === Export === */
+function exportCSV(rows, filename){
+  if(!rows || !rows.length) return;
+  const keys = Object.keys(rows[0]);
+  const escape = v => {
+    if(v==null) return '';
+    const s = String(v);
+    if(s.indexOf('"')>=0 || s.indexOf(',')>=0 || s.indexOf('\n')>=0) return '"'+s.replace(/"/g,'""')+'"';
+    return s;
+  };
+  const csv = [keys.join(',')].concat(rows.map(r => keys.map(k=>escape(r[k])).join(','))).join('\n');
+  const blob = new Blob(['\uFEFF'+csv], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename || 'export.csv';
+  a.click();
+}
+function exportJSON(obj, filename){
+  const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename || 'export.json';
+  a.click();
+}
+function exportPNG(chartId, filename){
+  const inst = charts[chartId];
+  if(!inst) return;
+  const url = inst.getDataURL({ type: 'png', pixelRatio: 2, backgroundColor: '#0c0c20' });
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename || 'chart.png';
+  a.click();
+}
+
+/* === Format === */
+function formatNum(n){
+  if(n>=10000) return (n/10000).toFixed(1)+'w';
+  if(n>=1000) return (n/1000).toFixed(1)+'k';
+  return n.toString();
+}
+function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
+function escAttr(s){return String(s||"").replace(/"/g,'&quot;')}
+function debounce(fn, ms){
+  let t = null;
+  return function(...args){
+    clearTimeout(t);
+    t = setTimeout(()=>fn.apply(this,args), ms);
+  };
+}
+
+/* === Aggregations === */
 function buildWorks(){
-  // Use for-loop for max performance on 200K entries
   const N = RAW.length;
   WORKS = new Array(N);
   for(let i=0; i<N; i++){
@@ -613,16 +819,12 @@ function buildWorks(){
     }
   }
 }
-
-/* === Aggregations === */
 function buildAggregates(){
   const N = WORKS.length;
   const ipC = Object.create(null);
   const tC = Object.create(null);
   const rC = Object.create(null);
   const dC = Object.create(null);
-  const yC = new Int32Array(60); // 1985-2025+
-  const yrStart = 1985;
   for(let i=0; i<N; i++){
     const w = WORKS[i];
     ipC[w.ip] = (ipC[w.ip] || 0) + 1;
@@ -630,231 +832,864 @@ function buildAggregates(){
     rC[w.region] = (rC[w.region] || 0) + 1;
     const d = Math.floor(w.year/10)*10;
     dC[d] = (dC[d] || 0) + 1;
-    if(w.year >= yrStart && w.year < yrStart + 60){
-      yC[w.year - yrStart]++;
-    }
   }
   IP_LIST = Object.entries(ipC).sort((a,b)=>b[1]-a[1]);
-  IP_BY_NAME = Object.fromEntries(IP_LIST.map(([k])=>[k,k]));
   typeCounts = tC;
   regionCounts = rC;
   decadeCounts = dC;
   allIPs = IP_LIST.map(([k])=>k);
-  window.__AGG = { ipC, tC, rC, dC, yC, yrStart };
 }
 
-/* === State === */
-const state = { q:"", types:new Set(), regions:new Set(), decades:new Set(), ips:new Set(), sort:"year-desc", page:1, perPage:48 };
-
-/* === Build filter UI === */
-function renderFilters(){
-  const ftypes=document.getElementById("f-types");
-  ftypes.innerHTML=Object.entries(typeCounts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>
-    `<div class="chip${state.types.has(k)?" active":""}" data-type="${k}">${TYPE_MAP[k]||k}<span class="n">${formatNum(v)}</span></div>`
-  ).join("");
-  const fregs=document.getElementById("f-regions");
-  fregs.innerHTML=Object.entries(regionCounts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>
-    `<div class="chip${state.regions.has(k)?" active":""}" data-region="${k}">${k}<span class="n">${formatNum(v)}</span></div>`
-  ).join("");
-  const fdec=document.getElementById("f-decades");
-  fdec.innerHTML=Object.entries(decadeCounts).sort((a,b)=>parseInt(a)-parseInt(b)).map(([k,v])=>
-    `<div class="chip${state.decades.has(+k)?" active":""}" data-decade="${k}">${k}s<span class="n">${formatNum(v)}</span></div>`
-  ).join("");
-  const fips=document.getElementById("f-ips");
-  fips.innerHTML=IP_LIST.map(([k,v])=>
-    `<div class="f-item${state.ips.has(k)?" active":""}" data-ip="${escAttr(k)}"><span>${esc(k)}</span><span class="n">${formatNum(v)}</span></div>`
-  ).join("");
+/* ============================================================
+   Router
+   ============================================================ */
+const app = document.getElementById('app');
+function parseRoute(){
+  const h = (location.hash || '#/').slice(1);
+  const [path, ...rest] = h.split('/').filter(Boolean);
+  return { path: '/' + (path||''), params: rest };
+}
+function navigate(hash){ location.hash = hash; }
+function setActiveNav(path){
+  document.querySelectorAll('.navlinks a').forEach(a=>{
+    const r = a.getAttribute('href').slice(1) || '/';
+    a.classList.toggle('active', r === path || (path.startsWith(r) && r !== '/') || (r === '/' && path === '/'));
+  });
 }
 
-function formatNum(n){
-  if(n>=10000) return (n/10000).toFixed(1)+'w';
-  if(n>=1000) return (n/1000).toFixed(1)+'k';
-  return n.toString();
-}
-
-document.getElementById("f-types").addEventListener("click",e=>{const k=e.target.closest("[data-type]")?.dataset.type;if(k){state.types.has(k)?state.types.delete(k):state.types.add(k);state.page=1;renderFilters();render()}});
-document.getElementById("f-regions").addEventListener("click",e=>{const k=e.target.closest("[data-region]")?.dataset.region;if(k){state.regions.has(k)?state.regions.delete(k):state.regions.add(k);state.page=1;renderFilters();render()}});
-document.getElementById("f-decades").addEventListener("click",e=>{const k=parseInt(e.target.closest("[data-decade]")?.dataset.decade);if(k){state.decades.has(k)?state.decades.delete(k):state.decades.add(k);state.page=1;renderFilters();render()}});
-document.getElementById("f-ips").addEventListener("click",e=>{const k=e.target.closest("[data-ip]")?.dataset.ip;if(k){state.ips.has(k)?state.ips.delete(k):state.ips.add(k);state.page=1;renderFilters();render()}});
-document.querySelectorAll(".clear").forEach(c=>c.addEventListener("click",()=>{
-  const t=c.dataset.clear;
-  if(t==="type")state.types.clear();
-  if(t==="region")state.regions.clear();
-  if(t==="decade")state.decades.clear();
-  if(t==="ip")state.ips.clear();
-  state.page=1;renderFilters();render();
-}));
-document.getElementById("search").addEventListener("input",e=>{state.q=e.target.value.trim().toLowerCase();state.page=1;render()});
-document.getElementById("sort").addEventListener("click",e=>{
-  const k=e.target.dataset.sort;if(!k)return;
-  state.sort=k;state.page=1;
-  document.querySelectorAll("#sort button").forEach(b=>b.classList.toggle("active",b.dataset.sort===k));
-  render();
-});
-document.getElementById("btn-shuffle").addEventListener("click",()=>{
-  const r=WORKS[Math.floor(Math.random()*WORKS.length)];
-  openModal(r);
-});
-document.getElementById("btn-top").addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
-
-/* === Filter & Sort (optimized for 200K) === */
-function getFiltered(){
-  const q = state.q;
-  const hasQ = q.length > 0;
-  const hasT = state.types.size > 0;
-  const hasR = state.regions.size > 0;
-  const hasD = state.decades.size > 0;
-  const hasI = state.ips.size > 0;
-  const out = [];
-  for(let i=0, n=WORKS.length; i<n; i++){
-    const w = WORKS[i];
-    if(hasQ){
-      const hay = (w.title + " " + w.ip + " " + w.typeZh + " " + w.region + " " + w.year + " " + w.desc).toLowerCase();
-      if(hay.indexOf(q) < 0) continue;
-    }
-    if(hasT && !state.types.has(w.type)) continue;
-    if(hasR && !state.regions.has(w.region)) continue;
-    if(hasD && !state.decades.has(Math.floor(w.year/10)*10)) continue;
-    if(hasI && !state.ips.has(w.ip)) continue;
-    out.push(w);
-  }
-  const s = state.sort;
-  if(s==="year-desc") out.sort((a,b)=>b.year-a.year);
-  else if(s==="year-asc") out.sort((a,b)=>a.year-b.year);
-  else if(s==="title-asc") out.sort((a,b)=>a.title.localeCompare(b.title,"zh"));
-  else if(s==="ip-asc") out.sort((a,b)=>a.ip.localeCompare(b.ip,"zh"));
-  return out;
-}
-
-/* === Render === */
-function render(){
-  const list=getFiltered();
-  const total = list.length;
-  document.getElementById("r-count").textContent = formatNum(total);
-  document.getElementById("b-count").textContent = formatNum(total);
-  const totalPages=Math.max(1,Math.ceil(total/state.perPage));
-  if(state.page>totalPages)state.page=totalPages;
-  const start=(state.page-1)*state.perPage;
-  const pageList=list.slice(start,start+state.perPage);
-  const grid=document.getElementById("grid");
-  if(!pageList.length){
-    grid.innerHTML=`<div class="empty"><h3>暂无匹配作品</h3><p>尝试调整筛选条件或重置</p></div>`;
-  } else {
-    // Build HTML as string (faster than innerHTML with map)
-    let html = "";
-    for(let i=0; i<pageList.length; i++){
-      const w = pageList[i];
-      html += `<div class="card" data-id="${w.id}">
-        <div class="card-head">
-          <div class="card-title">${esc(w.title)}</div>
-          <div class="badge ${TYPE_CLS[w.type]||'b-other'}">${w.typeZh}</div>
+/* ============================================================
+   VIEW 1: HOME
+   ============================================================ */
+function renderHome(mountEl){
+  const total = WORKS.length;
+  const topIp = IP_LIST[0] || ['—', 0];
+  const ipCount = IP_LIST.length;
+  const typeCount = Object.keys(typeCounts).length;
+  const regionCount = Object.keys(regionCounts).length;
+  // sample 6 featured works
+  const featured = [];
+  for(let i=0; i<6; i++){ featured.push(WORKS[Math.floor(Math.random()*total)]); }
+  const entries = [
+    {c:'c1', href:'#/browse', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>', t:'浏览资料库', p:'筛选、搜索、排序海量作品，按 IP / 类型 / 地区 / 年代精确定位。'},
+    {c:'c2', href:'#/visualize', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 16l4-4 4 4 5-5"/></svg>', t:'数据可视化', p:'6 种 ECharts 图表：时间线、热力图、网络、雷达、饼图、条形。'},
+    {c:'c3', href:'#/ip', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg>', t:'IP 详情', p:'点击任意 IP 查看其衍生谱系、年度趋势、类型构成与代表作品。'},
+    {c:'c4', href:'#/rankings', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 21V10M12 21V3M18 21v-7"/></svg>', t:'排行榜', p:'IP / 作品 / 作者 / 类型四维 Top 100 榜单。'},
+    {c:'c5', href:'#/compare', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h7v7H3zM14 14h7v7h-7zM14 3h7v4h-7zM3 17h7v4H3z"/></svg>', t:'IP 对比', p:'最多 4 个 IP 横向对比，雷达图可视化 6 维度生态差异。'},
+    {c:'c6', href:'#/timeline', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>', t:'时间轴', p:'跨年度拖动时间滑块，发现每一年的代表作与重要事件。'},
+    {c:'c7', href:'#/regions', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg>', t:'地区洞察', p:'全球 9 个地区分布对比，含中国/日本/美国/欧洲等主要市场。'},
+    {c:'c8', href:'#/collections', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>', t:'我的收藏', p:'LocalStorage 持久化保存喜爱的作品，支持标签与导出。'},
+    {c:'c9', href:'#/settings', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>', t:'偏好设置', p:'主题 / 密度 / 动画 / 单位 / 数据导出。'},
+  ];
+  mountEl.innerHTML = `
+    <div class="hero" style="margin-top:24px">
+      <div class="hero-top">
+        <div class="logo" style="width:46px;height:46px;border-radius:14px;background:var(--grad-1);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;box-shadow:0 8px 24px rgba(124,92,255,0.45);position:relative;overflow:hidden">G<span style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.4),transparent 50%)"></span></div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.18em;color:var(--text-2);text-transform:uppercase">GameIP · <b style="color:var(--accent-b);font-weight:600">Derivative Universe Archive</b></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.18em;color:var(--text-2);text-transform:uppercase;margin-top:4px">Updated 2026 · 06 · 08</div>
         </div>
-        <div class="card-meta">
-          <span class="ip">◆ ${esc(w.ip)}</span>
-          <span class="year">${w.year}</span>
-          <span>· ${esc(w.region)}</span>
-        </div>
-        <div class="card-desc">${esc(w.desc||'—')}</div>
-      </div>`;
-    }
-    grid.innerHTML = html;
-  }
-  // pager (limit to first 9 pages visible)
-  const pg=document.getElementById("pager");
-  const p=state.page, tp=totalPages;
-  let h=`<button data-p="${p-1}" ${p<=1?"disabled":""}>‹</button>`;
-  const span=(a,b)=>{for(let i=a;i<=b;i++){h+=`<button data-p="${i}" class="${i===p?"active":""}">${i}</button>`}};
-  if(tp<=9) span(1,tp);
-  else if(p<=5){span(1,7);h+=`<span class="ellipsis">…</span>`;h+=`<button data-p="${tp}">${tp}</button>`}
-  else if(p>=tp-4){h+=`<button data-p="1">1</button><span class="ellipsis">…</span>`;span(tp-6,tp)}
-  else{h+=`<button data-p="1">1</button><span class="ellipsis">…</span>`;span(p-2,p+2);h+=`<span class="ellipsis">…</span><button data-p="${tp}">${tp}</button>`}
-  h+=`<button data-p="${p+1}" ${p>=tp?"disabled":""}>›</button>`;
-  pg.innerHTML=h;
-  pg.querySelectorAll("button[data-p]").forEach(b=>b.addEventListener("click",()=>{state.page=parseInt(b.dataset.p);render();window.scrollTo({top:document.querySelector(".results-head").offsetTop-100,behavior:"smooth"})}));
-  // card click
-  grid.querySelectorAll(".card").forEach(c=>c.addEventListener("click",()=>{
-    const w=WORKS.find(x=>x.id===parseInt(c.dataset.id));
-    if(w)openModal(w);
-  }));
-}
-function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
-function escAttr(s){return String(s||"").replace(/"/g,'&quot;')}
-function escQ(s){return String(s||"").replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-/* === Modal === */
-function openModal(w){
-  const box=document.getElementById("modal-box");
-  box.innerHTML=`
-    <button class="modal-close" id="mc">×</button>
-    <h2>${esc(w.title)}</h2>
-    <div class="ip-line">◆ ${esc(w.ip)}</div>
-    <div class="modal-grid">
-      <div class="cell"><div class="k">类型</div><div class="v">${w.typeZh}</div></div>
-      <div class="cell"><div class="k">年份</div><div class="v">${w.year}</div></div>
-      <div class="cell"><div class="k">地区</div><div class="v">${esc(w.region)}</div></div>
-      <div class="cell"><div class="k">来源/制作方</div><div class="v">${esc(w.source)}</div></div>
+      </div>
+      <h1>游戏 IP 衍生作品宇宙</h1>
+      <p class="sub">从单点浏览升级为完整聚合平台。在 200,000+ 条衍生作品数据上，<b style="color:var(--accent-b)">9 大视图</b>覆盖发现、对比、洞察全流程；3 套主题、收藏夹、CSV/PNG 导出、内置 200+ 真实游戏 IP 生态。</p>
+      <div class="meta">
+        <span>Curated by <b>Gamers' Lore Lab</b></span>
+        <span>Snapshot <b>2026-06-08</b></span>
+        <span>Source <b>Wikipedia · MyAnimeList · Bangumi · AniDB</b></span>
+        <span><b>${formatNum(total)}</b> 条 · <b>${ipCount}</b> IP · <b>${typeCount}</b> 类型</span>
+      </div>
+      <div class="tag-row">
+        <div class="tag live">● LIVE</div>
+        <div class="tag acc">9 VIEWS</div>
+        <div class="tag">REAL-TIME</div>
+        <div class="tag">3 THEMES</div>
+        <div class="tag">EXPORTABLE</div>
+      </div>
     </div>
-    <div class="modal-desc">${esc(w.desc||"无详细简介。")}</div>
-    <div class="modal-tags">
-      <div class="tag">${w.typeZh}</div>
-      <div class="tag">${esc(w.ip)}</div>
-      <div class="tag">${w.year}</div>
-      <div class="tag">${esc(w.region)}</div>
+    <div class="page-heading">
+      <h1>快速进入 <span class="grad">9 大模块</span></h1>
+      <p>每个入口都是独立的分析维度。可从任一模块开始探索。</p>
+    </div>
+    <div class="entry-grid">
+      ${entries.map(e => `
+        <a class="entry-card ${e.c}" href="${e.href}">
+          <div class="icon">${e.icon}</div>
+          <h3>${e.t}<span class="arr">→</span></h3>
+          <p>${e.p}</p>
+          <div class="ec">${e.href.replace('#','')}</div>
+        </a>
+      `).join('')}
+    </div>
+    <div class="page-heading" style="margin-top:8px">
+      <h1>数据快照 <span class="grad">${yearRange[0]} – ${yearRange[1]}</span></h1>
+      <p>38+ 年游戏 IP 衍生作品宇宙的关键数字。</p>
+    </div>
+    <section class="stats">
+      <div class="stat"><div class="label">总收录作品</div><div class="val" id="s-total">${formatNum(total)}<small>条</small></div><div class="delta">+ 近期持续更新</div></div>
+      <div class="stat"><div class="label">游戏 IP 源</div><div class="val">${ipCount}<small>个</small></div><div class="delta">跨越多个时代</div></div>
+      <div class="stat"><div class="label">衍生类型</div><div class="val">${typeCount}<small>类</small></div><div class="delta">全媒体覆盖</div></div>
+      <div class="stat"><div class="label">覆盖地区</div><div class="val">${regionCount}<small>个</small></div><div class="delta">日本 · 美国 · 中国 · 欧洲</div></div>
+      <div class="stat"><div class="label">最早 / 最新</div><div class="val">${yearRange[0]}<small>—</small>${yearRange[1]}</div><div class="delta">跨度 ${yearRange[1]-yearRange[0]+1} 年</div></div>
+    </section>
+    <div class="page-heading" style="margin-top:8px">
+      <h1>随机精选 <span class="grad">6 项</span></h1>
+      <p>每次刷新都会重新抽取，点开看看是什么。</p>
+    </div>
+    <div class="spotlight-grid">
+      ${featured.map(w => `
+        <div class="spot-card" data-id="${w.id}">
+          <h4>${esc(w.title)}</h4>
+          <div class="smeta">◆ ${esc(w.ip)} · ${w.year} · ${esc(w.region)}</div>
+        </div>
+      `).join('')}
     </div>
   `;
-  document.getElementById("modal").classList.add("open");
-  document.getElementById("mc").addEventListener("click",()=>document.getElementById("modal").classList.remove("open"));
-}
-document.getElementById("modal").addEventListener("click",e=>{
-  if(e.target.id==="modal")document.getElementById("modal").classList.remove("open");
-});
-document.addEventListener("keydown",e=>{if(e.key==="Escape")document.getElementById("modal").classList.remove("open")});
-/* === Stats === */
-function renderStats(){
-  document.getElementById("s-total").innerHTML=`${formatNum(WORKS.length)}<small>条</small>`;
-  document.getElementById("s-ip").innerHTML=`${IP_LIST.length}<small>个</small>`;
-  document.getElementById("s-type").innerHTML=`${Object.keys(typeCounts).length}<small>类</small>`;
-  document.getElementById("s-region").innerHTML=`${Object.keys(regionCounts).length}<small>个</small>`;
-  document.getElementById("s-year").innerHTML=`${yearRange[0]}<small>—</small>${yearRange[1]}`;
+  // spotlight click
+  mountEl.querySelectorAll('.spot-card').forEach(c=>c.addEventListener('click',()=>{
+    const w = WORKS.find(x=>x.id===parseInt(c.dataset.id));
+    if(w) openModal(w);
+  }));
 }
 
-/* === Tabs === */
-document.querySelectorAll(".tab").forEach(t=>{
-  t.addEventListener("click",()=>{
-    document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===t));
-    const p = t.dataset.tab;
-    document.querySelectorAll(".tab-panel").forEach(x=>x.classList.toggle("active",x.dataset.panel===p));
-    if(p==="visualize"){
-      setTimeout(()=>renderVisualizations(), 50);
+/* ============================================================
+   VIEW 2: BROWSE
+   ============================================================ */
+const browseState = { q:"", types:new Set(), regions:new Set(), decades:new Set(), ips:new Set(), sort:"year-desc", page:1, perPage:48 };
+function renderBrowse(mountEl){
+  mountEl.innerHTML = `
+    <div class="page-heading" style="margin-top:24px">
+      <h1>浏览 <span class="grad">资料库</span></h1>
+      <p>200,000+ 条数据实时筛选。多维度条件组合，毫秒级响应。</p>
+    </div>
+    <div class="toolbar">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input id="br-search" class="search" placeholder="搜索作品名、IP、类型、地区、年份…">
+      </div>
+      <div class="toolbar-actions">
+        <button class="btn" id="br-shuffle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>随机</button>
+        <button class="btn primary" id="br-export">↓ 导出 CSV</button>
+      </div>
+    </div>
+    <div class="body">
+      <aside class="filters">
+        <div class="f-group">
+          <div class="f-title">类型 <span class="clear" data-clear="type">清空</span></div>
+          <div class="f-chips" id="br-f-types"></div>
+        </div>
+        <div class="f-group">
+          <div class="f-title">地区 <span class="clear" data-clear="region">清空</span></div>
+          <div class="f-chips" id="br-f-regions"></div>
+        </div>
+        <div class="f-group">
+          <div class="f-title">年代 <span class="clear" data-clear="decade">清空</span></div>
+          <div class="f-chips" id="br-f-decades"></div>
+        </div>
+        <div class="f-group">
+          <div class="f-title">游戏 IP 源 <span class="clear" data-clear="ip">清空</span></div>
+          <div class="f-list" id="br-f-ips"></div>
+        </div>
+      </aside>
+      <main>
+        <div class="results-head">
+          <div class="results-count">共 <b id="br-r-count">0</b> 项作品匹配</div>
+          <div class="sort" id="br-sort">
+            <button class="active" data-sort="year-desc">最新优先</button>
+            <button data-sort="year-asc">最早优先</button>
+            <button data-sort="title-asc">名称 A→Z</button>
+            <button data-sort="ip-asc">按 IP</button>
+          </div>
+        </div>
+        <div class="grid" id="br-grid"></div>
+        <div class="pager" id="br-pager"></div>
+      </main>
+    </div>
+  `;
+  const fav = storage.get('favs', []);
+  const favSet = new Set(fav);
+  function renderFilters(){
+    document.getElementById("br-f-types").innerHTML = Object.entries(typeCounts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>
+      `<div class="chip${browseState.types.has(k)?" active":""}" data-type="${k}">${TYPE_MAP[k]||k}<span class="n">${formatNum(v)}</span></div>`).join("");
+    document.getElementById("br-f-regions").innerHTML = Object.entries(regionCounts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>
+      `<div class="chip${browseState.regions.has(k)?" active":""}" data-region="${k}">${k}<span class="n">${formatNum(v)}</span></div>`).join("");
+    document.getElementById("br-f-decades").innerHTML = Object.entries(decadeCounts).sort((a,b)=>parseInt(a)-parseInt(b)).map(([k,v])=>
+      `<div class="chip${browseState.decades.has(+k)?" active":""}" data-decade="${k}">${k}s<span class="n">${formatNum(v)}</span></div>`).join("");
+    document.getElementById("br-f-ips").innerHTML = IP_LIST.map(([k,v])=>
+      `<div class="f-item${browseState.ips.has(k)?" active":""}" data-ip="${escAttr(k)}"><span>${esc(k)}</span><span class="n">${formatNum(v)}</span></div>`).join("");
+  }
+  function render(){
+    const list = getFiltered();
+    const total = list.length;
+    document.getElementById("br-r-count").textContent = formatNum(total);
+    const totalPages = Math.max(1, Math.ceil(total / browseState.perPage));
+    if(browseState.page > totalPages) browseState.page = totalPages;
+    const start = (browseState.page - 1) * browseState.perPage;
+    const pageList = list.slice(start, start + browseState.perPage);
+    const grid = document.getElementById("br-grid");
+    if(!pageList.length){
+      grid.innerHTML = `<div class="empty"><h3>暂无匹配作品</h3><p>尝试调整筛选条件或重置</p></div>`;
+    } else {
+      let html = "";
+      for(let i=0; i<pageList.length; i++){
+        const w = pageList[i];
+        const isFav = favSet.has(w.id);
+        html += `<div class="card" data-id="${w.id}">
+          <div class="card-head">
+            <div class="card-title">${esc(w.title)}</div>
+            <div class="badge ${TYPE_CLS[w.type]||'b-other'}">${w.typeZh}</div>
+          </div>
+          <div class="card-meta">
+            <span class="ip">◆ ${esc(w.ip)}</span>
+            <span class="year">${w.year}</span>
+            <span>· ${esc(w.region)}</span>
+          </div>
+          <div class="card-desc">${esc(w.desc||'—')}</div>
+          <div class="card-actions">
+            <button class="icon-btn fav-btn ${isFav?'faved':''}" data-fav="${w.id}" title="收藏">
+              <svg viewBox="0 0 24 24" fill="${isFav?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+            </button>
+          </div>
+        </div>`;
+      }
+      grid.innerHTML = html;
+    }
+    const pg = document.getElementById("br-pager");
+    const p = browseState.page, tp = totalPages;
+    let h = `<button data-p="${p-1}" ${p<=1?"disabled":""}>‹</button>`;
+    const span=(a,b)=>{for(let i=a;i<=b;i++){h+=`<button data-p="${i}" class="${i===p?"active":""}">${i}</button>`}};
+    if(tp<=9) span(1,tp);
+    else if(p<=5){span(1,7);h+=`<span class="ellipsis">…</span>`;h+=`<button data-p="${tp}">${tp}</button>`}
+    else if(p>=tp-4){h+=`<button data-p="1">1</button><span class="ellipsis">…</span>`;span(tp-6,tp)}
+    else{h+=`<button data-p="1">1</button><span class="ellipsis">…</span>`;span(p-2,p+2);h+=`<span class="ellipsis">…</span><button data-p="${tp}">${tp}</button>`}
+    h += `<button data-p="${p+1}" ${p>=tp?"disabled":""}>›</button>`;
+    pg.innerHTML = h;
+    pg.querySelectorAll("button[data-p]").forEach(b => b.addEventListener("click", () => { browseState.page = parseInt(b.dataset.p); render(); window.scrollTo({top:mountEl.offsetTop,behavior:"smooth"}); }));
+    grid.querySelectorAll(".card").forEach(c => c.addEventListener("click", (e) => {
+      if(e.target.closest('.fav-btn')) return;
+      const w = WORKS.find(x => x.id === parseInt(c.dataset.id));
+      if(w) openModal(w);
+    }));
+    grid.querySelectorAll(".fav-btn").forEach(b => b.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const id = parseInt(b.dataset.fav);
+      const arr = storage.get('favs', []);
+      const i = arr.indexOf(id);
+      if(i >= 0){ arr.splice(i,1); b.classList.remove('faved'); favSet.delete(id); }
+      else { arr.push(id); b.classList.add('faved'); favSet.add(id); }
+      storage.set('favs', arr);
+      b.querySelector('svg').setAttribute('fill', favSet.has(id) ? 'currentColor' : 'none');
+    }));
+  }
+  function getFiltered(){
+    const q = browseState.q;
+    const hasQ = q.length > 0;
+    const hasT = browseState.types.size > 0;
+    const hasR = browseState.regions.size > 0;
+    const hasD = browseState.decades.size > 0;
+    const hasI = browseState.ips.size > 0;
+    const out = [];
+    for(let i=0, n=WORKS.length; i<n; i++){
+      const w = WORKS[i];
+      if(hasQ){
+        const hay = (w.title + " " + w.ip + " " + w.typeZh + " " + w.region + " " + w.year + " " + w.desc).toLowerCase();
+        if(hay.indexOf(q) < 0) continue;
+      }
+      if(hasT && !browseState.types.has(w.type)) continue;
+      if(hasR && !browseState.regions.has(w.region)) continue;
+      if(hasD && !browseState.decades.has(Math.floor(w.year/10)*10)) continue;
+      if(hasI && !browseState.ips.has(w.ip)) continue;
+      out.push(w);
+    }
+    const s = browseState.sort;
+    if(s==="year-desc") out.sort((a,b)=>b.year-a.year);
+    else if(s==="year-asc") out.sort((a,b)=>a.year-b.year);
+    else if(s==="title-asc") out.sort((a,b)=>a.title.localeCompare(b.title,"zh"));
+    else if(s==="ip-asc") out.sort((a,b)=>a.ip.localeCompare(b.ip,"zh"));
+    return out;
+  }
+  document.getElementById("br-search").addEventListener("input", debounce(e => { browseState.q = e.target.value.trim().toLowerCase(); browseState.page = 1; render(); }, 200));
+  document.getElementById("br-shuffle").addEventListener("click", () => openModal(WORKS[Math.floor(Math.random()*WORKS.length)]));
+  document.getElementById("br-export").addEventListener("click", () => {
+    const list = getFiltered().slice(0, 5000);
+    exportCSV(list.map(w => ({ id:w.id, title:w.title, type:w.typeZh, region:w.region, year:w.year, source:w.source, ip:w.ip, desc:w.desc })), `gameip_${list.length}_${Date.now()}.csv`);
+  });
+  document.getElementById("br-f-types").addEventListener("click", e => { const k = e.target.closest("[data-type]")?.dataset.type; if(k){ browseState.types.has(k)?browseState.types.delete(k):browseState.types.add(k); browseState.page=1; renderFilters(); render(); } });
+  document.getElementById("br-f-regions").addEventListener("click", e => { const k = e.target.closest("[data-region]")?.dataset.region; if(k){ browseState.regions.has(k)?browseState.regions.delete(k):browseState.regions.add(k); browseState.page=1; renderFilters(); render(); } });
+  document.getElementById("br-f-decades").addEventListener("click", e => { const k = parseInt(e.target.closest("[data-decade]")?.dataset.decade); if(k){ browseState.decades.has(k)?browseState.decades.delete(k):browseState.decades.add(k); browseState.page=1; renderFilters(); render(); } });
+  document.getElementById("br-f-ips").addEventListener("click", e => { const k = e.target.closest("[data-ip]")?.dataset.ip; if(k){ browseState.ips.has(k)?browseState.ips.delete(k):browseState.ips.add(k); browseState.page=1; renderFilters(); render(); } });
+  mountEl.querySelectorAll(".clear").forEach(c => c.addEventListener("click", () => {
+    const t = c.dataset.clear;
+    if(t==="type") browseState.types.clear();
+    if(t==="region") browseState.regions.clear();
+    if(t==="decade") browseState.decades.clear();
+    if(t==="ip") browseState.ips.clear();
+    browseState.page=1; renderFilters(); render();
+  }));
+  document.getElementById("br-sort").addEventListener("click", e => {
+    const k = e.target.dataset.sort; if(!k) return;
+    browseState.sort = k; browseState.page = 1;
+    document.querySelectorAll("#br-sort button").forEach(b => b.classList.toggle("active", b.dataset.sort === k));
+    render();
+  });
+  renderFilters();
+  render();
+}
+
+/* ============================================================
+   VIEW 6: COMPARE
+   ============================================================ */
+let compareState = { ips: [] };
+function renderCompare(mountEl){
+  if(!compareState.ips.length){
+    compareState.ips = storage.get('compare', []);
+    if(!compareState.ips.length && IP_LIST.length) compareState.ips = [IP_LIST[0][0], IP_LIST[1] ? IP_LIST[1][0] : IP_LIST[0][0]];
+  }
+  mountEl.innerHTML = `
+    <div class="page-heading" style="margin-top:24px">
+      <h1>IP <span class="grad">对比</span></h1>
+      <p>最多 4 个 IP · 6 维度雷达图横向比较</p>
+    </div>
+    <div class="compare-picker">
+      <h3>选择 IP (1 – 4 个)</h3>
+      <p>已选 ${compareState.ips.length} / 4 · 点击下方 chip 切换</p>
+      <div class="compare-chips" id="cp-chips">
+        ${IP_LIST.map(([k,v]) => `<div class="chip ${compareState.ips.includes(k)?'active':''}" data-ip="${escAttr(k)}">${esc(k)}<span class="n">${formatNum(v)}</span></div>`).join('')}
+      </div>
+    </div>
+    <div class="compare-result" id="cr-out"></div>
+  `;
+  function runCompare(){
+    const ips = compareState.ips.slice(0, 4);
+    if(!ips.length){
+      document.getElementById("cr-out").innerHTML = `<div class="empty"><h3>请至少选择 1 个 IP</h3></div>`;
+      return;
+    }
+    // Per-IP stats
+    const stats = {};
+    for(const ip of ips){
+      const list = [];
+      for(let i=0, n=WORKS.length; i<n; i++){
+        if(WORKS[i].ip === ip) list.push(WORKS[i]);
+      }
+      const tC = Object.create(null);
+      const rC = Object.create(null);
+      const yrs = [];
+      for(const w of list){
+        tC[w.type] = (tC[w.type]||0) + 1;
+        rC[w.region] = (rC[w.region]||0) + 1;
+        if(w.year > 0) yrs.push(w.year);
+      }
+      const ymin = yrs.length ? Math.min(...yrs) : 0;
+      const ymax = yrs.length ? Math.max(...yrs) : 0;
+      const span = ymax - ymin + 1;
+      const anime = tC['anime'] || 0;
+      const manga = tC['manga'] || 0;
+      const game = tC['game'] || 0;
+      const music = tC['music'] || 0;
+      const otaku = tC['otaku'] || 0;
+      // 6 dims
+      stats[ip] = {
+        total: list.length,
+        typeCount: Object.keys(tC).length,
+        regionCount: Object.keys(rC).length,
+        span, ymin, ymax,
+        anime, manga, game, music, otaku,
+        // radar 6 dims: 0-100 normalized
+        radar: [
+          Math.min(100, list.length / 1000 * 100),  // total
+          Math.min(100, Object.keys(tC).length / 13 * 100), // type diversity
+          Math.min(100, Object.keys(rC).length / 9 * 100),  // region diversity
+          Math.min(100, anime / 100 * 100),  // anime
+          Math.min(100, otaku / 1000 * 100),  // otaku
+          Math.min(100, span / 40 * 100),  // year span
+        ],
+      };
+    }
+    storage.set('compare', ips);
+    const colors = ['#7c5cff', '#22d3ee', '#ff5d8f', '#ffd166'];
+    const out = document.getElementById("cr-out");
+    out.innerHTML = `
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 22h20z"/></svg>6 维度雷达对比</h3>
+      <div id="cmp-radar" style="height:380px"></div>
+      <table class="compare-table" style="margin-top:20px">
+        <thead><tr>
+          <th>维度</th>
+          ${ips.map((ip, i) => `<th style="color:${colors[i]}">${esc(ip)}</th>`).join('')}
+        </tr></thead>
+        <tbody>
+          <tr><td>衍生总数</td>${ips.map(ip => `<td>${formatNum(stats[ip].total)}</td>`).join('')}</tr>
+          <tr><td>类型数</td>${ips.map(ip => `<td>${stats[ip].typeCount}</td>`).join('')}</tr>
+          <tr><td>地区数</td>${ips.map(ip => `<td>${stats[ip].regionCount}</td>`).join('')}</tr>
+          <tr><td>最早–最新</td>${ips.map(ip => `<td>${stats[ip].ymin || '—'} – ${stats[ip].ymax || '—'}</td>`).join('')}</tr>
+          <tr><td>动画</td>${ips.map(ip => `<td>${formatNum(stats[ip].anime)}</td>`).join('')}</tr>
+          <tr><td>漫画</td>${ips.map(ip => `<td>${formatNum(stats[ip].manga)}</td>`).join('')}</tr>
+          <tr><td>游戏</td>${ips.map(ip => `<td>${formatNum(stats[ip].game)}</td>`).join('')}</tr>
+          <tr><td>音乐</td>${ips.map(ip => `<td>${formatNum(stats[ip].music)}</td>`).join('')}</tr>
+          <tr><td>周边</td>${ips.map(ip => `<td>${formatNum(stats[ip].otaku)}</td>`).join('')}</tr>
+        </tbody>
+      </table>
+      <div style="margin-top:20px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" id="cmp-clear">清空选择</button>
+        <button class="btn" id="cmp-export">↓ 导出对比 (CSV)</button>
+      </div>
+    `;
+    setTimeout(() => {
+      const c = ensureChart("cmp-radar");
+      c.setOption({
+        ...baseTheme(),
+        tooltip: { backgroundColor: 'rgba(20,20,45,0.95)', borderColor: 'rgba(124,92,255,0.3)', textStyle: { color: '#fff' } },
+        legend: { bottom: 0, textStyle: { color: getComputedStyle(document.body).getPropertyValue('--text-1') } },
+        radar: {
+          indicator: [
+            { name: '总量', max: 100 },
+            { name: '类型多样性', max: 100 },
+            { name: '地区多样性', max: 100 },
+            { name: '动画覆盖', max: 100 },
+            { name: '周边覆盖', max: 100 },
+            { name: '时间跨度', max: 100 },
+          ],
+          shape: 'polygon',
+          splitNumber: 4,
+          axisName: { color: getComputedStyle(document.body).getPropertyValue('--text-1'), fontSize: 11 },
+          splitLine: { lineStyle: { color: 'rgba(124,92,255,0.15)' } },
+          splitArea: { areaStyle: { color: ['rgba(124,92,255,0.02)', 'rgba(124,92,255,0.05)'] } },
+          axisLine: { lineStyle: { color: 'rgba(124,92,255,0.2)' } },
+        },
+        series: [{
+          type: 'radar',
+          data: ips.map((ip, i) => ({
+            name: ip,
+            value: stats[ip].radar,
+            areaStyle: { color: colors[i] + '30' },
+            lineStyle: { color: colors[i], width: 2 },
+            itemStyle: { color: colors[i] },
+          })),
+        }],
+      }, true);
+    }, 50);
+    document.getElementById("cmp-clear").addEventListener("click", () => {
+      compareState.ips = [];
+      storage.set('compare', []);
+      renderCompare(mountEl);
+    });
+    document.getElementById("cmp-export").addEventListener("click", () => {
+      const rows = [];
+      for(const ip of ips){
+        rows.push({ ip, ...stats[ip] });
+      }
+      exportCSV(rows, `compare_${Date.now()}.csv`);
+    });
+  }
+  mountEl.querySelectorAll("[data-ip]").forEach(c => c.addEventListener("click", () => {
+    const ip = c.dataset.ip;
+    if(compareState.ips.includes(ip)){
+      compareState.ips = compareState.ips.filter(x => x !== ip);
+    } else {
+      if(compareState.ips.length >= 4){ compareState.ips.shift(); }
+      compareState.ips.push(ip);
+    }
+    storage.set('compare', compareState.ips);
+    mountEl.querySelectorAll("[data-ip]").forEach(x => x.classList.toggle("active", compareState.ips.includes(x.dataset.ip)));
+    runCompare();
+  }));
+  runCompare();
+}
+
+/* ============================================================
+   VIEW 7: TIMELINE
+   ============================================================ */
+let timelineState = { year: yearRange[1] || 2025 };
+function renderTimeline(mountEl){
+  const yr = timelineState.year;
+  // works in this year
+  const works = [];
+  for(let i=0, n=WORKS.length; i<n; i++){
+    if(WORKS[i].year === yr) works.push(WORKS[i]);
+  }
+  const tC = Object.create(null);
+  for(const w of works) tC[w.type] = (tC[w.type]||0) + 1;
+  // top IPs of this year
+  const ipC = Object.create(null);
+  for(const w of works) ipC[w.ip] = (ipC[w.ip]||0) + 1;
+  const topIps = Object.entries(ipC).sort((a,b)=>b[1]-a[1]).slice(0, 6);
+  mountEl.innerHTML = `
+    <div class="page-heading" style="margin-top:24px">
+      <h1>时间 <span class="grad">轴</span></h1>
+      <p>拖动滑块 · 探索每一年的游戏 IP 衍生图景</p>
+    </div>
+    <div class="timeline-stage">
+      <div style="text-align:center;font-size:11px;color:var(--text-2);letter-spacing:0.18em;text-transform:uppercase;font-family:'JetBrains Mono',monospace">YEAR</div>
+      <div class="timeline-year">${yr}</div>
+      <input type="range" class="timeline-slider" id="tl-slider" min="${yearRange[0]}" max="${yearRange[1]}" value="${yr}">
+      <div class="timeline-scale">
+        <span>${yearRange[0]}</span>
+        <span>${Math.floor((yearRange[0]+yearRange[1])/2)}</span>
+        <span>${yearRange[1]}</span>
+      </div>
+      <div class="viz-insights" style="margin-top:24px">
+        <div class="insight"><div class="k">${yr} 总数</div><div class="v">${formatNum(works.length)}<small>条</small></div><div class="h">所有类型合计</div></div>
+        <div class="insight"><div class="k">类型数</div><div class="v">${Object.keys(tC).length}<small>类</small></div><div class="h">${Object.entries(tC).sort((a,b)=>b[1]-a[1])[0] ? TYPE_MAP[Object.entries(tC).sort((a,b)=>b[1]-a[1])[0][0]] || '—' : '—'} 主导</div></div>
+        <div class="insight"><div class="k">活跃 IP 数</div><div class="v">${Object.keys(ipC).length}<small>个</small></div><div class="h">${topIps[0] ? esc(topIps[0][0]) : '—'} 领先</div></div>
+        <div class="insight"><div class="k">与峰值对比</div><div class="v">${(() => { let mx=0,my=0; for(let i=yearRange[0];i<=yearRange[1];i++){ let c=0; for(let j=0;j<WORKS.length;j++) if(WORKS[j].year===i) c++; if(c>mx){mx=c;my=i} } return mx?`${((works.length/mx)*100).toFixed(0)}%`:'0%'; })()}</div><div class="h">历史峰值 ${(()=>{let mx=0;for(let i=yearRange[0];i<=yearRange[1];i++){let c=0;for(let j=0;j<WORKS.length;j++) if(WORKS[j].year===i) c++;if(c>mx)mx=c;}return mx;})()} 项</div></div>
+      </div>
+    </div>
+    <div class="viz-card" style="margin-bottom:18px">
+      <div class="vhead"><h3>${yr} 类型分布</h3><span class="vmeta">${Object.keys(tC).length} 类</span></div>
+      <div id="tl-chart-type" class="chart"></div>
+    </div>
+    <div class="viz-card" style="margin-bottom:18px">
+      <div class="vhead"><h3>${yr} 头部 IP</h3><span class="vmeta">按该年度衍生数</span></div>
+      <div id="tl-chart-ip" class="chart"></div>
+    </div>
+    <div class="viz-card">
+      <div class="vhead"><h3>${yr} 代表作品</h3><span class="vmeta">共 ${works.length} 项</span></div>
+      <div class="timeline-events">
+        ${works.slice(0, 30).map(w => `<div class="timeline-row" data-id="${w.id}">
+          <div class="yr">${w.year}</div>
+          <div class="nm">${esc(w.title)}</div>
+          <div class="tp">${w.typeZh} · ${esc(w.ip)}</div>
+        </div>`).join('') || '<div style="color:var(--text-2);padding:20px;text-align:center">该年份暂无数据</div>'}
+      </div>
+    </div>
+  `;
+  const slider = document.getElementById("tl-slider");
+  let debounceTimer = null;
+  slider.addEventListener("input", e => {
+    const newYr = parseInt(e.target.value);
+    document.querySelector(".timeline-year").textContent = newYr;
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      timelineState.year = newYr;
+      renderTimeline(mountEl);
+    }, 300);
+  });
+  // Charts
+  setTimeout(() => {
+    const tSorted = Object.entries(tC).sort((a,b)=>b[1]-a[1]);
+    const c1 = ensureChart("tl-chart-type");
+    c1.setOption({
+      ...baseTheme(),
+      tooltip: { trigger: 'item', backgroundColor: 'rgba(20,20,45,0.95)', borderColor: 'rgba(124,92,255,0.3)', textStyle: { color: '#fff' }, formatter: '{b}<br/>{c} 项 ({d}%)' },
+      series: [{ type: 'pie', radius: ['40%', '70%'], center: ['50%', '50%'], itemStyle: { borderRadius: 6, borderColor: 'rgba(20,20,45,0.95)', borderWidth: 2 }, label: { show: false }, emphasis: { label: { show: true, fontSize: 13, fontWeight: 600, color: '#fff' }, itemStyle: { shadowBlur: 20 } }, data: tSorted.map(([k,v],i)=>({ name: TYPE_MAP[k]||k, value: v, itemStyle: { color: PALETTE[i % PALETTE.length] } })) }],
+    }, true);
+    const c2 = ensureChart("tl-chart-ip");
+    c2.setOption({
+      ...baseTheme(),
+      grid: { top: 10, right: 30, bottom: 30, left: 100 },
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, backgroundColor: 'rgba(20,20,45,0.95)', borderColor: 'rgba(124,92,255,0.3)', textStyle: { color: '#fff' } },
+      xAxis: { type: 'value', axisLine: { show: false }, axisLabel: { color: getComputedStyle(document.body).getPropertyValue('--text-2'), fontSize: 10 }, splitLine: { lineStyle: { color: 'rgba(160,160,255,0.08)' } } },
+      yAxis: { type: 'category', data: topIps.map(d=>d[0]).reverse(), axisLine: { lineStyle: { color: 'rgba(160,160,255,0.2)' } }, axisLabel: { color: getComputedStyle(document.body).getPropertyValue('--text-1'), fontSize: 11 } },
+      series: [{ type: 'bar', data: topIps.map(d=>d[1]).reverse(), itemStyle: { borderRadius: [0, 4, 4, 0], color: { type: 'linear', x: 0, y: 0, x2: 1, y2: 0, colorStops: [{offset:0,color:'#22d3ee'},{offset:1,color:'#7c5cff'}] } } }],
+    }, true);
+  }, 50);
+  mountEl.querySelectorAll(".timeline-row").forEach(r => r.addEventListener("click", () => {
+    const w = WORKS.find(x => x.id === parseInt(r.dataset.id));
+    if(w) openModal(w);
+  }));
+}
+
+/* ============================================================
+   VIEW 8: REGIONS
+   ============================================================ */
+function renderRegions(mountEl){
+  const regions = Object.entries(regionCounts).sort((a,b)=>b[1]-a[1]);
+  const total = WORKS.length;
+  const top = regions[0] ? regions[0][1] : 1;
+  mountEl.innerHTML = `
+    <div class="page-heading" style="margin-top:24px">
+      <h1>地区 <span class="grad">洞察</span></h1>
+      <p>${regions.length} 个主要地区 · 总 ${formatNum(total)} 项作品</p>
+    </div>
+    <div class="region-grid">
+      ${regions.map(([r,v], i) => {
+        const cls = 'r' + ((i % 4) + 1);
+        const pct = (v / total * 100).toFixed(1);
+        return `<a href="#/visualize" class="region-card ${cls}" data-r="${escAttr(r)}">
+          <div class="rn">${esc(r)}</div>
+          <div class="rc">${formatNum(v)}</div>
+          <div class="rp">${pct}% · ${formatNum(Math.max(1, v - 100))} 项 IP 多样</div>
+          <div class="rbar"><div style="width:${(v/top*100)}%"></div></div>
+        </a>`;
+      }).join('')}
+    </div>
+    <div class="viz-card" style="margin-bottom:18px">
+      <div class="vhead"><h3>地区 vs 衍生类型 · 堆叠柱</h3><span class="vmeta">点击地区卡片进入可视化</span></div>
+      <div id="rg-chart" class="chart tall"></div>
+    </div>
+    <div class="viz-card">
+      <div class="vhead"><h3>地区 vs 头部 IP</h3><span class="vmeta">各地区 Top 5 IP</span></div>
+      <div id="rg-chart-ip" class="chart tall"></div>
+    </div>
+  `;
+  setTimeout(() => {
+    const types = TYPE_LIST.filter(t => typeCounts[t]);
+    const series = types.map((t, i) => {
+      const data = regions.map(([r]) => {
+        let c = 0;
+        for(let j=0, n=WORKS.length; j<n; j++){
+          if(WORKS[j].region === r && WORKS[j].type === t) c++;
+        }
+        return c;
+      });
+      return { name: TYPE_MAP[t], type: 'bar', stack: 'total', data, itemStyle: { color: PALETTE[i % PALETTE.length] } };
+    });
+    const c = ensureChart("rg-chart");
+    c.setOption({
+      ...baseTheme(),
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, backgroundColor: 'rgba(20,20,45,0.95)', borderColor: 'rgba(124,92,255,0.3)', textStyle: { color: '#fff' } },
+      legend: { type: 'scroll', bottom: 0, textStyle: { color: getComputedStyle(document.body).getPropertyValue('--text-1'), fontSize: 11 } },
+      grid: { top: 30, right: 30, bottom: 60, left: 60 },
+      xAxis: { type: 'category', data: regions.map(d=>d[0]), axisLine: { lineStyle: { color: 'rgba(160,160,255,0.2)' } }, axisLabel: { color: getComputedStyle(document.body).getPropertyValue('--text-1'), fontSize: 12 } },
+      yAxis: { type: 'value', axisLine: { show: false }, axisLabel: { color: getComputedStyle(document.body).getPropertyValue('--text-2'), fontSize: 10, formatter: formatNum }, splitLine: { lineStyle: { color: 'rgba(160,160,255,0.08)' } } },
+      series,
+    }, true);
+    // IP per region
+    const topIPData = [];
+    for(const [r] of regions.slice(0, 6)){
+      const ipC = Object.create(null);
+      for(let j=0, n=WORKS.length; j<n; j++){
+        if(WORKS[j].region === r) ipC[WORKS[j].ip] = (ipC[WORKS[j].ip]||0) + 1;
+      }
+      const top = Object.entries(ipC).sort((a,b)=>b[1]-a[1]).slice(0, 5);
+      topIPData.push({ region: r, top });
+    }
+    const ipNamesSet = new Set();
+    topIPData.forEach(d => d.top.forEach(([k]) => ipNamesSet.add(k)));
+    const ipNames = Array.from(ipNamesSet);
+    const ipSeries = ipNames.map((ip, i) => ({
+      name: ip,
+      type: 'bar',
+      stack: 'total',
+      data: topIPData.map(d => {
+        const found = d.top.find(([k]) => k === ip);
+        return found ? found[1] : 0;
+      }),
+      itemStyle: { color: PALETTE[i % PALETTE.length] }
+    }));
+    const c2 = ensureChart("rg-chart-ip");
+    c2.setOption({
+      ...baseTheme(),
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, backgroundColor: 'rgba(20,20,45,0.95)', borderColor: 'rgba(124,92,255,0.3)', textStyle: { color: '#fff' } },
+      legend: { type: 'scroll', bottom: 0, textStyle: { color: getComputedStyle(document.body).getPropertyValue('--text-1'), fontSize: 10 } },
+      grid: { top: 30, right: 30, bottom: 60, left: 60 },
+      xAxis: { type: 'category', data: topIPData.map(d=>d.region), axisLine: { lineStyle: { color: 'rgba(160,160,255,0.2)' } }, axisLabel: { color: getComputedStyle(document.body).getPropertyValue('--text-1'), fontSize: 12 } },
+      yAxis: { type: 'value', axisLine: { show: false }, axisLabel: { color: getComputedStyle(document.body).getPropertyValue('--text-2'), fontSize: 10, formatter: formatNum }, splitLine: { lineStyle: { color: 'rgba(160,160,255,0.08)' } } },
+      series: ipSeries,
+    }, true);
+  }, 50);
+  mountEl.querySelectorAll(".region-card").forEach(c => c.addEventListener("click", (e) => {
+    e.preventDefault();
+    vizState.region = c.dataset.r === '其他' ? '其他' : c.dataset.r;
+    navigate('#/visualize');
+  }));
+}
+
+/* ============================================================
+   VIEW 9: COLLECTIONS
+   ============================================================ */
+function renderCollections(mountEl){
+  const favs = storage.get('favs', []);
+  const favSet = new Set(favs);
+  const list = favs.map(id => WORKS.find(w => w.id === id)).filter(Boolean);
+  mountEl.innerHTML = `
+    <div class="page-heading" style="margin-top:24px">
+      <h1>我的 <span class="grad">收藏</span></h1>
+      <p>LocalStorage 持久化保存 · 跨刷新保留 · 支持导出与清空</p>
+    </div>
+    <div class="coll-head">
+      <div class="results-count">共 <b id="coll-count">${favs.length}</b> 项收藏</div>
+      <div class="toolbar-actions">
+        <button class="btn" id="coll-export"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>导出 JSON</button>
+        <button class="btn" id="coll-import">↑ 导入 JSON</button>
+        <button class="btn danger" id="coll-clear"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>清空</button>
+      </div>
+      <input type="file" id="coll-file" style="display:none" accept=".json">
+    </div>
+    <div id="coll-body"></div>
+  `;
+  function renderList(){
+    const body = document.getElementById("coll-body");
+    if(!list.length){
+      body.innerHTML = `<div class="coll-empty"><h3>暂无收藏</h3><p>在浏览页点击卡片右上角的 ☆ 即可加入收藏</p></div>`;
+      return;
+    }
+    body.innerHTML = `<div class="coll-grid">${list.map(w => `<div class="card" data-id="${w.id}">
+      <div class="card-head"><div class="card-title">${esc(w.title)}</div><div class="badge ${TYPE_CLS[w.type]||'b-other'}">${w.typeZh}</div></div>
+      <div class="card-meta"><span class="ip">◆ ${esc(w.ip)}</span><span class="year">${w.year}</span><span>· ${esc(w.region)}</span></div>
+      <div class="card-desc">${esc(w.desc||'—')}</div>
+      <div class="card-actions">
+        <button class="icon-btn fav-btn faved" data-rm="${w.id}" title="移除">
+          <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+        </button>
+      </div>
+    </div>`).join('')}</div>`;
+    body.querySelectorAll(".card").forEach(c => c.addEventListener("click", e => {
+      if(e.target.closest('.fav-btn')) return;
+      const w = WORKS.find(x => x.id === parseInt(c.dataset.id));
+      if(w) openModal(w);
+    }));
+    body.querySelectorAll("[data-rm]").forEach(b => b.addEventListener("click", e => {
+      e.stopPropagation();
+      const id = parseInt(b.dataset.rm);
+      const newFavs = favs.filter(x => x !== id);
+      storage.set('favs', newFavs);
+      location.reload();
+    }));
+  }
+  document.getElementById("coll-export").addEventListener("click", () => {
+    exportJSON({ count: list.length, exportedAt: new Date().toISOString(), works: list.map(w => ({ id: w.id, title: w.title, type: w.typeZh, ip: w.ip, year: w.year, region: w.region, source: w.source, desc: w.desc })) }, `collections_${Date.now()}.json`);
+  });
+  document.getElementById("coll-import").addEventListener("click", () => document.getElementById("coll-file").click());
+  document.getElementById("coll-file").addEventListener("change", e => {
+    const f = e.target.files[0];
+    if(!f) return;
+    const r = new FileReader();
+    r.onload = ev => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        const arr = (data.works || []).map(w => w.id).filter(Boolean);
+        const merged = Array.from(new Set([...favs, ...arr]));
+        storage.set('favs', merged);
+        location.reload();
+      } catch(err) { alert('导入失败: ' + err.message); }
+    };
+    r.readAsText(f);
+  });
+  document.getElementById("coll-clear").addEventListener("click", () => {
+    if(confirm('确定清空所有收藏？此操作不可撤销。')){
+      storage.set('favs', []);
+      location.reload();
     }
   });
-});
+  renderList();
+}
 
-/* === Visualizations === */
-const PALETTE = ['#7c5cff','#22d3ee','#ff5d8f','#ffd166','#10b981','#c084fc','#4ade80','#f472b6','#fb923c','#60a5fa','#2dd4bf','#e879f9','#f87171','#fde047','#94a3b8'];
-let charts = {};
-let vizFilter = { region: "日本", top: 30 };
-document.querySelectorAll("[data-viz-region]").forEach(c=>c.addEventListener("click",()=>{
-  document.querySelectorAll("[data-viz-region]").forEach(x=>x.classList.toggle("active",x===c));
-  vizFilter.region = c.dataset.vizRegion;
-  renderVisualizations();
-}));
-document.querySelectorAll("[data-viz-top]").forEach(c=>c.addEventListener("click",()=>{
-  document.querySelectorAll("[data-viz-top]").forEach(x=>x.classList.toggle("active",x===c));
-  vizFilter.top = parseInt(c.dataset.vizTop);
-  renderVisualizations();
-}));
+/* ============================================================
+   VIEW 10: SETTINGS
+   ============================================================ */
+function renderSettings(mountEl){
+  const cur = storage.get('theme', 'dark');
+  const density = storage.get('density', 'default');
+  const anim = storage.get('anim', 'on');
+  mountEl.innerHTML = `
+    <div class="page-heading" style="margin-top:24px">
+      <h1>偏好 <span class="grad">设置</span></h1>
+      <p>主题、密度、动画与数据导出</p>
+    </div>
+    <div class="settings-group">
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>主题</h3>
+      <div class="settings-row">
+        <div>
+          <div class="lbl">外观模式</div>
+          <div class="desc">3 套精心设计的主题</div>
+        </div>
+        <div class="opts">
+          <button class="viz-chip ${cur==='dark'?'active':''}" data-theme="dark">深空</button>
+          <button class="viz-chip ${cur==='light'?'active':''}" data-theme="light">明亮</button>
+          <button class="viz-chip ${cur==='cyber'?'active':''}" data-theme="cyber">赛博</button>
+        </div>
+      </div>
+    </div>
+    <div class="settings-group">
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>视图密度</h3>
+      <div class="settings-row">
+        <div><div class="lbl">紧凑度</div><div class="desc">影响卡片间距与内边距</div></div>
+        <div class="opts">
+          <button class="viz-chip ${density==='default'?'active':''}" data-density="default">标准</button>
+          <button class="viz-chip ${density==='compact'?'active':''}" data-density="compact">紧凑</button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div><div class="lbl">动画</div><div class="desc">关闭可减少性能开销</div></div>
+        <div class="toggle ${anim==='on'?'on':''}" id="anim-toggle"></div>
+      </div>
+    </div>
+    <div class="settings-group">
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>数据导出</h3>
+      <div class="settings-row">
+        <div><div class="lbl">导出全部作品</div><div class="desc">将 200,000+ 条记录导出为 CSV（最多 5,000/批）</div></div>
+        <button class="btn" id="ex-all">导出</button>
+      </div>
+      <div class="settings-row">
+        <div><div class="lbl">导出全部 IP 排行</div><div class="desc">所有 IP 的衍生数量统计</div></div>
+        <button class="btn" id="ex-ip">导出</button>
+      </div>
+      <div class="settings-row">
+        <div><div class="lbl">导出当前收藏</div><div class="desc">LocalStorage 中的收藏</div></div>
+        <button class="btn" id="ex-fav">导出</button>
+      </div>
+    </div>
+    <div class="settings-group">
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>重置</h3>
+      <div class="settings-row">
+        <div><div class="lbl">清空所有本地数据</div><div class="desc">清空收藏、主题、设置等所有 LocalStorage</div></div>
+        <button class="btn danger" id="reset-all">重置</button>
+      </div>
+    </div>
+  `;
+  mountEl.querySelectorAll("[data-theme]").forEach(c => c.addEventListener("click", () => {
+    storage.set('theme', c.dataset.theme);
+    document.documentElement.setAttribute('data-theme', c.dataset.theme);
+    mountEl.querySelectorAll("[data-theme]").forEach(x => x.classList.toggle("active", x === c));
+    // re-render all charts
+    for(const k in charts){ try { charts[k].dispose(); } catch(e){} }
+    Object.keys(charts).forEach(k => delete charts[k]);
+    // re-render current view if it uses charts
+    if(location.hash.startsWith('#/visualize')) renderVisualize(mountEl);
+  }));
+  mountEl.querySelectorAll("[data-density]").forEach(c => c.addEventListener("click", () => {
+    storage.set('density', c.dataset.density);
+    document.documentElement.setAttribute('data-density', c.dataset.density);
+    mountEl.querySelectorAll("[data-density]").forEach(x => x.classList.toggle("active", x === c));
+  }));
+  document.getElementById("anim-toggle").addEventListener("click", e => {
+    const cur = storage.get('anim', 'on');
+    const next = cur === 'on' ? 'off' : 'on';
+    storage.set('anim', next);
+    document.documentElement.setAttribute('data-anim', next);
+    e.currentTarget.classList.toggle("on", next === 'on');
+  });
+  document.getElementById("ex-all").addEventListener("click", () => {
+    exportCSV(WORKS.slice(0, 5000).map(w => ({ id:w.id, title:w.title, type:w.typeZh, region:w.region, year:w.year, source:w.source, ip:w.ip })), `all_works_${Date.now()}.csv`);
+  });
+  document.getElementById("ex-ip").addEventListener("click", () => {
+    exportCSV(IP_LIST.map(([k,v]) => ({ ip:k, count:v })), `ip_ranking_${Date.now()}.csv`);
+  });
+  document.getElementById("ex-fav").addEventListener("click", () => {
+    const favs = storage.get('favs', []);
+    const list = favs.map(id => WORKS.find(w => w.id === id)).filter(Boolean);
+    if(!list.length) return alert('暂无收藏');
+    exportJSON(list, `collections_${Date.now()}.json`);
+  });
+  document.getElementById("reset-all").addEventListener("click", () => {
+    if(confirm('清空所有本地数据？此操作不可撤销。')){
+      Object.keys(localStorage).filter(k => k.startsWith('gip:')).forEach(k => localStorage.removeItem(k));
+      location.reload();
+    }
+  });
+}
 
-function aggregate(filtered){
-  // Returns { year, ip, type, region, ipTypeMatrix }
-  const yC = new Int32Array(60);
+/* ============================================================
+   VIEW 3: VISUALIZE
+   ============================================================ */
+const vizState = { region:"日本", top:30 };
+function ensureChart(id){ if(!charts[id]) charts[id] = echarts.init(document.getElementById(id), null, { renderer: 'canvas' }); return charts[id]; }
+function baseTheme(){
+  const t = document.documentElement.getAttribute('data-theme') || 'dark';
+  return {
+    textStyle: { color: t === 'light' ? '#3a3a55' : (t === 'cyber' ? '#80fff0' : '#c8c8e6'), fontFamily: 'Inter, "PingFang SC", sans-serif' },
+    backgroundColor: 'transparent',
+  };
+}
+function aggregateList(list){
   const yrStart = 1985;
+  const yC = new Int32Array(60);
   const ipC = Object.create(null);
   const tC = Object.create(null);
   const rC = Object.create(null);
   const ipType = Object.create(null);
-  const N = filtered.length;
+  const N = list.length;
   for(let i=0; i<N; i++){
-    const w = filtered[i];
+    const w = list[i];
     if(w.year >= yrStart && w.year < yrStart + 60) yC[w.year-yrStart]++;
     ipC[w.ip] = (ipC[w.ip] || 0) + 1;
     tC[w.type] = (tC[w.type] || 0) + 1;
@@ -864,307 +1699,510 @@ function aggregate(filtered){
   }
   return { yC, yrStart, ipC, tC, rC, ipType };
 }
-
-function baseTheme(){
-  return {
-    textStyle: { color: '#c8c8e6', fontFamily: 'Inter, "PingFang SC", sans-serif' },
-    backgroundColor: 'transparent',
-  };
-}
-
-function renderVisualizations(){
-  // Filter for viz
-  const targetRegion = vizFilter.region;
-  const filtered = [];
-  const wantAll = targetRegion === "all";
-  for(let i=0, n=WORKS.length; i<n; i++){
-    if(wantAll || WORKS[i].region === targetRegion) filtered.push(WORKS[i]);
-  }
-  const agg = aggregate(filtered);
-  const topN = vizFilter.top;
-
-  // Insights
-  const totalN = filtered.length;
-  const topIp = Object.entries(agg.ipC).sort((a,b)=>b[1]-a[1])[0] || ["—",0];
-  const topType = Object.entries(agg.tC).sort((a,b)=>b[1]-a[1])[0] || ["—",0];
-  // active year range
-  let activeYears = 0;
-  for(let i=0;i<60;i++) if(agg.yC[i]>0) activeYears++;
-  document.getElementById("insights").innerHTML = `
-    <div class="insight">
-      <div class="k">当前样本</div>
-      <div class="v">${formatNum(totalN)}<small>条</small></div>
-      <div class="h">${wantAll ? "全球范围" : targetRegion} · 当前过滤条件</div>
+function renderVisualize(mountEl){
+  mountEl.innerHTML = `
+    <div class="page-heading" style="margin-top:24px">
+      <h1>数据 <span class="grad">可视化</span></h1>
+      <p>6 张 ECharts 图表全景呈现衍生作品生态。可按地区与规模切换。</p>
     </div>
-    <div class="insight">
-      <div class="k">头部 IP</div>
-      <div class="v">${esc(topIp[0])}</div>
-      <div class="h">${formatNum(topIp[1])} 项衍生作品</div>
+    <div class="viz-controls">
+      <span class="label">地区：</span>
+      <div class="viz-chip ${vizState.region==='all'?'active':''}" data-vz="all">全部</div>
+      <div class="viz-chip ${vizState.region==='日本'?'active':''}" data-vz="日本">日本</div>
+      <div class="viz-chip ${vizState.region==='美国'?'active':''}" data-vz="美国">美国</div>
+      <div class="viz-chip ${vizState.region==='中国'?'active':''}" data-vz="中国">中国</div>
+      <div class="viz-chip ${vizState.region==='其他'?'active':''}" data-vz="其他">其他</div>
+      <span class="label" style="margin-left:8px">规模：</span>
+      <div class="viz-chip ${vizState.top===30?'active':''}" data-tp="30">Top 30</div>
+      <div class="viz-chip ${vizState.top===50?'active':''}" data-tp="50">Top 50</div>
+      <div class="viz-chip ${vizState.top===100?'active':''}" data-tp="100">Top 100</div>
+      <button class="btn" id="vz-export" style="margin-left:auto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>导出全部 PNG</button>
     </div>
-    <div class="insight">
-      <div class="k">头部类型</div>
-      <div class="v">${esc(TYPE_MAP[topType[0]]||topType[0])}</div>
-      <div class="h">${formatNum(topType[1])} 项作品</div>
-    </div>
-    <div class="insight">
-      <div class="k">活跃年份</div>
-      <div class="v">${activeYears}<small>年</small></div>
-      <div class="h">覆盖 ${agg.yrStart} – ${agg.yrStart+59}</div>
+    <div class="viz-insights" id="vz-ins"></div>
+    <div class="viz-grid">
+      <div class="viz-card span-12">
+        <div class="vhead"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 6-6"/></svg>衍生作品年度时间线（1985 – 2026）</h3><span class="vmeta" id="vz-m1">—</span></div>
+        <div id="chart-timeline" class="chart tall"></div>
+      </div>
+      <div class="viz-card span-8">
+        <div class="vhead"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18"/><path d="M3 9h18M9 21V9"/></svg>头部 IP · 衍生作品数量排行</h3><span class="vmeta" id="vz-m2">—</span></div>
+        <div id="chart-ip" class="chart tall"></div>
+      </div>
+      <div class="viz-card span-4">
+        <div class="vhead"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path d="M12 3v9l5 3"/></svg>衍生类型分布</h3><span class="vmeta" id="vz-m3">—</span></div>
+        <div id="chart-type" class="chart tall"></div>
+      </div>
+      <div class="viz-card span-4">
+        <div class="vhead"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg>地区分布</h3><span class="vmeta" id="vz-m4">—</span></div>
+        <div id="chart-region" class="chart"></div>
+      </div>
+      <div class="viz-card span-8">
+        <div class="vhead"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>IP × 衍生类型 · 热力图</h3><span class="vmeta" id="vz-m5">—</span></div>
+        <div id="chart-heatmap" class="chart tall"></div>
+      </div>
+      <div class="viz-card span-12">
+        <div class="vhead"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 6h6M9 18h6M6 9v6M18 9v6"/></svg>IP 关系网络 · 类型共现</h3><span class="vmeta">节点 = IP · 边权重 = 主导类型</span></div>
+        <div id="chart-network" class="chart tall"></div>
+      </div>
     </div>
   `;
-
-  // 1) Timeline
-  const years = [];
-  const yData = [];
-  for(let i=0; i<60; i++){
-    years.push(agg.yrStart + i);
-    yData.push(agg.yC[i]);
-  }
-  const chart1 = ensureChart("chart-timeline");
-  chart1.setOption({
-    ...baseTheme(),
-    grid: { top: 30, right: 30, bottom: 60, left: 60 },
-    tooltip: { trigger: 'axis', backgroundColor: 'rgba(20,20,45,0.95)', borderColor: 'rgba(124,92,255,0.3)', textStyle: { color: '#fff' } },
-    xAxis: {
-      type: 'category', data: years,
-      axisLine: { lineStyle: { color: 'rgba(160,160,255,0.2)' } },
-      axisLabel: { color: '#8a8aab', fontSize: 10, rotate: years.length > 25 ? 45 : 0, interval: Math.max(0, Math.floor(years.length/20)) },
-      splitLine: { show: false },
-    },
-    yAxis: {
-      type: 'value',
-      axisLine: { show: false },
-      axisLabel: { color: '#8a8aab', fontSize: 10, formatter: v=>formatNum(v) },
-      splitLine: { lineStyle: { color: 'rgba(160,160,255,0.08)' } },
-    },
-    series: [{
-      name: '衍生作品数',
-      type: 'line', smooth: true, symbol: 'circle', symbolSize: 6,
-      data: yData,
-      itemStyle: { color: '#22d3ee' },
-      lineStyle: { color: '#7c5cff', width: 2.5, shadowColor: 'rgba(124,92,255,0.5)', shadowBlur: 12 },
-      areaStyle: {
-        color: {
-          type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
-          colorStops: [
-            { offset: 0, color: 'rgba(124,92,255,0.5)' },
-            { offset: 1, color: 'rgba(124,92,255,0)' },
-          ],
-        },
-      },
-      markPoint: { data: [
-        { type: 'max', name: '峰值', itemStyle: { color: '#ff5d8f' }, label: { color: '#fff', fontSize: 10 } }
-      ], symbolSize: 50 },
-    }],
-  }, true);
-  document.getElementById("vmeta-timeline").textContent = `峰值 ${formatNum(Math.max(...yData))} 项 / 年`;
-
-  // 2) IP bar chart (top N)
-  const ipTop = Object.entries(agg.ipC).sort((a,b)=>b[1]-a[1]).slice(0, topN);
-  const ipData = ipTop.map(([k,v])=>({ name: k, value: v })).reverse();
-  const chart2 = ensureChart("chart-ip");
-  chart2.setOption({
-    ...baseTheme(),
-    grid: { top: 20, right: 50, bottom: 30, left: 130 },
-    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, backgroundColor: 'rgba(20,20,45,0.95)', borderColor: 'rgba(124,92,255,0.3)', textStyle: { color: '#fff' } },
-    xAxis: {
-      type: 'value',
-      axisLine: { show: false },
-      axisLabel: { color: '#8a8aab', fontSize: 10, formatter: v=>formatNum(v) },
-      splitLine: { lineStyle: { color: 'rgba(160,160,255,0.08)' } },
-    },
-    yAxis: {
-      type: 'category', data: ipData.map(d=>d.name),
-      axisLine: { lineStyle: { color: 'rgba(160,160,255,0.2)' } },
-      axisLabel: { color: '#c8c8e6', fontSize: 11 },
-    },
-    series: [{
-      name: '衍生作品数',
-      type: 'bar',
-      data: ipData.map(d=>d.value),
-      itemStyle: {
-        borderRadius: [0, 4, 4, 0],
-        color: {
-          type: 'linear', x: 0, y: 0, x2: 1, y2: 0,
-          colorStops: [
-            { offset: 0, color: '#22d3ee' },
-            { offset: 1, color: '#7c5cff' },
-          ],
-        },
-      },
-      label: { show: true, position: 'right', color: '#c8c8e6', fontSize: 10, formatter: v=>formatNum(v.value) },
-    }],
-  }, true);
-  document.getElementById("vmeta-ip").textContent = `Top ${topN} · 共 ${ipTop.length} IP 显示`;
-
-  // 3) Type pie
-  const tSorted = Object.entries(agg.tC).sort((a,b)=>b[1]-a[1]);
-  const chart3 = ensureChart("chart-type");
-  chart3.setOption({
-    ...baseTheme(),
-    tooltip: { trigger: 'item', backgroundColor: 'rgba(20,20,45,0.95)', borderColor: 'rgba(124,92,255,0.3)', textStyle: { color: '#fff' }, formatter: '{b}<br/>{c} 项 ({d}%)' },
-    legend: { type: 'scroll', bottom: 10, textStyle: { color: '#c8c8e6', fontSize: 11 }, itemWidth: 12, itemHeight: 12 },
-    series: [{
-      type: 'pie',
-      radius: ['45%', '70%'],
-      center: ['50%', '45%'],
-      avoidLabelOverlap: true,
-      itemStyle: { borderRadius: 6, borderColor: 'rgba(20,20,45,0.95)', borderWidth: 2 },
-      label: { show: false },
-      emphasis: { label: { show: true, fontSize: 13, fontWeight: 600, color: '#fff' }, itemStyle: { shadowBlur: 20, shadowColor: 'rgba(124,92,255,0.6)' } },
-      data: tSorted.map(([k,v],i)=>({ name: TYPE_MAP[k]||k, value: v, itemStyle: { color: PALETTE[i % PALETTE.length] } })),
-    }],
-  }, true);
-  document.getElementById("vmeta-type").textContent = `${tSorted.length} 类 · 总 ${formatNum(totalN)} 项`;
-
-  // 4) Region (donut)
-  const rSorted = Object.entries(agg.rC).sort((a,b)=>b[1]-a[1]);
-  const chart4 = ensureChart("chart-region");
-  chart4.setOption({
-    ...baseTheme(),
-    tooltip: { trigger: 'item', backgroundColor: 'rgba(20,20,45,0.95)', borderColor: 'rgba(124,92,255,0.3)', textStyle: { color: '#fff' }, formatter: '{b}<br/>{c} 项 ({d}%)' },
-    legend: { orient: 'vertical', left: 10, top: 'center', textStyle: { color: '#c8c8e6', fontSize: 12 } },
-    series: [{
-      type: 'pie',
-      radius: ['50%', '78%'],
-      center: ['65%', '50%'],
-      itemStyle: { borderRadius: 8, borderColor: 'rgba(20,20,45,0.95)', borderWidth: 3 },
-      label: { show: false },
-      emphasis: { label: { show: true, fontSize: 14, fontWeight: 600, color: '#fff' }, itemStyle: { shadowBlur: 20, shadowColor: 'rgba(34,211,238,0.6)' } },
-      data: rSorted.map(([k,v],i)=>({ name: k, value: v, itemStyle: { color: PALETTE[(i*3) % PALETTE.length] } })),
-    }],
-  }, true);
-  document.getElementById("vmeta-region").textContent = `${rSorted.length} 个地区`;
-
-  // 5) Heatmap: top 25 IPs × all types
-  const heatIps = Object.entries(agg.ipC).sort((a,b)=>b[1]-a[1]).slice(0, 25).map(([k])=>k);
-  const heatTypes = Object.keys(agg.tC).sort();
-  const heatData = [];
-  let heatMax = 0;
-  for(let i=0; i<heatIps.length; i++){
-    const ip = heatIps[i];
-    for(let j=0; j<heatTypes.length; j++){
-      const t = heatTypes[j];
-      const v = (agg.ipType[ip] && agg.ipType[ip][t]) || 0;
-      if(v > heatMax) heatMax = v;
-      heatData.push([j, i, v]);
+  function runViz(){
+    const target = vizState.region;
+    const wantAll = target === "all";
+    const list = [];
+    for(let i=0, n=WORKS.length; i<n; i++){
+      if(wantAll || WORKS[i].region === target) list.push(WORKS[i]);
     }
-  }
-  const chart5 = ensureChart("chart-heatmap");
-  chart5.setOption({
-    ...baseTheme(),
-    tooltip: { backgroundColor: 'rgba(20,20,45,0.95)', borderColor: 'rgba(124,92,255,0.3)', textStyle: { color: '#fff' },
-      formatter: p => `${heatIps[p.value[1]]} · ${TYPE_MAP[heatTypes[p.value[0]]]||heatTypes[p.value[0]]}<br/>${p.value[2]} 项` },
-    grid: { top: 20, right: 50, bottom: 60, left: 110 },
-    xAxis: {
-      type: 'category', data: heatTypes.map(t=>TYPE_MAP[t]||t),
-      splitArea: { show: true },
-      axisLine: { lineStyle: { color: 'rgba(160,160,255,0.2)' } },
-      axisLabel: { color: '#c8c8e6', fontSize: 10, rotate: 30, interval: 0 },
-    },
-    yAxis: {
-      type: 'category', data: heatIps, inverse: true,
-      splitArea: { show: true },
-      axisLine: { lineStyle: { color: 'rgba(160,160,255,0.2)' } },
-      axisLabel: { color: '#c8c8e6', fontSize: 10 },
-    },
-    visualMap: {
-      min: 0, max: heatMax,
-      calculable: true,
-      orient: 'horizontal', left: 'center', bottom: 5,
-      textStyle: { color: '#c8c8e6', fontSize: 10 },
-      inRange: { color: ['#0c0c20', '#7c5cff', '#22d3ee', '#ff5d8f', '#ffd166'] },
-    },
-    series: [{
-      name: '衍生数', type: 'heatmap', data: heatData,
-      label: { show: false },
-      emphasis: { itemStyle: { shadowBlur: 10, shadowColor: 'rgba(124,92,255,0.8)' } },
-    }],
-  }, true);
-  document.getElementById("vmeta-heatmap").textContent = `Top 25 IP × ${heatTypes.length} 类型 · 峰值 ${formatNum(heatMax)}`;
-
-  // 6) Network: top IPs (nodes), edges weighted by co-occurrence in same year
-  // For efficiency, just show top 25 IPs and connect them by type co-occurrence
-  const netIps = Object.entries(agg.ipC).sort((a,b)=>b[1]-a[1]).slice(0, 25);
-  const netNodes = netIps.map(([k,v],i)=>({
-    id: k, name: k, symbolSize: 8 + Math.min(40, Math.log10(v+1)*6),
-    value: v, category: i % PALETTE.length,
-    itemStyle: { color: PALETTE[i % PALETTE.length] },
-    label: { show: true, color: '#c8c8e6', fontSize: 10 }
-  }));
-  // Build edges from shared dominant type
-  const ipTypeArr = netIps.map(([k])=>({ ip: k, types: agg.ipType[k] || {} }));
-  const netEdges = [];
-  const typeTopByIp = ipTypeArr.map(o=>{
-    let best = null, bv = 0;
-    for(const t in o.types){ if(o.types[t] > bv){ bv = o.types[t]; best = t } }
-    return { ip: o.ip, type: best };
-  });
-  // Group by type
-  const byType = Object.create(null);
-  typeTopByIp.forEach(o=>{ if(o.type){ (byType[o.type] = byType[o.type] || []).push(o.ip) } });
-  for(const t in byType){
-    const arr = byType[t];
-    for(let i=0; i<arr.length; i++){
-      for(let j=i+1; j<arr.length; j++){
-        if(netEdges.length > 220) break;
-        netEdges.push({ source: arr[i], target: arr[j], lineStyle: { color: 'rgba(124,92,255,0.18)', width: 1, curveness: 0.1 } });
+    const agg = aggregateList(list);
+    const topN = vizState.top;
+    const totalN = list.length;
+    const topIp = Object.entries(agg.ipC).sort((a,b)=>b[1]-a[1])[0] || ['—', 0];
+    const topType = Object.entries(agg.tC).sort((a,b)=>b[1]-a[1])[0] || ['—', 0];
+    let activeYears = 0;
+    for(let i=0;i<60;i++) if(agg.yC[i]>0) activeYears++;
+    document.getElementById("vz-ins").innerHTML = `
+      <div class="insight"><div class="k">当前样本</div><div class="v">${formatNum(totalN)}<small>条</small></div><div class="h">${wantAll ? "全球范围" : target} · 当前过滤</div></div>
+      <div class="insight"><div class="k">头部 IP</div><div class="v">${esc(topIp[0])}</div><div class="h">${formatNum(topIp[1])} 项衍生</div></div>
+      <div class="insight"><div class="k">头部类型</div><div class="v">${esc(TYPE_MAP[topType[0]]||topType[0])}</div><div class="h">${formatNum(topType[1])} 项作品</div></div>
+      <div class="insight"><div class="k">活跃年份</div><div class="v">${activeYears}<small>年</small></div><div class="h">${agg.yrStart} – ${agg.yrStart+59}</div></div>
+    `;
+    const cTextColor = getComputedStyle(document.body).getPropertyValue('--text-2') || '#8a8aab';
+    const cTextColor1 = getComputedStyle(document.body).getPropertyValue('--text-1') || '#c8c8e6';
+    // timeline
+    const years = [], yData = [];
+    for(let i=0; i<60; i++){ years.push(agg.yrStart+i); yData.push(agg.yC[i]); }
+    const c1 = ensureChart("chart-timeline");
+    c1.setOption({
+      ...baseTheme(),
+      grid: { top: 30, right: 30, bottom: 60, left: 60 },
+      tooltip: { trigger: 'axis', backgroundColor: 'rgba(20,20,45,0.95)', borderColor: 'rgba(124,92,255,0.3)', textStyle: { color: '#fff' } },
+      xAxis: { type: 'category', data: years, axisLine: { lineStyle: { color: 'rgba(160,160,255,0.2)' } }, axisLabel: { color: cTextColor, fontSize: 10, rotate: 45 }, splitLine: { show: false } },
+      yAxis: { type: 'value', axisLine: { show: false }, axisLabel: { color: cTextColor, fontSize: 10, formatter: formatNum }, splitLine: { lineStyle: { color: 'rgba(160,160,255,0.08)' } } },
+      series: [{ name: '衍生作品数', type: 'line', smooth: true, symbol: 'circle', symbolSize: 5, data: yData, itemStyle: { color: '#22d3ee' }, lineStyle: { color: '#7c5cff', width: 2.5, shadowColor: 'rgba(124,92,255,0.5)', shadowBlur: 12 }, areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{offset:0,color:'rgba(124,92,255,0.5)'},{offset:1,color:'rgba(124,92,255,0)'}] } }, markPoint: { data: [{ type: 'max', name: '峰值', itemStyle: { color: '#ff5d8f' }, label: { color: '#fff', fontSize: 10 } }], symbolSize: 50 } }],
+    }, true);
+    document.getElementById("vz-m1").textContent = `峰值 ${formatNum(Math.max(...yData))} 项/年`;
+    // IP bar
+    const ipTop = Object.entries(agg.ipC).sort((a,b)=>b[1]-a[1]).slice(0, topN);
+    const ipData = ipTop.map(([k,v])=>({ name: k, value: v })).reverse();
+    const c2 = ensureChart("chart-ip");
+    c2.setOption({
+      ...baseTheme(),
+      grid: { top: 20, right: 60, bottom: 30, left: 130 },
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, backgroundColor: 'rgba(20,20,45,0.95)', borderColor: 'rgba(124,92,255,0.3)', textStyle: { color: '#fff' } },
+      xAxis: { type: 'value', axisLine: { show: false }, axisLabel: { color: cTextColor, fontSize: 10, formatter: formatNum }, splitLine: { lineStyle: { color: 'rgba(160,160,255,0.08)' } } },
+      yAxis: { type: 'category', data: ipData.map(d=>d.name), axisLine: { lineStyle: { color: 'rgba(160,160,255,0.2)' } }, axisLabel: { color: cTextColor1, fontSize: 11 } },
+      series: [{ name: '衍生作品数', type: 'bar', data: ipData.map(d=>d.value), itemStyle: { borderRadius: [0, 4, 4, 0], color: { type: 'linear', x: 0, y: 0, x2: 1, y2: 0, colorStops: [{offset:0,color:'#22d3ee'},{offset:1,color:'#7c5cff'}] } }, label: { show: true, position: 'right', color: cTextColor1, fontSize: 10, formatter: p => formatNum(p.value) } }],
+    }, true);
+    document.getElementById("vz-m2").textContent = `Top ${topN} · 共 ${ipTop.length} IP`;
+    // type pie
+    const tSorted = Object.entries(agg.tC).sort((a,b)=>b[1]-a[1]);
+    const c3 = ensureChart("chart-type");
+    c3.setOption({
+      ...baseTheme(),
+      tooltip: { trigger: 'item', backgroundColor: 'rgba(20,20,45,0.95)', borderColor: 'rgba(124,92,255,0.3)', textStyle: { color: '#fff' }, formatter: '{b}<br/>{c} 项 ({d}%)' },
+      legend: { type: 'scroll', bottom: 10, textStyle: { color: cTextColor1, fontSize: 11 }, itemWidth: 12, itemHeight: 12 },
+      series: [{ type: 'pie', radius: ['45%', '70%'], center: ['50%', '45%'], avoidLabelOverlap: true, itemStyle: { borderRadius: 6, borderColor: 'rgba(20,20,45,0.95)', borderWidth: 2 }, label: { show: false }, emphasis: { label: { show: true, fontSize: 13, fontWeight: 600, color: '#fff' }, itemStyle: { shadowBlur: 20, shadowColor: 'rgba(124,92,255,0.6)' } }, data: tSorted.map(([k,v],i)=>({ name: TYPE_MAP[k]||k, value: v, itemStyle: { color: PALETTE[i % PALETTE.length] } })) }],
+    }, true);
+    document.getElementById("vz-m3").textContent = `${tSorted.length} 类 · 总 ${formatNum(totalN)} 项`;
+    // region pie
+    const rSorted = Object.entries(agg.rC).sort((a,b)=>b[1]-a[1]);
+    const c4 = ensureChart("chart-region");
+    c4.setOption({
+      ...baseTheme(),
+      tooltip: { trigger: 'item', backgroundColor: 'rgba(20,20,45,0.95)', borderColor: 'rgba(124,92,255,0.3)', textStyle: { color: '#fff' }, formatter: '{b}<br/>{c} 项 ({d}%)' },
+      legend: { orient: 'vertical', left: 10, top: 'center', textStyle: { color: cTextColor1, fontSize: 12 } },
+      series: [{ type: 'pie', radius: ['50%', '78%'], center: ['65%', '50%'], itemStyle: { borderRadius: 8, borderColor: 'rgba(20,20,45,0.95)', borderWidth: 3 }, label: { show: false }, emphasis: { label: { show: true, fontSize: 14, fontWeight: 600, color: '#fff' }, itemStyle: { shadowBlur: 20, shadowColor: 'rgba(34,211,238,0.6)' } }, data: rSorted.map(([k,v],i)=>({ name: k, value: v, itemStyle: { color: PALETTE[(i*3) % PALETTE.length] } })) }],
+    }, true);
+    document.getElementById("vz-m4").textContent = `${rSorted.length} 个地区`;
+    // heatmap
+    const heatIps = Object.entries(agg.ipC).sort((a,b)=>b[1]-a[1]).slice(0, 25).map(([k])=>k);
+    const heatTypes = Object.keys(agg.tC).sort();
+    const heatData = [];
+    let heatMax = 0;
+    for(let i=0; i<heatIps.length; i++){
+      for(let j=0; j<heatTypes.length; j++){
+        const v = (agg.ipType[heatIps[i]] && agg.ipType[heatIps[i]][heatTypes[j]]) || 0;
+        if(v > heatMax) heatMax = v;
+        heatData.push([j, i, v]);
       }
     }
+    const c5 = ensureChart("chart-heatmap");
+    c5.setOption({
+      ...baseTheme(),
+      tooltip: { backgroundColor: 'rgba(20,20,45,0.95)', borderColor: 'rgba(124,92,255,0.3)', textStyle: { color: '#fff' }, formatter: p => `${heatIps[p.value[1]]} · ${TYPE_MAP[heatTypes[p.value[0]]]||heatTypes[p.value[0]]}<br/>${p.value[2]} 项` },
+      grid: { top: 20, right: 50, bottom: 60, left: 110 },
+      xAxis: { type: 'category', data: heatTypes.map(t=>TYPE_MAP[t]||t), splitArea: { show: true }, axisLine: { lineStyle: { color: 'rgba(160,160,255,0.2)' } }, axisLabel: { color: cTextColor1, fontSize: 10, rotate: 30, interval: 0 } },
+      yAxis: { type: 'category', data: heatIps, inverse: true, splitArea: { show: true }, axisLine: { lineStyle: { color: 'rgba(160,160,255,0.2)' } }, axisLabel: { color: cTextColor1, fontSize: 10 } },
+      visualMap: { min: 0, max: heatMax, calculable: true, orient: 'horizontal', left: 'center', bottom: 5, textStyle: { color: cTextColor1, fontSize: 10 }, inRange: { color: ['#0c0c20', '#7c5cff', '#22d3ee', '#ff5d8f', '#ffd166'] } },
+      series: [{ name: '衍生数', type: 'heatmap', data: heatData, label: { show: false }, emphasis: { itemStyle: { shadowBlur: 10, shadowColor: 'rgba(124,92,255,0.8)' } } }],
+    }, true);
+    document.getElementById("vz-m5").textContent = `Top 25 IP × ${heatTypes.length} 类型 · 峰值 ${formatNum(heatMax)}`;
+    // network
+    const netIps = Object.entries(agg.ipC).sort((a,b)=>b[1]-a[1]).slice(0, 25);
+    const netNodes = netIps.map(([k,v],i)=>({ id: k, name: k, symbolSize: 8 + Math.min(40, Math.log10(v+1)*6), value: v, category: i, label: { show: true, color: cTextColor1, fontSize: 10 } }));
+    const typeTopByIp = netIps.map(([k])=>{ let best=null,bv=0; for(const t in (agg.ipType[k]||{})){ if(agg.ipType[k][t]>bv){bv=agg.ipType[k][t];best=t} } return {ip:k,type:best}; });
+    const byType = Object.create(null);
+    typeTopByIp.forEach(o=>{ if(o.type){ (byType[o.type]=byType[o.type]||[]).push(o.ip) } });
+    const netEdges = [];
+    for(const t in byType){
+      const arr = byType[t];
+      for(let i=0;i<arr.length;i++) for(let j=i+1;j<arr.length;j++){
+        if(netEdges.length<220) netEdges.push({ source:arr[i], target:arr[j], lineStyle:{ color:'rgba(124,92,255,0.18)', width:1, curveness:0.1 } });
+      }
+    }
+    const c6 = ensureChart("chart-network");
+    c6.setOption({
+      ...baseTheme(),
+      tooltip: { backgroundColor: 'rgba(20,20,45,0.95)', borderColor: 'rgba(124,92,255,0.3)', textStyle: { color: '#fff' }, formatter: p => p.dataType==='edge' ? '' : `${p.data.name}<br/>${formatNum(p.data.value)} 项衍生` },
+      series: [{ type: 'graph', layout: 'force', data: netNodes, links: netEdges, roam: true, draggable: true, force: { repulsion: 220, edgeLength: 80, gravity: 0.05 }, emphasis: { focus: 'adjacency', lineStyle: { width: 3, color: '#22d3ee' }, itemStyle: { shadowBlur: 16, shadowColor: '#7c5cff' } }, lineStyle: { opacity: 0.5 } }],
+    }, true);
   }
-  const chart6 = ensureChart("chart-network");
-  chart6.setOption({
-    ...baseTheme(),
-    tooltip: { backgroundColor: 'rgba(20,20,45,0.95)', borderColor: 'rgba(124,92,255,0.3)', textStyle: { color: '#fff' },
-      formatter: p => p.dataType === 'edge' ? '' : `${p.data.name}<br/>${formatNum(p.data.value)} 项衍生` },
-    legend: [{ type: 'scroll', bottom: 5, textStyle: { color: '#c8c8e6', fontSize: 10 }, data: Object.keys(typeTopByIp.reduce((m,o)=>{m[o.type||'未知']=true; return m},{})).filter(x=>x).slice(0,8) }],
-    series: [{
-      type: 'graph', layout: 'force',
-      data: netNodes, links: netEdges,
-      roam: true, draggable: true,
-      force: { repulsion: 220, edgeLength: 80, gravity: 0.05 },
-      emphasis: { focus: 'adjacency', lineStyle: { width: 3, color: '#22d3ee' }, itemStyle: { shadowBlur: 16, shadowColor: '#7c5cff' } },
-      lineStyle: { opacity: 0.5 },
-      edgeSymbol: ['none','none'],
-    }],
-  }, true);
-  document.getElementById("vmeta-network").textContent = `${netNodes.length} 节点 · ${netEdges.length} 边`;
+  mountEl.querySelectorAll("[data-vz]").forEach(c => c.addEventListener("click", () => {
+    vizState.region = c.dataset.vz;
+    mountEl.querySelectorAll("[data-vz]").forEach(x => x.classList.toggle("active", x === c));
+    runViz();
+  }));
+  mountEl.querySelectorAll("[data-tp]").forEach(c => c.addEventListener("click", () => {
+    vizState.top = parseInt(c.dataset.tp);
+    mountEl.querySelectorAll("[data-tp]").forEach(x => x.classList.toggle("active", x === c));
+    runViz();
+  }));
+  document.getElementById("vz-export").addEventListener("click", () => {
+    for(const id of ["chart-timeline","chart-ip","chart-type","chart-region","chart-heatmap","chart-network"]){
+      exportPNG(id, `gameip_${id}_${Date.now()}.png`);
+    }
+  });
+  setTimeout(runViz, 50);
 }
 
-function ensureChart(id){
-  if(!charts[id]) charts[id] = echarts.init(document.getElementById(id), null, { renderer: 'canvas' });
-  return charts[id];
-}
-
-window.addEventListener("resize",()=>{
-  Object.values(charts).forEach(c=>c.resize());
-});
-
-/* === Init === */
-function init(){
-  if(!RAW.length){
-    document.getElementById("grid").innerHTML=`<div class="empty"><h3>数据加载中…</h3></div>`;
+/* ============================================================
+   VIEW 4: IP DETAIL
+   ============================================================ */
+function renderIPDetail(mountEl, ipName){
+  if(!ipName){
+    mountEl.innerHTML = `
+      <div class="page-heading" style="margin-top:24px">
+        <h1>IP <span class="grad">详情</span></h1>
+        <p>选择一个游戏 IP，查看其衍生生态全景。</p>
+      </div>
+      <div class="filters" style="position:static;max-height:none">
+        <div class="f-group">
+          <div class="f-title">所有 IP 源 (${IP_LIST.length})</div>
+          <div class="f-list" id="ip-picker" style="max-height:70vh">
+            ${IP_LIST.map(([k,v]) => `<a href="#/ip/${encodeURIComponent(k)}" class="f-item"><span>${esc(k)}</span><span class="n">${formatNum(v)}</span></a>`).join('')}
+          </div>
+        </div>
+      </div>
+    `;
     return;
   }
-  // Show loading screen briefly
+  const ip = decodeURIComponent(ipName);
+  const works = [];
+  const tC = Object.create(null);
+  const yC = new Int32Array(60);
+  const yrStart = 1985;
+  const rC = Object.create(null);
+  for(let i=0, n=WORKS.length; i<n; i++){
+    const w = WORKS[i];
+    if(w.ip !== ip) continue;
+    works.push(w);
+    tC[w.type] = (tC[w.type] || 0) + 1;
+    if(w.year >= yrStart && w.year < yrStart + 60) yC[w.year-yrStart]++;
+    rC[w.region] = (rC[w.region] || 0) + 1;
+  }
+  const sorted = works.slice().sort((a,b)=>b.year-a.year);
+  const topWorks = sorted.slice(0, 24);
+  const total = works.length;
+  const topType = Object.entries(tC).sort((a,b)=>b[1]-a[1])[0] || ['—', 0];
+  const yrs = works.map(w=>w.year).filter(y=>y>0);
+  const yearMin = yrs.length ? Math.min(...yrs) : 0;
+  const yearMax = yrs.length ? Math.max(...yrs) : 0;
+  const related = IP_LIST.filter(([k]) => k !== ip).slice(0, 6);
+  mountEl.innerHTML = `
+    <a class="back-btn" href="#/ip">← 返回 IP 列表</a>
+    <div class="ip-hero">
+      <div class="ip-sub">GAME IP · ${esc(ip)}</div>
+      <h1>${esc(ip)}</h1>
+      <div class="ip-sub" style="margin-top:4px">衍生作品宇宙 · ${formatNum(total)} 项 · 活跃 ${yearMin}–${yearMax}</div>
+      <div class="ip-hero-actions">
+        <button class="btn" id="ip-export">↓ 导出该 IP 全部数据 (CSV)</button>
+        <button class="btn" id="ip-compare">↔ 加入对比</button>
+      </div>
+    </div>
+    <div class="viz-insights">
+      <div class="insight"><div class="k">衍生总数</div><div class="v">${formatNum(total)}<small>条</small></div><div class="h">覆盖所有类型与地区</div></div>
+      <div class="insight"><div class="k">头部类型</div><div class="v">${esc(TYPE_MAP[topType[0]]||topType[0])}</div><div class="h">${formatNum(topType[1])} 项</div></div>
+      <div class="insight"><div class="k">活跃年份</div><div class="v">${yearMin || '—'}<small>—</small>${yearMax || '—'}</div><div class="h">跨度 ${(yearMax-yearMin+1)||0} 年</div></div>
+      <div class="insight"><div class="k">覆盖类型数</div><div class="v">${Object.keys(tC).length}<small>类</small></div><div class="h">${Object.keys(rC).length} 个地区</div></div>
+    </div>
+    <div class="ip-grid">
+      <div class="viz-card span-8">
+        <div class="vhead"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 6-6"/></svg>${esc(ip)} 衍生时间线</h3><span class="vmeta">${yearMin} – ${yearMax}</span></div>
+        <div id="ip-chart-tl" class="chart tall"></div>
+      </div>
+      <div class="viz-card span-4">
+        <div class="vhead"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path d="M12 3v9l5 3"/></svg>类型分布</h3><span class="vmeta">${Object.keys(tC).length} 类</span></div>
+        <div id="ip-chart-type" class="chart tall"></div>
+      </div>
+      <div class="viz-card span-12">
+        <div class="vhead"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>代表作品 Top ${topWorks.length}</h3><span class="vmeta">按年份降序</span></div>
+        <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">
+          ${topWorks.map(w => `<div class="card" data-id="${w.id}">
+            <div class="card-head"><div class="card-title">${esc(w.title)}</div><div class="badge ${TYPE_CLS[w.type]||'b-other'}">${w.typeZh}</div></div>
+            <div class="card-meta"><span class="year">${w.year}</span><span>· ${esc(w.region)}</span></div>
+            <div class="card-desc">${esc(w.desc||'—')}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div class="viz-card span-12">
+        <div class="vhead"><h3>相似 IP · 头部推荐</h3><span class="vmeta">同量级衍生生态</span></div>
+        <div class="spotlight-grid">
+          ${related.map(([k,v]) => `<a href="#/ip/${encodeURIComponent(k)}" class="spot-card"><h4>${esc(k)}</h4><div class="smeta">${formatNum(v)} 项衍生</div></a>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+  setTimeout(() => {
+    const years = [];
+    const yData = [];
+    for(let i=0; i<60; i++){ years.push(yrStart+i); yData.push(yC[i]||0); }
+    const c1 = ensureChart("ip-chart-tl");
+    c1.setOption({
+      ...baseTheme(),
+      grid: { top: 30, right: 30, bottom: 60, left: 60 },
+      tooltip: { trigger: 'axis', backgroundColor: 'rgba(20,20,45,0.95)', borderColor: 'rgba(124,92,255,0.3)', textStyle: { color: '#fff' } },
+      xAxis: { type: 'category', data: years, axisLine: { lineStyle: { color: 'rgba(160,160,255,0.2)' } }, axisLabel: { color: getComputedStyle(document.body).getPropertyValue('--text-2'), fontSize: 10, rotate: 45 } },
+      yAxis: { type: 'value', axisLine: { show: false }, axisLabel: { color: getComputedStyle(document.body).getPropertyValue('--text-2'), fontSize: 10 }, splitLine: { lineStyle: { color: 'rgba(160,160,255,0.08)' } } },
+      series: [{ name: '衍生', type: 'bar', data: yData, itemStyle: { borderRadius: [3,3,0,0], color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{offset:0,color:'#7c5cff'},{offset:1,color:'#22d3ee'}] } } }],
+    }, true);
+    const tSorted = Object.entries(tC).sort((a,b)=>b[1]-a[1]);
+    const c2 = ensureChart("ip-chart-type");
+    c2.setOption({
+      ...baseTheme(),
+      tooltip: { trigger: 'item', backgroundColor: 'rgba(20,20,45,0.95)', borderColor: 'rgba(124,92,255,0.3)', textStyle: { color: '#fff' }, formatter: '{b}<br/>{c} 项 ({d}%)' },
+      legend: { type: 'scroll', bottom: 10, textStyle: { color: getComputedStyle(document.body).getPropertyValue('--text-1'), fontSize: 11 } },
+      series: [{ type: 'pie', radius: ['40%', '70%'], center: ['50%', '45%'], itemStyle: { borderRadius: 6, borderColor: 'rgba(20,20,45,0.95)', borderWidth: 2 }, label: { show: false }, emphasis: { label: { show: true, fontSize: 13, fontWeight: 600, color: '#fff' }, itemStyle: { shadowBlur: 20, shadowColor: 'rgba(124,92,255,0.6)' } }, data: tSorted.map(([k,v],i)=>({ name: TYPE_MAP[k]||k, value: v, itemStyle: { color: PALETTE[i % PALETTE.length] } })) }],
+    }, true);
+  }, 50);
+  document.getElementById("ip-export").addEventListener("click", () => {
+    exportCSV(works.map(w => ({ id:w.id, title:w.title, type:w.typeZh, region:w.region, year:w.year, source:w.source, ip:w.ip, desc:w.desc })), `${ip}_${Date.now()}.csv`);
+  });
+  document.getElementById("ip-compare").addEventListener("click", () => {
+    const arr = storage.get('compare', []);
+    if(!arr.includes(ip)){ arr.push(ip); if(arr.length>4) arr.shift(); storage.set('compare', arr); }
+    navigate('#/compare');
+  });
+  mountEl.querySelectorAll(".card").forEach(c => c.addEventListener("click", () => {
+    const w = WORKS.find(x => x.id === parseInt(c.dataset.id));
+    if(w) openModal(w);
+  }));
+}
+
+/* ============================================================
+   VIEW 5: RANKINGS
+   ============================================================ */
+let rankState = { dim: 'ip' };
+function renderRankings(mountEl){
+  const dims = [
+    {k:'ip', label:'IP 排行', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg>'},
+    {k:'type', label:'类型 排行', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg>'},
+    {k:'region', label:'地区 排行', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg>'},
+    {k:'source', label:'来源/作者 排行', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'},
+  ];
+  mountEl.innerHTML = `
+    <div class="page-heading" style="margin-top:24px">
+      <h1>排行 <span class="grad">榜</span></h1>
+      <p>多维度 Top 100 榜单 · 实时计算</p>
+    </div>
+    <div class="rank-tabs">
+      ${dims.map(d => `<div class="rank-tab ${rankState.dim===d.k?'active':''}" data-dim="${d.k}">${d.icon}${d.label}</div>`).join('')}
+      <button class="btn" id="rk-export" style="margin-left:auto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>导出当前榜单</button>
+    </div>
+    <div class="rank-list" id="rk-list"></div>
+  `;
+  function getData(){
+    const c = Object.create(null);
+    for(let i=0, n=WORKS.length; i<n; i++){
+      const w = WORKS[i];
+      let key;
+      if(rankState.dim === 'ip') key = w.ip;
+      else if(rankState.dim === 'type') key = w.typeZh;
+      else if(rankState.dim === 'region') key = w.region;
+      else if(rankState.dim === 'source') key = w.source || '—';
+      c[key] = (c[key] || 0) + 1;
+    }
+    return Object.entries(c).sort((a,b)=>b[1]-a[1]);
+  }
+  function render(){
+    const data = getData();
+    const top = data.slice(0, 100);
+    const max = top[0] ? top[0][1] : 1;
+    const list = document.getElementById("rk-list");
+    list.innerHTML = top.map((d, i) => {
+      const [name, val] = d;
+      const pct = (val / max) * 100;
+      const isIP = rankState.dim === 'ip';
+      const href = isIP ? `href="#/ip/${encodeURIComponent(name)}"` : '';
+      return `<a ${href} class="rank-row">
+        <div class="rank-num">#${i+1}</div>
+        <div class="rank-name">${esc(name)}</div>
+        <div class="rank-bar-wrap"><div class="rank-bar" style="width:${pct}%"></div></div>
+        <div class="rank-val">${formatNum(val)}</div>
+      </a>`;
+    }).join('');
+  }
+  mountEl.querySelectorAll("[data-dim]").forEach(c => c.addEventListener("click", () => {
+    rankState.dim = c.dataset.dim;
+    mountEl.querySelectorAll("[data-dim]").forEach(x => x.classList.toggle("active", x === c));
+    render();
+  }));
+  document.getElementById("rk-export").addEventListener("click", () => {
+    const data = getData().slice(0, 100);
+    exportCSV(data.map((d, i) => ({ rank: i+1, name: d[0], count: d[1] })), `rankings_${rankState.dim}_${Date.now()}.csv`);
+  });
+  render();
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+function openModal(w){
+  const box = document.getElementById("modal-box");
+  // Find related (same IP, excluding self)
+  const related = [];
+  for(let i=0, n=WORKS.length; i<n && related.length<5; i++){
+    if(WORKS[i].ip === w.ip && WORKS[i].id !== w.id) related.push(WORKS[i]);
+  }
+  const fav = storage.get('favs', []);
+  const isFav = fav.includes(w.id);
+  box.innerHTML = `
+    <button class="modal-close" id="mc">×</button>
+    <h2>${esc(w.title)}</h2>
+    <a href="#/ip/${encodeURIComponent(w.ip)}" class="ip-line">◆ ${esc(w.ip)} · 查看全部 →</a>
+    <div class="modal-grid">
+      <div class="cell"><div class="k">类型</div><div class="v">${w.typeZh}</div></div>
+      <div class="cell"><div class="k">年份</div><div class="v">${w.year}</div></div>
+      <div class="cell"><div class="k">地区</div><div class="v">${esc(w.region)}</div></div>
+      <div class="cell"><div class="k">来源/制作方</div><div class="v">${esc(w.source)}</div></div>
+    </div>
+    <div class="modal-desc">${esc(w.desc || '无详细简介。')}</div>
+    <div class="modal-tags">
+      <div class="tag">${w.typeZh}</div>
+      <div class="tag">${esc(w.ip)}</div>
+      <div class="tag">${w.year}</div>
+      <div class="tag">${esc(w.region)}</div>
+      <button class="btn ${isFav?'primary':''}" id="modal-fav" data-id="${w.id}" style="padding:6px 10px;font-size:12px">${isFav?'★ 已收藏':'☆ 收藏'}</button>
+    </div>
+    ${related.length ? `<div class="modal-related">
+      <h4>同 IP 其他作品</h4>
+      ${related.map(r => `<div class="rel-item" data-id="${r.id}">${esc(r.title)} <span style="color:var(--text-3)">· ${r.year} · ${r.typeZh}</span></div>`).join('')}
+    </div>` : ''}
+  `;
+  document.getElementById("modal").classList.add("open");
+  document.getElementById("mc").addEventListener("click", closeModal);
+  document.getElementById("modal-fav").addEventListener("click", () => {
+    const id = parseInt(document.getElementById("modal-fav").dataset.id);
+    const arr = storage.get('favs', []);
+    const i = arr.indexOf(id);
+    if(i >= 0) arr.splice(i, 1);
+    else arr.push(id);
+    storage.set('favs', arr);
+    closeModal();
+  });
+  box.querySelectorAll(".rel-item").forEach(r => r.addEventListener("click", () => {
+    const nw = WORKS.find(x => x.id === parseInt(r.dataset.id));
+    if(nw) openModal(nw);
+  }));
+}
+function closeModal(){ document.getElementById("modal").classList.remove("open"); }
+document.getElementById("modal").addEventListener("click", e => { if(e.target.id==="modal") closeModal(); });
+document.addEventListener("keydown", e => { if(e.key==="Escape") closeModal(); });
+
+/* ============================================================
+   THEME / DENSITY / ANIM INIT
+   ============================================================ */
+const themeBtn = document.getElementById("theme-btn");
+const themes = ['dark','light','cyber'];
+let themeIdx = themes.indexOf(storage.get('theme', 'dark'));
+if(themeIdx < 0) themeIdx = 0;
+document.documentElement.setAttribute('data-theme', themes[themeIdx]);
+document.documentElement.setAttribute('data-density', storage.get('density', 'default'));
+document.documentElement.setAttribute('data-anim', storage.get('anim', 'on'));
+themeBtn.addEventListener("click", () => {
+  themeIdx = (themeIdx + 1) % themes.length;
+  const t = themes[themeIdx];
+  storage.set('theme', t);
+  document.documentElement.setAttribute('data-theme', t);
+  for(const k in charts){ try { charts[k].dispose(); } catch(e){} }
+  Object.keys(charts).forEach(k => delete charts[k]);
+  const r = parseRoute();
+  const path = r.path;
+  const mountEl = app;
+  // re-render current view
+  if(path === '/' || path === '') renderHome(mountEl);
+  else if(path === '/browse') renderBrowse(mountEl);
+  else if(path === '/visualize') renderVisualize(mountEl);
+  else if(path === '/ip') renderIPDetail(mountEl, r.params[0]);
+  else if(path === '/rankings') renderRankings(mountEl);
+  else if(path === '/compare') renderCompare(mountEl);
+  else if(path === '/timeline') renderTimeline(mountEl);
+  else if(path === '/regions') renderRegions(mountEl);
+  else if(path === '/collections') renderCollections(mountEl);
+  else if(path === '/settings') renderSettings(mountEl);
+});
+
+/* ============================================================
+   ROUTER + INIT
+   ============================================================ */
+function routeTo(){
+  const r = parseRoute();
+  const path = r.path;
+  setActiveNav(path);
+  // Dispose all charts to free memory
+  for(const k in charts){ try { charts[k].dispose(); } catch(e){} }
+  Object.keys(charts).forEach(k => delete charts[k]);
+  // Render view
+  if(path === '/' || path === '') renderHome(app);
+  else if(path === '/browse') renderBrowse(app);
+  else if(path === '/visualize') renderVisualize(app);
+  else if(path === '/ip') renderIPDetail(app, r.params[0]);
+  else if(path === '/rankings') renderRankings(app);
+  else if(path === '/compare') renderCompare(app);
+  else if(path === '/timeline') renderTimeline(app);
+  else if(path === '/regions') renderRegions(app);
+  else if(path === '/collections') renderCollections(app);
+  else if(path === '/settings') renderSettings(app);
+  else { app.innerHTML = `<div class="page-heading" style="margin-top:80px"><h1>404</h1><p>页面不存在 · <a href="#/" style="color:var(--accent-b)">返回首页</a></p></div>`; }
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+window.addEventListener("hashchange", routeTo);
+window.addEventListener("resize", () => {
+  for(const k in charts) try { charts[k].resize(); } catch(e){}
+});
+
+function init(){
+  if(!RAW.length){
+    document.getElementById("lt").textContent = "NO DATA FOUND";
+    document.getElementById("lp").textContent = "请确认 data.js 存在";
+    return;
+  }
   const lt = document.getElementById("lt");
   const lp = document.getElementById("lp");
   lt.textContent = "PARSING DATABASE…";
   lp.textContent = `正在解析 ${RAW.length.toLocaleString()} 条原始数据`;
-  setTimeout(()=>{
-    lt.textContent = "BUILDING AGGREGATES…";
+  setTimeout(() => {
+    lt.textContent = "BUILDING INDEX…";
     lp.textContent = "正在构建索引与统计聚合";
-    setTimeout(()=>{
+    setTimeout(() => {
       buildWorks();
       buildAggregates();
-      renderStats();
-      renderFilters();
-      render();
+      timelineState.year = yearRange[1] || 2025;
       lt.textContent = "READY";
       lp.textContent = "准备就绪";
-      setTimeout(()=>{
+      setTimeout(() => {
         document.getElementById("loader").classList.add("hidden");
-      }, 250);
+        routeTo();
+      }, 200);
     }, 30);
   }, 30);
 }
