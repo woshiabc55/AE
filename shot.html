@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>单镜详情 · 哥窑</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+  <nav class="nav">
+    <a href="index.html" class="nav__brand"><span class="seal">哥</span>哥窑 · GE KILN</a>
+    <ul class="nav__links">
+      <li><a href="ppt.html">PPT 演示</a></li>
+      <li><a href="storyboard.html">分镜长卷</a></li>
+      <li><a href="analysis.html">主旨解读</a></li>
+      <li><a href="about.html">关于</a></li>
+    </ul>
+  </nav>
+
+  <main class="shot-detail" id="shotRoot">
+    <div style="text-align:center;padding:80px;color:var(--ink-soft);">
+      <div style="font-family:var(--font-display);letter-spacing:0.3em;">LOADING · 加载镜号数据</div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__brand">哥窑 · GE KILN</div>
+    <div class="footer__lead">窑火如歌，兄弟如线</div>
+    <div class="footer__small">
+      <a href="ppt.html">PPT</a> ·
+      <a href="storyboard.html">分镜长卷</a> ·
+      <a href="about.html">关于</a>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/site.js"></script>
+  <script src="js/shot.js"></script>
+  <script>KE.markNav('storyboard.html');</script>
+</body>
+</html>
