@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>游戏IP衍生宇宙 · GameIP Derivative Archive (2026.06)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-0:#070713;
+  --bg-1:#0c0c20;
+  --bg-2:#12122b;
+  --panel:rgba(20,20,45,0.55);
+  --panel-2:rgba(30,30,60,0.65);
+  --border:rgba(120,120,200,0.18);
+  --border-2:rgba(160,160,255,0.28);
+  --text-0:#f5f5ff;
+  --text-1:#c8c8e6;
+  --text-2:#8a8aab;
+  --text-3:#5a5a7a;
+  --accent-a:#7c5cff;
+  --accent-b:#22d3ee;
+  --accent-c:#ff5d8f;
+  --accent-d:#ffd166;
+  --grad-1:linear-gradient(135deg,#7c5cff 0%,#22d3ee 100%);
+  --grad-2:linear-gradient(135deg,#ff5d8f 0%,#ffd166 100%);
+  --grad-3:linear-gradient(135deg,#22d3ee 0%,#10b981 100%);
+  --grad-4:linear-gradient(135deg,#7c5cff 0%,#ff5d8f 100%);
+  --shadow-1:0 8px 30px rgba(0,0,0,0.35);
+  --shadow-2:0 12px 50px rgba(124,92,255,0.25);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;
+  background:var(--bg-0);
+  color:var(--text-0);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  position:relative;
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:-2;
+  background:
+    radial-gradient(60vw 50vh at 12% 8%, rgba(124,92,255,0.22), transparent 60%),
+    radial-gradient(50vw 50vh at 88% 20%, rgba(34,211,238,0.18), transparent 60%),
+    radial-gradient(60vw 60vh at 50% 100%, rgba(255,93,143,0.12), transparent 60%),
+    linear-gradient(180deg,#070713 0%,#0a0a1c 50%,#070713 100%);
+}
+body::after{
+  content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.app{max-width:1480px;margin:0 auto;padding:24px 32px 80px}
+.hero{
+  position:relative;border-radius:28px;padding:48px 48px 56px;
+  background:linear-gradient(135deg,rgba(124,92,255,0.12),rgba(34,211,238,0.06) 50%,rgba(255,93,143,0.10));
+  border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow-1);
+  margin-bottom:28px;
+}
+.hero-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.logo{
+  width:46px;height:46px;border-radius:14px;background:var(--grad-1);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:22px;box-shadow:0 8px 24px rgba(124,92,255,0.45);
+  position:relative;overflow:hidden;
+}
+.logo::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.4),transparent 50%)}
+.crumb{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.18em;color:var(--text-2);text-transform:uppercase}
+.crumb b{color:var(--accent-b);font-weight:600}
+h1{
+  font-size:48px;font-weight:800;letter-spacing:-0.02em;
+  background:linear-gradient(120deg,#fff 20%,#c8b3ff 50%,#7ee0ff 90%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  line-height:1.1;margin-bottom:14px;
+}
+.hero p.sub{color:var(--text-1);font-size:16px;line-height:1.6;max-width:780px}
+.hero .meta{display:flex;gap:18px;flex-wrap:wrap;margin-top:18px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-2)}
+.hero .meta span b{color:var(--text-0);font-weight:600}
+.tag-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+.tag{font-size:12px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text-1);font-family:'JetBrains Mono',monospace}
+.tag.live{color:var(--accent-d);border-color:rgba(255,209,102,0.4)}
+.tag.acc{color:var(--accent-b);border-color:rgba(34,211,238,0.4)}
+.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-bottom:28px}
+.stat{
+  position:relative;padding:18px 20px;border-radius:18px;
+  background:var(--panel);border:1px solid var(--border);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);overflow:hidden;
+}
+.stat::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--g,var(--grad-1)) 0%,transparent 60%);opacity:0.18;pointer-events:none}
+.stat .label{font-size:12px;color:var(--text-2);letter-spacing:0.12em;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
+.stat .val{font-size:32px;font-weight:800;margin-top:6px;letter-spacing:-0.02em}
+.stat .val small{font-size:14px;font-weight:500;color:var(--text-2);margin-left:6px}
+.stat .delta{font-size:12px;color:var(--accent-b);margin-top:6px;font-family:'JetBrains Mono',monospace}
+.stat:nth-child(1){--g:var(--grad-1)}
+.stat:nth-child(2){--g:var(--grad-2)}
+.stat:nth-child(3){--g:var(--grad-3)}
+.stat:nth-child(4){--g:var(--grad-4)}
+.stat:nth-child(5){--g:var(--grad-1)}
+.toolbar{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;margin-bottom:18px}
+.search-wrap{position:relative}
+.search-wrap svg{position:absolute;left:18px;top:50%;transform:translateY(-50%);color:var(--text-2);width:18px;height:18px}
+.search{
+  width:100%;padding:18px 22px 18px 50px;font-size:15px;color:var(--text-0);
+  background:var(--panel);border:1px solid var(--border);border-radius:16px;
+  outline:none;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  transition:all 0.2s;
+}
+.search::placeholder{color:var(--text-3)}
+.search:focus{border-color:var(--accent-a);box-shadow:0 0 0 4px rgba(124,92,255,0.15)}
+.toolbar-actions{display:flex;gap:10px;align-items:center}
+.btn{
+  padding:14px 18px;border-radius:14px;background:var(--panel);border:1px solid var(--border);
+  color:var(--text-1);font-size:13px;font-weight:500;
+  display:flex;align-items:center;gap:8px;transition:all 0.2s;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+}
+.btn:hover{border-color:var(--accent-a);color:var(--text-0)}
+.btn svg{width:16px;height:16px}
+.btn.primary{background:var(--grad-1);border-color:transparent;color:#fff;font-weight:600}
+.btn.primary:hover{box-shadow:0 8px 24px rgba(124,92,255,0.4)}
+.body{display:grid;grid-template-columns:280px 1fr;gap:24px;align-items:flex-start}
+.filters{
+  position:sticky;top:24px;background:var(--panel);border:1px solid var(--border);
+  border-radius:20px;padding:20px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  max-height:calc(100vh - 48px);overflow-y:auto;
+}
+.filters::-webkit-scrollbar{width:6px}
+.filters::-webkit-scrollbar-track{background:transparent}
+.filters::-webkit-scrollbar-thumb{background:rgba(124,92,255,0.3);border-radius:3px}
+.f-group{margin-bottom:22px}
+.f-group:last-child{margin-bottom:0}
+.f-title{
+  font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--text-2);margin-bottom:10px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.f-title .clear{color:var(--accent-b);cursor:pointer;font-size:11px;text-transform:none;letter-spacing:0}
+.f-title .clear:hover{text-decoration:underline}
+.f-chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{
+  font-size:12px;padding:6px 11px;border-radius:10px;
+  background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text-1);
+  transition:all 0.15s;cursor:pointer;user-select:none;
+}
+.chip:hover{border-color:var(--border-2);color:var(--text-0)}
+.chip.active{background:var(--grad-1);border-color:transparent;color:#fff;font-weight:600;box-shadow:0 4px 14px rgba(124,92,255,0.35)}
+.chip .n{opacity:0.55;font-size:10px;margin-left:4px;font-family:'JetBrains Mono',monospace}
+.f-list{display:flex;flex-direction:column;gap:5px;max-height:240px;overflow-y:auto;padding-right:4px}
+.f-list::-webkit-scrollbar{width:4px}
+.f-list::-webkit-scrollbar-thumb{background:rgba(124,92,255,0.3);border-radius:2px}
+.f-item{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:13px;padding:6px 10px;border-radius:8px;cursor:pointer;
+  color:var(--text-1);transition:all 0.15s;
+}
+.f-item:hover{background:rgba(255,255,255,0.04);color:var(--text-0)}
+.f-item.active{background:rgba(124,92,255,0.18);color:var(--text-0)}
+.f-item .n{color:var(--text-3);font-family:'JetBrains Mono',monospace;font-size:11px}
+.results-head{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;
+}
+.results-count{font-size:14px;color:var(--text-1)}
+.results-count b{color:var(--text-0);font-weight:700;font-size:18px;margin:0 4px}
+.sort{
+  display:flex;gap:6px;align-items:center;background:var(--panel);border:1px solid var(--border);
+  border-radius:12px;padding:4px;
+}
+.sort button{
+  padding:8px 14px;border-radius:8px;font-size:12px;color:var(--text-2);font-weight:500;
+  transition:all 0.15s;
+}
+.sort button.active{background:var(--grad-1);color:#fff}
+.sort button:hover:not(.active){color:var(--text-0)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.card{
+  position:relative;background:var(--panel-2);border:1px solid var(--border);
+  border-radius:16px;padding:16px 16px 14px;transition:all 0.2s;overflow:hidden;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);cursor:pointer;
+}
+.card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--g,var(--grad-1));opacity:0.85}
+.card:hover{transform:translateY(-3px);border-color:var(--border-2);box-shadow:0 14px 40px rgba(0,0,0,0.4)}
+.card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px}
+.card-title{font-size:15px;font-weight:600;color:var(--text-0);line-height:1.35;flex:1}
+.badge{font-size:10px;font-weight:600;padding:3px 8px;border-radius:6px;background:rgba(124,92,255,0.18);color:var(--accent-a);letter-spacing:0.05em;white-space:nowrap;flex-shrink:0}
+.badge.b-anime{background:rgba(34,211,238,0.15);color:var(--accent-b)}
+.badge.b-manga{background:rgba(255,93,143,0.15);color:var(--accent-c)}
+.badge.b-film{background:rgba(255,209,102,0.15);color:var(--accent-d)}
+.badge.b-tv{background:rgba(124,92,255,0.18);color:var(--accent-a)}
+.badge.b-stage{background:rgba(168,85,247,0.18);color:#c084fc}
+.badge.b-novel{background:rgba(74,222,128,0.15);color:#4ade80}
+.badge.b-game{background:rgba(244,114,182,0.15);color:#f472b6}
+.badge.b-music{background:rgba(251,146,60,0.15);color:#fb923c}
+.badge.b-otaku{background:rgba(96,165,250,0.15);color:#60a5fa}
+.badge.b-web{background:rgba(45,212,191,0.15);color:#2dd4bf}
+.badge.b-radio{background:rgba(232,121,249,0.15);color:#e879f9}
+.badge.b-short{background:rgba(248,113,113,0.15);color:#f87171}
+.badge.b-live{background:rgba(253,224,71,0.15);color:#fde047}
+.badge.b-other{background:rgba(148,163,184,0.15);color:#94a3b8}
+.card-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;font-size:11px;color:var(--text-2);font-family:'JetBrains Mono',monospace}
+.card-meta span{display:inline-flex;align-items:center;gap:3px}
+.card-meta .ip{color:var(--accent-b);font-weight:600}
+.card-meta .year{color:var(--accent-d)}
+.card-desc{font-size:12px;color:var(--text-1);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.empty{
+  grid-column:1/-1;padding:60px 20px;text-align:center;color:var(--text-2);
+  background:var(--panel);border:1px dashed var(--border);border-radius:18px;
+}
+.empty h3{color:var(--text-1);margin-bottom:6px;font-size:18px}
+.pager{display:flex;justify-content:center;align-items:center;gap:6px;flex-wrap:wrap;margin-top:32px}
+.pager button{
+  min-width:38px;height:38px;padding:0 12px;border-radius:10px;
+  background:var(--panel);border:1px solid var(--border);
+  color:var(--text-1);font-size:13px;font-weight:500;transition:all 0.15s;
+}
+.pager button:hover:not(:disabled){border-color:var(--accent-a);color:var(--text-0)}
+.pager button:disabled{opacity:0.4;cursor:not-allowed}
+.pager button.active{background:var(--grad-1);border-color:transparent;color:#fff;font-weight:600}
+.pager .ellipsis{color:var(--text-3);padding:0 6px}
+.foot{
+  margin-top:48px;padding-top:24px;border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
+  font-size:12px;color:var(--text-3);font-family:'JetBrains Mono',monospace;
+}
+.foot b{color:var(--accent-b);font-weight:600}
+.modal{
+  position:fixed;inset:0;z-index:1000;background:rgba(7,7,19,0.7);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  display:none;align-items:center;justify-content:center;padding:20px;animation:fadeIn 0.2s;
+}
+.modal.open{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-box{
+  width:100%;max-width:560px;
+  background:linear-gradient(180deg,#15152e,#0c0c20);
+  border:1px solid var(--border-2);border-radius:20px;padding:28px;
+  position:relative;max-height:80vh;overflow-y:auto;
+  box-shadow:0 30px 80px rgba(0,0,0,0.5);
+}
+.modal-box::-webkit-scrollbar{width:6px}
+.modal-box::-webkit-scrollbar-thumb{background:rgba(124,92,255,0.3);border-radius:3px}
+.modal-close{
+  position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;
+  background:rgba(255,255,255,0.06);color:var(--text-1);
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+}
+.modal-close:hover{background:rgba(255,255,255,0.12);color:#fff}
+.modal h2{
+  font-size:22px;font-weight:700;margin-bottom:8px;line-height:1.3;
+  background:linear-gradient(120deg,#fff,#c8b3ff);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.modal .ip-line{
+  display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--accent-b);
+  font-family:'JetBrains Mono',monospace;letter-spacing:0.06em;margin-bottom:14px;
+  padding:4px 10px;border-radius:6px;background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.18);
+}
+.modal .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.modal .modal-grid .cell{
+  padding:10px 12px;border-radius:10px;
+  background:rgba(255,255,255,0.03);border:1px solid var(--border);
+}
+.modal .modal-grid .cell .k{font-size:11px;color:var(--text-2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;font-family:'JetBrains Mono',monospace}
+.modal .modal-grid .cell .v{font-size:14px;color:var(--text-0);font-weight:500}
+.modal-desc{color:var(--text-1);font-size:14px;line-height:1.7}
+.modal-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+@media (max-width:1100px){
+  .stats{grid-template-columns:repeat(3,1fr)}
+  .body{grid-template-columns:1fr}
+  .filters{position:static;max-height:none}
+}
+@media (max-width:680px){
+  .app{padding:16px 14px 60px}
+  .hero{padding:28px 22px 36px}
+  h1{font-size:32px}
+  .stats{grid-template-columns:repeat(2,1fr);gap:10px}
+  .stat .val{font-size:24px}
+  .toolbar{grid-template-columns:1fr}
+  .grid{grid-template-columns:1fr 1fr}
+  .modal-grid{grid-template-columns:1fr !important}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="hero">
+    <div class="hero-top">
+      <div class="logo">G</div>
+      <div>
+        <div class="crumb">GameIP · <b>Derivative Universe Archive</b></div>
+        <div class="crumb" style="margin-top:4px">Updated 2026 · 06 · 08</div>
+      </div>
+    </div>
+    <h1>游戏 IP 衍生作品宇宙</h1>
+    <p class="sub">收录来自游戏原生 IP 衍生的动画、漫画、电影、电视剧、舞台剧、小说、衍生游戏、音乐剧与同人佳作。跨越 1985–2026，涵盖 30+ 个国家与地区，超过 2000 项作品的资料库与现代化浏览体验。</p>
+    <div class="meta">
+      <span>Curated by <b>Gamers' Lore Lab</b></span>
+      <span>Snapshot <b>2026-06-08</b></span>
+      <span>Source <b>Wikipedia · MyAnimeList · Bangumi · AniDB</b></span>
+    </div>
+    <div class="tag-row">
+      <div class="tag live">● LIVE DATABASE</div>
+      <div class="tag acc">2,000+ ENTRIES</div>
+      <div class="tag">MULTI-REGION</div>
+      <div class="tag">1985 – 2026</div>
+      <div class="tag">REAL-TIME FILTER</div>
+    </div>
+  </header>
+  <section class="stats" id="stats">
+    <div class="stat"><div class="label">总收录作品</div><div class="val" id="s-total">0<small>条</small></div><div class="delta">+ 近期持续更新</div></div>
+    <div class="stat"><div class="label">游戏 IP 源</div><div class="val" id="s-ip">0<small>个</small></div><div class="delta">跨越多个时代</div></div>
+    <div class="stat"><div class="label">衍生类型</div><div class="val" id="s-type">0<small>类</small></div><div class="delta">全媒体覆盖</div></div>
+    <div class="stat"><div class="label">覆盖地区</div><div class="val" id="s-region">0<small>个</small></div><div class="delta">日本 · 美国 · 中国 · 欧洲</div></div>
+    <div class="stat"><div class="label">最早 / 最新</div><div class="val" id="s-year">—<small>—</small></div><div class="delta">跨度 40+ 年</div></div>
+  </section>
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input id="search" class="search" placeholder="搜索作品名、IP、类型、地区、年份…">
+    </div>
+    <div class="toolbar-actions">
+      <button class="btn" id="btn-shuffle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>随机推荐</button>
+      <button class="btn primary" id="btn-top">↑ 回到顶部</button>
+    </div>
+  </div>
+  <div class="body">
+    <aside class="filters" id="filters">
+      <div class="f-group">
+        <div class="f-title">类型 <span class="clear" data-clear="type">清空</span></div>
+        <div class="f-chips" id="f-types"></div>
+      </div>
+      <div class="f-group">
+        <div class="f-title">地区 <span class="clear" data-clear="region">清空</span></div>
+        <div class="f-chips" id="f-regions"></div>
+      </div>
+      <div class="f-group">
+        <div class="f-title">年代 <span class="clear" data-clear="decade">清空</span></div>
+        <div class="f-chips" id="f-decades"></div>
+      </div>
+      <div class="f-group">
+        <div class="f-title">游戏 IP 源 <span class="clear" data-clear="ip">清空</span></div>
+        <div class="f-list" id="f-ips"></div>
+      </div>
+    </aside>
+    <main>
+      <div class="results-head">
+        <div class="results-count">共 <b id="r-count">0</b> 项作品匹配</div>
+        <div class="sort" id="sort">
+          <button class="active" data-sort="year-desc">最新优先</button>
+          <button data-sort="year-asc">最早优先</button>
+          <button data-sort="title-asc">名称 A→Z</button>
+          <button data-sort="ip-asc">按 IP</button>
+        </div>
+      </div>
+      <div class="grid" id="grid"></div>
+      <div class="pager" id="pager"></div>
+    </main>
+  </div>
+  <footer class="foot">
+    <div>GameIP Derivative Universe · <b>2026-06-08 SNAPSHOT</b></div>
+    <div>本资料库仅供浏览研究 · 版权归原作者与权利方所有</div>
+  </footer>
+</div>
+<div class="modal" id="modal">
+  <div class="modal-box" id="modal-box"></div>
+</div>
+<script src="data.js"></script>
+<script>
+/* === Data Registry === */
+const TYPE_MAP = {
+  anime:"动画", manga:"漫画", film:"电影", tv:"电视剧", stage:"舞台剧",
+  novel:"小说", game:"衍生游戏", music:"音乐", otaku:"周边", web:"网络剧",
+  radio:"广播剧", short:"短片", live:"真人"
+};
+const TYPE_CLS = {
+  anime:"b-anime", manga:"b-manga", film:"b-film", tv:"b-tv", stage:"b-stage",
+  novel:"b-novel", game:"b-game", music:"b-music", otaku:"b-otaku", web:"b-web",
+  radio:"b-radio", short:"b-short", live:"b-live"
+};
+const ALL = (typeof window !== "undefined" && window.WORKS_DATA) || [];
+const WORKS = ALL.map((r,i)=>({
+  id:i+1, title:r[0], type:r[1], typeZh:TYPE_MAP[r[1]]||r[1],
+  region:r[2], year:r[3], source:r[4]||"—", desc:r[5]||"", ip:r[6]||"其他"
+}));
+/* === State === */
+const state = { q:"", types:new Set(), regions:new Set(), decades:new Set(), ips:new Set(), sort:"year-desc", page:1, perPage:48 };
+/* === Build IP list === */
+const ipCounts = {}; WORKS.forEach(w=>{ ipCounts[w.ip]=(ipCounts[w.ip]||0)+1 });
+const IP_LIST = Object.entries(ipCounts).sort((a,b)=>b[1]-a[1]);
+const IP_BY_NAME = Object.fromEntries(IP_LIST.map(([k])=>[k,k]));
+/* === Build type/region/decade === */
+const typeCounts = {}, regionCounts = {}, decadeCounts = {};
+WORKS.forEach(w=>{
+  typeCounts[w.type]=(typeCounts[w.type]||0)+1;
+  regionCounts[w.region]=(regionCounts[w.region]||0)+1;
+  const d = Math.floor(w.year/10)*10;
+  decadeCounts[d]=(decadeCounts[d]||0)+1;
+});
+/* === Render filters === */
+function renderFilters(){
+  const ftypes=document.getElementById("f-types");
+  ftypes.innerHTML=Object.entries(typeCounts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>
+    `<div class="chip${state.types.has(k)?" active":""}" data-type="${k}">${TYPE_MAP[k]||k}<span class="n">${v}</span></div>`
+  ).join("");
+  const fregs=document.getElementById("f-regions");
+  fregs.innerHTML=Object.entries(regionCounts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>
+    `<div class="chip${state.regions.has(k)?" active":""}" data-region="${k}">${k}<span class="n">${v}</span></div>`
+  ).join("");
+  const fdec=document.getElementById("f-decades");
+  fdec.innerHTML=Object.entries(decadeCounts).sort((a,b)=>parseInt(a)-parseInt(b)).map(([k,v])=>
+    `<div class="chip${state.decades.has(+k)?" active":""}" data-decade="${k}">${k}s<span class="n">${v}</span></div>`
+  ).join("");
+  const fips=document.getElementById("f-ips");
+  fips.innerHTML=IP_LIST.map(([k,v])=>
+    `<div class="f-item${state.ips.has(k)?" active":""}" data-ip="${k}"><span>${k}</span><span class="n">${v}</span></div>`
+  ).join("");
+}
+document.getElementById("f-types").addEventListener("click",e=>{const k=e.target.closest("[data-type]")?.dataset.type;if(k){state.types.has(k)?state.types.delete(k):state.types.add(k);state.page=1;renderFilters();render()}});
+document.getElementById("f-regions").addEventListener("click",e=>{const k=e.target.closest("[data-region]")?.dataset.region;if(k){state.regions.has(k)?state.regions.delete(k):state.regions.add(k);state.page=1;renderFilters();render()}});
+document.getElementById("f-decades").addEventListener("click",e=>{const k=parseInt(e.target.closest("[data-decade]")?.dataset.decade);if(k){state.decades.has(k)?state.decades.delete(k):state.decades.add(k);state.page=1;renderFilters();render()}});
+document.getElementById("f-ips").addEventListener("click",e=>{const k=e.target.closest("[data-ip]")?.dataset.ip;if(k){state.ips.has(k)?state.ips.delete(k):state.ips.add(k);state.page=1;renderFilters();render()}});
+document.querySelectorAll(".clear").forEach(c=>c.addEventListener("click",()=>{
+  const t=c.dataset.clear;
+  if(t==="type")state.types.clear();
+  if(t==="region")state.regions.clear();
+  if(t==="decade")state.decades.clear();
+  if(t==="ip")state.ips.clear();
+  state.page=1;renderFilters();render();
+}));
+document.getElementById("search").addEventListener("input",e=>{state.q=e.target.value.trim().toLowerCase();state.page=1;render()});
+document.getElementById("sort").addEventListener("click",e=>{
+  const k=e.target.dataset.sort;if(!k)return;
+  state.sort=k;state.page=1;
+  document.querySelectorAll("#sort button").forEach(b=>b.classList.toggle("active",b.dataset.sort===k));
+  render();
+});
+document.getElementById("btn-shuffle").addEventListener("click",()=>{
+  const r=WORKS[Math.floor(Math.random()*WORKS.length)];
+  openModal(r);
+});
+document.getElementById("btn-top").addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
+/* === Filter & Sort === */
+function getFiltered(){
+  return WORKS.filter(w=>{
+    if(state.q){
+      const hay=(w.title+" "+w.ip+" "+w.typeZh+" "+w.region+" "+w.year+" "+w.desc).toLowerCase();
+      if(!hay.includes(state.q)) return false;
+    }
+    if(state.types.size && !state.types.has(w.type)) return false;
+    if(state.regions.size && !state.regions.has(w.region)) return false;
+    if(state.decades.size && !state.decades.has(Math.floor(w.year/10)*10)) return false;
+    if(state.ips.size && !state.ips.has(w.ip)) return false;
+    return true;
+  }).sort((a,b)=>{
+    if(state.sort==="year-desc") return b.year-a.year;
+    if(state.sort==="year-asc") return a.year-b.year;
+    if(state.sort==="title-asc") return a.title.localeCompare(b.title,"zh");
+    if(state.sort==="ip-asc") return a.ip.localeCompare(b.ip,"zh");
+    return 0;
+  });
+}
+/* === Render === */
+function render(){
+  const list=getFiltered();
+  document.getElementById("r-count").textContent=list.length;
+  const totalPages=Math.max(1,Math.ceil(list.length/state.perPage));
+  if(state.page>totalPages)state.page=totalPages;
+  const start=(state.page-1)*state.perPage;
+  const pageList=list.slice(start,start+state.perPage);
+  const grid=document.getElementById("grid");
+  if(!pageList.length){
+    grid.innerHTML=`<div class="empty"><h3>暂无匹配作品</h3><p>尝试调整筛选条件或重置</p></div>`;
+  } else {
+    grid.innerHTML=pageList.map(w=>`
+      <div class="card" data-id="${w.id}">
+        <div class="card-head">
+          <div class="card-title">${esc(w.title)}</div>
+          <div class="badge ${TYPE_CLS[w.type]||'b-other'}">${w.typeZh}</div>
+        </div>
+        <div class="card-meta">
+          <span class="ip">◆ ${esc(w.ip)}</span>
+          <span class="year">${w.year}</span>
+          <span>· ${esc(w.region)}</span>
+        </div>
+        <div class="card-desc">${esc(w.desc||'—')}</div>
+      </div>
+    `).join("");
+  }
+  // pager
+  const pg=document.getElementById("pager");
+  const p=state.page, tp=totalPages;
+  let h=`<button data-p="${p-1}" ${p<=1?"disabled":""}>‹</button>`;
+  const span=(a,b)=>{for(let i=a;i<=b;i++){h+=`<button data-p="${i}" class="${i===p?"active":""}">${i}</button>`}};
+  if(tp<=9) span(1,tp);
+  else if(p<=5){span(1,7);h+=`<span class="ellipsis">…</span>`;h+=`<button data-p="${tp}">${tp}</button>`}
+  else if(p>=tp-4){h+=`<button data-p="1">1</button><span class="ellipsis">…</span>`;span(tp-6,tp)}
+  else{h+=`<button data-p="1">1</button><span class="ellipsis">…</span>`;span(p-2,p+2);h+=`<span class="ellipsis">…</span><button data-p="${tp}">${tp}</button>`}
+  h+=`<button data-p="${p+1}" ${p>=tp?"disabled":""}>›</button>`;
+  pg.innerHTML=h;
+  pg.querySelectorAll("button[data-p]").forEach(b=>b.addEventListener("click",()=>{state.page=parseInt(b.dataset.p);render();window.scrollTo({top:document.querySelector(".results-head").offsetTop-100,behavior:"smooth"})}));
+  // card click
+  grid.querySelectorAll(".card").forEach(c=>c.addEventListener("click",()=>{
+    const w=WORKS.find(x=>x.id===parseInt(c.dataset.id));
+    if(w)openModal(w);
+  }));
+}
+function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
+/* === Modal === */
+function openModal(w){
+  const box=document.getElementById("modal-box");
+  box.innerHTML=`
+    <button class="modal-close" id="mc">×</button>
+    <h2>${esc(w.title)}</h2>
+    <div class="ip-line">◆ ${esc(w.ip)}</div>
+    <div class="modal-grid">
+      <div class="cell"><div class="k">类型</div><div class="v">${w.typeZh}</div></div>
+      <div class="cell"><div class="k">年份</div><div class="v">${w.year}</div></div>
+      <div class="cell"><div class="k">地区</div><div class="v">${esc(w.region)}</div></div>
+      <div class="cell"><div class="k">来源/制作方</div><div class="v">${esc(w.source)}</div></div>
+    </div>
+    <div class="modal-desc">${esc(w.desc||"无详细简介。")}</div>
+    <div class="modal-tags">
+      <div class="tag">${w.typeZh}</div>
+      <div class="tag">${esc(w.ip)}</div>
+      <div class="tag">${w.year}</div>
+      <div class="tag">${esc(w.region)}</div>
+    </div>
+  `;
+  document.getElementById("modal").classList.add("open");
+  document.getElementById("mc").addEventListener("click",()=>document.getElementById("modal").classList.remove("open"));
+}
+document.getElementById("modal").addEventListener("click",e=>{
+  if(e.target.id==="modal")document.getElementById("modal").classList.remove("open");
+});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")document.getElementById("modal").classList.remove("open")});
+/* === Stats === */
+function renderStats(){
+  document.getElementById("s-total").innerHTML=`${WORKS.length}<small>条</small>`;
+  document.getElementById("s-ip").innerHTML=`${IP_LIST.length}<small>个</small>`;
+  document.getElementById("s-type").innerHTML=`${Object.keys(typeCounts).length}<small>类</small>`;
+  document.getElementById("s-region").innerHTML=`${Object.keys(regionCounts).length}<small>个</small>`;
+  const ys=WORKS.map(w=>w.year).filter(y=>y>0);
+  document.getElementById("s-year").innerHTML=`${Math.min(...ys)}<small>—</small>${Math.max(...ys)}`;
+}
+/* === Init === */
+function init(){
+  if(!WORKS.length){
+    document.getElementById("grid").innerHTML=`<div class="empty"><h3>数据加载中…</h3></div>`;
+    return;
+  }
+  renderStats();
+  renderFilters();
+  render();
+}
+init();
+</script>
+</body>
+</html>
