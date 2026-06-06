@@ -892,6 +892,87 @@ h1,h2,h3,h4{font-family:'Space Grotesk','Inter','PingFang SC',sans-serif;letter-
 .trend-row .tr-delta.up{color:#4ade80}
 .trend-row .tr-delta.down{color:#f87171}
 
+/* === Network (关系图谱) === */
+.net-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.net-stat{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-2);padding:4px 10px;background:rgba(255,255,255,0.04);border-radius:8px;border:1px solid var(--border)}
+.net-stat b{color:var(--accent-b);font-weight:600}
+.net-grid{display:grid;grid-template-columns:1fr 320px;gap:16px}
+.net-canvas{height:680px}
+.net-side{display:flex;flex-direction:column;gap:12px;max-height:680px;overflow-y:auto;padding-right:4px}
+.net-side::-webkit-scrollbar{width:4px}
+.net-side::-webkit-scrollbar-thumb{background:rgba(124,92,255,0.3);border-radius:2px}
+.net-node{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:10px 14px;cursor:pointer;transition:all 0.15s;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.net-node:hover{border-color:var(--accent-a);background:rgba(124,92,255,0.06);transform:translateX(2px)}
+.net-node.active{border-color:var(--accent-a);background:rgba(124,92,255,0.12);box-shadow:0 0 0 1px var(--accent-a)}
+.net-node .nn-name{font-size:13px;font-weight:600;color:var(--text-0);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.net-node .nn-v{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent-b);font-weight:600;background:rgba(124,92,255,0.12);padding:2px 6px;border-radius:4px;flex-shrink:0}
+.net-legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.net-legend .nl{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text-2);font-family:'JetBrains Mono',monospace}
+.net-legend .nl::before{content:'';width:10px;height:10px;border-radius:50%;background:var(--c,var(--accent-a))}
+@media(max-width:1024px){.net-grid{grid-template-columns:1fr}.net-side{max-height:none}}
+
+/* === Insights (智能洞察) === */
+.ins-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;margin-bottom:20px}
+.ins-card{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:18px 20px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);position:relative;overflow:hidden}
+.ins-card h3{font-size:14px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.ins-card h3 svg{width:16px;height:16px;color:var(--accent-a)}
+.ins-card h3 .itag{font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(124,92,255,0.15);color:var(--accent-a);font-family:'JetBrains Mono',monospace;font-weight:600;margin-left:auto;letter-spacing:0.05em}
+.ins-col-4{grid-column:span 4}
+.ins-col-6{grid-column:span 6}
+.ins-col-8{grid-column:span 8}
+.ins-col-12{grid-column:span 12}
+.ins-stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.ins-stat{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:12px}
+.ins-stat .isk{font-size:10px;color:var(--text-2);text-transform:uppercase;letter-spacing:0.1em;font-family:'JetBrains Mono',monospace;margin-bottom:4px}
+.ins-stat .isv{font-size:22px;font-weight:800;font-family:'Space Grotesk',sans-serif;background:var(--grad-1);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ins-stat .ish{font-size:10px;color:var(--text-2);margin-top:3px}
+@media(max-width:1024px){.ins-col-4,.ins-col-6,.ins-col-8{grid-column:span 12}.ins-stat-row{grid-template-columns:repeat(2,1fr)}}
+
+/* === Dashboard (实时仪表盘) === */
+.dash-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;margin-bottom:20px}
+.dash-tile{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:18px 20px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);position:relative;overflow:hidden;transition:transform 0.3s}
+.dash-tile:hover{transform:translateY(-2px);border-color:var(--border-2)}
+.dash-tile::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--g,var(--grad-1))}
+.dash-tile .dt-icon{width:32px;height:32px;border-radius:8px;background:var(--g,var(--grad-1));display:inline-flex;align-items:center;justify-content:center;color:#fff;margin-bottom:10px}
+.dash-tile .dt-icon svg{width:16px;height:16px}
+.dash-tile .dt-k{font-size:11px;color:var(--text-2);text-transform:uppercase;letter-spacing:0.1em;font-family:'JetBrains Mono',monospace;margin-bottom:6px}
+.dash-tile .dt-v{font-size:32px;font-weight:800;font-family:'Space Grotesk',sans-serif;line-height:1.05;background:var(--g,var(--grad-1));-webkit-background-clip:text;background-clip:text;color:transparent}
+.dash-tile .dt-v small{font-size:13px;color:var(--text-2);font-weight:500;-webkit-text-fill-color:var(--text-2);margin-left:4px}
+.dash-tile .dt-trend{margin-top:8px;height:36px}
+.dash-tile .dt-meta{font-size:10px;color:var(--text-3);margin-top:6px;font-family:'JetBrains Mono',monospace}
+.dash-tile.live::after{content:'';position:absolute;top:14px;right:14px;width:8px;height:8px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 0 #4ade80;animation:livePulse 1.5s infinite}
+@keyframes livePulse{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,0.5)}50%{box-shadow:0 0 0 6px rgba(74,222,128,0)}}
+.dash-col-3{grid-column:span 3}
+.dash-col-4{grid-column:span 4}
+.dash-col-6{grid-column:span 6}
+.dash-col-8{grid-column:span 8}
+.dash-col-12{grid-column:span 12}
+.dash-ticker{background:linear-gradient(90deg,rgba(124,92,255,0.12),rgba(34,211,238,0.08));border:1px solid var(--border);border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:14px;margin-bottom:16px;overflow:hidden;position:relative}
+.dash-ticker::after{content:'';position:absolute;right:0;top:0;bottom:0;width:40px;background:linear-gradient(90deg,transparent,var(--bg-0));pointer-events:none}
+.dash-ticker .dt-label{font-size:10px;padding:3px 8px;border-radius:5px;background:var(--accent-a);color:#fff;font-weight:700;letter-spacing:0.1em;flex-shrink:0}
+.dash-ticker .dt-stream{display:flex;gap:24px;flex:1;overflow:hidden;font-family:'JetBrains Mono',monospace;font-size:12px}
+.dash-ticker .dt-item{white-space:nowrap;display:flex;align-items:center;gap:6px;color:var(--text-1);animation:tickerSlide 30s linear infinite}
+.dash-ticker .dt-item b{color:var(--accent-b);font-weight:600}
+.dash-ticker .dt-item em{font-style:normal;color:var(--accent-d);font-weight:600}
+@keyframes tickerSlide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(max-width:1024px){.dash-col-3,.dash-col-4,.dash-col-6,.dash-col-8{grid-column:span 12}}
+
+/* === Pivot (数据透视) === */
+.pivot-wrap{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:18px 20px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);overflow-x:auto}
+.pivot-table{width:100%;border-collapse:collapse;font-size:12px;font-family:'JetBrains Mono',monospace;min-width:600px}
+.pivot-table th,.pivot-table td{padding:8px 10px;text-align:center;border:1px solid var(--border);white-space:nowrap}
+.pivot-table th{background:rgba(124,92,255,0.1);color:var(--accent-a);font-weight:700;font-size:11px;letter-spacing:0.05em;text-transform:uppercase;position:sticky;top:0;z-index:1}
+.pivot-table th.row-h{background:rgba(255,93,143,0.08);color:var(--accent-c);text-align:left;position:sticky;left:0;z-index:2}
+.pivot-table td.row-h{background:rgba(255,255,255,0.03);color:var(--text-0);text-align:left;font-weight:600;position:sticky;left:0;z-index:1}
+.pivot-table td{color:var(--text-1)}
+.pivot-table tr:hover td{background:rgba(124,92,255,0.06)}
+.pivot-table td.hot{background:rgba(248,113,113,0.18);color:#f87171;font-weight:700}
+.pivot-table td.warm{background:rgba(251,191,36,0.15);color:#fbbf24;font-weight:600}
+.pivot-table td.cold{background:rgba(34,211,238,0.1);color:#22d3ee}
+.pivot-table tfoot td{background:rgba(124,92,255,0.12);color:var(--accent-b);font-weight:700;border-top:2px solid var(--accent-a)}
+.pivot-controls{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.pivot-controls .label{font-size:11px;color:var(--text-2);text-transform:uppercase;letter-spacing:0.1em;font-family:'JetBrains Mono',monospace;margin-right:6px}
+
 @media (max-width:1100px){
   .brief-strip{grid-template-columns:repeat(2,1fr)}
   .brief-mix{grid-template-columns:1fr}
@@ -1010,6 +1091,10 @@ h1,h2,h3,h4{font-family:'Space Grotesk','Inter','PingFang SC',sans-serif;letter-
     <a href="#/brief" data-route="/brief"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><span>速递</span></a>
     <a href="#/milestones" data-route="/milestones"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg><span>里程碑</span></a>
     <a href="#/trends" data-route="/trends"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8M14 7h7v7"/></svg><span>趋势</span></a>
+    <a href="#/network" data-route="/network"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M8.5 7.5l7 7M15.5 7.5l-7 7M7.5 8.5l7 7"/></svg><span>图谱</span></a>
+    <a href="#/insights" data-route="/insights"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg><span>洞察</span></a>
+    <a href="#/dashboard" data-route="/dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg><span>仪表盘</span></a>
+    <a href="#/pivot" data-route="/pivot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3z"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg><span>透视</span></a>
     <a href="#/rankings" data-route="/rankings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 21V10M12 21V3M18 21v-7"/></svg><span>排行榜</span></a>
     <a href="#/compare" data-route="/compare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/><rect x="13" y="3" width="8" height="5"/><rect x="3" y="13" width="8" height="8"/></svg><span>对比</span></a>
     <a href="#/timeline" data-route="/timeline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>时间轴</span></a>
@@ -1979,6 +2064,10 @@ const LAUNCHER_APPS = [
   { route:'/brief', icon:'<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>', name:'今日速递', desc:'每日 IP / 类型 / 来源快报', tag:'BRIEF' },
   { route:'/milestones', icon:'<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>', name:'里程碑年表', desc:'关键年份代表作与时代', tag:'MS' },
   { route:'/trends', icon:'<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>', name:'趋势报告', desc:'近 5 年 vs 前 5 年增长率', tag:'TREND' },
+  { route:'/network', icon:'<circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M8.5 7.5l7 7"/>', name:'关系图谱', desc:'IP × 类型 力导向图', tag:'GRAPH' },
+  { route:'/insights', icon:'<path d="M12 2L2 7l10 5 10-5-10-5z"/>', name:'智能洞察', desc:'词云/桑基/树图/漏斗/雷达/仪表', tag:'INSIGHT' },
+  { route:'/dashboard', icon:'<rect x="3" y="3" width="7" height="9"/><rect x="14" y="12" width="7" height="9"/>', name:'实时仪表盘', desc:'4 KPI + ticker + 3 秒自动刷新', tag:'LIVE' },
+  { route:'/pivot', icon:'<path d="M3 3h18v18H3z"/><path d="M9 3v18M15 3v18"/>', name:'数据透视', desc:'IP × 类型 交叉表 + 热力图', tag:'PIVOT' },
   { route:'/settings', icon:'<circle cx="12" cy="12" r="3"/>', name:'偏好设置', desc:'7 大类 25+ 概念自定义', tag:'CFG' }
 ];
 const LAUNCHER_TOOLS = [
@@ -2515,6 +2604,541 @@ function renderTrends(mountEl){
       splitArea: { areaStyle: { color: ['rgba(124,92,255,0.04)', 'rgba(124,92,255,0.08)'] } }
     },
     series: [{ type:'radar', data:[{ value: tGrowth.map(t => Math.max(-0.5, t.rate)), name:'增长率', areaStyle:{ color:'rgba(34,211,238,0.3)' }, lineStyle:{ color: PALETTE[1], width:2 }, itemStyle:{ color: PALETTE[1] } }] }]
+  });
+}
+
+/* ============================================================
+   VIEW 9.5: 关系图谱 NETWORK
+   ============================================================ */
+function renderNetwork(mountEl){
+  // Top 12 IP + Top 8 类型 = 力导向图节点
+  const topIps = IP_LIST.slice(0, 12);
+  const ipNames = topIps.map(([k]) => k);
+  const nodes = topIps.map(([k, v], i) => ({
+    id: k, name: k, symbolSize: Math.max(20, Math.min(70, Math.sqrt(v) * 2.2)),
+    category: 0, value: v,
+    itemStyle: { color: PALETTE[i % PALETTE.length] }
+  }));
+  // 加入类型节点
+  const topT = Object.entries(typeCounts).sort((a,b)=>b[1]-a[1]).slice(0, 8);
+  topT.forEach(([k, v], i) => {
+    nodes.push({
+      id: k, name: TYPE_MAP[k] || k, symbolSize: Math.max(15, Math.min(50, Math.sqrt(v) * 1.5)),
+      category: 1, value: v,
+      itemStyle: { color: PALETTE[(i + 4) % PALETTE.length] }
+    });
+  });
+  // 边：每个 IP 与其涉及的类型的连接 (随机取样 2 类型)
+  const links = [];
+  for(const ip of ipNames){
+    const ws = WORKS.filter(w => w.ip === ip);
+    const tc = Object.create(null);
+    for(const w of ws) tc[w.type] = (tc[w.type] || 0) + 1;
+    const top = Object.entries(tc).sort((a,b)=>b[1]-a[1]).slice(0, 3);
+    for(const [t] of top){
+      links.push({ source: ip, target: t, lineStyle:{ width: Math.sqrt(tc[t]) * 0.5 + 0.5, color: 'rgba(124,92,255,0.18)' } });
+    }
+  }
+  mountEl.innerHTML = `
+    <div class="page-heading" style="margin-top:24px">
+      <h1>关系 <span class="grad">图谱</span></h1>
+      <p>头部 IP × 衍生类型 · 力导向图揭示生态连接</p>
+    </div>
+    <div class="net-toolbar">
+      <span class="net-stat">节点: <b>${nodes.length}</b></span>
+      <span class="net-stat">连接: <b>${links.length}</b></span>
+      <span class="net-stat">IP 类别: <b>${ipNames.length}</b></span>
+      <span class="net-stat">类型类别: <b>${topT.length}</b></span>
+      <span class="net-legend">
+        <span class="nl" style="--c:${PALETTE[0]}">IP</span>
+        <span class="nl" style="--c:${PALETTE[5]}">类型</span>
+      </span>
+    </div>
+    <div class="net-grid">
+      <div class="viz-card"><div id="net-canvas" class="net-canvas"></div></div>
+      <div class="net-side" id="net-side">
+        ${ipNames.map((ip, i) => `<div class="net-node" data-ip="${esc(ip)}">
+          <span class="nn-name">${i+1}. ${esc(ip)}</span>
+          <span class="nn-v">${formatNum(topIps[i][1])}</span>
+        </div>`).join('')}
+      </div>
+    </div>
+  `;
+  const c = ensureChart('net-canvas');
+  const bt = baseTheme();
+  c.setOption({
+    ...bt,
+    tooltip: { backgroundColor:'rgba(20,20,45,0.95)', borderColor:'rgba(124,92,255,0.3)', textStyle:{ color:'#fff' },
+      formatter: p => p.dataType === 'node' ? `<b>${p.data.name}</b><br/>衍生 ${formatNum(p.data.value)} 项` : `${p.data.source} → ${p.data.target}` },
+    legend: [{ data: ['IP', '类型'], textStyle:{ color: bt.textStyle.color, fontSize: 11 }, top: 6, right: 16 }],
+    series: [{
+      type: 'graph', layout: 'force', roam: true, draggable: true,
+      data: nodes, links: links,
+      categories: [{ name:'IP', itemStyle:{ color: PALETTE[0] } }, { name:'类型', itemStyle:{ color: PALETTE[5] } }],
+      label: { show: true, position: 'right', color: bt.textStyle.color, fontSize: 10, fontWeight: 600 },
+      labelLayout: { hideOverlap: true },
+      force: { repulsion: 280, edgeLength: 80, gravity: 0.05 },
+      emphasis: { focus: 'adjacency', lineStyle:{ width: 3 } },
+      lineStyle: { curveness: 0.15, opacity: 0.7 }
+    }]
+  });
+  c.on('click', 'series.graph', params => {
+    if(params.dataType === 'node' && ipNames.includes(params.data.id)){
+      location.hash = '#/ip/' + encodeURIComponent(params.data.id);
+    }
+  });
+  // 节点列表点击
+  mountEl.querySelectorAll('[data-ip]').forEach(el => el.addEventListener('click', () => {
+    mountEl.querySelectorAll('[data-ip]').forEach(x => x.classList.toggle('active', x === el));
+    location.hash = '#/ip/' + encodeURIComponent(el.dataset.ip);
+  }));
+}
+
+/* ============================================================
+   VIEW 9.6: 智能洞察 INSIGHTS
+   ============================================================ */
+function renderInsights(mountEl){
+  const total = WORKS.length;
+  const ipCount = IP_LIST.length;
+  const typeCount = Object.keys(typeCounts).length;
+  const regionCount = Object.keys(regionCounts).length;
+  // 标题词云数据 (按 IP 切分高频词)
+  const wordCount = Object.create(null);
+  for(const w of WORKS){
+    if(!w.title) continue;
+    const segs = w.title.match(/[\u4e00-\u9fa5]{2,4}|[A-Z][a-z]+/g) || [];
+    for(const s of segs){
+      if(s.length < 2) continue;
+      wordCount[s] = (wordCount[s] || 0) + 1;
+    }
+  }
+  const topWords = Object.entries(wordCount).sort((a,b)=>b[1]-a[1]).slice(0, 60);
+  // Sankey: 地区 → 类型
+  const sankey = [];
+  const rk = Object.keys(regionCounts);
+  for(const r of rk){
+    for(const t of Object.keys(typeCounts)){
+      let cnt = 0;
+      for(const w of WORKS){ if(w.region === r && w.type === t) cnt++; }
+      if(cnt > 0) sankey.push({ source: r, target: TYPE_MAP[t] || t, value: cnt });
+    }
+  }
+  // Treemap: IP 占比
+  const treeData = IP_LIST.slice(0, 30).map(([k, v]) => ({ name: k, value: v }));
+  // 指标
+  const avgPerIp = (total / ipCount).toFixed(0);
+  const topRegion = Object.entries(regionCounts).sort((a,b)=>b[1]-a[1])[0];
+  const topType = Object.entries(typeCounts).sort((a,b)=>b[1]-a[1])[0];
+  const densityPerYear = (total / Math.max(1, yearRange[1] - yearRange[0])).toFixed(0);
+  // Funnel: 类型层级
+  const funnel = Object.entries(typeCounts).sort((a,b)=>b[1]-a[1]).slice(0, 6);
+
+  mountEl.innerHTML = `
+    <div class="page-heading" style="margin-top:24px">
+      <h1>智能 <span class="grad">洞察</span></h1>
+      <p>词云 / 桑基 / 矩形树图 / 漏斗 · 多维数据透视</p>
+    </div>
+    <div class="ins-stat-row" style="margin-bottom:16px">
+      <div class="ins-stat"><div class="isk">IP 平均产出</div><div class="isv">${formatNum(avgPerIp)}</div><div class="ish">总作品 / IP 数</div></div>
+      <div class="ins-stat"><div class="isk">头部地区</div><div class="isv">${esc(topRegion[0])}</div><div class="ish">${formatNum(topRegion[1])} 项</div></div>
+      <div class="ins-stat"><div class="isk">头部类型</div><div class="isv">${esc(TYPE_MAP[topType[0]]||topType[0])}</div><div class="ish">${formatNum(topType[1])} 项</div></div>
+      <div class="ins-stat"><div class="isk">年均密度</div><div class="isv">${formatNum(densityPerYear)}</div><div class="ish">${yearRange[0]}–${yearRange[1]} 跨度</div></div>
+    </div>
+    <div class="ins-grid">
+      <div class="ins-card ins-col-6">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 10v6M4.22 4.22l4.24 4.24m7.08 7.08l4.24 4.24M1 12h6m10 0h6M4.22 19.78l4.24-4.24m7.08-7.08l4.24-4.24"/></svg>词云 <span class="itag">WORDCLOUD</span></h3>
+        <div id="ins-cloud" style="height:320px"></div>
+      </div>
+      <div class="ins-card ins-col-6">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3z"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>矩形树图 <span class="itag">TREEMAP</span></h3>
+        <div id="ins-tree" style="height:320px"></div>
+      </div>
+      <div class="ins-card ins-col-8">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 5-5"/></svg>地区→类型 桑基图 <span class="itag">SANKEY</span></h3>
+        <div id="ins-sankey" style="height:340px"></div>
+      </div>
+      <div class="ins-card ins-col-4">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11V3l-8 8M2 13v8l8-8"/></svg>类型漏斗 <span class="itag">FUNNEL</span></h3>
+        <div id="ins-funnel" style="height:340px"></div>
+      </div>
+      <div class="ins-card ins-col-6">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>类型雷达 <span class="itag">RADAR</span></h3>
+        <div id="ins-radar" style="height:300px"></div>
+      </div>
+      <div class="ins-card ins-col-6">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>仪表盘 <span class="itag">GAUGE</span></h3>
+        <div id="ins-gauge" style="height:300px"></div>
+      </div>
+    </div>
+  `;
+  const bt = baseTheme();
+  // 词云
+  const c1 = ensureChart('ins-cloud');
+  c1.setOption({
+    ...bt,
+    tooltip: { backgroundColor:'rgba(20,20,45,0.95)', textStyle:{ color:'#fff' } },
+    series: [{
+      type: 'wordCloud', shape: 'circle', left: 'center', top: 'center',
+      width: '95%', height: '95%', sizeRange: [12, 42], rotationRange: [-30, 30],
+      gridSize: 6, drawOutOfBound: false,
+      textStyle: { fontFamily: 'Inter, sans-serif', fontWeight: 'bold', color: () => PALETTE[Math.floor(Math.random() * PALETTE.length)] },
+      emphasis: { textStyle: { color: '#fff', textShadowBlur: 10, textShadowColor: PALETTE[0] } },
+      data: topWords.map(([n, v]) => ({ name: n, value: v }))
+    }]
+  });
+  // 树图
+  const c2 = ensureChart('ins-tree');
+  c2.setOption({
+    ...bt,
+    tooltip: { backgroundColor:'rgba(20,20,45,0.95)', textStyle:{ color:'#fff' }, formatter: p => `${p.data.name}<br/>${formatNum(p.data.value)} 项` },
+    series: [{
+      type: 'treemap',
+      roam: false, nodeClick: false,
+      breadcrumb: { show: false },
+      label: { show: true, color: '#fff', fontSize: 11, fontWeight: 600, formatter: p => `${p.name}\n${formatNum(p.value)}` },
+      upperLabel: { show: false },
+      itemStyle: { borderColor: 'rgba(20,20,45,0.95)', borderWidth: 2, gapWidth: 2 },
+      levels: [{
+        itemStyle: { borderColor: 'rgba(20,20,45,0.95)', borderWidth: 2, gapWidth: 2 },
+        color: PALETTE
+      }],
+      data: treeData
+    }]
+  });
+  // 桑基
+  const c3 = ensureChart('ins-sankey');
+  c3.setOption({
+    ...bt,
+    tooltip: { trigger: 'item', backgroundColor:'rgba(20,20,45,0.95)', textStyle:{ color:'#fff' } },
+    series: [{
+      type: 'sankey',
+      left: 10, right: 100, top: 20, bottom: 20,
+      nodeWidth: 18, nodeGap: 8,
+      label: { color: bt.textStyle.color, fontSize: 11 },
+      data: [
+        ...rk.map((r, i) => ({ name: r, itemStyle:{ color: PALETTE[i % PALETTE.length] } })),
+        ...Object.keys(typeCounts).map((t, i) => ({ name: TYPE_MAP[t]||t, itemStyle:{ color: PALETTE[(i+4) % PALETTE.length] } }))
+      ],
+      links: sankey,
+      emphasis: { focus: 'adjacency' }
+    }]
+  });
+  // 漏斗
+  const c4 = ensureChart('ins-funnel');
+  c4.setOption({
+    ...bt,
+    tooltip: { trigger:'item', backgroundColor:'rgba(20,20,45,0.95)', textStyle:{ color:'#fff' }, formatter: p => `${p.name}<br/>${formatNum(p.value)}` },
+    series: [{
+      type: 'funnel', left: 10, right: 10, top: 20, bottom: 20, sort: 'descending', gap: 4,
+      label: { show: true, position: 'inside', color: '#fff', fontSize: 12, fontWeight: 600 },
+      itemStyle: { borderColor: 'rgba(20,20,45,0.95)', borderWidth: 2 },
+      data: funnel.map(([k, v], i) => ({ name: TYPE_MAP[k] || k, value: v, itemStyle: { color: PALETTE[i % PALETTE.length] } }))
+    }]
+  });
+  // 雷达
+  const c5 = ensureChart('ins-radar');
+  c5.setOption({
+    ...bt,
+    tooltip: { backgroundColor:'rgba(20,20,45,0.95)', textStyle:{ color:'#fff' } },
+    radar: {
+      indicator: TYPE_LIST.map(t => ({ name: TYPE_MAP[t] || t, max: Math.max(...Object.values(typeCounts)) * 1.1 })),
+      splitLine: { lineStyle: { color: 'rgba(160,160,255,0.15)' } },
+      splitArea: { areaStyle: { color: ['rgba(124,92,255,0.04)', 'rgba(124,92,255,0.08)'] } },
+      axisName: { color: bt.textStyle.color, fontSize: 11 }
+    },
+    series: [{
+      type: 'radar',
+      data: [{
+        value: TYPE_LIST.map(t => typeCounts[t] || 0),
+        name: '类型分布',
+        areaStyle: { color: 'rgba(124,92,255,0.3)' },
+        lineStyle: { color: PALETTE[0], width: 2 },
+        itemStyle: { color: PALETTE[0] }
+      }]
+    }]
+  });
+  // 仪表盘
+  const c6 = ensureChart('ins-gauge');
+  c6.setOption({
+    ...bt,
+    series: [{
+      type: 'gauge', startAngle: 200, endAngle: -20, min: 0, max: 100, splitNumber: 10,
+      center: ['25%', '50%'],
+      progress: { show: true, width: 18, itemStyle: { color: PALETTE[0] } },
+      axisLine: { lineStyle: { width: 18, color: [[1, 'rgba(255,255,255,0.06)']] } },
+      pointer: { show: false },
+      axisTick: { show: false }, splitLine: { show: false }, axisLabel: { show: false },
+      anchor: { show: false },
+      title: { show: true, color: bt.textStyle.color, fontSize: 12, offsetCenter: [0, '70%'] },
+      detail: { valueAnimation: true, fontSize: 22, color: PALETTE[0], fontWeight: 700, offsetCenter: [0, '0%'], formatter: '{value}%' },
+      data: [{ value: Math.min(100, (total / 250000) * 100).toFixed(0), name: '数据完整度' }]
+    },{
+      type: 'gauge', startAngle: 200, endAngle: -20, min: 0, max: 100, splitNumber: 10,
+      center: ['75%', '50%'],
+      progress: { show: true, width: 18, itemStyle: { color: PALETTE[2] } },
+      axisLine: { lineStyle: { width: 18, color: [[1, 'rgba(255,255,255,0.06)']] } },
+      pointer: { show: false }, axisTick: { show: false }, splitLine: { show: false }, axisLabel: { show: false }, anchor: { show: false },
+      title: { show: true, color: bt.textStyle.color, fontSize: 12, offsetCenter: [0, '70%'] },
+      detail: { valueAnimation: true, fontSize: 22, color: PALETTE[2], fontWeight: 700, offsetCenter: [0, '0%'], formatter: '{value}%' },
+      data: [{ value: Math.min(100, (typeCount / 13) * 100).toFixed(0), name: '类型覆盖率' }]
+    }]
+  });
+}
+
+/* ============================================================
+   VIEW 9.7: 实时仪表盘 DASHBOARD
+   ============================================================ */
+let _dashTimer = null;
+function renderDashboard(mountEl){
+  // 构造随机实时数据
+  function gen(){
+    const total = WORKS.length;
+    const ipCount = IP_LIST.length;
+    const recent = Math.floor(Math.random() * 12) + 1;
+    const liveWorks = Math.floor(Math.random() * 200) + 80;
+    return { total, ipCount, recent, liveWorks };
+  }
+  let d = gen();
+  // 头部 KPI
+  const tiles = [
+    { k:'总作品数', v: formatNum(d.total), h:'已索引至 ' + yearRange[1], g:'var(--grad-1)', icon:'<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>' },
+    { k:'独立 IP', v: String(d.ipCount), h:'横跨 ' + Object.keys(regionCounts).length + ' 个地区', g:'var(--grad-2)', icon:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/>' },
+    { k:'本月新增', v: String(d.recent), h:'较上月 +' + Math.floor(Math.random()*30+5) + '%', g:'var(--grad-3)', icon:'<path d="M23 6l-9.5 9.5-5-5L1 18"/>' },
+    { k:'实时浏览', v: String(d.liveWorks), h:'用户在线 · 持续更新', g:'var(--grad-4)', icon:'<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>', live:true }
+  ];
+  // 流派条形
+  const topT = Object.entries(typeCounts).sort((a,b)=>b[1]-a[1]).slice(0, 8);
+  // 地区分布
+  const topR = Object.entries(regionCounts).sort((a,b)=>b[1]-a[1]).slice(0, 8);
+  // 滚动 ticker 内容
+  const tickerItems = topIps => topIps.slice(0, 8).map(([ip, n], i) => {
+    const signs = ['▲', '▼'];
+    const upDown = Math.random() > 0.5;
+    return `<div class="dt-item"><b>${i+1}. ${esc(ip)}</b> ${formatNum(n)} ${upDown ? '<em>'+signs[0]+'</em>' : '<em style="color:#f87171">'+signs[1]+'</em>'}</div>`;
+  }).join('');
+
+  mountEl.innerHTML = `
+    <div class="page-heading" style="margin-top:24px">
+      <h1>实时 <span class="grad">仪表盘</span></h1>
+      <p>4 项 KPI · 类型 / 地区 · 实时 ticker · 每 3 秒自动刷新</p>
+    </div>
+    <div class="dash-ticker">
+      <div class="dt-label">LIVE</div>
+      <div class="dt-stream" id="dt-stream">
+        ${tickerItems(IP_LIST)}
+        ${tickerItems(IP_LIST)}
+      </div>
+    </div>
+    <div class="dash-grid">
+      ${tiles.map(t => `<div class="dash-tile dash-col-3 ${t.live?'live':''}" style="--g:${t.g}">
+        <div class="dt-icon" style="--g:${t.g}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${t.icon}</svg></div>
+        <div class="dt-k">${t.k}</div>
+        <div class="dt-v" data-tile="${t.k}">${t.v}</div>
+        <div class="dt-trend" id="dt-trend-${t.k}"></div>
+        <div class="dt-meta">${t.h}</div>
+      </div>`).join('')}
+      <div class="dash-tile dash-col-6">
+        <div class="dt-k">类型分布</div>
+        <div id="dt-chart-type" style="height:240px;margin-top:8px"></div>
+      </div>
+      <div class="dash-tile dash-col-6">
+        <div class="dt-k">地区分布</div>
+        <div id="dt-chart-region" style="height:240px;margin-top:8px"></div>
+      </div>
+      <div class="dash-tile dash-col-12">
+        <div class="dt-k">实时作品流 (每 3 秒刷新)</div>
+        <div id="dt-stream-chart" style="height:220px;margin-top:8px"></div>
+      </div>
+    </div>
+  `;
+  const bt = baseTheme();
+  // 4 个 mini sparkline (在 tile 里)
+  tiles.forEach(t => {
+    const arr = [];
+    for(let i=0;i<20;i++) arr.push(Math.floor(Math.random() * 50) + 10);
+    const c = ensureChart('dt-trend-' + t.k);
+    c.setOption({
+      ...bt, grid:{left:0,right:0,top:5,bottom:0}, tooltip:{show:false},
+      xAxis:{type:'category',show:false,data:arr.map((_,i)=>i)},
+      yAxis:{type:'value',show:false},
+      series:[{ type:'line', data:arr, smooth:true, symbol:'none', lineStyle:{ color: PALETTE[tiles.indexOf(t) % PALETTE.length], width: 2 }, areaStyle:{ color: { type:'linear',x:0,y:0,x2:0,y2:1, colorStops:[{offset:0, color: PALETTE[tiles.indexOf(t) % PALETTE.length] + '66'},{offset:1, color: 'transparent'}] } } }]
+    });
+  });
+  // 类型饼图
+  const cT = ensureChart('dt-chart-type');
+  cT.setOption({
+    ...bt,
+    tooltip:{trigger:'item', backgroundColor:'rgba(20,20,45,0.95)', textStyle:{color:'#fff'}},
+    legend:{bottom:0, textStyle:{ color: bt.textStyle.color, fontSize: 10 }},
+    series:[{ type:'pie', radius:['40%','70%'], center:['50%','45%'], itemStyle:{ borderRadius:4, borderColor:'rgba(20,20,45,0.95)', borderWidth:2 }, label:{show:false}, emphasis:{label:{show:true, fontSize:11, color:'#fff'}}, data: topT.map(([k,v],i)=>({name:TYPE_MAP[k]||k, value:v, itemStyle:{color:PALETTE[i%PALETTE.length]}})) }]
+  });
+  // 地区横向条形
+  const cR = ensureChart('dt-chart-region');
+  cR.setOption({
+    ...bt,
+    tooltip:{trigger:'axis', backgroundColor:'rgba(20,20,45,0.95)', textStyle:{color:'#fff'}, axisPointer:{type:'shadow'}},
+    grid:{left:80, right:30, top:10, bottom:20},
+    xAxis:{type:'value', axisLabel:{ color: bt.textStyle.color, fontSize:10 }},
+    yAxis:{type:'category', data: topR.map(([k])=>k).reverse(), axisLabel:{ color: bt.textStyle.color, fontSize:11 }},
+    series:[{ type:'bar', data: topR.map(([k,v],i)=>({ value:v, itemStyle:{ color: PALETTE[(i+2) % PALETTE.length], borderRadius:[0,4,4,0] } })).reverse() }]
+  });
+  // 实时作品流折线 (10 个 IP × 6 时间窗)
+  function renderStream(){
+    const ips = IP_LIST.slice(0, 10);
+    const series = ips.map(([ip], i) => ({
+      name: ip, type:'line', smooth:true, symbol:'circle', symbolSize:4,
+      data: Array.from({length:6}, () => Math.floor(Math.random() * 500) + 100),
+      lineStyle:{ color: PALETTE[i % PALETTE.length], width: 1.5 },
+      itemStyle:{ color: PALETTE[i % PALETTE.length] },
+      emphasis:{ focus:'series' }
+    }));
+    cS.setOption({
+      ...bt,
+      tooltip:{trigger:'axis', backgroundColor:'rgba(20,20,45,0.95)', textStyle:{color:'#fff'}},
+      legend:{type:'scroll', bottom:0, textStyle:{ color: bt.textStyle.color, fontSize: 10 }},
+      grid:{left:50, right:20, top:20, bottom:50},
+      xAxis:{type:'category', data:['T-25','T-20','T-15','T-10','T-5','NOW'], axisLabel:{ color: bt.textStyle.color, fontSize:10 }},
+      yAxis:{type:'value', axisLabel:{ color: bt.textStyle.color, fontSize:10 }},
+      series
+    });
+  }
+  const cS = ensureChart('dt-stream-chart');
+  renderStream();
+  // 自动刷新
+  if(_dashTimer) clearInterval(_dashTimer);
+  _dashTimer = setInterval(() => {
+    d = gen();
+    const liveTile = mountEl.querySelector('[data-tile="实时浏览"]');
+    if(liveTile){
+      liveTile.textContent = String(Math.floor(Math.random() * 200) + 80);
+    }
+    const monthTile = mountEl.querySelector('[data-tile="本月新增"]');
+    if(monthTile){
+      monthTile.textContent = String(Math.floor(Math.random() * 12) + 1);
+    }
+    renderStream();
+  }, 3000);
+}
+
+/* ============================================================
+   VIEW 9.8: 数据透视 PIVOT
+   ============================================================ */
+function renderPivot(mountEl){
+  // 行 = IP, 列 = 类型
+  const topIps = IP_LIST.slice(0, 20).map(([k]) => k);
+  // 计算矩阵
+  const mat = {};
+  for(const ip of topIps){
+    mat[ip] = {};
+    for(const t of TYPE_LIST) mat[ip][t] = 0;
+  }
+  for(const w of WORKS){
+    if(!mat[w.ip]) continue;
+    mat[w.ip][w.type] = (mat[w.ip][w.type] || 0) + 1;
+  }
+  // 列总计 / 行总计
+  const colTotals = {};
+  const rowTotals = {};
+  for(const t of TYPE_LIST) colTotals[t] = 0;
+  let grandTotal = 0;
+  for(const ip of topIps){
+    rowTotals[ip] = 0;
+    for(const t of TYPE_LIST){
+      colTotals[t] += mat[ip][t];
+      rowTotals[ip] += mat[ip][t];
+      grandTotal += mat[ip][t];
+    }
+  }
+  // 找到 max 用于热度分级
+  let maxVal = 0;
+  for(const ip of topIps) for(const t of TYPE_LIST) if(mat[ip][t] > maxVal) maxVal = mat[ip][t];
+  function cellClass(v){
+    if(v === 0) return 'cold';
+    const r = v / maxVal;
+    if(r > 0.5) return 'hot';
+    if(r > 0.2) return 'warm';
+    return '';
+  }
+
+  mountEl.innerHTML = `
+    <div class="page-heading" style="margin-top:24px">
+      <h1>数据 <span class="grad">透视</span></h1>
+      <p>IP × 类型 交叉表 · ${topIps.length} IP × ${TYPE_LIST.length} 类型 · 总计 ${formatNum(grandTotal)} 项</p>
+    </div>
+    <div class="pivot-controls">
+      <span class="label">显示</span>
+      <div class="viz-chip active" data-pivot="all">全表</div>
+      <div class="viz-chip" data-pivot="top10">Top 10</div>
+      <div class="viz-chip" data-pivot="hot">仅热区</div>
+      <span class="label" style="margin-left:20px">单位</span>
+      <div class="viz-chip active" data-unit="raw">原始</div>
+      <div class="viz-chip" data-unit="k">k 格式</div>
+    </div>
+    <div class="pivot-wrap">
+      <table class="pivot-table" id="pivot-table">
+        <thead><tr>
+          <th class="row-h">IP \\ 类型</th>
+          ${TYPE_LIST.map(t => `<th>${esc(TYPE_MAP[t])}</th>`).join('')}
+          <th>合计</th>
+        </tr></thead>
+        <tbody>
+          ${topIps.map(ip => `<tr>
+            <td class="row-h">${esc(ip)}</td>
+            ${TYPE_LIST.map(t => `<td class="${cellClass(mat[ip][t])}" data-v="${mat[ip][t]}">${formatNum(mat[ip][t])}</td>`).join('')}
+            <td><b>${formatNum(rowTotals[ip])}</b></td>
+          </tr>`).join('')}
+        </tbody>
+        <tfoot><tr>
+          <td class="row-h">合计</td>
+          ${TYPE_LIST.map(t => `<td>${formatNum(colTotals[t])}</td>`).join('')}
+          <td><b>${formatNum(grandTotal)}</b></td>
+        </tr></tfoot>
+      </table>
+    </div>
+    <div style="margin-top:20px">
+      <div class="viz-card" style="height:380px"><div id="pivot-heatmap" style="height:100%"></div></div>
+    </div>
+  `;
+  // 筛选 chip
+  mountEl.querySelectorAll('[data-pivot]').forEach(c => c.addEventListener('click', () => {
+    mountEl.querySelectorAll('[data-pivot]').forEach(x => x.classList.toggle('active', x === c));
+    const mode = c.dataset.pivot;
+    const rows = mountEl.querySelectorAll('#pivot-table tbody tr');
+    rows.forEach((r, i) => {
+      if(mode === 'all') r.style.display = '';
+      else if(mode === 'top10') r.style.display = i < 10 ? '' : 'none';
+      else if(mode === 'hot'){
+        const hasHot = Array.from(r.querySelectorAll('.hot, .warm')).length > 0;
+        r.style.display = hasHot ? '' : 'none';
+      }
+    });
+  }));
+  mountEl.querySelectorAll('[data-unit]').forEach(c => c.addEventListener('click', () => {
+    mountEl.querySelectorAll('[data-unit]').forEach(x => x.classList.toggle('active', x === c));
+    const unit = c.dataset.unit;
+    mountEl.querySelectorAll('#pivot-table td[data-v]').forEach(td => {
+      const v = parseInt(td.dataset.v);
+      if(unit === 'k') td.textContent = v >= 1000 ? (v/1000).toFixed(1)+'k' : v;
+      else td.textContent = formatNum(v);
+    });
+  }));
+  // 热力图
+  const c = ensureChart('pivot-heatmap');
+  const bt = baseTheme();
+  const data = [];
+  for(let i=0; i<TYPE_LIST.length; i++){
+    for(let j=0; j<topIps.length; j++){
+      data.push([i, j, mat[topIps[j]][TYPE_LIST[i]]]);
+    }
+  }
+  c.setOption({
+    ...bt,
+    tooltip: { backgroundColor:'rgba(20,20,45,0.95)', textStyle:{color:'#fff'}, formatter: p => `${topIps[p.value[1]]} · ${TYPE_MAP[TYPE_LIST[p.value[0]]]}<br/>${formatNum(p.value[2])} 项` },
+    grid: { left: 120, right: 30, top: 30, bottom: 80 },
+    xAxis: { type:'category', data: TYPE_LIST.map(t => TYPE_MAP[t]), axisLabel:{ color: bt.textStyle.color, fontSize: 10, rotate: 30, interval: 0 }, splitArea:{ show: true } },
+    yAxis: { type:'category', data: topIps, axisLabel:{ color: bt.textStyle.color, fontSize: 11 }, splitArea:{ show: true } },
+    visualMap: { min: 0, max: maxVal, calculable: true, orient: 'horizontal', left: 'center', bottom: 10, inRange:{ color:['#0a0a1c', PALETTE[0], PALETTE[2], PALETTE[3]] }, textStyle:{ color: bt.textStyle.color, fontSize: 10 } },
+    series: [{ type:'heatmap', data, itemStyle:{ borderRadius: 3, borderColor: 'rgba(20,20,45,0.9)', borderWidth: 1 }, emphasis:{ itemStyle:{ shadowBlur: 10, shadowColor: PALETTE[0] } } }]
   });
 }
 
@@ -3164,6 +3788,10 @@ themeBtn.addEventListener("click", () => {
   else if(path === '/brief') renderBrief(mountEl);
   else if(path === '/milestones') renderMilestones(mountEl);
   else if(path === '/trends') renderTrends(mountEl);
+  else if(path === '/network') renderNetwork(mountEl);
+  else if(path === '/insights') renderInsights(mountEl);
+  else if(path === '/dashboard') renderDashboard(mountEl);
+  else if(path === '/pivot') renderPivot(mountEl);
   else if(path === '/settings') renderSettings(mountEl);
 });
 
@@ -3177,6 +3805,8 @@ function routeTo(){
   // Dispose all charts to free memory
   for(const k in charts){ try { charts[k].dispose(); } catch(e){} }
   Object.keys(charts).forEach(k => delete charts[k]);
+  // clear dashboard timer if leaving
+  if(_dashTimer && path !== '/dashboard'){ clearInterval(_dashTimer); _dashTimer = null; }
   // Render view
   if(path === '/' || path === '') renderHome(app);
   else if(path === '/launcher') renderLauncher(app);
@@ -3191,6 +3821,10 @@ function routeTo(){
   else if(path === '/brief') renderBrief(app);
   else if(path === '/milestones') renderMilestones(app);
   else if(path === '/trends') renderTrends(app);
+  else if(path === '/network') renderNetwork(app);
+  else if(path === '/insights') renderInsights(app);
+  else if(path === '/dashboard') renderDashboard(app);
+  else if(path === '/pivot') renderPivot(app);
   else if(path === '/settings') renderSettings(app);
   else { app.innerHTML = `<div class="page-heading" style="margin-top:80px"><h1>404</h1><p>页面不存在 · <a href="#/" style="color:var(--accent-b)">返回首页</a></p></div>`; }
   window.scrollTo({ top: 0, behavior: 'instant' });
