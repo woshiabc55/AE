@@ -28,10 +28,25 @@ if (!META.length && window.SCRIPTS) scripts = window.SCRIPTS;
 
 // ---------- 分块加载 ----------
 const chunkLoading = {}; // 防止并发加载同一个块
+const loadStat = () => $('#loadStat');
+function updateLoadStat() {
+  const elStat = loadStat();
+  if (!elStat) return;
+  const loaded = chunksLoaded.size;
+  if (loaded >= CHUNK_COUNT) {
+    elStat.textContent = '● 就绪 ' + loaded + '/' + CHUNK_COUNT;
+    elStat.classList.add('ready');
+  } else if (loaded > 0) {
+    elStat.textContent = '◐ 加载 ' + loaded + '/' + CHUNK_COUNT;
+  } else {
+    elStat.textContent = '○ 等待 ' + CHUNK_COUNT;
+  }
+}
 async function loadChunk(idx) {
   if (idx < 0 || idx >= CHUNK_COUNT) return;
   if (chunksLoaded.has(idx)) return;
   if (chunkLoading[idx]) return chunkLoading[idx];
+  updateLoadStat();
   chunkLoading[idx] = new Promise((resolve, reject) => {
     const s = document.createElement('script');
     s.src = `./data-${idx}.js`;
@@ -40,6 +55,7 @@ async function loadChunk(idx) {
       if (window.SCRIPTS_CHUNKS && window.SCRIPTS_CHUNKS[idx]) {
         chunksData[idx] = window.SCRIPTS_CHUNKS[idx];
         chunksLoaded.add(idx);
+        updateLoadStat();
         resolve(chunksData[idx]);
       } else {
         reject(new Error('chunk ' + idx + ' empty'));
@@ -277,9 +293,9 @@ function renderHome() {
   heroInner.appendChild(heroTitle);
 
   const sub = el('div', { class: 'hero__sub' });
-  sub.innerHTML = `基于<span class="red"> 6 大原子池 · 200+ 主题 · 60+ 题材 · 7 种幕结构 </span>，将灵感工业化。` +
+  sub.innerHTML = `基于<span class="red"> 6 大原子池 · 400+ 主题 · 60+ 题材 · 12 种场景模板 </span>，将灵感工业化。` +
     `<br/>每份剧本由 <span class="gold">题材 ⊗ 时代 ⊗ 视角 ⊗ 基调 ⊗ 幕结构 ⊗ 角色 ⊗ 主题 ⊗ 转折</span> 自由组合生成。` +
-    `<br/>总计 <span class="red">${stats.total.toLocaleString()}</span> 份结构化剧本，每份均含完整幕 / 场 / 角色 / 对话。`;
+    `<br/>总计 <span class="red">${stats.total.toLocaleString()}</span> 份结构化剧本，分 <span class="gold">${CHUNK_COUNT} 块</span> 懒加载，每份均含完整幕 / 场 / 角色 / 对话。`;
   heroInner.appendChild(sub);
 
   const byline = el('div', { class: 'hero__byline' });
@@ -1460,23 +1476,27 @@ function renderAbout() {
 
   const side = el('dl', { class: 'about__side' });
   const data = [
-    ['版本', 'v 1.0'],
+    ['版本', 'v 1.1'],
     ['种子', '20260608'],
     ['类型', '静态生成 · 浏览器端'],
-    ['脚本数量', scripts.length.toLocaleString()],
+    ['分块架构', `元数据 + ${CHUNK_COUNT} 个分块（按需加载）`],
+    ['剧本总量', scripts.length.toLocaleString() + (newScripts.length ? ` + ${newScripts.length} 新生成` : '')],
     ['题材池', '60+'],
-    ['时代池', '18'],
-    ['视角池', '8'],
-    ['基调池', '17'],
+    ['时代池', '18+'],
+    ['视角池', '8+'],
+    ['基调池', '17+'],
     ['结构池', '7'],
-    ['场景模板', '8 类'],
-    ['角色原型', '37+'],
-    ['主题池', '200+'],
+    ['场景模板', '12 类'],
+    ['角色原型', '47+'],
+    ['主题池', '400+'],
+    ['分块大小', '~5.5 MB / 块'],
+    ['元数据大小', `${(3913323 / 1024 / 1024).toFixed(1)} MB`],
     ['渲染', '纯原生 ES6+'],
     ['图表', '自绘 Canvas'],
     ['字体', 'Bodoni Moda / Special Elite / EB Garamond / Noto Serif SC'],
     ['生成', 'Mulberry32 PRNG'],
     ['导出', 'MD / JSON / TXT'],
+    ['部署', 'Vercel / Netlify / Cloudflare Pages / GitHub Pages'],
   ];
   for (const [k, v] of data) {
     side.appendChild(el('dt', {}, [k]));
@@ -1533,7 +1553,13 @@ function init() {
   window.addEventListener('hashchange', renderView);
 
   // 启动后立即在后台预加载所有分块
-  setTimeout(() => preloadAllChunks(), 200);
+  setTimeout(() => {
+    preloadAllChunks();
+    updateLoadStat();
+  }, 200);
+
+  // 初次更新状态
+  setTimeout(updateLoadStat, 50);
 
   renderView();
 }

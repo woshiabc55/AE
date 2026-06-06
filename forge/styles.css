@@ -194,6 +194,22 @@ body::before {
   border: 1px dashed rgba(193,18,31,0.4);
   pointer-events: none;
 }
+.topbar__loadstat {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--gold-light);
+  background: rgba(187, 139, 0, 0.08);
+  border: 1px solid var(--gold);
+  padding: 4px 8px;
+  min-width: 60px;
+  text-align: center;
+}
+.topbar__loadstat.ready {
+  color: #6fbf6f;
+  border-color: #6fbf6f;
+  background: rgba(111, 191, 111, 0.08);
+}
 .topbar__rule {
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--red) 20%, var(--red) 80%, transparent);
