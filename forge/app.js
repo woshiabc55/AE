@@ -1,12 +1,95 @@
 // ============================================================
-// SCRIPT.FORGE · 主逻辑
+// SCRIPT.FORGE · 主逻辑（分块加载版）
 // 纯原生 ES6+，无构建依赖
 // ============================================================
 'use strict';
 
 // ---------- 数据 ----------
-const ALL_SCRIPTS = window.SCRIPTS || [];
-let scripts = ALL_SCRIPTS.slice(); // 当前数据集（生成时可追加）
+// 元数据：用于列表/筛选/搜索（轻量，必加载）
+const META = window.SCRIPTS_META || [];
+// 分块：完整剧本数据（按需加载）
+const CHUNK_COUNT = window.SCRIPTS_CHUNK_COUNT || 1;
+const CHUNK_SIZE = window.SCRIPTS_CHUNK_SIZE || 1000;
+// 已加载分块：data-0.js 在 HTML 中预加载，其余按需
+const chunksData = window.SCRIPTS_CHUNKS || {};
+const chunksLoaded = new Set();
+for (let i = 0; i < CHUNK_COUNT; i++) {
+  if (chunksData[i]) chunksLoaded.add(i);
+  else chunksData[i] = [];
+}
+
+// 当前工作集（meta 列表 + 生成时新加的）
+let scripts = META.slice();
+// 内存中新生成的剧本
+let newScripts = []; // 完整剧本（含 acts）
+
+// 兼容：旧 data.js 也可作为兜底
+if (!META.length && window.SCRIPTS) scripts = window.SCRIPTS;
+
+// ---------- 分块加载 ----------
+const chunkLoading = {}; // 防止并发加载同一个块
+async function loadChunk(idx) {
+  if (idx < 0 || idx >= CHUNK_COUNT) return;
+  if (chunksLoaded.has(idx)) return;
+  if (chunkLoading[idx]) return chunkLoading[idx];
+  chunkLoading[idx] = new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = `./data-${idx}.js`;
+    s.async = true;
+    s.onload = () => {
+      if (window.SCRIPTS_CHUNKS && window.SCRIPTS_CHUNKS[idx]) {
+        chunksData[idx] = window.SCRIPTS_CHUNKS[idx];
+        chunksLoaded.add(idx);
+        resolve(chunksData[idx]);
+      } else {
+        reject(new Error('chunk ' + idx + ' empty'));
+      }
+    };
+    s.onerror = () => reject(new Error('load failed: data-' + idx + '.js'));
+    document.head.appendChild(s);
+  });
+  return chunkLoading[idx];
+}
+
+function getFullScript(id) {
+  // 1) 内存新生成
+  const ns = newScripts.find(s => s.id === id);
+  if (ns) return ns;
+  // 2) 已加载分块
+  for (const arr of Object.values(chunksData)) {
+    const f = arr.find(s => s.id === id);
+    if (f) return f;
+  }
+  return null;
+}
+
+async function ensureFullScript(id) {
+  let full = getFullScript(id);
+  if (full) return full;
+  const m = scripts.find(s => s.id === id);
+  if (!m) return null;
+  if (m._chunk != null) {
+    await loadChunk(m._chunk);
+    full = getFullScript(id);
+  }
+  return full;
+}
+
+function preloadChunksForList(list) {
+  // 预加载列表中所有分块（按 ID 范围）
+  const chunks = new Set();
+  for (const m of list) {
+    if (m._chunk != null && m._chunk >= 0) chunks.add(m._chunk);
+  }
+  for (const c of chunks) loadChunk(c).catch(() => {});
+}
+
+function preloadAllChunks() {
+  // 预加载所有未加载的分块（用于 library 浏览）
+  for (let i = 0; i < CHUNK_COUNT; i++) {
+    if (!chunksLoaded.has(i)) loadChunk(i).catch(() => {});
+  }
+}
 
 // ---------- 工具 ----------
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -123,8 +206,16 @@ function getFiltered() {
     if (f.perspective.size && !f.perspective.has(s.perspective)) return false;
     if (f.tone.size && !f.tone.has(s.tone)) return false;
     if (q) {
-      const hay = (s.title + ' ' + s.logline + ' ' + s.setting + ' ' + s.themes.join(' ') + ' ' + s.characters.map(c => c.name + ' ' + c.archetype).join(' ')).toLowerCase();
-      if (!hay.includes(q)) return false;
+      // 优先使用 meta 字段；如需 acts 内的搜索，先查分块
+      const hay = (s.title + ' ' + s.logline + ' ' + (s.themes || []).join(' ') + ' ' + (s.characters || []).map(c => (c.name || '') + ' ' + (c.archetype || '')).join(' ')).toLowerCase();
+      if (hay.includes(q)) return true;
+      // 深入 acts：仅在已加载分块内查找
+      const full = getFullScript(s.id);
+      if (full) {
+        const deep = (full.setting + ' ' + (full.acts || []).map(a => a.scenes.map(sc => sc.action + ' ' + sc.dialogue.map(d => d.line).join(' ')).join(' ')).join(' ')).toLowerCase();
+        if (deep.includes(q)) return true;
+      }
+      return false;
     }
     return true;
   });
@@ -578,7 +669,29 @@ function appendScripts(arr) {
     toast('请至少选择一个生成条件');
     return;
   }
-  scripts = scripts.concat(arr);
+  // 1) 存到内存（新生成的剧本）
+  for (const s of arr) newScripts.push(s);
+  // 2) 追加到 meta 视图（用于列表/筛选）
+  for (const s of arr) {
+    scripts.push({
+      id: s.id,
+      title: s.title,
+      type: s.type,
+      genre: s.genre,
+      era: s.era,
+      perspective: s.perspective,
+      tone: s.tone,
+      structure: s.structure,
+      actCount: s.actCount,
+      wordCount: s.wordCount,
+      logline: s.logline,
+      themes: s.themes,
+      tags: s.tags,
+      createdAt: s.createdAt,
+      characters: (s.characters || []).map(c => ({ name: c.name, archetype: c.archetype, role: c.role })),
+      _chunk: -1, // 标记为新生成
+    });
+  }
   state.page = 1;
   toast(`已生成 ${arr.length} 份剧本`);
   setTimeout(() => navigate('library'), 400);
@@ -586,6 +699,8 @@ function appendScripts(arr) {
 
 // ---------- 资料库 ----------
 function renderLibrary() {
+  // 后台预加载所有分块（首次进入 library 时）
+  preloadAllChunks();
   const main = $('#main');
   main.innerHTML = '';
 
@@ -768,22 +883,30 @@ function renderScriptView(filtered) {
     inner.appendChild(el('div', { class: 'script-paper__head' }, [s.title]));
     inner.appendChild(el('div', { class: 'script-paper__logline' }, [s.logline]));
     inner.appendChild(el('div', { class: 'script-paper__meta' }, [`${s.type} · ${s.genre} · ${s.era} · ${s.perspective} · ${s.tone} · ${s.structure} · ${s.wordCount}字 · №${pad(s.id)}`]));
-    for (const a of s.acts) {
-      inner.appendChild(el('div', { class: 'script-paper__act' }, [a.title]));
-      for (const sc of a.scenes) {
-        const sBlk = el('div', { class: 'script-paper__scene' });
-        sBlk.appendChild(el('div', { class: 'script-paper__heading' }, [`场 ${sc.number} — ${sc.heading}`]));
-        sBlk.appendChild(el('div', { class: 'script-paper__action' }, [sc.action]));
-        for (const d of sc.dialogue) {
-          const dl = el('div', { class: 'script-paper__dialogue' });
-          if (d.parenthetical) dl.appendChild(el('span', { style: { fontSize: '11px', color: 'var(--ink-light)' } }, [d.parenthetical]));
-          dl.appendChild(el('span', { class: 'script-paper__char' }, [d.character.toUpperCase()]));
-          dl.appendChild(el('div', { class: 'script-paper__line' }, [d.line]));
-          sBlk.appendChild(dl);
+
+    // 尝试从已加载分块中找到完整剧本
+    const full = getFullScript(s.id);
+    if (full && full.acts && full.acts.length) {
+      for (const a of full.acts) {
+        inner.appendChild(el('div', { class: 'script-paper__act' }, [a.title]));
+        for (const sc of (a.scenes || [])) {
+          const sBlk = el('div', { class: 'script-paper__scene' });
+          sBlk.appendChild(el('div', { class: 'script-paper__heading' }, [`场 ${sc.number} — ${sc.heading}`]));
+          sBlk.appendChild(el('div', { class: 'script-paper__action' }, [sc.action]));
+          for (const d of (sc.dialogue || [])) {
+            const dl = el('div', { class: 'script-paper__dialogue' });
+            if (d.parenthetical) dl.appendChild(el('span', { style: { fontSize: '11px', color: 'var(--ink-light)' } }, [d.parenthetical]));
+            dl.appendChild(el('span', { class: 'script-paper__char' }, [d.character.toUpperCase()]));
+            dl.appendChild(el('div', { class: 'script-paper__line' }, [d.line]));
+            sBlk.appendChild(dl);
+          }
+          if (sc.transition) sBlk.appendChild(el('div', { class: 'script-paper__trans' }, [sc.transition]));
+          inner.appendChild(sBlk);
         }
-        if (sc.transition) sBlk.appendChild(el('div', { class: 'script-paper__trans' }, [sc.transition]));
-        inner.appendChild(sBlk);
       }
+    } else {
+      // 分块未加载完毕
+      inner.appendChild(el('div', { style: { padding: '20px 0', textAlign: 'center', color: 'var(--ink-light)', fontStyle: 'italic', fontFamily: 'var(--font-mono)', fontSize: '12px' } }, ['… 完整幕 / 场加载中，请点击进入详情查看 …']));
     }
     paper.appendChild(inner);
     paper.addEventListener('click', () => openDrawer(s.id));
@@ -834,10 +957,40 @@ function renderPager(filtered) {
 }
 
 // ---------- 详情弹窗 ----------
-function openDrawer(id) {
-  const s = scripts.find(x => x.id === id);
-  if (!s) return;
-  state.selectedId = id;
+async function openDrawer(id) {
+  const meta = scripts.find(x => x.id === id);
+  if (!meta) return;
+  // 立即显示骨架 + 加载完整剧本
+  openDrawerSkeleton(meta);
+  const s = await ensureFullScript(id);
+  if (!s) {
+    toast('剧本加载失败');
+    return;
+  }
+  renderDrawerContent(s);
+}
+
+function openDrawerSkeleton(meta) {
+  state.selectedId = meta.id;
+  const sheet = $('#drawerSheet');
+  sheet.innerHTML = '';
+  const close = el('button', { class: 'drawer__close', 'aria-label': '关闭' }, ['×']);
+  close.addEventListener('click', closeDrawer);
+  sheet.appendChild(close);
+
+  const d = el('div', { class: 'detail' });
+  d.appendChild(el('div', { class: 'detail__eyebrow' }, [`№ ${pad(meta.id)} · ${meta.type} · ${meta.structure}`]));
+  d.appendChild(el('h2', { class: 'detail__title' }, [meta.title]));
+  d.appendChild(el('div', { class: 'detail__logline' }, [meta.logline]));
+  d.appendChild(el('div', { style: { padding: '24px', textAlign: 'center', color: 'var(--ink-light)', fontStyle: 'italic' } }, ['… 正在加载完整剧本 …']));
+  sheet.appendChild(d);
+  $('#drawer').classList.add('open');
+  $('#drawer').setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+
+function renderDrawerContent(s) {
+  if (state.selectedId !== s.id) return; // 用户已经关闭
   const sheet = $('#drawerSheet');
   sheet.innerHTML = '';
 
@@ -855,58 +1008,65 @@ function openDrawer(id) {
     meta.appendChild(el('div', {}, [k, el('strong', {}, [v])]));
   }
   meta.appendChild(el('div', {}, ['结构', el('strong', {}, [s.structure])]));
-  meta.appendChild(el('div', {}, ['幕 / 场', el('strong', {}, [`${s.actCount} 幕 / ${s.acts.reduce((a, b) => a + b.scenes.length, 0)} 场`])]));
-  meta.appendChild(el('div', {}, ['字数', el('strong', {}, [s.wordCount.toLocaleString() + ' 字'])]));
+  meta.appendChild(el('div', {}, ['幕 / 场', el('strong', {}, [`${s.actCount} 幕 / ${(s.acts || []).reduce((a, b) => a + b.scenes.length, 0)} 场`])]));
+  meta.appendChild(el('div', {}, ['字数', el('strong', {}, [(s.wordCount || 0).toLocaleString() + ' 字'])]));
   meta.appendChild(el('div', {}, ['生成', el('strong', {}, [s.createdAt || '—'])]));
   d.appendChild(meta);
 
   // setting
-  const setting = el('div', { class: 'detail__setting' }, [s.setting]);
-  d.appendChild(setting);
+  if (s.setting) d.appendChild(el('div', { class: 'detail__setting' }, [s.setting]));
 
   // themes
-  const themes = el('div', { class: 'detail__themes' });
-  for (const t of s.themes) themes.appendChild(el('span', { class: 'theme-tag' }, [t]));
-  d.appendChild(themes);
+  if (s.themes && s.themes.length) {
+    const themes = el('div', { class: 'detail__themes' });
+    for (const t of s.themes) themes.appendChild(el('span', { class: 'theme-tag' }, [t]));
+    d.appendChild(themes);
+  }
 
   // characters
-  const chars = el('div', { class: 'detail__chars' });
-  for (const c of s.characters) {
-    const card = el('div', { class: 'char-card' });
-    card.innerHTML = `
-      <div class="char-card__name">${c.name}</div>
-      <div class="char-card__arch">${c.archetype} · ${c.role}</div>
-      <div class="char-card__traits">${(c.traits || []).join(' · ')}</div>
-      <div class="char-card__motivation">动机：${c.motivation}</div>
-      <div class="char-card__arc">弧线：${c.arc}</div>
-    `;
-    chars.appendChild(card);
+  if (s.characters && s.characters.length) {
+    const chars = el('div', { class: 'detail__chars' });
+    for (const c of s.characters) {
+      const card = el('div', { class: 'char-card' });
+      card.innerHTML = `
+        <div class="char-card__name">${c.name}</div>
+        <div class="char-card__arch">${c.archetype || ''} · ${c.role || ''}</div>
+        <div class="char-card__traits">${(c.traits || []).join(' · ')}</div>
+        <div class="char-card__motivation">动机：${c.motivation || '—'}</div>
+        <div class="char-card__arc">弧线：${c.arc || '—'}</div>
+      `;
+      chars.appendChild(card);
+    }
+    d.appendChild(chars);
   }
-  d.appendChild(chars);
 
   // body
-  const body = el('div', { class: 'detail__body' });
-  body.appendChild(el('h3', {}, ['完整剧本 · FULL SCRIPT']));
-  for (const a of s.acts) {
-    const ab = el('div', { class: 'act-block' });
-    ab.appendChild(el('div', { class: 'act-block__title' }, [a.title]));
-    for (const sc of a.scenes) {
-      const sBlk = el('div', { class: 'scene-block' });
-      sBlk.appendChild(el('div', { class: 'scene-block__heading' }, [`场 ${sc.number} — ${sc.heading}`]));
-      sBlk.appendChild(el('div', { class: 'scene-block__action' }, [sc.action]));
-      for (const dl of sc.dialogue) {
-        const dEl = el('div', { class: 'dialogue-line' });
-        if (dl.parenthetical) dEl.appendChild(el('span', { class: 'parenthetical' }, [dl.parenthetical]));
-        dEl.appendChild(el('span', { class: 'name' }, [dl.character.toUpperCase()]));
-        dEl.appendChild(el('span', { class: 'line' }, [dl.line]));
-        sBlk.appendChild(dEl);
+  if (s.acts && s.acts.length) {
+    const body = el('div', { class: 'detail__body' });
+    body.appendChild(el('h3', {}, ['完整剧本 · FULL SCRIPT']));
+    for (const a of s.acts) {
+      const ab = el('div', { class: 'act-block' });
+      ab.appendChild(el('div', { class: 'act-block__title' }, [a.title]));
+      for (const sc of (a.scenes || [])) {
+        const sBlk = el('div', { class: 'scene-block' });
+        sBlk.appendChild(el('div', { class: 'scene-block__heading' }, [`场 ${sc.number} — ${sc.heading}`]));
+        sBlk.appendChild(el('div', { class: 'scene-block__action' }, [sc.action]));
+        for (const dl of (sc.dialogue || [])) {
+          const dEl = el('div', { class: 'dialogue-line' });
+          if (dl.parenthetical) dEl.appendChild(el('span', { class: 'parenthetical' }, [dl.parenthetical]));
+          dEl.appendChild(el('span', { class: 'name' }, [dl.character.toUpperCase()]));
+          dEl.appendChild(el('span', { class: 'line' }, [dl.line]));
+          sBlk.appendChild(dEl);
+        }
+        if (sc.transition) sBlk.appendChild(el('div', { class: 'scene-block__transition' }, [sc.transition]));
+        ab.appendChild(sBlk);
       }
-      if (sc.transition) sBlk.appendChild(el('div', { class: 'scene-block__transition' }, [sc.transition]));
-      ab.appendChild(sBlk);
+      body.appendChild(ab);
     }
-    body.appendChild(ab);
+    d.appendChild(body);
+  } else {
+    d.appendChild(el('div', { class: 'detail__setting' }, ['（该剧本未包含完整幕 / 场数据）']));
   }
-  d.appendChild(body);
 
   // actions
   const actions = el('div', { class: 'detail__actions' });
@@ -931,9 +1091,6 @@ function openDrawer(id) {
   d.appendChild(actions);
 
   sheet.appendChild(d);
-  $('#drawer').classList.add('open');
-  $('#drawer').setAttribute('aria-hidden', 'false');
-  document.body.style.overflow = 'hidden';
 }
 
 function closeDrawer() {
@@ -1374,6 +1531,10 @@ function init() {
 
   // hash 路由
   window.addEventListener('hashchange', renderView);
+
+  // 启动后立即在后台预加载所有分块
+  setTimeout(() => preloadAllChunks(), 200);
+
   renderView();
 }
 

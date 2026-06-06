@@ -54,8 +54,9 @@
   <!-- 导出 / 通知 toast -->
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <!-- 数据 -->
-  <script src="./data.js"></script>
+  <!-- 数据：分块加载（先 meta，按需加载分块） -->
+  <script src="./data-meta.js"></script>
+  <script src="./data-0.js"></script>
   <!-- 主逻辑 -->
   <script src="./app.js"></script>
 </body>
