@@ -631,21 +631,132 @@ h1,h2,h3,h4{font-family:'Space Grotesk','Inter','PingFang SC',sans-serif;letter-
 .toggle.on::after{left:20px}
 
 /* === Loader === */
+/* === Loader (软件驱动引导) === */
 #loader{
-  position:fixed;inset:0;z-index:9999;background:var(--bg-0);
-  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;
-  transition:opacity 0.4s;
+  position:fixed;inset:0;z-index:9999;
+  background:radial-gradient(ellipse at top,var(--bg-1,#0a0a1c) 0%,var(--bg-0) 70%);
+  display:flex;align-items:center;justify-content:center;padding:24px;
+  transition:opacity 0.5s cubic-bezier(0.4,0,0.2,1);
+  overflow:hidden;
 }
-#loader .ring{
-  width:56px;height:56px;border-radius:50%;
-  border:3px solid rgba(124,92,255,0.2);
-  border-top-color:var(--accent-a);
-  animation:spin 0.9s linear infinite;
+#loader::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(124,92,255,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(124,92,255,0.04) 1px,transparent 1px);
+  background-size:32px 32px;pointer-events:none;opacity:0.6;
 }
-@keyframes spin{to{transform:rotate(360deg)}}
-#loader .lt{color:var(--text-1);font-size:14px;font-family:'JetBrains Mono',monospace;letter-spacing:0.1em}
-#loader .lp{color:var(--text-3);font-size:12px}
+#loader::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 30% 50%,rgba(124,92,255,0.08) 0%,transparent 50%),
+             radial-gradient(circle at 70% 50%,rgba(34,211,238,0.06) 0%,transparent 50%);
+  pointer-events:none;
+}
 #loader.hidden{opacity:0;pointer-events:none}
+#loader.dismissed{display:none}
+.ld-shell{
+  position:relative;z-index:1;width:100%;max-width:720px;
+  display:grid;grid-template-columns:200px 1fr;gap:24px;
+  background:var(--panel);border:1px solid var(--border);border-radius:24px;
+  padding:28px 32px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  box-shadow:0 24px 80px rgba(0,0,0,0.5),0 0 0 1px rgba(124,92,255,0.1);
+}
+.ld-shell::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,var(--accent-a),var(--accent-b),var(--accent-c),var(--accent-d));
+  border-radius:24px 0 0 24px;
+}
+.ld-brand{text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px}
+.ld-logo{
+  width:96px;height:96px;border-radius:24px;background:var(--grad-1);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:42px;color:#fff;
+  box-shadow:0 12px 32px rgba(124,92,255,0.4),inset 0 1px 0 rgba(255,255,255,0.2);
+  position:relative;overflow:hidden;
+}
+.ld-logo::before{
+  content:'';position:absolute;inset:0;
+  background:conic-gradient(from 0deg,transparent 0deg,rgba(255,255,255,0.2) 60deg,transparent 120deg);
+  animation:ldLogoSweep 3s linear infinite;
+}
+@keyframes ldLogoSweep{to{transform:rotate(360deg)}}
+.ld-name{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--text-0)}
+.ld-ver{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-2);letter-spacing:0.18em}
+.ld-rings{position:relative;width:120px;height:60px;margin-top:8px}
+.ld-rings::before,.ld-rings::after{
+  content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  border:1.5px solid;border-radius:50%;border-color:rgba(124,92,255,0.2);
+}
+.ld-rings::before{width:60px;height:60px;border-top-color:var(--accent-a);animation:spin 1.2s linear infinite}
+.ld-rings::after{width:100px;height:100px;border-right-color:var(--accent-b);animation:spin 1.8s linear infinite reverse}
+.ld-main{display:flex;flex-direction:column;gap:14px;min-width:0}
+.ld-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.ld-title{font-size:14px;font-weight:600;color:var(--text-0);font-family:'JetBrains Mono',monospace;letter-spacing:0.05em}
+.ld-status{
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;
+  padding:3px 8px;border-radius:6px;letter-spacing:0.1em;text-transform:uppercase;
+  background:rgba(124,92,255,0.15);color:var(--accent-a);
+  display:flex;align-items:center;gap:5px;
+}
+.ld-status.ok{background:rgba(74,222,128,0.15);color:#4ade80}
+.ld-status.err{background:rgba(248,113,113,0.15);color:#f87171}
+.ld-status::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;animation:ldPulse 1.2s ease-in-out infinite}
+.ld-status.ok::before,.ld-status.err::before{animation:none}
+@keyframes ldPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+.ld-bar{position:relative;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden}
+.ld-bar > div{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--accent-a),var(--accent-b));border-radius:3px;transition:width 0.3s ease;box-shadow:0 0 12px var(--accent-a)}
+.ld-bar::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);transform:translateX(-100%);animation:ldShimmer 2s linear infinite}
+@keyframes ldShimmer{to{transform:translateX(100%)}}
+.ld-meta{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-2)}
+.ld-meta b{color:var(--text-0);font-weight:600}
+.ld-stages{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:2px}
+.ld-stage{
+  text-align:center;padding:6px 2px;border-radius:6px;
+  font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-3);
+  background:rgba(255,255,255,0.03);border:1px solid transparent;
+  transition:all 0.3s;position:relative;overflow:hidden;
+}
+.ld-stage.done{color:var(--accent-b);background:rgba(34,211,238,0.08);border-color:rgba(34,211,238,0.2)}
+.ld-stage.active{color:var(--text-0);background:rgba(124,92,255,0.12);border-color:rgba(124,92,255,0.3)}
+.ld-stage.active::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(124,92,255,0.3),transparent);
+  animation:ldShimmer 1.4s linear infinite;
+}
+.ld-log{
+  font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7;
+  background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:10px;
+  padding:10px 12px;height:120px;overflow-y:auto;
+}
+.ld-log::-webkit-scrollbar{width:4px}
+.ld-log::-webkit-scrollbar-thumb{background:rgba(124,92,255,0.3);border-radius:2px}
+.ld-log .ll-line{display:flex;gap:8px}
+.ld-log .ll-time{color:var(--text-3);flex-shrink:0;opacity:0.7}
+.ld-log .ll-tag{padding:0 5px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:0.05em;flex-shrink:0;align-self:center;height:14px;display:inline-flex;align-items:center}
+.ld-log .ll-tag.init{background:rgba(124,92,255,0.2);color:var(--accent-a)}
+.ld-log .ll-tag.parse{background:rgba(34,211,238,0.2);color:#22d3ee}
+.ld-log .ll-tag.index{background:rgba(255,209,102,0.2);color:#ffd166}
+.ld-log .ll-tag.agg{background:rgba(74,222,128,0.2);color:#4ade80}
+.ld-log .ll-tag.chart{background:rgba(255,93,143,0.2);color:#ff5d8f}
+.ld-log .ll-tag.mount{background:rgba(192,132,252,0.2);color:#c084fc}
+.ld-log .ll-tag.ready{background:rgba(74,222,128,0.3);color:#4ade80}
+.ld-log .ll-tag.err{background:rgba(248,113,113,0.3);color:#f87171}
+.ld-log .ll-tag.warn{background:rgba(251,191,36,0.2);color:#fbbf24}
+.ld-log .ll-tag.ok{background:rgba(74,222,128,0.2);color:#4ade80}
+.ld-log .ll-msg{color:var(--text-1);word-break:break-word}
+.ld-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:4px}
+.ld-actions .btn{font-size:11px;padding:5px 12px}
+@media (prefers-reduced-motion: reduce){
+  #loader::before,#loader::after,.ld-logo::before,.ld-bar::after,.ld-stage.active::after,.ld-status::before,.ld-rings::before,.ld-rings::after{animation:none!important}
+}
+@media(max-width:640px){
+  .ld-shell{grid-template-columns:1fr;padding:20px;gap:16px}
+  .ld-brand{flex-direction:row;justify-content:flex-start}
+  .ld-logo{width:64px;height:64px;font-size:28px}
+  .ld-rings{display:none}
+  .ld-stages{grid-template-columns:repeat(4,1fr)}
+  .ld-stages .ld-stage:nth-child(n+5){display:none}
+}
 
 /* === Featured / Spotlight === */
 .spotlight-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:18px}
@@ -845,9 +956,45 @@ h1,h2,h3,h4{font-family:'Space Grotesk','Inter','PingFang SC',sans-serif;letter-
 </head>
 <body>
 <div id="loader">
-  <div class="ring"></div>
-  <div class="lt" id="lt">LOADING DATABASE…</div>
-  <div class="lp" id="lp">正在加载 200,000+ 衍生作品数据</div>
+  <div class="ld-shell">
+    <div class="ld-brand">
+      <div class="ld-logo">G</div>
+      <div>
+        <div class="ld-name">GameIP Universe</div>
+        <div class="ld-ver">DRIVER v1.0 · BUILD 20260608</div>
+      </div>
+      <div class="ld-rings"></div>
+    </div>
+    <div class="ld-main">
+      <div class="ld-head">
+        <div>
+          <div class="ld-title" id="ld-stage-title">系统初始化</div>
+          <div class="ld-meta" style="margin-top:4px"><span>驱动: <b id="ld-driver">GameIP-Core 1.0</b></span><span>用时: <b id="ld-elapsed">0.00s</b></span></div>
+        </div>
+        <div class="ld-status" id="ld-status">启动中</div>
+      </div>
+      <div class="ld-bar"><div id="ld-bar-fill" style="width:0%"></div></div>
+      <div class="ld-meta">
+        <span>阶段进度 · <b id="ld-stage-cnt">0/7</b></span>
+        <span>数据加载 · <b id="ld-data-cnt">0</b></span>
+      </div>
+      <div class="ld-stages" id="ld-stages">
+        <div class="ld-stage" data-stage="init">INIT</div>
+        <div class="ld-stage" data-stage="mount">MOUNT</div>
+        <div class="ld-stage" data-stage="parse">PARSE</div>
+        <div class="ld-stage" data-stage="index">INDEX</div>
+        <div class="ld-stage" data-stage="agg">AGG</div>
+        <div class="ld-stage" data-stage="chart">CHART</div>
+        <div class="ld-stage" data-stage="ready">READY</div>
+      </div>
+      <div class="ld-log" id="ld-log"></div>
+      <div class="ld-actions">
+        <button class="btn" id="ld-skip" style="display:none">跳过 →</button>
+        <button class="btn" id="ld-retry" style="display:none">↻ 重试</button>
+        <button class="btn" id="ld-offline" style="display:none">离线模式</button>
+      </div>
+    </div>
+  </div>
 </div>
 <nav class="topnav">
   <a class="brand" href="#/">
@@ -3054,30 +3201,262 @@ window.addEventListener("resize", () => {
 });
 
 function init(){
-  if(!RAW.length){
-    document.getElementById("lt").textContent = "NO DATA FOUND";
-    document.getElementById("lp").textContent = "请确认 data.js 存在";
-    return;
+  const t0 = performance.now();
+  const ld = {
+    bar: document.getElementById('ld-bar-fill'),
+    title: document.getElementById('ld-stage-title'),
+    status: document.getElementById('ld-status'),
+    log: document.getElementById('ld-log'),
+    elapsed: document.getElementById('ld-elapsed'),
+    stageCnt: document.getElementById('ld-stage-cnt'),
+    dataCnt: document.getElementById('ld-data-cnt'),
+    stages: document.querySelectorAll('#ld-stages .ld-stage'),
+    skip: document.getElementById('ld-skip'),
+    retry: document.getElementById('ld-retry'),
+    offline: document.getElementById('ld-offline'),
+    loader: document.getElementById('loader'),
+    driver: document.getElementById('ld-driver'),
+    curStage: 0,
+    dismissed: false
+  };
+  const STAGES = ['init','mount','parse','index','agg','chart','ready'];
+  const STAGE_TITLES = {
+    init: '系统初始化',
+    mount: '挂载数据卷',
+    parse: '解析数据集',
+    index: '构建索引',
+    agg: '聚合统计',
+    chart: '初始化图表引擎',
+    ready: '就绪'
+  };
+  let _timer = null;
+  function tickElapsed(){
+    if(ld.dismissed) return;
+    ld.elapsed.textContent = ((performance.now() - t0) / 1000).toFixed(2) + 's';
+    _timer = requestAnimationFrame(tickElapsed);
   }
-  const lt = document.getElementById("lt");
-  const lp = document.getElementById("lp");
-  lt.textContent = "PARSING DATABASE…";
-  lp.textContent = `正在解析 ${RAW.length.toLocaleString()} 条原始数据`;
-  setTimeout(() => {
-    lt.textContent = "BUILDING INDEX…";
-    lp.textContent = "正在构建索引与统计聚合";
+  _timer = requestAnimationFrame(tickElapsed);
+  function setProgress(pct, stageIdx){
+    ld.bar.style.width = Math.min(100, Math.max(0, pct)) + '%';
+    if(typeof stageIdx === 'number'){
+      ld.stages.forEach((s, i) => {
+        s.classList.remove('active','done');
+        if(i < stageIdx) s.classList.add('done');
+        else if(i === stageIdx) s.classList.add('active');
+      });
+      ld.curStage = stageIdx;
+      ld.stageCnt.textContent = (stageIdx) + '/' + STAGES.length;
+      ld.title.textContent = STAGE_TITLES[STAGES[stageIdx]] || STAGE_TITLES.init;
+    }
+  }
+  function log(tag, msg){
+    const t = new Date();
+    const ts = `${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}:${String(t.getSeconds()).padStart(2,'0')}.${String(t.getMilliseconds()).padStart(3,'0')}`;
+    const line = document.createElement('div');
+    line.className = 'll-line';
+    line.innerHTML = `<span class="ll-time">${ts}</span><span class="ll-tag ${tag}">${tag}</span><span class="ll-msg"></span>`;
+    line.querySelector('.ll-msg').textContent = msg;
+    ld.log.appendChild(line);
+    ld.log.scrollTop = ld.log.scrollHeight;
+  }
+  function setStatus(text, kind){
+    ld.status.textContent = text;
+    ld.status.className = 'ld-status' + (kind ? ' ' + kind : '');
+  }
+  function fail(msg){
+    log('err', msg);
+    setStatus('失败', 'err');
+    ld.retry.style.display = '';
+    ld.offline.style.display = '';
+  }
+  function done(){
+    setProgress(100, STAGES.length);
+    STAGES.forEach(s => { const el = document.querySelector(`[data-stage="${s}"]`); if(el) el.classList.add('done'); });
+    log('ready', '所有子系统已就绪 · 欢迎使用');
+    setStatus('就绪', 'ok');
+    cancelAnimationFrame(_timer);
     setTimeout(() => {
-      buildWorks();
-      buildAggregates();
-      timelineState.year = yearRange[1] || 2025;
-      lt.textContent = "READY";
-      lp.textContent = "准备就绪";
-      setTimeout(() => {
-        document.getElementById("loader").classList.add("hidden");
-        routeTo();
+      if(ld.dismissed) return;
+      ld.dismissed = true;
+      ld.loader.classList.add('hidden');
+      setTimeout(() => ld.loader.classList.add('dismissed'), 600);
+      routeTo();
+    }, 500);
+  }
+  ld.skip.onclick = () => {
+    log('warn', '用户跳过等待 · 强制进入');
+    done();
+  };
+  ld.retry.onclick = () => {
+    ld.retry.style.display = 'none';
+    ld.offline.style.display = 'none';
+    setStatus('重试中');
+    ld.log.innerHTML = '';
+    setProgress(0, 0);
+    init();
+  };
+  ld.offline.onclick = () => {
+    log('warn', '进入离线模式 · 仅基础界面');
+    if(typeof RAW !== 'undefined') RAW.length = 0;
+    done();
+  };
+
+  // 阶段 1: INIT
+  setProgress(5, 0);
+  log('init', 'GameIP-Core 驱动 v1.0 启动');
+  log('init', '检测运行环境 · ' + (navigator.userAgent.split(' ').slice(-1)[0] || 'browser'));
+  log('init', '主题: ' + (document.documentElement.getAttribute('data-theme') || 'dark') + ' · 强调色: ' + (document.documentElement.getAttribute('data-accent') || 'purple'));
+  log('init', '可用内存估算 · ' + (navigator.deviceMemory ? navigator.deviceMemory + ' GB' : '未知'));
+  ld.dataCnt.textContent = '等待中';
+
+  setTimeout(() => {
+    // 阶段 2: MOUNT (检查 data.js)
+    setProgress(15, 1);
+    log('mount', '挂载数据卷 data.js …');
+    if(typeof RAW === 'undefined' || !RAW.length){
+      // 检查脚本是否真的在加载
+      const scripts = document.querySelectorAll('script[src*="data.js"]');
+      log('warn', 'data.js 未在内存中找到 · 已检测 ' + scripts.length + ' 个脚本标签');
+      if(scripts.length === 0){
+        fail('致命: data.js 脚本未引用');
+        return;
+      }
+      log('mount', '脚本标签存在 · 等待 88MB 数据解析…');
+      // 给个最长 30s 等待
+      let waited = 0;
+      const wt = setInterval(() => {
+        waited += 500;
+        if(typeof RAW !== 'undefined' && RAW.length){
+          clearInterval(wt);
+          log('mount', '数据卷挂载完成 · ' + RAW.length.toLocaleString() + ' 条原始记录');
+          ld.dataCnt.textContent = RAW.length.toLocaleString();
+          setTimeout(parseStage, 200);
+        } else if(waited > 30000){
+          clearInterval(wt);
+          fail('超时 (30s): data.js 加载失败 · 请检查网络或刷新');
+        }
+      }, 500);
+      // 同时启动进度模拟
+      let mockPct = 15;
+      const mockT = setInterval(() => {
+        if(mockPct < 35){ mockPct += 1; setProgress(mockPct, 1); }
+        else clearInterval(mockT);
       }, 200);
-    }, 30);
-  }, 30);
+      return;
+    }
+    log('mount', '数据卷已挂载 · ' + RAW.length.toLocaleString() + ' 条原始记录');
+    ld.dataCnt.textContent = RAW.length.toLocaleString();
+    setTimeout(parseStage, 100);
+  }, 300);
+
+  function parseStage(){
+    // 阶段 3: PARSE - 真实分块解析
+    setProgress(35, 2);
+    log('parse', '开始解析 ' + RAW.length.toLocaleString() + ' 条原始记录');
+    const t1 = performance.now();
+    const N = RAW.length;
+    const CHUNK = 5000;
+    let i = 0;
+    // 先 buildWorks
+    function buildInChunks(){
+      const end = Math.min(i + CHUNK, N);
+      if(i === 0){
+        WORKS = new Array(N);
+        for(let j=0;j<N;j++) WORKS[j] = { id:j+1, title:'', type:'', typeZh:'', region:'', year:0, source:'', desc:'', ip:'' };
+      }
+      for(; i<end; i++){
+        const r = RAW[i];
+        const y = +r[3] || 0;
+        WORKS[i].title = r[0];
+        WORKS[i].type = r[1];
+        WORKS[i].typeZh = TYPE_MAP[r[1]] || r[1];
+        WORKS[i].region = r[2];
+        WORKS[i].year = y;
+        WORKS[i].source = r[4] || '—';
+        WORKS[i].desc = r[5] || '';
+        WORKS[i].ip = r[6] || '其他';
+        if(y > 0){
+          if(y < yearRange[0]) yearRange[0] = y;
+          if(y > yearRange[1]) yearRange[1] = y;
+        }
+      }
+      ld.dataCnt.textContent = i.toLocaleString();
+      const pct = 35 + (i / N) * 25;  // 35% → 60%
+      setProgress(pct, 2);
+      if(i < N){
+        setTimeout(buildInChunks, 0);
+      } else {
+        const dt = (performance.now() - t1).toFixed(0);
+        log('parse', '解析完成 · 耗时 ' + dt + 'ms · ' + N.toLocaleString() + ' 条');
+        setTimeout(indexStage, 100);
+      }
+    }
+    buildInChunks();
+  }
+
+  function indexStage(){
+    // 阶段 4: INDEX
+    setProgress(65, 3);
+    log('index', '构建 IP / 类型 / 地区 索引');
+    const t1 = performance.now();
+    // 简化的索引构建 (buildAggregates 分块)
+    const ipC = Object.create(null);
+    const tC = Object.create(null);
+    const rC = Object.create(null);
+    const dC = Object.create(null);
+    const N = WORKS.length;
+    const CHUNK = 10000;
+    let i = 0;
+    function chunk(){
+      const end = Math.min(i + CHUNK, N);
+      for(; i<end; i++){
+        const w = WORKS[i];
+        ipC[w.ip] = (ipC[w.ip] || 0) + 1;
+        tC[w.type] = (tC[w.type] || 0) + 1;
+        rC[w.region] = (rC[w.region] || 0) + 1;
+        const d = Math.floor(w.year/10)*10;
+        if(d > 0) dC[d] = (dC[d] || 0) + 1;
+      }
+      const pct = 65 + (i / N) * 15;  // 65% → 80%
+      setProgress(pct, 3);
+      if(i < N){
+        setTimeout(chunk, 0);
+      } else {
+        IP_LIST = Object.entries(ipC).sort((a,b)=>b[1]-a[1]);
+        typeCounts = tC;
+        regionCounts = rC;
+        decadeCounts = dC;
+        allIPs = IP_LIST.map(([k])=>k);
+        log('index', '索引完成 · ' + IP_LIST.length + ' IP · ' + Object.keys(tC).length + ' 类型 · ' + Object.keys(rC).length + ' 地区 · 耗时 ' + (performance.now() - t1).toFixed(0) + 'ms');
+        setTimeout(aggStage, 80);
+      }
+    }
+    chunk();
+  }
+
+  function aggStage(){
+    // 阶段 5: AGG (跨视图聚合 / 时间线初始化)
+    setProgress(82, 4);
+    log('agg', '初始化各视图聚合');
+    timelineState.year = yearRange[1] || 2025;
+    log('agg', '时间线锚点年份 · ' + timelineState.year);
+    setTimeout(chartStage, 80);
+  }
+
+  function chartStage(){
+    // 阶段 6: CHART
+    setProgress(92, 5);
+    log('chart', '验证 ECharts 引擎');
+    if(typeof echarts !== 'undefined'){
+      log('chart', 'ECharts ' + echarts.version + ' 已加载 · 6+ 图表组件就绪');
+    } else {
+      log('warn', 'ECharts 未检测到 · 可视化视图可能受限');
+    }
+    setTimeout(() => {
+      ld.skip.style.display = 'none';
+      done();
+    }, 200);
+  }
 }
 init();
 </script>
