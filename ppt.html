@@ -16,14 +16,16 @@
     <div class="ppt__controls">
       <button class="ppt__btn" id="pptPrev" title="上一张 (←)">‹</button>
       <div class="ppt__progress" id="pptDots"></div>
-      <span id="pptProgress" style="font-family:var(--font-display);font-size:0.85rem;letter-spacing:0.1em;min-width:48px;text-align:center;">1 / 8</span>
+      <span id="pptProgress" style="font-family:var(--font-display);font-size:0.85rem;letter-spacing:0.1em;min-width:56px;text-align:center;">01 / 11</span>
       <button class="ppt__btn" id="pptNext" title="下一张 (→)">›</button>
       <button class="ppt__btn" id="pptFullscreen" title="全屏 (F)">⛶</button>
     </div>
 
-    <a href="index.html" class="nav__brand" style="position:fixed;top:18px;left:32px;z-index:60;color:var(--paper);">
+    <a href="index.html" class="nav__brand" id="pptBrand" style="position:fixed;top:18px;left:32px;z-index:60;color:var(--paper);opacity:0.85;">
       <span class="seal">哥</span>哥窑
     </a>
+
+    <div class="ppt__hint">键盘 ← → 翻页 · F 全屏 · Home/End 首末页</div>
   </div>
 
   <script src="js/data.js"></script>

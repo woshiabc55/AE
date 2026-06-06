@@ -29,4 +29,10 @@
     act2: '第二幕·贡品之印',
     act3: '第三幕·窑火成瓷'
   };
+
+  // 工具：数字补零
+  global.KE.pad2 = function (n) {
+    n = parseInt(n, 10) || 0;
+    return n < 10 ? '0' + n : '' + n;
+  };
 })(window);
