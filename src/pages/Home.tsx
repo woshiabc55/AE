@@ -1,5 +1,6 @@
 import Hero from "../components/Hero";
 import CharacterCards from "../components/CharacterCards";
+import ScriptSection from "../components/ScriptSection";
 import SceneTimeline from "../components/SceneTimeline";
 import PropsAndVFX from "../components/PropsAndVFX";
 import AudioDesign from "../components/AudioDesign";
@@ -11,6 +12,7 @@ export default function Home() {
     <main className="relative">
       <Hero />
       <CharacterCards />
+      <ScriptSection />
       <SceneTimeline />
       <PropsAndVFX />
       <AudioDesign />
