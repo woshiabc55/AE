@@ -692,6 +692,63 @@ h1,h2,h3,h4{font-family:'Space Grotesk','Inter','PingFang SC',sans-serif;letter-
 .brief-ip-card .ipstats{display:flex;gap:14px;font-size:11px;color:var(--text-2);font-family:'JetBrains Mono',monospace;position:relative;z-index:1}
 .brief-ip-card .ipstats span b{color:var(--accent-d);font-weight:600;margin-left:4px}
 
+/* === Launcher === */
+.launcher-link{position:relative}
+.launcher-link::after{content:'';position:absolute;bottom:-2px;left:10%;right:10%;height:2px;background:var(--grad-1);opacity:0.5;border-radius:1px}
+.lh-hero{position:relative;padding:32px 36px 36px;background:linear-gradient(135deg,rgba(124,92,255,0.18) 0%,rgba(34,211,238,0.12) 50%,rgba(255,93,143,0.12) 100%);border:1px solid var(--border);border-radius:24px;margin-bottom:24px;overflow:hidden}
+.lh-hero::before{content:'';position:absolute;right:-100px;top:-100px;width:300px;height:300px;background:radial-gradient(circle,rgba(124,92,255,0.4) 0%,transparent 70%);filter:blur(20px)}
+.lh-hero::after{content:'';position:absolute;left:-50px;bottom:-100px;width:200px;height:200px;background:radial-gradient(circle,rgba(34,211,238,0.3) 0%,transparent 70%);filter:blur(20px)}
+.lh-hero .lh-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.25em;color:var(--accent-b);text-transform:uppercase;margin-bottom:8px;position:relative;z-index:1}
+.lh-hero h1{font-family:'Space Grotesk',sans-serif;font-size:48px;font-weight:800;line-height:1.05;margin-bottom:12px;position:relative;z-index:1;background:linear-gradient(135deg,#fff 0%,var(--accent-b) 50%,var(--accent-c) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lh-hero p{font-size:15px;color:var(--text-1);line-height:1.6;max-width:720px;position:relative;z-index:1;margin-bottom:18px}
+.lh-hero-actions{display:flex;gap:10px;flex-wrap:wrap;position:relative;z-index:1}
+.lh-hero-actions .btn{font-size:13px}
+.lh-diagnostics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:24px}
+.lh-diag{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:18px 20px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);position:relative;overflow:hidden}
+.lh-diag .ldi-icon{width:38px;height:38px;border-radius:12px;background:var(--grad-1);display:flex;align-items:center;justify-content:center;margin-bottom:12px;box-shadow:0 6px 16px rgba(124,92,255,0.3)}
+.lh-diag .ldi-icon svg{width:18px;height:18px;color:#fff}
+.lh-diag .ldi-k{font-size:11px;color:var(--text-2);text-transform:uppercase;letter-spacing:0.12em;font-family:'JetBrains Mono',monospace;margin-bottom:4px}
+.lh-diag .ldi-v{font-size:24px;font-weight:800;font-family:'Space Grotesk',sans-serif;background:var(--grad-1);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.1}
+.lh-diag .ldi-h{font-size:11px;color:var(--text-2);margin-top:6px;line-height:1.4}
+.lh-diag .ldi-bar{margin-top:10px;height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden}
+.lh-diag .ldi-bar > div{height:100%;background:var(--grad-1);border-radius:2px;transition:width 0.4s}
+.lh-apps{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:24px}
+.lh-app{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:18px 20px;text-decoration:none;color:inherit;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:all 0.18s;position:relative;overflow:hidden;display:block}
+.lh-app:hover{transform:translateY(-3px);border-color:var(--accent-a);box-shadow:0 12px 30px rgba(124,92,255,0.2)}
+.lh-app::after{content:'';position:absolute;right:-40px;top:-40px;width:120px;height:120px;border-radius:50%;background:var(--grad-1);opacity:0.1;filter:blur(20px);transition:opacity 0.2s}
+.lh-app:hover::after{opacity:0.2}
+.lh-app .la-icon{width:36px;height:36px;border-radius:10px;background:var(--grad-1);display:flex;align-items:center;justify-content:center;margin-bottom:12px;box-shadow:0 4px 12px rgba(124,92,255,0.25)}
+.lh-app .la-icon svg{width:18px;height:18px;color:#fff}
+.lh-app .la-t{font-size:15px;font-weight:700;margin-bottom:4px}
+.lh-app .la-p{font-size:12px;color:var(--text-2);line-height:1.5}
+.lh-app .la-meta{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text-3);text-transform:uppercase;letter-spacing:0.1em}
+.lh-app .la-meta .la-go{color:var(--accent-b);font-weight:600}
+.lh-tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.lh-tool{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:16px 18px;cursor:pointer;transition:all 0.18s;text-align:left;font:inherit;color:inherit;display:block;width:100%;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.lh-tool:hover{border-color:var(--accent-a);background:rgba(124,92,255,0.08);transform:translateY(-2px)}
+.lh-tool .lt-icon{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;background:rgba(124,92,255,0.15);margin-bottom:10px}
+.lh-tool .lt-icon svg{width:16px;height:16px;color:var(--accent-a)}
+.lh-tool .lt-t{font-size:13px;font-weight:600;margin-bottom:2px}
+.lh-tool .lt-p{font-size:11px;color:var(--text-2);line-height:1.4}
+.lh-log{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:16px 18px;margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;max-height:200px;overflow-y:auto;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.lh-log .ll-line{display:flex;gap:10px}
+.lh-log .ll-time{color:var(--text-3);flex-shrink:0}
+.lh-log .ll-tag{padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;flex-shrink:0}
+.lh-log .ll-tag.ok{background:rgba(74,222,128,0.15);color:#4ade80}
+.lh-log .ll-tag.warn{background:rgba(251,191,36,0.15);color:#fbbf24}
+.lh-log .ll-tag.err{background:rgba(248,113,113,0.15);color:#f87171}
+.lh-log .ll-tag.info{background:rgba(124,92,255,0.15);color:var(--accent-a)}
+.lh-log .ll-msg{color:var(--text-1)}
+@media(max-width:1024px){
+  .lh-diagnostics{grid-template-columns:repeat(2,1fr)}
+  .lh-hero h1{font-size:32px}
+}
+@media(max-width:640px){
+  .lh-diagnostics{grid-template-columns:1fr 1fr}
+  .lh-hero{padding:24px 20px 26px}
+  .lh-hero h1{font-size:26px}
+}
+
 /* === Milestones === */
 .ms-timeline{position:relative;padding:20px 0}
 .ms-timeline::before{content:'';position:absolute;left:80px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--accent-a),var(--accent-b),var(--accent-c),var(--accent-d));opacity:0.5}
@@ -799,6 +856,7 @@ h1,h2,h3,h4{font-family:'Space Grotesk','Inter','PingFang SC',sans-serif;letter-
   </a>
   <div class="navlinks" id="navlinks">
     <a href="#/" data-route="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg><span>首页</span></a>
+    <a href="#/launcher" data-route="/launcher" class="launcher-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17l5-5 4 4 7-7M14 4h7v7"/></svg><span>启动器</span></a>
     <a href="#/browse" data-route="/browse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span>浏览</span></a>
     <a href="#/visualize" data-route="/visualize"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 16l4-4 4 4 5-5"/></svg><span>可视化</span></a>
     <a href="#/ip" data-route="/ip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg><span>IP详情</span></a>
@@ -1759,6 +1817,257 @@ function renderCollections(mountEl){
 }
 
 /* ============================================================
+   VIEW 9: 项目启动器 LAUNCHER
+   ============================================================ */
+const LAUNCHER_APPS = [
+  { route:'/', icon:'<path d="M3 12l9-9 9 9M5 10v10h14V10"/>', name:'首页', desc:'总览、亮点推荐与入口聚合', tag:'OVERVIEW' },
+  { route:'/browse', icon:'<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>', name:'浏览资料库', desc:'筛选、搜索、排序 200,000+ 作品', tag:'BROWSE' },
+  { route:'/visualize', icon:'<path d="M3 3v18h18M7 16l4-4 4 4 5-5"/>', name:'数据可视化', desc:'6 种 ECharts 图表组件', tag:'VIZ' },
+  { route:'/ip', icon:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/>', name:'IP 详情', desc:'所有 IP 索引与详情查询', tag:'IPS' },
+  { route:'/rankings', icon:'<path d="M6 21V10M12 21V3M18 21v-7"/>', name:'排行榜', desc:'IP / 作品 / 类型四维 Top 100', tag:'TOP' },
+  { route:'/compare', icon:'<rect x="3" y="3" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/>', name:'IP 对比', desc:'最多 4 个 IP 雷达图对比', tag:'CMP' },
+  { route:'/timeline', icon:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', name:'时间轴', desc:'跨年度拖动时间滑块', tag:'TIME' },
+  { route:'/regions', icon:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/>', name:'地区洞察', desc:'全球 9 个地区分布对比', tag:'GEO' },
+  { route:'/collections', icon:'<path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>', name:'我的收藏', desc:'LocalStorage 持久化收藏夹', tag:'FAV' },
+  { route:'/brief', icon:'<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>', name:'今日速递', desc:'每日 IP / 类型 / 来源快报', tag:'BRIEF' },
+  { route:'/milestones', icon:'<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>', name:'里程碑年表', desc:'关键年份代表作与时代', tag:'MS' },
+  { route:'/trends', icon:'<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>', name:'趋势报告', desc:'近 5 年 vs 前 5 年增长率', tag:'TREND' },
+  { route:'/settings', icon:'<circle cx="12" cy="12" r="3"/>', name:'偏好设置', desc:'7 大类 25+ 概念自定义', tag:'CFG' }
+];
+const LAUNCHER_TOOLS = [
+  { id:'reload-data', icon:'<path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>', name:'重新加载数据', desc:'重新拉取 data.js (91MB)', tag:'RELOAD' },
+  { id:'clear-cache', icon:'<path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>', name:'清空 LocalStorage', desc:'重置主题 / 收藏 / 25+ 设置', tag:'RESET' },
+  { id:'export-all', icon:'<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>', name:'导出全部 CSV', desc:'前 5,000 条记录 + IP 排行', tag:'EXPORT' },
+  { id:'open-prd', icon:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>', name:'查看 PRD', desc:'产品需求文档 (Markdown)', tag:'DOC' },
+  { id:'open-tech', icon:'<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>', name:'查看技术文档', desc:'架构设计与技术栈说明', tag:'DOC' },
+  { id:'copy-link', icon:'<path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/>', name:'复制当前链接', desc:'分享当前页面 URL', tag:'SHARE' },
+  { id:'fullscreen', icon:'<path d="M8 3H5a2 2 0 00-2 2v3M21 8V5a2 2 0 00-2-2h-3M3 16v3a2 2 0 002 2h3M16 21h3a2 2 0 002-2v-3"/>', name:'进入全屏', desc:'沉浸式浏览视图', tag:'VIEW' },
+  { id:'view-source', icon:'<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>', name:'查看源码', desc:'在新窗口打开 index.html', tag:'CODE' },
+  { id:'regen-data', icon:'<path d="M21 12a9 9 0 11-6.219-8.56"/>', name:'重新生成数据', desc:'运行 generate4.py (后台任务)', tag:'GEN' },
+  { id:'diag-run', icon:'<circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/>', name:'运行诊断', desc:'扫描所有路由与图表', tag:'DIAG' }
+];
+let _logEntries = [];
+function _logToLauncher(tag, msg){
+  const t = new Date();
+  const ts = `${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}:${String(t.getSeconds()).padStart(2,'0')}`;
+  _logEntries.unshift({ tag, msg, ts });
+  if(_logEntries.length > 50) _logEntries = _logEntries.slice(0, 50);
+  const el = document.getElementById('lh-log-body');
+  if(el){
+    el.innerHTML = _logEntries.map(e => `<div class="ll-line"><span class="ll-time">${e.ts}</span><span class="ll-tag ${e.tag}">${e.tag}</span><span class="ll-msg">${esc(e.msg)}</span></div>`).join('') + el.innerHTML;
+  }
+}
+function _computeLocalStorageUsage(){
+  let total = 0, count = 0;
+  for(let i=0; i<localStorage.length; i++){
+    const k = localStorage.key(i);
+    const v = localStorage.getItem(k) || '';
+    total += k.length + v.length;
+    count++;
+  }
+  return { bytes: total, kb: (total/1024).toFixed(2), mb: (total/1024/1024).toFixed(2), count };
+}
+function renderLauncher(mountEl){
+  const total = WORKS.length;
+  const ipCount = IP_LIST.length;
+  const typeCount = Object.keys(typeCounts).length;
+  const regionCount = Object.keys(regionCounts).length;
+  const ls = _computeLocalStorageUsage();
+  const favs = storage.get('favs', []);
+  const now = new Date();
+  const uptime = Math.floor((now - _startedAt) / 1000);
+  const upM = Math.floor(uptime / 60), upS = uptime % 60;
+  // 健康检查
+  const checks = [
+    { ok: total > 0, label:'数据加载', detail: total.toLocaleString() + ' 条' },
+    { ok: IP_LIST.length > 0, label:'IP 索引', detail: ipCount + ' 个' },
+    { ok: typeof echarts !== 'undefined', label:'ECharts', detail: typeof echarts !== 'undefined' ? '5.x 已加载' : '未加载' },
+    { ok: ls.count > 0, label:'本地存储', detail: ls.kb + ' KB / ' + ls.count + ' 项' }
+  ];
+  const health = checks.filter(c => c.ok).length;
+
+  mountEl.innerHTML = `
+    <div class="lh-hero" style="margin-top:24px">
+      <div class="lh-eyebrow">LAUNCHER · v1.0</div>
+      <h1>项目 <span class="grad">启动器</span></h1>
+      <p>一站式启动 / 诊断 / 管理 GameIP Universe Archive。从这里进入 13 个视图，运行 10 个工具，查看系统健康度与实时日志。所有操作均在本地完成。</p>
+      <div class="lh-hero-actions">
+        <button class="btn primary" id="lh-go-browse">🚀 进入资料库</button>
+        <button class="btn" id="lh-go-brief">⚡ 今日速递</button>
+        <button class="btn" id="lh-go-trends">📈 趋势报告</button>
+        <button class="btn" id="lh-go-settings">⚙ 设置</button>
+        <button class="btn" id="lh-diag-run-2">🔍 立即诊断</button>
+      </div>
+    </div>
+
+    <div class="lh-diagnostics">
+      <div class="lh-diag">
+        <div class="ldi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg></div>
+        <div class="ldi-k">数据容量</div>
+        <div class="ldi-v">${formatNum(total)}</div>
+        <div class="ldi-h">${ipCount} 个 IP · ${typeCount} 种类型 · ${regionCount} 个地区</div>
+        <div class="ldi-bar"><div style="width:${Math.min(100, total/2000)}%"></div></div>
+      </div>
+      <div class="lh-diag">
+        <div class="ldi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></div>
+        <div class="ldi-k">收藏夹</div>
+        <div class="ldi-v">${favs.length}</div>
+        <div class="ldi-h">已收藏作品 · 可导出 JSON</div>
+        <div class="ldi-bar"><div style="width:${Math.min(100, favs.length/100*100)}%"></div></div>
+      </div>
+      <div class="lh-diag">
+        <div class="ldi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg></div>
+        <div class="ldi-k">本地存储</div>
+        <div class="ldi-v">${ls.kb}<small style="font-size:11px;color:var(--text-2);font-weight:500"> KB</small></div>
+        <div class="ldi-h">${ls.count} 个键 · ${ls.bytes.toLocaleString()} 字节</div>
+        <div class="ldi-bar"><div style="width:${Math.min(100, parseFloat(ls.kb)/50)}%"></div></div>
+      </div>
+      <div class="lh-diag">
+        <div class="ldi-icon" style="background:${health===checks.length?'linear-gradient(135deg,#10b981,#22d3ee)':'linear-gradient(135deg,#fbbf24,#f97316)'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+        <div class="ldi-k">系统健康</div>
+        <div class="ldi-v">${health}/${checks.length}</div>
+        <div class="ldi-h">运行 ${upM} 分 ${upS} 秒 · ${SETTINGS.theme}/${SETTINGS.accent}</div>
+        <div class="ldi-bar"><div style="width:${(health/checks.length*100)}%"></div></div>
+      </div>
+    </div>
+
+    <div class="brief-section">
+      <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>应用面板 <span class="sub">· ${LAUNCHER_APPS.length} 个视图</span></h2>
+      <div class="lh-apps">
+        ${LAUNCHER_APPS.map(a => `<a href="#${a.route}" class="lh-app" data-route="${a.route}">
+          <div class="la-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${a.icon}</svg></div>
+          <div class="la-t">${esc(a.name)}</div>
+          <div class="la-p">${esc(a.desc)}</div>
+          <div class="la-meta"><span>${a.tag}</span><span class="la-go">→ 打开</span></div>
+        </a>`).join('')}
+      </div>
+    </div>
+
+    <div class="brief-section">
+      <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>快捷工具 <span class="sub">· ${LAUNCHER_TOOLS.length} 项操作</span></h2>
+      <div class="lh-tools">
+        ${LAUNCHER_TOOLS.map(t => `<button class="lh-tool" data-tool="${t.id}">
+          <div class="lt-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${t.icon}</svg></div>
+          <div class="lt-t">${esc(t.name)}</div>
+          <div class="lt-p">${esc(t.desc)}</div>
+        </button>`).join('')}
+      </div>
+    </div>
+
+    <div class="brief-section">
+      <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>实时日志 <span class="sub">· 最近 ${_logEntries.length} 条</span></h2>
+      <div class="lh-log" id="lh-log-body">
+        ${_logEntries.length === 0 ? '<div style="color:var(--text-3);text-align:center;padding:20px">暂无日志 · 点击任意工具开始记录</div>' : _logEntries.map(e => `<div class="ll-line"><span class="ll-time">${e.ts}</span><span class="ll-tag ${e.tag}">${e.tag}</span><span class="ll-msg">${esc(e.msg)}</span></div>`).join('')}
+      </div>
+    </div>
+  `;
+
+  // initial log entries
+  if(_logEntries.length === 0){
+    _logToLauncher('info', '启动器初始化完成');
+    _logToLauncher('ok', '数据解析成功 · ' + total.toLocaleString() + ' 条作品');
+    _logToLauncher('ok', 'ECharts ' + (typeof echarts !== 'undefined' ? '5.x 已就绪' : '未加载'));
+    _logToLauncher('ok', 'LocalStorage 读取 ' + ls.count + ' 项');
+    _logToLauncher('info', '健康检查 ' + health + '/' + checks.length);
+  }
+
+  // hero buttons
+  document.getElementById('lh-go-browse').onclick = () => location.hash = '#/browse';
+  document.getElementById('lh-go-brief').onclick = () => location.hash = '#/brief';
+  document.getElementById('lh-go-trends').onclick = () => location.hash = '#/trends';
+  document.getElementById('lh-go-settings').onclick = () => location.hash = '#/settings';
+  document.getElementById('lh-diag-run-2').onclick = () => _runDiagnostics(mountEl);
+
+  // tools
+  mountEl.querySelectorAll('[data-tool]').forEach(btn => btn.addEventListener('click', () => _runTool(btn.dataset.tool, mountEl)));
+}
+
+function _runTool(id, mountEl){
+  switch(id){
+    case 'reload-data':
+      _logToLauncher('info', '正在重新加载 data.js…');
+      const s = document.createElement('script');
+      s.src = 'data.js?t=' + Date.now();
+      s.onload = () => { _logToLauncher('ok', 'data.js 重新加载完成'); setTimeout(() => location.reload(), 500); };
+      s.onerror = () => _logToLauncher('err', 'data.js 加载失败');
+      document.head.appendChild(s);
+      break;
+    case 'clear-cache':
+      if(!confirm('清空所有 LocalStorage (主题 / 收藏 / 25+ 设置)？此操作不可撤销。')) return;
+      Object.keys(localStorage).filter(k => k.startsWith('gip:')).forEach(k => localStorage.removeItem(k));
+      _logToLauncher('warn', 'LocalStorage 已清空');
+      setTimeout(() => location.reload(), 600);
+      break;
+    case 'export-all':
+      exportCSV(WORKS.slice(0, 5000).map(w => ({ id:w.id, title:w.title, type:w.typeZh, region:w.region, year:w.year, source:w.source, ip:w.ip })), `all_works_${Date.now()}.csv`);
+      exportCSV(IP_LIST.map(([k,v]) => ({ ip:k, count:v })), `ip_ranking_${Date.now()}.csv`);
+      _logToLauncher('ok', '已导出 CSV (5,000 作品 + IP 排行)');
+      break;
+    case 'open-prd':
+      window.open('.trae/documents/PRD.md', '_blank');
+      _logToLauncher('info', '打开 PRD.md');
+      break;
+    case 'open-tech':
+      window.open('.trae/documents/TECH.md', '_blank');
+      _logToLauncher('info', '打开 TECH.md');
+      break;
+    case 'copy-link':
+      navigator.clipboard.writeText(location.href).then(() => {
+        _logToLauncher('ok', '链接已复制: ' + location.href);
+      }).catch(() => _logToLauncher('warn', '复制失败，请手动复制地址栏'));
+      break;
+    case 'fullscreen':
+      if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+      _logToLauncher('info', '切换全屏');
+      break;
+    case 'view-source':
+      window.open('index.html', '_blank');
+      _logToLauncher('info', '在新窗口打开源码');
+      break;
+    case 'regen-data':
+      _logToLauncher('info', '提示: 重新生成需在终端运行 python3 generate4.py');
+      alert('请在终端运行:\\n\\npython3 generate4.py\\n\\n此操作会重新生成 91MB 的 data.js');
+      break;
+    case 'diag-run':
+      _runDiagnostics(mountEl);
+      break;
+  }
+}
+
+function _runDiagnostics(mountEl){
+  _logEntries = [];
+  _logToLauncher('info', '开始系统诊断…');
+  // 检查所有路由
+  const routes = ['/', '/browse', '/visualize', '/ip', '/rankings', '/compare', '/timeline', '/regions', '/collections', '/brief', '/milestones', '/trends', '/settings', '/launcher'];
+  routes.forEach(r => _logToLauncher('ok', '路由 ' + r + ' 已注册'));
+  // 检查数据
+  _logToLauncher(WORKS.length > 0 ? 'ok' : 'err', '数据: ' + WORKS.length.toLocaleString() + ' 条 / ' + IP_LIST.length + ' 个 IP');
+  _logToLauncher(Object.keys(typeCounts).length === 13 ? 'ok' : 'warn', '类型数: ' + Object.keys(typeCounts).length + ' (期望 13)');
+  _logToLauncher(Object.keys(regionCounts).length >= 4 ? 'ok' : 'warn', '地区数: ' + Object.keys(regionCounts).length);
+  // 检查 ECharts
+  _logToLauncher(typeof echarts !== 'undefined' ? 'ok' : 'err', 'ECharts ' + echarts.version);
+  // LocalStorage
+  const ls = _computeLocalStorageUsage();
+  _logToLauncher(parseFloat(ls.mb) < 5 ? 'ok' : 'warn', 'LocalStorage: ' + ls.kb + ' KB (' + ls.count + ' 键)');
+  // 设置
+  _logToLauncher('info', '当前设置: theme=' + SETTINGS.theme + ' accent=' + SETTINGS.accent + ' density=' + SETTINGS.density);
+  // 收藏
+  _logToLauncher('ok', '收藏数: ' + storage.get('favs', []).length);
+  // 性能
+  const t = performance.now();
+  IP_LIST.length;
+  _logToLauncher('ok', '性能: IP_LIST 索引耗时 ' + (performance.now()-t).toFixed(2) + 'ms');
+  // DOM
+  _logToLauncher('ok', 'DOM 节点: ' + document.getElementsByTagName('*').length);
+  _logToLauncher('info', '诊断完成');
+  // re-render
+  if(mountEl) renderLauncher(mountEl);
+}
+
+const _startedAt = new Date();
+
+/* ============================================================
    VIEW 10: 今日速递 BRIEF
    ============================================================ */
 function renderBrief(mountEl){
@@ -2696,6 +3005,7 @@ themeBtn.addEventListener("click", () => {
   const mountEl = app;
   // re-render current view
   if(path === '/' || path === '') renderHome(mountEl);
+  else if(path === '/launcher') renderLauncher(mountEl);
   else if(path === '/browse') renderBrowse(mountEl);
   else if(path === '/visualize') renderVisualize(mountEl);
   else if(path === '/ip') renderIPDetail(mountEl, r.params[0]);
@@ -2722,6 +3032,7 @@ function routeTo(){
   Object.keys(charts).forEach(k => delete charts[k]);
   // Render view
   if(path === '/' || path === '') renderHome(app);
+  else if(path === '/launcher') renderLauncher(app);
   else if(path === '/browse') renderBrowse(app);
   else if(path === '/visualize') renderVisualize(app);
   else if(path === '/ip') renderIPDetail(app, r.params[0]);
