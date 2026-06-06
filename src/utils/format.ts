@@ -1,4 +1,3 @@
-// 工具函数
 import type { DerivativeWork } from '../data/types';
 
 export function fmt(n: number): string {
@@ -33,8 +32,4 @@ export function debounce<T extends (...args: unknown[]) => unknown>(fn: T, ms = 
     if (t) clearTimeout(t);
     t = setTimeout(() => fn(...args), ms);
   };
-}
-
-export function clamp(v: number, lo: number, hi: number) {
-  return Math.max(lo, Math.min(hi, v));
 }

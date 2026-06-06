@@ -1,15 +1,16 @@
 import type { DerivativeWork } from '../data/types';
-import type { FilterState } from '../store/useAppStore';
+import type { FilterState } from '../stores/app';
 
 export function applyFilters(works: DerivativeWork[], f: FilterState): DerivativeWork[] {
   const q = f.query.trim().toLowerCase();
   let out = works;
   if (q) {
-    out = out.filter((w) =>
-      w.title.toLowerCase().includes(q) ||
-      w.ipName.toLowerCase().includes(q) ||
-      w.description.toLowerCase().includes(q) ||
-      w.tags.some((t) => t.toLowerCase().includes(q))
+    out = out.filter(
+      (w) =>
+        w.title.toLowerCase().includes(q) ||
+        w.ipName.toLowerCase().includes(q) ||
+        w.description.toLowerCase().includes(q) ||
+        w.tags.some((t) => t.toLowerCase().includes(q))
     );
   }
   if (f.types.length) out = out.filter((w) => f.types.includes(w.type));

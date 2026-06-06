@@ -1,30 +1,30 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tsconfigPaths from "vite-tsconfig-paths";
-import { traeBadgePlugin } from 'vite-plugin-trae-solo-badge';
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import path from 'node:path';
 
-// https://vite.dev/config/
 export default defineConfig({
-  build: {
-    sourcemap: 'hidden',
+  plugins: [vue()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
   },
-  plugins: [
-    react({
-      babel: {
-        plugins: [
-          'react-dev-locator',
-        ],
+  server: {
+    host: '0.0.0.0',
+    port: 5173,
+  },
+  worker: {
+    format: 'es',
+  },
+  build: {
+    target: 'es2020',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vue-vendor': ['vue', 'vue-router', 'pinia'],
+          'icons': ['lucide-vue-next'],
+        },
       },
-    }),
-    traeBadgePlugin({
-      variant: 'dark',
-      position: 'bottom-right',
-      prodOnly: true,
-      clickable: true,
-      clickUrl: 'https://www.trae.ai/solo?showJoin=1',
-      autoTheme: true,
-      autoThemeTarget: '#root'
-    }), 
-    tsconfigPaths()
-  ],
-})
+    },
+  },
+});
