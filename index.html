@@ -708,7 +708,325 @@
   }
   .timeline-ruler .tick.major { color: var(--ink-1); }
 
-  /* ============  LEGEND  ============ */
+  /* ============  S06 FRAME STYLES · 边（发力） ============ */
+.sframe-1 { background:
+  linear-gradient(180deg, #142030 0%, #0E131C 50%, #06080C 100%),
+  radial-gradient(circle at 30% 30%, rgba(122,232,255,0.10), transparent 50%); }
+.sframe-1 .clouds-bottom {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 40%;
+  background: radial-gradient(ellipse 60% 30% at 50% 100%, rgba(255,255,255,0.18), transparent 70%);
+  filter: blur(4px);
+}
+.sframe-1 .jet-pull {
+  position: absolute; top: 20%; left: 50%; transform: translateX(-50%);
+  width: 8px; height: 36px;
+  background: linear-gradient(180deg, var(--ink-0), var(--ink-2));
+  box-shadow: 0 0 12px rgba(232,230,225,0.3);
+}
+.sframe-1 .jet-pull::before {
+  content: ""; position: absolute; left: -16px; top: 0; width: 40px; height: 36px;
+  background: linear-gradient(90deg, transparent, var(--ink-0) 50%, transparent);
+  clip-path: polygon(0 50%, 100% 0, 100% 100%);
+  opacity: 0.7;
+}
+.sframe-1 .pull-trail {
+  position: absolute; top: 56%; left: 50%; transform: translateX(-50%);
+  width: 1px; height: 60%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
+  filter: blur(1px);
+}
+.sframe-1 .pull-vapor {
+  position: absolute; top: 35%; left: 30%; right: 30%; height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  filter: blur(2px);
+  transform: rotate(-3deg);
+}
+.sframe-1 .pull-sun { position: absolute; top: 8%; right: 12%; width: 50px; height: 50px; background: radial-gradient(circle, #fff7e0, transparent 70%); border-radius: 50%; }
+
+.sframe-2 .pilot-side { position: absolute; inset: 0; background: linear-gradient(135deg, #1B1F29 0%, #0B0E14 60%, #06080C 100%); }
+.sframe-2 .helmet {
+  position: absolute; top: 12%; left: 18%;
+  width: 56%; aspect-ratio: 1;
+  background: radial-gradient(circle at 35% 35%, #2A2F3A, #0E1118 70%);
+  border-radius: 50%;
+  border: 1px solid var(--ink-3);
+  box-shadow: inset -12px -16px 30px rgba(0,0,0,0.6);
+}
+.sframe-2 .visor {
+  position: absolute; top: 26%; left: 24%;
+  width: 44%; height: 38%;
+  background: linear-gradient(135deg, rgba(255,106,26,0.55), rgba(255,59,59,0.35), rgba(0,0,0,0.8));
+  border: 1px solid var(--orange);
+  border-radius: 30% 50% 40% 60% / 50% 40% 60% 50%;
+  box-shadow: 0 0 22px rgba(255,106,26,0.5);
+}
+.sframe-2 .mouth-grit {
+  position: absolute; bottom: 20%; left: 38%;
+  width: 22%; height: 4px;
+  background: var(--ink-1);
+  border-radius: 2px;
+  box-shadow: 0 8px 0 var(--ink-2);
+}
+
+.sframe-3 { background: linear-gradient(135deg, #1B1F29, #06080C); }
+.sframe-3 .stick-base {
+  position: absolute; top: 30%; left: 25%; right: 25%; bottom: 0;
+  background: linear-gradient(180deg, #2A2F3A 0%, #0B0E14 100%);
+  border: 1px solid var(--ink-3);
+  border-radius: 8px 8px 0 0;
+  box-shadow: inset 0 8px 20px rgba(0,0,0,0.5);
+}
+.sframe-3 .arm-btn {
+  position: absolute; top: 38%; left: 50%; transform: translate(-50%, 0);
+  width: 32%; aspect-ratio: 1;
+  background: radial-gradient(circle at 30% 30%, #ff7a3a, #b00000 60%, #4a0000);
+  border: 3px solid var(--red);
+  border-radius: 50%;
+  box-shadow: 0 0 32px var(--red), inset 0 0 18px rgba(0,0,0,0.5);
+  animation: armPulse 1.2s ease-in-out infinite;
+}
+@keyframes armPulse { 50% { box-shadow: 0 0 48px var(--red), inset 0 0 22px rgba(0,0,0,0.5); } }
+.sframe-3 .arm-btn::after {
+  content: "ARM"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: #fff;
+  letter-spacing: 0.16em; text-shadow: 0 0 8px var(--red);
+}
+.sframe-3 .thumb {
+  position: absolute; top: 12%; left: 50%; transform: translateX(-50%);
+  width: 18%; height: 32%;
+  background: linear-gradient(180deg, var(--ink-0), var(--ink-2));
+  border-radius: 50% 50% 30% 30%;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6));
+}
+.sframe-3 .hud-warn {
+  position: absolute; top: 8%; left: 8%;
+  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  color: var(--red); letter-spacing: 0.2em;
+}
+
+.sframe-4 { background: linear-gradient(180deg, #1A1F2A, #06080C); }
+.sframe-4 .g-blur {
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(90deg, transparent 0, transparent 14px, rgba(255,255,255,0.06) 14px, rgba(255,255,255,0.06) 15px);
+  animation: gShake 0.4s linear infinite;
+}
+@keyframes gShake {
+  0% { transform: translate(0,0); }
+  25% { transform: translate(-3px, 1px); }
+  50% { transform: translate(2px, -1px); }
+  75% { transform: translate(-1px, 2px); }
+  100% { transform: translate(0,0); }
+}
+.sframe-4 .g-num {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 110px; color: var(--red);
+  text-shadow: 0 0 28px var(--red);
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+.sframe-4 .g-num .u { font-size: 28px; color: var(--ink-1); margin-left: 6px; }
+.sframe-4 .g-arrow {
+  position: absolute; top: 30%; left: 50%; transform: translate(-50%, 0);
+  width: 0; height: 0;
+  border-left: 16px solid transparent; border-right: 16px solid transparent;
+  border-top: 24px solid var(--red);
+  filter: drop-shadow(0 0 8px var(--red));
+  animation: bob 0.6s ease-in-out infinite;
+}
+@keyframes bob { 50% { transform: translate(-50%, 8px); } }
+.sframe-4 .pilot-silhouette {
+  position: absolute; bottom: 0; left: 10%; right: 10%; height: 35%;
+  background: linear-gradient(180deg, transparent, #06080C 80%);
+}
+
+.sframe-5 { background: linear-gradient(180deg, #142030, #06080C); }
+.sframe-5 .vapor-cloud { position: absolute; inset: 0; }
+.sframe-5 .vapor-cloud span {
+  position: absolute; height: 3px; background: linear-gradient(to right, transparent, rgba(255,255,255,0.7), transparent);
+  filter: blur(2px);
+}
+.sframe-5 .vapor-cloud span:nth-child(1) { top: 25%; left: 0; right: 25%; transform: rotate(-12deg); }
+.sframe-5 .vapor-cloud span:nth-child(2) { top: 38%; left: 0; right: 35%; transform: rotate(-6deg); height: 4px; }
+.sframe-5 .vapor-cloud span:nth-child(3) { top: 52%; left: 0; right: 28%; transform: rotate(-15deg); }
+.sframe-5 .vapor-cloud span:nth-child(4) { top: 65%; left: 0; right: 40%; transform: rotate(-3deg); }
+.sframe-5 .vapor-cloud span:nth-child(5) { top: 45%; left: 0; right: 20%; transform: rotate(8deg); height: 2px; }
+.sframe-5 .jet-streak {
+  position: absolute; top: 40%; left: 70%; width: 80px; height: 6px;
+  background: var(--ink-0); transform: rotate(-20deg);
+}
+.sframe-5 .jet-streak::after {
+  content: ""; position: absolute; right: 100%; top: 50%;
+  width: 100px; height: 1px; background: linear-gradient(to left, rgba(232,230,225,0.6), transparent);
+  transform: translateY(-0.5px);
+}
+
+.sframe-6 { background: linear-gradient(180deg, #1A2A40 0%, #4F6A87 60%, #D6C49A 100%); }
+.sframe-6 .our-jet {
+  position: absolute; top: 25%; left: 15%; width: 70px; height: 10px;
+  background: linear-gradient(90deg, var(--ink-2), var(--ink-0));
+  transform: rotate(25deg);
+  box-shadow: 0 0 12px rgba(0,0,0,0.4);
+}
+.sframe-6 .our-jet::before {
+  content: ""; position: absolute; right: 100%; top: 50%;
+  width: 120px; height: 1px; background: linear-gradient(to left, rgba(232,230,225,0.5), transparent);
+  transform: translateY(-0.5px);
+}
+.sframe-6 .missile-a {
+  position: absolute; top: 30%; left: 28%; width: 24px; height: 4px;
+  background: var(--ink-2); transform: rotate(25deg);
+  animation: drop 2s ease-out infinite;
+}
+.sframe-6 .missile-b {
+  position: absolute; top: 22%; left: 24%; width: 24px; height: 4px;
+  background: var(--ink-2); transform: rotate(25deg);
+  animation: drop 2s ease-out infinite 0.3s;
+}
+.sframe-6 .missile-a::after, .sframe-6 .missile-b::after {
+  content: ""; position: absolute; right: 100%; top: 50%;
+  width: 30px; height: 1px; background: linear-gradient(to left, var(--orange), transparent);
+  transform: translateY(-0.5px);
+}
+@keyframes drop {
+  0% { transform: rotate(25deg) translateX(0); opacity: 1; }
+  100% { transform: rotate(25deg) translateX(60px) translateY(20px); opacity: 0.5; }
+}
+.sframe-6 .afterburner {
+  position: absolute; top: 23%; left: 5%; width: 50px; height: 14px;
+  background: radial-gradient(ellipse, #fff 0%, #FFB347 30%, #FF6A1A 60%, transparent 100%);
+  border-radius: 50%; filter: blur(2px); transform: rotate(25deg);
+}
+
+.sframe-7 .hud-cross {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  width: 60%; aspect-ratio: 1;
+  border: 2px solid var(--red);
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(0,0,0,0.6), 0 0 20px var(--red);
+  animation: lockPulse 0.8s ease-in-out infinite;
+}
+@keyframes lockPulse { 50% { transform: translate(-50%,-50%) scale(0.96); } }
+.sframe-7 .hud-cross::before, .sframe-7 .hud-cross::after { content: ""; position: absolute; background: var(--red); }
+.sframe-7 .hud-cross::before { top: 50%; left: -8px; right: -8px; height: 2px; transform: translateY(-1px); }
+.sframe-7 .hud-cross::after  { left: 50%; top: -8px; bottom: -8px; width: 2px; transform: translateX(-1px); }
+.sframe-7 .missile-launch {
+  position: absolute; top: 30%; right: -30%;
+  width: 60%; height: 6px;
+  background: linear-gradient(90deg, transparent 0%, var(--orange) 40%, #fff 60%, transparent 100%);
+  transform: rotate(-12deg);
+  filter: blur(1px);
+  animation: mfly 1.4s linear infinite;
+}
+@keyframes mfly {
+  0% { right: -30%; opacity: 0; }
+  30% { opacity: 1; }
+  100% { right: 130%; opacity: 0; }
+}
+.sframe-7 .launch-flash {
+  position: absolute; top: 30%; right: 10%;
+  width: 40px; height: 40px;
+  background: radial-gradient(circle, #fff 0%, #FFB347 40%, transparent 80%);
+  border-radius: 50%; filter: blur(2px);
+  animation: flashP 0.6s ease-out infinite;
+}
+@keyframes flashP { 0% { opacity: 1; transform: scale(0.6);} 100% { opacity: 0; transform: scale(1.6);} }
+.sframe-7 .lock-text {
+  position: absolute; top: 12%; left: 50%; transform: translateX(-50%);
+  color: var(--red); font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.3em;
+  white-space: nowrap; text-shadow: 0 0 10px var(--red);
+}
+.sframe-7 .target-foe {
+  position: absolute; top: 48%; left: 50%;
+  width: 28px; height: 6px; background: var(--ink-0);
+  transform: translate(-50%,-50%) rotate(8deg);
+}
+
+.sframe-8 { background: linear-gradient(180deg, #1A2A40 0%, #4F6A87 50%, #D6C49A 100%); }
+.sframe-8 .arc {
+  position: absolute; top: 20%; left: 5%; width: 90%; height: 60%;
+  border-top: 1px dashed rgba(255,255,255,0.3);
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+}
+.sframe-8 .arc-trail {
+  position: absolute; top: 30%; left: 10%; width: 80%; height: 2px;
+  background: linear-gradient(to right, transparent, rgba(255,106,26,0.7), transparent);
+  filter: blur(1px);
+  transform: rotate(-8deg);
+}
+.sframe-8 .impact-flash {
+  position: absolute; top: 38%; right: 18%;
+  width: 60px; height: 60px;
+  background: radial-gradient(circle, #fff 0%, #FFB347 25%, #FF6A1A 50%, transparent 80%);
+  border-radius: 50%; filter: blur(2px);
+  animation: bigFlash 1.6s ease-out infinite;
+}
+@keyframes bigFlash {
+  0% { transform: scale(0.5); opacity: 0; }
+  30% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+.sframe-8 .shockwave {
+  position: absolute; top: 42%; right: 22%;
+  width: 20px; height: 20px;
+  border: 2px solid rgba(255,255,255,0.6);
+  border-radius: 50%;
+  animation: shock 1.6s ease-out infinite;
+}
+@keyframes shock {
+  0% { width: 20px; height: 20px; opacity: 1; }
+  100% { width: 160px; height: 160px; margin-top: -70px; margin-left: -70px; opacity: 0; }
+}
+.sframe-8 .debris {
+  position: absolute; top: 40%; right: 18%;
+  width: 100px; height: 4px;
+  background: radial-gradient(ellipse, rgba(255,255,255,0.5), transparent 70%);
+  filter: blur(2px);
+}
+
+/* ============  S06 SECTION DIVIDER  ============ */
+.seq-divider {
+  position: relative;
+  margin: 80px 64px 0;
+  padding: 28px 0;
+  border-top: 1px solid var(--orange);
+  border-bottom: 1px solid var(--orange);
+  display: flex; align-items: center; justify-content: space-between;
+  background: linear-gradient(90deg, rgba(255,106,26,0.08), transparent 50%, rgba(255,59,59,0.05));
+}
+.seq-divider::before, .seq-divider::after {
+  content: ""; position: absolute; top: 50%; width: 12px; height: 12px;
+  background: var(--orange); transform: translateY(-50%) rotate(45deg);
+}
+.seq-divider::before { left: -6px; }
+.seq-divider::after  { right: -6px; }
+.seq-divider .label {
+  font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 0.08em;
+  color: var(--orange);
+}
+.seq-divider .label .sub {
+  font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink-1);
+  margin-left: 12px; letter-spacing: 0.2em;
+}
+.seq-divider .stamp {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--red);
+  border: 1px solid var(--red); padding: 4px 10px; letter-spacing: 0.2em;
+  transform: rotate(-2deg);
+}
+@media (max-width: 700px) { .seq-divider { margin: 48px 16px 0; flex-direction: column; gap: 8px; align-items: flex-start; } }
+
+/* S06 accent — red-dominant */
+.shots.s06 .shot { border-left-color: var(--red); }
+.shots.s06 .shot:nth-child(even) { border-right-color: var(--red); border-left-color: var(--line); }
+.shots.s06 .shot::after { background: var(--red); }
+.shots.s06 .shot:hover { border-color: var(--red); }
+.shots.s06 .pill.move { border-left-color: var(--red); }
+.shots.s06 .pill.dur .v { color: var(--red); }
+.shots.s06 .meta-row .v.dialog { border-left-color: var(--red); }
+.shots.s06 .meta-row .v.dialog .who { color: var(--red); }
+.shots.s06 .meta-row .v.dialog::after { border-left-color: var(--red); }
+.shots.s06 .visual::before { background: linear-gradient(to bottom, var(--red), transparent); }
+
+/* ============  LEGEND  ============ */
   .legend {
     padding: 24px 64px 80px;
     display: grid;
@@ -827,8 +1145,10 @@
     <div class="mark"><span class="dot"></span>REC ● LIVE FEED · 24FPS · 2.39:1</div>
   </div>
   <div class="right">
-    <div class="stat">FILE <b>S05_SHOTLIST_08</b></div>
-    <div class="stat">REV <b>v2.1</b></div>
+    <div class="stat"><a href="#s05" style="color:inherit">SEQ <b style="color:var(--orange)">S05</b></a></div>
+    <div class="stat"><a href="#s06" style="color:inherit">SEQ <b style="color:var(--red)">S06</b></a></div>
+    <div class="stat">FILE <b>S05_S06_16</b></div>
+    <div class="stat">REV <b>v2.2</b></div>
     <div class="stat">PAGE <b>01/01</b></div>
     <div class="stamp">CLASSIFIED</div>
   </div>
@@ -886,7 +1206,7 @@
 </div>
 
 <!-- 镜头标题 -->
-<div class="section-title">
+<div class="section-title" id="s05">
   <h2><span class="num">// 01</span>SHOT LIST · 镜头清单</h2>
   <div class="meta">8 SHOTS / 18.0s / <b>HIGH DENSITY</b></div>
 </div>
@@ -1210,6 +1530,333 @@
   </div>
 </section>
 
+<!-- ============== S06 · 边（发力） ============== -->
+<div class="seq-divider reveal">
+  <div class="label">S<span style="color:var(--red)">06</span> · 边 · 发力<span class="sub">// SEQUENCE CONTINUATION · DECISIVE STRIKE</span></div>
+  <div class="stamp">FLAGGED · ENGAGEMENT</div>
+</div>
+
+<div class="section-title" id="s06">
+  <h2><span class="num">// 03</span>S06 · SHOT LIST · 镜头清单</h2>
+  <div class="meta">8 SHOTS / 18.0s / <b>DECISIVE STRIKE</b></div>
+</div>
+
+<main class="shots s06" id="shots-s06">
+
+  <!-- S06-01 -->
+  <article class="shot reveal" id="s06-01">
+    <div class="shot-index">
+      <div class="seq"><span class="pre">S06-</span>01</div>
+      <div class="stamp">FRAME <span class="d">0432</span></div>
+    </div>
+    <div class="shot-body">
+      <div class="shot-head">
+        <span class="pill size"><span class="k">SIZE</span><span class="v">远景 LS</span></span>
+        <span class="pill move"><span class="k">MOVE</span><span class="v">固定 / 慢摇</span></span>
+        <span class="pill dur"><span class="k">DUR</span><span class="v">3.0s</span></span>
+      </div>
+      <p class="visual">鹰1号猛然拉起，机头刺破云层向上爬升；阳光在机翼下方炸出刺眼反光。</p>
+      <div class="meta-row">
+        <div class="row">
+          <div class="k">SOUND · 音效</div>
+          <div class="v sound">引擎推力激增、风切声</div>
+        </div>
+        <div class="row">
+          <div class="k">PURPOSE · 用途</div>
+          <div class="v purpose">蓄势 · 改出被动</div>
+        </div>
+      </div>
+    </div>
+    <div class="shot-frame sframe-1">
+      <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
+      <span class="frame-corner bl"></span><span class="frame-corner br"></span>
+      <div class="clouds-bottom"></div>
+      <div class="jet-pull"></div>
+      <div class="pull-trail"></div>
+      <div class="pull-vapor"></div>
+      <div class="pull-sun"></div>
+      <div class="hud-text">PITCH +35° · CLIMB</div>
+      <div class="timecode">S06-01 / 3.0s</div>
+    </div>
+  </article>
+
+  <!-- S06-02 -->
+  <article class="shot reveal" id="s06-02">
+    <div class="shot-index">
+      <div class="seq"><span class="pre">S06-</span>02</div>
+      <div class="stamp">FRAME <span class="d">0504</span></div>
+    </div>
+    <div class="shot-body">
+      <div class="shot-head">
+        <span class="pill size"><span class="k">SIZE</span><span class="v">近景 CU</span></span>
+        <span class="pill move"><span class="k">MOVE</span><span class="v">固定</span></span>
+        <span class="pill dur"><span class="k">DUR</span><span class="v">2.0s</span></span>
+      </div>
+      <p class="visual">主角咬紧牙关、目光如炬，拇指缓缓扣上扳机护圈，HUD 倒影在护目镜上急速跳动。</p>
+      <div class="meta-row">
+        <div class="row">
+          <div class="k">SOUND · 音效</div>
+          <div class="v sound">呼吸加重、电流底噪、轻微金属摩擦</div>
+        </div>
+        <div class="row">
+          <div class="k">PURPOSE · 用途</div>
+          <div class="v purpose">人物张力 · 蓄力</div>
+        </div>
+      </div>
+    </div>
+    <div class="shot-frame sframe-2">
+      <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
+      <span class="frame-corner bl"></span><span class="frame-corner br"></span>
+      <div class="pilot-side"></div>
+      <div class="helmet"></div>
+      <div class="visor"></div>
+      <div class="mouth-grit"></div>
+      <div class="hud-text">WEAPON · <span style="color:var(--red)">ARMED</span></div>
+      <div class="timecode">S06-02 / 2.0s</div>
+    </div>
+  </article>
+
+  <!-- S06-03 -->
+  <article class="shot reveal" id="s06-03">
+    <div class="shot-index">
+      <div class="seq"><span class="pre">S06-</span>03</div>
+      <div class="stamp">FRAME <span class="d">0552</span></div>
+    </div>
+    <div class="shot-body">
+      <div class="shot-head">
+        <span class="pill size"><span class="k">SIZE</span><span class="v">特写 ECU</span></span>
+        <span class="pill move"><span class="k">MOVE</span><span class="v">固定 / 微推</span></span>
+        <span class="pill dur"><span class="k">DUR</span><span class="v">1.5s</span></span>
+      </div>
+      <p class="visual">操纵杆手柄上那颗红色 "ARM" 按钮在暗处脉动，拇指以慢动作按下，护盖弹开。</p>
+      <div class="meta-row">
+        <div class="row">
+          <div class="k">SOUND · 音效</div>
+          <div class="v sound">"咔哒"机械声 + 高频电流声</div>
+        </div>
+        <div class="row">
+          <div class="k">PURPOSE · 用途</div>
+          <div class="v purpose">关键动作特写</div>
+        </div>
+      </div>
+    </div>
+    <div class="shot-frame sframe-3">
+      <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
+      <span class="frame-corner bl"></span><span class="frame-corner br"></span>
+      <div class="stick-base"></div>
+      <div class="arm-btn"></div>
+      <div class="thumb"></div>
+      <div class="hud-warn">▲ ARM SWITCH · HOT</div>
+      <div class="timecode">S06-03 / 1.5s</div>
+    </div>
+  </article>
+
+  <!-- S06-04 -->
+  <article class="shot reveal" id="s06-04">
+    <div class="shot-index">
+      <div class="seq"><span class="pre">S06-</span>04</div>
+      <div class="stamp">FRAME <span class="d">0588</span></div>
+    </div>
+    <div class="shot-body">
+      <div class="shot-head">
+        <span class="pill size"><span class="k">SIZE</span><span class="v">中景 MS</span></span>
+        <span class="pill move"><span class="k">MOVE</span><span class="v">手持 / 剧烈晃动</span></span>
+        <span class="pill dur"><span class="k">DUR</span><span class="v">1.5s</span></span>
+      </div>
+      <p class="visual">主角身体被巨大的 G 力压入座椅，HUD 数字狂跳，红色 G 值警示箭头不断向上。</p>
+      <div class="meta-row">
+        <div class="row" style="grid-column: 1 / -1;">
+          <div class="k">DIALOGUE · 对白</div>
+          <div class="v dialog">
+            <span class="who">主角 · 无线电</span>
+            "稳住……稳住！"
+          </div>
+        </div>
+        <div class="row">
+          <div class="k">SOUND · 音效</div>
+          <div class="v sound">G 力压迫声 + 主角低吼</div>
+        </div>
+      </div>
+    </div>
+    <div class="shot-frame sframe-4">
+      <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
+      <span class="frame-corner bl"></span><span class="frame-corner br"></span>
+      <div class="g-blur"></div>
+      <div class="g-arrow"></div>
+      <div class="g-num">8.4<span class="u">G</span></div>
+      <div class="pilot-silhouette"></div>
+      <div class="hud-text" style="color:var(--red)">G-LIMIT WARNING</div>
+      <div class="timecode">S06-04 / 1.5s</div>
+    </div>
+  </article>
+
+  <!-- S06-05 -->
+  <article class="shot reveal" id="s06-05">
+    <div class="shot-index">
+      <div class="seq"><span class="pre">S06-</span>05</div>
+      <div class="stamp">FRAME <span class="d">0624</span></div>
+    </div>
+    <div class="shot-body">
+      <div class="shot-head">
+        <span class="pill size"><span class="k">SIZE</span><span class="v">中远景 MLS</span></span>
+        <span class="pill move"><span class="k">MOVE</span><span class="v">快速横摇（甩）</span></span>
+        <span class="pill dur"><span class="k">DUR</span><span class="v">2.0s</span></span>
+      </div>
+      <p class="visual">战机瞬间改出俯冲、拉出数道白色涡流云，像刀锋般切向敌机所在方位。</p>
+      <div class="meta-row">
+        <div class="row">
+          <div class="k">SOUND · 音效</div>
+          <div class="v sound">加力燃烧室轰鸣 + 破空声</div>
+        </div>
+        <div class="row">
+          <div class="k">PURPOSE · 用途</div>
+          <div class="v purpose">爆发 · 主动出击</div>
+        </div>
+      </div>
+    </div>
+    <div class="shot-frame sframe-5">
+      <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
+      <span class="frame-corner bl"></span><span class="frame-corner br"></span>
+      <div class="vapor-cloud">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div class="jet-streak"></div>
+      <div class="hud-text">AFTERBURNER · ON · 100%</div>
+      <div class="timecode">S06-05 / 2.0s</div>
+    </div>
+  </article>
+
+  <!-- S06-06 -->
+  <article class="shot reveal" id="s06-06">
+    <div class="shot-index">
+      <div class="seq"><span class="pre">S06-</span>06</div>
+      <div class="stamp">FRAME <span class="d">0672</span></div>
+    </div>
+    <div class="shot-body">
+      <div class="shot-head">
+        <span class="pill size"><span class="k">SIZE</span><span class="v">全景 FS</span></span>
+        <span class="pill move"><span class="k">MOVE</span><span class="v">跟拍</span></span>
+        <span class="pill dur"><span class="k">DUR</span><span class="v">2.5s</span></span>
+      </div>
+      <p class="visual">战机俯冲而下、加力全开，翼下两枚导弹依次脱离挂架，带着尾焰坠向斜下方。</p>
+      <div class="meta-row">
+        <div class="row">
+          <div class="k">SOUND · 音效</div>
+          <div class="v sound">金属脱离声 + 短促破空</div>
+        </div>
+        <div class="row">
+          <div class="k">PURPOSE · 用途</div>
+          <div class="v purpose">火力释放 · 决定性一击</div>
+        </div>
+      </div>
+    </div>
+    <div class="shot-frame sframe-6">
+      <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
+      <span class="frame-corner bl"></span><span class="frame-corner br"></span>
+      <div class="afterburner"></div>
+      <div class="our-jet"></div>
+      <div class="missile-a"></div>
+      <div class="missile-b"></div>
+      <div class="hud-text">SALVO · 2 / 4 RELEASED</div>
+      <div class="timecode">S06-06 / 2.5s</div>
+    </div>
+  </article>
+
+  <!-- S06-07 -->
+  <article class="shot reveal" id="s06-07">
+    <div class="shot-index">
+      <div class="seq"><span class="pre">S06-</span>07</div>
+      <div class="stamp">FRAME <span class="d">0732</span></div>
+    </div>
+    <div class="shot-body">
+      <div class="shot-head">
+        <span class="pill size"><span class="k">SIZE</span><span class="v">主观 POV</span></span>
+        <span class="pill move"><span class="k">MOVE</span><span class="v">快速前推 + 摇晃</span></span>
+        <span class="pill dur"><span class="k">DUR</span><span class="v">2.0s</span></span>
+      </div>
+      <p class="visual">从主角头盔瞄准具视角看出去，敌机被红色锁定框套住；屏幕边缘，导弹拖着尾焰呼啸飞出。</p>
+      <div class="meta-row">
+        <div class="row" style="grid-column: 1 / -1;">
+          <div class="k">DIALOGUE · 对白</div>
+          <div class="v dialog">
+            <span class="who">主角 · 无线电</span>
+            "鹰2，跟我上！锁定——发射！"
+          </div>
+        </div>
+        <div class="row">
+          <div class="k">SOUND · 音效</div>
+          <div class="v sound">锁定长鸣 + 发射轰鸣</div>
+        </div>
+      </div>
+    </div>
+    <div class="shot-frame sframe-7">
+      <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
+      <span class="frame-corner bl"></span><span class="frame-corner br"></span>
+      <div class="hud-cross"></div>
+      <div class="target-foe"></div>
+      <div class="missile-launch"></div>
+      <div class="launch-flash"></div>
+      <div class="lock-text">◀ LOCK · TONE · FIRE ▶</div>
+      <div class="hud-text" style="color:var(--red)">▲ MISSILE AWAY</div>
+      <div class="timecode">S06-07 / 2.0s</div>
+    </div>
+  </article>
+
+  <!-- S06-08 -->
+  <article class="shot reveal" id="s06-08">
+    <div class="shot-index">
+      <div class="seq"><span class="pre">S06-</span>08</div>
+      <div class="stamp">FRAME <span class="d">0780</span></div>
+    </div>
+    <div class="shot-body">
+      <div class="shot-head">
+        <span class="pill size"><span class="k">SIZE</span><span class="v">极远景 EL</span></span>
+        <span class="pill move"><span class="k">MOVE</span><span class="v">固定</span></span>
+        <span class="pill dur"><span class="k">DUR</span><span class="v">3.5s</span></span>
+      </div>
+      <p class="visual">远空一道弧线划过，命中点闪出白光与火球；冲击波向四周扩散，黑烟缓缓落下。</p>
+      <div class="meta-row">
+        <div class="row">
+          <div class="k">SOUND · 音效</div>
+          <div class="v sound">导弹末端"嗞"声 + 巨大爆炸 + 余音回响</div>
+        </div>
+        <div class="row">
+          <div class="k">PURPOSE · 用途</div>
+          <div class="v purpose">命中 · 决定性收束</div>
+        </div>
+      </div>
+    </div>
+    <div class="shot-frame sframe-8">
+      <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
+      <span class="frame-corner bl"></span><span class="frame-corner br"></span>
+      <div class="arc"></div>
+      <div class="arc-trail"></div>
+      <div class="impact-flash"></div>
+      <div class="shockwave"></div>
+      <div class="debris"></div>
+      <div class="hud-text">IMPACT CONFIRMED · KILL</div>
+      <div class="timecode">S06-08 / 3.5s</div>
+    </div>
+  </article>
+
+</main>
+
+<!-- S06 时间轴 -->
+<section class="timeline-wrap reveal">
+  <div class="section-title" style="padding:0 0 16px; border:0;">
+    <h2><span class="num">// 04</span>TIMELINE · S06 时间刻度</h2>
+    <div class="meta">SCALE 1:1 · UNIT <b>SEC</b> · <b style="color:var(--red)">RED FLAG</b></div>
+  </div>
+  <div class="timeline">
+    <div class="timeline-head">
+      <h3>S06 · 18.0s RUNTIME · 边（发力）</h3>
+      <div class="sub">CLICK ANY SEGMENT ↓</div>
+    </div>
+    <div class="timeline-bar" id="bar-s06"></div>
+    <div class="timeline-ruler" id="ruler-s06"></div>
+  </div>
+</section>
+
 <!-- 图例 -->
 <section class="legend reveal">
   <div class="group">
@@ -1248,9 +1895,9 @@
 </section>
 
 <footer>
-  <div>S05 · SKYLOCK · SHOTLIST v2.1 · DIRECTOR / DP / 1st AC</div>
+  <div>S05 + S06 · SKYLOCK · SHOTLIST v2.2 · DIRECTOR / DP / 1st AC</div>
   <div class="right">
-    <span>DOC ID: SKY-05-2025</span>
+    <span>DOC ID: SKY-05-06-2025</span>
     <span class="barcode"></span>
     <span>END · // EOF</span>
   </div>
@@ -1304,6 +1951,40 @@
     t.style.left = (s / total * 100) + '%';
     t.textContent = s + 's';
     ruler.appendChild(t);
+  }
+
+  // ============  S06 TIMELINE BUILD  ============
+  const shotsS06 = [
+    { id: 'S06-01', dur: 3.0 },
+    { id: 'S06-02', dur: 2.0 },
+    { id: 'S06-03', dur: 1.5 },
+    { id: 'S06-04', dur: 1.5 },
+    { id: 'S06-05', dur: 2.0 },
+    { id: 'S06-06', dur: 2.5 },
+    { id: 'S06-07', dur: 2.0 },
+    { id: 'S06-08', dur: 3.5 },
+  ];
+  const totalS06 = shotsS06.reduce((s, x) => s + x.dur, 0);
+  const barS06 = document.getElementById('bar-s06');
+  const rulerS06 = document.getElementById('ruler-s06');
+
+  shotsS06.forEach((s, i) => {
+    const seg = document.createElement('a');
+    seg.className = 'seg';
+    seg.href = '#' + s.id.toLowerCase();
+    seg.style.flex = s.dur + ' 0 0';
+    seg.innerHTML = `<span class="id">${s.id.replace('S06-', '')}</span><span class="dur">${s.dur.toFixed(1)}s</span>`;
+    seg.title = `${s.id} · ${s.dur}s · jump`;
+    barS06.appendChild(seg);
+  });
+
+  const totalS06Round = Math.ceil(totalS06);
+  for (let s = 0; s <= totalS06Round; s++) {
+    const t = document.createElement('div');
+    t.className = 'tick' + (s % 2 === 0 ? ' major' : '');
+    t.style.left = (s / totalS06 * 100) + '%';
+    t.textContent = s + 's';
+    rulerS06.appendChild(t);
   }
 </script>
 </body>
