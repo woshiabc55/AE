@@ -279,6 +279,15 @@
 .deck-nav a { color: var(--ash); border-bottom: none; }
 .deck-nav a:hover { color: var(--kiln-gold); }
 .deck-nav .sep { color: var(--ink-soft); }
+.deck-nav a.dl-btn {
+  border: 1px solid var(--kiln-gold);
+  color: var(--kiln-gold);
+  padding: 4px 10px;
+  font-size: 11px;
+  letter-spacing: .15em;
+  transition: all var(--t-fast) var(--ease-out);
+}
+.deck-nav a.dl-btn:hover { background: var(--kiln-gold); color: var(--ink); }
 
 /* 黑场 */
 .blackout {
