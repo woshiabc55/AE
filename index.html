@@ -1026,6 +1026,167 @@
 .shots.s06 .meta-row .v.dialog::after { border-left-color: var(--red); }
 .shots.s06 .visual::before { background: linear-gradient(to bottom, var(--red), transparent); }
 
+/* ============  FRAME TIMELINE (100 关键帧)  ============ */
+.frametimeline-wrap {
+  padding: 72px 64px 24px;
+  border-top: 1px solid var(--line);
+  margin-top: 64px;
+}
+@media (max-width: 700px) { .frametimeline-wrap { padding: 48px 16px 24px; } }
+
+.frametimeline-head {
+  display: flex; align-items: end; justify-content: space-between;
+  margin-bottom: 24px;
+  border-bottom: 1px dashed var(--line);
+  padding-bottom: 12px;
+}
+.frametimeline-head h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(32px, 4.5vw, 56px);
+  color: var(--ink-0);
+  letter-spacing: 0.04em;
+}
+.frametimeline-head h2 .num {
+  font-family: 'JetBrains Mono', monospace; font-size: 13px;
+  color: var(--orange); margin-right: 16px;
+  letter-spacing: 0.2em; vertical-align: middle;
+}
+.frametimeline-head .meta {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  color: var(--ink-1); letter-spacing: 0.18em; text-align: right;
+}
+.frametimeline-head .meta b { color: var(--orange); }
+.frametimeline-head .meta .r { color: var(--red); }
+
+/* 顶部时间刻度尺 */
+.ft-ruler {
+  border: 1px solid var(--line);
+  background: var(--bg-1);
+  padding: 20px 24px 12px;
+  margin-bottom: 0;
+}
+.ft-ruler-bar {
+  position: relative;
+  height: 30px;
+  display: flex; align-items: stretch;
+  margin-bottom: 6px;
+}
+.ft-ruler-bar .seg {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bebas Neue', sans-serif; font-size: 14px;
+  letter-spacing: 0.1em; color: var(--ink-0);
+}
+.ft-ruler-bar .seg.s05 {
+  background: linear-gradient(180deg, rgba(255,106,26,0.4), rgba(255,106,26,0.1));
+  border-right: 1px solid var(--orange);
+}
+.ft-ruler-bar .seg.s06 {
+  background: linear-gradient(180deg, rgba(255,59,59,0.4), rgba(255,59,59,0.1));
+}
+.ft-ruler-ticks {
+  position: relative;
+  height: 22px;
+  border-top: 1px solid var(--line);
+}
+.ft-ruler-ticks .tick {
+  position: absolute; top: 0; bottom: 0;
+  border-left: 1px solid var(--ink-3);
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: var(--ink-1); padding-left: 4px; letter-spacing: 0.1em;
+  display: flex; align-items: center;
+}
+
+/* 100 帧表格 */
+.frame-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--line);
+  border-top: 0;
+  background: var(--bg-1);
+}
+.frame-table thead {
+  background: var(--bg-3);
+  position: sticky; top: 56px; z-index: 5;
+}
+.frame-table th {
+  text-align: left;
+  padding: 10px 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 0.2em;
+  color: var(--ink-1);
+  border-bottom: 1px solid var(--line);
+  text-transform: uppercase;
+}
+.frame-table th.r { text-align: right; }
+.frame-table td {
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--line-2);
+  color: var(--ink-1);
+  vertical-align: middle;
+  font-size: 12px;
+}
+.frame-table tbody tr:nth-child(even) { background: rgba(255,255,255,0.015); }
+.frame-table tbody tr.s05-row:hover { background: rgba(255,106,26,0.10); }
+.frame-table tbody tr.s06-row:hover { background: rgba(255,59,59,0.10); }
+.frame-table .col-frame {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  color: var(--ink-0);
+  width: 64px;
+}
+.frame-table .col-tc {
+  color: var(--cyan);
+  width: 86px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+.frame-table .col-seq {
+  width: 48px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
+}
+.frame-table .col-seq.s05 { color: var(--orange); }
+.frame-table .col-seq.s06 { color: var(--red); }
+.frame-table .col-sht {
+  width: 56px;
+  color: var(--ink-0);
+  font-family: 'JetBrains Mono', monospace;
+}
+.frame-table .col-desc {
+  color: var(--ink-0);
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 12.5px;
+}
+.frame-table .col-note {
+  color: var(--ink-2);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  width: 130px;
+  text-transform: uppercase;
+  font-family: 'JetBrains Mono', monospace;
+}
+.frame-table .col-note b { color: var(--orange); font-weight: 500; }
+.frame-table tbody tr.s06-row .col-note b { color: var(--red); }
+
+/* 镜头分组的视觉行 */
+.frame-table tbody tr.shot-start td { border-top: 1px solid var(--ink-3); }
+.frame-table tbody tr.shot-end td { border-bottom: 1px dashed var(--line); }
+
+@media (max-width: 900px) {
+  .frame-table .col-note { display: none; }
+  .frame-table .col-tc { width: 70px; }
+}
+
+@media print {
+  .frametimeline-wrap { page-break-before: always; }
+  .frame-table thead { position: static; }
+  .frame-table tbody tr.s05-row:hover, .frame-table tbody tr.s06-row:hover { background: transparent; }
+}
+
 /* ============  LEGEND  ============ */
   .legend {
     padding: 24px 64px 80px;
@@ -1147,6 +1308,7 @@
   <div class="right">
     <div class="stat"><a href="#s05" style="color:inherit">SEQ <b style="color:var(--orange)">S05</b></a></div>
     <div class="stat"><a href="#s06" style="color:inherit">SEQ <b style="color:var(--red)">S06</b></a></div>
+    <div class="stat"><a href="#frame-table" style="color:inherit"><b style="color:var(--cyan)">100 KF</b></a></div>
     <div class="stat">FILE <b>S05_S06_16</b></div>
     <div class="stat">REV <b>v2.2</b></div>
     <div class="stat">PAGE <b>01/01</b></div>
@@ -1857,6 +2019,33 @@
   </div>
 </section>
 
+<!-- ============== 100 关键帧时间维度 ============== -->
+<section class="frametimeline-wrap reveal">
+  <div class="frametimeline-head">
+    <h2><span class="num">// 05</span>FRAME TIMELINE · 100 关键帧</h2>
+    <div class="meta">100 KF · S05×<b>50</b> + S06×<b class="r">50</b> · 24FPS · TOTAL 36.0s</div>
+  </div>
+
+  <div class="ft-ruler">
+    <div class="ft-ruler-bar" id="ft-bar"></div>
+    <div class="ft-ruler-ticks" id="ft-ticks"></div>
+  </div>
+
+  <table class="frame-table" id="frame-table">
+    <thead>
+      <tr>
+        <th>Frame</th>
+        <th>Timecode</th>
+        <th>SEQ</th>
+        <th>SHT</th>
+        <th>Visual / Action</th>
+        <th>Note</th>
+      </tr>
+    </thead>
+    <tbody id="frame-tbody"></tbody>
+  </table>
+</section>
+
 <!-- 图例 -->
 <section class="legend reveal">
   <div class="group">
@@ -1985,6 +2174,229 @@
     t.style.left = (s / totalS06 * 100) + '%';
     t.textContent = s + 's';
     rulerS06.appendChild(t);
+  }
+
+  // ============  100 KEYFRAMES (S05 + S06)  ============
+  // 关键帧按镜头定义：每条含 dt（镜头内时间，秒）、desc（视觉描述）、note（镜头/声音/特效 备注）
+  const shotKeyframes = {
+    'S05-01': [
+      { dt: 0.00, d: '鹰1 / 鹰2 平行编队，云海在下方铺开', n: 'CAM: <b>固定</b>' },
+      { dt: 0.36, d: '慢摇开始，编队缓缓横移', n: 'CAM: <b>慢摇</b>' },
+      { dt: 0.72, d: '阳光从云缝洒下，体积光初现', n: 'FX: 体积光' },
+      { dt: 1.08, d: '编队压云顶飞行', n: 'CAM: 慢摇' },
+      { dt: 1.44, d: '镜头横摇揭示更多云层', n: 'CAM: 慢摇' },
+      { dt: 1.80, d: '机翼反光增强，金属高光闪烁', n: 'FX: 高光' },
+      { dt: 2.16, d: '鹰2 略微靠拢，编队收紧', n: 'CAM: 慢摇' },
+      { dt: 2.52, d: '进入新云区，接近镜头末尾', n: 'CAM: 慢摇收' },
+    ],
+    'S05-02': [
+      { dt: 0.00, d: '主角侧脸，眼神锐利', n: 'CAM: <b>固定</b>' },
+      { dt: 0.36, d: '扫描雷达屏幕，HUD 数据在护目镜上反射', n: 'FX: HUD 倒影' },
+      { dt: 0.72, d: '呼吸声加重', n: 'SFX: 呼吸' },
+      { dt: 1.08, d: '眼神锁定某个目标', n: 'CAM: 固定' },
+      { dt: 1.44, d: '准备抬头', n: 'SFX: 呼吸' },
+      { dt: 1.80, d: '接近镜头末尾', n: 'CAM: 固定' },
+    ],
+    'S05-03': [
+      { dt: 0.00, d: '雷达屏幕特写，光标扫描中', n: 'CAM: <b>固定</b>' },
+      { dt: 0.45, d: '第一个红色亮点闪现', n: 'SFX: 告警起' },
+      { dt: 0.85, d: '两个红点快速闪烁逼近', n: 'SFX: 告警强' },
+      { dt: 1.30, d: '接近镜头末尾', n: 'CAM: 微推' },
+    ],
+    'S05-04': [
+      { dt: 0.00, d: '主角猛地抬头', n: 'CAM: <b>手持</b>' },
+      { dt: 0.45, d: '透过座舱罩向外张望，眼神紧张', n: 'SFX: 呼吸' },
+      { dt: 0.90, d: 'VO：「鹰2，有客到，两点钟方向！」', n: 'VO: 无线电' },
+      { dt: 1.30, d: '接近镜头末尾', n: 'CAM: 手持' },
+    ],
+    'S05-05': [
+      { dt: 0.00, d: '镜头快速甩向右前方', n: 'CAM: <b>横摇甩</b>' },
+      { dt: 0.40, d: '敌机从云层中冲出，模糊剪影', n: 'SFX: 破空' },
+      { dt: 0.80, d: '敌机轮廓变得清晰', n: 'CAM: 横摇收' },
+      { dt: 1.20, d: '引擎啸叫声突然变大', n: 'SFX: 引擎' },
+      { dt: 1.60, d: '敌机完全显形', n: 'CAM: 跟拍' },
+      { dt: 1.80, d: '接近镜头末尾', n: 'CAM: 跟拍' },
+    ],
+    'S05-06': [
+      { dt: 0.00, d: '急转弯开始，机身倾斜', n: 'CAM: <b>跟拍</b>' },
+      { dt: 0.40, d: '大坡度倾斜，金属受力', n: 'SFX: G 力' },
+      { dt: 0.80, d: '白色涡流云初现', n: 'FX: 涡流' },
+      { dt: 1.20, d: '涡流云扩大、拉长', n: 'CAM: 跟拍' },
+      { dt: 1.60, d: '阳光在机翼上产生刺眼反光', n: 'FX: 高光' },
+      { dt: 2.00, d: '完成转弯，迎向敌机', n: 'SFX: 推力' },
+      { dt: 2.40, d: '锁定姿态，准备攻击', n: 'CAM: 跟拍' },
+      { dt: 2.80, d: '接近镜头末尾', n: 'CAM: 跟拍' },
+    ],
+    'S05-07': [
+      { dt: 0.00, d: 'HUD 主观视角开始', n: 'CAM: <b>POV</b>' },
+      { dt: 0.40, d: '敌机进入视野', n: 'SFX: 锁定' },
+      { dt: 0.80, d: '锁定框套住敌机', n: 'FX: 锁定' },
+      { dt: 1.20, d: 'VO：「锁定！发射！」', n: 'VO: 无线电' },
+      { dt: 1.60, d: '锁定提示音长鸣', n: 'SFX: 提示' },
+      { dt: 1.80, d: '接近镜头末尾', n: 'CAM: POV 摇' },
+    ],
+    'S05-08': [
+      { dt: 0.00, d: '双方战机交错而过', n: 'CAM: <b>固定</b>' },
+      { dt: 0.50, d: '尾迹云开始拉出', n: 'FX: 尾迹' },
+      { dt: 1.00, d: '尾迹延展成弧线', n: 'SFX: 导弹「轰」' },
+      { dt: 1.60, d: '爆炸声延迟到达', n: 'SFX: 爆炸' },
+      { dt: 2.20, d: '尾迹扩散成水墨笔触', n: 'CAM: 固定' },
+      { dt: 2.70, d: '黑烟缓缓散开', n: 'FX: 烟' },
+      { dt: 3.20, d: '远空余韵，画面归于平静', n: 'CAM: 固定' },
+      { dt: 3.70, d: '镜头收束', n: 'CAM: 固定' },
+    ],
+    'S06-01': [
+      { dt: 0.00, d: '鹰1 猛然拉起，仰角加大', n: 'CAM: <b>固定</b>' },
+      { dt: 0.40, d: '机头刺破云层', n: 'SFX: 风切' },
+      { dt: 0.80, d: '阳光在机翼下方炸出反光', n: 'FX: 高光' },
+      { dt: 1.20, d: '仰角继续加大', n: 'CAM: 慢摇' },
+      { dt: 1.60, d: '加力燃烧室启动', n: 'SFX: 轰鸣' },
+      { dt: 2.00, d: '推力激增，可见推力线', n: 'FX: 推力线' },
+      { dt: 2.40, d: '进入新高度层', n: 'CAM: 慢摇' },
+      { dt: 2.80, d: '接近镜头末尾', n: 'CAM: 慢摇收' },
+    ],
+    'S06-02': [
+      { dt: 0.00, d: '主角侧脸咬牙，目光如炬', n: 'CAM: <b>固定</b>' },
+      { dt: 0.40, d: '眼神锁定', n: 'SFX: 呼吸' },
+      { dt: 0.80, d: 'HUD 倒影在护目镜上急速跳动', n: 'FX: HUD' },
+      { dt: 1.20, d: '拇指缓缓扣上扳机护圈', n: 'SFX: 金属摩擦' },
+      { dt: 1.60, d: '准备按下', n: 'SFX: 呼吸' },
+      { dt: 1.80, d: '接近镜头末尾', n: 'CAM: 固定' },
+    ],
+    'S06-03': [
+      { dt: 0.00, d: '操纵杆手柄特写，红色 ARM 按钮脉动', n: 'CAM: <b>微推</b>' },
+      { dt: 0.45, d: 'ARM 按钮达到脉动峰值', n: 'FX: 脉动' },
+      { dt: 0.85, d: '拇指按下，护盖弹开', n: 'SFX: 「咔哒」' },
+      { dt: 1.30, d: '接近镜头末尾', n: 'SFX: 机械' },
+    ],
+    'S06-04': [
+      { dt: 0.00, d: 'G 力压迫开始，机身剧烈晃动', n: 'CAM: <b>手持</b>' },
+      { dt: 0.45, d: '主角被压入座椅，视野模糊', n: 'FX: 抖动' },
+      { dt: 0.90, d: 'HUD 数字狂跳，红色警示箭头升起', n: 'SFX: G 力压迫' },
+      { dt: 1.30, d: 'VO：「稳住……稳住！」', n: 'VO: 低吼' },
+    ],
+    'S06-05': [
+      { dt: 0.00, d: '战机瞬间改出俯冲', n: 'CAM: <b>横摇甩</b>' },
+      { dt: 0.40, d: '第一道涡流云拉出', n: 'FX: 涡流' },
+      { dt: 0.80, d: '涡流数道，刀锋般切入', n: 'SFX: 轰鸣' },
+      { dt: 1.20, d: '切向敌机所在方位', n: 'CAM: 跟拍' },
+      { dt: 1.60, d: '锁定方位', n: 'SFX: 推力' },
+      { dt: 1.80, d: '接近镜头末尾', n: 'CAM: 跟拍' },
+    ],
+    'S06-06': [
+      { dt: 0.00, d: '俯冲开始，机身压低', n: 'CAM: <b>跟拍</b>' },
+      { dt: 0.40, d: '翼下两枚导弹就位', n: 'FX: 武器' },
+      { dt: 0.80, d: '第一枚脱离挂架', n: 'SFX: 脱离' },
+      { dt: 1.20, d: '第二枚脱离', n: 'SFX: 脱离' },
+      { dt: 1.60, d: '尾焰坠向斜下方', n: 'FX: 尾焰' },
+      { dt: 2.00, d: '导弹加速下坠', n: 'SFX: 破空' },
+      { dt: 2.20, d: '接近镜头末尾', n: 'CAM: 跟拍' },
+    ],
+    'S06-07': [
+      { dt: 0.00, d: 'HUD 主观视角开始，红色锁定框呼吸', n: 'CAM: <b>POV</b>' },
+      { dt: 0.40, d: '敌机被锁定', n: 'FX: 锁定' },
+      { dt: 0.80, d: '红色锁定框完全套住', n: 'FX: 锁定' },
+      { dt: 1.20, d: '导弹尾焰从屏幕边缘飞出', n: 'SFX: 轰鸣' },
+      { dt: 1.60, d: 'VO：「鹰2，跟我上！锁定——发射！」', n: 'VO: 无线电' },
+      { dt: 1.80, d: '接近镜头末尾', n: 'CAM: POV' },
+    ],
+    'S06-08': [
+      { dt: 0.00, d: '远空弧线划过，导弹尾迹如墨', n: 'CAM: <b>固定</b>' },
+      { dt: 0.45, d: '命中点闪出白光', n: 'FX: 闪光' },
+      { dt: 0.90, d: '火球出现，吞没目标', n: 'FX: 火球' },
+      { dt: 1.40, d: '冲击波向四周扩散', n: 'FX: 冲击' },
+      { dt: 1.90, d: '黑烟升起', n: 'FX: 烟' },
+      { dt: 2.30, d: '碎片飞散', n: 'FX: 碎片' },
+      { dt: 2.70, d: '余音回响', n: 'SFX: 余音' },
+      { dt: 3.10, d: '远空恢复平静', n: 'CAM: 固定' },
+      { dt: 3.30, d: '镜头收束', n: 'CAM: 固定' },
+    ],
+  };
+
+  // 镜头定义：seq + id + start + dur
+  const shotDefs = [
+    { seq: 'S05', id: '01', start: 0.0,  dur: 3.0 },
+    { seq: 'S05', id: '02', start: 3.0,  dur: 2.0 },
+    { seq: 'S05', id: '03', start: 5.0,  dur: 1.5 },
+    { seq: 'S05', id: '04', start: 6.5,  dur: 1.5 },
+    { seq: 'S05', id: '05', start: 8.0,  dur: 2.0 },
+    { seq: 'S05', id: '06', start: 10.0, dur: 3.0 },
+    { seq: 'S05', id: '07', start: 13.0, dur: 2.0 },
+    { seq: 'S05', id: '08', start: 15.0, dur: 4.0 },
+    { seq: 'S06', id: '01', start: 18.0, dur: 3.0 },
+    { seq: 'S06', id: '02', start: 21.0, dur: 2.0 },
+    { seq: 'S06', id: '03', start: 23.0, dur: 1.5 },
+    { seq: 'S06', id: '04', start: 24.5, dur: 1.5 },
+    { seq: 'S06', id: '05', start: 26.0, dur: 2.0 },
+    { seq: 'S06', id: '06', start: 28.0, dur: 2.5 },
+    { seq: 'S06', id: '07', start: 30.5, dur: 2.0 },
+    { seq: 'S06', id: '08', start: 32.5, dur: 3.5 },
+  ];
+  const totalRun = 36.0;
+
+  // 格式化时间码 MM:SS:FF
+  function toTC(seconds) {
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    const f = Math.round((seconds - Math.floor(seconds)) * 24);
+    return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0') + ':' + String(f).padStart(2, '0');
+  }
+
+  // 渲染 100 帧表格
+  const tbody = document.getElementById('frame-tbody');
+  let frameIdx = 0;
+  const allFrames = [];
+  shotDefs.forEach(shot => {
+    const kfs = shotKeyframes[shot.seq + '-' + shot.id] || [];
+    kfs.forEach((kf, i) => {
+      frameIdx++;
+      const absT = shot.start + kf.dt;
+      allFrames.push({
+        idx: frameIdx,
+        t: absT,
+        seq: shot.seq,
+        sht: shot.id,
+        d: kf.d,
+        n: kf.n,
+        shotFirst: i === 0,
+        shotLast:  i === kfs.length - 1,
+      });
+    });
+  });
+
+  allFrames.forEach(f => {
+    const tr = document.createElement('tr');
+    tr.className = f.seq.toLowerCase() + '-row' + (f.shotFirst ? ' shot-start' : '') + (f.shotLast ? ' shot-end' : '');
+    tr.innerHTML =
+      '<td class="col-frame">F' + String(f.idx).padStart(3, '0') + '</td>' +
+      '<td class="col-tc">' + toTC(f.t) + '</td>' +
+      '<td class="col-seq ' + f.seq.toLowerCase() + '">' + f.seq + '</td>' +
+      '<td class="col-sht">' + f.sht + '</td>' +
+      '<td class="col-desc">' + f.d + '</td>' +
+      '<td class="col-note">' + f.n + '</td>';
+    tbody.appendChild(tr);
+  });
+
+  // 顶部时间刻度尺（S05 + S06 两个色块 + 1s 刻度）
+  const ftBar = document.getElementById('ft-bar');
+  const s05Seg = document.createElement('div');
+  s05Seg.className = 'seg s05';
+  s05Seg.style.flex = 18 + ' 0 0';
+  s05Seg.textContent = 'S05 · 18.0s';
+  ftBar.appendChild(s05Seg);
+  const s06Seg = document.createElement('div');
+  s06Seg.className = 'seg s06';
+  s06Seg.style.flex = 18 + ' 0 0';
+  s06Seg.textContent = 'S06 · 18.0s';
+  ftBar.appendChild(s06Seg);
+
+  const ftTicks = document.getElementById('ft-ticks');
+  for (let s = 0; s <= 36; s++) {
+    const tk = document.createElement('div');
+    tk.className = 'tick';
+    tk.style.left = (s / totalRun * 100) + '%';
+    tk.textContent = s % 6 === 0 ? s + 's' : '·';
+    ftTicks.appendChild(tk);
   }
 </script>
 </body>
