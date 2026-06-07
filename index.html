@@ -663,6 +663,685 @@ footer a:hover { color: var(--rust-bright); border-color: var(--rust-bright); }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
 }
+
+/* ================================================================
+   ANNOTATION SYSTEM · 战地档案标注系统
+   ================================================================ */
+.anno {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--sand);
+  pointer-events: none;
+  z-index: 5;
+  text-transform: uppercase;
+}
+.anno.rust { color: var(--rust-bright); }
+.anno.ink { color: var(--ink); }
+.anno.faint { color: var(--ink-faint); }
+
+/* corner brackets — L shape */
+.bracket {
+  position: absolute;
+  width: 22px; height: 22px;
+  border-color: var(--sand);
+  border-style: solid;
+  border-width: 0;
+  pointer-events: none;
+  opacity: 0.7;
+}
+.bracket.tl { top: 8px; left: 8px; border-top-width: 1.5px; border-left-width: 1.5px; }
+.bracket.tr { top: 8px; right: 8px; border-top-width: 1.5px; border-right-width: 1.5px; }
+.bracket.bl { bottom: 8px; left: 8px; border-bottom-width: 1.5px; border-left-width: 1.5px; }
+.bracket.br { bottom: 8px; right: 8px; border-bottom-width: 1.5px; border-right-width: 1.5px; }
+.bracket.rust { border-color: var(--rust-bright); }
+.bracket.ink { border-color: var(--ink); }
+
+/* crosshair target */
+.crosshair {
+  position: absolute;
+  width: 60px; height: 60px;
+  pointer-events: none;
+  z-index: 6;
+}
+.crosshair::before, .crosshair::after {
+  content: ""; position: absolute; background: var(--rust-bright);
+}
+.crosshair::before { top: 50%; left: 0; right: 0; height: 1px; transform: translateY(-50%); }
+.crosshair::after { left: 50%; top: 0; bottom: 0; width: 1px; transform: translateX(-50%); }
+.crosshair .ring {
+  position: absolute; top: 50%; left: 50%;
+  width: 36px; height: 36px;
+  border: 1px solid var(--rust-bright);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 1px rgba(181, 57, 42, 0.2);
+}
+.crosshair .ring::before {
+  content: ""; position: absolute; inset: 12px;
+  border: 1px solid var(--rust-bright);
+  border-radius: 50%;
+  opacity: 0.5;
+}
+.crosshair .ring::after {
+  content: ""; position: absolute; top: 50%; left: 50%;
+  width: 3px; height: 3px;
+  background: var(--rust-bright);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--rust-bright);
+}
+.crosshair .label {
+  position: absolute; top: -18px; left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 9px; letter-spacing: 0.2em;
+  color: var(--rust-bright);
+  background: rgba(11, 13, 10, 0.85);
+  padding: 1px 6px;
+  white-space: nowrap;
+}
+.crosshair .coord {
+  position: absolute; bottom: -16px; left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 8px; letter-spacing: 0.15em;
+  color: var(--sand);
+  white-space: nowrap;
+}
+
+/* tape marker — red tape corner */
+.tape {
+  position: absolute;
+  width: 60px; height: 18px;
+  background: rgba(181, 57, 42, 0.55);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+  transform: rotate(-35deg);
+  pointer-events: none;
+  z-index: 4;
+  opacity: 0.85;
+}
+.tape::before, .tape::after {
+  content: ""; position: absolute; top: 0; bottom: 0;
+  width: 4px;
+  background: rgba(0,0,0,0.18);
+}
+.tape::before { left: 0; }
+.tape::after { right: 0; }
+.tape.b { background: rgba(200, 176, 116, 0.45); }
+.tape.b::before, .tape.b::after { background: rgba(0,0,0,0.25); }
+.tape.tl { top: -6px; left: -10px; }
+.tape.tr { top: -6px; right: -10px; transform: rotate(35deg); }
+.tape.bl { bottom: -6px; left: -10px; transform: rotate(35deg); }
+.tape.br { bottom: -6px; right: -10px; transform: rotate(-35deg); }
+
+/* stamp seal */
+.stamp-seal {
+  position: absolute;
+  display: inline-block;
+  padding: 6px 14px;
+  border: 2.5px solid var(--rust-bright);
+  color: var(--rust-bright);
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  transform: rotate(-8deg);
+  pointer-events: none;
+  background: rgba(11, 13, 10, 0.4);
+  z-index: 5;
+  text-align: center;
+  line-height: 1.1;
+  box-shadow: 0 0 0 3px rgba(11, 13, 10, 0.4);
+}
+.stamp-seal .small {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  color: var(--rust-bright);
+  margin-top: 2px;
+  font-weight: 400;
+}
+.stamp-seal.double {
+  border-style: double;
+  border-width: 4px;
+}
+.stamp-seal.sand { border-color: var(--sand); color: var(--sand); }
+.stamp-seal.sand .small { color: var(--sand); }
+.stamp-seal.olive { border-color: var(--olive); color: #6f8550; }
+.stamp-seal.olive .small { color: #6f8550; }
+.stamp-seal.big {
+  font-size: 18px;
+  padding: 10px 22px;
+}
+
+/* handwritten margin note */
+.margin-note {
+  position: absolute;
+  font-family: var(--font-stencil);
+  color: var(--rust-bright);
+  font-size: 13px;
+  line-height: 1.4;
+  pointer-events: none;
+  z-index: 5;
+  text-shadow: 0 0 2px rgba(11, 13, 10, 0.9);
+  max-width: 180px;
+  letter-spacing: 0.05em;
+}
+.margin-note::before {
+  content: "✎ ";
+  opacity: 0.7;
+}
+.margin-note.sand { color: var(--sand); }
+.margin-note.ink { color: var(--ink); }
+.margin-note.italic { font-family: 'IBM Plex Serif', serif; font-style: italic; font-size: 12px; }
+
+/* pencil underline */
+.pencil-mark {
+  position: relative;
+  display: inline-block;
+}
+.pencil-mark::after {
+  content: "";
+  position: absolute; left: -2px; right: -2px; bottom: 0;
+  height: 6px;
+  background:
+    linear-gradient(120deg, transparent 0 2%, rgba(181, 57, 42, 0.55) 2% 6%, transparent 6% 9%,
+    rgba(181, 57, 42, 0.55) 9% 14%, transparent 14% 18%, rgba(181, 57, 42, 0.55) 18% 23%, transparent 23% 100%);
+  background-size: 22px 6px;
+  background-repeat: repeat-x;
+  opacity: 0.85;
+  transform: rotate(-0.5deg);
+}
+
+/* data tag — small spec badge */
+.data-tag {
+  position: absolute;
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: var(--sand);
+  background: rgba(11, 13, 10, 0.7);
+  border: 1px solid var(--sand-deep);
+  padding: 2px 6px;
+  text-transform: uppercase;
+  pointer-events: none;
+  z-index: 5;
+  white-space: nowrap;
+}
+.data-tag .v {
+  color: var(--rust-bright);
+  font-weight: 700;
+}
+.data-tag.rust {
+  border-color: var(--rust-bright);
+  color: var(--rust-bright);
+}
+.data-tag.rust .v { color: var(--ink); }
+
+/* timecode (film style) */
+.timecode {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--sand);
+  background: rgba(0, 0, 0, 0.7);
+  padding: 3px 8px;
+  border: 1px solid var(--sand-deep);
+  pointer-events: none;
+  z-index: 5;
+}
+.timecode .blink {
+  color: var(--rust-bright);
+  animation: blink 1s infinite;
+}
+.timecode .sep { color: var(--ink-faint); }
+
+/* ruler scale */
+.ruler {
+  position: absolute;
+  background:
+    linear-gradient(90deg, var(--sand) 0 1px, transparent 1px),
+    linear-gradient(0deg, var(--sand) 0 1px, transparent 1px);
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+/* coordinate / grid overlay */
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  background-image:
+    linear-gradient(rgba(200, 176, 116, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200, 176, 116, 0.06) 1px, transparent 1px);
+  background-size: 40px 40px, 40px 40px;
+}
+
+/* compass rose */
+.compass {
+  position: absolute;
+  width: 60px; height: 60px;
+  pointer-events: none;
+  z-index: 5;
+  font-family: var(--font-mono);
+  color: var(--sand);
+}
+.compass::before {
+  content: ""; position: absolute; inset: 0;
+  border: 1px solid var(--sand);
+  border-radius: 50%;
+  opacity: 0.6;
+}
+.compass::after {
+  content: ""; position: absolute;
+  top: 4px; left: 50%;
+  width: 1px; height: calc(100% - 8px);
+  background: var(--rust-bright);
+  transform: translateX(-50%);
+  box-shadow: 0 0 4px var(--rust-bright);
+}
+.compass .n, .compass .s, .compass .e, .compass .w {
+  position: absolute; font-size: 9px; letter-spacing: 0.1em;
+}
+.compass .n { top: -2px; left: 50%; transform: translateX(-50%); color: var(--rust-bright); }
+.compass .s { bottom: -2px; left: 50%; transform: translateX(-50%); }
+.compass .e { right: -4px; top: 50%; transform: translateY(-50%); }
+.compass .w { left: -4px; top: 50%; transform: translateY(-50%); }
+.compass .deg {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 8px;
+  background: rgba(11, 13, 10, 0.8);
+  padding: 1px 3px;
+  color: var(--ink);
+}
+
+/* pin (callout pointer) */
+.pin {
+  position: absolute;
+  width: 14px; height: 14px;
+  border: 1.5px solid var(--rust-bright);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 5;
+  background: rgba(11, 13, 10, 0.4);
+}
+.pin::after {
+  content: ""; position: absolute; top: 50%; left: 50%;
+  width: 4px; height: 4px; background: var(--rust-bright);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 4px var(--rust-bright);
+}
+.pin .num {
+  position: absolute; top: -8px; right: -10px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--rust-bright);
+  background: var(--bg);
+  padding: 1px 4px;
+  border: 1px solid var(--rust-bright);
+  font-weight: 700;
+}
+
+/* scale bar */
+.scale-bar {
+  position: absolute;
+  pointer-events: none;
+  z-index: 5;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  color: var(--sand);
+  letter-spacing: 0.15em;
+}
+.scale-bar .bar {
+  display: block;
+  height: 5px;
+  background:
+    linear-gradient(90deg, var(--sand) 0 25%, transparent 25% 30%,
+    var(--sand) 30% 55%, transparent 55% 60%, var(--sand) 60% 85%, transparent 85% 90%, var(--sand) 90% 100%);
+  margin-bottom: 2px;
+}
+
+/* range finder */
+.range-finder {
+  position: absolute;
+  pointer-events: none;
+  z-index: 5;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: var(--rust-bright);
+  border: 1px solid var(--rust-bright);
+  background: rgba(11, 13, 10, 0.7);
+  padding: 4px 8px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.range-finder .lbl { color: var(--sand); }
+
+/* frame counter */
+.frame-counter {
+  position: absolute;
+  pointer-events: none;
+  z-index: 5;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--ink);
+  background: rgba(0,0,0,0.6);
+  border: 1px solid var(--sand-deep);
+  padding: 2px 6px;
+  display: flex; gap: 6px;
+  align-items: center;
+}
+.frame-counter .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--rust-bright);
+  box-shadow: 0 0 4px var(--rust-bright);
+  animation: blink 1.5s infinite;
+}
+
+/* bookmark ribbon */
+.bookmark {
+  position: absolute;
+  width: 28px;
+  background: var(--rust);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-align: center;
+  padding: 4px 0;
+  pointer-events: none;
+  z-index: 5;
+  box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+}
+.bookmark::after {
+  content: ""; position: absolute;
+  bottom: -6px; left: 0; right: 0;
+  height: 0;
+  border-left: 14px solid transparent;
+  border-right: 14px solid transparent;
+  border-top: 6px solid #5a1e14;
+}
+.bookmark.s { background: var(--sand); color: var(--bg); }
+.bookmark.s::after { border-top-color: #5a4f2c; }
+.bookmark.o { background: var(--olive); color: var(--ink); }
+.bookmark.o::after { border-top-color: #1a2210; }
+
+/* field-mark style large handwritten */
+.field-mark {
+  position: absolute;
+  font-family: var(--font-stencil);
+  font-size: 16px;
+  color: var(--rust-bright);
+  pointer-events: none;
+  z-index: 5;
+  transform: rotate(-3deg);
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 2px rgba(11, 13, 10, 0.8);
+}
+
+/* numbered callout brackets pointing to detail */
+.callout {
+  position: absolute;
+  pointer-events: none;
+  z-index: 5;
+}
+.callout .num {
+  display: inline-block;
+  width: 22px; height: 22px;
+  border: 1.5px solid var(--rust-bright);
+  border-radius: 50%;
+  color: var(--rust-bright);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 22px;
+  background: rgba(11, 13, 10, 0.85);
+  box-shadow: 0 0 6px rgba(181, 57, 42, 0.4);
+}
+.callout .lbl {
+  display: inline-block;
+  margin-left: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--sand);
+  text-transform: uppercase;
+  background: rgba(11, 13, 10, 0.7);
+  padding: 2px 6px;
+  border: 1px solid var(--line);
+}
+
+/* arrow callout */
+.arrow {
+  position: absolute;
+  pointer-events: none;
+  z-index: 5;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--rust-bright);
+}
+.arrow::before {
+  content: "→";
+  margin-right: 6px;
+  font-size: 14px;
+}
+.arrow .lbl {
+  background: rgba(11, 13, 10, 0.7);
+  border: 1px solid var(--rust);
+  padding: 2px 6px;
+}
+
+/* signature stamp */
+.sig-stamp {
+  position: absolute;
+  pointer-events: none;
+  z-index: 5;
+  font-family: 'Special Elite', cursive;
+  color: var(--rust-bright);
+  font-size: 22px;
+  transform: rotate(-12deg);
+  letter-spacing: 0.05em;
+  text-shadow: 1px 1px 0 rgba(11, 13, 10, 0.5);
+}
+
+/* fine ruled lines — annotation guide lines */
+.guide-line {
+  position: absolute;
+  background: var(--rust-bright);
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0.5;
+}
+.guide-line.h { height: 1px; left: 0; right: 0; }
+.guide-line.v { width: 1px; top: 0; bottom: 0; }
+.guide-line.d1 { height: 1px; transform: rotate(15deg); transform-origin: left center; }
+.guide-line.d2 { height: 1px; transform: rotate(-15deg); transform-origin: right center; }
+
+/* highlight block — yellow-tan */
+.highlight {
+  background: linear-gradient(180deg, transparent 50%, rgba(200, 176, 116, 0.35) 50%);
+  padding: 0 2px;
+}
+.highlight.rust {
+  background: linear-gradient(180deg, transparent 50%, rgba(181, 57, 42, 0.4) 50%);
+}
+
+/* dotted leader line */
+.leader {
+  position: absolute;
+  pointer-events: none;
+  z-index: 4;
+  border-top: 1px dashed rgba(200, 176, 116, 0.5);
+}
+
+/* section anchors labels */
+.field-label {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  pointer-events: none;
+  z-index: 5;
+}
+.field-label::before {
+  content: "▸ ";
+  color: var(--rust-bright);
+}
+
+/* callout balloon */
+.balloon {
+  position: absolute;
+  pointer-events: none;
+  z-index: 6;
+  font-family: var(--font-stencil);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: rgba(11, 13, 10, 0.92);
+  border: 1px solid var(--sand-deep);
+  padding: 8px 12px;
+  max-width: 200px;
+  letter-spacing: 0.04em;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.5);
+}
+.balloon::before {
+  content: ""; position: absolute;
+  top: 100%; left: 16px;
+  width: 0; height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid var(--sand-deep);
+}
+.balloon::after {
+  content: ""; position: absolute;
+  top: 100%; left: 18px;
+  width: 0; height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 6px solid rgba(11, 13, 10, 0.92);
+}
+.balloon .head {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--rust-bright);
+  letter-spacing: 0.2em;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+.balloon.rust { border-color: var(--rust-bright); }
+.balloon.rust::before { border-top-color: var(--rust-bright); }
+.balloon.sand { border-color: var(--sand); }
+.balloon.sand::before { border-top-color: var(--sand); }
+
+/* manuscript edit marks — strikethrough, caret */
+.strike {
+  text-decoration: line-through;
+  text-decoration-color: var(--rust-bright);
+  text-decoration-thickness: 1.5px;
+  opacity: 0.65;
+}
+.caret {
+  display: inline-block;
+  width: 8px; height: 12px;
+  border-left: 2px solid var(--rust-bright);
+  margin: 0 2px;
+  animation: blink 0.8s infinite;
+}
+
+/* film slate */
+.slate {
+  position: absolute;
+  pointer-events: none;
+  z-index: 6;
+  background: #1A1A1A;
+  border: 1px solid var(--sand);
+  padding: 6px 10px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+  line-height: 1.4;
+  min-width: 120px;
+}
+.slate::before {
+  content: "";
+  position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: repeating-linear-gradient(90deg, var(--sand) 0 6px, #1A1A1A 6px 12px);
+}
+.slate .row { display: flex; justify-content: space-between; gap: 12px; }
+.slate .row .k { color: var(--rust-bright); }
+.slate .row .v { color: var(--ink); }
+
+/* footage label — film canister style */
+.canister {
+  position: absolute;
+  pointer-events: none;
+  z-index: 5;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--bg);
+  background: var(--sand);
+  padding: 3px 10px;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.canister.r { background: var(--rust-bright); color: var(--ink); }
+.canister.o { background: var(--olive); color: var(--ink); }
+
+/* index card */
+.index-card {
+  position: absolute;
+  pointer-events: none;
+  z-index: 5;
+  background: var(--ink);
+  color: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  padding: 8px 10px;
+  line-height: 1.5;
+  width: 140px;
+  transform: rotate(2deg);
+  box-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+  letter-spacing: 0.1em;
+}
+.index-card .title {
+  font-family: var(--font-display);
+  font-size: 11px;
+  color: var(--rust);
+  border-bottom: 1px solid var(--bg);
+  padding-bottom: 3px;
+  margin-bottom: 4px;
+  letter-spacing: 0.05em;
+}
+
+/* annotation scrollbar note (margin ruler) */
+.margin-ruler {
+  position: absolute;
+  pointer-events: none;
+  z-index: 5;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  color: var(--ink-faint);
+  letter-spacing: 0.15em;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
 </style>
 </head>
 <body>
@@ -1161,12 +1840,544 @@ footer a:hover { color: var(--rust-bright); border-color: var(--rust-bright); }
 </footer>
 
 <script>
+/* =================================================================
+   ANNOTATION INJECTOR · 大量战地档案 / 导演批注生成器
+   ================================================================= */
 (function(){
+  // ---- make sure containers can host absolutely-positioned kids ----
+  ['.epilogue', '.section-head', '.notes-wrap', '.archive', '.hero'].forEach(sel => {
+    document.querySelectorAll(sel).forEach(el => {
+      if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
+    });
+  });
+  // also for each shot body so margin notes can sit outside .shot-visual
+  document.querySelectorAll('.shot-body').forEach(el => el.style.position = 'relative');
+
+  // ---- helpers ----
+  const h = (tag, cls, html, style) => {
+    const el = document.createElement(tag);
+    if (cls) el.className = cls;
+    if (html != null) el.innerHTML = html;
+    if (style) Object.assign(el.style, style);
+    return el;
+  };
+  const mount = (parent, child, pos) => {
+    if (!parent) return;
+    child.style.top = pos.top; child.style.bottom = pos.bottom;
+    child.style.left = pos.left; child.style.right = pos.right;
+    parent.appendChild(child);
+  };
+  const crosshair = (parent, opts) => {
+    const c = h('div', 'crosshair');
+    c.innerHTML = `<div class="ring"></div>
+      <div class="label">${opts.label||'TARGET'}</div>
+      <div class="coord">${opts.coord||''}</div>`;
+    mount(parent, c, opts.pos);
+  };
+  const stamp = (parent, txt, sub, pos, mods='') => {
+    const s = h('span', 'stamp-seal ' + mods);
+    s.innerHTML = txt + (sub ? `<span class="small">${sub}</span>` : '');
+    mount(parent, s, pos);
+  };
+  const tape = (parent, pos, mod='') => mount(parent, h('div', 'tape ' + mod), pos);
+  const brackets = (parent, mod='') => {
+    ['tl','tr','bl','br'].forEach(p => parent.appendChild(h('div', 'bracket ' + p + (mod?' '+mod:''))));
+  };
+  const dataTag = (parent, html, pos) => mount(parent, h('span', 'data-tag', html), pos);
+  const frameCounter = (parent, num, pos) => {
+    const f = h('div', 'frame-counter');
+    f.innerHTML = `<span class="dot"></span><span>FRAME</span><span>${num}</span>`;
+    mount(parent, f, pos);
+  };
+  const tc = (parent, h2, m2, s2, f2, pos) => {
+    const t = h('div', 'timecode');
+    t.innerHTML = `<span>${h2}</span><span class="sep">:</span><span>${m2}</span><span class="sep">:</span><span>${s2}</span><span class="sep">:</span><span class="blink">${f2}</span>`;
+    mount(parent, t, pos);
+  };
+  const marginNote = (parent, txt, pos, mod='') =>
+    mount(parent, h('div', 'margin-note ' + mod, txt), pos);
+  const arrowCallout = (parent, txt, pos) => {
+    const a = h('div', 'arrow');
+    a.innerHTML = `<span class="lbl">${txt}</span>`;
+    mount(parent, a, pos);
+  };
+  const pin = (parent, num, pos) => {
+    const p = h('div', 'pin');
+    p.innerHTML = `<div class="num">${num}</div>`;
+    mount(parent, p, pos);
+  };
+  const balloon = (parent, head, body, pos, mod='') => {
+    const b = h('div', 'balloon ' + mod);
+    b.innerHTML = `<span class="head">${head}</span>${body}`;
+    mount(parent, b, pos);
+  };
+  const bookmark = (parent, txt, pos, mod='') =>
+    mount(parent, h('div', 'bookmark '+mod, txt), pos);
+  const fieldMark = (parent, txt, pos) =>
+    mount(parent, h('div', 'field-mark', txt), pos);
+  const scaleBar = (parent, txt, pos) => {
+    const s = h('div', 'scale-bar');
+    s.innerHTML = `<span class="bar" style="width:80px"></span>${txt}`;
+    mount(parent, s, pos);
+  };
+  const range = (parent, lbl, val, pos) => {
+    const r = h('div', 'range-finder');
+    r.innerHTML = `<span class="lbl">${lbl}</span> &nbsp;<span>${val}</span>`;
+    mount(parent, r, pos);
+  };
+  const slate = (parent, rows, pos) => {
+    const s = h('div', 'slate');
+    s.innerHTML = rows.map(r => `<div class="row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('');
+    mount(parent, s, pos);
+  };
+  const canister = (parent, txt, pos, mod='') =>
+    mount(parent, h('div', 'canister '+mod, txt), pos);
+  const indexCard = (parent, title, body, pos) => {
+    const c = h('div', 'index-card');
+    c.innerHTML = `<div class="title">${title}</div>${body}`;
+    mount(parent, c, pos);
+  };
+  const compass = (parent, deg, pos) => {
+    const c = h('div', 'compass');
+    c.innerHTML = `<span class="n">N</span><span class="s">S</span><span class="e">E</span><span class="w">W</span><span class="deg">${deg}°</span>`;
+    mount(parent, c, pos);
+  };
+  const ruler = (parent, pos, w, h2) => {
+    const r = h('div','ruler');
+    r.style.width = w; r.style.height = h2;
+    mount(parent, r, pos);
+  };
+  const grid = (parent) => parent.appendChild(h('div','grid-overlay'));
+  const highlight = (text, mod='') => `<span class="highlight ${mod}">${text}</span>`;
+
+  // ====== HERO ======
+  const hero = document.querySelector('#hero');
+  stamp(hero, 'TOP SECRET', 'DECLASSIFIED 2004', {top:'90px', left:'40px'});
+  stamp(hero, 'FIELD REEL', '01 / 15', {top:'90px', right:'40px'}, 'sand');
+  dataTag(hero, 'FILE № <span class="v">SD-1944-01</span>', {top:'160px', left:'40px'});
+  dataTag(hero, 'GRID <span class="v">51°40′N · 36°15′E</span>', {top:'160px', right:'40px'}, 'rust');
+  tape(hero, {top:'40px', left:'60px'});
+  tape(hero, {top:'40px', right:'60px'}, 'b');
+  indexCard(hero, 'BATTLE ORDER', `
+    UNIT: 近卫第 29 坦克旅<br>
+    CO: 中尉 · 伊万·科洛夫<br>
+    ROLL: 35MM · ASA 200<br>
+    STATUS: <span style="color:#8B2E1F">ACTIVE</span>
+  `, {top:'480px', left:'40px'});
+  canister(hero, 'CAN · A-101 · 1000FT', {bottom:'180px', left:'40px'});
+  canister(hero, '1944 · STEEL DAWN', {bottom:'180px', right:'40px'}, 'r');
+  ruler(hero, {top:'50%', left:'30px'}, '1px', '120px');
+  ruler(hero, {top:'50%', right:'30px'}, '1px', '120px');
+  fieldMark(hero, '"Дым и сталь" — 烟与钢', {top:'420px', right:'80px'});
+  marginNote(hero, '外景 · 黎明实拍 · 阴天', {top:'350px', left:'80px'}, 'italic');
+  marginNote(hero, '库尔斯克 · 普罗霍罗夫卡', {bottom:'260px', right:'40px'}, 'sand');
+  slate(hero, [
+    ['SCENE', '01 / 15'],
+    ['DATE', '1944.07.12'],
+    ['DIR', 'FIELD'],
+    ['CAM', 'DEGtyarev'],
+  ], {bottom:'260px', left:'40px'});
+  crosshair(hero, {label:'KURSK', coord:'51°40′N 36°15′E', pos:{top:'40%', left:'50%'}});
+  arrowCallout(hero, '东北 · 黑豹来袭', {top:'52%', right:'180px'});
+
+  // ====== SECTION HEAD: STORYBOARD ======
+  const sh = document.querySelector('#storyboard .section-head');
+  bookmark(sh, '01', {top:'-12px', left:'-14px'});
+  fieldLabel_local(sh);
+
+  // ====== SECTION HEAD: NOTES ======
+  const shN = document.querySelector('#notes .section-head');
+  bookmark(shN, 'N', {top:'-12px', left:'-14px'}, 's');
+  stamp(shN, 'DRAFT v3.2', 'FOR REVIEW', {top:'0', right:'-20px'}, 'sand');
+
+  // ====== SECTION HEAD: ARCHIVE ======
+  const shA = document.querySelector('#archive .section-head');
+  bookmark(shA, 'A', {top:'-12px', left:'-14px'}, 'o');
+  stamp(shA, 'ARCHIVE', 'DO NOT COPY', {top:'0', right:'-20px'}, 'olive');
+
+  // ====== PER-SHOT ANNOTATIONS ======
+  const shotAnno = {
+    'shot-01': () => {
+      const v = document.querySelector('#shot-01 .shot-visual');
+      const shot = document.querySelector('#shot-01');
+      const body = shot.querySelector('.shot-body');
+      brackets(v);
+      grid(v);
+      frameCounter(v, '0001 / 0100', {top:'10px', left:'40px'});
+      tc(v, '00', '00', '04', '12', {top:'10px', right:'40px'});
+      scaleBar(v, '0 — 5 KM', {bottom:'50px', left:'40px'});
+      compass(v, '045', {bottom:'20px', right:'40px'});
+      pin(v, 'A', {top:'38%', left:'32%'});
+      pin(v, 'B', {top:'42%', right:'28%'});
+      crosshair(v, {label:'PANTHER ×3', coord:'2.1 KM', pos:{top:'40%', left:'58%'}});
+      dataTag(v, 'AZIMUTH <span class="v">045°</span>', {top:'36%', right:'14%'}, 'rust');
+      arrowCallout(v, '前进方向 · 350°', {bottom:'30%', left:'10%'});
+      marginNote(body, '黎明实拍 · 库尔斯克 1944', {top:'0px', right:'-220px'}, 'italic');
+      marginNote(body, '"晨雾要再厚一些" — 导演', {bottom:'40px', right:'-200px'}, 'sand');
+      tape(shot, {top:'-10px', left:'20px'});
+      tape(shot, {top:'-10px', right:'20px'}, 'b');
+      dataTag(shot, 'EXTERIOR · 05:42 · 7°C', {bottom:'-12px', left:'0px'});
+    },
+    'shot-02': () => {
+      const v = document.querySelector('#shot-02 .shot-visual');
+      const shot = document.querySelector('#shot-02');
+      const body = shot.querySelector('.shot-body');
+      brackets(v);
+      tape(v, {top:'-8px', left:'40%'});
+      frameCounter(v, '0101 / 0100', {top:'10px', left:'40px'});
+      tc(v, '00', '00', '07', '12', {top:'10px', right:'40px'});
+      pin(v, '1', {top:'30%', left:'22%'});
+      pin(v, '2', {top:'30%', left:'48%'});
+      pin(v, '3', {top:'30%', left:'74%'});
+      dataTag(v, '识别带 <span class="v">白色</span>', {bottom:'46px', right:'14%'});
+      dataTag(v, '车长 <span class="v">伊万·科洛夫</span>', {bottom:'14px', left:'14%'});
+      balloon(v, 'VEHICLE ID', 'T-34-85 · №421<br>1944 春下线', {top:'40%', right:'12%'}, 'sand');
+      marginNote(body, '白色识别带要拍清楚', {top:'30px', right:'-220px'});
+      marginNote(body, '三辆编队 · 临时涂装', {bottom:'30px', right:'-200px'}, 'sand');
+      stamp(shot, 'UNIT', '29 GUARDS', {top:'-30px', right:'40px'}, 'sand');
+      tape(shot, {top:'-10px', left:'20px'}, 'b');
+      dataTag(shot, 'INTERIOR / EXTERIOR', {bottom:'-12px', right:'0px'});
+    },
+    'shot-03': () => {
+      const v = document.querySelector('#shot-03 .shot-visual');
+      const shot = document.querySelector('#shot-03');
+      const body = shot.querySelector('.shot-body');
+      brackets(v);
+      frameCounter(v, '0201 / 0300', {top:'10px', left:'40px'});
+      tc(v, '00', '00', '12', '12', {top:'10px', right:'40px'});
+      pin(v, 'A', {top:'48%', left:'15%'});
+      pin(v, 'B', {top:'48%', left:'52%'});
+      pin(v, 'C', {top:'48%', left:'88%'});
+      dataTag(v, 'SPEED <span class="v">45 km/h</span>', {bottom:'40px', left:'14%'});
+      dataTag(v, 'V-2 DIESEL <span class="v">500 HP</span>', {bottom:'40px', right:'14%'}, 'rust');
+      arrowCallout(v, '履带轨迹 · ↑ 12m', {top:'30%', left:'10%'});
+      scaleBar(v, '0 — 200 M', {bottom:'14px', left:'40%'});
+      marginNote(body, '"V-2 引擎的咚咚咚" — 关键音效', {top:'10px', right:'-230px'});
+      marginNote(body, '履带溅起的水花要拍实', {bottom:'30px', right:'-200px'}, 'sand');
+      tape(shot, {top:'-10px', right:'20px'});
+      dataTag(shot, 'EXT · DAY · 06:08', {bottom:'-12px', left:'0px'});
+    },
+    'shot-04': () => {
+      const v = document.querySelector('#shot-04 .shot-visual');
+      const shot = document.querySelector('#shot-04');
+      const body = shot.querySelector('.shot-body');
+      brackets(v);
+      grid(v);
+      frameCounter(v, '0301 / 0100', {top:'10px', left:'40px'});
+      tc(v, '00', '00', '15', '12', {top:'10px', right:'40px'});
+      pin(v, '1', {top:'36%', left:'34%'});
+      pin(v, '2', {top:'44%', right:'18%'});
+      pin(v, '3', {top:'70%', left:'20%'});
+      dataTag(v, 'TEMP <span class="v">+9°C</span>', {top:'36%', left:'14%'});
+      dataTag(v, 'WIND <span class="v">12 km/h W</span>', {top:'36%', right:'14%'}, 'rust');
+      arrowCallout(v, '燃烧的德军半履带', {top:'44%', left:'8%'});
+      balloon(v, 'VILLAGE', 'ROGOVKA · 已撤守', {bottom:'46px', right:'14%'}, 'rust');
+      marginNote(body, '"焦糊味要扑面" — 音轨', {top:'0px', right:'-210px'});
+      marginNote(body, '撤退的步兵 · 30 人', {bottom:'30px', right:'-200px'}, 'ink');
+      stamp(shot, 'BURN', 'DESTROYED', {top:'-30px', right:'40px'}, 'rust');
+      tape(shot, {top:'-10px', left:'20px'}, 'b');
+    },
+    'shot-05': () => {
+      const v = document.querySelector('#shot-05 .shot-visual');
+      const shot = document.querySelector('#shot-05');
+      const body = shot.querySelector('.shot-body');
+      brackets(v);
+      grid(v);
+      frameCounter(v, '0401 / 0100', {top:'10px', left:'40px'});
+      tc(v, '00', '00', '18', '12', {top:'10px', right:'40px'});
+      crosshair(v, {label:'PANTHER · Pz V', coord:'RNG 1.8 KM', pos:{top:'40%', left:'32%'}});
+      crosshair(v, {label:'PANTHER · Pz V', coord:'RNG 1.9 KM', pos:{top:'50%', left:'48%'}});
+      crosshair(v, {label:'PANTHER · Pz V', coord:'RNG 2.0 KM', pos:{top:'44%', left:'68%'}});
+      dataTag(v, 'DETECTED <span class="v">×3</span>', {top:'20%', right:'12%'}, 'rust');
+      arrowCallout(v, '迂回包抄 →', {top:'32%', right:'6%'});
+      marginNote(body, '"他们突破防线了！" — 战友电台', {top:'0', right:'-230px'});
+      marginNote(body, '瞄准镜分屏 · 左目视场', {bottom:'30px', right:'-220px'}, 'italic');
+      stamp(shot, 'CONTACT', 'ENEMY SIGHTED', {top:'-30px', right:'40px'}, 'rust double');
+      tape(shot, {top:'-10px', right:'20px'}, 'b');
+    },
+    'shot-06': () => {
+      const v = document.querySelector('#shot-06 .shot-visual');
+      const shot = document.querySelector('#shot-06');
+      const body = shot.querySelector('.shot-body');
+      brackets(v);
+      frameCounter(v, '0501 / 0100', {top:'10px', left:'40px'});
+      tc(v, '00', '00', '24', '12', {top:'10px', right:'40px'});
+      crosshair(v, {label:'HULL-DOWN', coord:'正面投影 ≤ 1.4M', pos:{top:'52%', left:'40%'}});
+      arrowCallout(v, '反斜面 · 抢占 ↑', {top:'28%', left:'14%'});
+      scaleBar(v, '0 — 50 M', {bottom:'14px', left:'40%'});
+      dataTag(v, 'SLOPE <span class="v">28°</span>', {top:'32%', right:'14%'});
+      dataTag(v, 'EXPOSURE <span class="v">TURRET</span>', {bottom:'40px', left:'14%'}, 'rust');
+      marginNote(body, '"我们只有一次射击的机会" — 车长', {top:'0', right:'-230px'});
+      marginNote(body, '反斜面 → 射击阵地', {bottom:'30px', right:'-200px'}, 'sand');
+      stamp(shot, 'TACTICAL', 'HULL-DOWN', {top:'-30px', right:'40px'}, 'olive');
+      tape(shot, {top:'-10px', left:'20px'});
+    },
+    'shot-07': () => {
+      const v = document.querySelector('#shot-07 .shot-visual');
+      const shot = document.querySelector('#shot-07');
+      const body = shot.querySelector('.shot-body');
+      brackets(v);
+      grid(v);
+      frameCounter(v, '0601 / 0100', {top:'10px', left:'40px'});
+      tc(v, '00', '00', '27', '12', {top:'10px', right:'40px'});
+      crosshair(v, {label:'LOCKED', coord:'RNG 800M', pos:{top:'46%', left:'54%'}});
+      range(v, 'RNG', '800 M', {top:'38%', right:'14%'});
+      dataTag(v, 'ELEV <span class="v">+0.4°</span>', {bottom:'40px', left:'14%'});
+      dataTag(v, 'WINDAGE <span class="v">-1.2 MIL</span>', {bottom:'40px', right:'14%'}, 'rust');
+      pin(v, 'A', {top:'30%', left:'20%'});
+      pin(v, 'B', {top:'30%', right:'20%'});
+      balloon(v, 'GUNNER', '"装填完毕！"', {top:'14%', right:'10%'}, 'rust');
+      marginNote(body, '瞄准镜分屏 → 局部大特写', {top:'0', right:'-210px'}, 'italic');
+      marginNote(body, '"800 米" — 炮长报距', {bottom:'40px', right:'-220px'});
+      stamp(shot, 'TARGET', 'LOCKED', {top:'-30px', right:'40px'}, 'rust');
+      tape(shot, {top:'-10px', right:'20px'}, 'b');
+    },
+    'shot-08': () => {
+      const v = document.querySelector('#shot-08 .shot-visual');
+      const shot = document.querySelector('#shot-08');
+      const body = shot.querySelector('.shot-body');
+      brackets(v, 'rust');
+      frameCounter(v, '0701 / 0100', {top:'10px', left:'40px'});
+      tc(v, '00', '00', '29', '12', {top:'10px', right:'40px'});
+      crosshair(v, {label:'BR-365K', coord:'APCR · 800M', pos:{top:'46%', left:'52%'}});
+      dataTag(v, 'CHARGE <span class="v">MANUAL</span>', {top:'22%', right:'14%'});
+      dataTag(v, 'M.V. <span class="v">925 m/s</span>', {top:'22%', left:'14%'}, 'rust');
+      arrowCallout(v, '炮口焰 → 弹道', {top:'36%', right:'10%'});
+      pin(v, '1', {top:'30%', left:'16%'});
+      pin(v, '2', {top:'30%', left:'38%'});
+      marginNote(body, '静音 → 炮声 · 蒙太奇', {top:'0', right:'-220px'}, 'italic');
+      marginNote(body, '"FIRE !" — 车长大喊', {bottom:'40px', right:'-210px'});
+      stamp(shot, 'FIRING', '85MM · APCR', {top:'-30px', left:'40px'}, 'rust big');
+      tape(shot, {top:'-10px', right:'20px'});
+    },
+    'shot-09': () => {
+      const v = document.querySelector('#shot-09 .shot-visual');
+      const shot = document.querySelector('#shot-09');
+      const body = shot.querySelector('.shot-body');
+      brackets(v, 'rust');
+      grid(v);
+      frameCounter(v, '0801 / 0100', {top:'10px', left:'40px'});
+      tc(v, '00', '00', '33', '12', {top:'10px', right:'40px'});
+      crosshair(v, {label:'K-KILL', coord:'弹药架殉爆', pos:{top:'48%', left:'40%'}});
+      dataTag(v, 'AMMO <span class="v">COOK-OFF</span>', {top:'22%', right:'14%'}, 'rust');
+      dataTag(v, 'TURRET <span class="v">BLOWN</span>', {top:'22%', left:'14%'}, 'rust');
+      pin(v, 'X', {top:'34%', right:'18%'});
+      arrowCallout(v, '炮塔掀开 ↑', {top:'28%', right:'8%'});
+      balloon(v, 'KILL', '目标 1 击杀确认', {bottom:'46px', right:'14%'}, 'rust');
+      marginNote(body, '"弹药殉爆的连串闷响"', {top:'0', right:'-220px'});
+      marginNote(body, '炮塔被掀开一角', {bottom:'40px', right:'-210px'}, 'sand');
+      stamp(shot, 'KILL', 'CONFIRMED', {top:'-30px', right:'40px'}, 'rust double big');
+      tape(shot, {top:'-10px', left:'20px'}, 'b');
+    },
+    'shot-10': () => {
+      const v = document.querySelector('#shot-10 .shot-visual');
+      const shot = document.querySelector('#shot-10');
+      const body = shot.querySelector('.shot-body');
+      brackets(v, 'rust');
+      frameCounter(v, '0901 / 0100', {top:'10px', left:'40px'});
+      tc(v, '00', '00', '35', '12', {top:'10px', right:'40px'});
+      crosshair(v, {label:'INCOMING', coord:'80mm KwK 40', pos:{top:'46%', left:'34%'}});
+      arrowCallout(v, '← 来袭炮弹', {top:'30%', left:'8%'});
+      dataTag(v, 'HIT <span class="v">TRACK</span>', {top:'22%', right:'14%'}, 'rust');
+      pin(v, '!', {top:'30%', left:'40%'});
+      marginNote(body, '"履带中弹！" — 驾驶员', {top:'0', right:'-220px'});
+      marginNote(body, '车内警报四起', {bottom:'40px', right:'-210px'}, 'sand');
+      stamp(shot, '! ALERT', 'SPOTTED', {top:'-30px', right:'40px'}, 'rust big');
+      tape(shot, {top:'-10px', right:'20px'});
+    },
+    'shot-11': () => {
+      const v = document.querySelector('#shot-11 .shot-visual');
+      const shot = document.querySelector('#shot-11');
+      const body = shot.querySelector('.shot-body');
+      brackets(v);
+      frameCounter(v, '1001 / 0100', {top:'10px', left:'40px'});
+      tc(v, '00', '00', '39', '12', {top:'10px', right:'40px'});
+      crosshair(v, {label:'SMOKE', coord:'RDG · ×6', pos:{top:'46%', left:'60%'}});
+      dataTag(v, 'SMOKE <span class="v">RELEASED</span>', {top:'22%', left:'14%'}, 'rust');
+      dataTag(v, 'REVERSE <span class="v">FULL</span>', {top:'22%', right:'14%'}, 'rust');
+      arrowCallout(v, '← 左转 · 倒车', {bottom:'34%', left:'10%'});
+      pin(v, '1', {top:'38%', left:'22%'});
+      pin(v, '2', {top:'62%', left:'52%'});
+      marginNote(body, '"左转！烟雾弹！" — 车长', {top:'0', right:'-220px'});
+      marginNote(body, '车内视角 · 沉浸感', {bottom:'40px', right:'-210px'}, 'italic');
+      stamp(shot, 'EVADE', 'SMOKE SCREEN', {top:'-30px', left:'40px'}, 'sand');
+      tape(shot, {top:'-10px', right:'20px'}, 'b');
+    },
+    'shot-12': () => {
+      const v = document.querySelector('#shot-12 .shot-visual');
+      const shot = document.querySelector('#shot-12');
+      const body = shot.querySelector('.shot-body');
+      brackets(v);
+      grid(v);
+      frameCounter(v, '1101 / 0100', {top:'10px', left:'40px'});
+      tc(v, '00', '00', '44', '12', {top:'10px', right:'40px'});
+      crosshair(v, {label:'HUNT', coord:'机动 · 25 km/h', pos:{top:'46%', left:'40%'}});
+      scaleBar(v, '0 — 500 M', {bottom:'14px', left:'40%'});
+      dataTag(v, 'SPEED <span class="v">38 km/h</span>', {top:'22%', right:'14%'}, 'rust');
+      pin(v, '!', {top:'30%', left:'60%'});
+      arrowCallout(v, '← 弹道飞过', {top:'30%', left:'8%'});
+      marginNote(body, '"视觉运动美学"', {top:'0', right:'-200px'}, 'italic');
+      marginNote(body, '俯拍 / 高速跟拍', {bottom:'40px', right:'-200px'}, 'sand');
+      stamp(shot, 'FLUX', 'HUNTING', {top:'-30px', right:'40px'}, 'olive');
+      tape(shot, {top:'-10px', left:'20px'});
+    },
+    'shot-13': () => {
+      const v = document.querySelector('#shot-13 .shot-visual');
+      const shot = document.querySelector('#shot-13');
+      const body = shot.querySelector('.shot-body');
+      brackets(v);
+      frameCounter(v, '1201 / 0100', {top:'10px', left:'40px'});
+      tc(v, '00', '00', '47', '12', {top:'10px', right:'40px'});
+      crosshair(v, {label:'SYNC', coord:'步坦协同', pos:{top:'50%', left:'32%'}});
+      dataTag(v, 'INFANTRY <span class="v">×30</span>', {top:'22%', right:'14%'}, 'rust');
+      dataTag(v, 'SIGNAL <span class="v">FLAG</span>', {top:'22%', left:'14%'}, 'rust');
+      pin(v, '★', {top:'30%', left:'60%'});
+      arrowCallout(v, '步兵冲锋 →', {bottom:'30%', right:'10%'});
+      marginNote(body, '"我们不再是猎物"', {top:'0', right:'-200px'});
+      marginNote(body, '步坦协同 · 红旗信号', {bottom:'40px', right:'-200px'}, 'sand');
+      stamp(shot, 'COUNTER', 'ASSAULT', {top:'-30px', right:'40px'}, 'rust');
+      tape(shot, {top:'-10px', right:'20px'}, 'b');
+    },
+    'shot-14': () => {
+      const v = document.querySelector('#shot-14 .shot-visual');
+      const shot = document.querySelector('#shot-14');
+      const body = shot.querySelector('.shot-body');
+      brackets(v);
+      grid(v);
+      frameCounter(v, '1301 / 0100', {top:'10px', left:'40px'});
+      tc(v, '00', '00', '52', '12', {top:'10px', right:'40px'});
+      crosshair(v, {label:'SURGE', coord:'突破 · 1.2 KM', pos:{top:'46%', left:'46%'}});
+      pin(v, 'A', {top:'32%', left:'20%'});
+      pin(v, 'B', {top:'38%', left:'40%'});
+      pin(v, 'C', {top:'34%', left:'60%'});
+      pin(v, 'D', {top:'40%', left:'80%'});
+      dataTag(v, 'FORMATION <span class="v">WEDGE</span>', {top:'20%', right:'14%'}, 'rust');
+      arrowCallout(v, '冲锋方向 →', {bottom:'30%', left:'10%'});
+      scaleBar(v, '0 — 2 KM', {bottom:'14px', left:'40%'});
+      marginNote(body, '"钢铁洪流 · 史诗冲锋"', {top:'0', right:'-220px'}, 'italic');
+      marginNote(body, '铜管 · 交响乐 · 史诗', {bottom:'40px', right:'-200px'}, 'sand');
+      stamp(shot, 'CLIMAX', 'STEEL SURGE', {top:'-30px', right:'40px'}, 'rust big');
+      tape(shot, {top:'-10px', left:'20px'});
+    },
+    'shot-15': () => {
+      const v = document.querySelector('#shot-15 .shot-visual');
+      const shot = document.querySelector('#shot-15');
+      const body = shot.querySelector('.shot-body');
+      brackets(v, 'rust');
+      frameCounter(v, '1401 / 0100', {top:'10px', left:'40px'});
+      tc(v, '00', '00', '55', '12', {top:'10px', right:'40px'});
+      crosshair(v, {label:'CLOSE', coord:'电影式收尾', pos:{top:'40%', left:'38%'}});
+      pin(v, '★', {top:'38%', right:'22%'});
+      dataTag(v, 'TIME <span class="v">19:42</span>', {top:'20%', right:'14%'});
+      dataTag(v, 'SUN <span class="v">SET</span>', {top:'20%', left:'14%'}, 'rust');
+      balloon(v, 'AFTER', '"车长靠在炮塔上"', {bottom:'46px', right:'14%'}, 'sand');
+      marginNote(body, '"硝烟散去 · 夕阳西下"', {top:'0', right:'-200px'}, 'italic');
+      marginNote(body, '悲壮 · 带有一丝希望', {bottom:'40px', right:'-200px'}, 'sand');
+      stamp(shot, 'END', 'PRINT TAKE 01', {top:'-30px', right:'40px'}, 'sand big');
+      tape(shot, {top:'-10px', right:'20px'}, 'b');
+    },
+  };
+
+  Object.keys(shotAnno).forEach(k => { try { shotAnno[k](); } catch(e) { console.warn(k, e); } });
+
+  // ====== NOTES ======
+  const notesWrap = document.querySelector('#notes .notes-wrap');
+  const notesCards = document.querySelectorAll('#notes .notes-card');
+  if (notesCards[0]) {
+    marginNote(notesCards[0], '"空战版 → 坦克版 · 翻译注"', {top:'14px', right:'-180px'});
+    marginNote(notesCards[0], '节奏由"高空"降为"地面"', {bottom:'20px', right:'-180px'}, 'sand');
+    stamp(notesCards[0], 'DRAFT', 'v3.2', {top:'-18px', right:'-18px'}, 'sand');
+    tape(notesCards[0], {top:'-10px', left:'40%'});
+  }
+  if (notesCards[1]) {
+    marginNote(notesCards[1], '"85mm 是 T-34 的二次生命"', {top:'14px', right:'-180px'});
+    marginNote(notesCards[1], '1944 春 · 投入量产', {bottom:'20px', right:'-180px'}, 'sand');
+    stamp(notesCards[1], 'APPROVED', 'BY D.P.', {top:'-18px', right:'-18px'}, 'olive');
+    tape(notesCards[1], {top:'-10px', right:'40%'}, 'b');
+  }
+  // add edit marks via span
+  document.querySelectorAll('#notes .compare-table td').forEach((td, i) => {
+    if (i === 4) td.innerHTML = '<span class="strike">撤离</span> · 开放式 → <span class="caret"></span> 胜利 · 史诗式';
+  });
+  fieldMark(notesWrap, '"From 109 to 85"', {top:'-30px', left:'40%'});
+  indexCard(notesWrap, 'TRANSLATION', `
+    原剧本: 15 镜 · 53s<br>
+    现版本: 15 镜 · 64s<br>
+    增加镜: 12、14、15<br>
+    缩减镜: 09、10
+  `, {bottom:'-20px', left:'-20px'});
+
+  // ====== ARCHIVE ======
+  const arch = document.querySelector('#archive .archive');
+  const archCards = document.querySelectorAll('.archive-card');
+  const archStamps = [
+    {t:'85mm ZiS-S-53', s:'口径 · 1944'},
+    {t:'V-2 柴油', s:'V12 · 500HP'},
+    {t:'90mm / 60°', s:'前装甲 · 倾斜'},
+    {t:'800 vs 400', s:'会战规模 · 1943'},
+  ];
+  archCards.forEach((c, i) => {
+    brackets(c);
+    dataTag(c, `DOSSIER № <span class="v">${String.fromCharCode(65+i)}-${(i+1).toString().padStart(2,'0')}</span>`, {top:'14px', right:'14px'});
+    fieldMark(c, archStamps[i].t, {bottom:'-12px', right:'14px'});
+    tape(c, {top:'-10px', right:'20px'});
+    pin(c, (i+1).toString(), {top:'60%', left:'-7px'});
+  });
+  stamp(arch, 'EYES ONLY', 'OFFICIAL USE', {top:'-30px', left:'40%'}, 'olive big');
+  marginNote(arch, '"所有数据均经 1944 第 3 局核实"', {top:'-30px', right:'40px'}, 'italic');
+
+  // ====== EPILOGUE ======
+  const epi = document.querySelector('#epilogue');
+  stamp(epi, 'FIN', 'PRINT MASTER', {top:'40px', left:'40px'}, 'sand big');
+  stamp(epi, 'THE END', 'CUT TO BLACK', {top:'40px', right:'40px'}, 'rust big');
+  tape(epi, {top:'120px', left:'20px'}, 'b');
+  tape(epi, {top:'120px', right:'20px'});
+  dataTag(epi, 'ROLL 01 / TAKE 01', {bottom:'180px', left:'40px'}, 'rust');
+  dataTag(epi, 'APPROVED FOR RELEASE', {bottom:'180px', right:'40px'}, 'sand');
+  sigStamp(epi);
+  indexCard(epi, 'CREDITS', `
+    DIRECTOR · FIELD OP.<br>
+    DOP · D.P. KOLOV<br>
+    EDITOR · M. PETROV<br>
+    SOUND · V-2 STUDIO
+  `, {bottom:'-20px', left:'40%'});
+  fieldMark(epi, '"Слава героям"', {top:'60%', right:'20%'});
+  // make .sign into a sig-stamp
+  const sign = epi.querySelector('.sign');
+  if (sign) sign.classList.add('sig-stamp');
+
+  // ----- helper for fieldLabel local use -----
+  function fieldLabel_local(parent) {
+    const f = h('div', 'field-label', 'FIELD REEL · 01');
+    parent.appendChild(f);
+    Object.assign(f.style, {top:'-22px', left:'0'});
+  }
+
+  // ---- sigStamp helper ----
+  function sigStamp(parent) {
+    const s = h('div', 'sig-stamp', 'И. Колов · 1944');
+    Object.assign(s.style, {bottom:'40px', right:'40px'});
+    parent.appendChild(s);
+  }
+
+  // ---- Annotation count badge (floating) ----
+  const counter = h('div');
+  counter.style.cssText = 'position:fixed;bottom:18px;left:18px;z-index:9999;font-family:var(--font-mono);font-size:10px;letter-spacing:0.2em;color:var(--sand);background:rgba(11,13,10,0.85);border:1px solid var(--sand-deep);padding:5px 10px;text-transform:uppercase;pointer-events:none;';
+  document.body.appendChild(counter);
+  const updateCount = () => {
+    const n = document.querySelectorAll('.anno,.bracket,.crosshair,.stamp-seal,.tape,.margin-note,.data-tag,.timecode,.frame-counter,.bookmark,.field-mark,.callout,.arrow,.pin,.balloon,.scale-bar,.range-finder,.slate,.canister,.index-card,.compass,.ruler,.grid-overlay,.sig-stamp').length;
+    counter.innerHTML = `◉ ANNOTATIONS · <span style="color:var(--rust-bright);font-weight:700">${n}</span>`;
+  };
+  updateCount();
+
+  // ===================================================================
+  // RESTORED ORIGINAL LOGIC · 还原原有交互
+  // ===================================================================
   // ---- Progress bar ----
   const progress = document.getElementById('progress');
   function updateProgress(){
-    const h = document.documentElement;
-    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight);
+    const h2 = document.documentElement;
+    const scrolled = (h2.scrollTop) / (h2.scrollHeight - h2.clientHeight);
     progress.style.width = (scrolled * 100).toFixed(2) + '%';
   }
   window.addEventListener('scroll', updateProgress, { passive: true });
