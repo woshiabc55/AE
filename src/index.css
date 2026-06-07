@@ -1,0 +1,258 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #0a0a0a;
+  color: #e8e6df;
+  overflow: hidden;
+  cursor: crosshair;
+}
+
+/* CRT 扫描线 */
+.crt-scanlines {
+  position: relative;
+}
+.crt-scanlines::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 255, 213, 0.03) 0px,
+    rgba(0, 255, 213, 0.03) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events: none;
+  z-index: 50;
+}
+/* CRT 移动扫描 */
+.crt-scanlines::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(0, 255, 213, 0.08) 50%,
+    transparent
+  );
+  animation: scan 6s linear infinite;
+  pointer-events: none;
+  z-index: 51;
+}
+
+/* 监视器暗角 */
+.crt-vignette {
+  box-shadow:
+    inset 0 0 80px 20px rgba(0, 0, 0, 0.6),
+    inset 0 0 4px rgba(0, 255, 213, 0.2);
+}
+
+/* 噪点纹理 */
+.noise-bg {
+  position: relative;
+}
+.noise-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0.92 0 0 0 0 0.9 0 0 0 0 0.85 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.3;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+/* 像素风按钮 */
+.btn-pixel {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  background: #16161c;
+  color: #e8e6df;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
+  border: 1px solid #2a2a35;
+  transition: all 0.15s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.btn-pixel:hover {
+  border-color: #ffe600;
+  color: #ffe600;
+  box-shadow: 0 0 12px rgba(255, 230, 0, 0.4);
+}
+.btn-pixel:active {
+  transform: translate(1px, 1px);
+}
+.btn-pixel:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.btn-pixel:disabled:hover {
+  border-color: #2a2a35;
+  color: #e8e6df;
+  box-shadow: none;
+}
+
+/* 警报边框 */
+.alert-border {
+  animation: alert-pulse 1s infinite;
+}
+
+/* 等宽字大数字 */
+.metric-number {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+/* 文字光晕 */
+.glow-amber {
+  text-shadow: 0 0 8px rgba(255, 230, 0, 0.6);
+}
+.glow-alert {
+  text-shadow: 0 0 6px rgba(255, 0, 51, 0.8);
+}
+.glow-enkephalin {
+  text-shadow: 0 0 8px rgba(77, 255, 136, 0.6);
+}
+
+/* 进度条 */
+.meter {
+  background: #0a0a0a;
+  border: 1px solid #2a2a35;
+  height: 8px;
+  position: relative;
+  overflow: hidden;
+}
+.meter-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+.meter-fill-amber { background: linear-gradient(90deg, #ffe600, #ffaa00); }
+.meter-fill-enkephalin { background: linear-gradient(90deg, #4dff88, #00cc66); }
+.meter-fill-alert { background: linear-gradient(90deg, #ff0033, #cc0033); }
+
+/* 危险等级徽章 */
+.class-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  border: 1px solid currentColor;
+}
+.class-ZAYIN { color: #6dbb6d; }
+.class-TETH { color: #4d9fff; }
+.class-HE { color: #d97c2a; }
+.class-WAW { color: #d94c8a; }
+.class-ALEPH { color: #ff0033; }
+
+/* 像素画板 */
+canvas.pixel-canvas {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2a35;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3a45;
+}
+
+/* 雾化文字 */
+.fog-text {
+  filter: blur(4px);
+  user-select: none;
+  color: #2a2a35;
+}
+.fog-text.partial {
+  filter: blur(2px);
+  color: #5a5a5a;
+}
+
+/* 雷达图 */
+.radar-grid {
+  fill: none;
+  stroke: #2a2a35;
+  stroke-width: 1;
+}
+.radar-axis {
+  stroke: #1d1d26;
+  stroke-width: 1;
+}
+.radar-data {
+  fill: rgba(255, 230, 0, 0.2);
+  stroke: #ffe600;
+  stroke-width: 2;
+}
+
+/* glitch 文字 */
+.glitch {
+  position: relative;
+  display: inline-block;
+}
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.glitch::before {
+  color: #ff0033;
+  animation: glitch 2s infinite;
+  clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+  transform: translate(-1px, 0);
+}
+.glitch::after {
+  color: #00ffd5;
+  animation: glitch 3s infinite reverse;
+  clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+  transform: translate(1px, 0);
+}
+
+/* 隐藏装饰元素聚焦 */
+button:focus-visible,
+[role="button"]:focus-visible {
+  outline: 1px dashed #ffe600;
+  outline-offset: 2px;
+}
