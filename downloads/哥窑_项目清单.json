@@ -1,0 +1,738 @@
+{
+  "name": "哥窑 · 主旨解读项目",
+  "theme": "窑火如歌，兄弟如线",
+  "version": "v1.0",
+  "generated": "2026-06-07 06:23:03",
+  "summary": {
+    "total_files": 113,
+    "total_size_b": 719027,
+    "total_size_kb": 702.2,
+    "total_size_mb": 0.69,
+    "by_type": {
+      "html": 78,
+      "css": 21,
+      "js": 5,
+      "md": 1,
+      "py": 5,
+      "other": 3
+    }
+  },
+  "characters": {
+    "elder_brother": "张寄 · 守护者 · 理性 · 承担",
+    "younger_brother": "张志元 · 探索者 · 感性 · 天赋",
+    "note": "此为唯一正确设定（脚本中\"章生一\"、\"张志耀\"为笔误）"
+  },
+  "stats": {
+    "slides": 24,
+    "shots": 66,
+    "acts": 3,
+    "components": 15,
+    "html_pages": 78
+  },
+  "downloads": {
+    "pptx": "downloads/哥窑_主旨解读.pptx",
+    "zip": "downloads/哥窑_主旨解读_HTML包.zip",
+    "single": "downloads/哥窑_主旨解读_单文件.html"
+  },
+  "directory_purpose": {
+    "assets/css": "样式表目录",
+    "assets/css/components": "14 个可复用组件 CSS + 设计令牌",
+    "assets/js": "脚本目录",
+    "assets/js/components": "组件 JS 模块（flame / toc）",
+    "assets/img": "图片资源",
+    "downloads": "可下载资源（pptx / zip / 单文件HTML / 项目清单）",
+    "scripts": "项目构建脚本",
+    ".trae/documents": "PRD 产品文档 + 技术架构"
+  },
+  "files": [
+    {
+      "path": "shot-25.html",
+      "size": 1699,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-55.html",
+      "size": 1484,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-13.html",
+      "size": 1502,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-48.html",
+      "size": 1526,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-03.html",
+      "size": 1614,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-19.html",
+      "size": 1708,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-17.html",
+      "size": 1685,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-50.html",
+      "size": 1671,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-21.html",
+      "size": 1540,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-38.html",
+      "size": 1526,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-12.html",
+      "size": 1713,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "index.html",
+      "size": 18778,
+      "type": "html",
+      "text": true,
+      "purpose": "主 PPT 旧版（14 张）"
+    },
+    {
+      "path": "README.md",
+      "size": 7497,
+      "type": "md",
+      "text": true
+    },
+    {
+      "path": "shot-23.html",
+      "size": 1574,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "gallery.html",
+      "size": 14212,
+      "type": "html",
+      "text": true,
+      "purpose": "资源索引"
+    },
+    {
+      "path": "shot-58.html",
+      "size": 1552,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "essay.html",
+      "size": 6076,
+      "type": "html",
+      "text": true,
+      "purpose": "深度解读"
+    },
+    {
+      "path": "shot-54.html",
+      "size": 1610,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-40.html",
+      "size": 1680,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "act-2.html",
+      "size": 5287,
+      "type": "html",
+      "text": true,
+      "purpose": "第二幕 · 贡品之印"
+    },
+    {
+      "path": "shot-05.html",
+      "size": 1557,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-65.html",
+      "size": 1549,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-15.html",
+      "size": 1547,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-04.html",
+      "size": 1441,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-62.html",
+      "size": 1562,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-44.html",
+      "size": 1535,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "act-3.html",
+      "size": 6094,
+      "type": "html",
+      "text": true,
+      "purpose": "第三幕 · 窑火成瓷"
+    },
+    {
+      "path": "shot-63.html",
+      "size": 1544,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-16.html",
+      "size": 1669,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-43.html",
+      "size": 1545,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-41.html",
+      "size": 1659,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-06.html",
+      "size": 1522,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-56.html",
+      "size": 1587,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-30.html",
+      "size": 1555,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-36.html",
+      "size": 1520,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "components.html",
+      "size": 21197,
+      "type": "html",
+      "text": true,
+      "purpose": "组件库演示（Storybook 风格）"
+    },
+    {
+      "path": "shot-24.html",
+      "size": 1675,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-46.html",
+      "size": 1529,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "character-zhangji.html",
+      "size": 7527,
+      "type": "html",
+      "text": true,
+      "purpose": "哥哥 · 张寄 档案"
+    },
+    {
+      "path": "shot-33.html",
+      "size": 1556,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-27.html",
+      "size": 1558,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-02.html",
+      "size": 1726,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-39.html",
+      "size": 1568,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-01.html",
+      "size": 1435,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-53.html",
+      "size": 1666,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-18.html",
+      "size": 1553,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-14.html",
+      "size": 1537,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-52.html",
+      "size": 1529,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-57.html",
+      "size": 1640,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-10.html",
+      "size": 1501,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-60.html",
+      "size": 1666,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-37.html",
+      "size": 1689,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-09.html",
+      "size": 1630,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-49.html",
+      "size": 1550,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-32.html",
+      "size": 1535,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-28.html",
+      "size": 1563,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-08.html",
+      "size": 1585,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-61.html",
+      "size": 1428,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-45.html",
+      "size": 1756,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-35.html",
+      "size": 1588,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-51.html",
+      "size": 1665,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-47.html",
+      "size": 1559,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-66.html",
+      "size": 1532,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-29.html",
+      "size": 1635,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-64.html",
+      "size": 1683,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-42.html",
+      "size": 1682,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-07.html",
+      "size": 1546,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "ppt.html",
+      "size": 48806,
+      "type": "html",
+      "text": true,
+      "purpose": "正式文稿 PPT（24 张，含下载）"
+    },
+    {
+      "path": "act-1.html",
+      "size": 5627,
+      "type": "html",
+      "text": true,
+      "purpose": "第一幕 · 历史回溯"
+    },
+    {
+      "path": "shot-31.html",
+      "size": 1553,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-20.html",
+      "size": 1543,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-26.html",
+      "size": 1514,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "theme.html",
+      "size": 6143,
+      "type": "html",
+      "text": true,
+      "purpose": "主旨专题"
+    },
+    {
+      "path": "shot-59.html",
+      "size": 1546,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-11.html",
+      "size": 1577,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "character-zhangzhiyuan.html",
+      "size": 7855,
+      "type": "html",
+      "text": true,
+      "purpose": "弟弟 · 张志元 档案"
+    },
+    {
+      "path": "shot-22.html",
+      "size": 1686,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "shot-34.html",
+      "size": 1567,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "assets/css/character.css",
+      "size": 6826,
+      "type": "css",
+      "text": true
+    },
+    {
+      "path": "assets/css/shot.css",
+      "size": 5808,
+      "type": "css",
+      "text": true
+    },
+    {
+      "path": "assets/css/components.css",
+      "size": 888,
+      "type": "css",
+      "text": true
+    },
+    {
+      "path": "assets/css/ppt.css",
+      "size": 20207,
+      "type": "css",
+      "text": true
+    },
+    {
+      "path": "assets/css/components-demo.css",
+      "size": 4607,
+      "type": "css",
+      "text": true
+    },
+    {
+      "path": "assets/css/deck.css",
+      "size": 9062,
+      "type": "css",
+      "text": true
+    },
+    {
+      "path": "assets/css/base.css",
+      "size": 2976,
+      "type": "css",
+      "text": true
+    },
+    {
+      "path": "assets/css/components/seal.css",
+      "size": 2106,
+      "type": "css",
+      "text": true
+    },
+    {
+      "path": "assets/css/components/navbar.css",
+      "size": 2580,
+      "type": "css",
+      "text": true
+    },
+    {
+      "path": "assets/css/components/flame.css",
+      "size": 2562,
+      "type": "css",
+      "text": true
+    },
+    {
+      "path": "assets/css/components/badge.css",
+      "size": 2133,
+      "type": "css",
+      "text": true
+    },
+    {
+      "path": "assets/css/components/card.css",
+      "size": 4080,
+      "type": "css",
+      "text": true
+    },
+    {
+      "path": "assets/css/components/toc.css",
+      "size": 1605,
+      "type": "css",
+      "text": true
+    },
+    {
+      "path": "assets/css/components/celadon.css",
+      "size": 2916,
+      "type": "css",
+      "text": true
+    },
+    {
+      "path": "assets/css/components/button.css",
+      "size": 2945,
+      "type": "css",
+      "text": true
+    },
+    {
+      "path": "assets/css/components/kbd.css",
+      "size": 1470,
+      "type": "css",
+      "text": true
+    },
+    {
+      "path": "assets/css/components/tokens.css",
+      "size": 3379,
+      "type": "css",
+      "text": true
+    },
+    {
+      "path": "assets/css/components/dialogue.css",
+      "size": 2385,
+      "type": "css",
+      "text": true
+    },
+    {
+      "path": "assets/css/components/timeline.css",
+      "size": 2037,
+      "type": "css",
+      "text": true
+    },
+    {
+      "path": "assets/css/components/table.css",
+      "size": 1753,
+      "type": "css",
+      "text": true
+    },
+    {
+      "path": "assets/css/components/eyebrow-quote.css",
+      "size": 1808,
+      "type": "css",
+      "text": true
+    },
+    {
+      "path": "assets/js/audio.js",
+      "size": 6579,
+      "type": "js",
+      "text": true
+    },
+    {
+      "path": "assets/js/components.js",
+      "size": 534,
+      "type": "js",
+      "text": true
+    },
+    {
+      "path": "assets/js/deck.js",
+      "size": 2531,
+      "type": "js",
+      "text": true
+    },
+    {
+      "path": "assets/js/components/toc.js",
+      "size": 1054,
+      "type": "js",
+      "text": true
+    },
+    {
+      "path": "assets/js/components/flame.js",
+      "size": 1183,
+      "type": "js",
+      "text": true
+    },
+    {
+      "path": "scripts/build_zip.py",
+      "size": 2093,
+      "type": "py",
+      "text": true
+    },
+    {
+      "path": "scripts/generate_pptx.py",
+      "size": 31435,
+      "type": "py",
+      "text": true
+    },
+    {
+      "path": "scripts/generate_manifest.py",
+      "size": 5260,
+      "type": "py",
+      "text": true
+    },
+    {
+      "path": "scripts/generate_shots.py",
+      "size": 20278,
+      "type": "py",
+      "text": true
+    },
+    {
+      "path": "scripts/build_single.py",
+      "size": 3543,
+      "type": "py",
+      "text": true
+    },
+    {
+      "path": "downloads/哥窑_主旨解读_单文件.html",
+      "size": 75473,
+      "type": "html",
+      "text": true
+    },
+    {
+      "path": "downloads/哥窑_项目清单.json",
+      "size": 14070,
+      "type": "json",
+      "text": true
+    },
+    {
+      "path": "downloads/哥窑_主旨解读_HTML包.zip",
+      "size": 140658,
+      "type": "zip",
+      "text": false
+    },
+    {
+      "path": "downloads/哥窑_主旨解读.pptx",
+      "size": 70477,
+      "type": "pptx",
+      "text": false
+    }
+  ]
+}

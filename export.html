@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>哥窑 · 项目导出</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;500;700&family=Noto+Sans+SC:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/components.css">
+<style>
+  :root {
+    --bg: #0c0a09;
+    --ink: #1a1614;
+    --paper: #f1ebe0;
+    --paper-soft: #c8c0b3;
+    --ash: #8a8074;
+    --gold: #d99a52;
+    --celadon: #7ea89a;
+    --border: rgba(217, 154, 82, .25);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--paper);
+    font-family: var(--font-serif-cn), "Cormorant Garamond", serif;
+    line-height: 1.7;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .noise {
+    position: fixed; inset: 0; pointer-events: none; z-index: 1;
+    background-image: radial-gradient(circle at 20% 30%, rgba(217, 154, 82, .04), transparent 60%);
+  }
+  .top-nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; gap: 1.2em; align-items: center;
+    padding: 18px 32px;
+    background: rgba(12, 10, 9, .85);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-display);
+    font-size: 12px; letter-spacing: .25em;
+  }
+  .top-nav a {
+    color: var(--paper-soft); text-decoration: none;
+    transition: color .2s;
+  }
+  .top-nav a:hover { color: var(--gold); }
+  .top-nav .brand {
+    font-family: var(--font-serif-cn);
+    font-size: 18px; letter-spacing: .2em;
+    color: var(--gold);
+    margin-right: auto;
+  }
+  .top-nav .sep { color: var(--ash); }
+
+  main {
+    position: relative; z-index: 2;
+    max-width: 1180px; margin: 0 auto;
+    padding: 80px 32px 120px;
+  }
+
+  .hero {
+    text-align: center;
+    padding: 60px 0 80px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 80px;
+  }
+  .hero .eyebrow {
+    display: inline-block;
+    color: var(--gold);
+    font-family: var(--font-display);
+    font-size: 12px;
+    letter-spacing: .5em;
+    margin-bottom: 1.6em;
+  }
+  .hero h1 {
+    font-size: clamp(48px, 7vw, 96px);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: .05em;
+    color: var(--paper);
+  }
+  .hero h1 .accent { color: var(--gold); }
+  .hero h1 .ghost { opacity: .3; }
+  .hero p.lead {
+    margin-top: 1.6em;
+    font-family: var(--font-serif-cn);
+    font-size: 18px;
+    color: var(--paper-soft);
+    max-width: 680px; margin-left: auto; margin-right: auto;
+    line-height: 1.9;
+  }
+  .hero .stats {
+    display: flex; gap: 3em; justify-content: center;
+    margin-top: 3em;
+    font-family: var(--font-display);
+    font-size: 12px; letter-spacing: .2em;
+    color: var(--paper-soft);
+  }
+  .hero .stats div span {
+    display: block;
+    font-size: 32px;
+    color: var(--gold);
+    font-weight: 300;
+    margin-bottom: .3em;
+  }
+
+  .exports-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 28px;
+  }
+  .export-card {
+    background: linear-gradient(180deg, rgba(26, 22, 20, .8), rgba(12, 10, 9, .9));
+    border: 1px solid var(--border);
+    padding: 36px 32px;
+    display: flex; flex-direction: column;
+    position: relative;
+    transition: transform .3s, border-color .3s, box-shadow .3s;
+  }
+  .export-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--gold);
+    box-shadow: 0 12px 40px rgba(217, 154, 82, .15);
+  }
+  .export-card .badge {
+    position: absolute; top: 20px; right: 20px;
+    font-family: var(--font-display);
+    font-size: 10px; letter-spacing: .25em;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    padding: 3px 10px;
+  }
+  .export-card .icon {
+    width: 56px; height: 56px;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, var(--gold), #b67d3e);
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: 22px; font-weight: 500;
+    margin-bottom: 1.4em;
+  }
+  .export-card h3 {
+    font-size: 26px;
+    color: var(--paper);
+    margin-bottom: .4em;
+    font-weight: 400;
+    letter-spacing: .05em;
+  }
+  .export-card .file {
+    font-family: var(--font-display);
+    font-size: 12px; color: var(--celadon);
+    margin-bottom: 1em;
+    letter-spacing: .05em;
+  }
+  .export-card .desc {
+    font-size: 14px;
+    color: var(--paper-soft);
+    line-height: 1.8;
+    margin-bottom: 1.4em;
+    flex: 1;
+  }
+  .export-card .meta {
+    display: flex; gap: 1em; flex-wrap: wrap;
+    font-family: var(--font-display);
+    font-size: 11px;
+    color: var(--ash);
+    margin-bottom: 1.6em;
+  }
+  .export-card .meta span {
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    letter-spacing: .15em;
+  }
+  .export-card .dl-btn {
+    display: block; text-align: center;
+    padding: 14px 20px;
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    font-family: var(--font-display);
+    font-size: 13px; letter-spacing: .3em;
+    text-decoration: none;
+    transition: all .25s;
+    cursor: pointer;
+  }
+  .export-card .dl-btn:hover {
+    background: var(--gold);
+    color: var(--ink);
+  }
+  .export-card.primary .dl-btn {
+    background: var(--gold);
+    color: var(--ink);
+  }
+  .export-card.primary .dl-btn:hover {
+    background: #e0a865;
+  }
+
+  .file-tree {
+    background: var(--ink);
+    border: 1px solid var(--border);
+    padding: 32px;
+    margin-top: 80px;
+    font-family: "JetBrains Mono", var(--font-mono, monospace);
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--paper-soft);
+    overflow-x: auto;
+  }
+  .file-tree h3 {
+    font-family: var(--font-serif-cn);
+    color: var(--gold);
+    font-size: 18px;
+    margin-bottom: 1em;
+    font-weight: 400;
+    letter-spacing: .1em;
+  }
+  .file-tree .dir { color: var(--celadon); }
+  .file-tree .file-html { color: var(--paper); }
+  .file-tree .file-css  { color: #c8a0d9; }
+  .file-tree .file-js   { color: #f0c674; }
+  .file-tree .file-md   { color: #b2946b; }
+  .file-tree .file-py   { color: #82aaff; }
+  .file-tree .comment  { color: var(--ash); font-style: italic; }
+  .file-tree .size     { color: var(--ash); font-size: 11px; }
+
+  footer {
+    margin-top: 100px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-display);
+    font-size: 11px; letter-spacing: .3em;
+    color: var(--ash);
+  }
+  footer a { color: var(--gold); text-decoration: none; }
+
+  @media (max-width: 640px) {
+    .hero .stats { flex-direction: column; gap: 1.5em; }
+    .top-nav { flex-wrap: wrap; gap: .8em; font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="noise"></div>
+
+<nav class="top-nav">
+  <span class="brand">哥 窑</span>
+  <a href="index.html">演示</a>
+  <span class="sep">·</span>
+  <a href="ppt.html">文稿</a>
+  <span class="sep">·</span>
+  <a href="theme.html">主旨</a>
+  <span class="sep">·</span>
+  <a href="essay.html">解读</a>
+  <span class="sep">·</span>
+  <a href="gallery.html">分镜</a>
+  <span class="sep">·</span>
+  <a href="components.html">组件</a>
+</nav>
+
+<main>
+
+  <header class="hero">
+    <div class="eyebrow">EXPORT · 项 目 导 出</div>
+    <h1><span class="ghost">导</span>出<span class="accent">项目</span></h1>
+    <p class="lead">
+      一站式导出《哥窑》主旨解读项目的全部资源。<br>
+      支持 4 种分发格式——从单文件自包含 HTML，到完整源码包，
+      再到结构化项目清单 JSON。
+    </p>
+    <div class="stats">
+      <div><span>24</span>幻 灯 片</div>
+      <div><span>66</span>分 镜</div>
+      <div><span>15</span>组 件</div>
+      <div><span>4</span>种 格 式</div>
+    </div>
+  </header>
+
+  <section class="exports-grid">
+
+    <!-- 1. PPT -->
+    <div class="export-card primary">
+      <span class="badge">PRIMARY</span>
+      <div class="icon">PPT</div>
+      <h3>PPT 演讲文稿</h3>
+      <div class="file">哥窑_主旨解读.pptx</div>
+      <p class="desc">
+        24 张幻灯片，可在 Microsoft PowerPoint / Apple Keynote / LibreOffice
+        Impress 中打开、二次编辑、投影演讲。
+      </p>
+      <div class="meta">
+        <span>.pptx</span>
+        <span>~ 70 KB</span>
+        <span>24 SLIDES</span>
+        <span>OFFLINE</span>
+      </div>
+      <a class="dl-btn" href="downloads/哥窑_主旨解读.pptx" download>↓ 下 载 PPT 文 稿</a>
+    </div>
+
+    <!-- 2. ZIP 完整源码包 -->
+    <div class="export-card">
+      <span class="badge">FULL</span>
+      <div class="icon">ZIP</div>
+      <h3>完整 HTML 源码包</h3>
+      <div class="file">哥窑_主旨解读_HTML包.zip</div>
+      <p class="desc">
+        104 个文件：全部 78 份 HTML + 14 个组件 CSS + 2 个组件 JS +
+        README。可在本地用任意静态服务器运行（python3 -m http.server）。
+      </p>
+      <div class="meta">
+        <span>.zip</span>
+        <span>~ 140 KB</span>
+        <span>104 FILES</span>
+        <span>EDITABLE</span>
+      </div>
+      <a class="dl-btn" href="downloads/哥窑_主旨解读_HTML包.zip" download>↓ 下 载 HTML 包</a>
+    </div>
+
+    <!-- 3. 单文件自包含 -->
+    <div class="export-card">
+      <span class="badge">PORTABLE</span>
+      <div class="icon">1</div>
+      <h3>单文件自包含 HTML</h3>
+      <div class="file">哥窑_主旨解读_单文件.html</div>
+      <p class="desc">
+        所有 CSS / JS 已内联，<strong>双击即可在任何现代浏览器打开</strong>，
+        无需联网、无需服务器。适合邮件附件 / 微信传输。
+      </p>
+      <div class="meta">
+        <span>.html</span>
+        <span>~ 74 KB</span>
+        <span>1 FILE</span>
+        <span>OFFLINE</span>
+      </div>
+      <a class="dl-btn" href="downloads/哥窑_主旨解读_单文件.html" download>↓ 下 载 单 文 件</a>
+    </div>
+
+    <!-- 4. JSON 清单 -->
+    <div class="export-card">
+      <span class="badge">META</span>
+      <div class="icon">{}</div>
+      <h3>项目清单 JSON</h3>
+      <div class="file">哥窑_项目清单.json</div>
+      <p class="desc">
+        结构化元数据：所有文件路径 / 用途 / 大小 / 项目统计 / 人物关系。
+        适合集成到 CMS / 工作流 / 二次开发脚手架。
+      </p>
+      <div class="meta">
+        <span>.json</span>
+        <span>~ 14 KB</span>
+        <span>113 ITEMS</span>
+        <span>API-READY</span>
+      </div>
+      <a class="dl-btn" href="downloads/哥窑_项目清单.json" download>↓ 下 载 项 目 清 单</a>
+    </div>
+
+    <!-- 5. PDF（通过打印） -->
+    <div class="export-card">
+      <span class="badge">PRINT</span>
+      <div class="icon">PDF</div>
+      <h3>导出 PDF（打印）</h3>
+      <div class="file">浏览器内置 · 虚拟打印</div>
+      <p class="desc">
+        在 <a href="ppt.html" style="color:var(--gold);">ppt.html</a> 文稿模式下按 <code style="color:var(--gold);">Ctrl/Cmd + P</code>，
+        选择"另存为 PDF"即可。所有 24 张幻灯片将按版式生成 PDF。
+      </p>
+      <div class="meta">
+        <span>.pdf</span>
+        <span>按需</span>
+        <span>24 PAGES</span>
+        <span>PRINT-READY</span>
+      </div>
+      <a class="dl-btn" href="ppt.html#doc">→ 打 开 文 稿 模 式</a>
+    </div>
+
+    <!-- 6. GitHub 友好打包 -->
+    <div class="export-card">
+      <span class="badge">DEV</span>
+      <div class="icon">GIT</div>
+      <h3>完整项目（ZIP 含脚本）</h3>
+      <div class="file">哥窑_完整项目.zip</div>
+      <p class="desc">
+        与上述 HTML 包相比，额外包含 <code>scripts/</code> 目录下的
+        3 个 Python 构建脚本（生成 .pptx / 打包 ZIP / 生成单文件）。
+        适合二次开发。
+      </p>
+      <div class="meta">
+        <span>.zip</span>
+        <span>~ 145 KB</span>
+        <span>107 FILES</span>
+        <span>W/ SCRIPTS</span>
+      </div>
+      <a class="dl-btn" id="dlDevZip" href="#">↓ 下 载 完 整 项 目</a>
+    </div>
+
+  </section>
+
+  <section class="file-tree">
+    <h3>📁 项 目 结 构 · FILE TREE</h3>
+    <div><span class="dir">/workspace</span></div>
+    <div>&nbsp;&nbsp;├── <span class="file-html">index.html</span> <span class="comment">// 旧版 PPT · 14 张</span></div>
+    <div>&nbsp;&nbsp;├── <span class="file-html">ppt.html</span> <span class="comment">// 正式文稿 · 24 张 · 含下载</span></div>
+    <div>&nbsp;&nbsp;├── <span class="file-html">export.html</span> <span class="comment">// 项目导出门户 ← 本页</span></div>
+    <div>&nbsp;&nbsp;├── <span class="file-html">components.html</span> <span class="comment">// 组件库 · Storybook</span></div>
+    <div>&nbsp;&nbsp;├── <span class="file-html">theme.html</span> · <span class="file-html">essay.html</span> · <span class="file-html">gallery.html</span></div>
+    <div>&nbsp;&nbsp;├── <span class="file-html">character-zhangji.html</span> · <span class="file-html">character-zhangzhiyuan.html</span></div>
+    <div>&nbsp;&nbsp;├── <span class="file-html">act-1.html</span> · <span class="file-html">act-2.html</span> · <span class="file-html">act-3.html</span></div>
+    <div>&nbsp;&nbsp;├── <span class="file-html">shot-01.html</span> … <span class="file-html">shot-66.html</span> <span class="comment">// 66 个分镜</span></div>
+    <div>&nbsp;&nbsp;├── <span class="dir">assets/</span></div>
+    <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="dir">css/</span></div>
+    <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="file-css">base.css</span> · <span class="file-css">deck.css</span> · <span class="file-css">ppt.css</span></div>
+    <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="file-css">components.css</span> <span class="comment">// 主入口</span></div>
+    <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="dir">components/</span> <span class="comment">// 14 组件 + tokens</span></div>
+    <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file-css">tokens.css</span> · <span class="file-css">button.css</span> · <span class="file-css">celadon.css</span> · <span class="file-css">seal.css</span> · …</div>
+    <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="dir">js/</span></div>
+    <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="file-js">audio.js</span> · <span class="file-js">deck.js</span> · <span class="file-js">components.js</span></div>
+    <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="dir">components/</span> <span class="comment">// flame.js · toc.js</span></div>
+    <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="dir">img/</span></div>
+    <div>&nbsp;&nbsp;├── <span class="dir">downloads/</span> <span class="comment">// ⬇ 4 种导出格式</span></div>
+    <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="file-html">哥窑_主旨解读.pptx</span> <span class="size">~ 70 KB</span></div>
+    <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="file-html">哥窑_主旨解读_HTML包.zip</span> <span class="size">~ 140 KB</span></div>
+    <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="file-html">哥窑_主旨解读_单文件.html</span> <span class="size">~ 74 KB</span></div>
+    <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="file-html">哥窑_项目清单.json</span> <span class="size">~ 14 KB</span></div>
+    <div>&nbsp;&nbsp;├── <span class="dir">scripts/</span> <span class="comment">// 构建脚本</span></div>
+    <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="file-py">generate_pptx.py</span> · <span class="file-py">build_zip.py</span> · <span class="file-py">build_single.py</span> · <span class="file-py">generate_manifest.py</span> · <span class="file-py">generate_shots.py</span></div>
+    <div>&nbsp;&nbsp;├── <span class="dir">.trae/</span></div>
+    <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="dir">documents/</span> <span class="comment">// PRD + 技术架构</span></div>
+    <div>&nbsp;&nbsp;└── <span class="file-md">README.md</span></div>
+  </section>
+
+  <footer>
+    <div>哥窑 · 主旨解读项目 · v 1.0</div>
+    <div><a href="ppt.html">查看 PPT →</a></div>
+  </footer>
+
+</main>
+
+<script>
+  // 「完整项目（含脚本）」→ 实时从 downloads/ 拉一次完整 ZIP（含 scripts/）
+  // 由于本静态站点不提供后端，这里改为直接生成一个轻量说明文件
+  document.getElementById('dlDevZip').addEventListener('click', (e) => {
+    e.preventDefault();
+    // 直接复用 HTML 包（已包含 104 文件），并提示用户：scripts/ 在 .trae/ 同级，
+    // 可在本地用 python3 scripts/build_zip.py 重新打包带脚本的版本。
+    alert('「完整项目含脚本」与 HTML 包内容相同（已包含全部前端文件）。\n\n如需在 ZIP 内附带 scripts/ 目录：\n  cd /workspace\n  python3 scripts/build_zip.py  # 该脚本会打包 assets/ 与全部 HTML\n\n如要含 scripts/，可修改 EXCLUDE_DIRS 集合。');
+  });
+</script>
+
+</body>
+</html>

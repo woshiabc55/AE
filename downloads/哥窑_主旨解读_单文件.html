@@ -1,13 +1,767 @@
-<!DOCTYPE html>
+<!-- 单文件自包含 · 哥窑 -->
+
 <html lang="zh-CN">
 <head>
+<!--
+  哥窑 · 主旨解读 — 单文件自包含版
+  所有 CSS / JS 已内联，无需联网即可完整运行。
+  共内联 CSS: 1 个文件，JS: 1 个文件。
+  生成时间: 2026-06-07
+-->
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>哥窑 · 主旨解读 — 正式文稿</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;500;700&family=Noto+Sans+SC:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/ppt.css">
+
+
+
+<style data-inlined="assets/css/ppt.css">
+/* =================================================================
+   哥窑·主旨解读 - 增强版 PPT 样式
+   24 张幻灯片 + 文稿模式 + 发言稿
+   ================================================================= */
+
+:root {
+  --ink:           #0c0a09;
+  --ink-soft:      #1a1814;
+  --celadon:       #7ea89a;
+  --celadon-light: #a8c4b8;
+  --celadon-deep:  #2f5b51;
+  --kiln-gold:     #d99a52;
+  --kiln-flame:    #f4a35c;
+  --kiln-ember:    #c0573a;
+  --paper:         #f1ebe0;
+  --paper-soft:    #e8e0d0;
+  --paper-warm:    #efe3d0;
+  --gold-line:     #b58a4a;
+  --iron-line:     #2a1a0e;
+  --ash:           #8a8275;
+
+  --font-serif-cn: "Noto Serif SC", "Songti SC", "STSong", "SimSun", "宋体", serif;
+  --font-sans-cn:  "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "微软雅黑", "Hiragino Sans GB", sans-serif;
+  --font-display:  "Cormorant Garamond", "EB Garamond", "Garamond", serif;
+  --font-mono:     "JetBrains Mono", "Menlo", "Consolas", monospace;
+
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-ink: cubic-bezier(.65, 0, .35, 1);
+  --t-fast:   220ms;
+  --t-med:    600ms;
+  --t-slow:   1200ms;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-sans-cn);
+  font-size: 16px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+a { color: var(--kiln-gold); text-decoration: none; border-bottom: 1px dashed currentColor; transition: color var(--t-fast) var(--ease-out); }
+a:hover { color: var(--kiln-flame); }
+h1, h2, h3, h4 { font-family: var(--font-serif-cn); font-weight: 500; letter-spacing: .04em; line-height: 1.25; }
+::selection { background: var(--kiln-gold); color: var(--ink); }
+::-webkit-scrollbar { width: 0; height: 0; }
+* { scrollbar-width: none; }
+
+/* 噪点纹理 */
+.noise {
+  position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+  opacity: .06;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+/* ===========================================
+   主 PPT 容器
+   =========================================== */
+.deck {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(126, 168, 154, .08), transparent 60%),
+    radial-gradient(ellipse at 80% 90%, rgba(217, 154, 82, .06), transparent 60%),
+    var(--ink);
+}
+.slides {
+  position: absolute; inset: 0;
+}
+.slide {
+  position: absolute; inset: 0;
+  padding: 6vh 8vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  opacity: 0;
+  transform: translateX(40px) scale(.98);
+  pointer-events: none;
+  transition: opacity var(--t-med) var(--ease-out), transform var(--t-med) var(--ease-out);
+}
+.slide.active { opacity: 1; transform: none; pointer-events: auto; z-index: 2; }
+.slide.prev { transform: translateX(-40px) scale(.98); }
+
+.slide-inner { max-width: 1280px; width: 100%; margin: 0 auto; position: relative; }
+.slide-num {
+  position: absolute; top: -3vh; right: 0;
+  font-family: var(--font-display);
+  font-size: 14px; letter-spacing: .3em; color: var(--ash);
+}
+.slide-num::before {
+  content: ""; display: inline-block;
+  width: 30px; height: 1px; vertical-align: middle;
+  background: var(--kiln-gold);
+  margin-right: 12px;
+}
+
+/* 进度条 */
+.progress {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 2px; background: rgba(217, 154, 82, .15);
+  z-index: 100;
+}
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--celadon), var(--kiln-gold));
+  width: 0; transition: width var(--t-med) var(--ease-out);
+}
+
+/* 顶部导航 */
+.deck-nav {
+  position: fixed; top: 20px; left: 32px;
+  display: flex; gap: 16px;
+  z-index: 100;
+  font-family: var(--font-display);
+  font-size: 12px; letter-spacing: .25em;
+  color: var(--ash);
+}
+.deck-nav a { color: var(--ash); border-bottom: none; }
+.deck-nav a:hover { color: var(--kiln-gold); }
+.deck-nav .sep { color: var(--ink-soft); }
+.deck-nav .cur { color: var(--kiln-gold); }
+.deck-nav a.dl-btn {
+  border: 1px solid var(--kiln-gold);
+  color: var(--kiln-gold);
+  padding: 4px 10px;
+  font-size: 11px;
+  letter-spacing: .15em;
+  transition: all var(--t-fast) var(--ease-out);
+}
+.deck-nav a.dl-btn:hover { background: var(--kiln-gold); color: var(--ink); }
+.deck-nav button.mode-btn {
+  background: transparent;
+  border: 1px solid var(--kiln-gold);
+  color: var(--kiln-gold);
+  padding: 4px 12px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: .25em;
+  cursor: pointer;
+  transition: all var(--t-fast) var(--ease-out);
+}
+.deck-nav button.mode-btn:hover { background: var(--kiln-gold); color: var(--ink); }
+
+/* 底部控制 */
+.controls {
+  position: fixed; bottom: 24px; right: 32px;
+  display: flex; gap: 10px;
+  z-index: 100;
+}
+.controls button {
+  width: 40px; height: 40px;
+  background: rgba(12, 10, 9, .7);
+  border: 1px solid rgba(217, 154, 82, .3);
+  color: var(--paper);
+  font-family: var(--font-display);
+  font-size: 18px;
+  cursor: pointer;
+  transition: all var(--t-fast) var(--ease-out);
+  display: flex; align-items: center; justify-content: center;
+}
+.controls button:hover {
+  background: var(--kiln-gold);
+  color: var(--ink);
+  border-color: var(--kiln-gold);
+}
+
+/* 计时器 */
+.timer {
+  position: fixed; bottom: 24px; left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-display);
+  font-size: 14px; letter-spacing: .2em;
+  color: var(--ash);
+  padding: 8px 18px;
+  background: rgba(12, 10, 9, .7);
+  border: 1px solid rgba(217, 154, 82, .2);
+  z-index: 100;
+  display: flex; align-items: center; gap: 10px;
+}
+.timer .clock-dot {
+  width: 6px; height: 6px;
+  background: var(--kiln-gold);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* 发言稿面板 */
+.speaker-panel {
+  position: fixed;
+  top: 0; right: -420px;
+  width: 420px; height: 100vh;
+  background: rgba(12, 10, 9, .96);
+  border-left: 1px solid var(--kiln-gold);
+  z-index: 200;
+  padding: 80px 40px 40px;
+  overflow-y: auto;
+  transition: right var(--t-med) var(--ease-out);
+  font-size: 15px;
+  line-height: 2;
+  color: var(--paper-soft);
+}
+.speaker-panel.open { right: 0; }
+.speaker-panel h3 {
+  font-size: 20px;
+  color: var(--kiln-gold);
+  margin-bottom: 1em;
+  letter-spacing: .1em;
+  font-weight: 400;
+  border-bottom: 1px solid rgba(217, 154, 82, .3);
+  padding-bottom: .8em;
+}
+.speaker-panel h4 {
+  color: var(--celadon-light);
+  font-size: 16px;
+  margin: 1.5em 0 .8em;
+  font-weight: 400;
+  letter-spacing: .05em;
+}
+.speaker-panel .note {
+  margin-bottom: 1.2em;
+  padding-left: 1em;
+  border-left: 2px solid var(--kiln-gold);
+  font-style: italic;
+  color: var(--paper);
+}
+.speaker-panel .pause {
+  text-align: center;
+  color: var(--ash);
+  margin: 1.5em 0;
+  font-size: 12px;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+}
+.speaker-panel .toggle {
+  position: absolute; top: 20px; right: 20px;
+  background: transparent;
+  border: 1px solid var(--kiln-gold);
+  color: var(--kiln-gold);
+  width: 32px; height: 32px;
+  cursor: pointer;
+  font-family: var(--font-display);
+}
+
+/* 标题样式 */
+.huge {
+  font-size: clamp(48px, 9vw, 144px);
+  font-weight: 400; line-height: 1.05;
+  letter-spacing: .02em;
+}
+.huge .accent { color: var(--kiln-gold); }
+.huge .ghost { color: var(--celadon); opacity: .5; }
+.huge .small-accent { color: var(--celadon); font-size: .6em; vertical-align: .3em; }
+
+.subtitle {
+  font-family: var(--font-serif-cn);
+  font-size: clamp(18px, 2.2vw, 28px);
+  color: var(--paper-soft);
+  letter-spacing: .15em;
+  margin-top: 1.5em;
+  font-weight: 300;
+}
+
+.eyebrow {
+  font-family: var(--font-display);
+  font-size: 14px; letter-spacing: .4em;
+  color: var(--kiln-gold);
+  text-transform: uppercase;
+  margin-bottom: 2em;
+  display: flex; align-items: center; gap: 12px;
+}
+.eyebrow::before {
+  content: ""; display: block;
+  width: 40px; height: 1px; background: currentColor;
+}
+.eyebrow.green { color: var(--celadon); }
+.eyebrow.center { justify-content: center; }
+
+.body-text {
+  font-size: clamp(15px, 1.3vw, 19px);
+  line-height: 2;
+  color: var(--paper-soft);
+  max-width: 720px;
+}
+.body-text em { color: var(--kiln-gold); font-style: normal; }
+.body-text strong { color: var(--celadon-light); font-weight: 500; }
+
+.pull-quote {
+  font-family: var(--font-serif-cn);
+  font-size: clamp(22px, 2.6vw, 36px);
+  line-height: 1.6;
+  color: var(--paper);
+  padding: 1.5em 2em;
+  border-left: 2px solid var(--kiln-gold);
+  margin: 1.5em 0;
+  font-weight: 300;
+}
+.pull-quote cite {
+  display: block;
+  font-family: var(--font-sans-cn);
+  font-style: normal;
+  font-size: 14px;
+  letter-spacing: .2em;
+  color: var(--ash);
+  margin-top: 1em;
+}
+
+.evidence-table {
+  width: 100%; border-collapse: collapse;
+  margin: 2em 0; font-size: 15px;
+}
+.evidence-table th, .evidence-table td {
+  padding: 14px 18px;
+  text-align: left;
+  border-bottom: 1px solid rgba(217, 154, 82, .15);
+  vertical-align: top;
+}
+.evidence-table th {
+  font-family: var(--font-serif-cn);
+  font-weight: 400;
+  color: var(--kiln-gold);
+  letter-spacing: .15em;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+.evidence-table tr:hover { background: rgba(126, 168, 154, .04); }
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4em;
+  align-items: center;
+}
+.two-col.right-img > *:first-child { order: 2; }
+
+.celadon-disc {
+  width: 280px; height: 280px;
+  border-radius: 50%;
+  margin: 0 auto;
+  background: radial-gradient(circle at 30% 30%, var(--celadon-light) 0%, var(--celadon) 40%, var(--celadon-deep) 90%);
+  box-shadow:
+    inset 0 0 0 2px rgba(181, 138, 74, .5),
+    inset 8px 0 24px rgba(42, 26, 14, .35),
+    inset -8px 0 24px rgba(255, 255, 255, .08),
+    0 0 60px rgba(126, 168, 154, .25),
+    0 20px 80px rgba(0, 0, 0, .6);
+  position: relative;
+  overflow: hidden;
+}
+.celadon-disc::before {
+  content: ""; position: absolute; inset: 8%;
+  border-radius: 50%;
+  border: 1px solid rgba(181, 138, 74, .35);
+}
+.celadon-disc::after {
+  content: "哥";
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-serif-cn);
+  font-size: 96px;
+  color: rgba(181, 138, 74, .55);
+  font-weight: 300;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, .4);
+}
+.celadon-disc.gold {
+  background: radial-gradient(circle at 30% 30%, var(--kiln-gold) 0%, var(--kiln-ember) 40%, var(--celadon-deep) 90%);
+}
+.celadon-disc.gold::after { content: "元"; }
+
+.seal {
+  display: inline-block;
+  width: 90px; height: 90px;
+  background: linear-gradient(135deg, #b22a2a, #8a1818);
+  color: #fbe5b6;
+  font-family: var(--font-serif-cn);
+  font-size: 18px; line-height: 1.1;
+  text-align: center;
+  padding: 14px 6px;
+  letter-spacing: .05em;
+  box-shadow:
+    inset 0 0 0 2px rgba(0, 0, 0, .3),
+    0 6px 20px rgba(178, 42, 42, .4);
+  transform: rotate(-3deg);
+  position: relative;
+}
+.seal::before {
+  content: ""; position: absolute; inset: 0;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'><filter id='n'><feTurbulence baseFrequency='.8' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='.4'/></svg>");
+  mix-blend-mode: overlay;
+}
+
+.ink-drop {
+  position: absolute;
+  width: 12px; height: 12px;
+  background: radial-gradient(circle, var(--celadon-deep), transparent 60%);
+  border-radius: 50%;
+  opacity: .4;
+  filter: blur(4px);
+}
+
+.bg-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(217, 154, 82, .04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(217, 154, 82, .04) 1px, transparent 1px);
+  background-size: 80px 80px;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse at center, #000 30%, transparent 80%);
+}
+
+.flame {
+  position: absolute;
+  width: 200px; height: 240px;
+  bottom: 10%; left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  filter: blur(1px);
+  animation: flicker 3s ease-in-out infinite;
+}
+.flame::before, .flame::after {
+  content: ""; position: absolute;
+  left: 50%; bottom: 0;
+  transform: translateX(-50%);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: radial-gradient(ellipse at center bottom, var(--kiln-flame) 0%, var(--kiln-gold) 40%, transparent 80%);
+  mix-blend-mode: screen;
+}
+.flame::before { width: 120px; height: 200px; }
+.flame::after { width: 80px; height: 160px; opacity: .7; animation-delay: -1.5s; }
+
+.chapter {
+  display: flex; align-items: baseline; gap: 1.5em;
+  font-family: var(--font-serif-cn);
+  font-size: clamp(40px, 5vw, 80px);
+  color: var(--paper);
+  font-weight: 300;
+}
+.chapter .num {
+  font-family: var(--font-display);
+  font-size: .35em; letter-spacing: .4em;
+  color: var(--kiln-gold);
+  vertical-align: super;
+}
+
+.btn {
+  display: inline-flex; align-items: center; gap: .5em;
+  padding: .6em 1.4em;
+  font-family: var(--font-serif-cn);
+  font-size: .95rem;
+  letter-spacing: .15em;
+  color: var(--paper);
+  background: transparent;
+  border: 1px solid var(--kiln-gold);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all var(--t-fast) var(--ease-out);
+  border-bottom: 1px solid var(--kiln-gold);
+}
+.btn:hover { background: var(--kiln-gold); color: var(--ink); }
+
+/* 表格 - 角色对比 */
+.character-compare {
+  display: grid;
+  grid-template-columns: 1fr 80px 1fr;
+  gap: 2em; align-items: stretch;
+  margin: 2em 0;
+}
+.character-compare .card {
+  padding: 2em;
+  border: 1px solid rgba(217, 154, 82, .25);
+  background: rgba(12, 10, 9, .5);
+  display: flex; flex-direction: column;
+}
+.character-compare .card.celadon { border-color: var(--celadon); }
+.character-compare .card.gold { border-color: var(--kiln-gold); }
+.character-compare .card h3 {
+  font-size: 36px; margin-bottom: .3em;
+  color: var(--paper);
+}
+.character-compare .card .role {
+  font-family: var(--font-display);
+  font-size: 12px; letter-spacing: .3em;
+  color: var(--ash);
+  text-transform: uppercase;
+  margin-bottom: 1.5em;
+}
+.character-compare .card .quote {
+  margin-top: auto;
+  padding-top: 1.5em;
+  border-top: 1px dashed rgba(217, 154, 82, .3);
+  font-size: 13px; color: var(--ash);
+  letter-spacing: .15em;
+  font-style: italic;
+}
+.character-compare .vs {
+  font-family: var(--font-display);
+  font-size: 28px; color: var(--ash);
+  text-align: center;
+  letter-spacing: .4em;
+  align-self: center;
+}
+.character-compare .card ul { list-style: none; }
+.character-compare .card li {
+  padding: .5em 0;
+  font-size: 15px; color: var(--paper-soft);
+  position: relative; padding-left: 1.2em;
+}
+.character-compare .card li::before {
+  content: "·"; position: absolute; left: 0;
+  color: var(--kiln-gold);
+}
+
+/* 目录 */
+.toc {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: .3em 4em;
+  margin-top: 3em;
+  max-width: 1000px;
+}
+.toc-item {
+  display: flex; align-items: baseline;
+  gap: 1em;
+  padding: .9em 0;
+  border-bottom: 1px dashed rgba(217, 154, 82, .15);
+  font-size: 16px;
+  color: var(--paper-soft);
+  transition: all var(--t-fast) var(--ease-out);
+  cursor: pointer;
+}
+.toc-item:hover { color: var(--kiln-gold); }
+.toc-item .toc-num {
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: var(--kiln-gold);
+  letter-spacing: .2em;
+  width: 40px; flex-shrink: 0;
+}
+.toc-item .toc-title {
+  flex: 1;
+  font-family: var(--font-serif-cn);
+  letter-spacing: .1em;
+}
+.toc-item .toc-dots {
+  flex: 1;
+  border-bottom: 1px dotted rgba(217, 154, 82, .3);
+  margin: 0 .5em;
+  position: relative;
+  top: -.3em;
+}
+.toc-item .toc-page {
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: var(--ash);
+  letter-spacing: .1em;
+}
+
+/* 倒计时 / 时间线 */
+.timeline-vertical {
+  position: relative;
+  padding-left: 3em;
+}
+.timeline-vertical::before {
+  content: ""; position: absolute;
+  left: 1em; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--kiln-gold) 10%, var(--kiln-gold) 90%, transparent);
+}
+.timeline-vertical .ev {
+  position: relative;
+  padding: 1em 0 1em 0;
+}
+.timeline-vertical .ev::before {
+  content: ""; position: absolute;
+  left: -2.4em; top: 1.6em;
+  width: 12px; height: 12px;
+  background: var(--kiln-gold);
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--kiln-gold);
+}
+.timeline-vertical .ev h4 {
+  font-size: 20px; color: var(--paper);
+  margin-bottom: .3em; font-weight: 400;
+}
+.timeline-vertical .ev .ref {
+  font-family: var(--font-display);
+  font-size: 12px; letter-spacing: .25em;
+  color: var(--kiln-gold);
+  text-transform: uppercase;
+  margin-bottom: .8em;
+}
+.timeline-vertical .ev p {
+  color: var(--paper-soft);
+  font-size: 15px; line-height: 1.8;
+  max-width: 600px;
+}
+
+/* 数字大 */
+.metric {
+  text-align: center;
+  padding: 1em;
+}
+.metric .num {
+  font-family: var(--font-display);
+  font-size: clamp(60px, 8vw, 120px);
+  color: var(--kiln-gold);
+  line-height: 1;
+  font-weight: 300;
+  letter-spacing: .05em;
+}
+.metric .label {
+  font-family: var(--font-serif-cn);
+  font-size: 14px;
+  letter-spacing: .3em;
+  color: var(--ash);
+  text-transform: uppercase;
+  margin-top: .5em;
+}
+
+/* 3 列指标 */
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3em;
+  margin: 2em 0;
+}
+
+/* 致谢 */
+.credits {
+  margin-top: 2em;
+  display: flex; flex-direction: column;
+  gap: .8em;
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: .3em;
+  color: var(--ash);
+  text-transform: uppercase;
+}
+
+/* 文稿模式 */
+.document-mode {
+  display: none;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 80px 8vw 200px;
+  background: var(--paper-warm);
+  color: var(--ink);
+}
+.document-mode.active { display: block; }
+.document-mode .doc-slide {
+  max-width: 1000px;
+  margin: 4em auto;
+  padding: 4em 3em;
+  background: var(--paper);
+  box-shadow: 0 20px 80px rgba(0, 0, 0, .15);
+  page-break-after: always;
+  position: relative;
+  border-top: 3px solid var(--kiln-gold);
+}
+.document-mode .doc-slide h1,
+.document-mode .doc-slide h2,
+.document-mode .doc-slide h3 {
+  color: var(--ink);
+}
+.document-mode .doc-slide .doc-num {
+  position: absolute; top: 20px; right: 30px;
+  font-family: var(--font-display);
+  font-size: 14px; letter-spacing: .3em;
+  color: var(--ash);
+}
+.document-mode .doc-slide .body-text {
+  color: #2a2520;
+}
+.document-mode .doc-slide .pull-quote {
+  border-color: var(--kiln-gold);
+  color: var(--ink);
+}
+.document-mode .doc-slide .eyebrow {
+  color: var(--kiln-ember);
+}
+.document-mode .doc-slide table {
+  border-color: rgba(0, 0, 0, .1);
+  color: var(--ink);
+}
+.document-mode .doc-slide table th {
+  color: var(--ink-soft);
+  border-bottom-color: var(--kiln-gold);
+}
+.document-mode .doc-slide table td {
+  border-bottom-color: rgba(0, 0, 0, .08);
+  color: #2a2520;
+}
+.document-mode .doc-close {
+  position: fixed; top: 20px; right: 32px;
+  z-index: 200;
+  padding: 8px 18px;
+  background: var(--ink);
+  color: var(--paper);
+  border: 1px solid var(--kiln-gold);
+  cursor: pointer;
+  font-family: var(--font-serif-cn);
+  letter-spacing: .15em;
+  font-size: 13px;
+}
+
+@media print {
+  body { background: white; }
+  .deck, .controls, .progress, .deck-nav, .timer, .speaker-panel, .noise { display: none !important; }
+  .document-mode { display: block !important; padding: 0; }
+  .document-mode .doc-slide {
+    box-shadow: none; margin: 0 auto;
+    page-break-after: always;
+    min-height: 100vh;
+  }
+  .doc-close { display: none; }
+}
+
+@keyframes flicker {
+  0%, 100% { transform: translateX(-50%) scale(1) rotate(0deg); }
+  50%      { transform: translateX(-50%) scale(1.06) rotate(-1deg); }
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: .6; }
+  50%      { transform: scale(1.1); opacity: 1; }
+}
+
+/* 短代码片段 */
+.kbd {
+  display: inline-block;
+  padding: 2px 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: rgba(126, 168, 154, .1);
+  border: 1px solid rgba(126, 168, 154, .3);
+  color: var(--celadon-light);
+  border-radius: 2px;
+  letter-spacing: .05em;
+}
+
+</style>
 </head>
 <body>
 <div class="noise"></div>
@@ -24,8 +778,6 @@
   <a href="gallery.html">分镜</a>
   <span class="sep">·</span>
   <a href="components.html">组件</a>
-  <span class="sep">·</span>
-  <a href="export.html">导出</a>
   <span class="sep">·</span>
   <a class="dl-btn" href="downloads/哥窑_主旨解读.pptx" download title="下载 PPT 演讲文稿 (.pptx)">↓ PPT</a>
   <span class="sep">·</span>
@@ -706,18 +1458,14 @@
       <div style="display: flex; justify-content: center; gap: 1.5em; margin-top: 3em; flex-wrap: wrap;">
         <a href="downloads/哥窑_主旨解读.pptx" download class="btn btn-gold" title="下载 .pptx 文件">↓ 下载 PPT 文稿</a>
         <a href="downloads/哥窑_主旨解读_HTML包.zip" download class="btn" title="下载全部 HTML 源文件">↓ 下载 HTML 包</a>
-        <a href="downloads/哥窑_主旨解读_单文件.html" download class="btn" title="下载单文件自包含 HTML">↓ 单文件 HTML</a>
-        <a href="export.html" class="btn">所有导出 →</a>
         <a href="components.html" class="btn">查看组件库 →</a>
         <button class="btn" id="printBtn">打印 / 导出 PDF</button>
       </div>
       <div style="margin: 2em auto; max-width: 720px; padding: 1.2em 1.6em; border: 1px solid var(--kiln-gold); background: rgba(217, 154, 82, .06); font-family: var(--font-display); font-size: 12px; letter-spacing: .15em; color: var(--paper-soft); line-height: 1.9;">
         <div style="color: var(--kiln-gold); margin-bottom: .4em;">⬇ DOWNLOADS · 可 下载 资 源</div>
         <div>· <a href="downloads/哥窑_主旨解读.pptx" download style="color: var(--paper); text-decoration: underline;">哥窑_主旨解读.pptx</a> — 24 张幻灯片（可二次编辑 / 演讲投影）</div>
-        <div>· <a href="downloads/哥窑_主旨解读_HTML包.zip" download style="color: var(--paper); text-decoration: underline;">哥窑_主旨解读_HTML包.zip</a> — 105 份文件 · 完整 HTML 源</div>
-        <div>· <a href="downloads/哥窑_主旨解读_单文件.html" download style="color: var(--paper); text-decoration: underline;">哥窑_主旨解读_单文件.html</a> — 单文件自包含 · 双击即用</div>
-        <div>· <a href="downloads/哥窑_项目清单.json" download style="color: var(--paper); text-decoration: underline;">哥窑_项目清单.json</a> — 项目结构化元数据</div>
-        <div>· <a href="export.html" style="color: var(--paper); text-decoration: underline;">export.html</a> — 完整导出门户（含 4 种格式）</div>
+        <div>· <a href="downloads/哥窑_主旨解读_HTML包.zip" download style="color: var(--paper); text-decoration: underline;">哥窑_主旨解读_HTML包.zip</a> — 84+ 份 HTML 源文件 + 组件库</div>
+        <div>· <a href="components.html" style="color: var(--paper); text-decoration: underline;">components.html</a> — 14 个可复用组件 · 设计令牌</div>
       </div>
       <div style="margin-top: 4em;">
         <button data-sound="demo" class="btn" style="background: transparent;">▶ 收听 · 古琴 + 窑火</button>
@@ -738,7 +1486,215 @@
   <div id="docContent"></div>
 </div>
 
-<script src="assets/js/audio.js"></script>
+<script data-inlined="assets/js/audio.js">
+/* =================================================================
+   古琴 / 窑火 / 鼓点 - Web Audio 合成
+   ================================================================= */
+(function () {
+  'use strict';
+
+  const Synth = {
+    ctx: null,
+    master: null,
+
+    init() {
+      if (this.ctx) return;
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.master = this.ctx.createGain();
+      this.master.gain.value = 0.25;
+      this.master.connect(this.ctx.destination);
+    },
+
+    resume() {
+      if (!this.ctx) this.init();
+      if (this.ctx.state === 'suspended') this.ctx.resume();
+    },
+
+    // 古琴单音（衰减泛音）
+    guqin(freq, duration = 2.5) {
+      this.resume();
+      const ctx = this.ctx;
+      const t = ctx.currentTime;
+      const partials = [
+        { f: 1.0,    a: 0.6,  d: 2.0 },
+        { f: 2.01,   a: 0.25, d: 1.4 },
+        { f: 3.02,   a: 0.15, d: 0.9 },
+        { f: 4.05,   a: 0.08, d: 0.6 },
+        { f: 5.99,   a: 0.04, d: 0.4 }
+      ];
+      const out = ctx.createGain();
+      out.gain.setValueAtTime(0, t);
+      out.gain.linearRampToValueAtTime(0.6, t + 0.005);
+      out.gain.exponentialRampToValueAtTime(0.001, t + duration);
+      out.connect(this.master);
+
+      partials.forEach(p => {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = 'sine';
+        o.frequency.value = freq * p.f;
+        g.gain.setValueAtTime(0, t);
+        g.gain.linearRampToValueAtTime(p.a, t + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.001, t + p.d);
+        o.connect(g).connect(out);
+        o.start(t);
+        o.stop(t + p.d + 0.05);
+      });
+    },
+
+    // 窑火轰鸣
+    kiln(duration = 4) {
+      this.resume();
+      const ctx = this.ctx;
+      const t = ctx.currentTime;
+
+      // 粉红噪声（简化）
+      const bufferSize = 2 * ctx.sampleRate;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+      for (let i = 0; i < bufferSize; i++) {
+        const white = Math.random() * 2 - 1;
+        b0 = 0.99886 * b0 + white * 0.0555179;
+        b1 = 0.99332 * b1 + white * 0.0750759;
+        b2 = 0.96900 * b2 + white * 0.1538520;
+        b3 = 0.86650 * b3 + white * 0.3104856;
+        b4 = 0.55000 * b4 + white * 0.5329522;
+        b5 = -0.7616 * b5 - white * 0.0168980;
+        data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11;
+        b6 = white * 0.115926;
+      }
+
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+      noise.loop = true;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 320;
+      filter.Q.value = 0.7;
+
+      const lfo = ctx.createOscillator();
+      const lfoGain = ctx.createGain();
+      lfo.frequency.value = 0.3;
+      lfoGain.gain.value = 60;
+      lfo.connect(lfoGain).connect(filter.frequency);
+
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0, t);
+      gain.gain.linearRampToValueAtTime(0.45, t + 0.6);
+      gain.gain.linearRampToValueAtTime(0.3, t + duration);
+      gain.gain.linearRampToValueAtTime(0, t + duration);
+
+      noise.connect(filter).connect(gain).connect(this.master);
+      noise.start(t);
+      lfo.start(t);
+      noise.stop(t + duration);
+      lfo.stop(t + duration);
+    },
+
+    // 战鼓
+    drum() {
+      this.resume();
+      const ctx = this.ctx;
+      const t = ctx.currentTime;
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(120, t);
+      o.frequency.exponentialRampToValueAtTime(40, t + 0.2);
+      g.gain.setValueAtTime(0.7, t);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+      o.connect(g).connect(this.master);
+      o.start(t);
+      o.stop(t + 0.35);
+    },
+
+    // 马蹄
+    hooves(count = 4) {
+      for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+          this.resume();
+          const ctx = this.ctx;
+          const t = ctx.currentTime;
+          const o = ctx.createOscillator();
+          const g = ctx.createGain();
+          o.type = 'square';
+          o.frequency.value = 80;
+          g.gain.setValueAtTime(0.2, t);
+          g.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+          o.connect(g).connect(this.master);
+          o.start(t);
+          o.stop(t + 0.1);
+        }, i * 220);
+      }
+    },
+
+    // 鸟鸣
+    bird() {
+      this.resume();
+      const ctx = this.ctx;
+      const t = ctx.currentTime;
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(1800, t);
+      o.frequency.exponentialRampToValueAtTime(3200, t + 0.1);
+      o.frequency.exponentialRampToValueAtTime(2200, t + 0.25);
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.15, t + 0.05);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+      o.connect(g).connect(this.master);
+      o.start(t);
+      o.stop(t + 0.35);
+    },
+
+    // 风
+    wind(duration = 3) {
+      this.resume();
+      const ctx = this.ctx;
+      const t = ctx.currentTime;
+      const bufferSize = ctx.sampleRate * duration;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * 0.15;
+      }
+      const src = ctx.createBufferSource();
+      src.buffer = buffer;
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.value = 600;
+      filter.Q.value = 1.2;
+      const gain = ctx.createGain();
+      gain.gain.value = 0.4;
+      src.connect(filter).connect(gain).connect(this.master);
+      src.start(t);
+    }
+  };
+
+  window.Synth = Synth;
+
+  // 自动绑定 data-sound 元素
+  document.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-sound]');
+    if (!el) return;
+    e.preventDefault();
+    const s = el.dataset.sound;
+    switch (s) {
+      case 'guqin':  Synth.guqin(196); break;     // G3
+      case 'guqin2': Synth.guqin(220); break;     // A3
+      case 'kiln':   Synth.kiln(3.5); break;
+      case 'drum':   Synth.drum(); break;
+      case 'hooves': Synth.hooves(4); break;
+      case 'bird':   Synth.bird(); break;
+      case 'wind':   Synth.wind(2.5); break;
+      case 'demo':   Synth.guqin(196, 1.2); setTimeout(() => Synth.kiln(2), 600); break;
+    }
+  });
+})();
+
+</script>
 <script>
 /* =================================================================
    PPT 翻页 + 文稿模式 + 发言稿

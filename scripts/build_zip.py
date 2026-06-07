@@ -14,7 +14,7 @@ EXCLUDE_DIRS = {'.trae', 'node_modules', '.git', '__pycache__', 'dist', 'scripts
 EXCLUDE_FILES = {'.DS_Store'}
 
 # 包含的文件
-INCLUDE_TOP = ['index.html', 'ppt.html', 'theme.html', 'essay.html', 'gallery.html',
+INCLUDE_TOP = ['index.html', 'ppt.html', 'export.html', 'theme.html', 'essay.html', 'gallery.html',
                'character-zhangji.html', 'character-zhangzhiyuan.html',
                'act-1.html', 'act-2.html', 'act-3.html', 'components.html',
                'README.md']

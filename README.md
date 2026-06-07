@@ -22,9 +22,12 @@
 | 文件 | 说明 | 链接 |
 |------|------|------|
 | **PPT 文稿** (.pptx) | 24 张幻灯片，可在 PowerPoint / Keynote 二次编辑 | [downloads/哥窑_主旨解读.pptx](file:///workspace/downloads/哥窑_主旨解读.pptx) |
-| **HTML 源文件包** (.zip) | 84+ 份 HTML + 全部 CSS/JS 资产，可本地直接打开 | [downloads/哥窑_主旨解读_HTML包.zip](file:///workspace/downloads/哥窑_主旨解读_HTML包.zip) |
+| **HTML 源文件包** (.zip) | 105 份文件（HTML + CSS + JS），可本地直接打开 | [downloads/哥窑_主旨解读_HTML包.zip](file:///workspace/downloads/哥窑_主旨解读_HTML包.zip) |
+| **单文件自包含 HTML** | 全部 CSS/JS 已内联，**双击即可在任意浏览器打开**，无需联网 | [downloads/哥窑_主旨解读_单文件.html](file:///workspace/downloads/哥窑_主旨解读_单文件.html) |
+| **项目清单 JSON** | 结构化元数据（113 项 · 文件用途/大小/统计），适合二次开发 | [downloads/哥窑_项目清单.json](file:///workspace/downloads/哥窑_项目清单.json) |
+| **PDF（打印导出）** | 在 [ppt.html](file:///workspace/ppt.html) 文稿模式下按 <kbd>Ctrl/Cmd + P</kbd> 另存为 PDF | — |
 
-> 在 [ppt.html](file:///workspace/ppt.html) 顶部导航 / 末页均可一键下载。
+> 完整导出门户：[export.html](file:///workspace/export.html) — 6 张导出卡片 + 项目结构可视化。
 
 ## 📦 组件库（v1.0）
 
@@ -51,7 +54,7 @@
 > 全部组件由 `assets/css/components/tokens.css` 中的设计令牌驱动；修改一个变量，全站同步。
 > JS 组件仅两个：[flame.js](file:///workspace/assets/js/components/flame.js) + [toc.js](file:///workspace/assets/js/components/toc.js)，均无依赖。
 
-## 文件清单（共 78 个 HTML）
+## 文件清单（共 79 个 HTML）
 
 | 类别 | 文件 |
 |------|------|
@@ -63,6 +66,7 @@
 | 角色档案 | [character-zhangji.html](file:///workspace/character-zhangji.html) · [character-zhangzhiyuan.html](file:///workspace/character-zhangzhiyuan.html) |
 | 三幕分幕 | [act-1.html](file:///workspace/act-1.html) · [act-2.html](file:///workspace/act-2.html) · [act-3.html](file:///workspace/act-3.html) |
 | **组件库** | [components.html](file:///workspace/components.html) — **Storybook 风格** |
+| **项目导出** | [export.html](file:///workspace/export.html) — 4 种格式 · 6 张导出卡片 |
 | 66 个分镜 | `shot-01.html` ~ `shot-66.html` |
 
 ## 启动预览
@@ -135,10 +139,13 @@ python3 -m http.server 8000
 ├── character-zhangji.html · character-zhangzhiyuan.html
 ├── act-1.html · act-2.html · act-3.html
 ├── components.html                  # 组件库演示（Storybook）
+├── export.html                      # 项目导出门户（4 种格式）
 ├── shot-01.html … shot-66.html      # 66 个分镜
-├── downloads/                       # ⬇ 可下载资源
+├── downloads/                       # ⬇ 5 种可下载资源
 │   ├── 哥窑_主旨解读.pptx
-│   └── 哥窑_主旨解读_HTML包.zip
+│   ├── 哥窑_主旨解读_HTML包.zip
+│   ├── 哥窑_主旨解读_单文件.html
+│   └── 哥窑_项目清单.json
 ├── .trae/documents/                 # PRD + 技术文档
 ├── assets/
 │   ├── css/                         # base / deck / ppt / character / shot / components
@@ -149,7 +156,9 @@ python3 -m http.server 8000
 └── scripts/
     ├── generate_shots.py            # 批量生成分镜页
     ├── generate_pptx.py             # 生成 .pptx 文件
-    └── build_zip.py                 # 打包 HTML ZIP
+    ├── build_zip.py                 # 打包 HTML ZIP
+    ├── build_single.py              # 生成单文件自包含 HTML
+    └── generate_manifest.py         # 生成项目清单 JSON
 ```
 
 ## 设计风格
@@ -170,6 +179,10 @@ python3 -m http.server 8000
 python3 scripts/build_zip.py
 # 重新生成 .pptx
 python3 scripts/generate_pptx.py
+# 重新生成单文件自包含 HTML
+python3 scripts/build_single.py
+# 重新生成项目清单 JSON
+python3 scripts/generate_manifest.py
 ```
 
 任何静态文件服务器即可运行（`python3 -m http.server` / `npx serve` / VS Code Live Server 等）。
