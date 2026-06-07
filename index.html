@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>高粱河车神与雍熙悲歌 · 分镜与解说系统</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="effects.css">
+</head>
+<body>
+
+<header class="banner">
+  <div class="stamp">宋史</div>
+  <h1>高粱河车神与雍熙悲歌</h1>
+  <div class="sub">赵光义北伐全纪实 · 分镜拆解与解说系统</div>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" data-tab="picker">剧本选择</button>
+  <button class="tab" data-tab="storyboard">分镜表</button>
+  <button class="tab" data-tab="characters">角色设计</button>
+  <button class="tab" data-tab="effects">特效展示</button>
+  <button class="tab" data-tab="game">像素游戏</button>
+</nav>
+
+<main>
+  <!-- 视图 1：剧本选择器与详情 -->
+  <section id="view-picker" class="view">
+    <div class="picker">
+      <div class="scene-list" id="scene-list"></div>
+      <div class="detail" id="scene-detail"></div>
+    </div>
+  </section>
+
+  <!-- 视图 2：分镜表 -->
+  <section id="view-storyboard" class="view">
+    <div class="progress"><div class="progress-bar" id="prog"></div></div>
+    <div class="storyboard-header">
+      <h2>分镜表 · 13 分钟 / 52 镜 / 15s 每镜</h2>
+      <div class="filter-bar">
+        <select id="filter-scene"><option value="all">全部场景</option></select>
+        <select id="filter-char"><option value="all">全部角色</option></select>
+        <input id="search-q" type="text" placeholder="🔍 搜索分镜/台词">
+        <span id="shot-count" style="color:#b8860b;font-weight:700"></span>
+      </div>
+    </div>
+    <div class="shot-grid" id="shot-grid"></div>
+  </section>
+
+  <!-- 视图 3：角色设计 -->
+  <section id="view-characters" class="view">
+    <h2 style="color:#b03a2e;margin-bottom:8px">角色设计 · 像素艺术</h2>
+    <p style="margin-bottom:16px;color:#5d4037;font-size:14px">每个角色使用 16×16 像素网格设计，包含 8 种颜色。SVG 矢量输出，可任意缩放。点击角色可在分镜中查看该角色的位置。</p>
+    <div class="char-grid" id="char-grid"></div>
+  </section>
+
+  <!-- 视图 4：特效展示 -->
+  <section id="view-effects" class="view">
+    <h2 style="color:#b03a2e;margin-bottom:8px">特殊效果 · HTML/CSS 实现</h2>
+    <p style="margin-bottom:16px;color:#5d4037;font-size:14px">全部使用纯 CSS 动画 + DOM 元素实现，零依赖。可直接嵌入分镜预览或导出为视频帧。</p>
+    <div class="fx-grid" id="fx-grid"></div>
+  </section>
+
+  <!-- 视图 5：像素游戏 -->
+  <section id="view-game" class="view">
+    <div class="game-wrap">
+      <div class="game-header">
+        <h2>像素突围 · 高粱河驴车漂移</h2>
+        <div class="game-stats">
+          <span>目标：驾驴车突围至涿州</span>
+        </div>
+      </div>
+      <div class="game-canvas-wrap">
+        <canvas id="game"></canvas>
+      </div>
+      <div class="game-controls">
+        <div class="game-keys">
+          <b>操作说明：</b><br>
+          <kbd>←</kbd> <kbd>↑</kbd> <kbd>↓</kbd> <kbd>→</kbd> 或 <kbd>WASD</kbd> 移动赵光义的驴车<br>
+          躲避辽国骑兵与路障，到达右侧 <b>涿州</b> 终点<br>
+          <kbd>R</kbd> 重新开始
+        </div>
+        <div class="game-buttons">
+          <button id="btn-start">开始突围</button>
+          <button id="btn-reset" class="alt">重新开始</button>
+          <button class="ghost" onclick="alert('历史背景：公元979年7月，赵光义在高粱河之战中箭后乘驴车而逃，成为千年笑谈。本游戏以像素艺术重现这一历史瞬间。')">历史背景</button>
+        </div>
+      </div>
+      <div class="mobile-pad">
+        <div class="empty"></div>
+        <button data-dir="ArrowUp">↑</button>
+        <div class="empty"></div>
+        <button data-dir="ArrowLeft">←</button>
+        <div class="empty"></div>
+        <button data-dir="ArrowDown">↓</button>
+        <div class="empty"></div>
+        <button data-dir="ArrowRight">→</button>
+        <div class="empty"></div>
+      </div>
+      <div class="game-msg" id="game-msg">驾！驾！驾驴车突围！</div>
+    </div>
+  </section>
+</main>
+
+<!-- 弹窗：分镜详情 -->
+<div class="modal" id="shot-modal">
+  <div class="modal-content">
+    <button class="modal-close" id="modal-close">×</button>
+    <h2 id="shot-modal-title" style="color:#b03a2e;margin-bottom:12px"></h2>
+    <div id="shot-modal-body"></div>
+  </div>
+</div>
+
+<footer>
+  <p>高粱河车神与雍熙悲歌 · 赵光义北伐全纪实 · 13分钟朗读脚本</p>
+  <p style="margin-top:4px">纯原生 HTML/CSS/JS 实现 · 零依赖 · 像素艺术 © 2026</p>
+</footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

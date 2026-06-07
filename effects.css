@@ -1,0 +1,423 @@
+/* 宋太宗北伐 - 特殊效果 CSS */
+
+/* 通用 */
+.fx-stage { overflow: hidden; }
+
+/* 烛火 */
+@keyframes flicker {
+  0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.95; }
+  25% { transform: translateX(-50%) scale(1.05) rotate(2deg); opacity: 1; }
+  50% { transform: translateX(-50%) scale(0.95) rotate(-1deg); opacity: 0.9; }
+  75% { transform: translateX(-50%) scale(1.02) rotate(1deg); opacity: 1; }
+}
+.candle-flame {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  width: 16px;
+  height: 26px;
+  background: radial-gradient(ellipse at center bottom, #ffeb3b 0%, #ff9800 40%, #b03a2e 80%, transparent 100%);
+  border-radius: 50% 50% 30% 30% / 60% 60% 40% 40%;
+  transform: translateX(-50%);
+  animation: flicker 0.6s infinite;
+  box-shadow: 0 -8px 20px rgba(255, 152, 0, 0.6);
+}
+.candle-glow {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(255, 152, 0, 0.3) 0%, transparent 70%);
+  animation: flicker 1s infinite;
+  pointer-events: none;
+}
+
+/* 黄沙 */
+@keyframes dustFloat {
+  0% { transform: translate(0, 0) rotate(0); opacity: 0.7; }
+  100% { transform: translate(80px, -30px) rotate(180deg); opacity: 0; }
+}
+.dust-field { position: absolute; inset: 0; }
+.dust-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(212, 163, 115, 0.8);
+  border-radius: 50%;
+  animation: dustFloat 3s linear infinite;
+}
+.dust-particle:nth-child(1) { left: 5%; top: 60%; animation-delay: 0s; }
+.dust-particle:nth-child(2) { left: 15%; top: 70%; animation-delay: 0.2s; }
+.dust-particle:nth-child(3) { left: 25%; top: 65%; animation-delay: 0.5s; }
+.dust-particle:nth-child(4) { left: 35%; top: 75%; animation-delay: 0.7s; }
+.dust-particle:nth-child(5) { left: 45%; top: 60%; animation-delay: 0.3s; }
+.dust-particle:nth-child(6) { left: 55%; top: 70%; animation-delay: 0.9s; }
+.dust-particle:nth-child(7) { left: 65%; top: 65%; animation-delay: 1.1s; }
+.dust-particle:nth-child(8) { left: 75%; top: 75%; animation-delay: 0.4s; }
+.dust-particle:nth-child(9) { left: 85%; top: 60%; animation-delay: 0.6s; }
+.dust-particle:nth-child(10) { left: 10%; top: 80%; animation-delay: 0.8s; }
+.dust-particle:nth-child(11) { left: 30%; top: 85%; animation-delay: 1s; }
+.dust-particle:nth-child(12) { left: 50%; top: 80%; animation-delay: 1.2s; }
+.dust-particle:nth-child(13) { left: 70%; top: 85%; animation-delay: 0.5s; }
+.dust-particle:nth-child(14) { left: 90%; top: 80%; animation-delay: 0.7s; }
+.dust-particle:nth-child(15) { left: 20%; top: 55%; animation-delay: 0.3s; }
+.dust-particle:nth-child(16) { left: 40%; top: 50%; animation-delay: 0.6s; }
+.dust-particle:nth-child(17) { left: 60%; top: 55%; animation-delay: 0.9s; }
+.dust-particle:nth-child(18) { left: 80%; top: 50%; animation-delay: 1.1s; }
+.dust-particle:nth-child(19) { left: 5%; top: 45%; animation-delay: 0.4s; }
+.dust-particle:nth-child(20) { left: 95%; top: 45%; animation-delay: 0.8s; }
+.dust-particle:nth-child(21) { left: 25%; top: 40%; animation-delay: 1.3s; }
+.dust-particle:nth-child(22) { left: 75%; top: 40%; animation-delay: 0.5s; }
+.dust-particle:nth-child(23) { left: 35%; top: 90%; animation-delay: 0.7s; }
+.dust-particle:nth-child(24) { left: 65%; top: 90%; animation-delay: 1s; }
+.dust-particle:nth-child(25) { left: 50%; top: 30%; animation-delay: 0.2s; }
+.dust-particle:nth-child(26) { left: 15%; top: 35%; animation-delay: 0.4s; }
+.dust-particle:nth-child(27) { left: 85%; top: 35%; animation-delay: 0.6s; }
+.dust-particle:nth-child(28) { left: 45%; top: 95%; animation-delay: 1.4s; }
+.dust-particle:nth-child(29) { left: 55%; top: 25%; animation-delay: 0.9s; }
+.dust-particle:nth-child(30) { left: 10%; top: 95%; animation-delay: 1.2s; }
+
+/* 箭雨 */
+@keyframes arrowFall {
+  0% { transform: translate(0, -20px) rotate(35deg); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translate(20px, 200px) rotate(35deg); opacity: 0; }
+}
+.arrow-rain { position: absolute; inset: 0; }
+.arrow-bolt {
+  position: absolute;
+  width: 2px;
+  height: 14px;
+  background: linear-gradient(#fff 0%, #8b6f47 60%, #5d4037 100%);
+  border-radius: 1px;
+  animation: arrowFall 1.2s linear infinite;
+}
+.arrow-bolt:nth-child(odd) { background: linear-gradient(#fff 0%, #3e2723 100%); }
+.arrow-bolt:nth-child(1) { left: 5%; animation-delay: 0s; }
+.arrow-bolt:nth-child(2) { left: 12%; animation-delay: 0.1s; }
+.arrow-bolt:nth-child(3) { left: 19%; animation-delay: 0.3s; }
+.arrow-bolt:nth-child(4) { left: 26%; animation-delay: 0.2s; }
+.arrow-bolt:nth-child(5) { left: 33%; animation-delay: 0.5s; }
+.arrow-bolt:nth-child(6) { left: 40%; animation-delay: 0.4s; }
+.arrow-bolt:nth-child(7) { left: 47%; animation-delay: 0.7s; }
+.arrow-bolt:nth-child(8) { left: 54%; animation-delay: 0.6s; }
+.arrow-bolt:nth-child(9) { left: 61%; animation-delay: 0.9s; }
+.arrow-bolt:nth-child(10) { left: 68%; animation-delay: 0.8s; }
+.arrow-bolt:nth-child(11) { left: 75%; animation-delay: 1s; }
+.arrow-bolt:nth-child(12) { left: 82%; animation-delay: 0.4s; }
+.arrow-bolt:nth-child(13) { left: 89%; animation-delay: 0.5s; }
+.arrow-bolt:nth-child(14) { left: 96%; animation-delay: 0.2s; }
+.arrow-bolt:nth-child(15) { left: 8%; animation-delay: 0.6s; }
+.arrow-bolt:nth-child(16) { left: 22%; animation-delay: 0.8s; }
+.arrow-bolt:nth-child(17) { left: 36%; animation-delay: 0.3s; }
+.arrow-bolt:nth-child(18) { left: 50%; animation-delay: 0.5s; }
+.arrow-bolt:nth-child(19) { left: 64%; animation-delay: 0.7s; }
+.arrow-bolt:nth-child(20) { left: 78%; animation-delay: 0.9s; }
+.arrow-bolt:nth-child(21) { left: 92%; animation-delay: 0.4s; }
+.arrow-bolt:nth-child(22) { left: 3%; animation-delay: 0.6s; }
+.arrow-bolt:nth-child(23) { left: 17%; animation-delay: 0.8s; }
+.arrow-bolt:nth-child(24) { left: 31%; animation-delay: 1s; }
+.arrow-bolt:nth-child(25) { left: 45%; animation-delay: 0.5s; }
+.arrow-bolt:nth-child(26) { left: 59%; animation-delay: 0.7s; }
+.arrow-bolt:nth-child(27) { left: 73%; animation-delay: 0.9s; }
+.arrow-bolt:nth-child(28) { left: 87%; animation-delay: 0.3s; }
+.arrow-bolt:nth-child(29) { left: 13%; animation-delay: 0.5s; }
+.arrow-bolt:nth-child(30) { left: 27%; animation-delay: 0.4s; }
+.arrow-bolt:nth-child(31) { left: 41%; animation-delay: 0.6s; }
+.arrow-bolt:nth-child(32) { left: 55%; animation-delay: 0.8s; }
+.arrow-bolt:nth-child(33) { left: 69%; animation-delay: 1s; }
+.arrow-bolt:nth-child(34) { left: 83%; animation-delay: 0.2s; }
+.arrow-bolt:nth-child(35) { left: 97%; animation-delay: 0.4s; }
+.arrow-bolt:nth-child(36) { left: 7%; animation-delay: 0.6s; }
+.arrow-bolt:nth-child(37) { left: 23%; animation-delay: 0.8s; }
+.arrow-bolt:nth-child(38) { left: 39%; animation-delay: 0.5s; }
+.arrow-bolt:nth-child(39) { left: 53%; animation-delay: 0.7s; }
+.arrow-bolt:nth-child(40) { left: 67%; animation-delay: 0.9s; }
+
+/* 战火 */
+@keyframes fireRise {
+  0% { transform: translateY(0) scaleY(1); opacity: 0.9; }
+  50% { transform: translateY(-10px) scaleY(1.1); opacity: 1; }
+  100% { transform: translateY(-25px) scaleY(0.8); opacity: 0; }
+}
+@keyframes smokeRise {
+  0% { transform: translateY(0) scale(1); opacity: 0.6; }
+  100% { transform: translateY(-60px) scale(2); opacity: 0; }
+}
+.fire-field { position: absolute; inset: 0; background: #0a0a0a; }
+.fire-flame {
+  position: absolute;
+  bottom: 0;
+  width: 40px;
+  height: 80px;
+  background: radial-gradient(ellipse at center bottom, #ffeb3b 0%, #ff5722 30%, #b03a2e 60%, #5d1a1a 90%, transparent 100%);
+  border-radius: 50% 50% 30% 30% / 60% 60% 40% 40%;
+  animation: fireRise 1s ease-in infinite;
+  filter: blur(1px);
+}
+.fire-flame.f1 { left: 20%; animation-delay: 0s; }
+.fire-flame.f2 { left: 50%; animation-delay: 0.3s; }
+.fire-flame.f3 { left: 75%; animation-delay: 0.6s; }
+.fire-smoke {
+  position: absolute;
+  bottom: 30%;
+  left: 50%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(60, 60, 60, 0.8) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translateX(-50%);
+  animation: smokeRise 3s linear infinite;
+}
+
+/* 血河 */
+@keyframes bloodFlow {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(0); }
+}
+.blood-river { position: absolute; inset: 0; overflow: hidden; }
+.blood-body {
+  position: absolute;
+  background: radial-gradient(ellipse, #5d1a1a 0%, #1a1a1a 80%);
+  border-radius: 50% 40% 60% 50%;
+  animation: bloodFlow 4s linear infinite;
+}
+.blood-body:nth-child(1) { left: 10%; top: 30%; width: 20px; height: 8px; animation-delay: 0s; }
+.blood-body:nth-child(2) { left: 20%; top: 50%; width: 30px; height: 12px; animation-delay: 0.5s; }
+.blood-body:nth-child(3) { left: 30%; top: 20%; width: 18px; height: 6px; animation-delay: 1s; }
+.blood-body:nth-child(4) { left: 40%; top: 60%; width: 25px; height: 10px; animation-delay: 1.5s; }
+.blood-body:nth-child(5) { left: 50%; top: 35%; width: 22px; height: 9px; animation-delay: 2s; }
+.blood-body:nth-child(6) { left: 60%; top: 55%; width: 28px; height: 11px; animation-delay: 2.5s; }
+.blood-body:nth-child(7) { left: 70%; top: 25%; width: 16px; height: 7px; animation-delay: 0.3s; }
+.blood-body:nth-child(8) { left: 80%; top: 45%; width: 24px; height: 9px; animation-delay: 0.8s; }
+.blood-body:nth-child(9) { left: 5%; top: 70%; width: 26px; height: 10px; animation-delay: 1.3s; }
+.blood-body:nth-child(10) { left: 25%; top: 80%; width: 20px; height: 8px; animation-delay: 1.8s; }
+.blood-body:nth-child(11) { left: 55%; top: 75%; width: 30px; height: 12px; animation-delay: 2.3s; }
+.blood-body:nth-child(12) { left: 85%; top: 80%; width: 22px; height: 9px; animation-delay: 2.8s; }
+/* 血河底色 */
+.blood-river::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(to bottom, transparent, #5d1a1a 50%, #3a0808 100%);
+  opacity: 0.6;
+}
+
+/* 大雪 */
+@keyframes snowFall {
+  0% { transform: translate(0, -20px) rotate(0); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translate(20px, 200px) rotate(360deg); opacity: 0; }
+}
+.snow-field { position: absolute; inset: 0; background: #0a1a2e; }
+.snow-flake {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #fff;
+  border-radius: 50%;
+  animation: snowFall 4s linear infinite;
+  box-shadow: 0 0 4px rgba(255,255,255,0.8);
+}
+.snow-flake:nth-child(1) { left: 5%; animation-delay: 0s; }
+.snow-flake:nth-child(2) { left: 15%; animation-delay: 0.5s; }
+.snow-flake:nth-child(3) { left: 25%; animation-delay: 1s; }
+.snow-flake:nth-child(4) { left: 35%; animation-delay: 0.3s; }
+.snow-flake:nth-child(5) { left: 45%; animation-delay: 0.8s; }
+.snow-flake:nth-child(6) { left: 55%; animation-delay: 1.3s; }
+.snow-flake:nth-child(7) { left: 65%; animation-delay: 0.6s; }
+.snow-flake:nth-child(8) { left: 75%; animation-delay: 1.1s; }
+.snow-flake:nth-child(9) { left: 85%; animation-delay: 0.4s; }
+.snow-flake:nth-child(10) { left: 95%; animation-delay: 0.9s; }
+.snow-flake:nth-child(11) { left: 10%; animation-delay: 1.4s; }
+.snow-flake:nth-child(12) { left: 20%; animation-delay: 0.2s; }
+.snow-flake:nth-child(13) { left: 30%; animation-delay: 0.7s; }
+.snow-flake:nth-child(14) { left: 40%; animation-delay: 1.2s; }
+.snow-flake:nth-child(15) { left: 50%; animation-delay: 0.5s; }
+.snow-flake:nth-child(16) { left: 60%; animation-delay: 1s; }
+.snow-flake:nth-child(17) { left: 70%; animation-delay: 0.3s; }
+.snow-flake:nth-child(18) { left: 80%; animation-delay: 0.8s; }
+.snow-flake:nth-child(19) { left: 90%; animation-delay: 1.3s; }
+.snow-flake:nth-child(20) { left: 7%; animation-delay: 0.6s; }
+.snow-flake:nth-child(n+21) { width: 3px; height: 3px; }
+.snow-flake:nth-child(21) { left: 12%; animation-delay: 0s; }
+.snow-flake:nth-child(22) { left: 22%; animation-delay: 0.4s; }
+.snow-flake:nth-child(23) { left: 32%; animation-delay: 0.8s; }
+.snow-flake:nth-child(24) { left: 42%; animation-delay: 1.2s; }
+.snow-flake:nth-child(25) { left: 52%; animation-delay: 0.1s; }
+.snow-flake:nth-child(26) { left: 62%; animation-delay: 0.5s; }
+.snow-flake:nth-child(27) { left: 72%; animation-delay: 0.9s; }
+.snow-flake:nth-child(28) { left: 82%; animation-delay: 1.3s; }
+.snow-flake:nth-child(29) { left: 92%; animation-delay: 0.2s; }
+.snow-flake:nth-child(30) { left: 17%; animation-delay: 0.7s; }
+.snow-flake:nth-child(31) { left: 27%; animation-delay: 1.1s; }
+.snow-flake:nth-child(32) { left: 37%; animation-delay: 0.3s; }
+.snow-flake:nth-child(33) { left: 47%; animation-delay: 0.7s; }
+.snow-flake:nth-child(34) { left: 57%; animation-delay: 1.1s; }
+.snow-flake:nth-child(35) { left: 67%; animation-delay: 0.4s; }
+.snow-flake:nth-child(36) { left: 77%; animation-delay: 0.8s; }
+.snow-flake:nth-child(37) { left: 87%; animation-delay: 1.2s; }
+.snow-flake:nth-child(38) { left: 14%; animation-delay: 0.5s; }
+.snow-flake:nth-child(39) { left: 24%; animation-delay: 0.9s; }
+.snow-flake:nth-child(40) { left: 34%; animation-delay: 1.3s; }
+.snow-flake:nth-child(41) { left: 44%; animation-delay: 0.2s; }
+.snow-flake:nth-child(42) { left: 54%; animation-delay: 0.6s; }
+.snow-flake:nth-child(43) { left: 64%; animation-delay: 1s; }
+.snow-flake:nth-child(44) { left: 74%; animation-delay: 1.4s; }
+.snow-flake:nth-child(45) { left: 84%; animation-delay: 0.3s; }
+.snow-flake:nth-child(46) { left: 94%; animation-delay: 0.7s; }
+.snow-flake:nth-child(47) { left: 9%; animation-delay: 1.1s; }
+.snow-flake:nth-child(48) { left: 19%; animation-delay: 0.4s; }
+.snow-flake:nth-child(49) { left: 29%; animation-delay: 0.8s; }
+.snow-flake:nth-child(50) { left: 39%; animation-delay: 1.2s; }
+
+/* 帝王金辉 */
+@keyframes ray {
+  0% { transform: rotate(0deg) scale(0.95); opacity: 0.7; }
+  100% { transform: rotate(360deg) scale(1.05); opacity: 1; }
+}
+.imperial-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, #2c1810 0%, #0a0a0a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.imperial-dragon {
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(circle, #ffeb3b 0%, #b8860b 40%, #b03a2e 80%, transparent 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 40px #b8860b, 0 0 80px #b03a2e;
+  animation: ray 3s ease-in-out infinite;
+  position: relative;
+}
+.imperial-dragon::before {
+  content: "龍";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: #1a1a1a;
+  font-weight: bold;
+  text-shadow: 0 0 4px #ffeb3b;
+}
+.imperial-rays {
+  position: absolute;
+  inset: 0;
+  background:
+    conic-gradient(from 0deg,
+      transparent 0deg, rgba(255, 215, 0, 0.3) 10deg, transparent 20deg,
+      transparent 60deg, rgba(255, 215, 0, 0.2) 70deg, transparent 80deg,
+      transparent 120deg, rgba(255, 215, 0, 0.3) 130deg, transparent 140deg,
+      transparent 180deg, rgba(255, 215, 0, 0.2) 190deg, transparent 200deg,
+      transparent 240deg, rgba(255, 215, 0, 0.3) 250deg, transparent 260deg,
+      transparent 300deg, rgba(255, 215, 0, 0.2) 310deg, transparent 320deg);
+  animation: ray 8s linear infinite;
+  opacity: 0.6;
+}
+
+/* 驴车飞驰 */
+.donkey-scene {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, #87ceeb 0%, #d2b48c 70%, #8b6f47 100%);
+  overflow: hidden;
+}
+.road {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30%;
+  background: #8b6f47;
+  background-image: repeating-linear-gradient(90deg, transparent 0 20px, rgba(0,0,0,0.2) 20px 22px);
+}
+.donkey-cart {
+  position: absolute;
+  bottom: 30%;
+  left: 30%;
+  width: 80px;
+  height: 50px;
+  animation: cartBounce 0.3s infinite;
+}
+@keyframes cartBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+.donkey {
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 24px;
+  height: 20px;
+  background: #8b6f47;
+  border-radius: 30% 50% 50% 30%;
+}
+.donkey::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: 4px;
+  width: 8px;
+  height: 8px;
+  background: #8b6f47;
+  border-radius: 50%;
+}
+.cart {
+  position: absolute;
+  left: 24px;
+  top: 8px;
+  width: 30px;
+  height: 22px;
+  background: #8b1a1a;
+  border: 2px solid #5d1a1a;
+  border-radius: 2px;
+}
+.cart::before {
+  content: "宋";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #f4d03f;
+  font-weight: bold;
+}
+.wheels {
+  position: absolute;
+  bottom: -6px;
+  width: 12px;
+  height: 12px;
+  background: #1a1a1a;
+  border-radius: 50%;
+  border: 2px solid #5d4037;
+  animation: spin 0.3s linear infinite;
+}
+.w1 { left: 26px; }
+.w2 { left: 50px; }
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.dust-trail {
+  position: absolute;
+  bottom: 25%;
+  left: -10%;
+  width: 50%;
+  height: 30px;
+  background: radial-gradient(ellipse at right, rgba(212, 163, 115, 0.8), transparent 70%);
+  animation: dustTrail 0.5s linear infinite;
+}
+@keyframes dustTrail {
+  0% { opacity: 0.8; transform: translateX(0); }
+  100% { opacity: 0; transform: translateX(-30px); }
+}
