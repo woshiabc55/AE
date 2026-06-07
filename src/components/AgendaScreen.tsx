@@ -230,8 +230,109 @@ export default function AgendaScreen({ onEnter, onVisible }: AgendaScreenProps) 
             </div>
           </motion.div>
         </div>
+
+        {/* ====== 大量技术标注 ====== */}
+        <AgendaAnnotations />
       </div>
     </section>
+  );
+}
+
+// ---------- AgendaScreen 标注层 ----------
+function AgendaAnnotations() {
+  return (
+    <div className="absolute inset-0 pointer-events-none z-20">
+      {/* 左侧 — 深度刻度 */}
+      <div className="absolute left-3 top-32 flex flex-col items-center gap-1">
+        <div className="font-mono text-[7px] text-fog/50 tracking-widest">DEPTH</div>
+        <div className="relative w-px h-40 bg-gradient-to-b from-sun/40 via-bone/20 to-trench/60">
+          {[0, 1000, 2000, 3000, 3800].map((m, i) => (
+            <div
+              key={i}
+              className="absolute -left-1 flex items-center gap-1"
+              style={{ top: `${(i / 4) * 100}%` }}
+            >
+              <div className="w-2 h-px bg-bone/40" />
+              <div className="font-mono text-[6px] text-fog/50 tabular-nums">
+                {m === 0 ? "0" : m === 3800 ? "-3.8K" : `-${m / 1000}K`}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="font-mono text-[6px] text-fog/40 tracking-widest">M</div>
+      </div>
+
+      {/* 右侧 — 项目元数据盒 */}
+      <div className="absolute right-3 top-32 w-32 glass rounded p-2">
+        <div className="flex items-center gap-1 mb-1.5">
+          <div className="w-1 h-1 bg-blood rounded-full animate-glow" />
+          <div className="font-mono text-[7px] text-rust/80 tracking-widest">PROJ META</div>
+        </div>
+        <MetaRow k="TITLE" v="深渊恐惧" />
+        <MetaRow k="EN" v="ABYSS FEAR" />
+        <MetaRow k="DIR" v="（虚构）" />
+        <MetaRow k="DOP" v="（虚构）" />
+        <MetaRow k="FORMAT" v="IMAX 3D" />
+        <MetaRow k="REV" v="0.1" />
+      </div>
+
+      {/* 顶部 — 场次标牌 */}
+      <div className="absolute top-2 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1">
+        <div className="flex items-center gap-2 font-mono text-[8px] text-fog/50 tracking-[0.4em]">
+          <span className="w-8 h-px bg-fog/30" />
+          <span>PART 01 · AGENDA · OVERVIEW</span>
+          <span className="w-8 h-px bg-fog/30" />
+        </div>
+      </div>
+
+      {/* 概念块引线 */}
+      <div className="absolute left-1/2 top-[42%] pointer-events-none">
+        <svg width="80" height="40" className="absolute">
+          <line x1="0" y1="20" x2="60" y2="20" stroke="rgba(201,90,43,0.4)" strokeWidth="0.5" strokeDasharray="2 2" />
+          <circle cx="60" cy="20" r="2" fill="rgba(201,90,43,0.6)" />
+        </svg>
+        <div className="absolute" style={{ left: 64, top: 6 }}>
+          <div className="font-mono text-[7px] text-rust/70 tracking-widest">CONCEPT</div>
+          <div className="font-mono text-[6px] text-fog/50 tracking-widest">SPINE</div>
+        </div>
+      </div>
+
+      {/* 深度曲线引线 */}
+      <div className="absolute right-1/4 top-[28%] pointer-events-none">
+        <div className="flex flex-col items-end gap-1">
+          <div className="font-mono text-[7px] text-rust/70 tracking-widest">→ DEPTH CURVE</div>
+          <div className="font-mono text-[6px] text-fog/50 tracking-widest">Y-AXIS · 0 → -3800</div>
+          <div className="font-mono text-[6px] text-fog/50 tracking-widest">X-AXIS · TC 3:00 → 3:15</div>
+        </div>
+      </div>
+
+      {/* 镜头列表引线 */}
+      <div className="absolute right-1/4 top-[55%] pointer-events-none">
+        <div className="flex flex-col items-end gap-1">
+          <div className="font-mono text-[7px] text-rust/70 tracking-widest">→ SHOT INDEX</div>
+          <div className="font-mono text-[6px] text-fog/50 tracking-widest">5 ENTRIES · 24 FPS EACH</div>
+        </div>
+      </div>
+
+      {/* 4 边刻度点 */}
+      <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+        {Array.from({ length: 11 }).map((_, i) => (
+          <g key={`atick-${i}`}>
+            <line x1={`${i * 10}%`} y1="0" x2={`${i * 10}%`} y2={i % 5 === 0 ? "6" : "3"} stroke="rgba(232,232,232,0.12)" strokeWidth="0.5" />
+            <line x1="0" y1={`${i * 10}%`} x2={i % 5 === 0 ? "6" : "3"} y2={`${i * 10}%`} stroke="rgba(232,232,232,0.12)" strokeWidth="0.5" />
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+function MetaRow({ k, v }: { k: string; v: string }) {
+  return (
+    <div className="flex items-center justify-between border-b border-bone/5 py-0.5">
+      <span className="font-mono text-[6px] text-fog/60 tracking-widest">{k}</span>
+      <span className="font-mono text-[7px] text-bone/80 tabular-nums truncate ml-1">{v}</span>
+    </div>
   );
 }
 

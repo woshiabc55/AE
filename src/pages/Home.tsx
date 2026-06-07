@@ -9,6 +9,9 @@ import SlideNav from "@/components/SlideNav";
 import DepthTransition from "@/components/DepthTransition";
 import RunningTC from "@/components/RunningTC";
 import ZAxisIndicator from "@/components/ZAxisIndicator";
+import FilmStrip from "@/components/FilmStrip";
+import DirectorScript from "@/components/DirectorScript";
+import ColorScript from "@/components/ColorScript";
 import { shots } from "@/data/shots";
 import { useAppStore } from "@/store";
 import type { ShotId } from "@/data/shots";
@@ -129,7 +132,10 @@ export default function Home() {
         <>
           <DepthTransition />
           <ZAxisIndicator activeShotId={activeShot} scrollProgress={scrollProgress} />
+          <ColorScript activeShotId={activeShot} onJump={jumpTo} />
           <LayerSwitcher active={activeLayer} onChange={setLayer} />
+          <DirectorScript activeShotId={activeShot} onJump={jumpTo} />
+          <FilmStrip activeShotId={activeShot} onJump={jumpTo} />
           <SlideNav
             activeShotId={activeShot}
             onPrev={goPrev}
