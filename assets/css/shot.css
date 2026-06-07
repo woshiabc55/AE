@@ -1,0 +1,204 @@
+/* =================================================================
+   分镜卡样式
+   ================================================================= */
+
+.shot-page {
+  min-height: 100vh;
+  padding: 5vh 6vw;
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(126, 168, 154, .08), transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(217, 154, 82, .04), transparent 50%),
+    var(--ink);
+  color: var(--paper);
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 4em;
+  align-items: center;
+}
+
+.shot-canvas {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: linear-gradient(135deg, #1a1814 0%, #0c0a09 100%);
+  border: 1px solid rgba(217, 154, 82, .2);
+  overflow: hidden;
+  box-shadow: 0 30px 100px rgba(0, 0, 0, .6);
+}
+
+.shot-meta {
+  position: absolute; top: 0; left: 0; right: 0;
+  display: flex; justify-content: space-between;
+  padding: 20px 24px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, .6), transparent);
+  z-index: 2;
+}
+.shot-meta .label {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: .4em;
+  color: var(--kiln-gold);
+  text-transform: uppercase;
+}
+.shot-meta .duration {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: .3em;
+  color: var(--ash);
+}
+
+.shot-info h2 {
+  font-family: var(--font-serif-cn);
+  font-size: 32px;
+  color: var(--paper);
+  margin-bottom: 1em;
+  font-weight: 400;
+  letter-spacing: .05em;
+}
+.shot-info .badge {
+  display: inline-block;
+  padding: .3em .8em;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: .3em;
+  color: var(--kiln-gold);
+  border: 1px solid currentColor;
+  margin-right: .5em;
+  text-transform: uppercase;
+}
+.shot-info .shot-num {
+  font-family: var(--font-display);
+  font-size: 60px;
+  color: var(--kiln-gold);
+  letter-spacing: .05em;
+  margin-bottom: .3em;
+  font-weight: 300;
+}
+.shot-info .shot-type {
+  font-size: 14px;
+  letter-spacing: .3em;
+  color: var(--ash);
+  text-transform: uppercase;
+  margin-bottom: 2em;
+}
+
+.shot-description {
+  font-size: 16px;
+  line-height: 1.9;
+  color: var(--paper-soft);
+  margin: 1.5em 0;
+  padding-left: 1em;
+  border-left: 2px solid var(--kiln-gold);
+}
+
+.shot-dialogue {
+  margin: 1.5em 0;
+  padding: 1em 1.2em;
+  background: rgba(217, 154, 82, .06);
+  border-left: 3px solid var(--kiln-gold);
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--paper);
+}
+.shot-dialogue .speaker {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: .3em;
+  color: var(--kiln-gold);
+  display: block;
+  margin-bottom: .4em;
+  text-transform: uppercase;
+}
+
+.shot-audio {
+  display: flex; align-items: center; gap: 12px;
+  margin-top: 1.5em;
+  padding-top: 1.5em;
+  border-top: 1px dashed rgba(217, 154, 82, .2);
+  font-size: 13px;
+  color: var(--ash);
+  letter-spacing: .1em;
+}
+.shot-audio .wave {
+  flex: 1;
+  height: 24px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 24' preserveAspectRatio='none'><path d='M0,12 Q10,2 20,12 T40,12 T60,12 T80,12 T100,12 T120,12 T140,12 T160,12 T180,12 T200,12' stroke='%23d99a52' fill='none' stroke-width='1.5'/></svg>");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  opacity: .6;
+}
+
+.shot-nav {
+  display: flex; justify-content: space-between;
+  margin-top: 2em;
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: .3em;
+  color: var(--ash);
+  text-transform: uppercase;
+}
+.shot-nav a { color: var(--kiln-gold); border: none; }
+.shot-nav .disabled { color: var(--ink-soft); pointer-events: none; }
+
+/* 不同景别的画布变体 */
+.size-CU .shot-canvas { background: radial-gradient(ellipse at 50% 50%, #2a1a0e 0%, #0c0a09 70%); }
+.size-CU .shot-canvas::after {
+  content: ""; position: absolute; inset: 20%;
+  background: radial-gradient(circle, var(--kiln-gold) 0%, var(--kiln-ember) 30%, transparent 70%);
+  filter: blur(20px);
+  animation: pulse 4s ease-in-out infinite;
+}
+.size-ECU .shot-canvas { background: radial-gradient(circle at center, #3a2510 0%, #0c0a09 80%); }
+.size-ECU .shot-canvas::after {
+  content: "章生"; position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-serif-cn);
+  font-size: 120px;
+  color: rgba(181, 138, 74, .35);
+  font-weight: 300;
+}
+.size-MS .shot-canvas {
+  background:
+    radial-gradient(ellipse at 50% 60%, rgba(217, 154, 82, .1) 0%, transparent 60%),
+    linear-gradient(135deg, #1a1814, #0c0a09);
+}
+.size-WS .shot-canvas {
+  background:
+    linear-gradient(to bottom, #2a1a0e 0%, #1a1814 30%, #0c0a09 100%);
+}
+.size-WS .shot-canvas::before {
+  content: ""; position: absolute;
+  left: 10%; right: 10%; bottom: 30%; top: 60%;
+  background: linear-gradient(to top, var(--celadon-deep) 0%, transparent 100%);
+  opacity: .4;
+}
+.size-AIR .shot-canvas {
+  background: linear-gradient(to bottom, #1a1f1c 0%, #2a3530 50%, #0c0a09 100%);
+}
+.size-AIR .shot-canvas::before {
+  content: ""; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(255, 220, 180, .15) 0%, transparent 50%),
+    radial-gradient(ellipse at 30% 70%, rgba(126, 168, 154, .1) 0%, transparent 40%);
+}
+.size-TITLE .shot-canvas { background: #000; }
+.size-TITLE .shot-canvas::after {
+  content: attr(data-text); position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-serif-cn);
+  font-size: 42px;
+  color: var(--kiln-gold);
+  letter-spacing: .3em;
+  text-align: center;
+  padding: 0 1em;
+  line-height: 1.6;
+}
+.size-BLACK .shot-canvas { background: #000; }
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: .6; }
+  50%      { transform: scale(1.1); opacity: 1; }
+}
+
+@media (max-width: 900px) {
+  .shot-page { grid-template-columns: 1fr; gap: 2em; }
+}
