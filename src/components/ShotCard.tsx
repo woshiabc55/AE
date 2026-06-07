@@ -68,7 +68,7 @@ function SlideTopBar({ shot, index, total, isActive }: { shot: Shot; index: numb
       <div className="flex items-center gap-6 font-mono text-[10px] tracking-widest">
         <div className="flex items-center gap-2">
           <div className={`w-1.5 h-1.5 rounded-full ${isActive ? "bg-blood animate-pulse" : "bg-fog/40"}`} />
-          <span className={isActive ? "text-bone" : "text-fog/50"}>CHIXIAO</span>
+          <span className={isActive ? "text-bone" : "text-fog/50"}>深渊恐惧</span>
         </div>
         <span className="text-fog/40">/</span>
         <span className="text-fog">SEQ 21-25</span>

@@ -271,8 +271,10 @@ export const layers: { key: LayerKey; label: string; cn: string }[] = [
 ];
 
 export const projectMeta = {
-  title: "赤霄",
-  titleEn: "CHIXIAO",
+  title: "深渊恐惧",
+  titleEn: "ABYSS FEAR",
+  subtitle: "一个关于下沉的电影",
+  subtitleEn: "A FILM ABOUT SINKING",
   sequence: "SEQ 21-25",
   timecode: "3:00 — 3:15",
   duration: 15,
