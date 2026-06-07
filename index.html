@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>S05 · SKYLOCK · 分镜剧本</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Anton&family=JetBrains+Mono:wght@300;400;500;700&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Oswald:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+  /* ============  TOKENS  ============ */
+  :root {
+    --bg-0: #06080C;
+    --bg-1: #0B0E14;
+    --bg-2: #11151D;
+    --bg-3: #1A1F2A;
+    --ink-0: #E8E6E1;
+    --ink-1: #B7B3AB;
+    --ink-2: #6E6A62;
+    --ink-3: #3A3A3A;
+    --line: rgba(232, 230, 225, 0.10);
+    --line-2: rgba(232, 230, 225, 0.06);
+    --orange: #FF6A1A;
+    --orange-dim: #B0490E;
+    --cyan: #7AE8FF;
+    --cyan-dim: #2E7C8B;
+    --red: #FF3B3B;
+    --amber: #FFB347;
+    --green: #6DFFB6;
+    --paper: #F2EBDD;
+    --paper-ink: #1A1814;
+  }
+
+  /* ============  RESET  ============ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg-0); color: var(--ink-0); }
+  body {
+    font-family: 'Noto Sans SC', 'JetBrains Mono', system-ui, sans-serif;
+    font-weight: 400;
+    line-height: 1.55;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(122, 232, 255, 0.06), transparent 60%),
+      radial-gradient(800px 400px at 0% 30%, rgba(255, 106, 26, 0.05), transparent 60%),
+      var(--bg-0);
+  }
+
+  /* Subtle film grain */
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.08;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>");
+  }
+
+  /* Scanlines */
+  body::after {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 9998;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.018) 0px,
+      rgba(255, 255, 255, 0.018) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  }
+
+  /* ============  TYPOGRAPHY  ============ */
+  .display { font-family: 'Bebas Neue', 'Anton', 'Oswald', sans-serif; letter-spacing: 0.02em; }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  .num { font-family: 'Oswald', 'Bebas Neue', sans-serif; font-feature-settings: "tnum"; }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* ============  FILM PERFORATIONS  ============ */
+  .perf {
+    position: fixed;
+    top: 0; bottom: 0;
+    width: 28px;
+    z-index: 50;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 20px 0;
+  }
+  .perf.left  { left: 0;  border-right: 1px solid var(--line); background: linear-gradient(to right, rgba(255,255,255,0.02), transparent); }
+  .perf.right { right: 0; border-left:  1px solid var(--line); background: linear-gradient(to left,  rgba(255,255,255,0.02), transparent); }
+  .perf .hole {
+    width: 12px; height: 18px;
+    margin: 0 auto;
+    background: var(--bg-0);
+    border: 1px solid var(--ink-3);
+    border-radius: 1px;
+  }
+  @media (max-width: 900px) { .perf { display: none; } }
+
+  /* ============  TOP MISSION BAR  ============ */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 64px;
+    background: linear-gradient(to bottom, rgba(6,8,12,0.95), rgba(6,8,12,0.75));
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(8px);
+  }
+  .topbar .left, .topbar .right { display: flex; align-items: center; gap: 24px; }
+  .topbar .mark {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.18em;
+    color: var(--ink-1);
+  }
+  .topbar .mark .dot { width: 6px; height: 6px; background: var(--orange); border-radius: 50%; box-shadow: 0 0 8px var(--orange); animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+  .topbar .stamp {
+    border: 1px solid var(--red); color: var(--red);
+    font-family: 'Oswald', sans-serif; font-weight: 700;
+    font-size: 11px; letter-spacing: 0.2em; padding: 4px 10px;
+    transform: rotate(-2deg);
+  }
+  .topbar .stat {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--ink-1); letter-spacing: 0.1em;
+  }
+  .topbar .stat b { color: var(--ink-0); font-weight: 500; }
+  @media (max-width: 700px) { .topbar { padding: 10px 16px; } .topbar .right .stat:not(:last-child) { display: none; } }
+
+  /* ============  HERO / MISSION BRIEF  ============ */
+  .hero {
+    position: relative;
+    padding: 80px 64px 60px;
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(90deg, transparent 0, transparent calc(50% - 0.5px), var(--orange) 50%, transparent calc(50% + 0.5px), transparent 100%),
+      repeating-linear-gradient(0deg, transparent 0, transparent 38px, rgba(255,255,255,0.02) 38px, rgba(255,255,255,0.02) 39px);
+    opacity: 0.18;
+    pointer-events: none;
+  }
+  .hero .corner {
+    position: absolute; width: 20px; height: 20px;
+    border: 1px solid var(--orange);
+  }
+  .hero .corner.tl { top: 24px; left: 24px;  border-right: 0; border-bottom: 0; }
+  .hero .corner.tr { top: 24px; right: 24px; border-left:  0; border-bottom: 0; }
+  .hero .corner.bl { bottom: 24px; left: 24px;  border-right: 0; border-top: 0; }
+  .hero .corner.br { bottom: 24px; right: 24px; border-left:  0; border-top: 0; }
+
+  .hero-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 48px;
+    align-items: end;
+  }
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; letter-spacing: 0.4em;
+    color: var(--orange);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .hero-eyebrow::before {
+    content: ""; display: inline-block;
+    width: 36px; height: 1px; background: var(--orange);
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', 'Anton', sans-serif;
+    font-size: clamp(80px, 14vw, 200px);
+    line-height: 0.85;
+    letter-spacing: -0.01em;
+    color: var(--ink-0);
+  }
+  .hero-title .s { color: var(--orange); }
+  .hero-title .s2 { color: var(--cyan); }
+  .hero-sub {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(28px, 4vw, 48px);
+    color: var(--ink-1);
+    letter-spacing: 0.06em;
+    margin-top: 8px;
+  }
+  .hero-sub .sep { color: var(--ink-2); margin: 0 12px; }
+  .hero-cn {
+    margin-top: 20px;
+    font-size: 16px; color: var(--ink-1);
+    max-width: 540px;
+  }
+  .hero-cn .tag {
+    display: inline-block;
+    border: 1px solid var(--line);
+    color: var(--ink-1);
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    letter-spacing: 0.16em;
+    padding: 3px 8px; margin-right: 8px;
+  }
+
+  .hero-meta {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    border: 1px solid var(--line);
+  }
+  .hero-meta .cell {
+    padding: 18px 20px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-meta .cell:nth-child(2n) { border-right: 0; }
+  .hero-meta .cell:nth-last-child(-n+2) { border-bottom: 0; }
+  .hero-meta .label {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    letter-spacing: 0.3em; color: var(--ink-2);
+    margin-bottom: 6px;
+  }
+  .hero-meta .value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px; color: var(--ink-0);
+    letter-spacing: 0.04em;
+  }
+  .hero-meta .value .u {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: var(--ink-2); margin-left: 6px; letter-spacing: 0.1em;
+  }
+  .hero-meta .value.cyan { color: var(--cyan); }
+  .hero-meta .value.orange { color: var(--orange); }
+  .hero-meta .sub {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--ink-1); margin-top: 4px;
+  }
+  @media (max-width: 900px) {
+    .hero { padding: 56px 24px 40px; }
+    .hero-grid { grid-template-columns: 1fr; gap: 32px; }
+  }
+
+  /* HUD ticker */
+  .hud-strip {
+    display: flex; gap: 0; flex-wrap: wrap;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: var(--bg-1);
+  }
+  .hud-strip .item {
+    flex: 1 1 200px;
+    padding: 14px 24px;
+    border-right: 1px solid var(--line);
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--ink-1); letter-spacing: 0.16em;
+  }
+  .hud-strip .item:last-child { border-right: 0; }
+  .hud-strip .item b { color: var(--cyan); font-weight: 500; }
+  .hud-strip .item.alert b { color: var(--red); }
+
+  /* ============  SECTION TITLE  ============ */
+  .section-title {
+    padding: 72px 64px 24px;
+    display: flex; align-items: end; justify-content: space-between;
+    border-bottom: 1px dashed var(--line);
+  }
+  .section-title h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 5vw, 64px);
+    letter-spacing: 0.04em;
+    color: var(--ink-0);
+  }
+  .section-title h2 .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px; color: var(--orange); margin-right: 16px;
+    letter-spacing: 0.2em; vertical-align: middle;
+  }
+  .section-title .meta {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--ink-1); letter-spacing: 0.18em; text-align: right;
+  }
+  .section-title .meta b { color: var(--orange); }
+  @media (max-width: 700px) { .section-title { padding: 48px 16px 16px; flex-direction: column; align-items: flex-start; gap: 12px; } }
+
+  /* ============  SHOT CARDS  ============ */
+  .shots {
+    padding: 48px 64px 0;
+    display: flex; flex-direction: column; gap: 56px;
+  }
+  @media (max-width: 700px) { .shots { padding: 24px 16px 0; gap: 32px; } }
+
+  .shot {
+    position: relative;
+    display: grid;
+    grid-template-columns: 110px 1fr 360px;
+    gap: 32px;
+    padding: 32px 28px;
+    background:
+      linear-gradient(180deg, var(--bg-2), var(--bg-1));
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--ink-2);
+    transition: border-color .25s ease, transform .25s ease, background .25s ease;
+  }
+  .shot:nth-child(even) {
+    grid-template-columns: 110px 360px 1fr;
+    border-left: 1px solid var(--line);
+    border-right: 2px solid var(--ink-2);
+  }
+  .shot:nth-child(even) .shot-index { order: 0; }
+  .shot:nth-child(even) .shot-frame { order: 2; }
+  .shot:nth-child(even) .shot-body  { order: 1; }
+  .shot:hover { border-color: var(--orange); background: linear-gradient(180deg, #14181F, #0D1118); }
+  .shot::after {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 2px; background: var(--orange);
+    transform: scaleY(0); transform-origin: top; transition: transform .35s ease;
+  }
+  .shot:hover::after { transform: scaleY(1); }
+  @media (max-width: 1100px) {
+    .shot, .shot:nth-child(even) { grid-template-columns: 90px 1fr; }
+    .shot .shot-frame, .shot:nth-child(even) .shot-frame { grid-column: 1 / -1; order: 3; }
+  }
+  @media (max-width: 700px) {
+    .shot, .shot:nth-child(even) { grid-template-columns: 1fr; padding: 20px 16px; }
+    .shot .shot-index { order: 0 !important; }
+    .shot .shot-body  { order: 1 !important; }
+    .shot .shot-frame { order: 2 !important; }
+  }
+
+  /* Index column */
+  .shot-index {
+    display: flex; flex-direction: column; gap: 12px;
+    padding-top: 4px;
+  }
+  .shot-index .seq {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 88px; line-height: 0.85;
+    color: var(--ink-0);
+    letter-spacing: -0.02em;
+  }
+  .shot-index .seq .pre { color: var(--ink-2); font-size: 28px; vertical-align: top; }
+  .shot-index .stamp {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    letter-spacing: 0.2em; color: var(--ink-1);
+    border: 1px solid var(--line);
+    padding: 4px 6px;
+  }
+  .shot-index .stamp .d { color: var(--cyan); }
+
+  /* Body */
+  .shot-body { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+  .shot-head {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 10px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    letter-spacing: 0.2em; color: var(--ink-0);
+    background: var(--bg-3);
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--orange);
+  }
+  .pill .k { color: var(--ink-2); font-size: 10px; }
+  .pill .v { color: var(--ink-0); }
+  .pill.size { border-left-color: var(--cyan); }
+  .pill.move { border-left-color: var(--orange); }
+  .pill.dur  { border-left-color: var(--amber); }
+  .pill.dur .v { color: var(--amber); font-size: 14px; }
+
+  .visual {
+    font-size: 17px; line-height: 1.7;
+    color: var(--ink-0);
+    font-weight: 400;
+    position: relative;
+    padding-left: 16px;
+  }
+  .visual::before {
+    content: ""; position: absolute; left: 0; top: 6px; bottom: 6px;
+    width: 2px; background: linear-gradient(to bottom, var(--orange), transparent);
+  }
+
+  .meta-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px;
+    border-top: 1px dashed var(--line);
+    padding-top: 14px;
+  }
+  @media (max-width: 560px) { .meta-row { grid-template-columns: 1fr; } }
+
+  .meta-row .row { display: flex; flex-direction: column; gap: 4px; }
+  .meta-row .k {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    letter-spacing: 0.25em; color: var(--ink-2);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .meta-row .k::before {
+    content: ""; display: inline-block; width: 8px; height: 1px; background: var(--ink-2);
+  }
+  .meta-row .v { font-size: 14px; color: var(--ink-1); }
+
+  .meta-row .v.sound  { color: var(--ink-1); font-style: normal; }
+  .meta-row .v.sound::before { content: "♪ "; color: var(--orange); }
+  .meta-row .v.dialog {
+    color: var(--paper);
+    background: var(--paper-ink);
+    padding: 10px 14px;
+    border-left: 3px solid var(--orange);
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 14px; line-height: 1.6;
+    position: relative;
+  }
+  .meta-row .v.dialog .who {
+    display: block;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    letter-spacing: 0.2em; color: var(--orange);
+    margin-bottom: 4px;
+  }
+  .meta-row .v.dialog::after {
+    content: ""; position: absolute; right: -8px; top: 18px;
+    border: 6px solid transparent; border-left-color: var(--orange);
+  }
+  .meta-row .v.purpose { color: var(--cyan); }
+  .meta-row .v.purpose::before { content: "▸ "; }
+
+  /* Frame (visual mock) */
+  .shot-frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background:
+      linear-gradient(135deg, rgba(122,232,255,0.06), rgba(255,106,26,0.04)),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 36px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 36px),
+      radial-gradient(circle at 30% 30%, rgba(122,232,255,0.10), transparent 50%),
+      radial-gradient(circle at 70% 80%, rgba(255,106,26,0.08), transparent 50%),
+      linear-gradient(180deg, #0E131C, #06080C);
+    border: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .shot-frame .frame-corner {
+    position: absolute; width: 14px; height: 14px;
+    border: 1px solid var(--orange);
+  }
+  .shot-frame .frame-corner.tl { top: 8px; left: 8px;  border-right: 0; border-bottom: 0; }
+  .shot-frame .frame-corner.tr { top: 8px; right: 8px; border-left:  0; border-bottom: 0; }
+  .shot-frame .frame-corner.bl { bottom: 8px; left: 8px;  border-right: 0; border-top: 0; }
+  .shot-frame .frame-corner.br { bottom: 8px; right: 8px; border-left:  0; border-top: 0; }
+  .shot-frame .hud-text {
+    position: absolute; top: 12px; left: 12px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--cyan); letter-spacing: 0.2em;
+  }
+  .shot-frame .hud-text .r { color: var(--red); }
+  .shot-frame .hud-text .g { color: var(--green); }
+  .shot-frame .timecode {
+    position: absolute; bottom: 12px; right: 12px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--ink-1); letter-spacing: 0.16em;
+    background: rgba(0,0,0,0.4); padding: 2px 6px;
+  }
+  .shot-frame .reticle {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 56%; aspect-ratio: 1;
+    border: 1px solid var(--orange);
+    border-radius: 50%;
+    opacity: 0.6;
+  }
+  .shot-frame .reticle::before, .shot-frame .reticle::after {
+    content: ""; position: absolute; background: var(--orange);
+  }
+  .shot-frame .reticle::before { left: 50%; top: -4px; bottom: -4px; width: 1px; transform: translateX(-0.5px); }
+  .shot-frame .reticle::after  { top: 50%; left: -4px; right: -4px; height: 1px; transform: translateY(-0.5px); }
+  .shot-frame .blink {
+    position: absolute; width: 8px; height: 8px; background: var(--red);
+    border-radius: 50%; box-shadow: 0 0 12px var(--red);
+    animation: blink 1s steps(2) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  .shot-frame .clouds {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 30% 18% at 30% 60%, rgba(255,255,255,0.10), transparent 60%),
+      radial-gradient(ellipse 40% 22% at 70% 40%, rgba(255,255,255,0.08), transparent 60%),
+      radial-gradient(ellipse 26% 16% at 50% 80%, rgba(255,255,255,0.06), transparent 60%);
+  }
+  .shot-frame .jet {
+    position: absolute; width: 28px; height: 6px;
+    background: linear-gradient(90deg, transparent, var(--ink-0), var(--ink-2));
+    border-radius: 1px;
+  }
+  .shot-frame .jet::after {
+    content: ""; position: absolute; right: 100%; top: 50%;
+    width: 80px; height: 1px; background: linear-gradient(to left, rgba(232,230,225,0.4), transparent);
+    transform: translateY(-0.5px);
+  }
+  .shot-frame .trail {
+    position: absolute; height: 1px; background: rgba(255,255,255,0.3);
+  }
+  .shot-frame .label-band {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+    padding: 18px 12px 10px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--ink-1); letter-spacing: 0.18em;
+  }
+  .shot-frame .label-band b { color: var(--cyan); }
+
+  /* per-shot frame content variants */
+  .frame-1 .jet1 { top: 38%; left: 22%; }
+  .frame-1 .jet2 { top: 48%; left: 30%; transform: scale(0.7); opacity: 0.8; }
+  .frame-1 .trail1 { top: 38%; left: 5%;  width: 18%; }
+  .frame-1 .trail2 { top: 48%; left: 12%; width: 20%; }
+
+  .frame-2 .pilot { position: absolute; inset: 0; background:
+    linear-gradient(135deg, #1B1F29 0%, #0B0E14 60%, #06080C 100%);
+  }
+  .frame-2 .helmet {
+    position: absolute; top: 18%; left: 25%;
+    width: 50%; aspect-ratio: 1;
+    background: radial-gradient(circle at 35% 35%, #2A2F3A, #0E1118 70%);
+    border-radius: 50%;
+    border: 1px solid var(--ink-3);
+    box-shadow: inset -12px -16px 30px rgba(0,0,0,0.6);
+  }
+  .frame-2 .visor {
+    position: absolute; top: 30%; left: 30%;
+    width: 42%; height: 36%;
+    background: linear-gradient(135deg, rgba(122,232,255,0.4), rgba(255,106,26,0.2), rgba(0,0,0,0.8));
+    border: 1px solid var(--cyan);
+    border-radius: 30% 50% 40% 60% / 50% 40% 60% 50%;
+    box-shadow: 0 0 18px rgba(122,232,255,0.4);
+  }
+  .frame-2 .visor::after {
+    content: ""; position: absolute; top: 30%; left: 20%; width: 60%; height: 1px;
+    background: var(--orange); box-shadow: 0 6px 0 var(--orange);
+  }
+
+  .frame-3 .radar {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 70%; aspect-ratio: 1;
+    background:
+      conic-gradient(from 0deg, rgba(122,232,255,0.18), transparent 25%, transparent 100%),
+      radial-gradient(circle, transparent 38%, rgba(122,232,255,0.15) 39%, transparent 41%),
+      radial-gradient(circle, transparent 58%, rgba(122,232,255,0.10) 59%, transparent 61%),
+      radial-gradient(circle, transparent 78%, rgba(122,232,255,0.06) 79%, transparent 81%);
+    border: 1px solid var(--cyan);
+    border-radius: 50%;
+    animation: spin 4s linear infinite;
+  }
+  @keyframes spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+  .frame-3 .blip { position: absolute; width: 10px; height: 10px; background: var(--red); border-radius: 50%; box-shadow: 0 0 14px var(--red); }
+  .frame-3 .blip.b1 { top: 36%; left: 58%; animation: blink 0.6s steps(2) infinite; }
+  .frame-3 .blip.b2 { top: 40%; left: 64%; animation: blink 0.6s steps(2) infinite 0.3s; }
+
+  .frame-4 .pov { position: absolute; inset: 0; background: linear-gradient(180deg, #142030 0%, #06080C 100%); }
+  .frame-4 .canopy { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 80%; height: 70%; border: 1px solid var(--cyan); border-radius: 50% 50% 30% 30%; background: radial-gradient(ellipse at 50% 30%, rgba(122,232,255,0.10), transparent 60%); }
+  .frame-4 .horizon { position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+  .frame-4 .clouds4 { position: absolute; inset: 50% 0 0 0; background: radial-gradient(ellipse 30% 20% at 30% 60%, rgba(255,255,255,0.10), transparent 60%), radial-gradient(ellipse 30% 20% at 70% 50%, rgba(255,255,255,0.08), transparent 60%); }
+
+  .frame-5 .jets-in {
+    position: absolute; top: 30%; right: -10%;
+    width: 60%; height: 40%;
+    background: linear-gradient(135deg, transparent 0%, transparent 60%, rgba(255,106,26,0.4) 100%);
+  }
+  .frame-5 .jet-foe {
+    position: absolute; top: 35%; right: 10%;
+    width: 60px; height: 8px;
+    background: linear-gradient(90deg, var(--ink-2), var(--ink-0));
+    transform: rotate(-8deg);
+  }
+  .frame-5 .jet-foe::before {
+    content: ""; position: absolute; left: 100%; top: 50%; transform: translateY(-50%);
+    width: 80px; height: 1px; background: linear-gradient(to right, rgba(232,230,225,0.5), transparent);
+  }
+  .frame-5 .sun { position: absolute; top: 15%; right: 18%; width: 60px; height: 60px; background: radial-gradient(circle, #fff7e0, transparent 70%); border-radius: 50%; }
+  .frame-5 .speed { font-family: 'JetBrains Mono', monospace; color: var(--orange); font-size: 24px; position: absolute; top: 12px; right: 12px; letter-spacing: 0.1em; }
+
+  .frame-6 .vapor {
+    position: absolute; top: 0; left: 30%;
+    width: 50%; height: 100%;
+    background: linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.5) 40%, transparent 100%);
+    transform: skewX(-20deg);
+    filter: blur(2px);
+  }
+  .frame-6 .jet-ours { position: absolute; top: 40%; left: 20%; width: 50px; height: 6px; background: var(--ink-0); transform: rotate(-25deg); }
+  .frame-6 .jet-ours::after { content: ""; position: absolute; right: 100%; top: 50%; width: 120px; height: 1px; background: linear-gradient(to left, rgba(232,230,225,0.6), transparent); transform: translateY(-0.5px); }
+  .frame-6 .glint { position: absolute; top: 18%; right: 22%; width: 24px; height: 24px; background: radial-gradient(circle, #fff, transparent 60%); border-radius: 50%; }
+
+  .frame-7 .hud-cross {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 60%; aspect-ratio: 1;
+    border: 2px solid var(--orange);
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(0,0,0,0.6);
+  }
+  .frame-7 .hud-cross::before, .frame-7 .hud-cross::after {
+    content: ""; position: absolute; background: var(--orange);
+  }
+  .frame-7 .hud-cross::before { top: 50%; left: -8px; right: -8px; height: 2px; transform: translateY(-1px); }
+  .frame-7 .hud-cross::after  { left: 50%; top: -8px; bottom: -8px; width: 2px; transform: translateX(-1px); }
+  .frame-7 .lock {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    color: var(--orange); font-family: 'JetBrains Mono', monospace; font-size: 14px; letter-spacing: 0.2em;
+    white-space: nowrap; text-shadow: 0 0 10px var(--orange);
+  }
+  .frame-7 .target {
+    position: absolute; top: 46%; left: 48%;
+    width: 30px; height: 6px; background: var(--ink-0);
+    transform: rotate(8deg);
+  }
+  .frame-7 .target::after {
+    content: ""; position: absolute; left: 100%; top: 50%; transform: translateY(-50%);
+    width: 60px; height: 1px; background: linear-gradient(to right, rgba(232,230,225,0.5), transparent);
+  }
+  .frame-7 .corner-marks { position: absolute; inset: 16px; }
+  .frame-7 .corner-marks span { position: absolute; width: 12px; height: 12px; border: 1px solid var(--orange); }
+  .frame-7 .corner-marks .tl { top: 0; left: 0; border-right: 0; border-bottom: 0; }
+  .frame-7 .corner-marks .tr { top: 0; right: 0; border-left: 0; border-bottom: 0; }
+  .frame-7 .corner-marks .bl { bottom: 0; left: 0; border-right: 0; border-top: 0; }
+  .frame-7 .corner-marks .br { bottom: 0; right: 0; border-left: 0; border-top: 0; }
+
+  .frame-8 .sky { position: absolute; inset: 0; background: linear-gradient(180deg, #1A2A40 0%, #4F6A87 50%, #D6C49A 100%); }
+  .frame-8 .ink-cloud1 { position: absolute; top: 25%; left: 8%; width: 40%; height: 30%; background: radial-gradient(ellipse, rgba(255,255,255,0.4), transparent 60%); filter: blur(8px); }
+  .frame-8 .ink-cloud2 { position: absolute; top: 55%; right: 5%; width: 50%; height: 25%; background: radial-gradient(ellipse, rgba(255,255,255,0.35), transparent 60%); filter: blur(10px); }
+  .frame-8 .trail-a { position: absolute; top: 30%; left: 20%; width: 60%; height: 2px; background: linear-gradient(to right, transparent, rgba(255,255,255,0.7), transparent); transform: rotate(8deg); filter: blur(1px); }
+  .frame-8 .trail-b { position: absolute; top: 55%; left: 15%; width: 70%; height: 2px; background: linear-gradient(to right, transparent, rgba(255,255,255,0.6), transparent); transform: rotate(-6deg); filter: blur(1px); }
+  .frame-8 .trail-c { position: absolute; top: 42%; left: 10%; width: 80%; height: 1px; background: linear-gradient(to right, transparent, rgba(255,106,26,0.5), transparent); transform: rotate(2deg); filter: blur(1px); }
+  .frame-8 .explosion {
+    position: absolute; top: 30%; right: 25%;
+    width: 80px; height: 80px;
+    background: radial-gradient(circle, #fff 0%, #FFB347 25%, #FF6A1A 50%, transparent 80%);
+    border-radius: 50%;
+    filter: blur(2px);
+    animation: explode 2s ease-out infinite;
+  }
+  @keyframes explode {
+    0% { transform: scale(0.4); opacity: 0; }
+    20% { opacity: 1; }
+    100% { transform: scale(1.4); opacity: 0; }
+  }
+
+  /* ============  TIMELINE  ============ */
+  .timeline-wrap {
+    padding: 72px 64px 24px;
+  }
+  @media (max-width: 700px) { .timeline-wrap { padding: 48px 16px 24px; } }
+  .timeline {
+    position: relative;
+    border: 1px solid var(--line);
+    background: var(--bg-1);
+    padding: 36px 36px 28px;
+  }
+  .timeline-head {
+    display: flex; align-items: end; justify-content: space-between;
+    margin-bottom: 18px;
+  }
+  .timeline-head h3 {
+    font-family: 'Bebas Neue', sans-serif; font-size: 28px;
+    color: var(--ink-0); letter-spacing: 0.06em;
+  }
+  .timeline-head .sub {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--ink-1); letter-spacing: 0.18em;
+  }
+  .timeline-bar {
+    position: relative;
+    height: 64px;
+    display: flex; align-items: stretch; gap: 4px;
+    padding: 0 0 24px;
+  }
+  .timeline-bar .seg {
+    position: relative;
+    display: flex; flex-direction: column; justify-content: space-between;
+    background: linear-gradient(180deg, rgba(255,106,26,0.5), rgba(255,106,26,0.15));
+    border: 1px solid var(--orange);
+    color: var(--ink-0);
+    padding: 6px 8px;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .timeline-bar .seg:nth-child(2n) {
+    background: linear-gradient(180deg, rgba(122,232,255,0.45), rgba(122,232,255,0.12));
+    border-color: var(--cyan);
+  }
+  .timeline-bar .seg .id {
+    font-family: 'Bebas Neue', sans-serif; font-size: 22px;
+    color: var(--ink-0); letter-spacing: 0.04em;
+  }
+  .timeline-bar .seg .dur {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--ink-0); letter-spacing: 0.1em;
+  }
+  .timeline-ruler {
+    position: relative;
+    height: 28px;
+    border-top: 1px solid var(--line);
+    margin-top: 4px;
+  }
+  .timeline-ruler .tick {
+    position: absolute; top: 0; bottom: 0;
+    border-left: 1px solid var(--ink-3);
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--ink-2); padding-left: 6px; letter-spacing: 0.1em;
+    display: flex; align-items: center;
+  }
+  .timeline-ruler .tick.major { color: var(--ink-1); }
+
+  /* ============  LEGEND  ============ */
+  .legend {
+    padding: 24px 64px 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+    border-top: 1px solid var(--line);
+    margin-top: 64px;
+  }
+  .legend .group {
+    padding: 24px 24px 24px 0;
+    border-right: 1px solid var(--line);
+  }
+  .legend .group:last-child { border-right: 0; }
+  .legend h4 {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    letter-spacing: 0.3em; color: var(--orange);
+    margin-bottom: 14px;
+  }
+  .legend dl { display: grid; grid-template-columns: 70px 1fr; gap: 8px 16px; }
+  .legend dt {
+    font-family: 'Bebas Neue', sans-serif; font-size: 22px;
+    color: var(--ink-0); letter-spacing: 0.04em;
+  }
+  .legend dt.sub { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--cyan); letter-spacing: 0.1em; }
+  .legend dd { font-size: 13px; color: var(--ink-1); align-self: center; }
+  @media (max-width: 900px) { .legend { grid-template-columns: 1fr; padding: 24px 16px 48px; } .legend .group { border-right: 0; border-bottom: 1px solid var(--line); } .legend .group:last-child { border-bottom: 0; } }
+
+  /* ============  FOOTER  ============ */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 24px 64px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--ink-2); letter-spacing: 0.18em;
+  }
+  footer .right { display: flex; gap: 24px; align-items: center; }
+  footer .barcode {
+    display: inline-block; height: 18px; width: 100px;
+    background: repeating-linear-gradient(90deg, var(--ink-1) 0 1px, transparent 1px 3px, var(--ink-1) 3px 4px, transparent 4px 7px);
+  }
+  @media (max-width: 700px) { footer { padding: 16px; flex-direction: column; gap: 8px; } }
+
+  /* ============  ENTRANCE ANIMATIONS  ============ */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .reveal.in {
+    opacity: 1; transform: none;
+  }
+  .scan {
+    position: relative; overflow: hidden;
+  }
+  .scan::after {
+    content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--orange), transparent);
+    animation: scan 3.4s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes scan {
+    0%   { transform: translateY(0);   opacity: 0; }
+    8%   { opacity: 1; }
+    92%  { opacity: 1; }
+    100% { transform: translateY(700px); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
+
+  /* ============  PRINT  ============ */
+  @media print {
+    body { background: #fff; color: #111; }
+    body::before, body::after { display: none; }
+    .perf, .topbar, .scan::after, .reveal, footer { display: none !important; }
+    .hero { padding: 24px; border-bottom: 2px solid #111; }
+    .hero::before { display: none; }
+    .hero-title { color: #111; }
+    .hero-title .s, .hero-title .s2 { color: #b0490e; }
+    .hero-meta { border: 1px solid #111; }
+    .hero-meta .value { color: #111; }
+    .section-title { padding: 16px 24px 8px; color: #111; }
+    .section-title h2 { color: #111; }
+    .shots { padding: 16px 24px; gap: 16px; }
+    .shot {
+      background: #fff !important;
+      border: 1px solid #111 !important;
+      page-break-inside: avoid;
+      break-inside: avoid;
+      color: #111;
+    }
+    .shot::after, .shot:hover::after { display: none; }
+    .shot-frame { display: none; }
+    .visual, .meta-row .v, .meta-row .k, .pill, .pill .v, .pill .k { color: #111 !important; }
+    .meta-row .v.dialog { background: #f3efe5; color: #111; border-left: 3px solid #111; }
+    .meta-row .v.dialog .who { color: #b0490e; }
+    .timeline-wrap, .legend { page-break-before: always; }
+    .timeline { border: 1px solid #111; background: #fff; }
+    .timeline-bar .seg { background: #f3efe5 !important; border: 1px solid #111 !important; color: #111; }
+    .legend { border-top: 1px solid #111; }
+    .legend dt, .legend dd, .legend h4 { color: #111 !important; }
+    .legend dt.sub { color: #2E7C8B !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 胶片孔 -->
+<aside class="perf left"><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span></aside>
+<aside class="perf right"><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span></aside>
+
+<!-- 顶部任务栏 -->
+<header class="topbar">
+  <div class="left">
+    <div class="mark"><span class="dot"></span>REC ● LIVE FEED · 24FPS · 2.39:1</div>
+  </div>
+  <div class="right">
+    <div class="stat">FILE <b>S05_SHOTLIST_08</b></div>
+    <div class="stat">REV <b>v2.1</b></div>
+    <div class="stat">PAGE <b>01/01</b></div>
+    <div class="stamp">CLASSIFIED</div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero scan reveal">
+  <span class="corner tl"></span><span class="corner tr"></span>
+  <span class="corner bl"></span><span class="corner br"></span>
+
+  <div class="hero-grid">
+    <div>
+      <div class="hero-eyebrow">SCENE 05 · OPERATION SKYLOCK</div>
+      <h1 class="hero-title">
+        S<span class="s">05</span><span class="s2">·</span>天<span class="s">幕</span>猎<span class="s2">杀</span>
+      </h1>
+      <div class="hero-sub">AIR <span class="sep">/</span> SUPERIORITY <span class="sep">/</span> ENGAGE</div>
+      <p class="hero-cn">
+        <span class="tag">SEQUENCE</span><span class="tag">DOGFIGHT OPEN</span>
+        云海之上，鹰编队突遇不明战机拦截，雷达告警、信息失谐、距离归零——一场空战在三秒钟内骤然点燃。本场共 <b style="color:var(--orange)">8</b> 个镜头，总时长 <b style="color:var(--orange)">18.0s</b>，需要在剪辑上保持高密度冲击。
+      </p>
+    </div>
+    <div class="hero-meta">
+      <div class="cell">
+        <div class="label">SHOT COUNT</div>
+        <div class="value orange">08<span class="u">SHOTS</span></div>
+        <div class="sub">S05-01 → S05-08</div>
+      </div>
+      <div class="cell">
+        <div class="label">RUNTIME</div>
+        <div class="value cyan">18.0<span class="u">SEC</span></div>
+        <div class="sub">≈ 432 FRAMES @24F</div>
+      </div>
+      <div class="cell">
+        <div class="label">ASPECT</div>
+        <div class="value">2.39:1</div>
+        <div class="sub">CINEMASCOPE</div>
+      </div>
+      <div class="cell">
+        <div class="label">PRIMARY UNIT</div>
+        <div class="value" style="font-size:22px;line-height:1.2">EAGLE 01<br/>EAGLE 02</div>
+        <div class="sub">CALLSIGN · 长僚机</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HUD 状态条 -->
+<div class="hud-strip">
+  <div class="item">WEATHER <b>CLEAR · CBL 8500M</b></div>
+  <div class="item">LIGHT <b>AM 09:42 · GOLDEN HOUR</b></div>
+  <div class="item">ALT <b>FL320 → FL280</b></div>
+  <div class="item alert">THREAT <b>UNKNOWN 02 · RWR LOCK</b></div>
+  <div class="item">SCRIPT BY <b>DIRECTOR · DP · 1st AC</b></div>
+</div>
+
+<!-- 镜头标题 -->
+<div class="section-title">
+  <h2><span class="num">// 01</span>SHOT LIST · 镜头清单</h2>
+  <div class="meta">8 SHOTS / 18.0s / <b>HIGH DENSITY</b></div>
+</div>
+
+<!-- 镜头列表 -->
+<main class="shots" id="shots">
+
+  <!-- S05-01 -->
+  <article class="shot reveal" id="s05-01">
+    <div class="shot-index">
+      <div class="seq"><span class="pre">S05-</span>01</div>
+      <div class="stamp">FRAME <span class="d">0000</span></div>
+    </div>
+    <div class="shot-body">
+      <div class="shot-head">
+        <span class="pill size"><span class="k">SIZE</span><span class="v">远景 LS</span></span>
+        <span class="pill move"><span class="k">MOVE</span><span class="v">固定 / 慢摇</span></span>
+        <span class="pill dur"><span class="k">DUR</span><span class="v">3.0s</span></span>
+      </div>
+      <p class="visual">云海之上，两架我方战机（代号"鹰1""鹰2"）成编队平飞，阳光从云层缝隙洒下。</p>
+      <div class="meta-row">
+        <div class="row">
+          <div class="k">SOUND · 音效</div>
+          <div class="v sound">引擎低沉的轰鸣声，风声</div>
+        </div>
+        <div class="row">
+          <div class="k">PURPOSE · 用途</div>
+          <div class="v purpose">交代环境与态势</div>
+        </div>
+      </div>
+    </div>
+    <div class="shot-frame frame-1">
+      <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
+      <span class="frame-corner bl"></span><span class="frame-corner br"></span>
+      <div class="clouds"></div>
+      <div class="jet jet1"></div>
+      <div class="jet jet2"></div>
+      <div class="trail trail1"></div>
+      <div class="trail trail2"></div>
+      <div class="hud-text">CINE 2.39:1 · REC 00:00:00:00</div>
+      <div class="timecode">S05-01 / 3.0s</div>
+    </div>
+  </article>
+
+  <!-- S05-02 -->
+  <article class="shot reveal" id="s05-02">
+    <div class="shot-index">
+      <div class="seq"><span class="pre">S05-</span>02</div>
+      <div class="stamp">FRAME <span class="d">0072</span></div>
+    </div>
+    <div class="shot-body">
+      <div class="shot-head">
+        <span class="pill size"><span class="k">SIZE</span><span class="v">近景 CU</span></span>
+        <span class="pill move"><span class="k">MOVE</span><span class="v">固定</span></span>
+        <span class="pill dur"><span class="k">DUR</span><span class="v">2.0s</span></span>
+      </div>
+      <p class="visual">主角（长机飞行员）戴头盔面罩的侧脸，眼神锐利，扫视雷达屏幕。HUD（平视显示器）上的数据反射在护目镜上。</p>
+      <div class="meta-row">
+        <div class="row">
+          <div class="k">SOUND · 音效</div>
+          <div class="v sound">无线电轻微电流声，呼吸声</div>
+        </div>
+        <div class="row">
+          <div class="k">PURPOSE · 用途</div>
+          <div class="v purpose">展现人物状态</div>
+        </div>
+      </div>
+    </div>
+    <div class="shot-frame frame-2">
+      <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
+      <span class="frame-corner bl"></span><span class="frame-corner br"></span>
+      <div class="pilot"></div>
+      <div class="helmet"></div>
+      <div class="visor"></div>
+      <div class="hud-text">HUD <span class="g">●</span> 088° · 12.4KM</div>
+      <div class="timecode">S05-02 / 2.0s</div>
+    </div>
+  </article>
+
+  <!-- S05-03 -->
+  <article class="shot reveal" id="s05-03">
+    <div class="shot-index">
+      <div class="seq"><span class="pre">S05-</span>03</div>
+      <div class="stamp">FRAME <span class="d">0120</span></div>
+    </div>
+    <div class="shot-body">
+      <div class="shot-head">
+        <span class="pill size"><span class="k">SIZE</span><span class="v">特写 ECU</span></span>
+        <span class="pill move"><span class="k">MOVE</span><span class="v">固定 / 微推</span></span>
+        <span class="pill dur"><span class="k">DUR</span><span class="v">1.5s</span></span>
+      </div>
+      <p class="visual">雷达屏幕上突然出现两个闪烁的红色亮点，并快速逼近。</p>
+      <div class="meta-row">
+        <div class="row">
+          <div class="k">SOUND · 音效</div>
+          <div class="v sound">雷达告警音（尖锐的哔哔声）</div>
+        </div>
+        <div class="row">
+          <div class="k">PURPOSE · 用途</div>
+          <div class="v purpose">危机信号</div>
+        </div>
+      </div>
+    </div>
+    <div class="shot-frame frame-3">
+      <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
+      <span class="frame-corner bl"></span><span class="frame-corner br"></span>
+      <div class="radar"></div>
+      <div class="blip b1"></div>
+      <div class="blip b2"></div>
+      <div class="hud-text">RWR <span class="r">● ALERT</span> · 2 CONTACTS</div>
+      <div class="timecode">S05-03 / 1.5s</div>
+    </div>
+  </article>
+
+  <!-- S05-04 -->
+  <article class="shot reveal" id="s05-04">
+    <div class="shot-index">
+      <div class="seq"><span class="pre">S05-</span>04</div>
+      <div class="stamp">FRAME <span class="d">0156</span></div>
+    </div>
+    <div class="shot-body">
+      <div class="shot-head">
+        <span class="pill size"><span class="k">SIZE</span><span class="v">中景 MS</span></span>
+        <span class="pill move"><span class="k">MOVE</span><span class="v">手持 / 晃动</span></span>
+        <span class="pill dur"><span class="k">DUR</span><span class="v">1.5s</span></span>
+      </div>
+      <p class="visual">主角猛地抬头，透过座舱罩向外张望，眼神骤然变得紧张。</p>
+      <div class="meta-row">
+        <div class="row" style="grid-column: 1 / -1;">
+          <div class="k">DIALOGUE · 对白</div>
+          <div class="v dialog">
+            <span class="who">主角 · 无线电</span>
+            "鹰2，有客到，两点钟方向！"
+          </div>
+        </div>
+        <div class="row">
+          <div class="k">PURPOSE · 用途</div>
+          <div class="v purpose">反应镜头</div>
+        </div>
+      </div>
+    </div>
+    <div class="shot-frame frame-4">
+      <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
+      <span class="frame-corner bl"></span><span class="frame-corner br"></span>
+      <div class="pov"></div>
+      <div class="canopy"></div>
+      <div class="horizon"></div>
+      <div class="clouds4"></div>
+      <div class="hud-text">EYES UP · SCAN 2 O'CLOCK</div>
+      <div class="timecode">S05-04 / 1.5s</div>
+    </div>
+  </article>
+
+  <!-- S05-05 -->
+  <article class="shot reveal" id="s05-05">
+    <div class="shot-index">
+      <div class="seq"><span class="pre">S05-</span>05</div>
+      <div class="stamp">FRAME <span class="d">0192</span></div>
+    </div>
+    <div class="shot-body">
+      <div class="shot-head">
+        <span class="pill size"><span class="k">SIZE</span><span class="v">中远景 MLS</span></span>
+        <span class="pill move"><span class="k">MOVE</span><span class="v">快速横摇（甩）</span></span>
+        <span class="pill dur"><span class="k">DUR</span><span class="v">2.0s</span></span>
+      </div>
+      <p class="visual">镜头快速甩向右前方，两架敌机从云层中突然冲出的模糊剪影，迅速变得清晰。</p>
+      <div class="meta-row">
+        <div class="row">
+          <div class="k">SOUND · 音效</div>
+          <div class="v sound">引擎啸叫声突然变大，伴有"嗖"的破空声</div>
+        </div>
+        <div class="row">
+          <div class="k">PURPOSE · 用途</div>
+          <div class="v purpose">营造突发感</div>
+        </div>
+      </div>
+    </div>
+    <div class="shot-frame frame-5">
+      <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
+      <span class="frame-corner bl"></span><span class="frame-corner br"></span>
+      <div class="sun"></div>
+      <div class="jets-in"></div>
+      <div class="jet-foe"></div>
+      <div class="speed">M2.4 ↓</div>
+      <div class="hud-text">PANIC SWITCH · 120°/s</div>
+      <div class="timecode">S05-05 / 2.0s</div>
+    </div>
+  </article>
+
+  <!-- S05-06 -->
+  <article class="shot reveal" id="s05-06">
+    <div class="shot-index">
+      <div class="seq"><span class="pre">S05-</span>06</div>
+      <div class="stamp">FRAME <span class="d">0240</span></div>
+    </div>
+    <div class="shot-body">
+      <div class="shot-head">
+        <span class="pill size"><span class="k">SIZE</span><span class="v">全景 FS</span></span>
+        <span class="pill move"><span class="k">MOVE</span><span class="v">跟拍</span></span>
+        <span class="pill dur"><span class="k">DUR</span><span class="v">3.0s</span></span>
+      </div>
+      <p class="visual">我方战机立即进行大坡度急转弯，拉出白色涡流云，向敌机方向迎去。阳光在机翼上产生刺眼的反光。</p>
+      <div class="meta-row">
+        <div class="row">
+          <div class="k">SOUND · 音效</div>
+          <div class="v sound">引擎推力急剧增大，金属结构受力声</div>
+        </div>
+        <div class="row">
+          <div class="k">PURPOSE · 用途</div>
+          <div class="v purpose">动作开始</div>
+        </div>
+      </div>
+    </div>
+    <div class="shot-frame frame-6">
+      <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
+      <span class="frame-corner bl"></span><span class="frame-corner br"></span>
+      <div class="vapor"></div>
+      <div class="jet-ours"></div>
+      <div class="glint"></div>
+      <div class="hud-text">G-LIMIT 7.2G · BANK 65°</div>
+      <div class="timecode">S05-06 / 3.0s</div>
+    </div>
+  </article>
+
+  <!-- S05-07 -->
+  <article class="shot reveal" id="s05-07">
+    <div class="shot-index">
+      <div class="seq"><span class="pre">S05-</span>07</div>
+      <div class="stamp">FRAME <span class="d">0312</span></div>
+    </div>
+    <div class="shot-body">
+      <div class="shot-head">
+        <span class="pill size"><span class="k">SIZE</span><span class="v">主观 POV</span></span>
+        <span class="pill move"><span class="k">MOVE</span><span class="v">快速前推 + 摇晃</span></span>
+        <span class="pill dur"><span class="k">DUR</span><span class="v">2.0s</span></span>
+      </div>
+      <p class="visual">从主角头盔瞄准具视角看出去，敌机被锁定框套住，伴有"已锁定"的文字提示。</p>
+      <div class="meta-row">
+        <div class="row" style="grid-column: 1 / -1;">
+          <div class="k">DIALOGUE · 对白</div>
+          <div class="v dialog">
+            <span class="who">主角 · 无线电</span>
+            "锁定！发射！"
+          </div>
+        </div>
+        <div class="row">
+          <div class="k">SOUND · 音效</div>
+          <div class="v sound">锁定提示音（长鸣）</div>
+        </div>
+        <div class="row">
+          <div class="k">PURPOSE · 用途</div>
+          <div class="v purpose">最具代入感的镜头</div>
+        </div>
+      </div>
+    </div>
+    <div class="shot-frame frame-7">
+      <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
+      <span class="frame-corner bl"></span><span class="frame-corner br"></span>
+      <div class="hud-cross"></div>
+      <div class="target"></div>
+      <div class="lock">◀ LOCK · TONE ▶</div>
+      <div class="hud-text"><span class="r">● TONE</span> · WEAPON HOT</div>
+      <div class="timecode">S05-07 / 2.0s</div>
+    </div>
+  </article>
+
+  <!-- S05-08 -->
+  <article class="shot reveal" id="s05-08">
+    <div class="shot-index">
+      <div class="seq"><span class="pre">S05-</span>08</div>
+      <div class="stamp">FRAME <span class="d">0360</span></div>
+    </div>
+    <div class="shot-body">
+      <div class="shot-head">
+        <span class="pill size"><span class="k">SIZE</span><span class="v">极远景 EL</span></span>
+        <span class="pill move"><span class="k">MOVE</span><span class="v">固定</span></span>
+        <span class="pill dur"><span class="k">DUR</span><span class="v">4.0s</span></span>
+      </div>
+      <p class="visual">两架战机在广阔天空中交错而过，后方留下一道道尾迹云。画面像一副空中水墨画。</p>
+      <div class="meta-row">
+        <div class="row">
+          <div class="k">SOUND · 音效</div>
+          <div class="v sound">导弹发射的"轰"声 + 剧烈爆炸声（稍延迟）</div>
+        </div>
+        <div class="row">
+          <div class="k">PURPOSE · 用途</div>
+          <div class="v purpose">壮美与残酷并存</div>
+        </div>
+      </div>
+    </div>
+    <div class="shot-frame frame-8">
+      <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
+      <span class="frame-corner bl"></span><span class="frame-corner br"></span>
+      <div class="sky"></div>
+      <div class="ink-cloud1"></div>
+      <div class="ink-cloud2"></div>
+      <div class="trail-a"></div>
+      <div class="trail-b"></div>
+      <div class="trail-c"></div>
+      <div class="explosion"></div>
+      <div class="hud-text">POST-IMPACT · 2.4KM OFFSET</div>
+      <div class="timecode">S05-08 / 4.0s</div>
+    </div>
+  </article>
+
+</main>
+
+<!-- 时间轴 -->
+<section class="timeline-wrap reveal">
+  <div class="section-title" style="padding:0 0 16px; border:0;">
+    <h2><span class="num">// 02</span>TIMELINE · 时间刻度</h2>
+    <div class="meta">SCALE 1:1 · UNIT <b>SEC</b></div>
+  </div>
+  <div class="timeline">
+    <div class="timeline-head">
+      <h3>S05 · 18.0s RUNTIME</h3>
+      <div class="sub">CLICK ANY SEGMENT ↓</div>
+    </div>
+    <div class="timeline-bar" id="bar"></div>
+    <div class="timeline-ruler" id="ruler"></div>
+  </div>
+</section>
+
+<!-- 图例 -->
+<section class="legend reveal">
+  <div class="group">
+    <h4>// SHOT SIZE · 景别</h4>
+    <dl>
+      <dt>LS</dt><dd>远景 Long Shot · 交代环境</dd>
+      <dt>CU</dt><dd>近景 Close-Up · 人物刻画</dd>
+      <dt>ECU</dt><dd>特写 Extreme Close-Up · 关键细节</dd>
+      <dt>MS</dt><dd>中景 Medium Shot · 动作与反应</dd>
+      <dt>MLS</dt><dd>中远景 Medium Long Shot · 关系建立</dd>
+      <dt>FS</dt><dd>全景 Full Shot · 主体完整</dd>
+      <dt>POV</dt><dd>主观视角 Point of View · 代入感</dd>
+      <dt>EL</dt><dd>极远景 Extreme Long Shot · 史诗感</dd>
+    </dl>
+  </div>
+  <div class="group">
+    <h4>// CAMERA MOVE · 运动</h4>
+    <dl>
+      <dt class="sub">FIX</dt><dd>固定 / Static</dd>
+      <dt class="sub">PAN</dt><dd>摇摄 / Pan · 慢摇 · 快速横摇（甩）</dd>
+      <dt class="sub">PUSH</dt><dd>前推 / Push In · 微推</dd>
+      <dt class="sub">FOLLOW</dt><dd>跟拍 / Follow</dd>
+      <dt class="sub">HAND</dt><dd>手持 / Handheld · 晃动</dd>
+      <dt class="sub">SHAKE</dt><dd>快速前推 + 摇晃</dd>
+    </dl>
+  </div>
+  <div class="group">
+    <h4>// AUDIO · 声音</h4>
+    <dl>
+      <dt class="sub">SFX</dt><dd>音效 · 引擎 / 风声 / 锁定音 / 爆炸</dd>
+      <dt class="sub">VO</dt><dd>对白 · 无线电通讯 / 主角指令</dd>
+      <dt class="sub">AMB</dt><dd>环境音 · 呼吸 / 电流底噪 / 涡流</dd>
+      <dt class="sub">HIT</dt><dd>冲击声 · 金属受力 / 破空 / 轰</dd>
+    </dl>
+  </div>
+</section>
+
+<footer>
+  <div>S05 · SKYLOCK · SHOTLIST v2.1 · DIRECTOR / DP / 1st AC</div>
+  <div class="right">
+    <span>DOC ID: SKY-05-2025</span>
+    <span class="barcode"></span>
+    <span>END · // EOF</span>
+  </div>
+</footer>
+
+<script>
+  // ============  INTERSECTION REVEAL  ============
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        const delay = (i % 4) * 80;
+        e.target.style.transitionDelay = delay + 'ms';
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // ============  TIMELINE BUILD  ============
+  const shots = [
+    { id: 'S05-01', dur: 3.0 },
+    { id: 'S05-02', dur: 2.0 },
+    { id: 'S05-03', dur: 1.5 },
+    { id: 'S05-04', dur: 1.5 },
+    { id: 'S05-05', dur: 2.0 },
+    { id: 'S05-06', dur: 3.0 },
+    { id: 'S05-07', dur: 2.0 },
+    { id: 'S05-08', dur: 4.0 },
+  ];
+  const total = shots.reduce((s, x) => s + x.dur, 0);
+  const bar = document.getElementById('bar');
+  const ruler = document.getElementById('ruler');
+
+  // bar segments
+  shots.forEach((s, i) => {
+    const seg = document.createElement('a');
+    seg.className = 'seg';
+    seg.href = '#' + s.id.toLowerCase();
+    seg.style.flex = s.dur + ' 0 0';
+    seg.innerHTML = `<span class="id">${s.id.replace('S05-', '')}</span><span class="dur">${s.dur.toFixed(1)}s</span>`;
+    seg.title = `${s.id} · ${s.dur}s · jump`;
+    bar.appendChild(seg);
+  });
+
+  // ruler (every 2s major, every 1s minor)
+  const totalRound = Math.ceil(total);
+  for (let s = 0; s <= totalRound; s++) {
+    const t = document.createElement('div');
+    t.className = 'tick' + (s % 2 === 0 ? ' major' : '');
+    t.style.left = (s / total * 100) + '%';
+    t.textContent = s + 's';
+    ruler.appendChild(t);
+  }
+</script>
+</body>
+</html>
