@@ -4,10 +4,14 @@
 
 :root {
   --bg-abyss: #050810;
-  --bg-deep: #0A1620;
+  --bg-iron: #0A0E14;
+  --bg-oxide: #1A1410;
   --bg-trench: #0F2A3D;
   --line-cyan: #1A4D6B;
   --accent-blood: #E63946;
+  --accent-rust: #C95A2B;
+  --accent-bronze: #8B5A3C;
+  --accent-patina: #4A6741;
   --accent-sun: #F4A261;
   --text-bone: #E8E8E8;
   --text-fog: #7A8B99;
@@ -35,8 +39,8 @@ html, body, #root {
 
 body {
   background:
-    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(26, 77, 107, 0.18), transparent 60%),
-    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(230, 57, 70, 0.04), transparent 60%),
+    radial-gradient(ellipse 100% 60% at 50% 0%, rgba(201, 90, 43, 0.06), transparent 70%),
+    radial-gradient(ellipse 80% 50% at 80% 100%, rgba(26, 77, 107, 0.12), transparent 70%),
     var(--bg-abyss);
   background-attachment: fixed;
 }
@@ -44,28 +48,46 @@ body {
 * { box-sizing: border-box; }
 
 ::selection {
-  background: var(--accent-blood);
+  background: var(--accent-rust);
   color: var(--bg-abyss);
 }
 
-/* Film grain overlay */
+/* 噪点叠加 */
 .grain::before {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: 0.04;
+  opacity: 0.05;
   z-index: 100;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.5 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 
-/* Custom scrollbar */
+/* 铁锈纹理（锈斑 + 噪点） */
+.rust-texture {
+  position: relative;
+}
+.rust-texture::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 15% 75%, rgba(201, 90, 43, 0.18) 0%, transparent 25%),
+    radial-gradient(circle at 85% 25%, rgba(139, 90, 60, 0.12) 0%, transparent 20%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='r'><feTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.79  0 0 0 0 0.35  0 0 0 0 0.17  0 0 0 0.3 0'/></filter><rect width='100%25' height='100%25' filter='url(%23r)'/></svg>");
+  mix-blend-mode: screen;
+  opacity: 0.5;
+  border-radius: inherit;
+}
+
+/* 自定义滚动条 */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(122, 139, 153, 0.2); }
-::-webkit-scrollbar-thumb:hover { background: rgba(122, 139, 153, 0.4); }
+::-webkit-scrollbar-thumb:hover { background: rgba(201, 90, 43, 0.5); }
 
-/* Letter-spaced label */
+/* 标签 */
 .label {
   font-family: "JetBrains Mono", monospace;
   font-size: 10px;
@@ -74,87 +96,353 @@ body {
   color: var(--text-fog);
 }
 
-/* Big numeric display */
 .numeral {
   font-family: "Bebas Neue", sans-serif;
   letter-spacing: 0.04em;
   line-height: 0.9;
 }
 
-/* Glow text */
-.glow-cyan { text-shadow: 0 0 24px rgba(26, 77, 107, 0.6); }
-.glow-blood { text-shadow: 0 0 24px rgba(230, 57, 70, 0.5); }
-.glow-sun { text-shadow: 0 0 28px rgba(244, 162, 97, 0.5); }
+/* 发光文字 */
+.glow-rust { text-shadow: 0 0 32px rgba(201, 90, 43, 0.5), 0 0 64px rgba(201, 90, 43, 0.2); }
+.glow-blood { text-shadow: 0 0 32px rgba(230, 57, 70, 0.5), 0 0 64px rgba(230, 57, 70, 0.2); }
+.glow-sun { text-shadow: 0 0 32px rgba(244, 162, 97, 0.5), 0 0 80px rgba(244, 162, 97, 0.3); }
 
 /* ============================================ */
-/* 点阵效果 / DOT MATRIX EFFECTS                */
+/* 点阵系统 / DOT MATRIX                        */
 /* ============================================ */
-
-/* 静态点阵背景 — 用 radial-gradient 绘制 */
 .dot-grid {
   background-image: radial-gradient(circle, var(--dot-color) 1px, transparent 1px);
   background-size: 24px 24px;
   background-position: 0 0;
 }
-
 .dot-grid-dense {
   background-image: radial-gradient(circle, var(--dot-color) 1px, transparent 1px);
   background-size: 16px 16px;
 }
-
 .dot-grid-sparse {
   background-image: radial-gradient(circle, var(--dot-color) 1.2px, transparent 1.2px);
   background-size: 32px 32px;
 }
-
-/* 暗角点阵 — 中心亮四周暗 */
 .dot-grid-vignette {
   background-image: radial-gradient(circle, var(--dot-color-bright) 1px, transparent 1px);
   background-size: 22px 22px;
   -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 0%, transparent 80%);
   mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 0%, transparent 80%);
 }
-
-/* 强调点阵 — 红色或橙色 */
+.dot-grid-rust {
+  background-image: radial-gradient(circle, rgba(201, 90, 43, 0.5) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+}
 .dot-grid-blood {
   background-image: radial-gradient(circle, rgba(230, 57, 70, 0.6) 1.5px, transparent 1.5px);
   background-size: 24px 24px;
 }
-
 .dot-grid-sun {
   background-image: radial-gradient(circle, rgba(244, 162, 97, 0.6) 1.5px, transparent 1.5px);
   background-size: 24px 24px;
 }
 
-/* 点阵动画 — 缓慢漂移 */
 @keyframes dot-drift {
   0% { background-position: 0 0; }
   100% { background-position: 24px 24px; }
 }
-.dot-drift {
-  animation: dot-drift 20s linear infinite;
-}
+.dot-drift { animation: dot-drift 20s linear infinite; }
 
 @keyframes dot-drift-slow {
   0% { background-position: 0 0; }
   100% { background-position: -16px -16px; }
 }
-.dot-drift-slow {
-  animation: dot-drift-slow 30s linear infinite;
-}
+.dot-drift-slow { animation: dot-drift-slow 30s linear infinite; }
 
-/* 点阵脉冲 — 整体呼吸 */
+@keyframes dot-drift-fast {
+  0% { background-position: 0 0; }
+  100% { background-position: 32px 32px; }
+}
+.dot-drift-fast { animation: dot-drift-fast 12s linear infinite; }
+
 @keyframes dot-pulse {
   0%, 100% { opacity: 0.5; }
   50% { opacity: 1; }
 }
-.dot-pulse {
-  animation: dot-pulse 3s ease-in-out infinite;
+.dot-pulse { animation: dot-pulse 3s ease-in-out infinite; }
+
+/* ============================================ */
+/* 立体感 / 3D & STEREO                        */
+/* ============================================ */
+.perspective-1000 { perspective: 1000px; }
+.perspective-2000 { perspective: 2000px; }
+.preserve-3d { transform-style: preserve-3d; }
+.backface-hidden { backface-visibility: hidden; }
+
+.tilt-y-1 { transform: perspective(2000px) rotateY(1deg); }
+.tilt-y-2 { transform: perspective(2000px) rotateY(2deg); }
+.tilt-y-3 { transform: perspective(2000px) rotateY(3deg); }
+.tilt-x-2 { transform: perspective(2000px) rotateX(2deg); }
+.tilt-x--2 { transform: perspective(2000px) rotateX(-2deg); }
+
+.translate-z-1 { transform: translateZ(8px); }
+.translate-z-2 { transform: translateZ(16px); }
+.translate-z-3 { transform: translateZ(24px); }
+.translate-z-4 { transform: translateZ(40px); }
+.translate-z-5 { transform: translateZ(64px); }
+
+/* 3D 巨字 — 透视 + 厚度 + 边光 */
+.text-3d-rust {
+  font-family: "Bebas Neue", sans-serif;
+  text-shadow:
+    0 1px 0 rgba(201, 90, 43, 0.6),
+    0 2px 0 rgba(201, 90, 43, 0.5),
+    0 3px 0 rgba(139, 90, 60, 0.5),
+    0 4px 0 rgba(139, 90, 60, 0.4),
+    0 5px 0 rgba(74, 103, 65, 0.3),
+    0 6px 12px rgba(0, 0, 0, 0.5),
+    0 12px 32px rgba(0, 0, 0, 0.6);
 }
 
-/* SVG 点阵 — 用于 Hero 巨字 */
-.dot-matrix-text {
+.text-3d-blood {
   font-family: "Bebas Neue", sans-serif;
+  text-shadow:
+    0 1px 0 rgba(230, 57, 70, 0.6),
+    0 2px 0 rgba(180, 40, 50, 0.5),
+    0 3px 0 rgba(140, 30, 40, 0.4),
+    0 4px 0 rgba(100, 20, 30, 0.3),
+    0 6px 12px rgba(0, 0, 0, 0.5),
+    0 12px 32px rgba(230, 57, 70, 0.2);
+}
+
+/* 玻璃面板 */
+.glass {
+  background: linear-gradient(135deg, rgba(232, 232, 232, 0.03) 0%, rgba(10, 14, 20, 0.3) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(232, 232, 232, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.4),
+    0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.glass-rust {
+  background: linear-gradient(135deg, rgba(201, 90, 43, 0.08) 0%, rgba(10, 14, 20, 0.5) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(201, 90, 43, 0.25);
+  box-shadow:
+    inset 0 1px 0 rgba(201, 90, 43, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 1px 2px rgba(0, 0, 0, 0.4),
+    0 0 32px rgba(201, 90, 43, 0.15),
+    0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.glass-blood {
+  background: linear-gradient(135deg, rgba(230, 57, 70, 0.08) 0%, rgba(10, 14, 20, 0.5) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(230, 57, 70, 0.25);
+  box-shadow:
+    inset 0 1px 0 rgba(230, 57, 70, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 0 32px rgba(230, 57, 70, 0.2);
+}
+
+/* 金属面板 — 渐变 + 边光 */
+.metal {
+  background: linear-gradient(135deg,
+    rgba(201, 90, 43, 0.15) 0%,
+    rgba(10, 14, 20, 0.7) 50%,
+    rgba(139, 90, 60, 0.12) 100%);
+  border: 1px solid rgba(201, 90, 43, 0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 200, 150, 0.15),
+    inset 1px 0 0 rgba(255, 200, 150, 0.05),
+    inset -1px 0 0 rgba(0, 0, 0, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+.metal-blood {
+  background: linear-gradient(135deg,
+    rgba(230, 57, 70, 0.15) 0%,
+    rgba(10, 14, 20, 0.7) 50%,
+    rgba(139, 30, 40, 0.12) 100%);
+  border: 1px solid rgba(230, 57, 70, 0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 150, 150, 0.15),
+    inset 1px 0 0 rgba(255, 150, 150, 0.05),
+    inset -1px 0 0 rgba(0, 0, 0, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 0 32px rgba(230, 57, 70, 0.15),
+    0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* 3D 金属按钮 */
+.btn-3d {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, rgba(201, 90, 43, 0.9) 0%, rgba(139, 60, 30, 0.9) 100%);
+  border: 1px solid rgba(255, 180, 100, 0.4);
+  color: #0A0E14;
+  font-weight: 600;
+  text-shadow: 0 1px 0 rgba(255, 200, 150, 0.5);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 220, 180, 0.4),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.4),
+    0 4px 12px rgba(201, 90, 43, 0.3),
+    0 12px 32px rgba(201, 90, 43, 0.2);
+  transition: all 0.2s ease;
+}
+.btn-3d:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 220, 180, 0.5),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.5),
+    0 8px 24px rgba(201, 90, 43, 0.4),
+    0 16px 48px rgba(201, 90, 43, 0.3);
+}
+.btn-3d:active {
+  transform: translateY(1px);
+}
+
+/* 玻璃药丸按钮 */
+.pill-3d {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(180deg, rgba(232, 232, 232, 0.06) 0%, rgba(10, 14, 20, 0.4) 100%);
+  border: 1px solid rgba(232, 232, 232, 0.1);
+  backdrop-filter: blur(12px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+.pill-3d:hover {
+  border-color: rgba(201, 90, 43, 0.4);
+  background: linear-gradient(180deg, rgba(201, 90, 43, 0.08) 0%, rgba(10, 14, 20, 0.5) 100%);
+}
+
+/* 立体药丸进度点 */
+.dot-3d {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, rgba(232, 232, 232, 0.2) 0%, rgba(232, 232, 232, 0.05) 100%);
+  border: 1px solid rgba(232, 232, 232, 0.4);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 1px 3px rgba(0, 0, 0, 0.4);
+}
+.dot-3d.active {
+  background: linear-gradient(180deg, rgba(230, 57, 70, 1) 0%, rgba(140, 20, 30, 0.9) 100%);
+  border-color: rgba(255, 200, 200, 0.4);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 200, 200, 0.5),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+    0 0 16px rgba(230, 57, 70, 0.5),
+    0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* 立体巨字 — 锯齿 + 边光 */
+.depth-text {
+  font-family: "Bebas Neue", sans-serif;
+  text-shadow:
+    0 1px 0 rgba(232, 232, 232, 0.4),
+    0 2px 0 rgba(232, 232, 232, 0.2),
+    0 3px 0 rgba(232, 232, 232, 0.1),
+    0 6px 24px rgba(0, 0, 0, 0.5);
+}
+
+.depth-text-rust {
+  font-family: "Bebas Neue", sans-serif;
+  background: linear-gradient(180deg, #E8E8E8 0%, #C95A2B 50%, #8B5A3C 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 4px 12px rgba(201, 90, 43, 0.4));
+}
+
+.depth-text-blood {
+  font-family: "Bebas Neue", sans-serif;
+  background: linear-gradient(180deg, #E63946 0%, #8B1A20 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 4px 12px rgba(230, 57, 70, 0.4));
+}
+
+/* 旧动画 */
+@keyframes caustic { 0%, 100% { opacity: 0.4; transform: translate(0,0) scale(1); } 50% { opacity: 0.9; transform: translate(8px,-6px) scale(1.06); } }
+@keyframes bubble { 0% { transform: translateY(0) scale(0.6); opacity: 0; } 20% { opacity: 0.8; } 100% { transform: translateY(-180px) scale(1.4); opacity: 0; } }
+@keyframes sediment { 0% { transform: scale(0.2); opacity: 0.9; } 70% { transform: scale(1.1); opacity: 0.5; } 100% { transform: scale(1.4); opacity: 0; } }
+@keyframes scan { 0% { transform: translateY(-100%); } 100% { transform: translateY(100vh); } }
+@keyframes flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.92; } }
+@keyframes rise { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+@keyframes dust { 0% { transform: translate(0,0); } 100% { transform: translate(40px,-30px); } }
+
+.animate-caustic { animation: caustic 4s ease-in-out infinite; }
+.animate-bubble { animation: bubble 6s ease-out infinite; }
+.animate-sediment { animation: sediment 3s ease-out forwards; }
+.animate-scan { animation: scan 8s linear infinite; }
+.animate-flicker { animation: flicker 3s ease-in-out infinite; }
+.animate-rise { animation: rise 0.9s ease-out forwards; }
+.animate-dust { animation: dust 12s linear infinite; }
+
+/* 跑马灯 */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee { animation: marquee 60s linear infinite; }
+
+/* 巨型入场 */
+@keyframes megaIn {
+  0% { opacity: 0; transform: perspective(2000px) rotateX(15deg) translateY(40px) scale(0.95); }
+  100% { opacity: 1; transform: perspective(2000px) rotateX(0) translateY(0) scale(1); }
+}
+.animate-megaIn { animation: megaIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+/* 立体按钮 */
+.nav-arrow-3d {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, rgba(232, 232, 232, 0.06) 0%, rgba(10, 14, 20, 0.5) 100%);
+  border: 1px solid rgba(232, 232, 232, 0.15);
+  backdrop-filter: blur(12px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.4),
+    0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.nav-arrow-3d:hover:not(:disabled) {
+  border-color: rgba(201, 90, 43, 0.5);
+  background: linear-gradient(180deg, rgba(201, 90, 43, 0.12) 0%, rgba(10, 14, 20, 0.6) 100%);
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 200, 150, 0.15),
+    0 2px 4px rgba(0, 0, 0, 0.5),
+    0 8px 24px rgba(201, 90, 43, 0.2);
+}
+.nav-arrow-3d:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
 }
 
 /* 滑动指示器 */
@@ -166,72 +454,10 @@ body {
   transition: all 0.4s ease;
 }
 .slide-indicator.active {
-  background: var(--accent-blood);
+  background: var(--accent-rust);
   opacity: 1;
   transform: scale(1.5);
-}
-
-/* 旧的动画保留 */
-@keyframes caustic {
-  0%, 100% { opacity: 0.4; transform: translate(0,0) scale(1); }
-  50% { opacity: 0.9; transform: translate(8px,-6px) scale(1.06); }
-}
-@keyframes bubble {
-  0% { transform: translateY(0) scale(0.6); opacity: 0; }
-  20% { opacity: 0.8; }
-  100% { transform: translateY(-180px) scale(1.4); opacity: 0; }
-}
-@keyframes sediment {
-  0% { transform: scale(0.2); opacity: 0.9; }
-  70% { transform: scale(1.1); opacity: 0.5; }
-  100% { transform: scale(1.4); opacity: 0; }
-}
-@keyframes scan {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100vh); }
-}
-@keyframes flicker {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.92; }
-}
-@keyframes rise {
-  0% { transform: translateY(20px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
-}
-@keyframes dust {
-  0% { transform: translate(0,0); }
-  100% { transform: translate(40px,-30px); }
-}
-
-.animate-caustic { animation: caustic 4s ease-in-out infinite; }
-.animate-bubble { animation: bubble 6s ease-out infinite; }
-.animate-sediment { animation: sediment 3s ease-out forwards; }
-.animate-scan { animation: scan 8s linear infinite; }
-.animate-flicker { animation: flicker 3s ease-in-out infinite; }
-.animate-rise { animation: rise 0.9s ease-out forwards; }
-.animate-dust { animation: dust 12s linear infinite; }
-
-/* Slide navigation arrows */
-.nav-arrow {
-  position: relative;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(232, 232, 232, 0.2);
-  background: rgba(5, 8, 16, 0.6);
-  backdrop-filter: blur(8px);
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-.nav-arrow:hover:not(:disabled) {
-  border-color: var(--accent-blood);
-  background: rgba(230, 57, 70, 0.1);
-}
-.nav-arrow:disabled {
-  opacity: 0.2;
-  cursor: not-allowed;
+  box-shadow: 0 0 12px rgba(201, 90, 43, 0.6);
 }
 
 /* 大字点阵 Hero 用 */
@@ -250,8 +476,8 @@ body {
 }
 .big-letter-dots > div.on {
   opacity: 1;
-  background: var(--accent-blood);
-  box-shadow: 0 0 12px rgba(230, 57, 70, 0.6);
+  background: var(--accent-rust);
+  box-shadow: 0 0 12px rgba(201, 90, 43, 0.6);
 }
 
 /* 卡片层叠效果 */
