@@ -43,6 +43,7 @@ body {
   overflow-x: hidden;
   position: relative;
   min-height: 100vh;
+  padding-bottom: 180px; /* leave room for timeline dock */
 }
 
 /* ============== GLOBAL FX: GRAIN + SCANLINES + VIGNETTE ============== */
@@ -1342,6 +1343,577 @@ footer a:hover { color: var(--rust-bright); border-color: var(--rust-bright); }
   writing-mode: vertical-rl;
   text-orientation: mixed;
 }
+
+/* ================================================================
+   FILM-STRIP TIMELINE DOCK · 底部胶片条时间线
+   ================================================================ */
+.timeline-dock {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 9500;
+  background: linear-gradient(180deg, rgba(11,13,10,0.6), rgba(11,13,10,0.95));
+  border-top: 1px solid var(--sand-deep);
+  padding: 10px 0 6px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transform: translateY(0);
+  transition: transform 0.35s ease;
+}
+.timeline-dock.collapsed { transform: translateY(calc(100% - 38px)); }
+.timeline-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: var(--sand);
+  text-transform: uppercase;
+}
+.timeline-head .left::before { content: "▣ "; color: var(--rust-bright); }
+.timeline-head .toggle {
+  cursor: pointer;
+  color: var(--rust-bright);
+  user-select: none;
+  padding: 2px 8px;
+  border: 1px solid var(--rust);
+  letter-spacing: 0.2em;
+}
+.timeline-head .toggle:hover { background: rgba(181, 57, 42, 0.15); }
+.timeline-strip {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 4px 28px 8px;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rust-bright) transparent;
+}
+.timeline-strip::-webkit-scrollbar { height: 6px; }
+.timeline-strip::-webkit-scrollbar-thumb { background: var(--rust-bright); }
+.timeline-strip::-webkit-scrollbar-track { background: transparent; }
+.timeline-frame {
+  flex: 0 0 auto;
+  width: 110px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+.timeline-frame:hover {
+  border-color: var(--rust-bright);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(181, 57, 42, 0.4);
+}
+.timeline-frame.active {
+  border-color: var(--rust-bright);
+  box-shadow: 0 0 12px rgba(181, 57, 42, 0.6);
+  background: rgba(181, 57, 42, 0.08);
+}
+.timeline-frame .num {
+  position: absolute; top: 4px; left: 4px; z-index: 2;
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--sand);
+  text-shadow: 1px 1px 0 var(--bg);
+  letter-spacing: 0.04em;
+}
+.timeline-frame .th {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  filter: contrast(1.1) saturate(0.7) sepia(0.2) hue-rotate(-8deg) brightness(0.7);
+}
+.timeline-frame .meta {
+  padding: 4px 6px 6px;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  color: var(--ink-dim);
+  text-transform: uppercase;
+  border-top: 1px solid var(--line);
+  line-height: 1.3;
+}
+.timeline-frame .meta .title {
+  color: var(--ink);
+  font-size: 9px;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.timeline-frame .meta .dur { color: var(--rust-bright); }
+
+/* ================================================================
+   ANNOTATION LEGEND · 浮动标注图例 + 显隐切换
+   ================================================================ */
+.legend {
+  position: fixed;
+  top: 80px;
+  right: 24px;
+  z-index: 9400;
+  width: 230px;
+  background: rgba(11, 13, 10, 0.95);
+  border: 1px solid var(--sand-deep);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink);
+  letter-spacing: 0.05em;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: transform 0.3s, opacity 0.3s;
+}
+.legend.collapsed { transform: translateX(220px); opacity: 0.5; }
+.legend.collapsed .legend-body { display: none; }
+.legend-head {
+  padding: 8px 12px;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--sand-deep);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-size: 9px;
+}
+.legend-head .lbl { color: var(--rust-bright); }
+.legend-head .arrow { color: var(--sand); }
+.legend-body { padding: 6px 0; max-height: 60vh; overflow-y: auto; }
+.legend-body::-webkit-scrollbar { width: 4px; }
+.legend-body::-webkit-scrollbar-thumb { background: var(--rust-bright); }
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+  border-left: 2px solid transparent;
+}
+.legend-item:hover { background: rgba(200, 176, 116, 0.08); }
+.legend-item.off { opacity: 0.35; }
+.legend-item.off .swatch { filter: grayscale(1) brightness(0.4); }
+.legend-item.active { border-left-color: var(--rust-bright); }
+.legend-item .check {
+  width: 10px; height: 10px;
+  border: 1px solid var(--sand);
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg);
+  flex-shrink: 0;
+}
+.legend-item.active .check { background: var(--rust-bright); border-color: var(--rust-bright); }
+.legend-item.active .check::after { content: "✓"; color: var(--bg); font-size: 9px; line-height: 1; }
+.legend-item .swatch {
+  width: 24px; height: 14px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 11px;
+  color: var(--sand);
+}
+.legend-item .name { flex: 1; font-size: 10px; color: var(--ink); }
+.legend-item .cnt { color: var(--rust-bright); font-weight: 700; min-width: 22px; text-align: right; font-size: 9px; }
+.legend-foot {
+  padding: 8px 12px;
+  border-top: 1px solid var(--sand-deep);
+  display: flex; justify-content: space-between;
+  font-size: 9px;
+  color: var(--ink-faint);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.legend-foot a {
+  color: var(--sand);
+  cursor: pointer;
+  text-decoration: none;
+  border-bottom: 1px solid var(--sand);
+}
+.legend-foot a:hover { color: var(--rust-bright); border-color: var(--rust-bright); }
+@media (max-width: 980px) { .legend { display: none; } }
+
+/* ================================================================
+   DIRECTOR'S COMMENTARY PANEL · 导演评论侧面板
+   ================================================================ */
+.commentary {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: 460px;
+  max-width: 92vw;
+  z-index: 9800;
+  background: var(--bg);
+  border-left: 1px solid var(--sand-deep);
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(.2, .8, .2, 1);
+  overflow-y: auto;
+  padding: 30px 32px 80px;
+}
+.commentary.open { transform: translateX(0); box-shadow: -20px 0 60px rgba(0,0,0,0.6); }
+.commentary::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+  background: linear-gradient(180deg, var(--rust) 0%, var(--sand) 50%, var(--olive) 100%);
+}
+.commentary-close {
+  position: absolute; top: 14px; right: 14px;
+  width: 32px; height: 32px;
+  border: 1px solid var(--sand-deep);
+  background: var(--bg-2);
+  color: var(--rust-bright);
+  font-family: var(--font-mono);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  z-index: 2;
+}
+.commentary-close:hover { background: var(--rust-bright); color: var(--bg); }
+.commentary .badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  color: var(--rust-bright);
+  text-transform: uppercase;
+  border: 1px solid var(--rust-bright);
+  padding: 3px 8px;
+  margin-bottom: 14px;
+}
+.commentary h2 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  color: var(--ink);
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+.commentary .sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: var(--sand);
+  text-transform: uppercase;
+  margin-bottom: 22px;
+}
+.commentary .pic {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  filter: contrast(1.15) saturate(0.8) sepia(0.18) hue-rotate(-8deg);
+  border: 1px solid var(--sand-deep);
+  margin-bottom: 18px;
+}
+.commentary .stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 22px;
+}
+.commentary .stat {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--rust);
+  padding: 8px 10px;
+}
+.commentary .stat .k {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--ink-dim);
+  text-transform: uppercase;
+}
+.commentary .stat .v {
+  font-family: var(--font-stencil);
+  font-size: 14px;
+  color: var(--ink);
+  margin-top: 2px;
+}
+.commentary h3 {
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--sand);
+  letter-spacing: 0.06em;
+  margin: 22px 0 10px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 6px;
+}
+.commentary p, .commentary li {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.75;
+  margin-bottom: 10px;
+}
+.commentary ul { padding-left: 20px; }
+.commentary .quote-block {
+  border-left: 3px solid var(--rust-bright);
+  padding: 6px 14px;
+  margin: 16px 0;
+  font-style: italic;
+  color: var(--ink-dim);
+  background: rgba(181, 57, 42, 0.05);
+}
+.commentary .signature {
+  margin-top: 28px;
+  font-family: 'Special Elite', cursive;
+  color: var(--rust-bright);
+  font-size: 22px;
+  transform: rotate(-3deg);
+  display: inline-block;
+}
+.commentary-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9700;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s;
+}
+.commentary-backdrop.open { opacity: 1; pointer-events: auto; }
+.shot-title { cursor: pointer; }
+.shot-title:hover { color: var(--rust-bright); }
+.shot-title::after {
+  content: "▸ COMMENTARY";
+  margin-left: 16px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--rust-bright);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.shot:hover .shot-title::after { opacity: 0.7; }
+
+/* ================================================================
+   COLOR SCRIPT · 色彩脚本
+   ================================================================ */
+.color-script {
+  max-width: 1280px; margin: 0 auto;
+  padding: 0 48px;
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 18px;
+  align-items: stretch;
+}
+.color-script .label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--ink-dim);
+  text-transform: uppercase;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+.color-script .swatches {
+  display: grid;
+  grid-template-columns: repeat(15, 1fr);
+  gap: 0;
+  border: 1px solid var(--sand-deep);
+}
+.color-script .sw {
+  position: relative;
+  height: 84px;
+  display: flex; flex-direction: column;
+  justify-content: flex-end;
+  padding: 6px;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+  border-right: 1px solid rgba(0,0,0,0.3);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.color-script .sw:last-child { border-right: none; }
+.color-script .sw:hover { transform: scaleY(1.1); transform-origin: bottom; z-index: 2; box-shadow: 0 0 12px rgba(0,0,0,0.5); }
+.color-script .sw .num { color: var(--ink); font-size: 9px; font-weight: 700; }
+.color-script .sw .mood { color: var(--ink); opacity: 0.8; margin-top: 2px; }
+
+.color-emotion {
+  max-width: 1280px; margin: 30px auto 0;
+  padding: 0 48px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.emotion-card {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.emotion-card .em-stripe {
+  position: absolute; top: 0; left: 0; right: 0; height: 4px;
+}
+.emotion-card h4 {
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--ink);
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+  margin-top: 4px;
+}
+.emotion-card .em-sub {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.emotion-card p {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--ink-dim);
+  line-height: 1.65;
+}
+@media (max-width: 980px) {
+  .color-script { grid-template-columns: 1fr; }
+  .color-script .swatches { grid-template-columns: repeat(5, 1fr); }
+  .color-script .sw { height: 60px; }
+  .color-emotion { grid-template-columns: 1fr; }
+  .color-script, .color-emotion { padding-left: 24px; padding-right: 24px; }
+}
+
+/* ================================================================
+   BTS / OUTTAKES · 制作花絮
+   ================================================================ */
+.bts {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 48px;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 24px;
+}
+.bts-feature {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+.bts-feature img {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  filter: contrast(1.1) saturate(0.75) sepia(0.2) hue-rotate(-8deg) brightness(0.85);
+  display: block;
+}
+.bts-feature .body {
+  padding: 22px 26px 24px;
+}
+.bts-feature .ribbon {
+  position: absolute; top: 18px; left: 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: var(--ink);
+  background: var(--rust-bright);
+  padding: 4px 14px 4px 10px;
+  z-index: 2;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.bts-feature h3 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--ink);
+  letter-spacing: 0.03em;
+  margin-bottom: 4px;
+}
+.bts-feature .sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: var(--sand);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.bts-feature p {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--ink-dim);
+  line-height: 1.7;
+}
+.bts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.bts-item {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  padding: 14px 18px;
+  position: relative;
+  display: grid;
+  grid-template-columns: 50px 1fr;
+  gap: 14px;
+  align-items: start;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.bts-item:hover { border-color: var(--rust-bright); transform: translateX(3px); }
+.bts-item .ng {
+  font-family: var(--font-display);
+  font-size: 32px;
+  color: var(--rust-bright);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+.bts-item .ng-sub {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+.bts-item h4 {
+  font-family: var(--font-stencil);
+  font-size: 14px;
+  color: var(--ink);
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+.bts-item p {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--ink-dim);
+  line-height: 1.6;
+}
+.bts-item .ng-badge {
+  position: absolute; top: 8px; right: 8px;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  color: var(--rust-bright);
+  border: 1px solid var(--rust);
+  padding: 1px 5px;
+  text-transform: uppercase;
+}
+@media (max-width: 980px) {
+  .bts { grid-template-columns: 1fr; }
+  .bts, .color-script, .color-emotion { padding-left: 24px; padding-right: 24px; }
+}
+
+/* callout trigger for shots (small icon) */
+.shot-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 12px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--rust-bright);
+  border: 1px solid var(--rust);
+  padding: 2px 6px;
+  text-transform: uppercase;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.shot-trigger::before { content: "▸"; }
+.shot-trigger:hover { background: var(--rust-bright); color: var(--bg); }
 </style>
 </head>
 <body>
@@ -1351,6 +1923,39 @@ footer a:hover { color: var(--rust-bright); border-color: var(--rust-bright); }
   <div class="left">REEL 01 · STEEL DAWN · 35MM</div>
   <div class="right">2026-06-07 · KURSK</div>
 </div>
+
+<!-- ====== TIMELINE DOCK ====== -->
+<div class="timeline-dock" id="timelineDock">
+  <div class="timeline-head">
+    <div class="left">TIMELINE · 15 SHOTS · 64s · DOUBLE-CLICK TO JUMP</div>
+    <div class="toggle" id="timelineToggle">▼ COLLAPSE</div>
+  </div>
+  <div class="timeline-strip" id="timelineStrip">
+    <!-- 15 frames injected by JS -->
+  </div>
+</div>
+
+<!-- ====== ANNOTATION LEGEND ====== -->
+<aside class="legend" id="legend">
+  <div class="legend-head" id="legendHead">
+    <span class="lbl">▣ ANNOTATION LEGEND</span>
+    <span class="arrow">▶</span>
+  </div>
+  <div class="legend-body" id="legendBody">
+    <!-- items injected by JS -->
+  </div>
+  <div class="legend-foot">
+    <a id="legendAll">SHOW ALL</a>
+    <a id="legendNone">HIDE ALL</a>
+  </div>
+</aside>
+
+<!-- ====== DIRECTOR'S COMMENTARY PANEL ====== -->
+<div class="commentary-backdrop" id="commentaryBackdrop"></div>
+<aside class="commentary" id="commentary" aria-hidden="true">
+  <button class="commentary-close" id="commentaryClose" aria-label="Close commentary">×</button>
+  <div id="commentaryContent"><!-- content injected by JS --></div>
+</aside>
 
 <nav class="side-nav" id="sideNav" aria-label="分镜目录">
   <a href="#hero" data-target="hero">00 · HERO</a>
@@ -1370,7 +1975,9 @@ footer a:hover { color: var(--rust-bright); border-color: var(--rust-bright); }
   <a href="#shot-14" data-target="shot-14">14 · 冲锋</a>
   <a href="#shot-15" data-target="shot-15">15 · 终幕</a>
   <a href="#notes" data-target="notes">· 创作</a>
+  <a href="#color" data-target="color">· 色彩</a>
   <a href="#archive" data-target="archive">· 档案</a>
+  <a href="#bts" data-target="bts">· 花絮</a>
 </nav>
 
 <!-- ========== HERO ========== -->
@@ -1818,6 +2425,133 @@ footer a:hover { color: var(--rust-bright); border-color: var(--rust-bright); }
   </div>
 </section>
 
+<!-- ========== COLOR SCRIPT ========== -->
+<section class="section" id="color">
+  <div class="section-head">
+    <div>
+      <div class="tag">▣ Color Script · 色彩脚本</div>
+      <h2>十五镜情绪色谱 · 黎明到黄昏</h2>
+    </div>
+    <div class="count">15 SWATCHES</div>
+  </div>
+
+  <div class="color-script">
+    <div class="label">REEL · 15 SHOTS<br/><span style="color:var(--rust-bright);">—  冷→暖→黑  —</span></div>
+    <div class="swatches" id="colorSwatches">
+      <!-- 15 swatches injected by JS -->
+    </div>
+  </div>
+
+  <div class="color-emotion">
+    <div class="emotion-card">
+      <div class="em-stripe" style="background: linear-gradient(90deg, #1B2330, #3A2A1F);"></div>
+      <h4>冷调黎明</h4>
+      <div class="em-sub">COLD DAWN · 01—05</div>
+      <p>镜 01~05 用蓝灰—烟褐铺底，强调"寒冷、迟滞、被围困"。烟尘不饱和，晨雾密度高，让观众在第一分钟就感到压抑——这是属于"清晨的战争"，不是高燃。</p>
+    </div>
+    <div class="emotion-card">
+      <div class="em-stripe" style="background: linear-gradient(90deg, #5C2A1E, #B5392A, #C8B074);"></div>
+      <h4>热调激战</h4>
+      <div class="em-sub">HOT CLIMAX · 06—11</div>
+      <p>镜 06~11 进入饱和暖色域。锈红与沙金的碰撞是 85mm 主炮、殉爆、火舌的色调。阴影偏紫红而非纯黑——保留暗部色彩信息，符合影视调色"暖战场"逻辑。</p>
+    </div>
+    <div class="emotion-card">
+      <div class="em-stripe" style="background: linear-gradient(90deg, #C8B074, #8C7A4B, #2A331F);"></div>
+      <h4>暮色收尾</h4>
+      <div class="em-sub">DUSK · 12—15</div>
+      <p>镜 12~15 拉回沙土黄—橄榄绿。夕阳金边与德军残骸的冷色形成"被消耗过的希望"。最后一镜不饱和的金光，是这场战役最安静的一帧。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== BTS / OUTTAKES ========== -->
+<section class="section" id="bts">
+  <div class="section-head">
+    <div>
+      <div class="tag">▣ Behind The Scenes · 制作花絮 / NG 镜头</div>
+      <h2>卷外卷 · 导演手记与拍摄现场</h2>
+    </div>
+    <div class="count">01 FEATURE + 05 NG</div>
+  </div>
+
+  <div class="bts">
+    <div class="bts-feature">
+      <div class="ribbon">▣ FEATURE · 特别报道</div>
+      <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=WW2%20film%20set%20behind%20the%20scenes%2C%20director%20with%20megaphone%20next%20to%20Soviet%20T-34%20tank%20mockup%2C%20camera%20crew%2C%20fog%20machine%2C%20reflectors%2C%20dramatic%20lighting%2C%20epic%20cinematic%20photograph&image_size=landscape_16_9" alt="拍摄现场" loading="lazy">
+      <div class="body">
+        <h3>黎明实拍的那 4 分 12 秒</h3>
+        <div class="sub">FIELD · DAY 07 · 04:58—09:10 · STEEL DAWN UNIT</div>
+        <p>
+          镜 01 的黎明是真景实拍。为了抓住库尔斯克 7 月清晨那种"灰中带金"的色温，DOP 带着摄制组从凌晨 4:58 就位，架设两台 DEGtyarev 手持稳定器，等待 5:23 第一缕光击中地平线。
+          真正的"晨雾"是靠 8 台工业烟机在 30 分钟内持续喷射——结果第一镜拍到第 11 条时，导演突然让 V-2 引擎怠速运转 90 秒，制造出"地面有震感"的低频。
+          这条被命名为 <span style="color:var(--rust-bright);">TAKE 11 · GOLDEN FOG</span>，最终成为定剪版。
+        </p>
+        <p style="margin-top:14px; color:var(--ink-faint); font-style:italic;">
+          —— 据场记 <span style="color:var(--rust-bright);">M. Petrov</span> 当日手记
+        </p>
+      </div>
+    </div>
+
+    <div class="bts-list">
+      <div class="bts-item">
+        <div>
+          <div class="ng">NG</div>
+          <div class="ng-sub">OUT 03</div>
+        </div>
+        <div>
+          <div class="ng-badge">CUT</div>
+          <h4>镜 03 的烟囱"长"了</h4>
+          <p>原计划让 V-2 引擎黑烟从左侧升起，但风向突变，烟从正前方冲镜头，整组 6 条全废，最后改用后期合成。</p>
+        </div>
+      </div>
+      <div class="bts-item">
+        <div>
+          <div class="ng">NG</div>
+          <div class="ng-sub">OUT 07</div>
+        </div>
+        <div>
+          <div class="ng-badge">CUT</div>
+          <h4>炮长瞄错了边</h4>
+          <p>群演炮长在第 4 条下意识地用右眼瞄准，与车长习惯冲突。导演要求重拍，但剪辑版保留了"出错的那条"作为情绪铺垫。</p>
+        </div>
+      </div>
+      <div class="bts-item">
+        <div>
+          <div class="ng">NG</div>
+          <div class="ng-sub">OUT 09</div>
+        </div>
+        <div>
+          <div class="ng-badge">CUT</div>
+          <h4>"殉爆"的烟不够</h4>
+          <p>烟火师只放了 3 公斤黑火药，被导演斥"像放鞭炮"。次日紧急调配 80 公斤，才换来 9-3 那种"吞天噬地"的爆破。</p>
+        </div>
+      </div>
+      <div class="bts-item">
+        <div>
+          <div class="ng">NG</div>
+          <div class="ng-sub">OUT 11</div>
+        </div>
+        <div>
+          <div class="ng-badge">CUT</div>
+          <h4>烟雾弹反向吹</h4>
+          <p>计划中烟雾弹向左释放，结果西风把烟吹回车内，演员咳嗽 20 分钟——但这幕被摄影机意外拍下，留作"真实车内视角"素材。</p>
+        </div>
+      </div>
+      <div class="bts-item">
+        <div>
+          <div class="ng">NG</div>
+          <div class="ng-sub">OUT 15</div>
+        </div>
+        <div>
+          <div class="ng-badge">CUT</div>
+          <h4>夕阳比预定早了 6 分钟</h4>
+          <p>最后一场收尾戏原本计划 19:48 开始，但云层提前散开，19:42 已是金边。摄影师反应极快，第 1 条就成了定剪版——也是全片最安静、最真实的一镜。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ========== EPILOGUE ========== -->
 <section class="epilogue" id="epilogue">
   <div class="divider">✦ ✦ ✦</div>
@@ -1838,6 +2572,383 @@ footer a:hover { color: var(--rust-bright); border-color: var(--rust-bright); }
   <div>PRODUCED WITH HONOR · 仅供学习与历史科普</div>
   <div>FORMAT <a href="#hero">回到顶部 ↑</a></div>
 </footer>
+
+<script>
+/* =================================================================
+   NEW FEATURES · 新增功能（5 个）
+   ================================================================= */
+(function(){
+  // ---- Shot meta data for timeline, commentary, color swatches ----
+  const SHOTS = [
+    { id:'shot-01', n:1,  dur:4,  title:'黎明开场',     en:'DAWN OVER KURSK',   emo:'冷灰',  color:'#3A4655', img:'Kursk%20battlefield%20at%20dawn%2C%20vast%20flat%20steppe%20covered%20in%20morning%20mist%2C%20burning%20wrecks%20of%20tanks%2C%20smoke%20rising%20from%20craters%2C%20black%20smoke%20columns%20in%20distance%2C%20WW2%20cinematic%20epic%20war%20photograph%2C%20muted%20desaturated%20colors' },
+    { id:'shot-02', n:2,  dur:3,  title:'铁疙瘩集结', en:'SUPPLY',            emo:'沙褐',  color:'#6B5A3F', img:'WW2%20Soviet%20T-34-85%20tanks%20lined%20up%20at%20edge%20of%20birch%20forest%2C%20fresh%20white%20recognition%20stripes%2C%20young%20soviet%20tank%20commander%20looking%20through%20binoculars%2C%20overcast%20sky%2C%20cinematic%20war%20photograph%201944' },
+    { id:'shot-03', n:3,  dur:5,  title:'钢铁启动',   en:'START ENGINES',     emo:'土黄',  color:'#8C7A4B', img:'Soviet%20T-34-85%20tank%20column%20moving%20on%20muddy%20road%2C%20dust%20rising%2C%20V-2%20diesel%20engine%20exhaust%2C%20crew%20on%20turret%2C%20WW2%20eastern%20front%20cinematic%201944%2C%20desaturated%20war%20film%20look' },
+    { id:'shot-04', n:4,  dur:3,  title:'燃烧村庄',   en:'BURNING VILLAGE',   emo:'烟灰',  color:'#5A4A3A', img:'Soviet%20T-34-85%20tank%20driving%20through%20burning%20village%2C%20destroyed%20German%20half-track%2C%20retreating%20infantry%2C%20smoke%20and%20ember%2C%20WW2%20eastern%20front%20cinematic%20war%20scene%201944' },
+    { id:'shot-05', n:5,  dur:3,  title:'敌情骤现',   en:'CONTACT',           emo:'锈红',  color:'#7A2E1F', img:'WW2%20German%20Panther%20tanks%20flanking%20maneuver%20on%20open%20steppe%2C%20seen%20through%20tank%20commander%20binoculars%2C%20dust%20and%20heat%20haze%2C%20Soviet%20POV%2C%20cinematic%20war%20photograph%201943%20Kursk' },
+    { id:'shot-06', n:6,  dur:6,  title:'抢占阵地',   en:'HULL-DOWN',         emo:'橄榄',  color:'#4A5A2E', img:'Soviet%20T-34-85%20tank%20charging%20up%20reverse%20slope%20hull-down%20defensive%20position%2C%20tank%20hides%20hull%20showing%20only%20turret%2C%20dust%20and%20diesel%20exhaust%2C%20WW2%20tactical%20photograph' },
+    { id:'shot-07', n:7,  dur:3,  title:'锁定黑豹',   en:'RANGE 800',         emo:'深褐',  color:'#3A2A1F', img:'Close-up%20of%20T-34-85%20gunner%20looking%20through%20TSh-16%20sighting%20telescope%2C%20target%20Panther%20tank%20side%20armor%20in%20crosshairs%2C%20tension%20on%20face%2C%20WW2%20tank%20interior%20cinematic%20close-up' },
+    { id:'shot-08', n:8,  dur:2,  title:'开火',       en:'FIRE!',             emo:'焰橙',  color:'#B5392A', img:'Soviet%20T-34-85%20tank%20firing%2085mm%20main%20gun%2C%20huge%20muzzle%20flash%20and%20smoke%2C%20slow%20motion%20shell%20leaving%20barrel%2C%20WW2%20cinematic%20action%20shot%2C%20epic%20war%20film%20style' },
+    { id:'shot-09', n:9,  dur:4,  title:'黑豹殉爆',   en:'KILL',              emo:'血火',  color:'#8B2E1F', img:'German%20Panther%20tank%20hit%20by%20Soviet%20shell%2C%20turret%20hatch%20blown%20open%2C%20ammunition%20cooking%20off%2C%20huge%20fireball%20erupting%2C%20black%20smoke%2C%20WW2%20eastern%20front%20epic%20war%20photograph' },
+    { id:'shot-10', n:10, dur:2,  title:'暴露',       en:'SPOTTED',           emo:'焦褐',  color:'#4A2A1A', img:'German%20tank%20shell%20incoming%20trail%20of%20dust%20striking%20Soviet%20T-34-85%20side%20track%2C%20sparks%20and%20debris%2C%20tank%20commander%20shouting%20inside%2C%20POV%20interior%20view%2C%20WW2%20cinematic%20action' },
+    { id:'shot-11', n:11, dur:4,  title:'机动规避',   en:'EVASION',           emo:'白烟',  color:'#8A8576', img:'Soviet%20T-34-85%20tank%20reversing%20fast%20into%20white%20smoke%20screen%2C%20smoke%20grenades%20popping%2C%20chaotic%20battlefield%2C%20WW2%20eastern%20front%20war%20photograph%20cinematic' },
+    { id:'shot-12', n:12, dur:5,  title:'战场穿梭',   en:'HUNTING',           emo:'土金',  color:'#A8884A', img:'Soviet%20T-34-85%20tank%20sprinting%20across%20battlefield%20weaving%20between%20craters%20and%20burning%20wrecks%2C%20incoming%20shell%20trails%20in%20air%2C%20epic%20wide%20shot%2C%20WW2%20eastern%20front%20cinematic%20war%20film' },
+    { id:'shot-13', n:13, dur:3,  title:'协同反击',   en:'COUNTER-ATTACK',    emo:'土红',  color:'#6F3A28', img:'Soviet%20T-34-85%20tank%20firing%20in%20coordination%20with%20Soviet%20infantry%20charging%2C%20red%20banner%20visible%2C%20WW2%20eastern%20front%20coordinated%20assault%20photograph%2C%20epic%20war%20film%20style' },
+    { id:'shot-14', n:14, dur:5,  title:'钢铁冲锋',   en:'STEEL SURGE',       emo:'焦金',  color:'#7A5A2E', img:'Massive%20Soviet%20T-34-85%20tank%20column%20charging%20forward%20through%20dust%20and%20smoke%2C%20epic%20wide%20shot%2C%20red%20army%20breaking%20through%20German%20defenses%2C%20WW2%20epic%20war%20cinematic%20photograph' },
+    { id:'shot-15', n:15, dur:3,  title:'战后归途',   en:'EPILOGUE',          emo:'残阳',  color:'#C89060', img:'Weary%20Soviet%20tank%20commander%20leaning%20on%20T-34-85%20turret%20at%20sunset%2C%20face%20covered%20in%20oil%20and%20soot%2C%20destroyed%20German%20tank%20wrecks%20in%20background%2C%20golden%20light%2C%20WW2%20cinematic%20portrait%20photograph' },
+  ];
+
+  // ---- Director's Commentary data (per shot) ----
+  const COMMENTARY = {
+    'shot-01': {
+      badge: '镜 01 · 黎明开场 · OPEN',
+      title: '黎明开场',
+      sub: 'DAWN OVER KURSK · 远景',
+      notes: [
+        '<b>为什么用航拍？</b>库尔斯克平原是地球上最平的战场之一。从 800 米高空往下看，弹坑的密度才是真正的"地标"——这些洞决定了下文坦克的走位。',
+        '<b>晨雾的非线性叙事</b>：从黑到灰、从灰到金的色温过渡，是为下一个镜头（铁疙瘩集结）做铺垫。观众要"先沉下来"，才能"被点燃"。',
+        '<b>声音处理</b>：远处炮声要"听得出方向"，不能做成"环境白噪"。每一个炮声都对应着 8~12 公里外一个真实正在燃烧的村庄。',
+      ],
+      task: '把整个故事的"地"和"势"立起来——这是所有大场面电影的镜 01 责任。',
+    },
+    'shot-02': {
+      badge: '镜 02 · 铁疙瘩集结 · SETUP',
+      title: '铁疙瘩集结',
+      sub: 'SUPPLY · 临时涂装',
+      notes: [
+        '<b>白色识别带的细节</b>：在二战的苏德战场上，T-34 涂白色条纹是为了避免己方误击——库尔斯克之后这成为标准操作。',
+        '<b>为什么用手持晃动？</b>：刻意营造一种"刚睡醒、车组还没坐稳"的真实感。真实战场上坦克车长刚从掩体探出时就是这种感觉。',
+        '<b>主角的眼神</b>：他看的是远方——我们故意不给观众看到他在看什么。下个镜头会揭示。',
+      ],
+      task: '介绍"迟到"的 T-34-85，同时埋下"它来得太晚了"的伏笔。',
+    },
+    'shot-03': {
+      badge: '镜 03 · 钢铁洪流启动 · MOVE',
+      title: '钢铁洪流启动',
+      sub: 'START ENGINES · 跟拍',
+      notes: [
+        '<b>V-2 引擎的"咚咚咚"</b>：这是 T-34 之所以被叫做"咚咚咚坦克"的原因——5 缸两冲程柴油机的特征性低频。',
+        '<b>履带溅起的水花</b>：1944 年的库尔斯克 7 月是雨季。我们故意把泥泞拍得夸张，让观众感受到"陷进去可能就出不来"的恐惧。',
+        '<b>声画对位的细节</b>：BGM 鼓点的进入点要精确到履带第一次完全离开泥地的那一刻。',
+      ],
+      task: '让观众听到"钢铁心跳"，为整段战斗建立节奏锚点。',
+    },
+    'shot-04': {
+      badge: '镜 04 · 燃烧村庄 · TRANSIT',
+      title: '燃烧的村庄',
+      sub: 'THROUGH THE BURNING VILLAGE',
+      notes: [
+        '<b>历史细节</b>：片中提到的"被摧毁的德军半履带"，历史上是 Sd.Kfz. 251 系列。撤退的步兵是"国民掷弹兵"。',
+        '<b>为什么这个镜头要快？</b>：在 3 秒内完成"已经发生的浩劫"+"还要去执行的战斗"——这是战争片常见的情绪叠加法。',
+        '<b>镜头语言的选择</b>：用横移跟车而不是推拉，是因为我们不想让观众"暂停下来感受"——他们要感受到那种"不让你停"的紧迫。',
+      ],
+      task: '用 3 秒内嵌 4 个细节，传递"我们赶路，我们目睹，我们继续"。',
+    },
+    'shot-05': {
+      badge: '镜 05 · 敌情骤现 · INCITING',
+      title: '敌情骤现',
+      sub: 'CONTACT · 3 辆黑豹',
+      notes: [
+        '<b>三辆黑豹</b>的设定：现实战场上"一辆黑豹就能换 5 辆 T-34"。把三辆放在同一帧，是在用镜头"压缩时间"——他们是被几波攻击分割后聚集到一起的。',
+        '<b>瞄准镜分屏</b>：这是二战苏军 TSh-16 望远镜的视场。10° 视角 + 测距分划，是那个年代的真实装备。',
+        '<b>"他们突破防线了！"的语音来源</b>：那是前方的 T-34-76 车组。他们此时已经全部阵亡。',
+      ],
+      task: '把"敌人"从一个抽象名词，变成 3 个具体的、有口径的、有射速的"我们即将面对的东西"。',
+    },
+    'shot-06': {
+      badge: '镜 06 · 抢占射击阵地 · RISING',
+      title: '抢占射击阵地',
+      sub: 'HULL-DOWN · 反斜面',
+      notes: [
+        '<b>反斜面（Hull-Down）战术</b>：是 T-34 系列对抗虎式、黑豹的关键——利用地形，只露出炮塔，最大限度减少投影。',
+        '<b>6 秒的节奏</b>：3 秒冲锋 + 1 秒停车 + 2 秒炮塔旋转——这是真实车组操作流程的压缩，60 倍速。',
+        '<b>"我们只有一次射击的机会"</b>：因为黑豹的 75mm L/70 在 1500m 内可以秒杀 T-34-85。我们必须先手。',
+      ],
+      task: '让观众感受到"时间停止"前的最后一次移动。',
+    },
+    'shot-07': {
+      badge: '镜 07 · 锁定黑豹 · AIM',
+      title: '锁定黑豹',
+      sub: 'RANGE 800 · 主观视角',
+      notes: [
+        '<b>800 米的距离选择</b>：在 800m，T-34-85 的 BR-365K 脱壳穿甲弹可以击穿 100mm 装甲。黑豹的侧装甲是 40mm+30mm 倾斜——能打穿。',
+        '<b>炮长的报距</b>："800 米！"是苏军条令中的标准报告用语，简洁、清晰、可复诵。',
+        '<b>主观视角的视场</b>：TSh-16 望远镜的视场是 10°——这相当于人眼盯着一个 7 米宽的物体在 40m 远的视角。我们做窄了 30%。',
+      ],
+      task: '把观众"放进"瞄准镜里——这是电影史上最具张力的"机械凝视"。',
+    },
+    'shot-08': {
+      badge: '镜 08 · 开火 · KILL',
+      title: '开火 · FIRE!',
+      sub: 'FIRST SHOT · 慢动作',
+      notes: [
+        '<b>静音蒙太奇</b>：开火前的 0.3 秒静音 + 炮口焰触发，模仿真实战场上的"先看到光，后听到声"——因为光速和声速的差异约 2.3 秒/km。',
+        '<b>炮口焰的颜色</b>：我们特意保留了真实炮口焰的"红 + 黄 + 黑"三段式——很多战争片把炮口焰拍成纯黄是错的。',
+        '<b>慢动作的物理参数</b>：用 96fps 拍摄，正常 24fps 播放，4 倍慢。这是 Bradley Cooper《美国狙击手》之后的标准做法。',
+      ],
+      task: '让"开火"成为整个 15 镜序列中"决定性的一帧"。',
+    },
+    'shot-09': {
+      badge: '镜 09 · 黑豹殉爆 · RESULT',
+      title: '黑豹殉爆',
+      sub: 'KILL CONFIRMED · 弹药架',
+      notes: [
+        '<b>为什么一定要"殉爆"？</b>：黑豹坦克有一个著名缺陷——弹药架在炮塔座圈下方，击穿后极易引爆。这不是艺术加工，是物理事实。',
+        '<b>炮塔被掀开</b>：历史上 Pz V 黑豹有 7 例"炮塔飞掉"记录（著名的有 Pz V "131 号"——现存于英国博文顿坦克博物馆）。',
+        '<b>火焰持续时间</b>：弹药殉爆后，明火会持续 90 秒以上。我们压缩到 4 秒，但保留了"瞬间吞噬感"。',
+      ],
+      task: '为整个 15 镜的"反派"画上句号——也是 85mm 主炮最光荣的第一次演出。',
+    },
+    'shot-10': {
+      badge: '镜 10 · 暴露 · DANGER',
+      title: '暴露与威胁',
+      sub: 'SPOTTED · 履带中弹',
+      notes: [
+        '<b>二战的"反杀"规律</b>：开炮之后 8~12 秒，是敌方反击的最大概率窗口。T-34-85 在 10 秒内必须转移——这 8 秒是"无防护时间"。',
+        '<b>履带中弹的物理细节</b>：80mm KwK 40 在 600m 距离上能打断 T-34 的履带销。我们用的是 60mm 实拍弹头，确保金属断裂的视觉是真实的。',
+        '<b>车内视角的混乱</b>：扬尘 + 警报 + 成员喊叫——三轨混音。这是人耳在 0.5 秒内的真实信息处理。',
+      ],
+      task: '在 2 秒内完成"胜利→危险"的反转，让观众的心跳跟着走。',
+    },
+    'shot-11': {
+      badge: '镜 11 · 机动规避 · EVADE',
+      title: '机动规避',
+      sub: 'SMOKE SCREEN · 车内视角',
+      notes: [
+        '<b>苏军 RDG 烟雾弹</b>：1944 年苏军装备的 RDG 烟雾手榴弹，能在 5 秒内形成 80×4m 的烟墙。我们拍了 6 颗同时释放。',
+        '<b>车组呼号的层次</b>：车长（喊"左转"）、驾驶员（沉默 0.3 秒后"倒车"）、装填手（"再装一发"）——三个声轨。',
+        '<b>摄影机挂载</b>：车内两台摄影机分别固定在炮塔顶 + 装填手肩上，第三台是手持，跟着炮长转。所有 3 条在剪辑时混为 1 条。',
+      ],
+      task: '让观众"被关进坦克里"——这是密闭空间戏的经典做法。',
+    },
+    'shot-12': {
+      badge: '镜 12 · 战场穿梭 · FLUX',
+      title: '战场穿梭',
+      sub: 'HUNTING · 高速跟拍',
+      notes: [
+        '<b>T-34 的"软优势"</b>：55 km/h 的公路极速 + 500hp 功重比——比虎式（45km/h）和黑豹（46km/h）都快。这是"机动换生存"的核心。',
+        '<b>俯拍选位</b>：本片在 35 米高的水泥废墟上架了一台 RED V-Raptor 远程头，避免航拍带来的"距离感"——我们要观众"贴着地面看"。',
+        '<b>音效叠层</b>：发动机 + 履带 + 炮弹破空 + 远景爆炸 + 风声 = 5 轨，每轨独立时间轴。这是真实战场上驾驶员"耳内的世界"。',
+      ],
+      task: '用 5 秒的"运动美学"完成从被动到主动的视觉转折。',
+    },
+    'shot-13': {
+      badge: '镜 13 · 协同反击 · TURN',
+      title: '协同反击',
+      sub: 'COUNTER-ATTACK · 步坦协同',
+      notes: [
+        '<b>步坦协同的真实历史</b>：1944 年苏军的《坦克兵手册》第 12 章专门讲步坦协同——步兵必须在坦克前方 30m 内。',
+        '<b>红旗信号</b>：苏军步兵在 1943 年后开始使用红底白字小旗作为步坦联络信号。这比无线电更可靠。',
+        '<b>"我们不再是猎物"这句旁白</b>：是剧本里后加的。原本是导演在剪辑第 7 遍时自己配的——决定保留。',
+      ],
+      task: '把孤立的"坦克"还原为"装甲步兵支援体系"——这是战术片必有的层次。',
+    },
+    'shot-14': {
+      badge: '镜 14 · 钢铁冲锋 · CLIMAX',
+      title: '钢铁冲锋',
+      sub: 'STEEL SURGE · 楔形队形',
+      notes: [
+        '<b>楔形队形（Клин）</b>：苏军条令中的"突破队形"——1 辆领航 + 4~6 辆侧翼。这是 1944 年后苏军装甲的标准冲击阵型。',
+        '<b>为什么是 5 秒？</b>：心理学研究显示，观众的"肾上腺素峰值"在 4~6 秒时达到顶峰。再长就开始麻木。',
+        '<b>交响乐 + 工业噪音</b>：肖斯塔科维奇第 7 交响曲"列宁格勒"的第 1 主题（铜管全奏）+ V-2 引擎低频——我们用了 0.7 秒对齐。',
+      ],
+      task: '把整部片子推向"史诗性"——这是大部分战争片失败的关卡。',
+    },
+    'shot-15': {
+      badge: '镜 15 · 战后归途 · END',
+      title: '战后归途',
+      sub: 'EPILOGUE · 电影式收尾',
+      notes: [
+        '<b>为什么最后一镜用近景？</b>：在经历 14 镜的远、全、中、特之后——观众的注意力需要被"拉回"一个人。',
+        '<b>脸上的油污</b>：是用 8 小时的纯真机油 + 烧焦的炭灰调和的。不能用化妆油彩——质感不对。',
+        '<b>夕阳的时间选择</b>：1944 年 7 月库尔斯克的日落是 21:24，但我们在 19:42 就开始拍——那 6 分钟的"提前"给了我们金边。',
+      ],
+      task: '不解释、不升华、不反思——只让一个满脸油污的人，安安静静地靠着那台钢铁。',
+    },
+  };
+
+  // ====== TIMELINE DOCK ======
+  const strip = document.getElementById('timelineStrip');
+  const dock = document.getElementById('timelineDock');
+  SHOTS.forEach(s => {
+    const f = document.createElement('div');
+    f.className = 'timeline-frame';
+    f.dataset.target = s.id;
+    f.innerHTML = `
+      <div class="num">${String(s.n).padStart(2,'0')}</div>
+      <img class="th" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=${s.img}&image_size=landscape_16_9" alt="${s.title}" loading="lazy">
+      <div class="meta">
+        <div class="title">${s.title}</div>
+        <span class="dur">${s.dur}s</span> · ${s.emo}
+      </div>
+    `;
+    f.addEventListener('click', () => {
+      const t = document.getElementById(s.id);
+      if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    strip.appendChild(f);
+  });
+  // collapse toggle
+  const tToggle = document.getElementById('timelineToggle');
+  tToggle.addEventListener('click', () => {
+    dock.classList.toggle('collapsed');
+    tToggle.textContent = dock.classList.contains('collapsed') ? '▲ EXPAND' : '▼ COLLAPSE';
+  });
+  // active frame sync
+  const frames = strip.querySelectorAll('.timeline-frame');
+  const shotObserver = new IntersectionObserver((entries) => {
+    entries.forEach(en => {
+      if (en.isIntersecting) {
+        const id = en.target.id;
+        frames.forEach(fr => fr.classList.toggle('active', fr.dataset.target === id));
+        // scroll the active frame into view in the strip
+        const active = strip.querySelector('.timeline-frame.active');
+        if (active) {
+          const sr = active.getBoundingClientRect();
+          const str = strip.getBoundingClientRect();
+          if (sr.left < str.left || sr.right > str.right) {
+            active.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+          }
+        }
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+  document.querySelectorAll('article.shot').forEach(s => shotObserver.observe(s));
+
+  // ====== COLOR SWATCHES ======
+  const sw = document.getElementById('colorSwatches');
+  SHOTS.forEach(s => {
+    const el = document.createElement('div');
+    el.className = 'sw';
+    el.style.background = `linear-gradient(180deg, ${s.color}aa 0%, ${s.color} 100%)`;
+    el.innerHTML = `<div class="num">${String(s.n).padStart(2,'0')}</div><div class="mood">${s.emo}</div>`;
+    el.addEventListener('click', () => {
+      const t = document.getElementById(s.id);
+      if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    sw.appendChild(el);
+  });
+
+  // ====== LEGEND ======
+  const TYPES = [
+    { cls: 'stamp-seal', name: '钢印章', swatch: '⊕' },
+    { cls: 'crosshair',  name: '准星',   swatch: '⊕' },
+    { cls: 'margin-note',name: '手写批注', swatch: '✎' },
+    { cls: 'data-tag',   name: '数据徽章', swatch: '#' },
+    { cls: 'tape',       name: '胶带角', swatch: '◤' },
+    { cls: 'bracket',    name: 'L 形框', swatch: '⌐' },
+    { cls: 'timecode',   name: '时码',   swatch: '⏱' },
+    { cls: 'frame-counter', name: '帧计数', swatch: '◉' },
+    { cls: 'pin',        name: '图钉',   swatch: '⊙' },
+    { cls: 'arrow',      name: '箭头',   swatch: '→' },
+    { cls: 'balloon',    name: '气泡',   swatch: '◯' },
+    { cls: 'scale-bar',  name: '比例尺', swatch: '⊟' },
+    { cls: 'range-finder', name: '测距仪', swatch: '◢' },
+    { cls: 'compass',    name: '指北针', swatch: '✛' },
+    { cls: 'ruler',      name: '刻度尺', swatch: '│' },
+    { cls: 'grid-overlay', name: '网格层', swatch: '▦' },
+    { cls: 'bookmark',   name: '书签带', swatch: '▼' },
+    { cls: 'field-mark', name: '字段手写', swatch: '✕' },
+    { cls: 'slate',      name: '场记板', swatch: '▤' },
+    { cls: 'canister',   name: '胶片罐', swatch: '▮' },
+    { cls: 'index-card', name: '索引卡', swatch: '▢' },
+    { cls: 'sig-stamp',  name: '钢笔签名', swatch: '✎' },
+  ];
+  const legendBody = document.getElementById('legendBody');
+  TYPES.forEach(t => {
+    const cnt = document.querySelectorAll('.' + t.cls).length;
+    const item = document.createElement('div');
+    item.className = 'legend-item active';
+    item.dataset.cls = t.cls;
+    item.innerHTML = `
+      <div class="check"></div>
+      <div class="swatch">${t.swatch}</div>
+      <div class="name">${t.name}</div>
+      <div class="cnt">${cnt}</div>
+    `;
+    item.addEventListener('click', () => {
+      item.classList.toggle('active');
+      item.classList.toggle('off');
+      const off = item.classList.contains('off');
+      const els = document.querySelectorAll('.' + t.cls);
+      els.forEach(el => el.style.display = off ? 'none' : '');
+    });
+    legendBody.appendChild(item);
+  });
+  // hide all
+  document.getElementById('legendNone').addEventListener('click', () => {
+    document.querySelectorAll('.legend-item').forEach(it => {
+      it.classList.remove('active'); it.classList.add('off');
+      const els = document.querySelectorAll('.' + it.dataset.cls);
+      els.forEach(el => el.style.display = 'none');
+    });
+  });
+  // show all
+  document.getElementById('legendAll').addEventListener('click', () => {
+    document.querySelectorAll('.legend-item').forEach(it => {
+      it.classList.add('active'); it.classList.remove('off');
+      const els = document.querySelectorAll('.' + it.dataset.cls);
+      els.forEach(el => el.style.display = '');
+    });
+  });
+  // collapse toggle
+  document.getElementById('legendHead').addEventListener('click', () => {
+    document.getElementById('legend').classList.toggle('collapsed');
+  });
+
+  // ====== COMMENTARY PANEL ======
+  const panel = document.getElementById('commentary');
+  const back = document.getElementById('commentaryBackdrop');
+  const closeBtn = document.getElementById('commentaryClose');
+  const content = document.getElementById('commentaryContent');
+
+  function openCommentary(id){
+    const c = COMMENTARY[id];
+    if (!c) return;
+    const s = SHOTS.find(x => x.id === id);
+    content.innerHTML = `
+      <div class="badge">${c.badge}</div>
+      <h2>${c.title}</h2>
+      <div class="sub">${c.sub}</div>
+      <img class="pic" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=${s.img}&image_size=landscape_16_9" alt="${c.title}">
+      <div class="stats">
+        <div class="stat"><div class="k">镜号</div><div class="v">${String(s.n).padStart(2,'0')} / 15</div></div>
+        <div class="stat"><div class="k">时长</div><div class="v">${s.dur}s</div></div>
+        <div class="stat"><div class="k">情绪色</div><div class="v">${s.emo}</div></div>
+        <div class="stat"><div class="k">色值</div><div class="v">${s.color}</div></div>
+      </div>
+      <h3>导演笔记 · DIRECTOR'S NOTES</h3>
+      <ul>${c.notes.map(n => `<li>${n}</li>`).join('')}</ul>
+      <h3>本镜任务 · THE TASK</h3>
+      <div class="quote-block">${c.task}</div>
+      <div class="signature">И. Колов · 1944</div>
+    `;
+    panel.classList.add('open');
+    back.classList.add('open');
+    panel.setAttribute('aria-hidden', 'false');
+  }
+  function closeCommentary(){
+    panel.classList.remove('open');
+    back.classList.remove('open');
+    panel.setAttribute('aria-hidden', 'true');
+  }
+  closeBtn.addEventListener('click', closeCommentary);
+  back.addEventListener('click', closeCommentary);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCommentary(); });
+  // bind shot titles
+  document.querySelectorAll('article.shot').forEach(art => {
+    const t = art.querySelector('.shot-title');
+    if (t) {
+      t.addEventListener('click', () => openCommentary(art.id));
+    }
+    // also add a small shot-trigger button
+    const trig = document.createElement('span');
+    trig.className = 'shot-trigger';
+    trig.textContent = 'COMMENTARY';
+    trig.addEventListener('click', (e) => { e.stopPropagation(); openCommentary(art.id); });
+    t && t.appendChild(trig);
+  });
+})();
+</script>
 
 <script>
 /* =================================================================
