@@ -53,7 +53,7 @@ export default function ShotCard({ shot, index, total, isActive, layer, onEnter 
       <SlideLeftCol shot={shot} index={index} isActive={isActive} />
 
       {/* 中部主区 */}
-      <SlideMainArea shot={shot} isActive={isActive} layer={layer} />
+      <SlideMainArea shot={shot} total={total} isActive={isActive} layer={layer} />
 
       {/* 右栏 — 镜头规格 */}
       <SlideRightCol shot={shot} />
@@ -165,7 +165,7 @@ function SlideLeftCol({ shot, index }: { shot: Shot; index: number; isActive: bo
   );
 }
 
-function SlideMainArea({ shot, isActive, layer }: { shot: Shot; isActive: boolean; layer: LayerKey }) {
+function SlideMainArea({ shot, total, isActive, layer }: { shot: Shot; total: number; isActive: boolean; layer: LayerKey }) {
   return (
     <div className="absolute left-80 right-72 top-20 bottom-20 z-10 flex gap-4" style={{ perspective: "2000px" }}>
       {/* Visual canvas — 3D 倾斜玻璃面板 */}
@@ -174,7 +174,7 @@ function SlideMainArea({ shot, isActive, layer }: { shot: Shot; isActive: boolea
         style={{ transformStyle: "preserve-3d" }}
       >
         <div className="absolute inset-0">
-          <ShotCanvas shot={shot} isActive={isActive} />
+          <ShotCanvas shot={shot} total={total} isActive={isActive} />
         </div>
         {/* 角落标签 */}
         <div className="absolute top-3 left-3 pill-3d rounded px-2 py-0.5 font-mono text-[9px] text-fog tracking-widest z-10">

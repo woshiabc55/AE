@@ -1,13 +1,15 @@
 import type { Shot } from "@/data/shots";
+import Annotations from "./Annotations";
 
 interface ShotCanvasProps {
   shot: Shot;
+  total: number;
   isActive: boolean;
 }
 
 // 每个镜头的"画框内"示意 — 用 SVG 几何抽象表示分镜内容
 // 重点在"电影监视器预览"质感，而非具象图形
-export default function ShotCanvas({ shot, isActive }: ShotCanvasProps) {
+export default function ShotCanvas({ shot, total, isActive }: ShotCanvasProps) {
   return (
     <div
       className="relative w-full h-full flex items-center justify-center transition-all duration-700"
@@ -38,6 +40,9 @@ export default function ShotCanvas({ shot, isActive }: ShotCanvasProps) {
 
       {/* Atmospheric particles */}
       <Particles shot={shot} />
+
+      {/* Rich technical annotations overlay */}
+      <Annotations shot={shot} index={shot.index} total={total} isActive={isActive} />
     </div>
   );
 }

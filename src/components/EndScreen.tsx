@@ -270,7 +270,167 @@ export default function EndScreen({ visible }: EndScreenProps) {
           </motion.div>
         </div>
       )}
+
+      {/* ====== 大量技术标注 ====== */}
+      <EndAnnotations />
     </section>
+  );
+}
+
+// ---------- EndScreen 标注层 ----------
+function EndAnnotations() {
+  return (
+    <div className="absolute inset-0 pointer-events-none z-20">
+      {/* 左侧 — 时间码尺 + 帧号 */}
+      <div className="absolute left-3 top-1/2 -translate-y-1/2 flex flex-col items-center gap-1">
+        <div className="font-mono text-[7px] text-fog/50 tracking-widest">TC</div>
+        <div className="relative w-px h-48 bg-gradient-to-b from-bone/30 via-rust/30 to-blood/30">
+          {["03:00", "03:03", "03:06", "03:09", "03:12", "03:15"].map((t, i) => (
+            <div
+              key={i}
+              className="absolute -left-1 flex items-center gap-1"
+              style={{ top: `${(i / 5) * 100}%` }}
+            >
+              <div className="w-2 h-px bg-bone/40" />
+              <div className="font-mono text-[6px] text-fog/50 tabular-nums">{t}</div>
+            </div>
+          ))}
+        </div>
+        <div className="font-mono text-[6px] text-fog/40 tracking-widest">15.00S</div>
+      </div>
+
+      {/* 右侧 — 胶片门参数盒 */}
+      <div className="absolute right-3 top-24 w-36 glass rounded p-2">
+        <div className="flex items-center gap-1 mb-1.5">
+          <div className="w-1 h-1 bg-blood rounded-full animate-glow" />
+          <div className="font-mono text-[7px] text-rust/80 tracking-widest">FILM GATE</div>
+        </div>
+        <SpecRow k="GAUGE" v="35MM" />
+        <SpecRow k="PERF" v="5/4 KS" />
+        <SpecRow k="EMULSION" v="KODAK 5219" />
+        <SpecRow k="ISO" v="TUNGSTEN 640" />
+        <SpecRow k="PITCH" v="4.74MM" />
+        <SpecRow k="GATE" v="21.95 × 16.05" />
+      </div>
+
+      {/* 顶部 — 场次标牌 */}
+      <div className="absolute top-2 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1">
+        <div className="flex items-center gap-2 font-mono text-[8px] text-fog/50 tracking-[0.4em]">
+          <span className="w-8 h-px bg-fog/30" />
+          <span>END OF REEL · BLACK · 5S</span>
+          <span className="w-8 h-px bg-fog/30" />
+        </div>
+        <div className="font-mono text-[7px] text-rust/40 tracking-widest">
+          SLATE · SL-25-5 · "AFTER"
+        </div>
+      </div>
+
+      {/* 主标题左侧 — 引线 + 注释 */}
+      <div className="absolute left-32 top-[28%] pointer-events-none">
+        <svg width="160" height="60" className="absolute">
+          <line x1="0" y1="30" x2="100" y2="30" stroke="rgba(201,90,43,0.4)" strokeWidth="0.5" strokeDasharray="2 2" />
+          <circle cx="100" cy="30" r="2" fill="rgba(201,90,43,0.6)" />
+          <line x1="100" y1="30" x2="140" y2="20" stroke="rgba(201,90,43,0.4)" strokeWidth="0.5" strokeDasharray="2 2" />
+        </svg>
+        <div className="absolute" style={{ left: 144, top: 10 }}>
+          <div className="font-mono text-[7px] text-rust/70 tracking-widest">EPILOGUE TITLE</div>
+          <div className="font-mono text-[7px] text-fog/60 tracking-widest">BEBAS · 144PX · 3D 7-LAYER</div>
+          <div className="font-mono text-[7px] text-fog/50 tracking-widest">RUST → BLOOD GRADIENT</div>
+        </div>
+      </div>
+
+      {/* 主标题右侧 — 颜色注解 */}
+      <div className="absolute right-32 top-[28%] pointer-events-none">
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 rounded-sm border border-bone/20" style={{ background: "linear-gradient(180deg, #E8E8E8 0%, #C95A2B 50%, #5C1A08 100%)" }} />
+            <div>
+              <div className="font-mono text-[7px] text-rust/70 tracking-widest">C-04 · BONE-RUST</div>
+              <div className="font-mono text-[6px] text-fog/50 tabular-nums">GRADIENT · 3 STOP</div>
+            </div>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 rounded-sm border border-bone/20" style={{ background: "linear-gradient(180deg, #E63946 0%, #2A0808 100%)" }} />
+            <div>
+              <div className="font-mono text-[7px] text-blood/70 tracking-widest">C-05 · BLOOD-DEEP</div>
+              <div className="font-mono text-[6px] text-fog/50 tabular-nums">DEPTH · 5 LAYER</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 面包屏左侧 — 注释 */}
+      <div className="absolute left-3 top-[60%] pointer-events-none">
+        <div className="flex flex-col gap-1">
+          <div className="font-mono text-[7px] text-rust/70 tracking-widest">CONTACT SHEET</div>
+          <div className="font-mono text-[6px] text-fog/50 tracking-widest">5 FRAMES · 35MM</div>
+          <div className="font-mono text-[6px] text-fog/50 tracking-widest">AR · 2.39:1</div>
+        </div>
+      </div>
+
+      {/* 面包屏右侧 — 注释 */}
+      <div className="absolute right-3 top-[55%] pointer-events-none w-28">
+        <div className="glass rounded p-1.5">
+          <div className="font-mono text-[6px] text-fog/50 tracking-widest mb-1">FRAME INFO</div>
+          <div className="font-mono text-[6px] text-bone/80 tracking-widest">5 × 24 = 120 FRAMES</div>
+          <div className="font-mono text-[6px] text-fog/60 tracking-widest">@ 24 FPS</div>
+          <div className="font-mono text-[6px] text-fog/60 tracking-widest">15.00 SEC TOTAL</div>
+        </div>
+      </div>
+
+      {/* 右下 — 3D 轴标 */}
+      <div className="absolute right-3 bottom-3 w-20 h-20 glass rounded-lg p-1.5">
+        <div className="font-mono text-[6px] text-fog/60 tracking-widest mb-1">CAM AXIS</div>
+        <svg className="w-full h-14" viewBox="0 0 60 56">
+          <line x1="6" y1="28" x2="54" y2="28" stroke="#C95A2B" strokeWidth="1" />
+          <polygon points="54,28 50,26 50,30" fill="#C95A2B" />
+          <text x="46" y="24" fill="#C95A2B" fontSize="5" fontFamily="JetBrains Mono">X</text>
+          <line x1="6" y1="28" x2="6" y2="2" stroke="#E63946" strokeWidth="1" />
+          <polygon points="6,2 4,6 8,6" fill="#E63946" />
+          <text x="9" y="6" fill="#E63946" fontSize="5" fontFamily="JetBrains Mono">Y</text>
+          <line x1="6" y1="28" x2="22" y2="48" stroke="#4A6741" strokeWidth="1" />
+          <polygon points="22,48 18,46 20,42" fill="#4A6741" />
+          <text x="24" y="50" fill="#4A6741" fontSize="5" fontFamily="JetBrains Mono">Z</text>
+          <circle cx="6" cy="28" r="1.5" fill="#E8E8E8" />
+        </svg>
+      </div>
+
+      {/* 左下 — 帧计数器 */}
+      <div className="absolute left-3 bottom-3 glass rounded p-2 w-32">
+        <div className="flex items-center gap-1 mb-1">
+          <div className="w-1 h-1 bg-blood rounded-full" />
+          <div className="font-mono text-[7px] text-rust/80 tracking-widest">FRAME · 0720 / 0720</div>
+        </div>
+        <div className="font-mono text-[7px] text-bone tabular-nums">@ 24.00 FPS · END</div>
+        <div className="mt-1 flex gap-px">
+          {Array.from({ length: 24 }).map((_, i) => (
+            <div
+              key={i}
+              className="flex-1 h-1.5 bg-rust/60"
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* 4 边刻度点 */}
+      <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+        {Array.from({ length: 11 }).map((_, i) => (
+          <g key={`etick-${i}`}>
+            <line x1={`${i * 10}%`} y1="0" x2={`${i * 10}%`} y2={i % 5 === 0 ? "6" : "3"} stroke="rgba(232,232,232,0.12)" strokeWidth="0.5" />
+            <line x1="0" y1={`${i * 10}%`} x2={i % 5 === 0 ? "6" : "3"} y2={`${i * 10}%`} stroke="rgba(232,232,232,0.12)" strokeWidth="0.5" />
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+function SpecRow({ k, v }: { k: string; v: string }) {
+  return (
+    <div className="flex items-center justify-between border-b border-bone/5 py-0.5">
+      <span className="font-mono text-[6px] text-fog/60 tracking-widest">{k}</span>
+      <span className="font-mono text-[7px] text-bone/80 tabular-nums">{v}</span>
+    </div>
   );
 }
 
