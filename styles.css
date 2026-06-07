@@ -321,6 +321,33 @@ main { padding: 24px; max-width: 1400px; margin: 0 auto; }
 .position-diagram .dot.jade { background: var(--jade);}
 .position-diagram .dot.gold { background: var(--gold);}
 
+/* 位置示意图角色动画 */
+@keyframes posBounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-4px); }
+}
+@keyframes posSway {
+  0%, 100% { transform: translateX(-50%) rotate(-3deg); }
+  50% { transform: translateX(-50%) rotate(3deg); }
+}
+@keyframes posIdle {
+  0%, 100% { transform: translateX(-50%); }
+  50% { transform: translateX(-50%) scale(1.05); }
+}
+.position-diagram .pos-char {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 28px;
+  pointer-events: none;
+  filter: drop-shadow(1px 1px 0 rgba(0,0,0,0.3));
+}
+.position-diagram .pos-char[data-anim="0"] { animation: posBounce 1.2s ease-in-out infinite; }
+.position-diagram .pos-char[data-anim="1"] { animation: posSway 1.5s ease-in-out infinite; }
+.position-diagram .pos-char[data-anim="2"] { animation: posIdle 1s ease-in-out infinite; }
+
 /* === 角色设计 === */
 .char-grid {
   display: grid;

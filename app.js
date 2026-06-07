@@ -144,51 +144,150 @@ function renderStoryboard() {
   }
 }
 
-// 简易位置示意
+// 简易位置示意 - 使用角色像素艺术
 function renderPosition(chars) {
-  // 根据 pos 字段定位
   const posMap = {
-    "0": { left: "50%", top: "60%" },   // 中央
-    "1": { left: "25%", top: "60%" },   // 左前
-    "2": { left: "75%", top: "60%" },   // 右前
-    "3": { left: "20%", top: "35%" },   // 左后
-    "4": { left: "80%", top: "35%" },   // 右后
-    "5": { left: "50%", top: "15%" },   // 上方
-    "6": { left: "50%", top: "85%" }    // 下方
+    "0": { left: "50%", top: "60%" },
+    "1": { left: "25%", top: "60%" },
+    "2": { left: "75%", top: "60%" },
+    "3": { left: "20%", top: "35%" },
+    "4": { left: "80%", top: "35%" },
+    "5": { left: "50%", top: "15%" },
+    "6": { left: "50%", top: "85%" }
   };
   return chars.map((c, i) => {
     const p = posMap[c.pos] || posMap["0"];
     const color = c.pos === "0" ? "" : (c.pos === "1" || c.pos === "2" ? "jade" : "gold");
-    return `<div class="dot ${color}" style="left:${p.left};top:${p.top}">${i+1}</div>`;
+    // 尝试查找角色并显示像素艺术
+    const charData = SCRIPT_DATA.characters.find(x => x.name === c.name);
+    const anim = i % 3; // 0=跳动, 1=摇摆, 2=待机
+    return `<div class="dot ${color}" data-i="${i}" data-anim="${anim}" style="left:${p.left};top:${p.top}">
+      ${charData ? `<div class="pos-char" style="position:absolute;bottom:14px;left:50%;transform:translateX(-50%);width:28px;height:28px;animation:${anim===0?'bounce 1.2s':anim===1?'sway 1.5s':'idle 1s'} infinite">${renderPixel(charData.frames?.idle || charData.pixel, charData.palette || charData.colors, 4)}</div>` : ""}
+      <span style="position:relative;z-index:2">${i+1}</span>
+    </div>`;
   }).join("");
 }
 
 // === 渲染：角色设计 ===
 function renderCharacters() {
   const grid = $("#char-grid");
-  grid.innerHTML = SCRIPT_DATA.characters.map(c => `
-    <div class="char-card">
-      <div class="char-portrait">${renderPixel(c)}</div>
+  // 状态标签
+  const stateLabels = {
+    idle: "默认", walk1: "行走 1", walk2: "行走 2",
+    attack: "攻击", hurt: "受伤", die: "阵亡", special: "特殊"
+  };
+  grid.innerHTML = SCRIPT_DATA.characters.map(c => {
+    const frames = c.frames || { idle: c.pixel };
+    const palette = c.palette || c.colors;
+    // 6 个状态小图
+    const states = ["idle", "walk1", "walk2", "attack", "hurt", "die", "special"].filter(s => frames[s]);
+    return `
+    <div class="char-card" data-char-id="${c.id}">
+      <div class="char-portrait char-main" data-frame="walk1" style="height:160px">
+        ${renderPixel(frames.walk1 || frames.idle, palette)}
+      </div>
       <h3>${escapeHTML(c.name)}</h3>
       <div class="role">${escapeHTML(c.role)}</div>
       <div class="desc">${escapeHTML(c.desc)}</div>
+      <div class="char-frames" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:10px;background:#ebe0c6;padding:6px;border-radius:3px">
+        ${states.map(s => `
+          <div class="char-frame-btn" data-state="${s}" data-char="${c.id}" style="cursor:pointer;text-align:center;padding:4px;border:1px solid #8b6f47;border-radius:3px;background:#f5ecd7;transition:all .15s" title="${stateLabels[s]}">
+            <div style="width:100%;aspect-ratio:1/1;overflow:hidden">
+              ${renderPixel(frames[s], palette, 50)}
+            </div>
+            <div style="font-size:9px;color:#5d4037;margin-top:2px">${stateLabels[s]}</div>
+          </div>
+        `).join("")}
+      </div>
+      <div class="char-actions" style="display:flex;gap:4px;margin-top:8px;flex-wrap:wrap">
+        <button class="char-anim-btn" data-char="${c.id}" data-mode="cycle" style="flex:1;padding:6px;font-size:11px;background:#2c7873;color:#f5ecd7;border:none;border-radius:3px;cursor:pointer">▶ 循环动画</button>
+        <button class="char-anim-btn" data-char="${c.id}" data-mode="walk" style="flex:1;padding:6px;font-size:11px;background:#b8860b;color:#1a1a1a;border:none;border-radius:3px;cursor:pointer">🚶 行走</button>
+        <button class="char-anim-btn" data-char="${c.id}" data-mode="attack" style="flex:1;padding:6px;font-size:11px;background:#b03a2e;color:#f5ecd7;border:none;border-radius:3px;cursor:pointer">⚔ 攻击</button>
+      </div>
     </div>
-  `).join("");
+  `}).join("");
+
+  // 绑定状态切换
+  grid.querySelectorAll(".char-frame-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const charId = btn.dataset.char;
+      const state = btn.dataset.state;
+      const card = grid.querySelector(`[data-char-id="${charId}"]`);
+      const char = SCRIPT_DATA.characters.find(x => x.id === charId);
+      const main = card.querySelector(".char-main");
+      if (char && char.frames) {
+        main.innerHTML = renderPixel(char.frames[state], char.palette || char.colors);
+        // 高亮当前选中的状态
+        card.querySelectorAll(".char-frame-btn").forEach(b => {
+          b.style.background = "#f5ecd7";
+          b.style.borderColor = "#8b6f47";
+        });
+        btn.style.background = "#fadbd8";
+        btn.style.borderColor = "#b03a2e";
+      }
+    });
+    btn.addEventListener("mouseenter", () => { if (btn.style.background !== "rgb(250, 219, 210)") btn.style.background = "#fadbd8"; });
+    btn.addEventListener("mouseleave", () => { if (btn.style.background !== "rgb(250, 219, 210)") btn.style.background = "#f5ecd7"; });
+  });
+
+  // 绑定动画播放
+  grid.querySelectorAll(".char-anim-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const charId = btn.dataset.char;
+      const mode = btn.dataset.mode;
+      const char = SCRIPT_DATA.characters.find(x => x.id === charId);
+      if (!char || !char.frames) return;
+      const card = grid.querySelector(`[data-char-id="${charId}"]`);
+      const main = card.querySelector(".char-main");
+      main.dataset.frame = mode;
+      main.dataset.playing = "1";
+      // 立即开始
+      playCharAnim(char, main, mode);
+    });
+  });
 }
 
-function renderPixel(char) {
-  // 用 SVG 渲染像素艺术
-  const size = 12; // 每格像素大小
-  const w = char.pixel[0].length * size;
-  const h = char.pixel.length * size;
+function playCharAnim(char, mainEl, mode) {
+  const palette = char.palette || char.colors;
+  const frames = char.frames;
+  if (!frames) return;
+  let sequence = [];
+  if (mode === "cycle") {
+    sequence = ["idle", "walk1", "walk2", "attack", "special", "idle"];
+  } else if (mode === "walk") {
+    sequence = ["walk1", "walk2", "walk1", "walk2"];
+  } else if (mode === "attack") {
+    sequence = ["idle", "attack", "attack", "hurt", "idle"];
+  }
+  let i = 0;
+  const tick = () => {
+    if (mainEl.dataset.playing !== "1" || mainEl.dataset.frame !== mode) return;
+    const state = sequence[i % sequence.length];
+    mainEl.innerHTML = renderPixel(frames[state], palette);
+    i++;
+    setTimeout(tick, mode === "attack" ? 250 : 400);
+  };
+  tick();
+}
+
+function renderPixel(pixel, palette, size) {
+  // 支持传入像素数组和调色板
+  if (typeof pixel === "object" && !Array.isArray(pixel) && pixel.pixel) {
+    palette = pixel.colors || pixel.palette;
+    pixel = pixel.pixel;
+  }
+  // pixel: 字符串数组, palette: 颜色映射
+  if (size === undefined) size = 12;
+  const w = pixel[0].length * size;
+  const h = pixel.length * size;
   let rects = "";
-  char.pixel.forEach((row, y) => {
+  pixel.forEach((row, y) => {
     [...row].forEach((ch, x) => {
-      const color = char.colors[ch];
+      const color = palette[ch];
       if (color) rects += `<rect x="${x*size}" y="${y*size}" width="${size}" height="${size}" fill="${color}"/>`;
     });
   });
-  return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" style="background:#f5ecd7">
+  return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" style="background:#f5ecd7;width:100%;height:100%">
     ${rects}
   </svg>`;
 }
@@ -361,236 +460,68 @@ function populateFilters() {
     [...allChars].map(c => `<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join("");
 }
 
-// === 像素游戏：高粱河突围 ===
+// === 像素游戏：高粱河突围（增强版） ===
 let game = null;
 function initGame() {
-  if (game) return; // 已初始化
+  if (game) return;
   const canvas = $("#game");
-  const ctx = canvas.getContext("2d");
-  canvas.width = 480; canvas.height = 270;
-  const W = canvas.width, H = canvas.height;
+  if (!canvas) return;
+  game = new Game(canvas);
+  game.start();
+  // 渲染关卡列表
+  renderLevelList();
+  // 按钮事件
+  const bs = $("#btn-start");
+  const br = $("#btn-reset");
+  const bl = $("#btn-leaderboard");
+  if (bs) bs.addEventListener("click", () => game.startGame());
+  if (br) br.addEventListener("click", () => game.restartLevel());
+  if (bl) bl.addEventListener("click", showLeaderboard);
+}
 
-  // 关卡地图：12列x9格的 16:9 像素地图
-  const map = [
-    "TTTTTTTTTTTT",
-    "T..........T",
-    "T..CCC..CCC.T",
-    "T..........T",
-    "T....B..B..T",
-    "T..........T",
-    "T..CCC..CCC.T",
-    "T..........T",
-    "TTTTTTTTTTTT"
-  ];
-  const tile = 30; // 30px
-  const COLS = map[0].length, ROWS = map.length;
-
-  // 玩家 = 驴车上的赵光义
-  const player = { x: 1*tile + 4, y: 4*tile + 4, w: 22, h: 22, dir: 1, hp: 3, score: 0, invuln: 0, onCart: true };
-  // 敌人 = 辽国骑兵 (C) 与路障 (B)
-  const enemies = [];
-  for (let r = 0; r < ROWS; r++) {
-    for (let c = 0; c < COLS; c++) {
-      if (map[r][c] === "C") enemies.push({ x: c*tile, y: r*tile, w: 22, h: 22, type: "khitan", vx: (Math.random()<0.5?-1:1)*0.6, vy: 0 });
-      if (map[r][c] === "B") enemies.push({ x: c*tile+4, y: r*tile+4, w: 22, h: 22, type: "barricade" });
-    }
-  }
-
-  const goal = { x: (COLS-2)*tile, y: 4*tile };
-
-  let keys = {};
-  let rafId = null, running = false, over = false, won = false;
-  let frameCount = 0;
-
-  // 输入
-  document.addEventListener("keydown", e => {
-    keys[e.key] = true;
-    if (e.key === "r" || e.key === "R") reset();
+function renderLevelList() {
+  const wrap = $("#level-list");
+  if (!wrap || !window.LEVELS) return;
+  wrap.innerHTML = LEVELS.map((lv, i) => `
+    <div class="level-card" data-i="${i}" style="
+      background:#f5ecd7;border:2px solid #8b6f47;border-radius:4px;padding:10px;cursor:pointer;
+      transition:all .2s;
+    ">
+      <div style="color:#b03a2e;font-weight:700;font-size:14px;margin-bottom:4px">${escapeHTML(lv.name)}</div>
+      <div style="color:#b8860b;font-size:11px;margin-bottom:4px">${escapeHTML(lv.subtitle)}</div>
+      <div style="color:#5d4037;font-size:11px;line-height:1.5">${escapeHTML(lv.story)}</div>
+      <div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap">
+        ${(lv.enemyTypes || []).map(t => `<span style="background:#ebe0c6;padding:1px 6px;border-radius:8px;font-size:10px">${escapeHTML(ENEMY_DEFS[t]?.name || t)}</span>`).join("")}
+        ${lv.boss ? `<span style="background:#f5d6d2;border:1px solid #b03a2e;padding:1px 6px;border-radius:8px;font-size:10px;color:#b03a2e;font-weight:700">👑 ${escapeHTML(ENEMY_DEFS[lv.boss.type]?.name || "Boss")}</span>` : ""}
+      </div>
+    </div>
+  `).join("");
+  wrap.querySelectorAll(".level-card").forEach(el => {
+    el.addEventListener("click", () => {
+      const i = +el.dataset.i;
+      if (game) {
+        game.startGame();
+        game.loadLevel(i);
+      }
+    });
+    el.addEventListener("mouseenter", () => el.style.background = "#ebe0c6");
+    el.addEventListener("mouseleave", () => el.style.background = "#f5ecd7");
   });
-  document.addEventListener("keyup", e => { keys[e.key] = false; });
+}
 
-  // 移动控制
-  $$(".mobile-pad button[data-dir]").forEach(b => {
-    b.addEventListener("touchstart", e => { e.preventDefault(); keys[b.dataset.dir] = true; });
-    b.addEventListener("touchend", e => { e.preventDefault(); keys[b.dataset.dir] = false; });
-    b.addEventListener("mousedown", e => { keys[b.dataset.dir] = true; });
-    b.addEventListener("mouseup", e => { keys[b.dataset.dir] = false; });
+function showLeaderboard() {
+  if (!window.scoreboard) return;
+  const tops = window.scoreboard.getAllTop(10);
+  if (tops.length === 0) {
+    alert("暂无排行，快来挑战吧！");
+    return;
+  }
+  let msg = "🏆 历史战役排行\n\n";
+  tops.forEach((s, i) => {
+    const medal = ["🥇","🥈","🥉","④","⑤","⑥","⑦","⑧","⑨","⑩"][i] || `${i+1}`;
+    msg += `${medal} ${s.name} - ${s.level} - ${s.score}分\n`;
   });
-  $("#btn-start")?.addEventListener("click", () => { running = true; $("#game-msg").textContent = "驾！驾！驾驴车突围！"; });
-  $("#btn-reset")?.addEventListener("click", reset);
-
-  function reset() {
-    player.x = 1*tile + 4; player.y = 4*tile + 4; player.hp = 3; player.score = 0; player.invuln = 0; player.dir = 1;
-    enemies.forEach((e, i) => {
-      const arr = [];
-      for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
-        if ((map[r][c] === "C" && arr.length === 0) || (map[r][c] === "C" && arr.length === 1)) {
-          if (!arr.includes(c + "," + r)) {
-            arr.push(c + "," + r);
-            if (arr.length === 2) break;
-          }
-        }
-        if (arr.length >= 2) break;
-      }
-      e.x = e.x; e.y = e.y; e.vx = Math.abs(e.vx) * (Math.random()<0.5?1:-1);
-    });
-    over = false; won = false; running = true;
-    $("#game-msg").textContent = "驾！驾！驾驴车突围！";
-  }
-
-  function rectCollide(a, b) {
-    return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
-  }
-
-  function update() {
-    if (!running || over) return;
-    frameCount++;
-    // 玩家移动
-    const speed = 2;
-    if (keys["ArrowLeft"] || keys["a"] || keys["A"]) { player.x -= speed; player.dir = -1; }
-    if (keys["ArrowRight"] || keys["d"] || keys["D"]) { player.x += speed; player.dir = 1; }
-    if (keys["ArrowUp"] || keys["w"] || keys["W"]) player.y -= speed;
-    if (keys["ArrowDown"] || keys["s"] || keys["S"]) player.y += speed;
-    // 边界
-    player.x = Math.max(0, Math.min(W - player.w, player.x));
-    player.y = Math.max(0, Math.min(H - player.h, player.y));
-
-    // 敌人移动
-    enemies.forEach(e => {
-      if (e.type === "khitan") {
-        e.x += e.vx;
-        if (e.x < 0 || e.x + e.w > W) e.vx = -e.vx;
-        e.y += Math.sin((frameCount + e.x) * 0.05) * 0.3;
-      }
-      // 碰撞
-      if (rectCollide(player, e) && player.invuln <= 0) {
-        player.hp--;
-        player.invuln = 60;
-        player.score = Math.max(0, player.score - 1);
-        if (player.hp <= 0) { over = true; $("#game-msg").textContent = "💀 阵亡！按 R 重来 (高粱河之败重演)"; }
-      }
-    });
-    if (player.invuln > 0) player.invuln--;
-
-    // 到达终点
-    if (Math.abs(player.x - goal.x) < tile && Math.abs(player.y - goal.y) < tile) {
-      won = true; over = true; running = false;
-      player.score += 10;
-      $("#game-msg").innerHTML = `🏆 成功突围！驴车漂移之神！得分：${player.score}，按 R 再来`;
-    }
-
-    // 每帧加分（逃亡）
-    player.score++;
-  }
-
-  function draw() {
-    // 背景
-    ctx.fillStyle = "#1a1a1a"; ctx.fillRect(0, 0, W, H);
-    // 草地
-    ctx.fillStyle = "#2d4a2d";
-    ctx.fillRect(0, 0, W, H);
-    // 网格
-    for (let r = 0; r < ROWS; r++) {
-      for (let c = 0; c < COLS; c++) {
-        const x = c*tile, y = r*tile;
-        if ((r+c) % 2 === 0) {
-          ctx.fillStyle = "#3a5a3a";
-          ctx.fillRect(x, y, tile, tile);
-        }
-        // 边界
-        if (map[r][c] === "T") {
-          ctx.fillStyle = "#5d4e8c";
-          ctx.fillRect(x, y, tile, tile);
-        }
-      }
-    }
-
-    // 终点
-    ctx.fillStyle = "#f5ecd7";
-    ctx.font = "bold 16px monospace";
-    ctx.textAlign = "center";
-    ctx.fillText("涿州→", goal.x + tile/2, goal.y + tile/2 + 6);
-    ctx.strokeStyle = "#b8860b"; ctx.lineWidth = 3;
-    ctx.strokeRect(goal.x - 2, goal.y - 2, tile + 4, tile + 4);
-
-    // 敌人
-    enemies.forEach(e => {
-      if (e.type === "khitan") {
-        // 辽国骑兵
-        ctx.fillStyle = "#3e2723";
-        ctx.fillRect(e.x + 6, e.y + 2, 10, 10); // 头
-        ctx.fillStyle = "#2c7873";
-        ctx.fillRect(e.x + 4, e.y + 10, 14, 8); // 身
-        ctx.fillStyle = "#1a1a1a";
-        ctx.fillRect(e.x + 8, e.y + 18, 6, 4); // 腿
-        // 武器
-        ctx.fillStyle = "#8b6f47";
-        ctx.fillRect(e.x + 18, e.y + 4, 2, 12);
-      } else {
-        // 路障
-        ctx.fillStyle = "#5d4037";
-        ctx.fillRect(e.x, e.y, e.w, e.h);
-        ctx.fillStyle = "#3e2723";
-        ctx.fillRect(e.x + 2, e.y + 2, e.w - 4, 4);
-        ctx.fillRect(e.x + 2, e.y + e.h - 6, e.w - 4, 4);
-      }
-    });
-
-    // 玩家：驴车
-    if (player.invuln <= 0 || Math.floor(frameCount/4) % 2 === 0) {
-      const px = player.x, py = player.y;
-      // 驴
-      ctx.fillStyle = "#8b6f47";
-      ctx.fillRect(px + 2, py + 6, 8, 10);
-      ctx.fillStyle = "#5d4037";
-      ctx.fillRect(px + 1, py + 4, 6, 4); // 头
-      ctx.fillRect(px - 2, py + 16, 3, 4); // 尾
-      // 车
-      ctx.fillStyle = "#8b1a1a";
-      ctx.fillRect(px + 10, py + 4, 12, 12);
-      // 皇帝（缩在车上）
-      ctx.fillStyle = "#b8860b";
-      ctx.fillRect(px + 12, py + 2, 6, 4);
-      ctx.fillStyle = "#f4d03f";
-      ctx.fillRect(px + 14, py + 6, 2, 4);
-      // 轮子
-      ctx.fillStyle = "#1a1a1a";
-      ctx.beginPath();
-      ctx.arc(px + 12, py + 18, 3, 0, Math.PI * 2);
-      ctx.arc(px + 20, py + 18, 3, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    // HUD
-    ctx.fillStyle = "#f5ecd7";
-    ctx.font = "12px monospace";
-    ctx.textAlign = "left";
-    ctx.fillText(`❤️ HP: ${"♥".repeat(player.hp)}`, 8, 16);
-    ctx.fillText(`⭐ 得分: ${player.score}`, 8, 32);
-    ctx.fillText(`🎯 目标: 驾驴车到右侧`, 8, 48);
-    ctx.fillText(`🕹️ 方向键/WASD 移动`, 8, H - 8);
-
-    if (over) {
-      ctx.fillStyle = "rgba(0,0,0,0.6)";
-      ctx.fillRect(0, 0, W, H);
-      ctx.fillStyle = won ? "#b8860b" : "#b03a2e";
-      ctx.font = "bold 24px serif";
-      ctx.textAlign = "center";
-      ctx.fillText(won ? "突围成功！" : "赵光义中箭！", W/2, H/2 - 20);
-      ctx.fillStyle = "#f5ecd7";
-      ctx.font = "14px serif";
-      ctx.fillText(won ? "你已成为新一代'高粱河车神'" : "按 R 重新突围", W/2, H/2 + 20);
-    }
-  }
-
-  function loop() {
-    update();
-    draw();
-    requestAnimationFrame(loop);
-  }
-
-  loop();
-  game = { ctx, player, enemies, map };
+  alert(msg);
 }
 
 // === 初始化 ===

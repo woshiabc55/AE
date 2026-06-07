@@ -65,9 +65,9 @@
   <section id="view-game" class="view">
     <div class="game-wrap">
       <div class="game-header">
-        <h2>像素突围 · 高粱河驴车漂移</h2>
+        <h2>像素突围 · 高粱河车神</h2>
         <div class="game-stats">
-          <span>目标：驾驴车突围至涿州</span>
+          <span id="game-level-info">共 4 关 · 4 个历史战役</span>
         </div>
       </div>
       <div class="game-canvas-wrap">
@@ -76,14 +76,15 @@
       <div class="game-controls">
         <div class="game-keys">
           <b>操作说明：</b><br>
-          <kbd>←</kbd> <kbd>↑</kbd> <kbd>↓</kbd> <kbd>→</kbd> 或 <kbd>WASD</kbd> 移动赵光义的驴车<br>
-          躲避辽国骑兵与路障，到达右侧 <b>涿州</b> 终点<br>
-          <kbd>R</kbd> 重新开始
+          <kbd>←</kbd> <kbd>↑</kbd> <kbd>↓</kbd> <kbd>→</kbd> 或 <kbd>WASD</kbd> 移动<br>
+          <kbd>Space</kbd>/<kbd>Z</kbd> 射击 · <kbd>P</kbd> 暂停 · <kbd>M</kbd> 静音 · <kbd>R</kbd> 重来<br>
+          拾取道具、击败 Boss、抵达终点！
         </div>
         <div class="game-buttons">
-          <button id="btn-start">开始突围</button>
-          <button id="btn-reset" class="alt">重新开始</button>
-          <button class="ghost" onclick="alert('历史背景：公元979年7月，赵光义在高粱河之战中箭后乘驴车而逃，成为千年笑谈。本游戏以像素艺术重现这一历史瞬间。')">历史背景</button>
+          <button id="btn-start">开始游戏</button>
+          <button id="btn-reset" class="alt">重置关卡</button>
+          <button id="btn-leaderboard" class="ghost">查看排行榜</button>
+          <button class="ghost" onclick="alert('历史背景：\n• 第一关 979年 高粱河突围\n• 第二关 986年 岐沟关大撤退\n• 第三关 986年 雪夜陈家谷\n• 第四关 1004年 澶渊之盟')">关卡说明</button>
         </div>
       </div>
       <div class="mobile-pad">
@@ -91,13 +92,14 @@
         <button data-dir="ArrowUp">↑</button>
         <div class="empty"></div>
         <button data-dir="ArrowLeft">←</button>
-        <div class="empty"></div>
+        <button data-dir=" ">⚔</button>
         <button data-dir="ArrowDown">↓</button>
         <div class="empty"></div>
         <button data-dir="ArrowRight">→</button>
         <div class="empty"></div>
       </div>
-      <div class="game-msg" id="game-msg">驾！驾！驾驴车突围！</div>
+      <div class="game-msg" id="game-msg">按 ENTER 开始游戏</div>
+      <div id="level-list" style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px"></div>
     </div>
   </section>
 </main>
@@ -117,6 +119,8 @@
 </footer>
 
 <script src="data.js"></script>
+<script src="characters-anim.js"></script>
+<script src="game.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
