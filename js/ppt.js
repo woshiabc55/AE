@@ -193,6 +193,9 @@
   const nextBtn = document.getElementById('pptNext');
   const fullscreenBtn = document.getElementById('pptFullscreen');
   const brandLink = document.getElementById('pptBrand');
+  const printBtn = document.getElementById('pptPrint');
+  const exportHtmlBtn = document.getElementById('pptExportHtml');
+  const exportMdBtn = document.getElementById('pptExportMd');
 
   let current = 0;
 
@@ -442,6 +445,300 @@
         history.back();
       }
     });
+  }
+
+  // =========================================================
+  // 导出功能
+  // =========================================================
+
+  /** 给 <body> 加导出模式 class，让 CSS 把所有 slide 堆叠显示 */
+  function setExportMode(on) {
+    document.body.classList.toggle('is-exporting', !!on);
+  }
+
+  /** 临时把所有 slide 设为可见，供导出使用 */
+  function activateAll() {
+    viewport.querySelectorAll('.ppt__slide').forEach(function (s) {
+      s.classList.add('is-active');
+    });
+  }
+
+  function deactivateAll() {
+    viewport.querySelectorAll('.ppt__slide').forEach(function (s) {
+      s.classList.remove('is-active');
+    });
+    // 恢复当前 active
+    viewport.querySelectorAll('.ppt__slide').forEach(function (s, i) {
+      if (i === current) s.classList.add('is-active');
+    });
+  }
+
+  // ---------- 1. 打印 / 导出为 PDF ----------
+  if (printBtn) {
+    printBtn.addEventListener('click', function () {
+      setExportMode(true);
+      activateAll();
+      // 等浏览器把样式应用完再触发打印
+      setTimeout(function () {
+        window.print();
+        // 打印对话框关闭后恢复
+        setTimeout(function () {
+          deactivateAll();
+          setExportMode(false);
+        }, 200);
+      }, 100);
+    });
+  }
+
+  // 打印后自动恢复
+  window.addEventListener('afterprint', function () {
+    deactivateAll();
+    setExportMode(false);
+  });
+
+  // ---------- 2. 导出为独立 HTML（单文件，可离线打开） ----------
+  if (exportHtmlBtn) {
+    exportHtmlBtn.addEventListener('click', function () {
+      setExportMode(true);
+      activateAll();
+
+      // 抓取当前页面的关键资源
+      const cssHrefs = Array.from(document.querySelectorAll('link[rel="stylesheet"]'))
+        .map(function (l) { return l.href; });
+
+      // 同步获取所有 CSS 文本
+      Promise.all(cssHrefs.map(function (url) {
+        return fetch(url).then(function (r) { return r.text(); }).catch(function () { return ''; });
+      })).then(function (cssList) {
+        // 抓取 viewport HTML（含所有 slide）
+        const slidesHTML = viewport.innerHTML;
+
+        // 内联构造单文件 HTML
+        const html = '<!DOCTYPE html>\n' +
+'<html lang="zh-CN">\n' +
+'<head>\n' +
+'<meta charset="UTF-8">\n' +
+'<title>哥窑 · PPT 演示（11 页 · 独立版）</title>\n' +
+'<link rel="preconnect" href="https://fonts.googleapis.com">\n' +
+'<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n' +
+'<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">\n' +
+'<style>\n' + cssList.join('\n') + '\n' +
+'body { background: #0e0e10; padding: 24px 0; }\n' +
+'.ppt { position: static; height: auto; min-height: 100vh; }\n' +
+'.ppt__viewport { position: static; display: block; padding: 24px 0; }\n' +
+'.ppt__slide { position: relative; opacity: 1 !important; transform: none !important; pointer-events: auto !important;\n' +
+'  margin: 24px auto; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }\n' +
+'.ppt__controls, .ppt__hint, .ppt__topbar, #pptBrand { display: none !important; }\n' +
+'@media print {\n' +
+'  .ppt__slide { page-break-after: always; margin: 0; box-shadow: none; }\n' +
+'  .ppt__slide:last-child { page-break-after: auto; }\n' +
+'}\n' +
+'</style>\n' +
+'</head>\n' +
+'<body class="is-exporting">\n' +
+'<div class="ppt"><div class="ppt__viewport">' + slidesHTML + '</div></div>\n' +
+'<script>document.querySelectorAll(".ppt__slide").forEach(function(s){s.classList.add("is-active");});<\/script>\n' +
+'</body>\n</html>';
+
+        // 触发下载
+        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = '哥窑-PPT-独立版-' + new Date().toISOString().slice(0, 10) + '.html';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function () {
+          URL.revokeObjectURL(a.href);
+          a.remove();
+        }, 1000);
+
+        deactivateAll();
+        setExportMode(false);
+      });
+    });
+  }
+
+  // ---------- 3. 导出为 Markdown（剪贴板 + 下载） ----------
+  if (exportMdBtn) {
+    exportMdBtn.addEventListener('click', function () {
+      const md = slidesToMarkdown(SLIDES);
+      const filename = '哥窑-PPT-' + new Date().toISOString().slice(0, 10) + '.md';
+
+      // 复制到剪贴板 + 下载文件
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(md).then(function () {
+          flashHint(exportMdBtn, '已复制 ' + SLIDES.length + ' 张到剪贴板 ✓');
+        }).catch(function () {
+          flashHint(exportMdBtn, '已下载 .md 文件');
+        });
+      }
+
+      const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function () {
+        URL.revokeObjectURL(a.href);
+        a.remove();
+      }, 1000);
+    });
+  }
+
+  /** 临时提示 */
+  function flashHint(btn, msg) {
+    const orig = btn.textContent;
+    btn.textContent = msg;
+    btn.disabled = true;
+    setTimeout(function () {
+      btn.textContent = orig;
+      btn.disabled = false;
+    }, 1800);
+  }
+
+  /** 把 11 张 slide 转成 Markdown */
+  function slidesToMarkdown(slides) {
+    const lines = [];
+    lines.push('# 哥窑 · 6 段结构主旨解读');
+    lines.push('');
+    lines.push('> 窑火如歌，兄弟如线 · 153s · 62 镜');
+    lines.push('');
+    lines.push('---');
+    lines.push('');
+
+    slides.forEach(function (s, i) {
+      const num = KE.pad2(i + 1);
+      const tag = (s.chapter || '').toString().trim();
+      const title = s.title || '';
+      const sub = s.subtitle || '';
+      const lead = s.lead || '';
+      const type = s.type;
+
+      // 标题（去除 tag 与 title 重复部分）
+      // 从 title 中移除与 chapter 末尾中文部分重叠的部分
+      const tagZh = (tag || '').split('·').map(function (s) { return s.trim(); }).filter(Boolean).pop() || '';
+      let cleanTitle = title || '';
+      if (tagZh && cleanTitle.indexOf(tagZh) === 0) {
+        const stripped = cleanTitle.substring(tagZh.length).replace(/^[·・\s]+/, '').trim();
+        // 仅当剥离后仍 ≥ 2 个字符时才采用（避免「前幕」→「幕」这种过短结果）
+        if (stripped.length >= 2) cleanTitle = stripped;
+      }
+      if (type === 'cover') {
+        lines.push('## ' + num + ' · 封面');
+        lines.push('');
+        lines.push('# ' + (title || '哥窑'));
+        lines.push('');
+        lines.push('**' + (sub || '') + '**');
+        if (lead) lines.push('');
+        lines.push(lead);
+      } else if (type === 'toc') {
+        lines.push('## ' + num + ' · 目录');
+        lines.push('');
+        if (lead) lines.push(lead);
+        if (sub) lines.push('*' + sub + '*');
+        lines.push('');
+        (s.items || []).forEach(function (it) {
+          lines.push('- **' + it.title + '** — ' + it.desc);
+        });
+      } else if (type === 'divider') {
+        lines.push('## ' + num + ' · ' + (tag ? tag + ' · ' : '') + cleanTitle);
+        if (sub) lines.push('*' + sub + '*');
+        if (lead) {
+          lines.push('');
+          lines.push('> ' + lead);
+        }
+      } else if (type === 'duo') {
+        lines.push('## ' + num + ' · ' + (tag ? tag + ' · ' : '') + cleanTitle);
+        if (sub) lines.push('*' + sub + '*');
+        lines.push('');
+        (s.bullets || []).forEach(function (b) {
+          lines.push('- **' + b.num + '** ' + stripTags(b.text));
+        });
+        if (s.left) {
+          lines.push('');
+          lines.push('### ' + (s.left.role || '左') + ' · ' + (s.left.seal || ''));
+          lines.push(stripTags(s.left.desc || ''));
+          if (s.left.keyLine) {
+            lines.push('');
+            lines.push('> 镜 ' + s.left.keyLine.shot + ' · ' + stripTags(s.left.keyLine.text));
+          }
+        }
+        if (s.right) {
+          lines.push('');
+          lines.push('### ' + (s.right.role || '右') + ' · ' + (s.right.seal || ''));
+          lines.push(stripTags(s.right.desc || ''));
+          if (s.right.keyLine) {
+            lines.push('');
+            lines.push('> 镜 ' + s.right.keyLine.shot + ' · ' + stripTags(s.right.keyLine.text));
+          }
+        }
+      } else if (type === 'quote') {
+        lines.push('## ' + num + ' · ' + (tag ? tag + ' · ' : '') + cleanTitle);
+        if (sub) lines.push('*' + sub + '*');
+        lines.push('');
+        if (s.quote) {
+          lines.push('> ' + s.quote.replace(/\n/g, '\n> '));
+          if (s.quoteAttr) lines.push('> ');
+          if (s.quoteAttr) lines.push('> ' + s.quoteAttr);
+        }
+        if (s.bullets && s.bullets.length) {
+          lines.push('');
+          s.bullets.forEach(function (b) {
+            lines.push('- **' + b.num + '** ' + stripTags(b.text));
+          });
+        }
+      } else if (type === 'duet') {
+        lines.push('## ' + num + ' · ' + (tag ? tag + ' · ' : '') + cleanTitle);
+        if (sub) lines.push('*' + sub + '*');
+        if (lead) {
+          lines.push('');
+          lines.push(lead);
+        }
+        lines.push('');
+        (s.quotes || []).forEach(function (q) {
+          lines.push('> 镜 ' + q.shot + ' · ' + q.text);
+        });
+      } else if (type === 'end') {
+        lines.push('## ' + num + ' · ' + (title || '感谢观看'));
+        if (sub) lines.push('*' + sub + '*');
+        if (lead) {
+          lines.push('');
+          lines.push(lead);
+        }
+        if (s.bullets && s.bullets.length) {
+          lines.push('');
+          s.bullets.forEach(function (b) {
+            lines.push('- **' + b.num + '** ' + stripTags(b.text));
+          });
+        }
+      } else {
+        // content
+        lines.push('## ' + num + ' · ' + (tag ? tag + ' · ' : '') + cleanTitle);
+        if (sub) lines.push('*' + sub + '*');
+        if (lead) {
+          lines.push('');
+          lines.push(lead);
+        }
+        if (s.bullets && s.bullets.length) {
+          lines.push('');
+          s.bullets.forEach(function (b) {
+            lines.push('- **' + b.num + '** ' + stripTags(b.text));
+          });
+        }
+      }
+      lines.push('');
+      lines.push('---');
+      lines.push('');
+    });
+
+    lines.push('*由「哥窑项目 · 优化服务器」自动生成于 ' + new Date().toLocaleString('zh-CN') + '*');
+    return lines.join('\n');
+  }
+
+  function stripTags(s) {
+    if (!s) return '';
+    return String(s).replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
   }
 
   render();

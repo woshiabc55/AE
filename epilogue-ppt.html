@@ -15,6 +15,72 @@
       background: var(--ink-deep);
       overflow: hidden;
     }
+
+    /* 导出按钮样式 */
+    .ppt__btn--export {
+      width: auto;
+      height: 32px;
+      padding: 0 12px;
+      border-radius: 16px;
+      font-family: var(--font-serif);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+    .ppt__btn--print::before { content: '🖨'; font-size: 13px; margin-right: 4px; }
+    .ppt__btn--html::before  { content: '↓'; font-size: 14px; margin-right: 4px; font-weight: 700; }
+    .ppt__btn--md::before    { content: '📋'; font-size: 12px; margin-right: 4px; }
+    .ppt__btn--export:disabled {
+      opacity: 0.6;
+      cursor: default;
+      background: var(--kiln-fire) !important;
+      border-color: var(--kiln-fire) !important;
+    }
+
+    /* 导出模式：所有 slide 堆叠 */
+    body.is-exporting .embed-ppt {
+      position: static;
+      height: auto;
+      overflow: visible;
+    }
+    body.is-exporting .embed-ppt__viewport {
+      position: static;
+      display: block;
+      padding: 24px 0;
+    }
+    body.is-exporting .ppt__slide {
+      position: relative;
+      opacity: 1 !important;
+      transform: none !important;
+      pointer-events: auto !important;
+      margin: 24px auto !important;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+    }
+    body.is-exporting .ppt__controls,
+    body.is-exporting .ppt__hint,
+    body.is-exporting .embed-ppt__bar {
+      display: none !important;
+    }
+
+    /* 打印样式 */
+    @media print {
+      @page { size: 1280px 720px; margin: 0; }
+      html, body { background: white !important; margin: 0 !important; padding: 0 !important; }
+      .embed-ppt, .embed-ppt__bar, .ppt__controls, .ppt__hint { display: none !important; }
+      .embed-ppt__viewport { position: static !important; display: block !important; }
+      .ppt__slide {
+        position: relative !important; opacity: 1 !important; transform: none !important;
+        pointer-events: auto !important;
+        width: 1280px !important; height: 720px !important;
+        aspect-ratio: auto !important; max-height: none !important;
+        margin: 0 !important; padding: 60px 80px !important;
+        box-shadow: none !important;
+        page-break-after: always !important; page-break-inside: avoid !important;
+        break-after: page !important; break-inside: avoid !important;
+        background: white !important;
+      }
+      .ppt__slide:last-child { page-break-after: auto !important; break-after: auto !important; }
+    }
   </style>
 </head>
 <body>
@@ -38,6 +104,10 @@
       <span id="pptProgress" style="font-family:var(--font-display);font-size:0.85rem;letter-spacing:0.1em;min-width:56px;text-align:center;">01 / 11</span>
       <button class="ppt__btn" id="pptNext" title="下一张 (→)">›</button>
       <button class="ppt__btn" id="pptFullscreen" title="全屏 (F)">⛶</button>
+      <span style="width:1px;height:20px;background:rgba(244,236,216,0.2);margin:0 4px;"></span>
+      <button class="ppt__btn ppt__btn--export ppt__btn--print" id="pptPrint" title="打印 / 导出 PDF">打印 / PDF</button>
+      <button class="ppt__btn ppt__btn--export ppt__btn--html"  id="pptExportHtml" title="下载独立 HTML">独立 HTML</button>
+      <button class="ppt__btn ppt__btn--export ppt__btn--md"    id="pptExportMd" title="复制 / 下载 Markdown">Markdown</button>
     </div>
   </div>
 
