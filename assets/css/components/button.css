@@ -1,0 +1,106 @@
+/* =================================================================
+   组件：按钮 Button
+   =================================================================
+   <button class="btn">基础</button>
+   <button class="btn btn-gold">金色主按钮</button>
+   <button class="btn btn-ghost">幽灵按钮</button>
+   <button class="btn btn-sm">小号</button>
+   <button class="btn btn-lg">大号</button>
+   <button class="btn btn-block">块级</button>
+   <a class="btn btn-icon">→ 链接按钮</a>
+   ================================================================= */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5em;
+  padding: .65em 1.6em;
+  font-family: var(--font-serif-cn);
+  font-size: .95rem;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text);
+  background: transparent;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none;
+  transition:
+    background var(--t-fast) var(--ease-out),
+    color      var(--t-fast) var(--ease-out),
+    transform  var(--t-fast) var(--ease-out),
+    box-shadow var(--t-fast) var(--ease-out);
+  border-bottom: 1px solid var(--color-accent); /* 抵消 a 默认下划线 */
+}
+
+.btn:hover {
+  background: var(--color-accent);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-1px);
+}
+
+.btn:active { transform: translateY(0); }
+
+/* 变体：金色主按钮 */
+.btn-gold {
+  background: var(--color-kiln-gold);
+  color: var(--color-ink);
+  border-color: var(--color-kiln-gold);
+}
+.btn-gold:hover {
+  background: var(--color-kiln-flame);
+  border-color: var(--color-kiln-flame);
+  color: var(--color-ink);
+}
+
+/* 变体：青瓷主按钮 */
+.btn-celadon {
+  background: var(--color-celadon);
+  color: var(--color-ink);
+  border-color: var(--color-celadon);
+}
+.btn-celadon:hover {
+  background: var(--color-celadon-light);
+  border-color: var(--color-celadon-light);
+}
+
+/* 变体：幽灵按钮 */
+.btn-ghost {
+  border-color: var(--color-ash);
+  color: var(--color-ash);
+}
+.btn-ghost:hover {
+  background: var(--color-ash);
+  color: var(--color-ink);
+  border-color: var(--color-ash);
+  box-shadow: none;
+}
+
+/* 变体：印章按钮 */
+.btn-seal {
+  background: linear-gradient(135deg, #b22a2a, #8a1818);
+  color: #fbe5b6;
+  border-color: rgba(0, 0, 0, .3);
+  font-family: var(--font-serif-cn);
+  letter-spacing: .3em;
+}
+.btn-seal:hover { box-shadow: 0 6px 20px rgba(178, 42, 42, .4); }
+
+/* 尺寸 */
+.btn-sm { padding: .4em 1em; font-size: .85rem; }
+.btn-lg { padding: .9em 2em;   font-size: 1.1rem; }
+
+/* 块级 */
+.btn-block { display: flex; width: 100%; }
+
+/* 禁用 */
+.btn[disabled],
+.btn-disabled {
+  opacity: .4; cursor: not-allowed; pointer-events: none;
+}
+
+/* 链接按钮：去除下划线 */
+a.btn { border-bottom: 1px solid var(--color-accent); }
+a.btn:hover { border-bottom-color: var(--color-kiln-flame); }

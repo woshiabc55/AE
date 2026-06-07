@@ -1,0 +1,80 @@
+/* =================================================================
+   组件：徽章 / 标记
+   =================================================================
+   <span class="badge">AUDIO</span>
+   <span class="badge badge-gold">24 SLIDES</span>
+   <span class="badge badge-celadon">66 SHOTS</span>
+   <span class="badge badge-outline">OUTLINE</span>
+   <span class="mark">镜号 9</span>
+   ================================================================= */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: .3em .8em;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: var(--tracking-display);
+  color: var(--color-accent);
+  border: 1px solid currentColor;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  background: transparent;
+  text-decoration: none;
+}
+
+.badge-gold    { color: var(--color-kiln-gold); }
+.badge-celadon { color: var(--color-celadon-light); }
+.badge-ember   { color: var(--color-kiln-ember); }
+.badge-muted   { color: var(--color-text-muted); }
+
+.badge-fill-gold {
+  background: var(--color-kiln-gold);
+  color: var(--color-ink);
+  border-color: var(--color-kiln-gold);
+}
+
+.badge-fill-celadon {
+  background: var(--color-celadon);
+  color: var(--color-ink);
+  border-color: var(--color-celadon);
+}
+
+/* Mark - 简短标识 */
+.mark {
+  display: inline-block;
+  padding: .2em .8em;
+  font-family: var(--font-serif-cn);
+  font-size: 12px;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-accent);
+  border: 1px solid currentColor;
+  margin-right: .5em;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: all var(--t-fast) var(--ease-out);
+  cursor: pointer;
+}
+.mark:hover {
+  background: var(--color-accent);
+  color: var(--color-ink);
+}
+
+/* 数字徽章 */
+.dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  vertical-align: middle;
+  margin-right: .5em;
+}
+
+.dot-pulse {
+  animation: c-pulse 2s ease-in-out infinite;
+}
+
+@keyframes c-pulse {
+  0%, 100% { transform: scale(1);   opacity: .6; }
+  50%      { transform: scale(1.3); opacity: 1;  }
+}

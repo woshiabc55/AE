@@ -1,0 +1,59 @@
+/* =================================================================
+   组件：键盘提示 / 工具栏
+   =================================================================
+   <span class="kbd">←</span>
+   <span class="kbd">N</span>
+   <span class="kbd kbd-lg">Space</span>
+   ================================================================= */
+
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  padding: 2px 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: rgba(126, 168, 154, .1);
+  border: 1px solid rgba(126, 168, 154, .3);
+  color: var(--color-celadon-light);
+  border-radius: var(--radius-sm);
+  letter-spacing: .05em;
+  vertical-align: middle;
+}
+
+.kbd-lg {
+  font-size: 13px;
+  padding: 4px 10px;
+  min-width: 32px;
+}
+
+.kbd-gold {
+  background: rgba(217, 154, 82, .1);
+  border-color: rgba(217, 154, 82, .3);
+  color: var(--color-accent);
+}
+
+.kbd-row {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: var(--tracking-display);
+  color: var(--color-text-muted);
+}
+
+/* 分割 */
+.divider {
+  display: flex; align-items: center; gap: var(--sp-3);
+  margin: 2em 0;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+}
+.divider::before, .divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(217, 154, 82, .2);
+}

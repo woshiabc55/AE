@@ -1,0 +1,72 @@
+/* =================================================================
+   组件：标签 / 章节头 Eyebrow / Pull-quote
+   =================================================================
+   <div class="eyebrow">CHAPTER · 章</div>
+   <div class="eyebrow eyebrow-celadon">CHAPTER · 章</div>
+   <div class="eyebrow eyebrow-center">CHAPTER · 章</div>
+
+   <div class="pull-quote">
+     "哥窑之'哥'，是谁？"
+     <cite>—— 镜号 5</cite>
+   </div>
+   ================================================================= */
+
+.eyebrow {
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: var(--tracking-eyebrow);
+  color: var(--color-accent);
+  text-transform: uppercase;
+  margin-bottom: 2em;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.eyebrow::before {
+  content: "";
+  display: block;
+  width: 40px; height: 1px;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.eyebrow-celadon { color: var(--color-celadon-light); }
+.eyebrow-muted   { color: var(--color-text-muted); }
+.eyebrow-center  { justify-content: center; }
+
+.eyebrow-no-line::before { display: none; }
+
+/* Pull Quote：左侧金线引用 */
+.pull-quote {
+  font-family: var(--font-serif-cn);
+  font-size: var(--fs-xl);
+  line-height: 1.6;
+  color: var(--color-text);
+  padding: 1.5em 2em;
+  border-left: 2px solid var(--color-accent);
+  margin: 1.5em 0;
+  font-weight: 300;
+}
+
+.pull-quote cite {
+  display: block;
+  font-family: var(--font-sans-cn);
+  font-style: normal;
+  font-size: 14px;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-muted);
+  margin-top: 1em;
+}
+
+/* 变体：居中无边框 */
+.pull-quote-center {
+  text-align: center;
+  border: none;
+  padding: 0;
+}
+
+/* 变体：青瓷色边框 */
+.pull-quote-celadon {
+  border-left-color: var(--color-celadon);
+}

@@ -1,0 +1,82 @@
+/* =================================================================
+   组件：火焰 / 噪点纹理 / 视觉装饰
+   ================================================================= */
+
+.flame {
+  position: relative;
+  width: 200px; height: 240px;
+  margin: 0 auto;
+  pointer-events: none;
+  filter: blur(1px);
+  animation: c-flame-flicker 3s ease-in-out infinite;
+}
+
+.flame::before,
+.flame::after {
+  content: "";
+  position: absolute;
+  left: 50%; bottom: 0;
+  transform: translateX(-50%);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: radial-gradient(ellipse at center bottom,
+    var(--color-kiln-flame) 0%,
+    var(--color-kiln-gold) 40%,
+    transparent 80%);
+  mix-blend-mode: screen;
+}
+.flame::before { width: 120px; height: 200px; }
+.flame::after  { width:  80px; height: 160px; opacity: .7; animation-delay: -1.5s; }
+
+.flame-sm { width: 120px; height: 144px; transform: scale(.6); }
+.flame-lg { width: 320px; height: 384px; transform: scale(1.6); }
+
+@keyframes c-flame-flicker {
+  0%, 100% { transform: translateX(-50%) scale(1)    rotate(0deg); }
+  50%      { transform: translateX(-50%) scale(1.06) rotate(-1deg); }
+}
+
+/* 噪点 */
+.noise {
+  position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+  opacity: .06;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+/* 网格背景 */
+.bg-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(217, 154, 82, .04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(217, 154, 82, .04) 1px, transparent 1px);
+  background-size: 80px 80px;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse at center, #000 30%, transparent 80%);
+}
+
+/* 墨点 */
+.ink-drop {
+  position: absolute;
+  width: 12px; height: 12px;
+  background: radial-gradient(circle, var(--color-celadon-deep), transparent 60%);
+  border-radius: 50%;
+  opacity: .4;
+  filter: blur(4px);
+}
+
+.ink-drop-gold {
+  background: radial-gradient(circle, var(--color-kiln-gold), transparent 60%);
+}
+
+/* 进度条 */
+.progress {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 2px;
+  background: rgba(217, 154, 82, .15);
+  z-index: 100;
+}
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-celadon), var(--color-kiln-gold));
+  width: 0;
+  transition: width var(--t-med) var(--ease-out);
+}

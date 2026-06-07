@@ -1,0 +1,168 @@
+/* =================================================================
+   组件：卡片 / 网格 / 对比卡
+   =================================================================
+   <div class="card-grid">
+     <a class="card">
+       <div class="card-num">CHAPTER 01</div>
+       <h3 class="card-title">标题</h3>
+       <p class="card-body">内容</p>
+     </a>
+   </div>
+
+   <div class="compare">
+     <div class="compare-card celadon">哥哥</div>
+     <div class="compare-vs">VS</div>
+     <div class="compare-card gold">弟弟</div>
+   </div>
+   ================================================================= */
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--sp-5);
+  margin: 2em 0;
+}
+
+.card {
+  display: block;
+  padding: 1.4em;
+  background: rgba(12, 10, 9, .6);
+  border: 1px solid rgba(217, 154, 82, .15);
+  color: var(--color-text-soft);
+  text-decoration: none;
+  transition: all var(--t-fast) var(--ease-out);
+  border-bottom: 1px solid rgba(217, 154, 82, .15);
+}
+
+.card:hover {
+  border-color: var(--color-accent);
+  background: rgba(217, 154, 82, .05);
+  transform: translateY(-3px);
+  border-bottom-color: var(--color-accent);
+}
+
+.card-num {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: var(--tracking-display);
+  color: var(--color-accent);
+  text-transform: uppercase;
+  margin-bottom: .6em;
+}
+
+.card-title {
+  font-size: 17px;
+  color: var(--color-text);
+  font-weight: 400;
+  margin: .5em 0;
+}
+
+.card-body {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+/* 变体：青瓷 */
+.card-celadon { border-color: rgba(126, 168, 154, .25); }
+.card-celadon:hover { border-color: var(--color-celadon); background: rgba(126, 168, 154, .05); }
+
+/* 变体：宣纸白底 */
+.card-paper {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  border-color: rgba(0, 0, 0, .1);
+}
+.card-paper .card-num { color: var(--color-kiln-ember); }
+.card-paper .card-title { color: var(--color-ink); }
+.card-paper .card-body { color: #4a4540; }
+
+/* 对比卡 */
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 80px 1fr;
+  gap: 2em;
+  align-items: stretch;
+  margin: 2em 0;
+}
+
+.compare-card {
+  padding: 2em;
+  border: 1px solid rgba(217, 154, 82, .25);
+  background: rgba(12, 10, 9, .5);
+  display: flex; flex-direction: column;
+}
+
+.compare-card.celadon { border-color: var(--color-celadon); }
+.compare-card.gold    { border-color: var(--color-kiln-gold); }
+.compare-card h3 {
+  font-size: 32px;
+  margin-bottom: .3em;
+  color: var(--color-text);
+}
+.compare-card .role {
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: var(--tracking-display);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  margin-bottom: 1.5em;
+}
+.compare-card ul { list-style: none; flex: 1; }
+.compare-card li {
+  padding: .5em 0;
+  font-size: 15px;
+  color: var(--color-text-soft);
+  position: relative;
+  padding-left: 1.2em;
+}
+.compare-card li::before {
+  content: "·"; position: absolute; left: 0;
+  color: var(--color-accent);
+}
+.compare-card .quote {
+  margin-top: 1.5em;
+  padding-top: 1.5em;
+  border-top: 1px dashed rgba(217, 154, 82, .3);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  letter-spacing: var(--tracking-wide);
+  font-style: italic;
+}
+
+.compare-vs {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--color-text-muted);
+  text-align: center;
+  letter-spacing: var(--tracking-eyebrow);
+  align-self: center;
+}
+
+/* 指标数字 */
+.metric {
+  text-align: center;
+  padding: 1em;
+}
+.metric .num {
+  font-family: var(--font-display);
+  font-size: clamp(60px, 8vw, 120px);
+  color: var(--color-accent);
+  line-height: 1;
+  font-weight: 300;
+  letter-spacing: var(--tracking-base);
+}
+.metric .label {
+  font-family: var(--font-serif-cn);
+  font-size: 14px;
+  letter-spacing: var(--tracking-display);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  margin-top: .5em;
+}
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3em;
+  margin: 2em 0;
+}

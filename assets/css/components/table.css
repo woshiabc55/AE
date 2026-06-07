@@ -1,0 +1,66 @@
+/* =================================================================
+   组件：表格 Table
+   =================================================================
+   <table class="table">
+     <thead><tr><th>镜号</th><th>画面</th></tr></thead>
+     <tbody><tr><td>16</td><td>...</td></tr></tbody>
+   </table>
+
+   变体：.table-zebra .table-celadon .table-flush
+   ================================================================= */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2em 0;
+  font-size: 15px;
+}
+
+.table th,
+.table td {
+  padding: var(--sp-4) var(--sp-5);
+  text-align: left;
+  border-bottom: 1px solid rgba(217, 154, 82, .15);
+  vertical-align: top;
+}
+
+.table th {
+  font-family: var(--font-serif-cn);
+  font-weight: 400;
+  color: var(--color-accent);
+  letter-spacing: var(--tracking-wide);
+  font-size: 13px;
+  text-transform: uppercase;
+  border-bottom-color: var(--color-accent);
+}
+
+.table tbody tr {
+  transition: background var(--t-fast) var(--ease-out);
+}
+
+.table tbody tr:hover {
+  background: rgba(126, 168, 154, .04);
+}
+
+/* 变体：青瓷表头 */
+.table-celadon th {
+  color: var(--color-celadon-light);
+  border-bottom-color: var(--color-celadon);
+}
+
+/* 变体：斑马纹 */
+.table-zebra tbody tr:nth-child(odd) {
+  background: rgba(126, 168, 154, .03);
+}
+
+/* 变体：紧凑 */
+.table-flush th,
+.table-flush td { padding: var(--sp-3) var(--sp-4); font-size: 13px; }
+
+/* 变体：宣纸白底（用于打印/文稿） */
+.table-paper {
+  color: var(--color-ink);
+}
+.table-paper th { color: var(--color-ink-soft); border-bottom-color: var(--color-accent); }
+.table-paper td { color: #2a2520; border-bottom-color: rgba(0, 0, 0, .08); }
+.table-paper tbody tr:hover { background: rgba(217, 154, 82, .05); }

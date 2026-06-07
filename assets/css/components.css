@@ -1,0 +1,21 @@
+/* =================================================================
+   哥窑组件库 - 总入口（顺序加载）
+   引入方式：
+     <link rel="stylesheet" href="assets/css/components.css">
+   单独使用：直接引入 tokens.css + 目标组件
+   ================================================================= */
+
+@import url("./components/tokens.css");
+@import url("./components/button.css");
+@import url("./components/celadon.css");
+@import url("./components/seal.css");
+@import url("./components/eyebrow-quote.css");
+@import url("./components/table.css");
+@import url("./components/flame.css");
+@import url("./components/toc.css");
+@import url("./components/timeline.css");
+@import url("./components/card.css");
+@import url("./components/badge.css");
+@import url("./components/dialogue.css");
+@import url("./components/navbar.css");
+@import url("./components/kbd.css");

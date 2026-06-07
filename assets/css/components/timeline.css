@@ -1,0 +1,83 @@
+/* =================================================================
+   组件：时间轴 Timeline
+   =================================================================
+   <div class="timeline">
+     <div class="timeline-event">
+       <h4>镜号 16 — 觉醒时刻</h4>
+       <div class="shot-ref">MEDIUM SHOT · 4s</div>
+       <p>张志元蹲下抓土……</p>
+     </div>
+   </div>
+   ================================================================= */
+
+.timeline {
+  position: relative;
+  margin: 3em 0;
+  padding-left: 3em;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 1em; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom,
+    transparent,
+    var(--color-accent) 10%,
+    var(--color-accent) 90%,
+    transparent);
+}
+
+.timeline-event {
+  position: relative;
+  padding: 1.5em 0;
+}
+
+.timeline-event::before {
+  content: "";
+  position: absolute;
+  left: -2.4em; top: 2em;
+  width: 12px; height: 12px;
+  background: var(--color-accent);
+  border: 2px solid var(--color-ink);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--color-accent);
+}
+
+.timeline-event h4 {
+  font-size: 20px;
+  color: var(--color-text);
+  margin-bottom: .3em;
+  font-weight: 400;
+}
+
+.timeline-event .shot-ref {
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-accent);
+  text-transform: uppercase;
+  margin-bottom: .8em;
+}
+
+.timeline-event p {
+  color: var(--color-text-soft);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+/* 变体：青瓷节点 */
+.timeline-celadon::before {
+  background: linear-gradient(to bottom, transparent, var(--color-celadon) 10%, var(--color-celadon) 90%, transparent);
+}
+.timeline-celadon .timeline-event::before {
+  background: var(--color-celadon);
+  box-shadow: 0 0 12px var(--color-celadon);
+}
+.timeline-celadon .timeline-event .shot-ref {
+  color: var(--color-celadon-light);
+}
+
+/* 紧凑版 */
+.timeline-compact .timeline-event { padding: .8em 0; }
+.timeline-compact .timeline-event h4 { font-size: 16px; }

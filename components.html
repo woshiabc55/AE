@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>哥窑 · 组件库</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;500;700&family=Noto+Sans+SC:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/components-demo.css">
+</head>
+<body>
+<div class="noise"></div>
+
+<div class="components-page">
+
+  <!-- 侧栏 -->
+  <aside class="components-side">
+    <div class="brand">
+      <h1>哥窑组件</h1>
+      <div class="v">v 1.0.0 · CSS MODULES</div>
+    </div>
+    <nav>
+      <a href="#intro"><span class="num">00</span>引言</a>
+      <a href="#button"><span class="num">01</span>按钮 Button</a>
+      <a href="#celadon"><span class="num">02</span>青瓷 Celadon</a>
+      <a href="#seal"><span class="num">03</span>印章 Seal</a>
+      <a href="#eyebrow"><span class="num">04</span>章节头 Eyebrow</a>
+      <a href="#quote"><span class="num">05</span>引用 Pull-quote</a>
+      <a href="#table"><span class="num">06</span>表格 Table</a>
+      <a href="#card"><span class="num">07</span>卡片 Card</a>
+      <a href="#compare"><span class="num">08</span>对比 Compare</a>
+      <a href="#timeline"><span class="num">09</span>时间轴 Timeline</a>
+      <a href="#toc"><span class="num">10</span>目录 TOC</a>
+      <a href="#dialogue"><span class="num">11</span>对话 Dialogue</a>
+      <a href="#badge"><span class="num">12</span>徽章 Badge</a>
+      <a href="#flame"><span class="num">13</span>窑火 Flame</a>
+      <a href="#kbd"><span class="num">14</span>键盘 KBD</a>
+      <a href="#navbar"><span class="num">15</span>导航 Navbar</a>
+    </nav>
+  </aside>
+
+  <!-- 主区 -->
+  <main class="components-main">
+
+    <header class="components-header" id="intro">
+      <div class="eyebrow">COMPONENT LIBRARY · 哥窑设计系统</div>
+      <h1>组件库 · 14 个可复用单元</h1>
+      <p class="lead">
+        哥窑组件库是一套<em>主题鲜明</em>、<em>语义清晰</em>的设计系统。
+        每一个组件都源自《哥窑》主旨解读项目的实际使用场景，
+        并提炼为可独立调用、可组合搭配的 CSS 模块。
+      </p>
+      <div class="stats">
+        <div><span>14</span> 组件</div>
+        <div><span>4</span> 主题色</div>
+        <div><span>0</span> 依赖</div>
+        <div><span>100%</span> CSS</div>
+      </div>
+    </header>
+
+    <!-- 1 · 按钮 -->
+    <section class="component-section" id="button">
+      <h2>01 · 按钮 <span class="badge">Button</span></h2>
+      <p class="desc">基础按钮组件，提供 5 种变体与 3 种尺寸。继承 <code>.btn</code> 类即可使用。</p>
+
+      <div class="preview">
+        <span class="preview-label">基础 / Variants</span>
+        <button class="btn">基础</button>
+        <button class="btn btn-gold">金色主按钮</button>
+        <button class="btn btn-celadon">青瓷主按钮</button>
+        <button class="btn btn-ghost">幽灵</button>
+        <button class="btn btn-seal">印章</button>
+        <button class="btn btn-gold" disabled>禁用</button>
+      </div>
+      <pre class="code"><span class="punct">&lt;</span><span class="tag">button</span> <span class="attr">class</span>=<span class="string">"btn"</span><span class="punct">&gt;</span>基础<span class="punct">&lt;/</span><span class="tag">button</span><span class="punct">&gt;</span>
+<span class="punct">&lt;</span><span class="tag">button</span> <span class="attr">class</span>=<span class="string">"btn btn-gold"</span><span class="punct">&gt;</span>金色主按钮<span class="punct">&lt;/</span><span class="tag">button</span><span class="punct">&gt;</span>
+<span class="punct">&lt;</span><span class="tag">button</span> <span class="attr">class</span>=<span class="string">"btn btn-celadon"</span><span class="punct">&gt;</span>青瓷主按钮<span class="punct">&lt;/</span><span class="tag">button</span><span class="punct">&gt;</span>
+<span class="punct">&lt;</span><span class="tag">button</span> <span class="attr">class</span>=<span class="string">"btn btn-ghost"</span><span class="punct">&gt;</span>幽灵<span class="punct">&lt;/</span><span class="tag">button</span><span class="punct">&gt;</span>
+<span class="punct">&lt;</span><span class="tag">button</span> <span class="attr">class</span>=<span class="string">"btn btn-seal"</span><span class="punct">&gt;</span>印章<span class="punct">&lt;/</span><span class="tag">button</span><span class="punct">&gt;</span></pre>
+
+      <div class="preview">
+        <span class="preview-label">尺寸 / Sizes</span>
+        <button class="btn btn-sm">小号</button>
+        <button class="btn">默认</button>
+        <button class="btn btn-lg">大号</button>
+      </div>
+
+      <div class="preview">
+        <span class="preview-label">块级 / Block</span>
+        <button class="btn btn-block btn-gold">块级按钮（占满父容器宽度）</button>
+      </div>
+    </section>
+
+    <!-- 2 · 青瓷 -->
+    <section class="component-section" id="celadon">
+      <h2>02 · 青瓷盘 <span class="badge">Celadon</span></h2>
+      <p class="desc">哥窑的核心视觉符号。通过 <code>data-char</code> 属性设置中心文字。</p>
+
+      <div class="preview">
+        <span class="preview-label">基础 / 变体</span>
+        <div class="celadon" data-char="哥"></div>
+        <div class="celadon celadon-gold" data-char="元"></div>
+        <div class="celadon celadon-ink"></div>
+        <div class="celadon celadon-sm" data-char="小"></div>
+        <div class="celadon celadon-xl" data-char="大"></div>
+      </div>
+      <pre class="code"><span class="punct">&lt;</span><span class="tag">div</span> <span class="attr">class</span>=<span class="string">"celadon"</span> <span class="attr">data-char</span>=<span class="string">"哥"</span><span class="punct">&gt;&lt;/</span><span class="tag">div</span><span class="punct">&gt;</span>
+<span class="punct">&lt;</span><span class="tag">div</span> <span class="attr">class</span>=<span class="string">"celadon celadon-gold"</span> <span class="attr">data-char</span>=<span class="string">"元"</span><span class="punct">&gt;&lt;/</span><span class="tag">div</span><span class="punct">&gt;</span>
+<span class="punct">&lt;</span><span class="tag">div</span> <span class="attr">class</span>=<span class="string">"celadon celadon-ink"</span><span class="punct">&gt;&lt;/</span><span class="tag">div</span><span class="punct">&gt;</span>
+<span class="punct">&lt;</span><span class="tag">div</span> <span class="attr">class</span>=<span class="string">"celadon celadon-sm"</span> <span class="attr">data-char</span>=<span class="string">"小"</span><span class="punct">&gt;&lt;/</span><span class="tag">div</span><span class="punct">&gt;</span></pre>
+    </section>
+
+    <!-- 3 · 印章 -->
+    <section class="component-section" id="seal">
+      <h2>03 · 印章 <span class="badge">Seal</span></h2>
+      <p class="desc">篆刻式印章，3 种颜色 × 4 种尺寸。</p>
+
+      <div class="preview">
+        <span class="preview-label">基础 / 尺寸</span>
+        <span class="seal seal-sm">章</span>
+        <span class="seal">龙泉章氏</span>
+        <span class="seal seal-lg">龙泉章氏</span>
+        <span class="seal seal-xl">龙泉章氏</span>
+      </div>
+      <div class="preview">
+        <span class="preview-label">颜色 / Colors</span>
+        <span class="seal">红印</span>
+        <span class="seal seal-ink">墨印</span>
+        <span class="seal seal-gold">金印</span>
+      </div>
+    </section>
+
+    <!-- 4 · 章节头 -->
+    <section class="component-section" id="eyebrow">
+      <h2>04 · 章节头 <span class="badge">Eyebrow</span></h2>
+      <p class="desc">位于大标题之上的小标签。常用于章节标记、分类、副标题。</p>
+
+      <div class="preview preview-column">
+        <span class="preview-label">基础</span>
+        <div class="eyebrow">CHAPTER · 第一幕</div>
+        <div class="eyebrow eyebrow-celadon">PROLOGUE · 序章</div>
+        <div class="eyebrow eyebrow-muted">EPILOGUE · 尾声</div>
+        <div class="eyebrow eyebrow-center" style="margin-left: 50%; transform: translateX(-50%);">CENTER · 居中</div>
+        <div class="eyebrow eyebrow-no-line">NO LINE · 无短线</div>
+      </div>
+    </section>
+
+    <!-- 5 · 引用 -->
+    <section class="component-section" id="quote">
+      <h2>05 · 引用 <span class="badge">Pull-quote</span></h2>
+      <p class="desc">左侧金线引用条。用于呈现核心台词、影片引文。</p>
+
+      <div class="preview preview-column">
+        <span class="preview-label">基础</span>
+        <div class="pull-quote">
+          "哥窑之'哥'，是谁？"
+          <cite>—— 镜号 5 · 黑场字幕</cite>
+        </div>
+        <div class="pull-quote pull-quote-celadon">
+          "哥，这土……在唱歌。"
+          <cite>—— 镜号 16 · 张志元</cite>
+        </div>
+        <div class="pull-quote pull-quote-center">
+          "哥……成了。"
+          <cite>—— 镜号 57 · 张志元</cite>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 · 表格 -->
+    <section class="component-section" id="table">
+      <h2>06 · 表格 <span class="badge">Table</span></h2>
+      <p class="desc">数据展示表格。支持悬停高亮、斑马纹、青瓷表头等变体。</p>
+
+      <table class="table">
+        <thead>
+          <tr><th>镜号</th><th>画面</th><th>象征</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>16</td><td>张志元蹲下抓土</td><td>觉醒时刻</td></tr>
+          <tr><td>17</td><td>张寄笑了</td><td>哥哥的肯定</td></tr>
+          <tr><td>45</td><td>兄弟之印</td><td>全片高潮</td></tr>
+        </tbody>
+      </table>
+      <pre class="code"><span class="punct">&lt;</span><span class="tag">table</span> <span class="attr">class</span>=<span class="string">"table"</span><span class="punct">&gt;</span>
+  <span class="punct">&lt;</span><span class="tag">thead</span><span class="punct">&gt;&lt;</span><span class="tag">tr</span><span class="punct">&gt;&lt;</span><span class="tag">th</span><span class="punct">&gt;</span>镜号<span class="punct">&lt;/</span><span class="tag">th</span><span class="punct">&gt;&lt;/</span><span class="tag">tr</span><span class="punct">&gt;&lt;/</span><span class="tag">thead</span><span class="punct">&gt;</span>
+  <span class="punct">&lt;</span><span class="tag">tbody</span><span class="punct">&gt;</span>...<span class="punct">&lt;/</span><span class="tag">tbody</span><span class="punct">&gt;</span>
+<span class="punct">&lt;/</span><span class="tag">table</span><span class="punct">&gt;</span></pre>
+    </section>
+
+    <!-- 7 · 卡片 -->
+    <section class="component-section" id="card">
+      <h2>07 · 卡片 <span class="badge">Card</span></h2>
+      <p class="desc">内容卡片。自适应网格布局，适合资源索引、列表展示。</p>
+
+      <div class="card-grid">
+        <a class="card" href="#">
+          <div class="card-num">CHAPTER 01</div>
+          <h3 class="card-title">问句：哥窑的"哥"</h3>
+          <p class="card-body">一切的起点，是黑场中的一个问句。</p>
+        </a>
+        <a class="card card-celadon" href="#">
+          <div class="card-num">CHAPTER 02</div>
+          <h3 class="card-title">主旨：传承之歌</h3>
+          <p class="card-body">"哥"通"歌"——窑火如歌，兄弟如线。</p>
+        </a>
+        <a class="card" href="#">
+          <div class="card-num">CHAPTER 03</div>
+          <h3 class="card-title">人物：两兄弟</h3>
+          <p class="card-body">持守者 × 探索者的二重唱。</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- 8 · 对比卡 -->
+    <section class="component-section" id="compare">
+      <h2>08 · 对比卡 <span class="badge">Compare</span></h2>
+      <p class="desc">左右双栏对比，常用于人物对照、方案对比。</p>
+
+      <div class="compare">
+        <div class="compare-card celadon">
+          <h3>张寄</h3>
+          <div class="role">THE ELDER · 哥哥</div>
+          <ul>
+            <li>持灯者 · 守护者</li>
+            <li>理性 · 冷静</li>
+            <li>拉住冲动的弟弟</li>
+          </ul>
+          <div class="quote">"等！现在开窑，全毁了！"</div>
+        </div>
+        <div class="compare-vs">VS</div>
+        <div class="compare-card gold">
+          <h3>张志元</h3>
+          <div class="role">THE YOUNGER · 弟弟</div>
+          <ul>
+            <li>行路人 · 探索者</li>
+            <li>感性 · 天赋</li>
+            <li>听见土在唱歌</li>
+          </ul>
+          <div class="quote">"哥，这土……在唱歌。"</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 · 时间轴 -->
+    <section class="component-section" id="timeline">
+      <h2>09 · 时间轴 <span class="badge">Timeline</span></h2>
+      <p class="desc">纵向时间线，常用于分幕叙事、镜头索引。</p>
+
+      <div class="timeline">
+        <div class="timeline-event">
+          <h4>镜号 16 — 觉醒时刻</h4>
+          <div class="shot-ref">MEDIUM SHOT · 4s</div>
+          <p>张志元蹲下抓土，眼神发亮——"哥，这土……在唱歌。"</p>
+        </div>
+        <div class="timeline-event">
+          <h4>镜号 28 — 第一把火</h4>
+          <div class="shot-ref">MEDIUM SHOT · 4s</div>
+          <p>张寄在窑口点燃第一把火，火光映红兄弟二人的脸。</p>
+        </div>
+        <div class="timeline-event">
+          <h4>镜号 45 — 兄弟之印</h4>
+          <div class="shot-ref">TWO SHOT · 5s</div>
+          <p>弟弟把哥哥的手一起按在印上——"哥，没有你这盏灯……"</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 · 目录 -->
+    <section class="component-section" id="toc">
+      <h2>10 · 目录 <span class="badge">TOC</span></h2>
+      <p class="desc">演讲目录。点击触发 <code>data-jump</code> 事件。</p>
+
+      <div class="toc">
+        <a class="toc-item" data-jump="1"><span class="toc-num">I</span><span class="toc-title">问句：哥窑的"哥"</span><span class="toc-dots"></span><span class="toc-page">04</span></a>
+        <a class="toc-item" data-jump="2"><span class="toc-num">II</span><span class="toc-title">主旨：传承之歌</span><span class="toc-dots"></span><span class="toc-page">06</span></a>
+        <a class="toc-item" data-jump="3"><span class="toc-num">III</span><span class="toc-title">人物：两兄弟</span><span class="toc-dots"></span><span class="toc-page">08</span></a>
+        <a class="toc-item" data-jump="4"><span class="toc-num">IV</span><span class="toc-title">第一幕：历史回溯</span><span class="toc-dots"></span><span class="toc-page">13</span></a>
+      </div>
+    </section>
+
+    <!-- 11 · 对话 -->
+    <section class="component-section" id="dialogue">
+      <h2>11 · 对话 <span class="badge">Dialogue</span></h2>
+      <p class="desc">台词展示条。左侧金线 + 说话人标签。</p>
+
+      <div class="preview preview-column">
+        <span class="preview-label">基础</span>
+        <div class="dialogue">
+          <span class="speaker">张志元 · 镜号 16</span>
+          "哥，这土……在唱歌。"
+        </div>
+        <div class="dialogue">
+          <span class="speaker">张寄 · 镜号 53</span>
+          "等！现在开窑，全毁了！"
+        </div>
+      </div>
+    </section>
+
+    <!-- 12 · 徽章 -->
+    <section class="component-section" id="badge">
+      <h2>12 · 徽章 <span class="badge">Badge</span></h2>
+      <p class="desc">小标签。常用于分类、版本号、状态标识。</p>
+
+      <div class="preview">
+        <span class="preview-label">轮廓</span>
+        <span class="badge">AUDIO</span>
+        <span class="badge badge-gold">24 SLIDES</span>
+        <span class="badge badge-celadon">66 SHOTS</span>
+        <span class="badge badge-ember">ACT III</span>
+        <span class="badge badge-muted">MUTED</span>
+      </div>
+      <div class="preview">
+        <span class="preview-label">填充</span>
+        <span class="badge badge-fill-gold">主色 · 24 SLIDES</span>
+        <span class="badge badge-fill-celadon">辅色 · 66 SHOTS</span>
+      </div>
+      <div class="preview">
+        <span class="preview-label">Mark</span>
+        <a class="mark">镜号 9</a>
+        <a class="mark">镜号 17</a>
+        <a class="mark">镜号 45</a>
+        <span class="dot dot-pulse"></span> 实时指示
+      </div>
+    </section>
+
+    <!-- 13 · 窑火 -->
+    <section class="component-section" id="flame">
+      <h2>13 · 窑火 <span class="badge">Flame</span></h2>
+      <p class="desc">CSS 关键帧动画。三种触发模式：auto / hover / click。</p>
+
+      <div class="preview">
+        <span class="preview-label">auto · 自动</span>
+        <div class="flame" data-flame="auto"></div>
+      </div>
+      <div class="preview">
+        <span class="preview-label">hover · 悬停</span>
+        <div class="flame" data-flame="hover" style="cursor: pointer;"></div>
+      </div>
+      <div class="preview">
+        <span class="preview-label">click · 点击</span>
+        <div class="flame" data-flame="click"></div>
+      </div>
+      <pre class="code"><span class="punct">&lt;</span><span class="tag">div</span> <span class="attr">class</span>=<span class="string">"flame"</span> <span class="attr">data-flame</span>=<span class="string">"auto"</span><span class="punct">&gt;&lt;/</span><span class="tag">div</span><span class="punct">&gt;</span>
+<span class="punct">&lt;</span><span class="tag">div</span> <span class="attr">class</span>=<span class="string">"flame"</span> <span class="attr">data-flame</span>=<span class="string">"hover"</span><span class="punct">&gt;&lt;/</span><span class="tag">div</span><span class="punct">&gt;</span>
+<span class="punct">&lt;</span><span class="tag">div</span> <span class="attr">class</span>=<span class="string">"flame"</span> <span class="attr">data-flame</span>=<span class="string">"click"</span><span class="punct">&gt;&lt;/</span><span class="tag">div</span><span class="punct">&gt;</span></pre>
+    </section>
+
+    <!-- 14 · 键盘 -->
+    <section class="component-section" id="kbd">
+      <h2>14 · 键盘 <span class="badge">KBD</span></h2>
+      <p class="desc">键位提示。用于操作说明。</p>
+
+      <div class="preview">
+        <span class="preview-label">基础</span>
+        <span class="kbd-row">
+          <span class="kbd">←</span> <span class="kbd">→</span> <span>翻页</span>
+        </span>
+        <span class="kbd-row">
+          <span class="kbd">N</span> <span>发言稿</span>
+        </span>
+        <span class="kbd-row">
+          <span class="kbd kbd-lg">Space</span> <span>下一张</span>
+        </span>
+        <span class="kbd-row">
+          <span class="kbd kbd-gold">P</span> <span>打印 / 导出 PDF</span>
+        </span>
+      </div>
+
+      <div class="preview">
+        <span class="preview-label">Divider</span>
+        <div class="divider">第一章 · 主旨</div>
+        <div class="divider">A Visual Epic of Heritage</div>
+      </div>
+    </section>
+
+    <!-- 15 · 导航 -->
+    <section class="component-section" id="navbar">
+      <h2>15 · 导航 <span class="badge">Navbar</span></h2>
+      <p class="desc">固定顶部导航。包含品牌、链接、按钮、当前页码。</p>
+
+      <div class="preview preview-column">
+        <span class="preview-label">示例</span>
+        <nav class="navbar" style="position: static;">
+          <a href="#" class="navbar-brand">哥窑</a>
+          <a class="navbar-link active">主旨</a>
+          <span class="navbar-sep">·</span>
+          <a class="navbar-link">解读</a>
+          <span class="navbar-sep">·</span>
+          <a class="navbar-link">分镜</a>
+          <span class="navbar-sep">·</span>
+          <button class="navbar-btn">文稿模式</button>
+          <span class="navbar-sep">·</span>
+          <span class="navbar-page">03 / 24</span>
+        </nav>
+      </div>
+
+      <div class="preview">
+        <span class="preview-label">控制按钮</span>
+        <div class="controls" style="position: static;">
+          <button class="controls-btn">‹</button>
+          <button class="controls-btn">›</button>
+        </div>
+      </div>
+    </section>
+
+    <footer style="margin-top: 100px; padding-top: 40px; border-top: 1px solid rgba(217, 154, 82, .2); display: flex; justify-content: space-between; font-family: var(--font-display); font-size: 12px; letter-spacing: .3em; color: var(--color-text-muted); text-transform: uppercase;">
+      <div>哥窑组件库 v1.0</div>
+      <div><a href="ppt.html" style="color: var(--color-accent); border: none;">查看 PPT →</a></div>
+    </footer>
+
+  </main>
+</div>
+
+<script src="assets/js/components.js" defer></script>
+</body>
+</html>

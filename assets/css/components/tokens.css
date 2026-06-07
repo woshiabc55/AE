@@ -1,0 +1,108 @@
+/* =================================================================
+   组件库 - 设计令牌（Design Tokens）
+   =================================================================
+   全局可复用变量：色彩、字体、间距、半径、阴影、动效曲线
+   使用方式：所有其他 component-*.css 引用本文件定义的 CSS 变量
+   ================================================================= */
+
+:root {
+  /* —— 色彩 ——
+     主色：墨黑 + 青瓷釉 + 窑火金
+     强调：金丝 + 铁线
+     状态：中性灰阶
+  */
+  --color-ink:           #0c0a09;
+  --color-ink-soft:      #1a1814;
+  --color-ink-elev:      #221e1a;
+  --color-celadon:       #7ea89a;
+  --color-celadon-light: #a8c4b8;
+  --color-celadon-deep:  #2f5b51;
+  --color-kiln-gold:     #d99a52;
+  --color-kiln-flame:    #f4a35c;
+  --color-kiln-ember:    #c0573a;
+  --color-paper:         #f1ebe0;
+  --color-paper-soft:    #e8e0d0;
+  --color-paper-warm:    #efe3d0;
+  --color-gold-line:     #b58a4a;
+  --color-iron-line:     #2a1a0e;
+  --color-ash:           #8a8275;
+
+  /* 语义色 */
+  --color-text:          var(--color-paper);
+  --color-text-soft:     var(--color-paper-soft);
+  --color-text-muted:    var(--color-ash);
+  --color-accent:        var(--color-kiln-gold);
+  --color-accent-2:      var(--color-celadon);
+
+  /* —— 字体 ——
+     衬线（标题/古意） + 黑体（正文） + 装饰（英文/数字） + 等宽
+  */
+  --font-serif-cn:  "Noto Serif SC", "Songti SC", "STSong", "SimSun", "宋体", serif;
+  --font-sans-cn:   "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "微软雅黑", sans-serif;
+  --font-display:   "Cormorant Garamond", "EB Garamond", "Garamond", serif;
+  --font-mono:      "JetBrains Mono", "Menlo", "Consolas", monospace;
+
+  /* —— 字号 ——
+     fluid scale: clamp(min, fluid, max)
+  */
+  --fs-xs:    12px;
+  --fs-sm:    14px;
+  --fs-base:  16px;
+  --fs-md:    clamp(15px, 1.3vw, 19px);
+  --fs-lg:    clamp(18px, 2.2vw, 28px);
+  --fs-xl:    clamp(22px, 2.6vw, 36px);
+  --fs-2xl:   clamp(32px, 4.5vw, 64px);
+  --fs-3xl:   clamp(40px, 6vw, 96px);
+  --fs-hero:  clamp(48px, 9vw, 144px);
+
+  /* —— 行高 —— */
+  --lh-tight: 1.25;
+  --lh-base:  1.7;
+  --lh-loose: 2;
+
+  /* —— 字距 —— */
+  --tracking-tight:   .02em;
+  --tracking-base:    .05em;
+  --tracking-wide:    .15em;
+  --tracking-display: .3em;
+  --tracking-eyebrow: .4em;
+
+  /* —— 间距（4 倍数）—— */
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3:  12px;
+  --sp-4:  16px;
+  --sp-5:  20px;
+  --sp-6:  24px;
+  --sp-8:  32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+
+  /* —— 圆角 —— */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  --radius-full: 9999px;
+
+  /* —— 阴影 —— */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, .15);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, .25);
+  --shadow-lg: 0 20px 80px rgba(0, 0, 0, .5);
+  --shadow-glow: 0 0 40px rgba(217, 154, 82, .35);
+  --shadow-celadon: 0 0 60px rgba(126, 168, 154, .25);
+
+  /* —— 动效曲线 —— */
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-ink: cubic-bezier(.65, 0, .35, 1);
+  --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+
+  /* —— 动效时长 —— */
+  --t-fast:   220ms;
+  --t-med:    600ms;
+  --t-slow:   1200ms;
+
+  /* —— 容器 / 布局 —— */
+  --container-max: 1280px;
+  --page-padding: 6vh 8vw;
+}

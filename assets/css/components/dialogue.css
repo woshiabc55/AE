@@ -1,0 +1,88 @@
+/* =================================================================
+   组件：对话框 / 引用 / 音轨
+   =================================================================
+   <div class="dialogue">
+     <span class="speaker">张志元</span>
+     "哥，这土……在唱歌。"
+   </div>
+
+   <div class="audio-track">
+     <div class="audio-wave"></div>
+     <span>古琴单音 · 余韵悠长</span>
+   </div>
+   ================================================================= */
+
+.dialogue {
+  position: relative;
+  padding: 1.2em 1.2em 1.2em 2.5em;
+  margin-bottom: 1em;
+  border-left: 2px solid var(--color-accent);
+  background: rgba(217, 154, 82, .04);
+  font-style: italic;
+  color: var(--color-text);
+}
+
+.dialogue::before {
+  content: "\201C";
+  position: absolute;
+  left: .8em; top: .8em;
+  color: var(--color-accent);
+  font-size: 1.4em;
+  line-height: 0;
+}
+
+.dialogue .speaker {
+  display: block;
+  font-style: normal;
+  font-size: 12px;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-muted);
+  margin-bottom: .8em;
+  text-transform: uppercase;
+}
+
+/* 音轨可视化 */
+.audio-track {
+  display: flex; align-items: center; gap: var(--sp-3);
+  margin: 1.5em 0;
+  padding: 1em 1.2em;
+  background: rgba(126, 168, 154, .04);
+  border: 1px solid rgba(126, 168, 154, .15);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  letter-spacing: var(--tracking-base);
+}
+
+.audio-wave {
+  flex: 1;
+  height: 24px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 24' preserveAspectRatio='none'><path d='M0,12 Q10,2 20,12 T40,12 T60,12 T80,12 T100,12 T120,12 T140,12 T160,12 T180,12 T200,12' stroke='%23d99a52' fill='none' stroke-width='1.5'/></svg>");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  opacity: .6;
+}
+
+/* 引用条 */
+.quote-bar {
+  position: relative;
+  padding: 1.5em 2em;
+  border-left: 2px solid var(--color-accent);
+  font-family: var(--font-serif-cn);
+  font-size: var(--fs-xl);
+  line-height: 1.6;
+  color: var(--color-text);
+  font-weight: 300;
+  margin: 1.5em 0;
+}
+
+.quote-bar-celadon { border-left-color: var(--color-celadon); }
+.quote-bar-gold    { border-left-color: var(--color-kiln-gold); }
+
+.quote-bar::after {
+  content: "";
+  position: absolute;
+  left: -2px; top: 1.5em;
+  width: 2px; height: 1em;
+  background: var(--color-text);
+  opacity: .4;
+}

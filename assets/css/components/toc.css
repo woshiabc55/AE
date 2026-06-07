@@ -1,0 +1,66 @@
+/* =================================================================
+   组件：目录 TOC
+   =================================================================
+   <div class="toc">
+     <a class="toc-item" data-jump="1">
+       <span class="toc-num">I</span>
+       <span class="toc-title">问句：哥窑的"哥"</span>
+       <span class="toc-dots"></span>
+       <span class="toc-page">04</span>
+     </a>
+   </div>
+   ================================================================= */
+
+.toc {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .3em 4em;
+  margin-top: 3em;
+  max-width: 1000px;
+}
+
+.toc-item {
+  display: flex;
+  align-items: baseline;
+  gap: 1em;
+  padding: .9em 0;
+  border-bottom: 1px dashed rgba(217, 154, 82, .15);
+  font-size: 16px;
+  color: var(--color-text-soft);
+  text-decoration: none;
+  transition: color var(--t-fast) var(--ease-out);
+  cursor: pointer;
+}
+.toc-item:hover { color: var(--color-accent); }
+.toc-item:focus { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+.toc-num {
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: var(--color-accent);
+  letter-spacing: var(--tracking-wide);
+  width: 40px;
+  flex-shrink: 0;
+}
+
+.toc-title {
+  flex: 0 0 auto;
+  font-family: var(--font-serif-cn);
+  letter-spacing: var(--tracking-wide);
+}
+
+.toc-dots {
+  flex: 1;
+  border-bottom: 1px dotted rgba(217, 154, 82, .3);
+  margin: 0 .5em;
+  position: relative;
+  top: -.3em;
+  min-width: 20px;
+}
+
+.toc-page {
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  letter-spacing: var(--tracking-base);
+}
