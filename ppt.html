@@ -35,8 +35,20 @@
   <span class="sep">·</span>
   <button class="mode-btn" id="notesBtn">发言稿</button>
   <span class="sep">·</span>
+  <button class="icon-btn" id="presenterBtn" title="演讲者模式 (P)">演讲</button>
+  <span class="sep">·</span>
+  <button class="icon-btn" id="fullscreenBtn" title="全屏 (F)">全屏</button>
+  <span class="sep">·</span>
+  <button class="icon-btn" id="autoBtn" title="自动播放 (A)">自动</button>
+  <span class="sep">·</span>
   <span class="cur"><span class="cur-page">01</span> / <span class="total-page">24</span></span>
 </nav>
+
+<!-- 章节指示 -->
+<div class="act-indicator" id="actIndicator">
+  <span class="act-en">PROLOGUE</span>
+  <span class="act-cn">序章</span>
+</div>
 
 <!-- 发言稿面板 -->
 <aside class="speaker-panel" id="speakerPanel">
@@ -50,11 +62,62 @@
   <span id="elapsed">00:00</span>
 </div>
 
+<!-- 进度环 -->
+<div class="progress-ring">
+  <svg viewBox="0 0 56 56">
+    <circle class="ring-bg" cx="28" cy="28" r="26"></circle>
+    <circle class="ring-fg" cx="28" cy="28" r="26" id="ringFg"></circle>
+  </svg>
+  <div class="ring-num"><span id="ringNum">01</span></div>
+</div>
+
+<!-- 鼠标点击粒子 -->
+<div id="particles"></div>
+
+<!-- Presenter 模式浮层 -->
+<div class="presenter-overlay" id="presenterOverlay">
+  <button class="presenter-close" id="closePresenter">× 关闭 (ESC)</button>
+  <div class="presenter-grid">
+    <div class="presenter-card">
+      <div class="label">⏱ 演 讲 时 间</div>
+      <h3>已用时间</h3>
+      <div class="big-time" id="presTime">00:00</div>
+      <div class="stat-row">
+        <span>页 码 <b id="presCurrent">01 / 24</b></span>
+        <span>章 节 <b id="presAct">序章</b></span>
+        <span>进 度 <b id="presPercent">4%</b></span>
+      </div>
+      <div class="key-hints">
+        <kbd>←</kbd> <kbd>→</kbd> 翻页 ·
+        <kbd>F</kbd> 全屏 ·
+        <kbd>B</kbd> 黑场 ·
+        <kbd>A</kbd> 自动 ·
+        <kbd>N</kbd> 发言稿 ·
+        <kbd>D</kbd> 文稿模式
+      </div>
+    </div>
+    <div class="presenter-card">
+      <div class="label">→ 下 一 页 预 览</div>
+      <div class="preview" id="presNext">
+        <div class="preview-eye">NEXT · 下一张</div>
+        <div class="preview-num">02 / 24</div>
+        <div class="preview-title">致辞</div>
+      </div>
+      <div class="key-hints" style="margin-top: 2em;">
+        提示：演讲时把此面板展开在第二屏，<br>
+        观众只看到当前幻灯片，<br>
+        你看得到剩余时间、进度、下一页内容。
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="deck" tabindex="0">
 
   <!-- ========== 1 · 封面 ========== -->
-  <section class="slide active" data-slide="1" data-notes="各位评委、各位来宾：今天我带来的不是一份普通的提案，而是一份关于'传承'的视觉史诗——《哥窑》。它用66个分镜，回答了一个问题：哥窑之'哥'，是谁？">
+  <section class="slide active" data-slide="1" data-act="PROLOGUE" data-notes="各位评委、各位来宾：今天我带来的不是一份普通的提案，而是一份关于'传承'的视觉史诗——《哥窑》。它用66个分镜，回答了一个问题：哥窑之'哥'，是谁？">
     <div class="bg-grid"></div>
+    <div class="slide-marker">SLIDE 01 · 序章 · PROLOGUE</div>
     <div class="ink-drop" style="top: 18%; left: 10%;"></div>
     <div class="ink-drop" style="top: 70%; right: 15%; background: radial-gradient(circle, var(--kiln-gold), transparent 60%);"></div>
     <div class="slide-inner" style="text-align: center;">
@@ -78,13 +141,14 @@
         <button class="btn" data-deck-next>开 始 演 讲 →</button>
       </div>
       <div style="margin-top: 3em; font-family: var(--font-display); font-size: 11px; letter-spacing: .3em; color: var(--ash);">
-        键盘 <span class="kbd">←</span> <span class="kbd">→</span> <span class="kbd">Space</span> 翻页 · <span class="kbd">N</span> 发言稿 · <span class="kbd">D</span> 文稿模式
+        键盘 <span class="kbd">←</span> <span class="kbd">→</span> <span class="kbd">Space</span> 翻页 · <span class="kbd">F</span> 全屏 · <span class="kbd">P</span> 演讲 · <span class="kbd">B</span> 黑场 · <span class="kbd">A</span> 自动 · <span class="kbd">N</span> 发言稿
       </div>
     </div>
   </section>
 
   <!-- ========== 2 · 致辞 ========== -->
-  <section class="slide" data-slide="2" data-notes="在正式解读之前，我必须先致谢一位非常重要的人——正是您对人物关系的指正，让我意识到'哥哥是张寄，弟弟是张志元'，这是理解整部作品的关键钥匙。">
+  <section class="slide" data-slide="2" data-act="PROLOGUE" data-notes="在正式解读之前，我必须先致谢一位非常重要的人——正是您对人物关系的指正，让我意识到'哥哥是张寄，弟弟是张志元'，这是理解整部作品的关键钥匙。">
+    <div class="slide-marker">SLIDE 02 · 序章 · PROLOGUE</div>
     <div class="slide-num">02 / 24</div>
     <div class="slide-inner">
       <div class="eyebrow">DEDICATION · 致 辞</div>
@@ -109,7 +173,8 @@
   </section>
 
   <!-- ========== 3 · 目录 ========== -->
-  <section class="slide" data-slide="3" data-notes="今天的演讲分为五个部分。我们将依次走过：主旨、人物、三幕、升华、致敬。">
+  <section class="slide" data-slide="3" data-act="PROLOGUE" data-notes="今天的演讲分为五个部分。我们将依次走过：主旨、人物、三幕、升华、致敬。">
+    <div class="slide-marker">SLIDE 03 · 序章 · PROLOGUE</div>
     <div class="slide-num">03 / 24</div>
     <div class="slide-inner">
       <div class="eyebrow">CONTENTS · 目 录</div>
@@ -128,7 +193,8 @@
   </section>
 
   <!-- ========== 4 · 序章·黑场 ========== -->
-  <section class="slide" data-slide="4" data-notes="一切的起点，是黑场中的一个问句：'哥窑的哥，是谁？' 这是整部作品的核心追问。">
+  <section class="slide" data-slide="4" data-act="PROLOGUE" data-notes="一切的起点，是黑场中的一个问句：'哥窑的哥，是谁？' 这是整部作品的核心追问。">
+    <div class="slide-marker">SLIDE 04 · 序章 · PROLOGUE</div>
     <div class="slide-num">04 / 24</div>
     <div class="slide-inner" style="text-align: center;">
       <div class="eyebrow center">PROLOGUE · 序章 · 镜号 1–5</div>
@@ -146,7 +212,8 @@
   </section>
 
   <!-- ========== 5 · 现代伏笔 ========== -->
-  <section class="slide" data-slide="5" data-notes="片头出现的'现代线'——老匠人与碎瓷——是后景的伏笔。它告诉我们：今天的故事，是关于'那一块缺了的瓷'的。">
+  <section class="slide" data-slide="5" data-act="PROLOGUE" data-notes="片头出现的'现代线'——老匠人与碎瓷——是后景的伏笔。它告诉我们：今天的故事，是关于'那一块缺了的瓷'的。">
+    <div class="slide-marker">SLIDE 05 · 序章 · PROLOGUE</div>
     <div class="slide-num">05 / 24</div>
     <div class="slide-inner two-col">
       <div>
@@ -176,7 +243,8 @@
   </section>
 
   <!-- ========== 6 · 主旨总纲 ========== -->
-  <section class="slide" data-slide="6" data-notes="这是全片的核心主旨——'哥'通'歌'，窑火如歌，兄弟如线。请允许我用30秒把这句话拆开。">
+  <section class="slide" data-slide="6" data-act="THESIS" data-notes="这是全片的核心主旨——'哥'通'歌'，窑火如歌，兄弟如线。请允许我用30秒把这句话拆开。">
+    <div class="slide-marker">SLIDE 06 · 主旨 · THESIS</div>
     <div class="slide-num">06 / 24</div>
     <div class="slide-inner">
       <div class="eyebrow">CORE THESIS · 主旨总纲</div>
@@ -197,7 +265,8 @@
   </section>
 
   <!-- ========== 7 · 修正说明 ========== -->
-  <section class="slide" data-slide="7" data-notes="我必须强调：脚本中'章生一'、'张志耀'是创作笔误。这一修正，让整部作品的'持守与开创'获得了最清晰的视觉对应。">
+  <section class="slide" data-slide="7" data-act="THESIS" data-notes="我必须强调：脚本中'章生一'、'张志耀'是创作笔误。这一修正，让整部作品的'持守与开创'获得了最清晰的视觉对应。">
+    <div class="slide-marker">SLIDE 07 · 主旨 · THESIS</div>
     <div class="slide-num">07 / 24</div>
     <div class="slide-inner">
       <div class="eyebrow">REVISION · 关键修正</div>
@@ -236,7 +305,8 @@
   </section>
 
   <!-- ========== 8 · 人物对照 ========== -->
-  <section class="slide" data-slide="8" data-notes="现在让我们把这两兄弟并排比较。请大家注意三组对应：节拍与旋律、锚点与延伸、持守与开创。">
+  <section class="slide" data-slide="8" data-act="CHARACTERS" data-notes="现在让我们把这两兄弟并排比较。请大家注意三组对应：节拍与旋律、锚点与延伸、持守与开创。">
+    <div class="slide-marker">SLIDE 08 · 人物 · CHARACTERS</div>
     <div class="slide-num">08 / 24</div>
     <div class="slide-inner">
       <div class="eyebrow">CONTRAST · 人物对照</div>
@@ -274,7 +344,8 @@
   </section>
 
   <!-- ========== 9 · 哥哥关键时刻 ========== -->
-  <section class="slide" data-slide="9" data-notes="哥哥有四个关键时刻。每一个，都展示了他'持守'的维度——他用守住的那一瞬间，让弟弟的天赋被听见。">
+  <section class="slide" data-slide="9" data-act="CHARACTERS" data-notes="哥哥有四个关键时刻。每一个，都展示了他'持守'的维度——他用守住的那一瞬间，让弟弟的天赋被听见。">
+    <div class="slide-marker">SLIDE 09 · 人物 · CHARACTERS</div>
     <div class="slide-num">09 / 24</div>
     <div class="slide-inner">
       <div class="eyebrow green">MOMENTS · 哥哥关键时刻</div>
@@ -303,7 +374,8 @@
   </section>
 
   <!-- ========== 10 · 弟弟关键时刻 ========== -->
-  <section class="slide" data-slide="10" data-notes="弟弟有四个'听见'的瞬间。每一次，他都先于语言，感知到火候的微妙变化。">
+  <section class="slide" data-slide="10" data-act="CHARACTERS" data-notes="弟弟有四个'听见'的瞬间。每一次，他都先于语言，感知到火候的微妙变化。">
+    <div class="slide-marker">SLIDE 10 · 人物 · CHARACTERS</div>
     <div class="slide-num">10 / 24</div>
     <div class="slide-inner">
       <div class="eyebrow">MOMENTS · 弟弟关键时刻</div>
@@ -332,7 +404,8 @@
   </section>
 
   <!-- ========== 11 · 三幕结构 ========== -->
-  <section class="slide" data-slide="11" data-notes="三幕结构，每一幕都完成一次'火候 + 持守'的对应。">
+  <section class="slide" data-slide="11" data-act="THESIS" data-notes="三幕结构，每一幕都完成一次'火候 + 持守'的对应。">
+    <div class="slide-marker">SLIDE 11 · 主旨 · THESIS</div>
     <div class="slide-num">11 / 24</div>
     <div class="slide-inner">
       <div class="eyebrow">STRUCTURE · 三幕结构</div>
@@ -360,7 +433,8 @@
   </section>
 
   <!-- ========== 12 · 第一幕·开篇 ========== -->
-  <section class="slide" data-slide="12" data-notes="第一幕讲述南下。父亲把两个包袱塞入兄弟手中——瓷土与家谱。">
+  <section class="slide" data-slide="12" data-act="ACT I" data-notes="第一幕讲述南下。父亲把两个包袱塞入兄弟手中——瓷土与家谱。">
+    <div class="slide-marker">SLIDE 12 · 第一幕 · ACT I</div>
     <div class="slide-num">12 / 24</div>
     <div class="slide-inner">
       <div class="eyebrow">ACT ONE · 第一幕</div>
@@ -384,7 +458,8 @@
   </section>
 
   <!-- ========== 13 · 第一幕·寻土 ========== -->
-  <section class="slide" data-slide="13" data-notes="寻土。弟弟蹲下抓土的瞬间——是整部作品最'天赋觉醒'的画面。">
+  <section class="slide" data-slide="13" data-act="ACT I" data-notes="寻土。弟弟蹲下抓土的瞬间——是整部作品最'天赋觉醒'的画面。">
+    <div class="slide-marker">SLIDE 13 · 第一幕 · ACT I</div>
     <div class="slide-num">13 / 24</div>
     <div class="slide-inner two-col">
       <div>
@@ -415,7 +490,8 @@
   </section>
 
   <!-- ========== 14 · 第一幕·起窑 ========== -->
-  <section class="slide" data-slide="14" data-notes="起窑。哥哥用树枝画窑体——这是他'持守者'姿态最直接的体现。">
+  <section class="slide" data-slide="14" data-act="ACT I" data-notes="起窑。哥哥用树枝画窑体——这是他'持守者'姿态最直接的体现。">
+    <div class="slide-marker">SLIDE 14 · 第一幕 · ACT I</div>
     <div class="slide-num">14 / 24</div>
     <div class="slide-inner">
       <div class="eyebrow">FIRST ACT · 起 窑</div>
@@ -438,7 +514,8 @@
   </section>
 
   <!-- ========== 15 · 第一幕·未开片 ========== -->
-  <section class="slide" data-slide="15" data-notes="第一件青瓷未开片——这是一个重要的'留白'，它告诉我们：哥窑不是一次成型的。">
+  <section class="slide" data-slide="15" data-act="ACT I" data-notes="第一件青瓷未开片——这是一个重要的'留白'，它告诉我们：哥窑不是一次成型的。">
+    <div class="slide-marker">SLIDE 15 · 第一幕 · ACT I</div>
     <div class="slide-num">15 / 24</div>
     <div class="slide-inner" style="text-align: center;">
       <div class="eyebrow center">FIRST ACT · 未 开 片</div>
@@ -461,7 +538,8 @@
   </section>
 
   <!-- ========== 16 · 第二幕·开篇 ========== -->
-  <section class="slide" data-slide="16" data-notes="第二幕开场——朝廷查验。这是窑火从民间走向庙堂的时刻。">
+  <section class="slide" data-slide="16" data-act="ACT II" data-notes="第二幕开场——朝廷查验。这是窑火从民间走向庙堂的时刻。">
+    <div class="slide-marker">SLIDE 16 · 第二幕 · ACT II</div>
     <div class="slide-num">16 / 24</div>
     <div class="slide-inner">
       <div class="eyebrow">ACT TWO · 第二幕</div>
@@ -489,7 +567,8 @@
   </section>
 
   <!-- ========== 17 · 第二幕·兄弟之印 ========== -->
-  <section class="slide" data-slide="17" data-notes="这是全片的精神顶点。请大家注意那句反向的致敬——'哥，没有你这盏灯'。">
+  <section class="slide" data-slide="17" data-act="ACT II" data-notes="这是全片的精神顶点。请大家注意那句反向的致敬——'哥，没有你这盏灯'。">
+    <div class="slide-marker">SLIDE 17 · 第二幕 · ACT II</div>
     <div class="slide-num">17 / 24</div>
     <div class="slide-inner">
       <div class="eyebrow">SECOND ACT · 兄 弟 之 印 ⭐</div>
@@ -515,7 +594,8 @@
   </section>
 
   <!-- ========== 18 · 第二幕·证据 ========== -->
-  <section class="slide" data-slide="18" data-notes="证据链——'无意之得，方为天工'。这是弟弟的谦逊，也是整部作品对'灵感'的态度。">
+  <section class="slide" data-slide="18" data-act="ACT II" data-notes="证据链——'无意之得，方为天工'。这是弟弟的谦逊，也是整部作品对'灵感'的态度。">
+    <div class="slide-marker">SLIDE 18 · 第二幕 · ACT II</div>
     <div class="slide-num">18 / 24</div>
     <div class="slide-inner">
       <div class="eyebrow green">EVIDENCE · 贡品之印证据</div>
@@ -539,7 +619,8 @@
   </section>
 
   <!-- ========== 19 · 第三幕·开篇 ========== -->
-  <section class="slide" data-slide="19" data-notes="第三幕——火候失控。这是'疯狂'与'理性'的最终碰撞。">
+  <section class="slide" data-slide="19" data-act="ACT III" data-notes="第三幕——火候失控。这是'疯狂'与'理性'的最终碰撞。">
+    <div class="slide-marker">SLIDE 19 · 第三幕 · ACT III</div>
     <div class="slide-num">19 / 24</div>
     <div class="slide-inner">
       <div class="eyebrow">ACT THREE · 第三幕</div>
@@ -566,7 +647,8 @@
   </section>
 
   <!-- ========== 20 · 第三幕·如一人 ========== -->
-  <section class="slide" data-slide="20" data-notes="镜号 54——'如一人'。这是全片的精神图腾。两个人的影子投在山壁上，像一个人。">
+  <section class="slide" data-slide="20" data-act="ACT III" data-notes="镜号 54——'如一人'。这是全片的精神图腾。两个人的影子投在山壁上，像一个人。">
+    <div class="slide-marker">SLIDE 20 · 第三幕 · ACT III</div>
     <div class="slide-num">20 / 24</div>
     <div class="slide-inner two-col">
       <div>
@@ -599,7 +681,8 @@
   </section>
 
   <!-- ========== 21 · 第三幕·金丝铁线 ========== -->
-  <section class="slide" data-slide="21" data-notes="开窑——金丝铁线诞生。这一刻，'持守'与'开创'合为完美和弦。">
+  <section class="slide" data-slide="21" data-act="ACT III" data-notes="开窑——金丝铁线诞生。这一刻，'持守'与'开创'合为完美和弦。">
+    <div class="slide-marker">SLIDE 21 · 第三幕 · ACT III</div>
     <div class="slide-num">21 / 24</div>
     <div class="slide-inner" style="text-align: center;">
       <div class="eyebrow center">THIRD ACT · 金 丝 铁 线 ⭐</div>
@@ -635,7 +718,8 @@
   </section>
 
   <!-- ========== 22 · 主旨升华 ========== -->
-  <section class="slide" data-slide="22" data-notes="这是全片主旨的最终升华——'哥'是'歌'，也是'兄'。">
+  <section class="slide" data-slide="22" data-act="EPILOGUE" data-notes="这是全片主旨的最终升华——'哥'是'歌'，也是'兄'。">
+    <div class="slide-marker">SLIDE 22 · 升华 · EPILOGUE</div>
     <div class="slide-num">22 / 24</div>
     <div class="slide-inner" style="text-align: center;">
       <div class="eyebrow center">RESOLUTION · 主旨升华</div>
@@ -662,7 +746,8 @@
   </section>
 
   <!-- ========== 23 · 主题字幕 ========== -->
-  <section class="slide" data-slide="23" data-notes="主题字幕——这是整部作品最后一句台词。请允许我把它念一遍。">
+  <section class="slide" data-slide="23" data-act="EPILOGUE" data-notes="主题字幕——这是整部作品最后一句台词。请允许我把它念一遍。">
+    <div class="slide-marker">SLIDE 23 · 升华 · EPILOGUE</div>
     <div class="slide-num">23 / 24</div>
     <div class="slide-inner" style="text-align: center;">
       <div class="eyebrow center">THE FINAL SENTENCE · 主题字幕</div>
@@ -684,8 +769,9 @@
   </section>
 
   <!-- ========== 24 · 片尾·致谢 ========== -->
-  <section class="slide" data-slide="24" data-notes="最后，我想用两句话作为结尾。第一句是这部作品的；最后一句，是我想对在座各位说的。">
+  <section class="slide" data-slide="24" data-act="EPILOGUE" data-notes="最后，我想用两句话作为结尾。第一句是这部作品的；最后一句，是我想对在座各位说的。">
     <div class="bg-grid"></div>
+    <div class="slide-marker">SLIDE 24 · 升华 · EPILOGUE</div>
     <div class="slide-inner" style="text-align: center;">
       <div class="eyebrow center">CREDITS · 致 谢</div>
       <h2 class="huge" style="font-size: clamp(48px, 7vw, 100px); margin-top: 1em;">
@@ -739,179 +825,7 @@
 </div>
 
 <script src="assets/js/audio.js"></script>
-<script>
-/* =================================================================
-   PPT 翻页 + 文稿模式 + 发言稿
-   ================================================================= */
-(function () {
-  'use strict';
-
-  const deck = document.querySelector('.deck');
-  if (!deck) return;
-
-  const slides = Array.from(deck.querySelectorAll('.slide'));
-  const total  = slides.length;
-  let current  = 0;
-  let isAnimating = false;
-
-  const progressBar = document.querySelector('.progress-bar');
-  const curPage  = document.querySelector('.cur-page');
-  const totalPage = document.querySelector('.total-page');
-
-  if (totalPage) totalPage.textContent = String(total).padStart(2, '0');
-
-  function show(index) {
-    if (index < 0 || index >= total || isAnimating) return;
-    isAnimating = true;
-    slides.forEach((s, i) => {
-      s.classList.remove('active', 'prev');
-      if (i < index) s.classList.add('prev');
-      else if (i === index) s.classList.add('active');
-    });
-    current = index;
-    if (curPage) curPage.textContent = String(current + 1).padStart(2, '0');
-    if (progressBar) progressBar.style.width = ((current + 1) / total * 100) + '%';
-    setTimeout(() => { isAnimating = false; }, 600);
-    // 更新发言稿
-    updateNotes();
-  }
-
-  function next() { show(current + 1); }
-  function prev() { show(current - 1); }
-  function goTo(i) { show(i); }
-
-  // 翻页事件
-  document.addEventListener('keydown', (e) => {
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-    switch (e.key) {
-      case 'ArrowRight':
-      case ' ':
-      case 'PageDown':
-        e.preventDefault(); next(); break;
-      case 'ArrowLeft':
-      case 'PageUp':
-        e.preventDefault(); prev(); break;
-      case 'Home':
-        e.preventDefault(); goTo(0); break;
-      case 'End':
-        e.preventDefault(); goTo(total - 1); break;
-      case 'Escape':
-        e.preventDefault(); goTo(0); break;
-      case 'n':
-      case 'N':
-        e.preventDefault(); toggleNotes(); break;
-      case 'd':
-      case 'D':
-        e.preventDefault(); toggleDocMode(); break;
-      case 'p':
-      case 'P':
-        e.preventDefault(); window.print(); break;
-    }
-  });
-
-  let touchStartX = 0;
-  document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
-  document.addEventListener('touchend', (e) => {
-    const dx = e.changedTouches[0].clientX - touchStartX;
-    if (Math.abs(dx) > 60) (dx < 0 ? next() : prev());
-  });
-
-  document.querySelectorAll('[data-deck-next]').forEach(b => b.addEventListener('click', next));
-  document.querySelectorAll('[data-deck-prev]').forEach(b => b.addEventListener('click', prev));
-  document.querySelectorAll('[data-jump]').forEach(el => {
-    el.addEventListener('click', (e) => { e.preventDefault(); goTo(parseInt(el.dataset.jump, 10) - 1); });
-  });
-
-  // ========== 发言稿 ==========
-  const speakerPanel = document.getElementById('speakerPanel');
-  const notesContent = document.getElementById('notesContent');
-  const notesBtn = document.getElementById('notesBtn');
-  const closeNotes = document.getElementById('closeNotes');
-
-  function updateNotes() {
-    const slide = slides[current];
-    if (!slide) return;
-    const note = slide.dataset.notes;
-    const slideNum = current + 1;
-    const headings = slide.querySelectorAll('h1, h2, h3');
-    const heading = headings[0] ? headings[0].textContent.trim() : '当前幻灯片';
-
-    const pauseAt = note ? `<div class="pause">· · ·</div>` : '';
-    notesContent.innerHTML = `
-      <h3>镜号 / 幻灯片 ${slideNum}</h3>
-      <h4>${heading}</h4>
-      ${note ? `<div class="note">${note}</div>` : '<div class="note">（本页无发言稿）</div>'}
-      ${pauseAt}
-      <h4>提示</h4>
-      <p style="font-size: 14px; color: var(--ash);">
-        翻到下一页时，本面板会自动更新。按 <span style="color: var(--kiln-gold);">N</span> 关闭发言稿。
-      </p>
-    `;
-  }
-  function toggleNotes() { speakerPanel.classList.toggle('open'); }
-  notesBtn.addEventListener('click', toggleNotes);
-  closeNotes.addEventListener('click', toggleNotes);
-
-  // ========== 文稿模式 ==========
-  const docMode = document.getElementById('docMode');
-  const docContent = document.getElementById('docContent');
-  const docModeBtn = document.getElementById('docModeBtn');
-  const closeDoc = document.getElementById('closeDoc');
-  const printBtn = document.getElementById('printBtn');
-
-  function buildDocContent() {
-    let html = '';
-    slides.forEach((slide, i) => {
-      const inner = slide.querySelector('.slide-inner');
-      if (!inner) return;
-      const clone = inner.cloneNode(true);
-      // 移除按钮（防误点击）
-      clone.querySelectorAll('button').forEach(b => b.remove());
-      const slideNum = String(i + 1).padStart(2, '0');
-      html += `<div class="doc-slide">
-        <div class="doc-num">${slideNum} / ${String(total).padStart(2, '0')}</div>
-        ${clone.innerHTML}
-      </div>`;
-    });
-    docContent.innerHTML = html;
-  }
-
-  function toggleDocMode() {
-    if (docMode.classList.contains('active')) {
-      docMode.classList.remove('active');
-      document.body.style.overflow = 'hidden';
-    } else {
-      buildDocContent();
-      docMode.classList.add('active');
-      document.body.style.overflow = 'auto';
-      docMode.scrollTop = 0;
-    }
-  }
-  docModeBtn.addEventListener('click', toggleDocMode);
-  closeDoc.addEventListener('click', toggleDocMode);
-  if (printBtn) printBtn.addEventListener('click', () => {
-    if (!docMode.classList.contains('active')) {
-      buildDocContent();
-      docMode.classList.add('active');
-    }
-    setTimeout(() => window.print(), 100);
-  });
-
-  // ========== 计时器 ==========
-  const startTime = Date.now();
-  const elapsedEl = document.getElementById('elapsed');
-  setInterval(() => {
-    const elapsed = Math.floor((Date.now() - startTime) / 1000);
-    const m = String(Math.floor(elapsed / 60)).padStart(2, '0');
-    const s = String(elapsed % 60).padStart(2, '0');
-    if (elapsedEl) elapsedEl.textContent = `${m}:${s}`;
-  }, 1000);
-
-  // 启动
-  show(0);
-  updateNotes();
-})();
-</script>
+<script src="assets/js/deck.js"></script>
 
 </body>
 </html>

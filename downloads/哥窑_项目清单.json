@@ -2,18 +2,18 @@
   "name": "哥窑 · 主旨解读项目",
   "theme": "窑火如歌，兄弟如线",
   "version": "v1.0",
-  "generated": "2026-06-07 06:23:03",
+  "generated": "2026-06-07 07:15:29",
   "summary": {
-    "total_files": 113,
-    "total_size_b": 719027,
-    "total_size_kb": 702.2,
-    "total_size_mb": 0.69,
+    "total_files": 116,
+    "total_size_b": 809445,
+    "total_size_kb": 790.5,
+    "total_size_mb": 0.77,
     "by_type": {
-      "html": 78,
+      "html": 79,
       "css": 21,
       "js": 5,
       "md": 1,
-      "py": 5,
+      "py": 7,
       "other": 3
     }
   },
@@ -27,7 +27,7 @@
     "shots": 66,
     "acts": 3,
     "components": 15,
-    "html_pages": 78
+    "html_pages": 79
   },
   "downloads": {
     "pptx": "downloads/哥窑_主旨解读.pptx",
@@ -113,14 +113,14 @@
     },
     {
       "path": "index.html",
-      "size": 18778,
+      "size": 18843,
       "type": "html",
       "text": true,
       "purpose": "主 PPT 旧版（14 张）"
     },
     {
       "path": "README.md",
-      "size": 7497,
+      "size": 9603,
       "type": "md",
       "text": true
     },
@@ -262,7 +262,7 @@
     },
     {
       "path": "components.html",
-      "size": 21197,
+      "size": 21340,
       "type": "html",
       "text": true,
       "purpose": "组件库演示（Storybook 风格）"
@@ -456,7 +456,7 @@
     },
     {
       "path": "ppt.html",
-      "size": 48806,
+      "size": 47772,
       "type": "html",
       "text": true,
       "purpose": "正式文稿 PPT（24 张，含下载）"
@@ -467,6 +467,13 @@
       "type": "html",
       "text": true,
       "purpose": "第一幕 · 历史回溯"
+    },
+    {
+      "path": "export.html",
+      "size": 17509,
+      "type": "html",
+      "text": true,
+      "purpose": "项目导出门户"
     },
     {
       "path": "shot-31.html",
@@ -544,7 +551,7 @@
     },
     {
       "path": "assets/css/ppt.css",
-      "size": 20207,
+      "size": 30855,
       "type": "css",
       "text": true
     },
@@ -664,7 +671,7 @@
     },
     {
       "path": "assets/js/deck.js",
-      "size": 2531,
+      "size": 17352,
       "type": "js",
       "text": true
     },
@@ -681,8 +688,14 @@
       "text": true
     },
     {
+      "path": "scripts/fix_slide_markers.py",
+      "size": 2891,
+      "type": "py",
+      "text": true
+    },
+    {
       "path": "scripts/build_zip.py",
-      "size": 2093,
+      "size": 2108,
       "type": "py",
       "text": true
     },
@@ -711,20 +724,26 @@
       "text": true
     },
     {
+      "path": "scripts/add_act_markers.py",
+      "size": 2695,
+      "type": "py",
+      "text": true
+    },
+    {
       "path": "downloads/哥窑_主旨解读_单文件.html",
-      "size": 75473,
+      "size": 102450,
       "type": "html",
       "text": true
     },
     {
       "path": "downloads/哥窑_项目清单.json",
-      "size": 14070,
+      "size": 14458,
       "type": "json",
       "text": true
     },
     {
       "path": "downloads/哥窑_主旨解读_HTML包.zip",
-      "size": 140658,
+      "size": 153852,
       "type": "zip",
       "text": false
     },
