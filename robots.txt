@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /logs/
+Disallow: /.server.pid
+Disallow: /server.py
+Disallow: /start.sh
