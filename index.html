@@ -25,9 +25,65 @@
     background: var(--bg-0);
     color: var(--ink);
     font-family: "Cormorant Garamond", "Times New Roman", serif;
-    overflow: hidden;
+    overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     cursor: none;
+    scroll-behavior: smooth;
+  }
+
+  /* 滚动进度条 */
+  .progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    width: 0%;
+    background: linear-gradient(90deg, #ff7ab8, #80e0ff, #a8ffc8, #ffd29a);
+    z-index: 9998;
+    transition: width 0.08s linear, opacity .4s;
+    box-shadow: 0 0 12px rgba(255, 122, 184, 0.6);
+  }
+  .progress.idle { opacity: 0.35; }
+
+  /* 视区标记（侧边） */
+  .viewmarks {
+    position: fixed;
+    right: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    opacity: 0;
+    animation: rise 1.4s 1.8s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  .viewmarks .mark {
+    width: 18px; height: 1px;
+    background: var(--ink-faint);
+    position: relative;
+    transition: width .4s cubic-bezier(.2,.7,.2,1), background .3s;
+  }
+  .viewmarks .mark.active {
+    width: 36px;
+    background: var(--ink);
+  }
+  .viewmarks .mark::after {
+    content: attr(data-label);
+    position: absolute;
+    right: 28px; top: 50%;
+    transform: translateY(-50%);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity .3s, transform .3s;
+  }
+  .viewmarks .mark.active::after {
+    opacity: 1;
+    transform: translateY(-50%) translateX(-4px);
   }
 
   /* 噪点纹理叠加 */
@@ -132,11 +188,157 @@
   .stage {
     position: relative;
     z-index: 10;
-    height: 100%;
+    width: 100%;
+  }
+
+  /* 每一屏 */
+  .view {
+    height: 100vh;
+    min-height: 720px;
     width: 100%;
     display: grid;
     grid-template-rows: auto 1fr auto;
     padding: 36px 56px;
+  }
+  .view.snap-end { scroll-snap-align: end; }
+
+  /* 屏 2 主体：研究 */
+  .study {
+    align-self: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: end;
+  }
+  .study .eyebrow { margin-bottom: 24px; }
+
+  .big {
+    font-weight: 300;
+    font-size: clamp(48px, 7vw, 120px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .big .it {
+    font-style: italic;
+    color: rgba(160, 220, 255, 0.9);
+  }
+  .big .line {
+    display: block;
+    overflow: hidden;
+  }
+  .big .line > span {
+    display: inline-block;
+    transform: translateY(110%);
+  }
+
+  .palette {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px 36px;
+  }
+  .swatch {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1);
+  }
+  .swatch .chip {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 24px currentColor;
+  }
+  .swatch.s1 .chip { background: #ff7ab8; color: rgba(255, 122, 184, 0.6); }
+  .swatch.s2 .chip { background: #50dcff; color: rgba(80, 220, 255, 0.6); }
+  .swatch.s3 .chip { background: #8cffb4; color: rgba(140, 255, 180, 0.55); }
+  .swatch.s4 .chip { background: #ffc878; color: rgba(255, 200, 120, 0.55); }
+  .swatch .label {
+    display: grid;
+    grid-template-rows: auto auto auto;
+    font-family: "JetBrains Mono", monospace;
+    line-height: 1.4;
+  }
+  .swatch .num {
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: var(--ink-faint);
+  }
+  .swatch .name {
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    color: var(--ink);
+    margin-top: 2px;
+  }
+  .swatch .desc {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--ink-dim);
+    margin-top: 2px;
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 14px;
+  }
+
+  /* 屏 3 主体：coda */
+  .coda {
+    align-self: center;
+    justify-self: center;
+    text-align: center;
+    max-width: 720px;
+  }
+  .coda .lede {
+    max-width: 540px;
+    margin: 36px auto 0;
+  }
+  .coda .actions {
+    margin-top: 56px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  .btn {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--ink-dim);
+    border: 1px solid var(--ink-faint);
+    padding: 14px 28px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color .3s, border-color .3s, background .3s;
+  }
+  .btn.ghost:hover {
+    color: var(--ink);
+    border-color: var(--ink);
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  /* 滚动揭示 */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 1.1s cubic-bezier(.2,.7,.2,1), transform 1.1s cubic-bezier(.2,.7,.2,1); }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+  .reveal .line > span,
+  .big .line > span {
+    transition: transform 1.4s cubic-bezier(.2,.7,.2,1);
+  }
+  .reveal.in .line > span,
+  .big.in .line > span,
+  .v-aurora h1.title.in .line > span {
+    transform: translateY(0);
+  }
+
+  @media (max-width: 980px) {
+    .study { grid-template-columns: 1fr; gap: 56px; }
+  }
+  @media (max-width: 720px) {
+    .view { padding: 24px; }
+    .rule.left, .rule.right { display: none; }
+    .viewmarks { right: 14px; gap: 10px; }
+    .palette { grid-template-columns: 1fr; }
   }
 
   header.bar {
@@ -307,6 +509,16 @@
 </head>
 <body>
 
+  <!-- 滚动进度 -->
+  <div class="progress" id="progress"></div>
+
+  <!-- 侧边视区标记 -->
+  <div class="viewmarks" id="viewmarks">
+    <div class="mark active" data-label="Aurora"></div>
+    <div class="mark" data-label="Study"></div>
+    <div class="mark" data-label="Coda"></div>
+  </div>
+
   <!-- 极光层 -->
   <div class="aurora" id="aurora">
     <div class="blob b1"></div>
@@ -324,42 +536,155 @@
 
   <!-- 内容 -->
   <div class="stage">
-    <header class="bar">
-      <div><span class="dot"></span>LIVE · 002</div>
-      <nav>
-        <span>Index</span>
-        <span>Studies</span>
-        <span>Contact</span>
-      </nav>
-    </header>
 
-    <main class="hero">
-      <div class="eyebrow">A field study in light · 2026</div>
-      <h1 class="title">
-        <span class="line l1"><span>Liquid</span></span>
-        <span class="line l2"><span class="it">aurora,</span></span>
-        <span class="line l3"><span>quiet motion.</span></span>
-      </h1>
-      <p class="lede">
-        四个柔和光团在深色画布上缓慢呼吸 —— 没有按钮、没有菜单、也没有 100,000 项功能。
-        只是光，流动的光，让眼睛慢下来。
-      </p>
-    </main>
+    <!-- 屏 1：液态极光 -->
+    <section class="view v-aurora" data-view="0">
+      <header class="bar">
+        <div><span class="dot"></span>LIVE · 002</div>
+        <nav>
+          <span>Index</span>
+          <span>Studies</span>
+          <span>Contact</span>
+        </nav>
+      </header>
 
-    <footer class="bar">
-      <div class="coords">
-        <span>64.13° N</span>
-        <span>21.94° W</span>
-      </div>
-      <div class="scroller">
-        scroll
-        <span class="line-v"></span>
-      </div>
-      <div class="meta">
-        <span>No. 002 / 100</span>
-        <span>↳ follow the light</span>
-      </div>
-    </footer>
+      <main class="hero">
+        <div class="eyebrow">A field study in light · 2026</div>
+        <h1 class="title">
+          <span class="line l1"><span>Liquid</span></span>
+          <span class="line l2"><span class="it">aurora,</span></span>
+          <span class="line l3"><span>quiet motion.</span></span>
+        </h1>
+        <p class="lede">
+          四个柔和光团在深色画布上缓慢呼吸 —— 没有按钮、没有菜单、也没有 100,000 项功能。
+          只是光，流动的光，让眼睛慢下来。
+        </p>
+      </main>
+
+      <footer class="bar">
+        <div class="coords">
+          <span>64.13° N</span>
+          <span>21.94° W</span>
+        </div>
+        <div class="scroller">
+          scroll
+          <span class="line-v"></span>
+        </div>
+        <div class="meta">
+          <span>No. 002 / 100</span>
+          <span>↳ follow the light</span>
+        </div>
+      </footer>
+    </section>
+
+    <!-- 屏 2：色彩研究 -->
+    <section class="view v-study" data-view="1">
+      <header class="bar">
+        <div><span class="dot"></span>STUDY · 003</div>
+        <nav>
+          <span>Index</span>
+          <span>Studies</span>
+          <span>Contact</span>
+        </nav>
+      </header>
+
+      <main class="study">
+        <div class="eyebrow reveal">Colour · field notes</div>
+        <h2 class="big reveal">
+          <span class="line"><span>Four lights,</span></span>
+          <span class="line"><span class="it">one breath.</span></span>
+        </h2>
+
+        <div class="palette">
+          <div class="swatch s1 reveal">
+            <div class="chip"></div>
+            <div class="label">
+              <span class="num">01</span>
+              <span class="name">Rose · 0xFF7AB8</span>
+              <span class="desc">暖粉，引领视线</span>
+            </div>
+          </div>
+          <div class="swatch s2 reveal">
+            <div class="chip"></div>
+            <div class="label">
+              <span class="num">02</span>
+              <span class="name">Cyan · 0x50DCFF</span>
+              <span class="desc">冷青，对位呼吸</span>
+            </div>
+          </div>
+          <div class="swatch s3 reveal">
+            <div class="chip"></div>
+            <div class="label">
+              <span class="num">03</span>
+              <span class="name">Mint · 0x8CFFB4</span>
+              <span class="desc">青翠，托底缓压</span>
+            </div>
+          </div>
+          <div class="swatch s4 reveal">
+            <div class="chip"></div>
+            <div class="label">
+              <span class="num">04</span>
+              <span class="name">Amber · 0xFFC878</span>
+              <span class="desc">琥珀，温暖收束</span>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="bar">
+        <div class="coords">
+          <span>64.13° N</span>
+          <span>21.94° W</span>
+        </div>
+        <div class="scroller">
+          continue
+          <span class="line-v"></span>
+        </div>
+        <div class="meta">
+          <span>No. 003 / 100</span>
+          <span>↳ four tints, one tempo</span>
+        </div>
+      </footer>
+    </section>
+
+    <!-- 屏 3：收束 -->
+    <section class="view v-coda" data-view="2">
+      <header class="bar">
+        <div><span class="dot"></span>CODA · 004</div>
+        <nav>
+          <span>Index</span>
+          <span>Studies</span>
+          <span>Contact</span>
+        </nav>
+      </header>
+
+      <main class="coda">
+        <div class="eyebrow reveal">A small ending</div>
+        <h2 class="big reveal">
+          <span class="line"><span>Slow</span></span>
+          <span class="line"><span class="it">is a feature.</span></span>
+        </h2>
+        <p class="lede reveal">
+          你已经看到全部了 —— 一道光，三句话。
+          把它留在屏幕上，让它陪你多看一会儿。
+        </p>
+        <div class="actions reveal">
+          <button class="btn ghost" id="toTop">↺ back to top</button>
+        </div>
+      </main>
+
+      <footer class="bar">
+        <div class="coords">
+          <span>64.13° N</span>
+          <span>21.94° W</span>
+        </div>
+        <div class="meta">
+          <span>No. 004 / 100</span>
+          <span>↳ fin</span>
+        </div>
+      </footer>
+    </section>
+
   </div>
 
   <!-- 自定义光标 -->
@@ -383,10 +708,62 @@
     window.__hotT = setTimeout(() => cursor.classList.remove('hot'), 600);
   });
 
-  // 滚动轻微扰动
-  window.addEventListener('scroll', () => {
+  // 滚动：进度条 + 视区标记 + 极光强度
+  const progress = document.getElementById('progress');
+  const marks = document.querySelectorAll('.viewmarks .mark');
+  const views = document.querySelectorAll('.view');
+
+  let scrollIdleT = null;
+  function onScroll() {
     const y = window.scrollY;
-    aurora.style.transform = `translate3d(0, ${y * -0.08}px, 0)`;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const p = max > 0 ? (y / max) * 100 : 0;
+    progress.style.width = p + '%';
+    progress.classList.add('idle');
+    clearTimeout(scrollIdleT);
+    scrollIdleT = setTimeout(() => progress.classList.remove('idle'), 800);
+
+    // 极光层：随滚动略压低/放大
+    aurora.style.transform = `translate3d(0, ${y * -0.06}px, 0) scale(${1 + Math.min(y / 4000, 0.15)})`;
+    aurora.style.opacity = String(Math.max(1 - y / 4000, 0.55));
+
+    // 视区标记
+    let active = 0;
+    const mid = y + window.innerHeight / 2;
+    views.forEach((v, i) => {
+      const top = v.offsetTop;
+      if (mid >= top) active = i;
+    });
+    marks.forEach((m, i) => m.classList.toggle('active', i === active));
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // 滚动揭示（IntersectionObserver）：仅观察后续屏的元素
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        e.target.querySelectorAll('.line > span').forEach((sp, i) => {
+          sp.style.transitionDelay = (0.1 + i * 0.12) + 's';
+        });
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.18 });
+  document.querySelectorAll('.v-study .reveal, .v-coda .reveal').forEach(el => io.observe(el));
+
+  // 顶部"back to top"
+  const toTop = document.getElementById('toTop');
+  if (toTop) toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  // 点击侧边标记平滑跳屏
+  marks.forEach((m, i) => {
+    m.style.cursor = 'pointer';
+    m.addEventListener('click', () => {
+      const v = views[i];
+      if (v) window.scrollTo({ top: v.offsetTop, behavior: 'smooth' });
+    });
   });
 
   // 主循环：光标缓动 + 视差
