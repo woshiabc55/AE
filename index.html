@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>高粱河车神与雍熙悲歌 · 分镜交互系统</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#0a0a0f;
+    --bg2:#13131c;
+    --bg3:#1c1c28;
+    --ink:#e8e6df;
+    --ink2:#a8a59c;
+    --ink3:#6b6862;
+    --gold:#c9a35a;
+    --gold2:#8a6d2e;
+    --red:#a8242b;
+    --red2:#6e1418;
+    --jade:#5a8a72;
+    --line:#2a2a36;
+    --shadow:0 8px 32px rgba(0,0,0,.5);
+  }
+  html,body{background:var(--bg);color:var(--ink);font-family:"Source Han Serif SC","Noto Serif SC","Songti SC",serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  body{min-height:100vh;background:
+    radial-gradient(ellipse at top, rgba(201,163,90,.06), transparent 60%),
+    radial-gradient(ellipse at bottom, rgba(168,36,43,.05), transparent 60%),
+    var(--bg)}
+
+  /* ====== HEADER ====== */
+  header{position:relative;padding:48px 32px 32px;text-align:center;border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(0,0,0,.4),transparent)}
+  header::before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><path d='M0 50 Q25 30 50 50 T100 50' stroke='%23c9a35a' stroke-width='.3' fill='none' opacity='.15'/></svg>");opacity:.4;pointer-events:none}
+  .seal{position:absolute;top:24px;right:32px;width:64px;height:64px;border:2px solid var(--red);color:var(--red);font-size:11px;display:flex;align-items:center;justify-content:center;transform:rotate(-8deg);font-weight:700;letter-spacing:2px;opacity:.85;background:rgba(168,36,43,.08)}
+  h1{font-size:36px;letter-spacing:8px;font-weight:900;background:linear-gradient(180deg,#e8c878,#c9a35a 50%,#8a6d2e);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:8px;text-shadow:0 2px 12px rgba(201,163,90,.2)}
+  .subtitle{color:var(--ink2);font-size:14px;letter-spacing:6px;margin-bottom:16px}
+  .meta{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;font-size:13px;color:var(--ink3)}
+  .meta span{display:inline-flex;align-items:center;gap:6px}
+  .meta b{color:var(--gold);font-weight:600}
+
+  /* ====== LAYOUT ====== */
+  .wrap{display:grid;grid-template-columns:340px 1fr;min-height:calc(100vh - 200px)}
+  @media(max-width:980px){.wrap{grid-template-columns:1fr}}
+
+  /* ====== SIDEBAR / SCRIPT SELECTOR ====== */
+  aside{background:var(--bg2);border-right:1px solid var(--line);padding:24px 0;position:sticky;top:0;max-height:100vh;overflow-y:auto}
+  aside::-webkit-scrollbar{width:6px}
+  aside::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+  .side-title{padding:0 24px 12px;font-size:11px;letter-spacing:4px;color:var(--ink3);text-transform:uppercase;border-bottom:1px dashed var(--line);margin-bottom:8px}
+  .act{padding:14px 24px;cursor:pointer;border-left:3px solid transparent;transition:all .2s;font-size:14px;color:var(--ink2)}
+  .act:hover{background:rgba(201,163,90,.05);color:var(--ink)}
+  .act.active{background:linear-gradient(90deg,rgba(201,163,90,.1),transparent);border-left-color:var(--gold);color:var(--gold)}
+  .act .n{font-size:11px;color:var(--ink3);display:block;margin-top:2px;letter-spacing:1px}
+  .shot-list{margin-top:8px;border-top:1px dashed var(--line);padding-top:8px}
+  .shot-mini{padding:6px 24px 6px 36px;font-size:12px;color:var(--ink3);cursor:pointer;transition:all .15s;display:flex;gap:8px;align-items:center}
+  .shot-mini:hover{color:var(--ink);background:rgba(255,255,255,.02)}
+  .shot-mini.current{color:var(--gold)}
+  .shot-mini .idx{font-family:monospace;width:28px;flex-shrink:0;color:var(--ink3)}
+  .shot-mini.current .idx{color:var(--gold)}
+  .shot-mini .dur{margin-left:auto;font-size:10px;color:var(--ink3);font-family:monospace}
+
+  /* ====== MAIN / DETAIL ====== */
+  main{padding:32px 40px;max-width:1200px;margin:0 auto;width:100%}
+  .crumb{font-size:12px;color:var(--ink3);letter-spacing:2px;margin-bottom:16px}
+  .crumb b{color:var(--gold);font-weight:600}
+
+  .shot-header{display:flex;align-items:flex-end;gap:24px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+  .shot-no{font-family:monospace;font-size:64px;font-weight:900;color:var(--gold);line-height:1;letter-spacing:-2px}
+  .shot-title{flex:1}
+  .shot-title h2{font-size:24px;letter-spacing:4px;margin-bottom:4px}
+  .shot-title .time{color:var(--ink3);font-size:13px;font-family:monospace}
+  .shot-title .time b{color:var(--red)}
+
+  .shot-nav{display:flex;gap:8px}
+  .shot-nav button{background:var(--bg3);color:var(--ink2);border:1px solid var(--line);padding:8px 14px;cursor:pointer;font-size:12px;letter-spacing:1px;transition:all .15s;font-family:inherit}
+  .shot-nav button:hover{background:var(--gold);color:#000;border-color:var(--gold)}
+  .shot-nav button:disabled{opacity:.3;cursor:not-allowed}
+
+  /* ====== GRID ====== */
+  .grid{display:grid;grid-template-columns:1.4fr 1fr;gap:20px;margin-bottom:20px}
+  @media(max-width:780px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--bg2);border:1px solid var(--line);padding:20px;box-shadow:var(--shadow);position:relative}
+  .card::before{content:"";position:absolute;top:0;left:0;width:3px;height:100%;background:var(--gold)}
+  .card.red::before{background:var(--red)}
+  .card.jade::before{background:var(--jade)}
+  .card-title{font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .card-title::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+  .card-body{font-size:14px;line-height:1.85;color:var(--ink);white-space:pre-wrap}
+
+  /* ====== CHARACTER LIST ====== */
+  .char-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:8px}
+  .char{background:var(--bg3);padding:10px;border:1px solid var(--line);text-align:center}
+  .char-av{width:48px;height:48px;margin:0 auto 6px;border-radius:50%;background:linear-gradient(135deg,var(--gold2),var(--red2));display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;font-weight:700;letter-spacing:0;border:2px solid var(--gold)}
+  .char-name{font-size:12px;font-weight:600;color:var(--ink)}
+  .char-pos{font-size:10px;color:var(--ink3);margin-top:2px}
+
+  /* ====== PROMPT BOX ====== */
+  .prompt-box{background:#000;border:1px dashed var(--gold2);padding:14px;font-family:monospace;font-size:12px;color:var(--gold);line-height:1.7;border-radius:0;position:relative;word-break:break-word}
+  .prompt-box::before{content:"EN_PROMPT";position:absolute;top:-8px;left:10px;background:var(--bg2);padding:0 6px;font-size:9px;letter-spacing:2px;color:var(--gold2)}
+  .prompt-cn{color:var(--ink2);font-family:"Source Han Serif SC",serif;font-size:13px;margin-bottom:10px;padding:10px 12px;background:rgba(201,163,90,.05);border-left:2px solid var(--gold)}
+
+  /* ====== EFFECT DEMO ====== */
+  .effect-stage{background:#000;border:1px solid var(--line);height:280px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .effect-stage canvas{position:absolute;inset:0;width:100%;height:100%}
+  .effect-label{position:absolute;top:10px;left:12px;font-size:10px;letter-spacing:2px;color:var(--gold);background:rgba(0,0,0,.6);padding:3px 8px;z-index:5;border:1px solid var(--gold2)}
+  .effect-tag{position:absolute;bottom:10px;right:10px;font-size:10px;letter-spacing:1px;color:var(--ink2);background:rgba(0,0,0,.7);padding:3px 8px;z-index:5;font-family:monospace}
+  .effect-controls{position:absolute;bottom:10px;left:10px;display:flex;gap:6px;z-index:5}
+  .effect-controls button{background:rgba(0,0,0,.6);color:var(--ink);border:1px solid var(--line);padding:4px 10px;font-size:11px;cursor:pointer;letter-spacing:1px}
+  .effect-controls button:hover{background:var(--gold);color:#000}
+
+  /* ====== POSITION MAP ====== */
+  .posmap{background:radial-gradient(ellipse at center,rgba(201,163,90,.08),transparent 70%),var(--bg3);height:280px;position:relative;border:1px solid var(--line);overflow:hidden}
+  .posmap svg{width:100%;height:100%}
+  .pos-tag{position:absolute;background:rgba(0,0,0,.75);color:var(--ink);font-size:11px;padding:3px 7px;border:1px solid var(--gold);white-space:nowrap;transform:translate(-50%,-50%);letter-spacing:1px}
+  .pos-tag.red{border-color:var(--red);color:#f5b5b8}
+  .pos-tag.jade{border-color:var(--jade);color:#b8e0c8}
+  .pos-tag::after{content:"";position:absolute;width:8px;height:8px;background:var(--gold);border-radius:50%;left:-13px;top:50%;transform:translateY(-50%);box-shadow:0 0 8px var(--gold)}
+  .pos-tag.red::after{background:var(--red);box-shadow:0 0 8px var(--red)}
+  .pos-tag.jade::after{background:var(--jade);box-shadow:0 0 8px var(--jade)}
+
+  /* ====== TIMELINE STRIP ====== */
+  .timeline{position:relative;height:8px;background:var(--bg3);margin:20px 0;overflow:hidden;border:1px solid var(--line)}
+  .tl-shot{position:absolute;top:0;height:100%;background:var(--line);border-right:1px solid var(--bg);transition:all .2s;cursor:pointer}
+  .tl-shot:hover{background:var(--gold2)}
+  .tl-shot.act{background:linear-gradient(180deg,var(--gold),var(--gold2))}
+  .tl-label{display:flex;justify-content:space-between;font-size:10px;color:var(--ink3);font-family:monospace;margin-top:4px}
+
+  /* ====== CAMERA NOTES ====== */
+  .cam-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .tag{background:var(--bg3);border:1px solid var(--line);padding:4px 10px;font-size:11px;color:var(--ink2);letter-spacing:1px}
+  .tag.gold{color:var(--gold);border-color:var(--gold2)}
+  .tag.red{color:#f5b5b8;border-color:var(--red2)}
+  .tag.jade{color:#b8e0c8;border-color:#3a5a4a}
+
+  /* ====== FOOTER ====== */
+  footer{text-align:center;padding:32px;color:var(--ink3);font-size:12px;letter-spacing:2px;border-top:1px solid var(--line);margin-top:40px}
+
+  /* ====== UTILS ====== */
+  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .small{font-size:12px;color:var(--ink3)}
+  .divider{height:1px;background:var(--line);margin:16px 0}
+
+  /* candle flicker */
+  @keyframes flicker{0%,100%{opacity:1;transform:scaleY(1)}50%{opacity:.7;transform:scaleY(.95)}}
+  /* shake */
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-1px)}75%{transform:translateX(1px)}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="seal">宋<br>北伐</div>
+  <div class="subtitle">影 视 分 镜 交 互 系 统</div>
+  <h1>高粱河车神 · 雍熙悲歌</h1>
+  <div class="meta">
+    <span>剧本：<b>赵光义北伐全纪实</b></span>
+    <span>时长：<b>13 分钟</b></span>
+    <span>分镜：<b>52 镜</b></span>
+    <span>单镜：<b>15 秒</b></span>
+    <span>语速：<b>180-200 字/分</b></span>
+  </div>
+</header>
+
+<div class="wrap">
+  <!-- ============ SIDEBAR ============ -->
+  <aside id="sidebar">
+    <div class="side-title">▎剧本分幕</div>
+    <div id="acts"></div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main id="main">
+    <div class="crumb" id="crumb"></div>
+    <div class="shot-header">
+      <div class="shot-no" id="shotNo">01</div>
+      <div class="shot-title">
+        <h2 id="shotTitle">—</h2>
+        <div class="time">本镜时长 <b id="shotTime">15.0s</b> · 起止 <span id="shotRange">00:00–00:15</span></div>
+      </div>
+      <div class="shot-nav">
+        <button id="btnPrev">◀ 上一镜</button>
+        <button id="btnNext">下一镜 ▶</button>
+      </div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div class="timeline" id="timeline"></div>
+    <div class="tl-label"><span>00:00</span><span>06:30</span><span>13:00</span></div>
+
+    <!-- SCENE + AI PROMPT -->
+    <div class="grid">
+      <div class="card">
+        <div class="card-title">▎画面描述 / 镜头脚本</div>
+        <div class="card-body" id="sceneText"></div>
+        <div class="divider"></div>
+        <div class="cam-tags" id="camTags"></div>
+      </div>
+      <div class="card jade">
+        <div class="card-title" style="color:var(--jade)">▎AI 生成提示词</div>
+        <div class="prompt-cn" id="promptCn"></div>
+        <div class="prompt-box" id="promptEn"></div>
+      </div>
+    </div>
+
+    <!-- CHARACTERS + POSITION -->
+    <div class="grid">
+      <div class="card red">
+        <div class="card-title" style="color:#f5b5b8">▎出场角色</div>
+        <div class="char-grid" id="charGrid"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">▎机位 / 角色位置</div>
+        <div class="posmap" id="posmap">
+          <svg viewBox="0 0 400 280" preserveAspectRatio="none">
+            <defs>
+              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#2a2a36" stroke-width="0.5"/>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)"/>
+            <line x1="200" y1="0" x2="200" y2="280" stroke="#3a3a48" stroke-dasharray="2,4"/>
+            <line x1="0" y1="140" x2="400" y2="140" stroke="#3a3a48" stroke-dasharray="2,4"/>
+            <text x="10" y="20" fill="#6b6862" font-size="10" font-family="monospace">↑ NORTH / 远景</text>
+            <text x="290" y="20" fill="#6b6862" font-size="10" font-family="monospace">WIDE 400 × 280</text>
+          </svg>
+          <div id="posTags" style="position:absolute;inset:0"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EFFECT DEMO -->
+    <div class="card">
+      <div class="card-title">▎特殊效果 HTML 演示 / FX Preview</div>
+      <div class="effect-stage" id="effectStage">
+        <canvas id="fxCanvas"></canvas>
+        <div class="effect-label" id="fxLabel">FX</div>
+        <div class="effect-tag" id="fxTag">composite</div>
+        <div class="effect-controls">
+          <button onclick="fxReplay()">▶ 重新播放</button>
+        </div>
+      </div>
+      <div class="small" style="margin-top:10px;line-height:1.8" id="fxDesc"></div>
+    </div>
+  </main>
+</div>
+
+<footer>
+  ◈ 高 梁 河 车 神 · 雍 熙 悲 歌  ◈  分 镜 交 互 系 统  ◈  A E · V I D E O  ◈
+</footer>
+
+<script>
+/* ============================================================
+   STORYBOARD DATA — 52 SHOTS @ 15s = 13min
+============================================================ */
+const SHOTS=[
+/* ============ 引子 ============ */
+{act:0,actName:"引子",title:"石敬瑭割让燕云",nar:"公元936年，五代后晋开国皇帝石敬瑭，为换取契丹支持，将燕云十六州拱手让给辽国。",
+ scene:"昏暗的宫殿内，石敬瑭跪于地上向北方叩拜。身后是燕云十六州的地形沙盘，烛光摇曳。",
+ chars:[
+  {n:"石敬瑭",p:"画面中央,跪姿",c:"#8a6d2e"},
+  {n:"契丹使者",p:"右侧,坐姿",c:"#5a8a72"},
+  {n:"燕云沙盘",p:"前景",c:"#a8242b"}
+ ],
+ cam:["中景","低角度","暖色调烛光"],
+ cn:"五代后晋宫殿夜景，石敬瑭跪拜契丹，沙盘上燕云十六州被红线划入辽国。",
+ en:"Cinematic night scene inside a dimly-lit Five Dynasties palace. Shi Jingtuo kneels before a Liao envoy. A sand table of the Sixteen Prefectures glows under flickering candlelight, a red line marking the border. Cinematic lighting, Song dynasty painting style, dramatic chiaroscuro, ultra detailed, 8k.",
+ fx:"candle", fxName:"烛影摇曳",fxTag:"#fx-candle",
+ fxDesc:"FX: 烛光摇曳投影在沙盘上 → 红色高亮燕云十六州 → 镜头缓缓推进。AE 制作: Turbulent Displace 烛芯 + Linear Wipe 红色描边。"},
+
+{act:0,title:"燕云十六州地形",nar:"燕云十六州以北京和大同为中心，囊括居庸关、雁门关等险要。",
+ scene:"中国北方地图从高空俯瞰，十六州区域高亮红光，居庸关、雁门关闪烁标记。",
+ chars:[{n:"地图",p:"全景",c:"#c9a35a"}],
+ cam:["航拍俯瞰","推镜","冷暖对比"],
+ cn:"高空俯视华北地形图，燕云十六州区域被金色光圈高亮，关隘闪烁标注。",
+ en:"Top-down aerial view of Northern China historical map, the Sixteen Prefectures region highlighted with golden halo, passes marked with pulsing red dots, cinematic satellite camera move, documentary style, 8k hyperrealistic.",
+ fx:"map", fxName:"关隘高亮",fxTag:"#fx-map",
+ fxDesc:"FX: AE 制作地图高亮序列。Animated Map 路径描绘 + 关键关隘标点闪烁。"},
+
+{act:0,title:"赵光义登基",nar:"公元976年，雄心勃勃的宋太宗赵光义，决心终结这百年憾事。",
+ scene:"开封皇城太极殿内，赵光义身着龙袍接受群臣朝拜。背景是巨幅大宋疆域图，镜头缓推至其锐利眼神。",
+ chars:[
+  {n:"赵光义",p:"画面中央,正面",c:"#c9a35a"},
+  {n:"群臣",p:"两侧,跪拜",c:"#6b6862"},
+  {n:"疆域图",p:"背景",c:"#a8242b"}
+ ],
+ cam:["中近景","缓推","对称呼应"],
+ cn:"宋太宗赵光义登基大典，俯视群臣，背景悬挂大宋疆域图，眼神锐利。",
+ en:"Emperor Zhao Guangyi in dragon robe standing in grand Song dynasty throne hall, ministers kneeling on both sides, a massive map of Song territory behind him, imperial golden lighting, low angle shot, cinematic, hyperdetailed, 8k.",
+ fx:"imperial", fxName:"帝王剪影",fxTag:"#fx-imperial",
+ fxDesc:"FX: AE 制作帝王金光辉映。Optical Flares 皇帝身后 → 群臣烟雾升腾。"},
+
+{act:0,title:"失落的屏障 · 北方无险可守",nar:"失去燕云，华北平原无险可守，北方骑兵可长驱直入。",
+ scene:"俯瞰图：开封城以北，一片平原无险可守。契丹骑兵如黑色箭头直指开封。",
+ chars:[
+  {n:"开封",p:"南端",c:"#c9a35a"},
+  {n:"契丹骑兵",p:"北端,箭头",c:"#a8242b"},
+  {n:"长城关口",p:"已被突破",c:"#6b6862"}
+ ],
+ cam:["航拍","俯视","压迫感"],
+ cn:"俯瞰图，开封以北无险可守，契丹骑兵箭头直指南下。",
+ en:"Top-down view showing Kaifeng at south, vast unprotected North China plain, Liao cavalry arrow piercing straight south through breached passes, dramatic strategic overview, 8k.",
+ fx:"map", fxName:"屏障失落",fxTag:"#fx-map-broken",
+ fxDesc:"FX: 红色箭头 + 长城断裂。AE: 路径生成 + 红色描边动画。"},
+
+/* ============ 第一幕 高粱河之败 ============ */
+{act:1,actName:"第一幕 · 高粱河之败",title:"宋太祖驾崩 · 烛影斧声",nar:"公元976年，宋太祖赵匡胤突然驾崩，留下烛影斧声的千古谜团。",
+ scene:"深夜寝宫，烛光在帷幕上投射出剧烈摇曳的人影。屏风后隐约可见斧形轮廓。",
+ chars:[
+  {n:"赵匡胤",p:"床榻,半卧",c:"#a8242b"},
+  {n:"神秘人影",p:"屏风后",c:"#13131c"}
+ ],
+ cam:["特写","剪影","明暗对比"],
+ cn:"宋太祖驾崩之夜，寝宫烛火摇曳，屏风后斧形阴影若隐若现。",
+ en:"Mysterious midnight scene inside a Song dynasty imperial bedchamber. A flickering candle throws dancing shadows of two figures on a folding screen, one silhouette holds an axe. Dramatic chiaroscuro, suspenseful, oil painting style, cinematic, 8k.",
+ fx:"candle", fxName:"烛影斧声",fxTag:"#fx-candle-axe",
+ fxDesc:"FX: 烛光 + 双影交互。AE: Track Matte 屏风投影 + 斧形路径动画。"},
+
+{act:1,title:"赵光义登基争议",nar:"他的弟弟赵光义在一片争议中登上皇位，是为宋太宗。",
+ scene:"龙椅前，赵光义转身坐下的慢镜头。脚下是大臣们低垂的目光。",
+ chars:[
+  {n:"赵光义",p:"龙椅,坐姿",c:"#c9a35a"},
+  {n:"争议群臣",p:"前景,交头接耳",c:"#6b6862"}
+ ],
+ cam:["仰拍","慢镜","黄金分割"],
+ cn:"赵光义转身坐上龙椅，慢动作，大臣们面面相觑。",
+ en:"Zhao Guangyi slowly turns and sits on the imperial dragon throne, slow motion 120fps, ministers below exchanging uncertain glances, golden throne hall, dramatic cinematic, low angle, 8k.",
+ fx:"imperial", fxName:"登基慢镜",fxTag:"#fx-imperial",
+ fxDesc:"FX: 慢镜登基 + 龙椅金光。AE: Timewarp 0.5x + 粒子金粉。"},
+
+{act:1,title:"立下北伐宏愿",nar:"为了证明自己皇位的正当性，赵光义急于建立彪炳史册的战功。",
+ scene:"赵光义在御书房凝视墙上挂着的燕云十六州地图，手指点在幽州位置。",
+ chars:[
+  {n:"赵光义",p:"右侧,凝视",c:"#c9a35a"},
+  {n:"燕云地图",p:"左侧墙面",c:"#a8242b"}
+ ],
+ cam:["中景","侧拍","剪影侧光"],
+ cn:"赵光义独坐御书房，烛光下凝视燕云十六州地图，指尖点向幽州。",
+ en:"Zhao Guangyi alone in imperial study, candlelight from left, staring at the Sixteen Prefectures map on wall, finger pointing at Youzhou, intense focused expression, cinematic side lighting, 8k.",
+ fx:"imperial", fxName:"凝视地图",fxTag:"#fx-imperial",
+ fxDesc:"FX: 指尖 → 幽州高亮。AE: 3D 摄像机推镜 + 光线追踪手指。"},
+
+{act:1,title:"太平兴国北伐北汉",nar:"太平兴国四年正月，赵光义任命潘美为北路招讨使，亲率大军北伐北汉。",
+ scene:"太原城外，宋军大营连绵。潘美与赵光义骑马检阅三军，旌旗蔽日。",
+ chars:[
+  {n:"赵光义",p:"中央,骑马",c:"#c9a35a"},
+  {n:"潘美",p:"左侧,抱拳",c:"#5a8a72"},
+  {n:"宋军将士",p:"背景,阵列",c:"#6b6862"}
+ ],
+ cam:["全景","航拍缓推","升格"],
+ cn:"太平兴国四年，宋军大营连绵，赵光义与潘美骑马检阅三军。",
+ en:"Spring 979 AD, vast Song dynasty military camp outside Taiyuan, Zhao Guangyi and general Pan Mei on horseback inspecting troops, banners fluttering, epic wide shot, sweeping drone camera, historical epic style, 8k.",
+ fx:"army", fxName:"旌旗蔽日",fxTag:"#fx-army",
+ fxDesc:"FX: 旌旗飘动 + 烟尘弥漫。AE: CC Particle World 烟尘 + 旗杆摆动。"},
+
+{act:1,title:"北汉皇帝出降",nar:"五月初六，北汉皇帝刘继元被迫出城投降。",
+ scene:"北汉皇宫前，刘继元白衣出城，将降书呈给赵光义。宋军甲士列阵两侧。",
+ chars:[
+  {n:"刘继元",p:"中央,白衣",c:"#e8e6df"},
+  {n:"赵光义",p:"右侧,接受",c:"#c9a35a"},
+  {n:"宋军甲士",p:"两侧,立盾",c:"#6b6862"}
+ ],
+ cam:["中景","对称","纪实风"],
+ cn:"北汉皇宫前，刘继元白衣出降，将降书呈给赵光义。",
+ en:"Liu Jiyuan in white surrender robes walks out of Northern Han palace gate, presenting surrender letter to Zhao Guangyi, Song armored soldiers line both sides symmetrically, formal historical scene, 8k.",
+ fx:"dust", fxName:"降书呈递",fxTag:"#fx-dust",
+ fxDesc:"FX: 白衣 + 慢镜降书。AE: Color Correct 蓝灰 + 慢动作 0.7x。"},
+
+{act:1,title:"骄傲轻敌 · 不做休整",nar:"胜利冲昏头脑，赵光义决定不做休整，直接挥师东进收复燕云。",
+ scene:"赵光义在帅帐内拍案而起，诸将面面相觑，欲言又止。",
+ chars:[
+  {n:"赵光义",p:"帅案后,起身",c:"#c9a35a"},
+  {n:"诸将",p:"两侧,沉默",c:"#6b6862"}
+ ],
+ cam:["中景","过肩","暖红"],
+ cn:"帅帐内赵光义拍案而起，诸将欲言又止，无人敢谏。",
+ en:"Inside military tent, Zhao Guangyi slams the table and stands up, generals exchange silent glances, no one dares to speak, dramatic warm lighting, cinematic, 8k.",
+ fx:"imperial", fxName:"拍案而起",fxTag:"#fx-imperial",
+ fxDesc:"FX: 案几震动 + 烛火摇曳。AE: 摄像机震动 + 烛光 Track Matte。"},
+
+{act:1,title:"仓促东进",nar:"六月十三日，赵光义率领十余万疲惫禁军从镇州仓促出发。",
+ scene:"烈日下，宋军绵延数里行军，旗帜低垂，将士口渴难耐。",
+ chars:[
+  {n:"赵光义",p:"中军,马背",c:"#c9a35a"},
+  {n:"疲惫禁军",p:"四周,步行",c:"#6b6862"}
+ ],
+ cam:["航拍","大全景","顶光"],
+ cn:"六月烈日下，宋军绵延数里疲惫行军，旌旗低垂。",
+ en:"Under scorching June sun, exhausted Song army marches in long column across dusty plains, banners drooping, soldiers visibly fatigued, aerial tracking shot, historical epic, 8k.",
+ fx:"dust", fxName:"行军烟尘",fxTag:"#fx-dust",
+ fxDesc:"FX: 行军长龙 + 烟尘尾迹。AE: 路径生成 + CC Particle World 烟尘。"},
+
+{act:1,title:"兵临幽州城",nar:"六月二十三日，宋军仅用十天便抵达幽州城下，四面合围。",
+ scene:"幽州城全景，宋军大营将城池团团包围。城墙上的辽军守军严阵以待。",
+ chars:[
+  {n:"幽州城",p:"中央",c:"#a8242b"},
+  {n:"宋军营寨",p:"四面",c:"#5a8a72"},
+  {n:"韩德让",p:"城头,巡视",c:"#c9a35a"}
+ ],
+ cam:["全景","环绕","升格"],
+ cn:"宋军兵临幽州城下，旌旗环绕，辽军守将韩德让城头巡视。",
+ en:"Song army encampments encircle Youzhou city on all four sides, banners everywhere, Liao general Han Derang patrols atop the city walls, epic wide establishing shot, 8k.",
+ fx:"army", fxName:"围城之势",fxTag:"#fx-army",
+ fxDesc:"FX: 围城旋转 + 旗帜阵列。AE: 3D 摄像机环绕 + 旗杆阵列。"},
+
+{act:1,title:"韩德让临危守城",nar:"幽州守将韩德让临危不惧，日夜登城巡视。",
+ scene:"韩德让在城楼上巡视，身后是组织搬运滚木礌石的军民。",
+ chars:[
+  {n:"韩德让",p:"城楼中央",c:"#c9a35a"},
+  {n:"军民",p:"搬运物资",c:"#6b6862"}
+ ],
+ cam:["中景","仰拍","烟尘"],
+ cn:"韩德让城头巡视军民搬运滚木礌石，烟尘弥漫。",
+ en:"Han Derang on the city wall inspecting, civilians and soldiers carrying logs and stones, smoke and dust in the air, dramatic low angle shot, 8k.",
+ fx:"dust", fxName:"城头守备",fxTag:"#fx-dust",
+ fxDesc:"FX: 滚木礌石下落 + 烟尘。AE: Particle System 抛物线 + 烟尘。"},
+
+{act:1,title:"围师必阙 · 决策失误",nar:"围师必阙乃兵家常识，但赵光义命令四面合围，不留退路。",
+ scene:"俯视沙盘上幽州城被四面箭头包围，仅留的空缺被赵光义亲手抹去。",
+ chars:[
+  {n:"赵光义",p:"俯视沙盘",c:"#c9a35a"},
+  {n:"沙盘幽州",p:"中央",c:"#a8242b"}
+ ],
+ cam:["俯拍","特写","暗调"],
+ cn:"俯视沙盘，赵光义抹去四面合围唯一缺口。",
+ en:"Top-down view of a sand table showing Youzhou city with arrows closing in from all sides, Zhao Guangyi's hand wipes away the last escape route, dark dramatic lighting, 8k.",
+ fx:"imperial", fxName:"抹去缺口",fxTag:"#fx-imperial",
+ fxDesc:"FX: 路径封闭动画。AE: 描边路径 → Trim Path 闭合 + 红光闪烁。"},
+
+{act:1,title:"高粱河初战",nar:"七月初六，辽将耶律沙抵达幽州城西北，宋军迎战。",
+ scene:"高粱河战场，宋辽两军骑兵对冲。耶律沙部被击退。",
+ chars:[
+  {n:"耶律沙",p:"远景溃逃",c:"#5a8a72"},
+  {n:"赵光义",p:"中军,挥剑",c:"#c9a35a"},
+  {n:"宋军骑兵",p:"冲锋",c:"#6b6862"}
+ ],
+ cam:["全景","中景","升格"],
+ cn:"高粱河战场，耶律沙部溃逃，宋军初战告捷。",
+ en:"Battle of Gaoliang River, Yelü Sha's forces flee in disarray as Song cavalry charges forward, dust clouds rising, slow motion, epic battle scene, 8k.",
+ fx:"battle", fxName:"骑兵冲锋",fxTag:"#fx-battle",
+ fxDesc:"FX: 骑兵冲锋 + 刀光。AE: 路径生成马匹 + Saber 刀光。"},
+
+{act:1,title:"耶律休哥奇袭侧翼",nar:"耶律休哥与耶律斜轸率精锐骑兵从两翼杀出。",
+ scene:"宋军阵型两侧，五院军精锐骑兵如尖刀插入，耶律休哥白马银枪冲在最前。",
+ chars:[
+  {n:"耶律休哥",p:"左翼,突前",c:"#a8242b"},
+  {n:"耶律斜轸",p:"右翼,突前",c:"#5a8a72"},
+  {n:"赵光义御营",p:"中央",c:"#c9a35a"}
+ ],
+ cam:["全景","俯冲","升格"],
+ cn:"耶律休哥率五院军精锐从两翼奇袭宋军，白马银枪直冲御营。",
+ en:"Yelü Xiuge leads elite cavalry attacking from both flanks like twin blades, white horse silver spear aimed at imperial camp, dramatic battle composition, 8k.",
+ fx:"battle", fxName:"两翼奇袭",fxTag:"#fx-battle",
+ fxDesc:"FX: 双箭头冲击波。AE: CC Particle World 烟尘 + Saber 拖尾。"},
+
+{act:1,title:"斩首行动",nar:"耶律休哥一眼看出赵光义御营位置，发动斩首行动。",
+ scene:"特写耶律休哥锐利眼神，镜头切至赵光义惊慌回头。",
+ chars:[
+  {n:"耶律休哥",p:"特写,锐目",c:"#a8242b"},
+  {n:"赵光义",p:"中近景,回望",c:"#c9a35a"}
+ ],
+ cam:["特写","正反打","升格"],
+ cn:"耶律休哥锐利眼神特写，镜头切至赵光义惊慌回望。",
+ en:"Extreme close-up of Yelü Xiuge's piercing eyes, then smash cut to Zhao Guangyi's panicked expression turning back, intense dramatic lighting, 8k.",
+ fx:"battle", fxName:"斩首锁定",fxTag:"#fx-battle",
+ fxDesc:"FX: 红色瞄准线 + 慢镜切换。AE: 红色路径 + Whip Pan 切换。"},
+
+{act:1,title:"宋军崩溃",nar:"宋军抵挡不住辽国铁骑冲击，全军崩溃。",
+ scene:"宋军阵脚大乱，士兵四散奔逃，刀枪剑戟散落一地。",
+ chars:[
+  {n:"崩溃宋军",p:"全景,四散",c:"#6b6862"},
+  {n:"辽国铁骑",p:"追击",c:"#a8242b"}
+ ],
+ cam:["全景","手持","纪实"],
+ cn:"宋军阵脚大乱四散奔逃，辽国铁骑掩杀。",
+ en:"Song army collapses in chaos, soldiers scattering in all directions, Liao cavalry crushing through, hand-held camera shake, documentary war style, 8k.",
+ fx:"battle", fxName:"全军崩溃",fxTag:"#fx-battle",
+ fxDesc:"FX: 大军溃散 + 镜头晃动。AE: 摄像机抖动 + 烟雾遮蔽。"},
+
+{act:1,title:"高粱河车神 · 驴车漂移",nar:"赵光义大腿连中两箭，驾驴车拼命狂奔逃出三十里。",
+ scene:"夜色中，赵光义爬上驴车，疯狂鞭打。辽国骑兵在身后追杀。",
+ chars:[
+  {n:"赵光义",p:"驴车上,挥鞭",c:"#c9a35a"},
+  {n:"驴车",p:"中央",c:"#6b6862"},
+  {n:"辽国追兵",p:"远景,追杀",c:"#a8242b"}
+ ],
+ cam:["侧拍","跟拍","手持"],
+ cn:"夜色中赵光义挥鞭驾驴车狂奔，辽国骑兵在身后追杀。",
+ en:"Night scene, Emperor Zhao Guangyi frantically whipping a donkey cart, Liao cavalry chasing behind in the darkness, dust and arrows flying, dynamic tracking shot, historical epic, 8k.",
+ fx:"donkey", fxName:"驴车漂移",fxTag:"#fx-donkey",
+ fxDesc:"FX: 驴车疾驰 + 拖尾烟尘 + 箭矢飞过。AE: 路径生成 + 烟尘 + 3D 摄像机跟拍。"},
+
+{act:1,title:"斩首万余级",nar:"史书记载这一战宋军斩首万余级，辎重尽失。",
+ scene:"战后幽州城外，遍野宋军尸首，辽军清点缴获的辎重。",
+ chars:[
+  {n:"战场尸首",p:"前景",c:"#a8242b"},
+  {n:"辽军清点",p:"中景",c:"#5a8a72"}
+ ],
+ cam:["航拍","大全景","低饱和"],
+ cn:"战后幽州城外遍野宋军尸首，辽军清点缴获辎重。",
+ en:"Aftermath of battle, Song soldier corpses scattered across Youzhou outskirts, Liao soldiers counting captured supplies, aerial wide shot, desaturated color, 8k.",
+ fx:"dust", fxName:"战后残骸",fxTag:"#fx-dust",
+ fxDesc:"FX: 烟尘弥漫 + 血迹。AE: 粒子血迹 + 烟雾缓慢上升。"},
+
+{act:1,title:"涿州失散 · 拥立风波",nar:"赵光义与大军失散，部分将领商议拥立赵德昭为帝。",
+ scene:"涿州城内，宋军残部聚议，主帅缺席帐内气氛紧张。",
+ chars:[
+  {n:"将领们",p:"中景,聚议",c:"#6b6862"},
+  {n:"赵德昭(画外)",p:"特写,画外音",c:"#c9a35a"}
+ ],
+ cam:["中景","俯拍","暖灰"],
+ cn:"涿州城内宋军残部聚议，气氛紧张，拥立风波暗涌。",
+ en:"Inside Zhuozhou city, surviving Song generals hold tense council discussing the succession, low key lighting, historical drama, 8k.",
+ fx:"dust", fxName:"拥立风波",fxTag:"#fx-dust",
+ fxDesc:"FX: 帐篷投影 + 多人剪影交头接耳。AE: 多层剪影 + Track Matte。"},
+
+/* ============ 第二幕 七年酝酿 ============ */
+{act:2,actName:"第二幕 · 七年酝酿",title:"卧薪尝胆 · 整军备战",nar:"此后的七年，赵光义一直卧薪尝胆，积极整军备战。",
+ scene:"练兵场全景，宋军将士刻苦训练，盾牌阵、弓弩阵、骑兵冲杀交替演练。",
+ chars:[
+  {n:"宋军将士",p:"练兵场,训练",c:"#6b6862"},
+  {n:"赵光义",p:"高台,检阅",c:"#c9a35a"}
+ ],
+ cam:["全景","航拍","壮阔"],
+ cn:"练兵场上宋军刻苦训练，赵光义高台检阅。",
+ en:"Massive training ground, Song soldiers practicing formations, cavalry charges, archery drills, Emperor Zhao Guangyi observing from high platform, aerial wide shot, 8k.",
+ fx:"army", fxName:"练兵场",fxTag:"#fx-army",
+ fxDesc:"FX: 阵列变换 + 尘土飞扬。AE: Trapcode Particular 阵列 + 尘土。"},
+
+{act:2,title:"辽景宗驾崩",nar:"公元982年，辽景宗耶律贤驾崩，年仅十二岁的辽圣宗继位。",
+ scene:"辽国宫廷内，年幼的耶律隆绪被推上龙椅。",
+ chars:[
+  {n:"耶律隆绪",p:"龙椅,幼年",c:"#5a8a72"},
+  {n:"萧燕燕",p:"帘后,垂帘",c:"#c9a35a"}
+ ],
+ cam:["中景","对称","冷调"],
+ cn:"辽国宫廷内年幼的耶律隆绪被推上龙椅，萧燕燕帘后垂帘。",
+ en:"Young Yelü Longxu being placed on the Liao dragon throne, Empress Xiao Yanyan behind the curtain regent, cold ceremonial lighting, 8k.",
+ fx:"imperial", fxName:"幼帝登基",fxTag:"#fx-imperial",
+ fxDesc:"FX: 幼帝 + 垂帘。AE: 帘子摆动 + 烛光摇曳。"},
+
+{act:2,title:"萧太后整顿内政",nar:"萧太后迅速整顿朝政，重用韩德让等能臣。",
+ scene:"萧太后与韩德让在朝堂上议事，群臣肃立听命。",
+ chars:[
+  {n:"萧太后",p:"中央,坐",c:"#c9a35a"},
+  {n:"韩德让",p:"左侧,奏对",c:"#5a8a72"},
+  {n:"群臣",p:"两侧,肃立",c:"#6b6862"}
+ ],
+ cam:["中景","对称","威严"],
+ cn:"萧太后与韩德让朝堂议事，群臣肃立听命。",
+ en:"Empress Xiao Yanyan and Han Derang discussing state affairs in court, ministers standing at attention, formal historical scene, 8k.",
+ fx:"imperial", fxName:"垂帘听政",fxTag:"#fx-imperial",
+ fxDesc:"FX: 垂帘 + 群臣肃立。AE: 帘幕摆动 + 多层人物。"},
+
+{act:2,title:"雍熙北伐誓师",nar:"公元986年，赵光义发起北宋历史上规模最大的一次北伐。",
+ scene:"开封城外誓师大会，赵光义登台点将，二十万大军旌旗蔽日。",
+ chars:[
+  {n:"赵光义",p:"高台,点将",c:"#c9a35a"},
+  {n:"三路主帅",p:"台下,听令",c:"#5a8a72"},
+  {n:"二十万大军",p:"背景,阵列",c:"#6b6862"}
+ ],
+ cam:["大全景","航拍","壮阔"],
+ cn:"开封城外誓师大会，二十万大军旌旗蔽日，赵光义点将出征。",
+ en:"Massive ceremony outside Kaifeng, Zhao Guangyi on high platform commissioning generals, 200,000 troops arrayed, banners filling horizon, epic wide shot, 8k.",
+ fx:"army", fxName:"点将出征",fxTag:"#fx-army",
+ fxDesc:"FX: 旌旗 + 烟尘 + 阵列变换。AE: 3D 摄像机 + 旗帜模拟 + 烟尘。"},
+
+{act:2,title:"阵图遥控 · 精密部署",nar:"赵光义发明了'授以阵图、遥控指挥'的作战方式。",
+ scene:"赵光义在宫内俯身绘制阵图，千里之外指挥大将如何打仗。",
+ chars:[
+  {n:"赵光义",p:"御案,绘制",c:"#c9a35a"},
+  {n:"阵图卷轴",p:"桌面",c:"#a8242b"}
+ ],
+ cam:["中景","俯拍","暖光"],
+ cn:"赵光义在御案上绘制阵图，卷轴展开千里山川。",
+ en:"Zhao Guangyi bent over imperial desk drawing battle formations on scrolls, maps of mountains and rivers spread out, warm candlelight, 8k.",
+ fx:"map", fxName:"阵图绘制",fxTag:"#fx-map",
+ fxDesc:"FX: 卷轴展开 + 路径绘制。AE: 卷轴贴图 + 描边动画。"},
+
+{act:2,title:"战略沙盘 · 千里推演",nar:"赵光义在沙盘前与宰相推演三路北伐之策。",
+ scene:"沙盘全景，三色旗帜代表三路大军。赵光义与赵普手指沙盘激烈讨论。",
+ chars:[
+  {n:"赵光义",p:"沙盘前,指示",c:"#c9a35a"},
+  {n:"赵普",p:"右侧,奏对",c:"#5a8a72"},
+  {n:"战略沙盘",p:"中央",c:"#a8242b"}
+ ],
+ cam:["俯拍","缓推","暖光"],
+ cn:"赵光义与赵普在战略沙盘前激烈讨论三路北伐之策。",
+ en:"Zhao Guangyi and Zhao Pu discussing the three-route strategy over a massive sand table, animated flags marking troop positions, 8k.",
+ fx:"map", fxName:"沙盘推演",fxTag:"#fx-sand",
+ fxDesc:"FX: 沙盘旗帜 + 路径推演。AE: 3D 沙盘 + 旗帜动画。"},
+
+/* ============ 第三幕 雍熙北伐 ============ */
+{act:3,actName:"第三幕 · 雍熙北伐",title:"三路大军部署",nar:"北宋投入二十万大军，分兵三路北上。",
+ scene:"俯视三路大军的进军路线图：东路曹彬出雄州，中路田重进出飞狐，西路潘美出雁门关。",
+ chars:[
+  {n:"三路进军图",p:"俯视中央",c:"#c9a35a"}
+ ],
+ cam:["俯拍","推镜","纪实"],
+ cn:"俯视三路大军进军路线图，三色箭头齐发北上。",
+ en:"Top-down strategic map showing three Song army routes pushing north: Cao Bin east, Tian Zhongjin center, Pan Mei west, animated arrows, documentary style, 8k.",
+ fx:"map", fxName:"三路进军",fxTag:"#fx-map",
+ fxDesc:"FX: 三色箭头 + 路径动画。AE: 3D Stroke + 描边路径。"},
+
+{act:3,title:"中路田重进连克二州",nar:"中路田重进连克飞狐、蔚州。",
+ scene:"田重进骑马入城，城门大开，百姓夹道相迎。",
+ chars:[
+  {n:"田重进",p:"中央,骑马",c:"#c9a35a"},
+  {n:"百姓",p:"两侧,相迎",c:"#6b6862"}
+ ],
+ cam:["中景","跟拍","暖调"],
+ cn:"田重进骑马入飞狐城，百姓夹道相迎。",
+ en:"General Tian Zhongjin on horseback entering Feihu city, civilians welcoming on both sides, warm golden lighting, 8k.",
+ fx:"army", fxName:"入城凯旋",fxTag:"#fx-army",
+ fxDesc:"FX: 入城 + 百姓欢呼。AE: Slow Motion + 粒子花絮。"},
+
+{act:3,title:"西路潘美杨业连下四州",nar:"西路潘美、杨业势如破竹，连下寰、朔、应、云四州。",
+ scene:"杨业率骑兵突袭云州城门，云州辽守将举白旗投降。",
+ chars:[
+  {n:"杨业",p:"中央,持枪",c:"#c9a35a"},
+  {n:"潘美",p:"后军,观战",c:"#5a8a72"},
+  {n:"辽守将",p:"城头,白旗",c:"#6b6862"}
+ ],
+ cam:["全景","中景","壮阔"],
+ cn:"杨业率骑兵突袭云州，辽守将举白旗投降。",
+ en:"General Yang Ye leading cavalry charge on Yunzhou, Liao garrison commander raising white flag, dynamic action shot, 8k.",
+ fx:"battle", fxName:"破城而下",fxTag:"#fx-battle",
+ fxDesc:"FX: 骑兵冲城 + 白旗飘扬。AE: Saber 拖尾 + 旗杆摆动。"},
+
+{act:3,title:"东路曹彬进军",nar:"东路曹彬率十万精兵出雄州，沿太行山东麓直取幽州。",
+ scene:"曹彬率大军出雄州，旌旗招展，步兵骑兵绵延数里。",
+ chars:[
+  {n:"曹彬",p:"中央,骑马",c:"#c9a35a"},
+  {n:"十万东路军",p:"绵延,行进",c:"#6b6862"}
+ ],
+ cam:["航拍","全景","升格"],
+ cn:"曹彬率十万大军出雄州，旌旗招展绵延数里。",
+ en:"Cao Bin leading 100,000 strong Eastern Route army out of Xiongzhou, banners waving, infantry and cavalry stretching to horizon, aerial tracking shot, 8k.",
+ fx:"army", fxName:"十万东征",fxTag:"#fx-army",
+ fxDesc:"FX: 大军行进 + 烟尘长龙。AE: 3D Path + 烟尘。"},
+
+{act:3,title:"涿州逗留 · 后退就粮",nar:"曹彬攻占涿州后，粮草不济，逗留后退就粮。",
+ scene:"涿州城外军营，宋军士兵因粮草不济面露疲态。曹彬下令退兵。",
+ chars:[
+  {n:"曹彬",p:"中军,下令",c:"#c9a35a"},
+  {n:"疲惫将士",p:"营帐内外",c:"#6b6862"}
+ ],
+ cam:["中景","俯拍","冷灰"],
+ cn:"涿州城外军营粮草不济，曹彬下令退兵。",
+ en:"Song camp outside Zhuozhou, soldiers visibly exhausted from lack of supplies, Cao Bin ordering retreat, cold gray lighting, 8k.",
+ fx:"dust", fxName:"退兵就粮",fxTag:"#fx-dust",
+ fxDesc:"FX: 营帐收缩 + 烟尘。AE: 镜头摇摄 + 烟尘粒子。"},
+
+{act:3,title:"争功心切 · 再进涿州",nar:"东路将士争功心切，曹彬再携五日粮向涿州冒进。",
+ scene:"烈日下东路军披甲急行军，将士汗流浃背。",
+ chars:[
+  {n:"曹彬",p:"马背,焦虑",c:"#c9a35a"},
+  {n:"东路军",p:"烈日下行军",c:"#6b6862"}
+ ],
+ cam:["全景","航拍","顶光"],
+ cn:"烈日下东路军披甲急行，将士汗流浃背。",
+ en:"Eastern Route army marching in heavy armor under scorching sun, soldiers drenched in sweat, aerial overhead shot, harsh sunlight, 8k.",
+ fx:"dust", fxName:"冒进急行",fxTag:"#fx-dust",
+ fxDesc:"FX: 烈日 + 汗珠 + 烟尘。AE: 暖色滤镜 + 粒子汗滴。"},
+
+{act:3,title:"涿州空城 · 萧太后合兵",nar:"涿州已成空城，萧太后率主力赶到。",
+ scene:"涿州空城内辽军故意烧光的粮仓废墟。城外远处，萧太后大军压境。",
+ chars:[
+  {n:"涿州空城",p:"中央",c:"#6b6862"},
+  {n:"萧太后",p:"远景,中军",c:"#5a8a72"},
+  {n:"耶律休哥",p:"前锋",c:"#a8242b"}
+ ],
+ cam:["全景","航拍","冷暖对比"],
+ cn:"涿州空城废墟，远景萧太后大军压境。",
+ en:"Ruins of empty Zhuozhou city, burned granaries, Empress Xiao Yanyan's massive army visible on horizon, dramatic wide shot, 8k.",
+ fx:"dust", fxName:"空城废墟",fxTag:"#fx-dust",
+ fxDesc:"FX: 焚烧废墟 + 远处大军压境。AE: 火光 + 烟尘 + 远景阵列。"},
+
+{act:3,title:"曹彬下令南撤",nar:"曹彬下令全军南撤，耶律休哥等的就是这个时机。",
+ scene:"涿州城外，宋军南撤，耶律休哥率精锐骑兵紧随其后。",
+ chars:[
+  {n:"南撤宋军",p:"中景,后退",c:"#6b6862"},
+  {n:"耶律休哥",p:"远景追击",c:"#a8242b"}
+ ],
+ cam:["全景","跟拍","压迫感"],
+ cn:"宋军南撤，耶律休哥率精锐骑兵尾随追击。",
+ en:"Song army retreating south, Yelü Xiuge's elite cavalry following closely behind, tense pursuit shot, 8k.",
+ fx:"battle", fxName:"南撤追击",fxTag:"#fx-battle",
+ fxDesc:"FX: 后撤 + 追击烟尘。AE: 双层路径 + 烟尘差速。"},
+
+{act:3,title:"岐沟关总攻",nar:"岐沟关辽军发起总攻，排山倒海般杀来。",
+ scene:"岐沟关隘口，辽军骑兵居高临下冲入宋军阵中。",
+ chars:[
+  {n:"辽军骑兵",p:"俯冲,破阵",c:"#a8242b"},
+  {n:"宋军残部",p:"溃散",c:"#6b6862"}
+ ],
+ cam:["俯拍","升格","惨烈"],
+ cn:"岐沟关隘口辽军骑兵居高临下冲入宋军阵中。",
+ en:"Qigou Pass, Liao cavalry charging downhill into Song formation, dramatic low angle shot, slow motion, 8k.",
+ fx:"battle", fxName:"岐沟关总攻",fxTag:"#fx-battle",
+ fxDesc:"FX: 俯冲骑兵 + 阵型崩溃。AE: 3D 摄像机 + Saber 拖尾。"},
+
+{act:3,title:"曹彬米信弃军而逃",nar:"曹彬竟丢弃大军，与米信连夜逃走。",
+ scene:"夜色中曹彬与米信率亲兵脱离大军，向南疾驰而去。",
+ chars:[
+  {n:"曹彬",p:"马背,夜逃",c:"#c9a35a"},
+  {n:"米信",p:"并骑",c:"#5a8a72"},
+  {n:"十万溃军",p:"远景,四散",c:"#6b6862"}
+ ],
+ cam:["侧拍","手持","夜调"],
+ cn:"夜色中曹彬米信率亲兵脱离大军向南疾驰。",
+ en:"Night scene, Cao Bin and Mi Xin riding south with personal guards, leaving 100,000 troops behind, dark tense lighting, 8k.",
+ fx:"battle", fxName:"弃军夜逃",fxTag:"#fx-battle",
+ fxDesc:"FX: 夜逃 + 月光 + 烟尘。AE: 蓝调 + 月光粒子。"},
+
+{act:3,title:"沙河不流",nar:"宋师望尘奔窜，堕岸相踩死者过半，沙河为之不流。",
+ scene:"沙河岸边，宋军溃兵互相踩踏，尸体填塞河道，河水染红。",
+ chars:[
+  {n:"沙河",p:"中央,血红",c:"#a8242b"},
+  {n:"溃散宋军",p:"两岸,踩踏",c:"#6b6862"}
+ ],
+ cam:["航拍","大全景","惨烈"],
+ cn:"沙河岸边宋军溃兵互相踩踏，尸体填塞河道。",
+ en:"Shahe river banks, Song soldiers trampling each other in panic, corpses blocking the river, water turned red, aerial wide shot, 8k.",
+ fx:"blood", fxName:"沙河染血",fxTag:"#fx-blood",
+ fxDesc:"FX: 红色河流 + 溃兵坠落。AE: 红色遮罩 + Particle World 坠落。"},
+
+{act:3,title:"全线撤退",nar:"赵光义紧急下令三路大军全部撤回。",
+ scene:"开封御书房，赵光义愤而将阵图撕碎，群臣肃立。",
+ chars:[
+  {n:"赵光义",p:"御案后,暴怒",c:"#c9a35a"},
+  {n:"阵图碎片",p:"桌面,飘落",c:"#a8242b"},
+  {n:"群臣",p:"两侧,肃立",c:"#6b6862"}
+ ],
+ cam:["中景","过肩","暖灰"],
+ cn:"赵光义愤而撕碎阵图，群臣肃立不敢言语。",
+ en:"Zhao Guangyi angrily tearing up the battle map in imperial study, ministers standing silently, dramatic warm lighting, 8k.",
+ fx:"imperial", fxName:"撕碎阵图",fxTag:"#fx-imperial",
+ fxDesc:"FX: 阵图撕裂 + 慢镜碎片。AE: 碎片粒子 + 慢动作。"},
+
+{act:3,title:"西路军护送百姓",nar:"宋太宗下令西路军护送归附百姓内迁。",
+ scene:"云州城外，西路军押送百姓缓缓南行，妇孺老人混杂其中。",
+ chars:[
+  {n:"潘美",p:"中军,策马",c:"#c9a35a"},
+  {n:"杨业",p:"侧翼,警戒",c:"#5a8a72"},
+  {n:"归附百姓",p:"队伍,绵延",c:"#6b6862"}
+ ],
+ cam:["全景","航拍","悲凉"],
+ cn:"云州城外西路军护送百姓南迁，队伍绵延悲凉。",
+ en:"Western Route army escorting civilians south, long column of refugees with women and elderly, melancholic atmosphere, 8k.",
+ fx:"dust", fxName:"护民南迁",fxTag:"#fx-dust",
+ fxDesc:"FX: 长队行进 + 风沙。AE: 路径生成 + 风沙粒子。"},
+
+{act:3,title:"王侁激将杨业",nar:"监军王侁冷嘲杨业:你号称杨无敌,难道你另有打算吗?",
+ scene:"帅帐内,王侁手指杨业冷嘲。潘美在旁沉默。",
+ chars:[
+  {n:"王侁",p:"画面中央,冷嘲",c:"#a8242b"},
+  {n:"杨业",p:"右侧,含泪",c:"#c9a35a"},
+  {n:"潘美",p:"左侧,沉默",c:"#5a8a72"}
+ ],
+ cam:["中景","对切","冷蓝"],
+ cn:"帅帐内王侁手指杨业冷嘲，潘美在旁沉默。",
+ en:"Inside military tent, Wang Shen pointing at Yang Ye with cold mockery, Pan Mei silent on the side, cold blue dramatic lighting, 8k.",
+ fx:"imperial", fxName:"激将法",fxTag:"#fx-imperial",
+ fxDesc:"FX: 手指 + 慢镜。AE: Whip Pan 切换 + 冷色滤镜。"},
+
+{act:3,title:"杨业请求设伏",nar:"杨业恳求潘美在陈家谷口设伏接应。",
+ scene:"杨业跪地恳求潘美，潘美犹豫后点头答应。",
+ chars:[
+  {n:"杨业",p:"中央,跪地",c:"#c9a35a"},
+  {n:"潘美",p:"右侧,犹豫",c:"#5a8a72"}
+ ],
+ cam:["中景","过肩","暖灰"],
+ cn:"杨业跪地恳求潘美设伏，潘美犹豫后点头。",
+ en:"Yang Ye kneeling before Pan Mei pleading for ambush support, Pan Mei hesitates then nods, warm dim lighting, 8k.",
+ fx:"imperial", fxName:"恳请设伏",fxTag:"#fx-imperial",
+ fxDesc:"FX: 跪地 + 慢镜。AE: 低机位 + Slow Motion。"},
+
+{act:3,title:"陈家谷口空无一人",nar:"杨业血战至陈家谷口，发现潘美王侁早已撤退。",
+ scene:"杨业浑身浴血到达陈家谷口，远景空无一人。",
+ chars:[
+  {n:"杨业",p:"中央,浴血",c:"#c9a35a"},
+  {n:"空谷口",p:"四周,空寂",c:"#6b6862"},
+  {n:"杨延玉(尸)",p:"脚下",c:"#a8242b"}
+ ],
+ cam:["全景","仰拍","悲凉"],
+ cn:"杨业浴血到达陈家谷口，远景空无一人。",
+ en:"Yang Ye blood-soaked arriving at Chenjia Valley entrance, empty silence, panoramic wide shot, melancholic, 8k.",
+ fx:"blood", fxName:"空谷悲歌",fxTag:"#fx-blood",
+ fxDesc:"FX: 浴血 + 空寂。AE: 红色污渍 + 烟雾消散。"},
+
+{act:3,title:"杨业被俘 · 绝食三日",nar:"杨业力竭被俘，绝食三日而死。",
+ scene:"辽军帐中，杨业被绑，面前摆着酒食，他闭目不视。",
+ chars:[
+  {n:"杨业",p:"中央,被绑",c:"#c9a35a"},
+  {n:"辽将",p:"右侧,劝降",c:"#5a8a72"},
+  {n:"酒食",p:"前景",c:"#a8242b"}
+ ],
+ cam:["特写","中景","冷蓝"],
+ cn:"辽军帐中杨业被绑酒食在前，闭目不视。",
+ en:"Yang Ye bound in Liao tent, food and wine placed before him, he closes his eyes refusing, cold blue lighting, 8k.",
+ fx:"blood", fxName:"绝食殉国",fxTag:"#fx-blood",
+ fxDesc:"FX: 闭目 + 慢镜烛光。AE: 闭眼 Track Matte + 烛光摇曳。"},
+
+{act:3,title:"杨业遗言 · 李陵碑前",nar:"杨业临终前，以李陵为戒，绝食三日而死于李陵碑前。",
+ scene:"李陵碑前，杨业披发而坐。身后是茫茫雪原与辽国军营。",
+ chars:[
+  {n:"杨业",p:"李陵碑前,坐",c:"#c9a35a"},
+  {n:"李陵碑",p:"身后",c:"#a8242b"},
+  {n:"茫茫雪原",p:"远景",c:"#6b6862"}
+ ],
+ cam:["中景","仰拍","悲壮"],
+ cn:"李陵碑前杨业披发而坐，绝食三日，悲壮而亡。",
+ en:"Yang Ye sitting disheveled before the Li Ling Stele, vast snowy plain behind, Liao camps distant, melancholic heroic ending, 8k.",
+ fx:"blood", fxName:"李陵碑前",fxTag:"#fx-stele",
+ fxDesc:"FX: 雪原 + 孤影。AE: 雪花粒子 + 烟雾 + 慢镜。"},
+
+/* ============ 史诗落幕 ============ */
+{act:4,actName:"史诗落幕",title:"元气大伤",nar:"两次北伐葬送宋太祖留下的数十万百战精锐。",
+ scene:"开封皇城俯瞰，画面渐暗转场为数字倒计时。",
+ chars:[
+  {n:"开封皇城",p:"全景俯瞰",c:"#6b6862"},
+  {n:"数字叠加",p:"前景",c:"#a8242b"}
+ ],
+ cam:["航拍","渐暗","终章感"],
+ cn:"开封皇城俯瞰，画面渐暗，数字倒计时叠加。",
+ en:"Aerial view of Kaifeng imperial city, scene gradually darkens with numerical overlays, somber ending tone, 8k.",
+ fx:"dust", fxName:"元气大伤",fxTag:"#fx-dust",
+ fxDesc:"FX: 渐暗 + 数字倒计时。AE: Fade to Black + 数字滚动。"},
+
+{act:4,title:"守内虚外",nar:"赵光义彻底放弃收复燕云，转而采取'守内虚外'的战略。",
+ scene:"边境要塞上，赵光义画像下，宋军守将遥望北方。",
+ chars:[
+  {n:"边境守将",p:"中央,背影",c:"#6b6862"},
+  {n:"北方辽境",p:"远景",c:"#a8242b"}
+ ],
+ cam:["全景","背影","冷调"],
+ cn:"边境要塞守将背影遥望北方辽境。",
+ en:"Border fortress, Song general's back looking north toward Liao territory, cold blue tone, 8k.",
+ fx:"dust", fxName:"守内虚外",fxTag:"#fx-dust",
+ fxDesc:"FX: 背影 + 北方辽境。AE: 烟尘 + 远景山脉。"},
+
+{act:4,title:"澶渊之盟 · 1004年",nar:"1004年，萧太后与辽圣宗亲率大军南下直抵澶州。",
+ scene:"澶州城下，辽军大营连绵。黄河对岸，宋真宗御驾亲征。",
+ chars:[
+  {n:"澶州城",p:"中央",c:"#a8242b"},
+  {n:"萧太后",p:"辽军中军",c:"#5a8a72"},
+  {n:"宋真宗",p:"黄河南岸",c:"#c9a35a"}
+ ],
+ cam:["全景","航拍","史诗"],
+ cn:"澶州城下辽军大营连绵，宋真宗黄河南岸亲征。",
+ en:"Chanzhou city under siege, massive Liao camp, Emperor Zhenzong on south bank of Yellow River, epic wide shot, 8k.",
+ fx:"army", fxName:"澶渊对峙",fxTag:"#fx-army",
+ fxDesc:"FX: 大军对峙 + 黄河。AE: 3D 摄像机 + 黄河粒子。"},
+
+{act:4,title:"澶渊之盟签订",nar:"宋辽约为兄弟之国，宋朝每年向辽朝提供岁币。",
+ scene:"澶州城外会盟台，萧太后与宋真宗互换国书。",
+ chars:[
+  {n:"萧太后",p:"左侧,签约",c:"#5a8a72"},
+  {n:"宋真宗",p:"右侧,签约",c:"#c9a35a"},
+  {n:"国书",p:"中央",c:"#a8242b"}
+ ],
+ cam:["中景","对称","暖光"],
+ cn:"澶州城外会盟台，萧太后与宋真宗互换国书。",
+ en:"Alliance platform outside Chanzhou, Empress Xiao and Emperor Zhenzong exchanging state letters, formal symmetrical composition, 8k.",
+ fx:"imperial", fxName:"澶渊之盟",fxTag:"#fx-imperial",
+ fxDesc:"FX: 国书交换 + 慢镜。AE: 慢镜 + 暖光粒子。"},
+
+{act:4,title:"燕云回归 · 四百年后",nar:"燕云十六州直到四百多年后，才在朱元璋手中回到汉人手中。",
+ scene:"明太祖朱元璋画像与燕云地图叠化，明军北伐箭头指向北京。",
+ chars:[
+  {n:"朱元璋",p:"画中,凝视",c:"#c9a35a"},
+  {n:"明军北伐图",p:"背景",c:"#a8242b"}
+ ],
+ cam:["中景","叠化","史诗"],
+ cn:"朱元璋画像与燕云地图叠化，明军北伐指向北京。",
+ en:"Ming dynasty founder Zhu Yuanzhang portrait dissolving into Sixteen Prefectures map, Ming army arrow pointing to Beijing, 8k.",
+ fx:"imperial", fxName:"四百年后",fxTag:"#fx-imperial",
+ fxDesc:"FX: 叠化转场。AE: Cross Dissolve + 路径动画。"},
+
+{act:4,title:"千年笑谈 · 千古悲歌",nar:"留给历史的，是高粱河车神的千年笑谈和杨令公血染李陵碑的千古悲歌。",
+ scene:"双画面分割：左为高粱河车神漫画式场景，右为杨业血战剪影。",
+ chars:[
+  {n:"赵光义(漫画)",p:"左侧,驴车",c:"#c9a35a"},
+  {n:"杨业(剪影)",p:"右侧,血战",c:"#a8242b"}
+ ],
+ cam:["双画面","对比","终章"],
+ cn:"双画面：左赵光义驴车漂移漫画式，右杨业血战剪影。",
+ en:"Split screen composition: left - cartoon-style donkey cart emperor; right - blood-soaked Yang Ye silhouette, contrasting tones, 8k.",
+ fx:"blood", fxName:"双画面终章",fxTag:"#fx-blood",
+ fxDesc:"FX: 双画面 + 黑白剪影。AE: Split Screen + 剪影遮罩。"},
+
+{act:4,title:"END · 完",nar:"——全剧终——",
+ scene:"黑屏，片尾字幕徐徐上升。",
+ chars:[
+  {n:"片尾字幕",p:"中央",c:"#c9a35a"}
+ ],
+ cam:["黑屏","字幕","完结"],
+ cn:"黑屏，片尾字幕徐徐上升。",
+ en:"Black screen with end credits slowly rising, golden typography, somber conclusion.",
+ fx:"dust", fxName:"片尾字幕",fxTag:"#fx-end",
+ fxDesc:"FX: 黑屏 + 字幕。AE: Black Solid + 字幕滚动。"}
+];
+
+/* ============================================================
+   ACTS
+============================================================ */
+const ACTS=[
+  {name:"引子：中原王朝失落的屏障",range:[1,4]},
+  {name:"第一幕 · 高粱河之败（979年）",range:[5,21]},
+  {name:"第二幕 · 七年的酝酿（979-986年）",range:[22,27]},
+  {name:"第三幕 · 雍熙北伐（986年）",range:[28,45]},
+  {name:"史诗落幕：北伐之后的北宋",range:[46,52]}
+];
+
+/* ============================================================
+   RENDER SIDEBAR
+============================================================ */
+const actsEl=document.getElementById("acts");
+ACTS.forEach((a,i)=>{
+  const div=document.createElement("div");
+  div.className="act";
+  div.dataset.act=i;
+  div.innerHTML=`${a.name}<span class="n">第 ${a.range[0]}–${a.range[1]} 镜</span>`;
+  div.onclick=()=>{goTo(a.range[0]-1)};
+  actsEl.appendChild(div);
+
+  const sl=document.createElement("div");
+  sl.className="shot-list";
+  for(let j=a.range[0]-1;j<a.range[1];j++){
+    const s=SHOTS[j];
+    const sm=document.createElement("div");
+    sm.className="shot-mini";
+    sm.dataset.idx=j;
+    sm.innerHTML=`<span class="idx">${String(j+1).padStart(2,"0")}</span><span>${s.title}</span><span class="dur">15s</span>`;
+    sm.onclick=()=>{goTo(j)};
+    sl.appendChild(sm);
+  }
+  div.appendChild(sl);
+});
+
+/* ============================================================
+   RENDER TIMELINE
+============================================================ */
+let current=0;
+let currentAct=0;
+const tlEl=document.getElementById("timeline");
+SHOTS.forEach((s,i)=>{
+  const t=document.createElement("div");
+  t.className="tl-shot"+(s.act===currentAct?" act":"");
+  t.style.left=(i/SHOTS.length*100)+"%";
+  t.style.width=(100/SHOTS.length)+"%";
+  t.dataset.idx=i;
+  t.onclick=()=>goTo(i);
+  tlEl.appendChild(t);
+});
+
+/* ============================================================
+   RENDER SHOT
+============================================================ */
+function fmtTime(sec){const m=Math.floor(sec/60),s=sec%60;return String(m).padStart(2,"0")+":"+String(s).padStart(2,"0")}
+function goTo(i){
+  if(i<0||i>=SHOTS.length)return;
+  current=i;
+  const s=SHOTS[i];
+  currentAct=s.act;
+  const startSec=i*15,endSec=(i+1)*15;
+
+  document.getElementById("shotNo").textContent=String(i+1).padStart(2,"0");
+  document.getElementById("shotTitle").textContent=s.title;
+  document.getElementById("shotTime").textContent="15.0s";
+  document.getElementById("shotRange").textContent=fmtTime(startSec)+" – "+fmtTime(endSec);
+  document.getElementById("sceneText").textContent=s.nar+"\n\n【画面】"+s.scene;
+  document.getElementById("promptCn").textContent=s.cn;
+  document.getElementById("promptEn").textContent=s.en;
+
+  // crumb
+  document.getElementById("crumb").innerHTML=`▸ ${ACTS[s.act].name} <b>·</b> 第 ${i+1} 镜`;
+
+  // char grid
+  const cg=document.getElementById("charGrid");
+  cg.innerHTML="";
+  s.chars.forEach(c=>{
+    const cd=document.createElement("div");
+    cd.className="char";
+    cd.innerHTML=`<div class="char-av" style="background:${c.c}">${c.n.charAt(0)}</div><div class="char-name">${c.n}</div><div class="char-pos">${c.p}</div>`;
+    cg.appendChild(cd);
+  });
+
+  // position tags - distribute around the map
+  const pt=document.getElementById("posTags");
+  pt.innerHTML="";
+  const posLayout=[
+    {x:50,y:50},{x:200,y:80},{x:350,y:60},
+    {x:80,y:160},{x:200,y:180},{x:330,y:170},
+    {x:60,y:240},{x:220,y:240},{x:340,y:230}
+  ];
+  s.chars.forEach((c,idx)=>{
+    const p=posLayout[idx%posLayout.length];
+    const t=document.createElement("div");
+    t.className="pos-tag"+(c.c==="#a8242b"?" red":c.c==="#5a8a72"?" jade":"");
+    t.style.left=p.x+"px";t.style.top=p.y+"px";
+    t.textContent=c.n+" · "+c.p;
+    pt.appendChild(t);
+  });
+
+  // cam tags
+  const ct=document.getElementById("camTags");
+  ct.innerHTML="";
+  s.cam.forEach(c=>{
+    const t=document.createElement("span");
+    t.className="tag gold";
+    t.textContent="◉ "+c;
+    ct.appendChild(t);
+  });
+  s.chars.forEach(c=>{
+    const t=document.createElement("span");
+    t.className="tag";
+    t.textContent="角色："+c.n;
+    ct.appendChild(t);
+  });
+
+  // fx label
+  document.getElementById("fxLabel").textContent="FX · "+s.fxName;
+  document.getElementById("fxTag").textContent=s.fxTag;
+  document.getElementById("fxDesc").textContent=s.fxDesc;
+
+  // active in sidebar
+  document.querySelectorAll(".shot-mini").forEach(el=>{
+    el.classList.toggle("current",+el.dataset.idx===i);
+  });
+  document.querySelectorAll("#acts > .act").forEach(el=>{
+    el.classList.toggle("active",ACTS[+el.dataset.act].range[0]-1<=i && i<ACTS[+el.dataset.act].range[1]);
+  });
+  document.querySelectorAll(".tl-shot").forEach(el=>{
+    el.classList.toggle("act",+el.dataset.idx===i);
+  });
+
+  // launch fx
+  playFx(s.fx);
+}
+
+document.getElementById("btnPrev").onclick=()=>goTo(current-1);
+document.getElementById("btnNext").onclick=()=>goTo(current+1);
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowLeft")goTo(current-1);
+  if(e.key==="ArrowRight")goTo(current+1);
+});
+
+/* ============================================================
+   SPECIAL EFFECTS — Canvas animations
+============================================================ */
+const canvas=document.getElementById("fxCanvas");
+const ctx=canvas.getContext("2d");
+let raf=null;
+let particles=[];
+
+function resize(){const s=document.getElementById("effectStage");canvas.width=s.clientWidth;canvas.height=s.clientHeight}
+window.addEventListener("resize",resize);resize();
+
+function fxReplay(){playFx(SHOTS[current].fx)}
+
+function clearFx(){if(raf)cancelAnimationFrame(raf);raf=null;particles=[];ctx.clearRect(0,0,canvas.width,canvas.height)}
+
+function playFx(type){
+  clearFx();
+  resize();
+  const W=canvas.width,H=canvas.height;
+
+  if(type==="candle"||type==="candle-axe")fxCandle(W,H);
+  else if(type==="map")fxMap(W,H);
+  else if(type==="imperial")fxImperial(W,H);
+  else if(type==="army")fxArmy(W,H);
+  else if(type==="dust")fxDust(W,H);
+  else if(type==="battle")fxBattle(W,H);
+  else if(type==="donkey")fxDonkey(W,H);
+  else if(type==="blood")fxBlood(W,H);
+  else if(type==="end")fxEnd(W,H);
+}
+
+function fxCandle(W,H){
+  const cx=W*0.5,cy=H*0.45;
+  const t0=performance.now();
+  function loop(t){
+    const dt=(t-t0)/1000;
+    ctx.fillStyle="rgba(0,0,0,0.25)";ctx.fillRect(0,0,W,H);
+    // backdrop
+    const grd=ctx.createRadialGradient(cx,cy,10,cx,cy,180);
+    grd.addColorStop(0,"rgba(201,163,90,0.4)");grd.addColorStop(1,"rgba(0,0,0,0)");
+    ctx.fillStyle=grd;ctx.fillRect(0,0,W,H);
+    // flame
+    const flick=Math.sin(t*0.02)*3+Math.sin(t*0.05)*2;
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.beginPath();
+    ctx.moveTo(0,-30+flick);
+    ctx.quadraticCurveTo(15+flick,-10,8+flick,10);
+    ctx.quadraticCurveTo(0,20+flick,-8-flick,10);
+    ctx.quadraticCurveTo(-15-flick,-10,0,-30+flick);
+    const fg=ctx.createRadialGradient(0,0,2,0,0,30);
+    fg.addColorStop(0,"#fff7c0");fg.addColorStop(0.4,"#c9a35a");fg.addColorStop(1,"rgba(201,163,90,0)");
+    ctx.fillStyle=fg;ctx.fill();
+    // candle stick
+    ctx.fillStyle="#e8e6df";
+    ctx.fillRect(-3,10,6,40);
+    // candlelight flicker
+    const flick2=0.6+Math.sin(t*0.03)*0.2+Math.sin(t*0.07)*0.1;
+    document.getElementById("effectStage").style.boxShadow=`inset 0 0 ${50+flick2*30}px rgba(201,163,90,${0.3+flick2*0.3})`;
+    // shadow hands on screen
+    if(Math.random()<0.01)particles.push({x:cx+Math.random()*100-50,y:cy,life:60,type:"shadow"});
+    ctx.restore();
+    // shadows
+    particles.forEach(p=>{
+      p.life--;
+      ctx.save();
+      ctx.translate(p.x,p.y);
+      ctx.fillStyle=`rgba(0,0,0,${p.life/60*0.5})`;
+      ctx.beginPath();
+      ctx.ellipse(0,0,40+Math.sin(t*0.05+p.x)*10,80+Math.sin(t*0.04+p.y)*15,0,0,Math.PI*2);
+      ctx.fill();
+      ctx.restore();
+    });
+    particles=particles.filter(p=>p.life>0);
+    if(t-t0<15000)raf=requestAnimationFrame(loop);
+  }
+  raf=requestAnimationFrame(loop);
+}
+
+function fxMap(W,H){
+  const t0=performance.now();
+  function loop(t){
+    const dt=(t-t0)/1000;
+    ctx.fillStyle="rgba(0,0,0,0.15)";ctx.fillRect(0,0,W,H);
+    // grid
+    ctx.strokeStyle="rgba(201,163,90,0.15)";ctx.lineWidth=1;
+    for(let i=0;i<W;i+=30){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,H);ctx.stroke()}
+    for(let i=0;i<H;i+=30){ctx.beginPath();ctx.moveTo(0,i);ctx.lineTo(W,i);ctx.stroke()}
+    // animated paths
+    ctx.strokeStyle="#c9a35a";ctx.lineWidth=2;ctx.shadowColor="#c9a35a";ctx.shadowBlur=10;
+    const paths=[[100,80,200,140,300,100],[80,200,200,180,300,220],[150,200,180,260,250,240]];
+    paths.forEach((p,i)=>{
+      ctx.beginPath();
+      const phase=(dt*0.5+i*0.2)%2;
+      for(let k=0;k<3;k+=2){
+        const t1=Math.min(1,Math.max(0,phase-k/3));
+        const x=p[k]+(p[k+2]-p[k])*t1,y=p[k+1]+(p[k+3]-p[k+1])*t1;
+        if(k===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+    });
+    ctx.shadowBlur=0;
+    // pulsing dots
+    [200,140,250,200,180,80].forEach((p,i)=>{
+      const x=[100,300,150][i%3],y=[140,100,200][i%3];
+      const r=3+Math.sin(t*0.005+i)*2;
+      ctx.fillStyle="#a8242b";
+      ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+    });
+    if(t-t0<15000)raf=requestAnimationFrame(loop);
+  }
+  raf=requestAnimationFrame(loop);
+}
+
+function fxImperial(W,H){
+  const t0=performance.now();
+  function loop(t){
+    ctx.fillStyle="rgba(0,0,0,0.1)";ctx.fillRect(0,0,W,H);
+    const grd=ctx.createRadialGradient(W/2,H/2,10,W/2,H/2,200);
+    const a=0.3+Math.sin(t*0.003)*0.15;
+    grd.addColorStop(0,`rgba(201,163,90,${a})`);grd.addColorStop(1,"rgba(0,0,0,0)");
+    ctx.fillStyle=grd;ctx.fillRect(0,0,W,H);
+    // gold particles
+    if(particles.length<60)particles.push({x:W/2,y:H/2,vx:(Math.random()-0.5)*2,vy:(Math.random()-0.5)*2,life:100});
+    particles.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.life--;
+      ctx.fillStyle=`rgba(201,163,90,${p.life/100})`;
+      ctx.fillRect(p.x,p.y,2,2);
+    });
+    particles=particles.filter(p=>p.life>0);
+    if(t-t0<15000)raf=requestAnimationFrame(loop);
+  }
+  raf=requestAnimationFrame(loop);
+}
+
+function fxArmy(W,H){
+  const t0=performance.now();
+  for(let i=0;i<80;i++)particles.push({x:Math.random()*W,y:Math.random()*H,vx:0.5+Math.random()*0.5,vy:-0.2-Math.random()*0.3,life:200,size:2+Math.random()*2});
+  function loop(t){
+    const dt=(t-t0)/1000;
+    ctx.fillStyle="rgba(60,50,40,0.15)";ctx.fillRect(0,0,W,H);
+    // ground
+    ctx.fillStyle="rgba(120,90,60,0.2)";ctx.fillRect(0,H*0.6,W,H*0.4);
+    // flags
+    particles.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.life--;
+      ctx.fillStyle=`rgba(${168+p.x%30},${36+p.x%20},${43},${p.life/200})`;
+      ctx.fillRect(p.x,p.y,p.size,15);
+      // flag cloth
+      ctx.fillStyle=`rgba(201,163,90,${p.life/200*0.6})`;
+      ctx.beginPath();
+      ctx.moveTo(p.x+p.size,p.y);
+      ctx.lineTo(p.x+p.size+8+Math.sin(t*0.01+p.x)*2,p.y+3);
+      ctx.lineTo(p.x+p.size,p.y+8);
+      ctx.fill();
+    });
+    particles=particles.filter(p=>p.life>0&&p.x<W);
+    if(t-t0<15000)raf=requestAnimationFrame(loop);
+  }
+  raf=requestAnimationFrame(loop);
+}
+
+function fxDust(W,H){
+  const t0=performance.now();
+  for(let i=0;i<40;i++)particles.push({x:Math.random()*W,y:H*0.5+Math.random()*H*0.5,vx:(Math.random()-0.5)*0.3,vy:-0.1-Math.random()*0.2,life:300,size:1+Math.random()*3});
+  function loop(t){
+    ctx.fillStyle="rgba(50,40,30,0.1)";ctx.fillRect(0,0,W,H);
+    // haze
+    const grd=ctx.createLinearGradient(0,H*0.4,0,H);
+    grd.addColorStop(0,"rgba(180,150,100,0)");grd.addColorStop(1,"rgba(180,150,100,0.4)");
+    ctx.fillStyle=grd;ctx.fillRect(0,H*0.4,W,H*0.6);
+    particles.forEach(p=>{
+      p.x+=p.vx+Math.sin(t*0.001+p.x)*0.2;
+      p.y+=p.vy;p.life--;
+      ctx.fillStyle=`rgba(180,150,100,${p.life/300*0.6})`;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();
+    });
+    particles=particles.filter(p=>p.life>0);
+    if(t-t0<15000)raf=requestAnimationFrame(loop);
+  }
+  raf=requestAnimationFrame(loop);
+}
+
+function fxBattle(W,H){
+  const t0=performance.now();
+  function loop(t){
+    const dt=(t-t0)/1000;
+    ctx.fillStyle="rgba(20,10,10,0.2)";ctx.fillRect(0,0,W,H);
+    // ground
+    ctx.fillStyle="rgba(60,40,30,0.5)";ctx.fillRect(0,H*0.65,W,H*0.35);
+    // dust clouds
+    if(Math.random()<0.3)particles.push({x:Math.random()*W,y:H*0.5+Math.random()*H*0.3,vx:(Math.random()-0.5)*3,vy:-Math.random()*2,life:50,size:8+Math.random()*15,col:Math.random()<0.5?"#a8242b":"#6b6862"});
+    // sabers
+    if(Math.random()<0.2)particles.push({x:Math.random()*W,y:Math.random()*H*0.6,vx:5+Math.random()*5,vy:0,life:20,type:"saber"});
+    particles.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.life--;
+      if(p.type==="saber"){
+        ctx.strokeStyle=`rgba(232,230,223,${p.life/20})`;
+        ctx.lineWidth=2;
+        ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-30,p.y+5);ctx.stroke();
+        ctx.shadowColor="#fff";ctx.shadowBlur=10;
+      }else{
+        ctx.fillStyle=p.col.replace(")",","+p.life/50+")").replace("rgb","rgba");
+        ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();
+      }
+    });
+    ctx.shadowBlur=0;
+    particles=particles.filter(p=>p.life>0);
+    if(t-t0<15000)raf=requestAnimationFrame(loop);
+  }
+  raf=requestAnimationFrame(loop);
+}
+
+function fxDonkey(W,H){
+  const t0=performance.now();
+  for(let i=0;i<20;i++)particles.push({x:Math.random()*W,y:H*0.6+Math.random()*H*0.2,vx:2+Math.random()*3,vy:0,life:100});
+  function loop(t){
+    const dt=(t-t0)/1000;
+    ctx.fillStyle="rgba(10,5,5,0.3)";ctx.fillRect(0,0,W,H);
+    // night sky
+    ctx.fillStyle="rgba(20,15,30,0.6)";ctx.fillRect(0,0,W,H*0.6);
+    // moon
+    ctx.fillStyle="#e8e6df";
+    ctx.beginPath();ctx.arc(W*0.8,H*0.2,20,0,Math.PI*2);ctx.fill();
+    // ground
+    ctx.fillStyle="rgba(60,40,30,0.6)";ctx.fillRect(0,H*0.6,W,H*0.4);
+    // cart
+    const x=((dt*100)%W+W*0.3)%W;
+    ctx.save();
+    ctx.translate(x,H*0.55);
+    ctx.fillStyle="#6b1418";ctx.fillRect(-15,-10,30,15);
+    ctx.fillStyle="#3a2818";ctx.fillRect(-2,5,4,8);
+    // donkey
+    ctx.fillStyle="#6b6862";
+    ctx.fillRect(20,-15,20,10);
+    ctx.fillRect(38,-20,5,15);
+    // emperor
+    ctx.fillStyle="#c9a35a";
+    ctx.beginPath();ctx.arc(-5,-18,4,0,Math.PI*2);ctx.fill();
+    // wheels
+    ctx.fillStyle="#13131c";
+    ctx.beginPath();ctx.arc(-10,10,4,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(10,10,4,0,Math.PI*2);ctx.fill();
+    ctx.restore();
+    // dust trail
+    particles.forEach(p=>{
+      p.x-=p.vx;p.life--;
+      ctx.fillStyle=`rgba(180,150,100,${p.life/100*0.4})`;
+      ctx.beginPath();ctx.arc(p.x,p.y,3+Math.random()*2,0,Math.PI*2);ctx.fill();
+    });
+    particles=particles.filter(p=>p.life>0);
+    if(particles.length<20)particles.push({x:W,y:H*0.6+Math.random()*H*0.2,vx:2+Math.random()*3,vy:0,life:100});
+    // pursuit arrows
+    if(Math.random()<0.1)particles.push({x:0,y:H*0.4+Math.random()*H*0.3,vx:8+Math.random()*4,vy:0,life:40,type:"arrow"});
+    particles.forEach(p=>{
+      if(p.type==="arrow"){
+        ctx.strokeStyle=`rgba(${p.life*4},${p.life*4},${p.life*4},${p.life/40})`;
+        ctx.lineWidth=1;
+        ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-15,p.y);ctx.stroke();
+      }
+    });
+    if(t-t0<15000)raf=requestAnimationFrame(loop);
+  }
+  raf=requestAnimationFrame(loop);
+}
+
+function fxBlood(W,H){
+  const t0=performance.now();
+  function loop(t){
+    const dt=(t-t0)/1000;
+    ctx.fillStyle="rgba(60,20,20,0.3)";ctx.fillRect(0,0,W,H);
+    // river
+    const ry=H*0.7;
+    const grd=ctx.createLinearGradient(0,ry-20,0,ry+20);
+    grd.addColorStop(0,"rgba(168,36,43,0.8)");grd.addColorStop(0.5,"rgba(110,20,24,1)");grd.addColorStop(1,"rgba(80,15,18,0.8)");
+    ctx.fillStyle=grd;ctx.fillRect(0,ry-15,W,30);
+    // waves
+    ctx.strokeStyle="rgba(168,36,43,0.6)";ctx.lineWidth=2;
+    for(let i=0;i<5;i++){
+      ctx.beginPath();
+      ctx.moveTo(0,ry-10+i*5);
+      for(let x=0;x<W;x+=10){
+        ctx.lineTo(x,ry-10+i*5+Math.sin(t*0.005+x*0.1+i)*2);
+      }
+      ctx.stroke();
+    }
+    // floating bodies
+    if(Math.random()<0.05)particles.push({x:Math.random()*W,y:ry,vx:-0.5,vy:0,life:200});
+    particles.forEach(p=>{
+      p.x+=p.vx;p.life--;
+      ctx.fillStyle=`rgba(60,30,30,${p.life/200})`;
+      ctx.fillRect(p.x,p.y-3,15,4);
+    });
+    particles=particles.filter(p=>p.life>0);
+    if(t-t0<15000)raf=requestAnimationFrame(loop);
+  }
+  raf=requestAnimationFrame(loop);
+}
+
+function fxEnd(W,H){
+  const t0=performance.now();
+  function loop(t){
+    ctx.fillStyle="#000";ctx.fillRect(0,0,W,H);
+    const a=Math.min(1,(t-t0)/2000);
+    ctx.fillStyle=`rgba(201,163,90,${a})`;
+    ctx.font="bold 36px serif";
+    ctx.textAlign="center";
+    ctx.fillText("—— 全 剧 终 ——",W/2,H/2);
+    ctx.font="14px monospace";
+    ctx.fillStyle=`rgba(201,163,90,${a*0.6})`;
+    ctx.fillText("THE END · 高粱河车神 · 雍熙悲歌",W/2,H/2+30);
+    if(t-t0<15000)raf=requestAnimationFrame(loop);
+  }
+  raf=requestAnimationFrame(loop);
+}
+
+/* ============================================================
+   INIT
+============================================================ */
+goTo(0);
+</script>
+</body>
+</html>
