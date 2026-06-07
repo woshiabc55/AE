@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>钢铁的黎明 · STEEL DAWN · KURSK 1944</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Special+Elite&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0B0D0A;
+  --bg-2: #121510;
+  --bg-3: #1A1D17;
+  --ink: #E8DCC0;
+  --ink-dim: #A89B7E;
+  --ink-faint: #6B6552;
+  --sand: #C8B074;
+  --sand-deep: #8C7A4B;
+  --olive: #3D4A2E;
+  --olive-deep: #2A331F;
+  --rust: #8B2E1F;
+  --rust-bright: #B5392A;
+  --steel: #4A4D44;
+  --line: rgba(200, 176, 116, 0.18);
+  --line-strong: rgba(200, 176, 116, 0.42);
+
+  --font-display: 'Black Ops One', 'Special Elite', serif;
+  --font-stencil: 'Special Elite', monospace;
+  --font-body: 'IBM Plex Serif', 'Georgia', serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  line-height: 1.65;
+  overflow-x: hidden;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* ============== GLOBAL FX: GRAIN + SCANLINES + VIGNETTE ============== */
+body::before {
+  content: "";
+  position: fixed; inset: 0; pointer-events: none; z-index: 9000;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.85  0 0 0 0 0.78  0 0 0 0 0.55  0 0 0 0.12 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  opacity: 0.55;
+  mix-blend-mode: overlay;
+}
+body::after {
+  content: "";
+  position: fixed; inset: 0; pointer-events: none; z-index: 9001;
+  background:
+    repeating-linear-gradient(0deg, rgba(0,0,0,0.08) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.55) 100%);
+}
+
+/* ============== TOP PROGRESS BAR ============== */
+.progress {
+  position: fixed; top: 0; left: 0; height: 3px;
+  background: linear-gradient(90deg, var(--sand), var(--rust-bright));
+  width: 0%;
+  z-index: 9999;
+  box-shadow: 0 0 12px rgba(181, 57, 42, 0.5);
+  transition: width 0.05s linear;
+}
+.top-meta {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 9998;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 28px;
+  background: linear-gradient(180deg, rgba(11,13,10,0.92), rgba(11,13,10,0));
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-dim);
+  pointer-events: none;
+}
+.top-meta .left::before { content: "▣ "; color: var(--rust-bright); }
+.top-meta .right::before { content: "◉ REC  "; color: var(--rust-bright); animation: blink 1.4s infinite; }
+@keyframes blink { 0%, 60% {opacity:1;} 61%, 100% {opacity:0.25;} }
+
+/* ============== SIDE NAV ============== */
+.side-nav {
+  position: fixed; right: 24px; top: 50%; transform: translateY(-50%);
+  z-index: 9990;
+  display: flex; flex-direction: column; gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+}
+.side-nav a {
+  display: flex; align-items: center; gap: 8px;
+  color: var(--ink-faint);
+  text-decoration: none;
+  padding: 4px 0;
+  transition: color 0.2s;
+}
+.side-nav a::after {
+  content: ""; width: 22px; height: 1px; background: currentColor;
+  transition: width 0.25s, background 0.2s;
+}
+.side-nav a:hover { color: var(--sand); }
+.side-nav a:hover::after { width: 36px; background: var(--rust-bright); }
+.side-nav a.active { color: var(--rust-bright); }
+.side-nav a.active::after { width: 36px; background: var(--rust-bright); box-shadow: 0 0 8px var(--rust-bright); }
+
+/* ============== HERO ============== */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 20% 80%, rgba(139, 46, 31, 0.18), transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(61, 74, 46, 0.22), transparent 55%),
+    linear-gradient(180deg, #070806 0%, #0B0D0A 50%, #070806 100%);
+}
+.hero::before {
+  /* smoke columns */
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: 0; height: 70%;
+  background:
+    radial-gradient(ellipse 60% 80% at 30% 100%, rgba(80, 70, 50, 0.45), transparent 70%),
+    radial-gradient(ellipse 50% 70% at 70% 100%, rgba(120, 60, 40, 0.28), transparent 70%);
+  filter: blur(20px);
+  animation: smokeRise 18s ease-in-out infinite alternate;
+}
+@keyframes smokeRise {
+  0% { transform: translateY(0) scale(1); opacity: 0.7; }
+  100% { transform: translateY(-40px) scale(1.08); opacity: 0.95; }
+}
+.hero::after {
+  /* film perforations */
+  content: "";
+  position: absolute; left: 0; right: 0; top: 0; bottom: 0;
+  background:
+    linear-gradient(90deg, var(--bg) 0, var(--bg) 32px, transparent 32px, transparent calc(100% - 32px), var(--bg) calc(100% - 32px)),
+    repeating-linear-gradient(0deg, transparent 0 22px, rgba(0,0,0,0.0) 22px 24px);
+  background:
+    radial-gradient(circle at 16px 24px, transparent 5px, var(--bg) 5.5px) 0 0 / 100% 48px repeat-y,
+    radial-gradient(circle at calc(100% - 16px) 24px, transparent 5px, var(--bg) 5.5px) 0 0 / 100% 48px repeat-y;
+  opacity: 0.95;
+  pointer-events: none;
+}
+.hero-inner {
+  position: relative; z-index: 2;
+  text-align: center;
+  max-width: 1100px;
+  padding: 80px 24px;
+}
+.hero .stamp {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  color: var(--rust-bright);
+  border: 1px solid var(--rust-bright);
+  padding: 6px 16px;
+  margin-bottom: 36px;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+  background: rgba(139, 46, 31, 0.08);
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(56px, 12vw, 168px);
+  line-height: 0.92;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  text-shadow:
+    0 0 30px rgba(200, 176, 116, 0.25),
+    3px 3px 0 var(--rust),
+    6px 6px 0 var(--bg-3);
+  margin-bottom: 8px;
+}
+.hero h1 .sub-cn {
+  display: block;
+  font-family: var(--font-stencil);
+  font-size: clamp(28px, 5vw, 56px);
+  letter-spacing: 0.4em;
+  color: var(--sand);
+  margin-top: 18px;
+  text-shadow: 2px 2px 0 var(--olive-deep);
+}
+.hero .en {
+  font-family: var(--font-display);
+  font-size: clamp(18px, 2.4vw, 30px);
+  letter-spacing: 0.5em;
+  color: var(--ink-dim);
+  margin-top: 28px;
+}
+.hero .quote {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(15px, 1.4vw, 19px);
+  color: var(--ink-dim);
+  max-width: 720px;
+  margin: 40px auto 0;
+  line-height: 1.7;
+  border-left: 2px solid var(--rust);
+  border-right: 2px solid var(--rust);
+  padding: 0 24px;
+}
+.hero .meta-row {
+  display: flex; justify-content: center; gap: 48px;
+  margin-top: 56px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+}
+.hero .meta-row span b { color: var(--sand); font-weight: 400; display: block; font-size: 18px; letter-spacing: 0.05em; margin-top: 6px; }
+.scroll-hint {
+  position: absolute; left: 50%; bottom: 24px; transform: translateX(-50%);
+  z-index: 3;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--ink-dim);
+  text-align: center;
+  animation: hintPulse 2.4s ease-in-out infinite;
+}
+.scroll-hint::after {
+  content: ""; display: block; width: 1px; height: 30px;
+  margin: 10px auto 0; background: var(--sand);
+  animation: hintLine 2.4s ease-in-out infinite;
+}
+@keyframes hintPulse { 0%,100% { opacity: 0.45; } 50% { opacity: 1; } }
+@keyframes hintLine { 0% { transform: scaleY(0.2); transform-origin: top; } 50% { transform: scaleY(1); } 100% { transform: scaleY(0.2); transform-origin: bottom; } }
+
+/* ============== SECTION COMMON ============== */
+.section {
+  position: relative;
+  padding: 100px 0 80px;
+  border-top: 1px solid var(--line);
+}
+.section-head {
+  max-width: 1280px; margin: 0 auto 60px;
+  padding: 0 48px;
+  display: flex; align-items: flex-end; gap: 24px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 18px;
+}
+.section-head .tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  color: var(--rust-bright);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.section-head h2 {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 48px);
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  line-height: 1.1;
+  flex: 1;
+}
+.section-head .count {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-faint);
+  letter-spacing: 0.2em;
+}
+
+/* ============== STORYBOARD ============== */
+.shots {
+  max-width: 1280px; margin: 0 auto;
+  padding: 0 48px;
+  display: flex; flex-direction: column; gap: 0;
+}
+.shot {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 40px;
+  padding: 56px 0;
+  border-top: 1px solid var(--line);
+  position: relative;
+  scroll-margin-top: 80px;
+}
+.shot:first-child { border-top: none; }
+
+.shot::before {
+  content: "";
+  position: absolute; left: 0; top: 56px; width: 4px; height: calc(100% - 56px);
+  background: linear-gradient(180deg, transparent, var(--rust-bright) 30%, var(--sand) 50%, var(--rust-bright) 70%, transparent);
+  opacity: 0.5;
+}
+.shot-num {
+  font-family: var(--font-display);
+  font-size: 140px;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--sand);
+  text-stroke: 1.5px var(--sand);
+  letter-spacing: -0.04em;
+  position: relative;
+  user-select: none;
+}
+.shot-num::after {
+  content: attr(data-num);
+  position: absolute; top: 3px; left: 3px;
+  -webkit-text-stroke: 0;
+  color: rgba(139, 46, 31, 0.55);
+  z-index: -1;
+  filter: blur(2px);
+}
+.shot-num .small {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--rust-bright);
+  -webkit-text-stroke: 0;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.shot-body { display: flex; flex-direction: column; gap: 22px; }
+.shot-title {
+  font-family: var(--font-stencil);
+  font-size: clamp(22px, 2.6vw, 32px);
+  color: var(--ink);
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 14px;
+}
+.shot-title .cn {
+  font-family: var(--font-body);
+  font-style: italic;
+  color: var(--ink-dim);
+  font-size: 0.7em;
+  margin-left: 12px;
+  letter-spacing: 0.1em;
+}
+
+.shot-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+}
+.shot-grid > div {
+  padding: 18px 20px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.shot-grid > div:last-child { border-right: none; }
+.shot-grid .lbl {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: var(--rust-bright);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 8px;
+}
+.shot-grid .val {
+  font-family: var(--font-stencil);
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.5;
+}
+.shot-grid .val.body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--ink);
+  line-height: 1.7;
+  grid-column: span 2;
+}
+.shot-grid .full { grid-column: 1 / -1; }
+.shot-grid .sound {
+  background: rgba(139, 46, 31, 0.05);
+}
+.shot-grid .note {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-dim);
+  letter-spacing: 0.04em;
+}
+
+.shot-visual {
+  position: relative;
+  aspect-ratio: 16/7;
+  background: #000;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+}
+.shot-visual img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: contrast(1.15) saturate(0.8) sepia(0.18) hue-rotate(-8deg);
+  transition: transform 0.8s ease;
+}
+.shot-visual:hover img { transform: scale(1.04); }
+.shot-visual::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.7) 100%),
+              radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.6) 100%);
+}
+.shot-visual .caption {
+  position: absolute; left: 14px; bottom: 12px; z-index: 2;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: var(--sand);
+  text-transform: uppercase;
+}
+
+/* ============== NOTES SECTION ============== */
+.notes-wrap {
+  max-width: 1280px; margin: 0 auto;
+  padding: 0 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+.notes-card {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  padding: 32px 28px;
+  position: relative;
+}
+.notes-card::before {
+  content: ""; position: absolute; top: 0; left: 0;
+  width: 28px; height: 28px;
+  border-top: 2px solid var(--sand);
+  border-left: 2px solid var(--sand);
+}
+.notes-card::after {
+  content: ""; position: absolute; bottom: 0; right: 0;
+  width: 28px; height: 28px;
+  border-bottom: 2px solid var(--sand);
+  border-right: 2px solid var(--sand);
+}
+.notes-card h3 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--ink);
+  margin-bottom: 8px;
+  letter-spacing: 0.03em;
+}
+.notes-card .sub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--rust-bright);
+  text-transform: uppercase;
+  margin-bottom: 22px;
+}
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+}
+.compare-table th, .compare-table td {
+  text-align: left;
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+  color: var(--ink);
+}
+.compare-table th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: var(--sand);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--sand);
+}
+.compare-table td:first-child {
+  font-family: var(--font-mono);
+  color: var(--rust-bright);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  width: 30%;
+}
+
+.specs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 8px;
+}
+.specs .item {
+  border-left: 2px solid var(--rust);
+  padding: 6px 0 6px 12px;
+}
+.specs .item .k {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--ink-dim);
+  text-transform: uppercase;
+}
+.specs .item .v {
+  font-family: var(--font-stencil);
+  font-size: 16px;
+  color: var(--ink);
+  margin-top: 2px;
+}
+
+/* ============== ARCHIVE WALL ============== */
+.archive {
+  max-width: 1280px; margin: 0 auto;
+  padding: 0 48px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+.archive-card {
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  padding: 28px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.archive-card::before {
+  content: attr(data-id);
+  position: absolute; top: 12px; right: 14px;
+  font-family: var(--font-display);
+  font-size: 48px;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--sand-deep);
+  opacity: 0.4;
+  line-height: 1;
+}
+.archive-card .icon {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--rust-bright);
+  margin-bottom: 14px;
+  letter-spacing: 0.1em;
+}
+.archive-card h4 {
+  font-family: var(--font-stencil);
+  font-size: 14px;
+  color: var(--ink);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 10px;
+}
+.archive-card .big {
+  font-family: var(--font-display);
+  font-size: 42px;
+  color: var(--sand);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.archive-card .unit {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--ink-dim);
+  text-transform: uppercase;
+}
+.archive-card p {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--ink-dim);
+  margin-top: 14px;
+  line-height: 1.6;
+}
+
+/* ============== EPILOGUE ============== */
+.epilogue {
+  text-align: center;
+  padding: 140px 24px 100px;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(139, 46, 31, 0.12), transparent 60%),
+    var(--bg);
+  border-top: 1px solid var(--line);
+}
+.epilogue .divider {
+  font-family: var(--font-mono);
+  color: var(--sand);
+  letter-spacing: 1.2em;
+  margin-bottom: 30px;
+  font-size: 14px;
+}
+.epilogue h2 {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 6vw, 76px);
+  color: var(--ink);
+  letter-spacing: 0.06em;
+  margin-bottom: 18px;
+  text-shadow: 2px 2px 0 var(--olive-deep);
+}
+.epilogue h2 small {
+  display: block;
+  font-family: var(--font-stencil);
+  font-size: 0.42em;
+  color: var(--rust-bright);
+  letter-spacing: 0.4em;
+  margin-top: 14px;
+}
+.epilogue p {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(14px, 1.4vw, 18px);
+  color: var(--ink-dim);
+  max-width: 680px;
+  margin: 30px auto;
+  line-height: 1.8;
+}
+.epilogue .sign {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.4em;
+  color: var(--sand);
+  text-transform: uppercase;
+  margin-top: 50px;
+}
+.epilogue .sign::before, .epilogue .sign::after { content: "— "; color: var(--rust-bright); }
+
+/* ============== FOOTER ============== */
+footer {
+  border-top: 1px solid var(--line);
+  padding: 30px 48px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+  background: var(--bg-2);
+}
+footer a { color: var(--sand); text-decoration: none; border-bottom: 1px solid var(--sand); }
+footer a:hover { color: var(--rust-bright); border-color: var(--rust-bright); }
+
+/* ============== RESPONSIVE ============== */
+@media (max-width: 980px) {
+  .shot { grid-template-columns: 1fr; gap: 18px; padding: 36px 0; }
+  .shot-num { font-size: 80px; }
+  .shot-grid { grid-template-columns: 1fr 1fr; }
+  .shot-grid .val.body { grid-column: span 2; }
+  .notes-wrap, .archive { grid-template-columns: 1fr; }
+  .section-head, .shots, .notes-wrap, .archive { padding-left: 24px; padding-right: 24px; }
+  .side-nav { display: none; }
+  .hero::after { display: none; }
+}
+@media (max-width: 640px) {
+  .shot-grid { grid-template-columns: 1fr; }
+  .shot-grid > div { border-right: none; }
+  .shot-grid .val.body { grid-column: span 1; }
+  .top-meta { padding: 8px 16px; font-size: 9px; }
+  .hero .meta-row { gap: 24px; flex-wrap: wrap; }
+}
+
+/* respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="top-meta">
+  <div class="left">REEL 01 · STEEL DAWN · 35MM</div>
+  <div class="right">2026-06-07 · KURSK</div>
+</div>
+
+<nav class="side-nav" id="sideNav" aria-label="分镜目录">
+  <a href="#hero" data-target="hero">00 · HERO</a>
+  <a href="#shot-01" data-target="shot-01">01 · 黎明</a>
+  <a href="#shot-02" data-target="shot-02">02 · 集结</a>
+  <a href="#shot-03" data-target="shot-03">03 · 启动</a>
+  <a href="#shot-04" data-target="shot-04">04 · 奔赴</a>
+  <a href="#shot-05" data-target="shot-05">05 · 敌情</a>
+  <a href="#shot-06" data-target="shot-06">06 · 抢占</a>
+  <a href="#shot-07" data-target="shot-07">07 · 测距</a>
+  <a href="#shot-08" data-target="shot-08">08 · 开火</a>
+  <a href="#shot-09" data-target="shot-09">09 · 击杀</a>
+  <a href="#shot-10" data-target="shot-10">10 · 暴露</a>
+  <a href="#shot-11" data-target="shot-11">11 · 规避</a>
+  <a href="#shot-12" data-target="shot-12">12 · 穿梭</a>
+  <a href="#shot-13" data-target="shot-13">13 · 反击</a>
+  <a href="#shot-14" data-target="shot-14">14 · 冲锋</a>
+  <a href="#shot-15" data-target="shot-15">15 · 终幕</a>
+  <a href="#notes" data-target="notes">· 创作</a>
+  <a href="#archive" data-target="archive">· 档案</a>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section class="hero" id="hero">
+  <div class="hero-inner">
+    <div class="stamp">Director's Cut · Field Reel 01</div>
+    <h1>
+      STEEL DAWN
+      <span class="sub-cn">钢 铁 的 黎 明</span>
+    </h1>
+    <div class="en">K U R S K &nbsp;·&nbsp; 1 9 4 4</div>
+    <p class="quote">
+      "1944 年初夏，我们接到了新的'铁疙瘩'……<br/>
+      可惜，它来得太晚了 —— 但它终究来了。<br/>
+      这一回，轮到我们去找德军算账。"
+      <br/><span style="font-style:normal;font-family:var(--font-mono);font-size:11px;letter-spacing:0.2em;color:var(--ink-faint);">— 车长手记 · 摘自《T-34-85 车组战地日记》</span>
+    </p>
+    <div class="meta-row">
+      <span>SCENE<b>15 SHOTS</b></span>
+      <span>FORMAT<b>35MM · 2.39:1</b></span>
+      <span>YEAR<b>1944 · 库尔斯克</b></span>
+      <span>UNIT<b>T-34-85 · 苏军近卫</b></span>
+    </div>
+  </div>
+  <div class="scroll-hint">SCROLL · 滚动至分镜 01</div>
+</section>
+
+<!-- ========== STORYBOARD ========== -->
+<section class="section" id="storyboard">
+  <div class="section-head">
+    <div>
+      <div class="tag">▣ Storyboard · 分镜脚本</div>
+      <h2>钢铁的黎明 · 十五镜</h2>
+    </div>
+    <div class="count">15 SHOTS · TOTAL 64s</div>
+  </div>
+
+  <div class="shots">
+
+    <!-- SHOT 01 -->
+    <article class="shot" id="shot-01">
+      <div class="shot-num" data-num="01"><span class="small">SHOT</span>01</div>
+      <div class="shot-body">
+        <div class="shot-title">黎明开场 <span class="cn">DAWN OVER KURSK</span></div>
+        <div class="shot-visual">
+          <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Kursk%20battlefield%20at%20dawn%2C%20vast%20flat%20steppe%20covered%20in%20morning%20mist%2C%20burning%20wrecks%20of%20tanks%2C%20smoke%20rising%20from%20craters%2C%20black%20smoke%20columns%20in%20distance%2C%20WW2%20cinematic%20epic%20war%20photograph%2C%20muted%20desaturated%20colors&image_size=landscape_16_9" alt="库尔斯克黎明" loading="lazy">
+          <div class="caption">LOCATION · 库尔斯克平原</div>
+        </div>
+        <div class="shot-grid">
+          <div><span class="lbl">景别</span><div class="val">远景</div></div>
+          <div><span class="lbl">镜头运动</span><div class="val">固定 / 航拍俯视</div></div>
+          <div><span class="lbl">时长</span><div class="val">4s</div></div>
+          <div><span class="lbl">SEQ</span><div class="val">OPEN · 起</div></div>
+          <div class="val body full">黎明时分，广袤的库尔斯克平原被晨雾笼罩，地平线上弥漫着滚滚黑烟，大地满目疮痍，到处是坦克残骸与弹坑。远景缓缓下摇，史诗战场一望无际。</div>
+          <div class="sound full"><span class="lbl">声音设计</span><div class="val">远处传来模糊的炮声 · 风卷起沙尘的低吟 · BGM：低沉大提琴起，营造苍凉沉重的氛围。</div></div>
+          <div class="note full"><span class="lbl">备注</span><div class="val">无人机高空视角 · 交代史诗般的战场背景</div></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- SHOT 02 -->
+    <article class="shot" id="shot-02">
+      <div class="shot-num" data-num="02"><span class="small">SHOT</span>02</div>
+      <div class="shot-body">
+        <div class="shot-title">铁疙瘩集结 <span class="cn">SUPPLY · THE NEW IRON</span></div>
+        <div class="shot-visual">
+          <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=WW2%20Soviet%20T-34-85%20tanks%20lined%20up%20at%20edge%20of%20birch%20forest%2C%20fresh%20white%20recognition%20stripes%2C%20young%20soviet%20tank%20commander%20looking%20through%20binoculars%2C%20overcast%20sky%2C%20cinematic%20war%20photograph%201944&image_size=landscape_16_9" alt="T-34-85 集结" loading="lazy">
+          <div class="caption">LOCATION · 白桦林边缘</div>
+        </div>
+        <div class="shot-grid">
+          <div><span class="lbl">景别</span><div class="val">近景</div></div>
+          <div><span class="lbl">镜头运动</span><div class="val">手持晃动（车内视角）</div></div>
+          <div><span class="lbl">时长</span><div class="val">3s</div></div>
+          <div><span class="lbl">SEQ</span><div class="val">SETUP · 承</div></div>
+          <div class="val body full">一列崭新的 T-34/85 坦克停在树林边缘，炮塔上临时涂着白色识别带。年轻的车长（主角）正用望远镜观察远方。电台里断断续续的呼叫声作底色。</div>
+          <div class="sound full"><span class="lbl">旁白 / 声音</span><div class="val">"1944 年初夏，我们接到了新的'铁疙瘩'……可惜，它来得太晚了。" · 电台断续 · 树叶沙沙。</div></div>
+          <div class="note full"><span class="lbl">备注</span><div class="val">通过角色之口，引出型号更替的历史感</div></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- SHOT 03 -->
+    <article class="shot" id="shot-03">
+      <div class="shot-num" data-num="03"><span class="small">SHOT</span>03</div>
+      <div class="shot-body">
+        <div class="shot-title">钢铁洪流启动 <span class="cn">START THE ENGINES</span></div>
+        <div class="shot-visual">
+          <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Soviet%20T-34-85%20tank%20column%20moving%20on%20muddy%20road%2C%20dust%20rising%2C%20V-2%20diesel%20engine%20exhaust%2C%20crew%20on%20turret%2C%20WW2%20eastern%20front%20cinematic%201944%2C%20desaturated%20war%20film%20look&image_size=landscape_16_9" alt="坦克启动" loading="lazy">
+          <div class="caption">LOCATION · 泥泞土路</div>
+        </div>
+        <div class="shot-grid">
+          <div><span class="lbl">景别</span><div class="val">中景</div></div>
+          <div><span class="lbl">镜头运动</span><div class="val">跟拍</div></div>
+          <div><span class="lbl">时长</span><div class="val">5s</div></div>
+          <div><span class="lbl">SEQ</span><div class="val">MOVE · 动</div></div>
+          <div class="val body full">主角车组跳上坦克，发动机咆哮着启动。坦克群驶出树林，碾过泥泞的土路，掀起漫天尘土。履带声、V-2 柴油机的"咚咚咚"低沉轰鸣，构成钢铁心跳。</div>
+          <div class="sound full"><span class="lbl">声音设计</span><div class="val">V-2 柴油机特有的低沉轰鸣 · 履带碾压碎石 · BGM 节奏渐激昂，加入鼓点。</div></div>
+          <div class="note full"><span class="lbl">备注</span><div class="val">展现 T-34/85 的机动与力量感</div></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- SHOT 04 -->
+    <article class="shot" id="shot-04">
+      <div class="shot-num" data-num="04"><span class="small">SHOT</span>04</div>
+      <div class="shot-body">
+        <div class="shot-title">燃烧的村庄 <span class="cn">THROUGH THE BURNING VILLAGE</span></div>
+        <div class="shot-visual">
+          <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Soviet%20T-34-85%20tank%20driving%20through%20burning%20village%2C%20destroyed%20German%20half-track%2C%20retreating%20infantry%2C%20smoke%20and%20ember%2C%20WW2%20eastern%20front%20cinematic%20war%20scene%201944&image_size=landscape_16_9" alt="燃烧的村庄" loading="lazy">
+          <div class="caption">LOCATION · 战火村庄</div>
+        </div>
+        <div class="shot-grid">
+          <div><span class="lbl">景别</span><div class="val">中景</div></div>
+          <div><span class="lbl">镜头运动</span><div class="val">横移 / 跟车</div></div>
+          <div><span class="lbl">时长</span><div class="val">3s</div></div>
+          <div><span class="lbl">SEQ</span><div class="val">TRANSIT · 渡</div></div>
+          <div class="val body full">主角的坦克编队穿过一个燃烧的村庄，路旁是被摧毁的德军车辆和撤退的步兵。空气中弥漫着硝烟与焦糊味。</div>
+          <div class="sound full"><span class="lbl">声音设计</span><div class="val">警报声 · 风声 · 发动机声交织 · 远处零星步枪声。</div></div>
+          <div class="note full"><span class="lbl">备注</span><div class="val">强调战场的残酷与时间的紧迫</div></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- SHOT 05 -->
+    <article class="shot" id="shot-05">
+      <div class="shot-num" data-num="05"><span class="small">SHOT</span>05</div>
+      <div class="shot-body">
+        <div class="shot-title">敌情骤现 <span class="cn">CONTACT</span></div>
+        <div class="shot-visual">
+          <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=WW2%20German%20Panther%20tanks%20flanking%20maneuver%20on%20open%20steppe%2C%20seen%20through%20tank%20commander%20binoculars%2C%20dust%20and%20heat%20haze%2C%20Soviet%20POV%2C%20cinematic%20war%20photograph%201943%20Kursk&image_size=landscape_16_9" alt="发现黑豹" loading="lazy">
+          <div class="caption">THREAT · 德军 黑豹</div>
+        </div>
+        <div class="shot-grid">
+          <div><span class="lbl">景别</span><div class="val">中景</div></div>
+          <div><span class="lbl">镜头运动</span><div class="val">固定（外部）</div></div>
+          <div><span class="lbl">时长</span><div class="val">3s</div></div>
+          <div><span class="lbl">SEQ</span><div class="val">INCITING · 冲突起</div></div>
+          <div class="val body full">车长（主角）探出炮塔，举起望远镜。画面切入瞄准镜分屏：地平线上，几辆德军"黑豹"坦克正迂回包抄，准备攻击苏军侧翼。</div>
+          <div class="sound full"><span class="lbl">声音设计</span><div class="val">电台战友焦急的求救声：<em>"他们突破防线了！请求支援！"</em></div></div>
+          <div class="note full"><span class="lbl">备注</span><div class="val">制造冲突 · 引出敌方目标</div></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- SHOT 06 -->
+    <article class="shot" id="shot-06">
+      <div class="shot-num" data-num="06"><span class="small">SHOT</span>06</div>
+      <div class="shot-body">
+        <div class="shot-title">抢占射击阵地 <span class="cn">TAKING THE HULL-DOWN POSITION</span></div>
+        <div class="shot-visual">
+          <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Soviet%20T-34-85%20tank%20charging%20up%20reverse%20slope%20hull-down%20defensive%20position%2C%20tank%20hides%20hull%20showing%20only%20turret%2C%20dust%20and%20diesel%20exhaust%2C%20WW2%20tactical%20photograph&image_size=landscape_16_9" alt="抢占阵地" loading="lazy">
+          <div class="caption">TACTICS · 反斜面伏击</div>
+        </div>
+        <div class="shot-grid">
+          <div><span class="lbl">景别</span><div class="val">全景</div></div>
+          <div><span class="lbl">镜头运动</span><div class="val">快速推近</div></div>
+          <div><span class="lbl">时长</span><div class="val">6s</div></div>
+          <div><span class="lbl">SEQ</span><div class="val">RISING · 升</div></div>
+          <div class="val body full">主角指挥驾驶员将坦克加速冲上一个反斜面高地，利用地形优势，只露出炮塔，构建了一个绝佳的伏击阵地。坦克短停，炮管缓缓指向敌军。</div>
+          <div class="sound full"><span class="lbl">旁白 / 声音</span><div class="val"><em>"我们只有一次射击的机会。"</em> · 发动机加力 → 短暂寂静 → 金属冷却的轻响。</div></div>
+          <div class="note full"><span class="lbl">备注</span><div class="val">核心战术：利用 T-34 优秀的机动性抢占地形</div></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- SHOT 07 -->
+    <article class="shot" id="shot-07">
+      <div class="shot-num" data-num="07"><span class="small">SHOT</span>07</div>
+      <div class="shot-body">
+        <div class="shot-title">锁定黑豹 <span class="cn">RANGE 800</span></div>
+        <div class="shot-visual">
+          <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Close-up%20of%20T-34-85%20gunner%20looking%20through%20TSh-16%20sighting%20telescope%2C%20target%20Panther%20tank%20side%20armor%20in%20crosshairs%2C%20tension%20on%20face%2C%20WW2%20tank%20interior%20cinematic%20close-up&image_size=landscape_16_9" alt="瞄准" loading="lazy">
+          <div class="caption">SIGHT · TSh-16 瞄准镜</div>
+        </div>
+        <div class="shot-grid">
+          <div><span class="lbl">景别</span><div class="val">大特写</div></div>
+          <div><span class="lbl">镜头运动</span><div class="val">主观视角 / 车长镜</div></div>
+          <div><span class="lbl">时长</span><div class="val">3s</div></div>
+          <div><span class="lbl">SEQ</span><div class="val">AIM · 张</div></div>
+          <div class="val body full">炮长通过瞄准镜锁定远处一辆"黑豹"坦克的侧装甲。炮手手动装填炮弹，炮闩发出清脆的闭锁声。</div>
+          <div class="sound full"><span class="lbl">声音设计</span><div class="val">炮长报距："<em>800 米！</em>" · 炮闩闭锁声 · 心脏跳动 · 急促呼吸。</div></div>
+          <div class="note full"><span class="lbl">备注</span><div class="val">渲染临战前的极度紧张感</div></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- SHOT 08 -->
+    <article class="shot" id="shot-08">
+      <div class="shot-num" data-num="08"><span class="small">SHOT</span>08</div>
+      <div class="shot-body">
+        <div class="shot-title">开火 · FIRE! <span class="cn">FIRST SHOT</span></div>
+        <div class="shot-visual">
+          <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Soviet%20T-34-85%20tank%20firing%2085mm%20main%20gun%2C%20huge%20muzzle%20flash%20and%20smoke%2C%20slow%20motion%20shell%20leaving%20barrel%2C%20WW2%20cinematic%20action%20shot%2C%20epic%20war%20film%20style&image_size=landscape_16_9" alt="开火" loading="lazy">
+          <div class="caption">ACTION · 主炮开火</div>
+        </div>
+        <div class="shot-grid">
+          <div><span class="lbl">景别</span><div class="val">大特写</div></div>
+          <div><span class="lbl">镜头运动</span><div class="val">慢动作</div></div>
+          <div><span class="lbl">时长</span><div class="val">2s</div></div>
+          <div><span class="lbl">SEQ</span><div class="val">KILL · 破</div></div>
+          <div class="val body full">主角大喊"开火！"。85 毫米主炮猛烈后坐，炮口喷出巨大的火焰和尘土。脱壳穿甲弹呼啸而出。</div>
+          <div class="sound full"><span class="lbl">声音设计</span><div class="val">短暂的静音（蒙太奇）→ 巨大的 85mm 炮声 · 金属被击穿的脆响。</div></div>
+          <div class="note full"><span class="lbl">备注</span><div class="val">展现坦克炮的强大威力</div></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- SHOT 09 -->
+    <article class="shot" id="shot-09">
+      <div class="shot-num" data-num="09"><span class="small">SHOT</span>09</div>
+      <div class="shot-body">
+        <div class="shot-title">黑豹殉爆 <span class="cn">KILL CONFIRMED</span></div>
+        <div class="shot-visual">
+          <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=German%20Panther%20tank%20hit%20by%20Soviet%20shell%2C%20turret%20hatch%20blown%20open%2C%20ammunition%20cooking%20off%2C%20huge%20fireball%20erupting%2C%20black%20smoke%2C%20WW2%20eastern%20front%20epic%20war%20photograph&image_size=landscape_16_9" alt="黑豹殉爆" loading="lazy">
+          <div class="caption">RESULT · 弹药架殉爆</div>
+        </div>
+        <div class="shot-grid">
+          <div><span class="lbl">景别</span><div class="val">全景</div></div>
+          <div><span class="lbl">镜头运动</span><div class="val">慢动作</div></div>
+          <div><span class="lbl">时长</span><div class="val">4s</div></div>
+          <div><span class="lbl">SEQ</span><div class="val">RESULT · 果</div></div>
+          <div class="val body full">穿甲弹击穿"黑豹"炮塔侧面，引爆弹药架。巨大的火球从敌坦克舱口喷涌而出，炮塔被掀开一角，随即冒出滚滚黑烟。</div>
+          <div class="sound full"><span class="lbl">声音设计</span><div class="val">巨大的爆炸声 · 金属扭曲声 · 弹药连锁殉爆的连串闷响。</div></div>
+          <div class="note full"><span class="lbl">备注</span><div class="val">表现击杀的震撼力</div></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- SHOT 10 -->
+    <article class="shot" id="shot-10">
+      <div class="shot-num" data-num="10"><span class="small">SHOT</span>10</div>
+      <div class="shot-body">
+        <div class="shot-title">暴露与威胁 <span class="cn">SPOTTED</span></div>
+        <div class="shot-visual">
+          <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=German%20tank%20shell%20incoming%20trail%20of%20dust%20striking%20Soviet%20T-34-85%20side%20track%2C%20sparks%20and%20debris%2C%20tank%20commander%20shouting%20inside%2C%20POV%20interior%20view%2C%20WW2%20cinematic%20action&image_size=landscape_16_9" alt="被反击命中" loading="lazy">
+          <div class="caption">IMPACT · 履带中弹</div>
+        </div>
+        <div class="shot-grid">
+          <div><span class="lbl">景别</span><div class="val">主观视角</div></div>
+          <div><span class="lbl">镜头运动</span><div class="val">POV / 车长镜晃动</div></div>
+          <div><span class="lbl">时长</span><div class="val">2s</div></div>
+          <div><span class="lbl">SEQ</span><div class="val">DANGER · 危</div></div>
+          <div class="val body full">虽然击毁一辆，但他们也暴露了位置。另一辆德军坦克掉转炮口，一发炮弹呼啸而来，打在坦克侧面的履带上。车内警报四起。</div>
+          <div class="sound full"><span class="lbl">声音设计</span><div class="val">刺耳的金属撞击声 · 车内警报蜂鸣 · 车长暴喝。</div></div>
+          <div class="note full"><span class="lbl">备注</span><div class="val">威胁逼近 · 增加紧张感</div></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- SHOT 11 -->
+    <article class="shot" id="shot-11">
+      <div class="shot-num" data-num="11"><span class="small">SHOT</span>11</div>
+      <div class="shot-body">
+        <div class="shot-title">机动规避 <span class="cn">EVASION</span></div>
+        <div class="shot-visual">
+          <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Soviet%20T-34-85%20tank%20reversing%20fast%20into%20white%20smoke%20screen%2C%20smoke%20grenades%20popping%2C%20chaotic%20battlefield%2C%20WW2%20eastern%20front%20war%20photograph%20cinematic&image_size=landscape_16_9" alt="规避与烟幕" loading="lazy">
+          <div class="caption">COUNTER · 烟幕弹</div>
+        </div>
+        <div class="shot-grid">
+          <div><span class="lbl">景别</span><div class="val">车内晃动</div></div>
+          <div><span class="lbl">镜头运动</span><div class="val">晃动 / 快速剪辑</div></div>
+          <div><span class="lbl">时长</span><div class="val">4s</div></div>
+          <div><span class="lbl">SEQ</span><div class="val">EVADE · 闪</div></div>
+          <div class="val body full">坦克猛地一震，车内扬尘弥漫。主角大喊："左转！烟雾弹！"驾驶员立即倒车，并释放烟雾弹，消失在白色烟幕中。</div>
+          <div class="sound full"><span class="lbl">声音设计</span><div class="val">剧烈金属碰撞 · 成员急促报告 · 烟雾弹释放的爆炸声。</div></div>
+          <div class="note full"><span class="lbl">备注</span><div class="val">车内视角 · 沉浸感 + 混乱感</div></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- SHOT 12 -->
+    <article class="shot" id="shot-12">
+      <div class="shot-num" data-num="12"><span class="small">SHOT</span>12</div>
+      <div class="shot-body">
+        <div class="shot-title">战场穿梭 <span class="cn">HUNTING</span></div>
+        <div class="shot-visual">
+          <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Soviet%20T-34-85%20tank%20sprinting%20across%20battlefield%20weaving%20between%20craters%20and%20burning%20wrecks%2C%20incoming%20shell%20trails%20in%20air%2C%20epic%20wide%20shot%2C%20WW2%20eastern%20front%20cinematic%20war%20film&image_size=landscape_16_9" alt="战场穿梭" loading="lazy">
+          <div class="caption">SPEED · 机动美学</div>
+        </div>
+        <div class="shot-grid">
+          <div><span class="lbl">景别</span><div class="val">远景</div></div>
+          <div><span class="lbl">镜头运动</span><div class="val">俯拍 / 高速跟拍</div></div>
+          <div><span class="lbl">时长</span><div class="val">5s</div></div>
+          <div><span class="lbl">SEQ</span><div class="val">FLUX · 流</div></div>
+          <div class="val body full">主角的 T-34/85 从烟雾中冲出，利用高机动性在战场上灵活穿梭，不断变换位置，躲避敌人精准的远距离打击。</div>
+          <div class="sound full"><span class="lbl">声音设计</span><div class="val">BGM 推向高潮 · 交响 + 金属感 · 引擎咆哮 · 炮弹飞过的尖啸。</div></div>
+          <div class="note full"><span class="lbl">备注</span><div class="val">展现 T-34/85 的机动性优势 · 视觉运动美学</div></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- SHOT 13 -->
+    <article class="shot" id="shot-13">
+      <div class="shot-num" data-num="13"><span class="small">SHOT</span>13</div>
+      <div class="shot-body">
+        <div class="shot-title">协同反击 <span class="cn">COUNTER-ATTACK</span></div>
+        <div class="shot-visual">
+          <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Soviet%20T-34-85%20tank%20firing%20in%20coordination%20with%20Soviet%20infantry%20charging%2C%20red%20banner%20visible%2C%20WW2%20eastern%20front%20coordinated%20assault%20photograph%2C%20epic%20war%20film%20style&image_size=landscape_16_9" alt="协同反击" loading="lazy">
+          <div class="caption">SYNC · 步坦协同</div>
+        </div>
+        <div class="shot-grid">
+          <div><span class="lbl">景别</span><div class="val">中景</div></div>
+          <div><span class="lbl">镜头运动</span><div class="val">固定 / 仰拍</div></div>
+          <div><span class="lbl">时长</span><div class="val">3s</div></div>
+          <div><span class="lbl">SEQ</span><div class="val">TURN · 转</div></div>
+          <div class="val body full">主角的坦克利用地形掩护，与步兵协同，对企图侧击友军阵地的德军装甲部队发起反击。</div>
+          <div class="sound full"><span class="lbl">旁白 / 声音</span><div class="val"><em>"我们不再是猎物。"</em> · 主炮连续开火 · 步兵的冲锋号。</div></div>
+          <div class="note full"><span class="lbl">备注</span><div class="val">展现协同作战与战术反击</div></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- SHOT 14 -->
+    <article class="shot" id="shot-14">
+      <div class="shot-num" data-num="14"><span class="small">SHOT</span>14</div>
+      <div class="shot-body">
+        <div class="shot-title">钢铁冲锋 <span class="cn">STEEL SURGE</span></div>
+        <div class="shot-visual">
+          <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Massive%20Soviet%20T-34-85%20tank%20column%20charging%20forward%20through%20dust%20and%20smoke%2C%20epic%20wide%20shot%2C%20red%20army%20breaking%20through%20German%20defenses%2C%20WW2%20epic%20war%20cinematic%20photograph&image_size=landscape_16_9" alt="钢铁冲锋" loading="lazy">
+          <div class="caption">SURGE · 突破防线</div>
+        </div>
+        <div class="shot-grid">
+          <div><span class="lbl">景别</span><div class="val">全景</div></div>
+          <div><span class="lbl">镜头运动</span><div class="val">慢动作 / 后拉</div></div>
+          <div><span class="lbl">时长</span><div class="val">5s</div></div>
+          <div><span class="lbl">SEQ</span><div class="val">CLIMAX · 顶</div></div>
+          <div class="val body full">苏军坦克集群发起冲击，钢铁洪流般的 T-34/85 编队冲向德军阵地，最终突破其防线。</div>
+          <div class="sound full"><span class="lbl">声音设计</span><div class="val">激昂交响乐 · 铜管 · 数十辆坦克发动机汇聚成低频巨浪。</div></div>
+          <div class="note full"><span class="lbl">备注</span><div class="val">描绘集体冲锋 · 呼应"钢铁洪流"的历史印象</div></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- SHOT 15 -->
+    <article class="shot" id="shot-15">
+      <div class="shot-num" data-num="15"><span class="small">SHOT</span>15</div>
+      <div class="shot-body">
+        <div class="shot-title">战后 · 归途 <span class="cn">EPILOGUE</span></div>
+        <div class="shot-visual">
+          <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Weary%20Soviet%20tank%20commander%20leaning%20on%20T-34-85%20turret%20at%20sunset%2C%20face%20covered%20in%20oil%20and%20soot%2C%20destroyed%20German%20tank%20wrecks%20in%20background%2C%20golden%20light%2C%20WW2%20cinematic%20portrait%20photograph&image_size=landscape_16_9" alt="战后归途" loading="lazy">
+          <div class="caption">CLOSE · 电影式收尾</div>
+        </div>
+        <div class="shot-grid">
+          <div><span class="lbl">景别</span><div class="val">近景</div></div>
+          <div><span class="lbl">镜头运动</span><div class="val">固定</div></div>
+          <div><span class="lbl">时长</span><div class="val">3s</div></div>
+          <div><span class="lbl">SEQ</span><div class="val">END · 合</div></div>
+          <div class="val body full">硝烟散去，夕阳西下。主角满脸油污地靠在炮塔上，看着被摧毁的德军坦克残骸。他们身后是同样满身伤痕但依然屹立的 T-34/85。</div>
+          <div class="sound full"><span class="lbl">声音设计</span><div class="val">战场归于平静 · 只剩风声 · 电台里的庆祝声 · BGM 转为悠扬、悲壮又带有一丝希望的旋律。</div></div>
+          <div class="note full"><span class="lbl">备注</span><div class="val">电影式收尾 · 制造情感共鸣</div></div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ========== NOTES ========== -->
+<section class="section" id="notes">
+  <div class="section-head">
+    <div>
+      <div class="tag">▣ Notes · 创作说明</div>
+      <h2>从 Bf-109 到 T-34-85 · 剧本转换笔记</h2>
+    </div>
+    <div class="count">02 PANELS</div>
+  </div>
+
+  <div class="notes-wrap">
+
+    <div class="notes-card">
+      <h3>空战版 vs 坦克版</h3>
+      <div class="sub">A · Script Translation</div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>维度</th><th>空战版</th><th>坦克版</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>战场</td><td>东线 · 日落</td><td>库尔斯克 · 黎明</td></tr>
+          <tr><td>主角</td><td>Bf-109 飞行员</td><td>T-34-85 车长</td></tr>
+          <tr><td>敌人</td><td>英军"英俊战士"</td><td>德军"黑豹"坦克</td></tr>
+          <tr><td>核心战术</td><td>BZ + 螺旋爬升</td><td>抢占地形 + 近战冲锋</td></tr>
+          <tr><td>结尾方式</td><td>撤离 · 开放式</td><td>胜利 · 史诗式</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="notes-card">
+      <h3>T-34-85 核心参数</h3>
+      <div class="sub">B · Vehicle Data Sheet</div>
+      <div class="specs">
+        <div class="item"><div class="k">主炮</div><div class="v">85mm ZiS-S-53</div></div>
+        <div class="item"><div class="k">备弹</div><div class="v">55~60 发</div></div>
+        <div class="item"><div class="k">动力</div><div class="v">V-2 柴油 · 500 hp</div></div>
+        <div class="item"><div class="k">极速</div><div class="v">55 km/h</div></div>
+        <div class="item"><div class="k">车组</div><div class="v">5 人</div></div>
+        <div class="item"><div class="k">穿甲</div><div class="v">102mm / 1000m</div></div>
+      </div>
+      <p style="font-family:var(--font-body);font-size:13px;color:var(--ink-dim);margin-top:18px;line-height:1.7;">
+        T-34-85 在库尔斯克战役后才开始量产，1944 年初投入战场。它的 85mm 主炮终于能在常规距离内击穿德军"黑豹"与"虎式"的前装甲。
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== ARCHIVE ========== -->
+<section class="section" id="archive">
+  <div class="section-head">
+    <div>
+      <div class="tag">▣ Archive · 战地档案</div>
+      <h2>库尔斯克会战 · 硬数据</h2>
+    </div>
+    <div class="count">04 DOSSIERS</div>
+  </div>
+
+  <div class="archive">
+    <div class="archive-card" data-id="A">
+      <div class="icon">▣</div>
+      <h4>主炮口径</h4>
+      <div class="big">85<span style="font-size:18px;color:var(--ink-dim);">mm</span></div>
+      <div class="unit">ZiS-S-53 · 1944</div>
+      <p>替代原 76.2mm F-34 炮，可在 1000m 距离击穿 102mm 装甲。</p>
+    </div>
+    <div class="archive-card" data-id="B">
+      <div class="icon">⚙</div>
+      <h4>动力总成</h4>
+      <div class="big">500<span style="font-size:18px;color:var(--ink-dim);">hp</span></div>
+      <div class="unit">V-2 柴油机 · V12</div>
+      <p>5 速变速箱，公路极速 55km/h，越野 25~30km/h。</p>
+    </div>
+    <div class="archive-card" data-id="C">
+      <div class="icon">✚</div>
+      <h4>装甲厚度</h4>
+      <div class="big">90<span style="font-size:18px;color:var(--ink-dim);">mm</span></div>
+      <div class="unit">前装甲 · 倾斜 60°</div>
+      <p>焊接装甲 · 倾斜 60° 时等效厚度 120mm+。</p>
+    </div>
+    <div class="archive-card" data-id="D">
+      <div class="icon">★</div>
+      <h4>会战规模</h4>
+      <div class="big">800<span style="font-size:18px;color:var(--ink-dim);"> vs 400</span></div>
+      <div class="unit">T-34 · vs 虎 + 黑豹</div>
+      <p>1943.7~8 · 人类史上最大坦克会战 · 苏军惨胜。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== EPILOGUE ========== -->
+<section class="epilogue" id="epilogue">
+  <div class="divider">✦ ✦ ✦</div>
+  <h2>导演寄语<small>DIRECTOR'S NOTE</small></h2>
+  <p>
+    这不是一份只属于《战争雷霆》的分镜脚本。<br/>
+    它是钢铁与泥泞、勇气与迟到的胜利之间，<br/>
+    一次跨越 80 年的无声对话。
+  </p>
+  <p style="font-size:14px;color:var(--ink-faint);">
+    「T-34-85 来得太晚——但它终究来了。」
+  </p>
+  <div class="sign">ROLL CAMERA · PRINT TAKE 01</div>
+</section>
+
+<footer>
+  <div>© 2026 · STEEL DAWN · FIELD ARCHIVE</div>
+  <div>PRODUCED WITH HONOR · 仅供学习与历史科普</div>
+  <div>FORMAT <a href="#hero">回到顶部 ↑</a></div>
+</footer>
+
+<script>
+(function(){
+  // ---- Progress bar ----
+  const progress = document.getElementById('progress');
+  function updateProgress(){
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight);
+    progress.style.width = (scrolled * 100).toFixed(2) + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  // ---- Side nav active state via IntersectionObserver ----
+  const sideLinks = document.querySelectorAll('.side-nav a');
+  const targets = Array.from(sideLinks).map(a => document.getElementById(a.dataset.target)).filter(Boolean);
+
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          sideLinks.forEach(a => a.classList.toggle('active', a.dataset.target === id));
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+    targets.forEach(t => io.observe(t));
+  }
+
+  // ---- Smooth scroll for side nav ----
+  sideLinks.forEach(a => {
+    a.addEventListener('click', (e) => {
+      const t = document.getElementById(a.dataset.target);
+      if (t) {
+        e.preventDefault();
+        t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // ---- Subtle parallax on shot visuals ----
+  const visuals = document.querySelectorAll('.shot-visual img');
+  window.addEventListener('scroll', () => {
+    visuals.forEach(img => {
+      const rect = img.parentElement.getBoundingClientRect();
+      if (rect.bottom > 0 && rect.top < window.innerHeight) {
+        const offset = (rect.top - window.innerHeight/2) * 0.06;
+        img.style.transform = `translateY(${offset.toFixed(2)}px) scale(1.06)`;
+      }
+    });
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>
