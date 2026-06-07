@@ -1,0 +1,256 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink: #0A0B12;
+  --paper: #E8E4D8;
+  --gilt: #D4AF37;
+  --electric: #5BC0EB;
+  --magenta: #EF476F;
+  --sprout: #06D6A0;
+  --twilight: #7B2CBF;
+  --mist-bg: #0A0B12;
+  --polar-bg: #050610;
+  --flame-bg: #120A0A;
+  --aurora-bg: #0A1014;
+  --ease-soft: cubic-bezier(.2,.8,.2,1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: 'Inter Tight', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+body {
+  cursor: none;
+}
+
+@media (max-width: 768px) {
+  body {
+    cursor: auto;
+  }
+}
+
+::selection {
+  background: var(--gilt);
+  color: var(--ink);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.25);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.5);
+}
+
+.font-display { font-family: 'Fraunces', Georgia, serif; }
+.font-mono    { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+.font-han     { font-family: 'Noto Serif SC', serif; }
+
+.gilt-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212,175,55,.6), transparent);
+}
+
+.gilt-text {
+  background: linear-gradient(135deg, #f0d57a 0%, #D4AF37 50%, #a07a1c 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.btn-capsule {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.6rem;
+  border: 1px solid rgba(232,228,216,0.35);
+  border-radius: 999px;
+  color: var(--paper);
+  background: transparent;
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transition: border-color .6s var(--ease-soft), background .6s var(--ease-soft), letter-spacing .6s var(--ease-soft);
+  cursor: none;
+}
+.btn-capsule:hover {
+  border-color: var(--gilt);
+  background: rgba(212,175,55,0.06);
+  letter-spacing: 0.24em;
+}
+.btn-capsule .arrow {
+  width: 14px;
+  height: 1px;
+  background: currentColor;
+  position: relative;
+  transition: width .6s var(--ease-soft);
+}
+.btn-capsule .arrow::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: -3px;
+  width: 7px;
+  height: 7px;
+  border-right: 1px solid currentColor;
+  border-top: 1px solid currentColor;
+  transform: rotate(45deg);
+}
+.btn-capsule:hover .arrow {
+  width: 22px;
+}
+
+.section-frame {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  padding: clamp(2.5rem, 6vw, 6rem) clamp(1.5rem, 5vw, 5rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.section-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(232,228,216,0.55);
+}
+
+.section-meta .num {
+  color: var(--gilt);
+}
+
+.section-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 300;
+  font-size: clamp(3rem, 9vw, 9rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  margin: 0.6rem 0 0;
+  font-variation-settings: "opsz" 144;
+}
+
+.section-sub {
+  font-family: 'Inter Tight', sans-serif;
+  font-weight: 400;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  max-width: 38rem;
+  color: rgba(232,228,216,0.7);
+  margin-top: 1.5rem;
+}
+
+.grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.08;
+  z-index: 9998;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode: overlay;
+}
+
+.vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9997;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.55) 100%);
+}
+
+.bg-mist        { background: var(--mist-bg); }
+.bg-polar       { background: var(--polar-bg); }
+.bg-flame       { background: var(--flame-bg); }
+.bg-aurora      { background: var(--aurora-bg); }
+
+.text-gilt      { color: var(--gilt); }
+.text-paper     { color: var(--paper); }
+.text-paper-70  { color: rgba(232,228,216,0.7); }
+.text-paper-50  { color: rgba(232,228,216,0.5); }
+.text-paper-30  { color: rgba(232,228,216,0.3); }
+
+.bord-paper-15  { border: 1px solid rgba(232,228,216,0.15); }
+.bord-gilt-50   { border: 1px solid rgba(212,175,55,0.5); }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes drift {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(20px, -10px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes breath {
+  0%, 100% { opacity: 0.4; transform: scale(0.92); }
+  50%      { opacity: 1.0; transform: scale(1.04); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-float   { animation: float 6s var(--ease-soft) infinite; }
+.animate-drift   { animation: drift 12s var(--ease-soft) infinite; }
+.animate-breath  { animation: breath 5s var(--ease-soft) infinite; }
+.animate-spin-slow { animation: spin-slow 60s linear infinite; }
+
+.tag-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid rgba(232,228,216,0.2);
+  border-radius: 999px;
+  color: rgba(232,228,216,0.7);
+  background: rgba(232,228,216,0.04);
+  white-space: nowrap;
+}
+
+input, button, textarea {
+  font-family: inherit;
+}
+
+.no-cursor, .no-cursor * {
+  cursor: none !important;
+}
