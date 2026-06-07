@@ -12,7 +12,7 @@ import { useGameLoop } from '../hooks/useGameLoop';
 import { useEffect } from 'react';
 import { audioEngine } from '../audio/audioEngine';
 import { Link } from 'react-router-dom';
-import { Cog, BookOpen, Hammer, Users, Activity } from 'lucide-react';
+import { Cog, BookOpen, Hammer, Users, Activity, TreePine, Crown } from 'lucide-react';
 
 export default function Home() {
   // 启动游戏循环
@@ -67,6 +67,8 @@ export default function Home() {
               <div className="flex-1" />
               <div className="flex gap-1">
                 <NavLinkBtn to="/" icon={Activity} label="监控" />
+                <NavLinkBtn to="/characters" icon={Crown} label="角色" />
+                <NavLinkBtn to="/qliphoth" icon={TreePine} label="卡巴拉" />
                 <NavLinkBtn to="/employees" icon={Users} label="员工" />
                 <NavLinkBtn to="/workshop" icon={Hammer} label="E.G.O" />
                 <NavLinkBtn to="/codex" icon={BookOpen} label="图鉴" />

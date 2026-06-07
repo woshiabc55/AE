@@ -1,63 +1,18 @@
-// 部长剧情页
+// 部长剧情页 - 5 天核心抑制剧情
 
 import { Link } from 'react-router-dom';
 import { useGameStore } from '../store/gameStore';
 import { departments } from '../data/departments';
-import { ArrowLeft, X } from 'lucide-react';
-
-const dialogues: Record<string, { speaker: string; lines: string[] }> = {
-  control: {
-    speaker: 'Malkuth · 控制部长',
-    lines: [
-      '欢迎来到脑叶公司，主管。',
-      '这里收容的……是那些被世界遗弃的存在。',
-      '他们有自己的规则。学会这些规则——',
-      '——否则，你将失去一切。',
-      '（你将作为这个"电池"系统的主管，照看他们。）',
-    ],
-  },
-  info: {
-    speaker: 'Yesod · 情报部长',
-    lines: [
-      '信息是这间设施里最稀缺的资源。',
-      '我已记录了这里发生的一切。',
-      '这些记录……你是否也有权利知道？',
-      '……但愿如此。',
-    ],
-  },
-  safety: {
-    speaker: 'Hod · 安保部长',
-    lines: [
-      '安保的本质不是镇压——',
-      '是让员工在崩溃前，找到回家的路。',
-      '你问我如何看待那些失联的名字？',
-      '……我不敢回答。',
-    ],
-  },
-  training: {
-    speaker: 'Netzach · 培训部长',
-    lines: [
-      '喝酒吗？……开玩笑的。',
-      '你看到那些家伙的眼神了吗？',
-      '每一个走进收容单元的人……',
-      '都已经准备好了一切——除了活着走出来。',
-    ],
-  },
-  central: {
-    speaker: 'Tiphareth · 中央本部长',
-    lines: [
-      '我代表七位部长的意志。',
-      '你做出的每一个决定……',
-      '都将通过我们的审核。',
-      '这是保护，也是审判。',
-    ],
-  },
-};
+import { qliphahBySephirah } from '../data/qliphoth';
+import { directors } from '../data/characters';
+import { ArrowLeft, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState } from 'react';
 
 export default function Story() {
   const deptId = useGameStore((s) => s.currentStoryDept);
   const close = useGameStore((s) => s.closeStory);
-  const progress = useGameStore((s) => s.storyProgress);
+
+  const [phaseIdx, setPhaseIdx] = useState(0);
 
   if (!deptId) {
     return (
@@ -72,9 +27,23 @@ export default function Story() {
   }
 
   const dept = departments.find(d => d.id === deptId);
-  const story = dialogues[deptId] || { speaker: dept?.director || '???', lines: ['……（沉默）'] };
-  const cur = progress[deptId] || 0;
-  const line = story.lines[Math.min(cur, story.lines.length - 1)];
+  const qli = qliphahBySephirah(deptId);
+  const dir = directors.find(d => d.sephirahId === deptId);
+  if (!qli || !dir) return null;
+
+  const allPhases = qli.suppressionPhases;
+  const currentPhase = allPhases[phaseIdx];
+
+  const handleNext = () => {
+    if (phaseIdx < allPhases.length - 1) {
+      setPhaseIdx(phaseIdx + 1);
+    } else {
+      close();
+    }
+  };
+  const handlePrev = () => {
+    if (phaseIdx > 0) setPhaseIdx(phaseIdx - 1);
+  };
 
   return (
     <div className="h-screen w-screen flex flex-col bg-void noise-bg crt-scanlines overflow-hidden">
@@ -83,33 +52,111 @@ export default function Story() {
           <ArrowLeft className="w-3 h-3" /> 返回
         </Link>
         <h1 className="font-display text-amber text-lg tracking-widest font-bold">{dept?.name || deptId} · 核心抑制</h1>
+        <span className="text-text-dim font-mono text-[10px]">{qli.english} · 5 天剧情</span>
         <button onClick={close} className="ml-auto btn-pixel text-[10px]">
           <X className="w-3 h-3" /> 关闭
         </button>
       </div>
 
       <div className="flex-1 flex">
-        {/* 部长立绘占位 */}
-        <div className="w-1/3 bg-gradient-to-r from-obsidian to-panel-light/20 flex items-end justify-center pb-12">
-          <div className="text-center">
-            <div className="w-48 h-64 bg-panel border-2 border-panel-light flex items-center justify-center mx-auto mb-2"
-                 style={{ borderColor: dept?.color || '#5a5a6a' }}>
-              <div className="font-display text-[8px] text-text-dim">[立绘占位]</div>
+        {/* 左侧：部长档案 + 进度 */}
+        <div className="w-72 bg-obsidian border-r border-panel-light p-4 overflow-y-auto font-mono text-[10px] space-y-3">
+          {/* 立绘占位 */}
+          <div
+            className="w-full h-48 border-2 flex items-center justify-center"
+            style={{ borderColor: '#ffe600', background: '#0a0a0a' }}
+          >
+            <div className="text-center">
+              <div className="text-5xl font-serif text-amber">♛</div>
+              <div className="text-[9px] text-text-mute mt-2">[部长立绘占位]</div>
             </div>
-            <div className="font-display text-amber tracking-widest text-sm">{dept?.director || '???'}</div>
+          </div>
+
+          <div>
+            <div className="text-amber font-display text-sm font-bold">{dir.nickname}</div>
+            <div className="text-text-mute text-[10px]">性格：{dir.personality.mbti} · {dir.personality.enneagram}</div>
+            <div className="text-text-mute text-[10px]">年龄：{dir.age === -1 ? '永恒' : String(dir.age)}</div>
+          </div>
+
+          <div className="text-bone/80 text-[11px] italic font-serif border-l-2 border-amber pl-2">
+            "{dir.voice.catchphrase}"
+          </div>
+
+          {/* 5 天进度 */}
+          <div className="pt-2 border-t border-panel-light/40">
+            <div className="text-amber text-[10px] tracking-widest mb-2">5 天节拍</div>
+            <div className="space-y-1">
+              {allPhases.map((p, i) => (
+                <div
+                  key={i}
+                  className={`p-2 border-l-2 cursor-pointer transition-all ${
+                    i === phaseIdx
+                      ? 'border-amber bg-amber/10'
+                      : i < phaseIdx
+                      ? 'border-enkephalin/40 bg-panel/40'
+                      : 'border-text-dim/40'
+                  }`}
+                  onClick={() => setPhaseIdx(i)}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="font-display text-amber text-[10px]">D{p.day}</span>
+                    <span className="text-bone text-[11px]">「{p.title}」</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* 对白框 */}
-        <div className="flex-1 p-8 flex flex-col justify-end">
-          <div className="font-display text-text-mute text-xs tracking-widest mb-2">
-            {story.speaker}
+        {/* 中央：对白 */}
+        <div className="flex-1 flex flex-col p-8">
+          <div className="font-display text-text-mute text-xs tracking-widest mb-2 flex items-center gap-2">
+            <span className="text-amber">{qli.name} · {qli.english}</span>
+            <span>· D{currentPhase.day}</span>
+            <span>· {currentPhase.title}</span>
           </div>
-          <div className="font-serif text-bone text-xl leading-loose border-l-2 border-amber pl-6">
-            {line}
+
+          {/* 阴影实体描述 */}
+          <div className="mb-4 text-[10px] text-text-dim font-mono">
+            阴影实体：<span className="text-alert">{qli.demon}</span> · 代表之罪：<span className="text-alert">{qli.sin}</span>
           </div>
-          <div className="mt-8 flex gap-2">
-            <button onClick={close} className="btn-pixel text-[10px]">继续 →</button>
+
+          {/* 对白框 */}
+          <div className="flex-1 flex flex-col justify-end max-w-3xl">
+            <div className="font-serif text-bone text-xl leading-loose border-l-4 border-amber pl-6 mb-6">
+              {currentPhase.narrative}
+            </div>
+
+            {/* 选择 */}
+            <div className="border-l-4 border-enkephalin pl-6 py-2 bg-enkephalin/5">
+              <div className="text-text-mute text-[10px] mb-1 font-mono">▸ 你的回应</div>
+              <div className="text-enkephalin font-serif text-lg italic">
+                {currentPhase.choice}
+              </div>
+            </div>
+
+            {/* 控制器 */}
+            <div className="mt-8 flex items-center gap-2">
+              <button
+                onClick={handlePrev}
+                disabled={phaseIdx === 0}
+                className="btn-pixel text-[10px] disabled:opacity-30"
+              >
+                <ChevronLeft className="w-3 h-3" /> 上一天
+              </button>
+              <span className="text-text-dim font-mono text-[10px]">
+                {phaseIdx + 1} / {allPhases.length}
+              </span>
+              {phaseIdx < allPhases.length - 1 ? (
+                <button onClick={handleNext} className="btn-pixel text-[10px]">
+                  下一天 <ChevronRight className="w-3 h-3" />
+                </button>
+              ) : (
+                <button onClick={() => { close(); }} className="btn-pixel text-[10px] border-enkephalin text-enkephalin">
+                  完成核心抑制
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
