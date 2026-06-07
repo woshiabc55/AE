@@ -17,11 +17,12 @@
 
 > 原脚本中"章生一"、"张志耀"为笔误。所有解读以"哥哥=张寄，弟弟=张志元"为准。
 
-## 文件清单（共 75 个 HTML）
+## 文件清单（共 76 个 HTML）
 
 | 类别 | 文件 |
 |------|------|
-| 主 PPT 入口 | [index.html](file:///workspace/index.html) — 14 张幻灯片 |
+| **主 PPT 入口（正式文稿）** | [ppt.html](file:///workspace/ppt.html) — **24 张幻灯片**，含发言稿 / 文稿模式 / 计时器 / 打印 PDF |
+| 主 PPT 旧版 | [index.html](file:///workspace/index.html) — 14 张幻灯片 |
 | 主旨专题 | [theme.html](file:///workspace/theme.html) |
 | 深度解读 | [essay.html](file:///workspace/essay.html) |
 | 资源索引 | [gallery.html](file:///workspace/gallery.html) |
@@ -34,17 +35,50 @@
 ```bash
 cd /workspace
 python3 -m http.server 8000
-# 浏览器访问 http://localhost:8000/
+# 浏览器访问 http://localhost:8000/ppt.html  （正式文稿）
+# 或       http://localhost:8000/             （旧版入口）
 ```
 
-## 操作
+## 正式文稿 ppt.html 操作
 
-### PPT 翻页
+### 翻页
 - `→` / `Space` / `PageDown` — 下一页
 - `←` / `PageUp` — 上一页
 - `Home` / `End` — 跳到首/末页
 - 鼠标点击右下角 ‹ › 按钮
-- 移动端：左右滑动
+
+### 增强功能
+- `N` — 切换发言稿面板（演讲时显示每页备注）
+- `D` — 切换文稿模式（所有幻灯片连续滚动）
+- `P` — 打印 / 导出 PDF
+- 顶部"发言稿"按钮 / "文稿模式"按钮
+- 底部计时器（演讲计时）
+
+### 24 张幻灯片目录
+1. 封面
+2. 致辞
+3. 目录
+4. 序章·黑场
+5. 现代伏笔·碎瓷
+6. 主旨总纲
+7. 人物关系修正
+8. 人物对照
+9. 哥哥·四个守的瞬间
+10. 弟弟·四个听的瞬间
+11. 三幕结构
+12. 第一幕·开篇
+13. 第一幕·寻土
+14. 第一幕·起窑
+15. 第一幕·未开片
+16. 第二幕·开篇
+17. 第二幕·兄弟之印 ⭐
+18. 第二幕·证据
+19. 第三幕·开篇
+20. 第三幕·如一人 ⭐
+21. 第三幕·金丝铁线
+22. 主旨升华
+23. 主题字幕
+24. 致谢·片尾
 
 ### 音频播放（Web Audio 合成）
 - 古琴单音 — `data-sound="guqin"`

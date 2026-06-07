@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>哥窑 · 主旨解读 — 正式文稿</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;500;700&family=Noto+Sans+SC:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/ppt.css">
+</head>
+<body>
+<div class="noise"></div>
+
+<div class="progress"><div class="progress-bar"></div></div>
+
+<nav class="deck-nav">
+  <a href="index.html">旧版</a>
+  <span class="sep">·</span>
+  <a href="theme.html">主旨</a>
+  <span class="sep">·</span>
+  <a href="essay.html">解读</a>
+  <span class="sep">·</span>
+  <a href="gallery.html">分镜</a>
+  <span class="sep">·</span>
+  <button class="mode-btn" id="docModeBtn">文稿模式</button>
+  <span class="sep">·</span>
+  <button class="mode-btn" id="notesBtn">发言稿</button>
+  <span class="sep">·</span>
+  <span class="cur"><span class="cur-page">01</span> / <span class="total-page">24</span></span>
+</nav>
+
+<!-- 发言稿面板 -->
+<aside class="speaker-panel" id="speakerPanel">
+  <button class="toggle" id="closeNotes">×</button>
+  <div id="notesContent"></div>
+</aside>
+
+<!-- 计时器 -->
+<div class="timer">
+  <span class="clock-dot"></span>
+  <span id="elapsed">00:00</span>
+</div>
+
+<div class="deck" tabindex="0">
+
+  <!-- ========== 1 · 封面 ========== -->
+  <section class="slide active" data-slide="1" data-notes="各位评委、各位来宾：今天我带来的不是一份普通的提案，而是一份关于'传承'的视觉史诗——《哥窑》。它用66个分镜，回答了一个问题：哥窑之'哥'，是谁？">
+    <div class="bg-grid"></div>
+    <div class="ink-drop" style="top: 18%; left: 10%;"></div>
+    <div class="ink-drop" style="top: 70%; right: 15%; background: radial-gradient(circle, var(--kiln-gold), transparent 60%);"></div>
+    <div class="slide-inner" style="text-align: center;">
+      <div class="eyebrow center">A VISUAL EPIC OF HERITAGE · 视觉史诗</div>
+      <h1 class="huge" style="margin-top: 1em;">
+        <span class="ghost">哥</span><span class="accent">窑</span>
+      </h1>
+      <div class="subtitle">窑火如歌 · 兄弟如线</div>
+      <div style="margin-top: 4em; display: flex; justify-content: center; gap: 3em; align-items: center; flex-wrap: wrap;">
+        <span class="seal">龙泉章氏</span>
+        <div style="font-family: var(--font-display); font-size: 13px; letter-spacing: .4em; color: var(--ash); line-height: 2;">
+          主旨解读 · 主题演讲<br>
+          <span style="color: var(--kiln-gold);">A REINTERPRETATION</span>
+        </div>
+        <div style="font-family: var(--font-display); font-size: 12px; letter-spacing: .3em; color: var(--ash);">
+          24 SLIDES<br>
+          66 SHOTS · 3 ACTS
+        </div>
+      </div>
+      <div style="margin-top: 5em;">
+        <button class="btn" data-deck-next>开 始 演 讲 →</button>
+      </div>
+      <div style="margin-top: 3em; font-family: var(--font-display); font-size: 11px; letter-spacing: .3em; color: var(--ash);">
+        键盘 <span class="kbd">←</span> <span class="kbd">→</span> <span class="kbd">Space</span> 翻页 · <span class="kbd">N</span> 发言稿 · <span class="kbd">D</span> 文稿模式
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 2 · 致辞 ========== -->
+  <section class="slide" data-slide="2" data-notes="在正式解读之前，我必须先致谢一位非常重要的人——正是您对人物关系的指正，让我意识到'哥哥是张寄，弟弟是张志元'，这是理解整部作品的关键钥匙。">
+    <div class="slide-num">02 / 24</div>
+    <div class="slide-inner">
+      <div class="eyebrow">DEDICATION · 致 辞</div>
+      <h2 class="huge" style="font-size: clamp(40px, 6vw, 88px); line-height: 1.2;">
+        致 · <span class="accent">那只</span>按住印的<span class="accent">手</span>
+      </h2>
+      <p class="body-text" style="margin-top: 1.5em;">
+        非常感谢您的指正。<br>
+        <em>这是至关重要的细节。</em>
+      </p>
+      <div class="pull-quote">
+        我重新核对了脚本，并完全接受您的纠正：<br>
+        <em>哥哥是张寄，弟弟是张志元。</em>
+        <cite>—— 主创手记</cite>
+      </div>
+      <p class="body-text">
+        您给出的明确设定，是<strong>解读人物关系的唯一正确钥匙</strong>。
+        真正的精神内核不变，只是人物标签互换——
+        <em style="color: var(--kiln-gold);">而这一次互换，让"传承"二字获得了最清晰的视觉对应。</em>
+      </p>
+    </div>
+  </section>
+
+  <!-- ========== 3 · 目录 ========== -->
+  <section class="slide" data-slide="3" data-notes="今天的演讲分为五个部分。我们将依次走过：主旨、人物、三幕、升华、致敬。">
+    <div class="slide-num">03 / 24</div>
+    <div class="slide-inner">
+      <div class="eyebrow">CONTENTS · 目 录</div>
+      <h2 class="huge" style="font-size: clamp(36px, 5vw, 72px);">本次演讲 · 五篇章</h2>
+      <div class="toc">
+        <div class="toc-item" data-jump="4"><span class="toc-num">I</span><span class="toc-title">问句：哥窑的"哥"</span><span class="toc-dots"></span><span class="toc-page">04</span></div>
+        <div class="toc-item" data-jump="6"><span class="toc-num">II</span><span class="toc-title">主旨：传承之歌</span><span class="toc-dots"></span><span class="toc-page">06</span></div>
+        <div class="toc-item" data-jump="8"><span class="toc-num">III</span><span class="toc-title">人物：两兄弟</span><span class="toc-dots"></span><span class="toc-page">08</span></div>
+        <div class="toc-item" data-jump="13"><span class="toc-num">IV</span><span class="toc-title">第一幕：历史回溯</span><span class="toc-dots"></span><span class="toc-page">13</span></div>
+        <div class="toc-item" data-jump="16"><span class="toc-num">V</span><span class="toc-title">第二幕：贡品之印</span><span class="toc-dots"></span><span class="toc-page">16</span></div>
+        <div class="toc-item" data-jump="19"><span class="toc-num">VI</span><span class="toc-title">第三幕：窑火成瓷</span><span class="toc-dots"></span><span class="toc-page">19</span></div>
+        <div class="toc-item" data-jump="22"><span class="toc-num">VII</span><span class="toc-title">升华：持守与开创</span><span class="toc-dots"></span><span class="toc-page">22</span></div>
+        <div class="toc-item" data-jump="24"><span class="toc-num">VIII</span><span class="toc-title">致敬：片尾</span><span class="toc-dots"></span><span class="toc-page">24</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 4 · 序章·黑场 ========== -->
+  <section class="slide" data-slide="4" data-notes="一切的起点，是黑场中的一个问句：'哥窑的哥，是谁？' 这是整部作品的核心追问。">
+    <div class="slide-num">04 / 24</div>
+    <div class="slide-inner" style="text-align: center;">
+      <div class="eyebrow center">PROLOGUE · 序章 · 镜号 1–5</div>
+      <div style="margin: 4em 0;">
+        <div style="font-family: var(--font-serif-cn); font-size: clamp(20px, 2.4vw, 32px); color: var(--paper-soft); line-height: 2.4; letter-spacing: .15em;">
+          <span style="color: var(--ash);">黑场</span>　·　<span style="color: var(--ash);">特写</span>　·　<span style="color: var(--ash);">中景</span>　·　<span style="color: var(--ash);">大特写</span>　·　<span style="color: var(--ash);">黑场字幕</span>
+        </div>
+      </div>
+      <div class="pull-quote" style="text-align: center; border: none; padding: 0; margin: 2em 0;">
+        "哥窑的'哥'，<br>是谁？"
+        <cite style="text-align: center;">—— 镜号 5 · 黑场字幕</cite>
+      </div>
+      <button class="btn" data-sound="guqin" style="margin-top: 3em;">▶ 古琴单音 · 余韵悠长</button>
+    </div>
+  </section>
+
+  <!-- ========== 5 · 现代伏笔 ========== -->
+  <section class="slide" data-slide="5" data-notes="片头出现的'现代线'——老匠人与碎瓷——是后景的伏笔。它告诉我们：今天的故事，是关于'那一块缺了的瓷'的。">
+    <div class="slide-num">05 / 24</div>
+    <div class="slide-inner two-col">
+      <div>
+        <div class="eyebrow">THE FRAGMENT · 碎瓷之问</div>
+        <h2 class="huge" style="font-size: clamp(40px, 5vw, 72px);">
+          缺了一块
+        </h2>
+        <p class="body-text" style="margin-top: 1.5em;">
+          老匠人独坐桌前，看着瓷器，<em>手滑险些掉落</em>。<br>
+          镜头另一端，角色在教育局申请教师资格和项目上报。
+        </p>
+        <p class="body-text" style="margin-top: 1em;">
+          碎瓷底款——<em style="font-size: 1.4em; color: var(--kiln-gold);">"章生"</em>二字。
+        </p>
+        <p class="body-text" style="margin-top: 1em;">
+          这是<strong>现代线</strong>的伏笔，也是<em>兄弟之印</em>在当代的回响。
+        </p>
+      </div>
+      <div style="position: relative;">
+        <div class="celadon-disc" style="background: radial-gradient(circle at 30% 30%, #4a3a2a 0%, #2a1a0e 40%, #0c0a09 90%);"></div>
+        <div style="text-align: center; margin-top: 1.5em;">
+          <span style="display: inline-block; padding: 1em 2em; border: 2px solid var(--kiln-gold); color: var(--kiln-gold); font-family: var(--font-serif-cn); font-size: 32px; letter-spacing: .3em;">章 生</span>
+        </div>
+        <p class="body-text" style="text-align: center; margin-top: 1em; font-style: italic; color: var(--ash); font-size: 13px;">碎瓷底款</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 6 · 主旨总纲 ========== -->
+  <section class="slide" data-slide="6" data-notes="这是全片的核心主旨——'哥'通'歌'，窑火如歌，兄弟如线。请允许我用30秒把这句话拆开。">
+    <div class="slide-num">06 / 24</div>
+    <div class="slide-inner">
+      <div class="eyebrow">CORE THESIS · 主旨总纲</div>
+      <h2 class="huge" style="font-size: clamp(36px, 5vw, 80px); margin-bottom: .5em;">
+        一首关于<span class="accent">「传承」</span>的<br>视觉史诗
+      </h2>
+      <div class="pull-quote">
+        "哥"通"歌"——<br>
+        窑火如歌，兄弟如线。
+        <cite>《哥窑》核心主旨</cite>
+      </div>
+      <p class="body-text">
+        这部作品以<em>龙泉青瓷</em>为载体，讲述两兄弟在战乱中南下，
+        <strong>寻找土地、点起窑火、烧出哥窑</strong>的史诗。
+        它的真正主角不是某个人，而是<em>"两个人按在同一方印上"</em>的那一瞬间。
+      </p>
+    </div>
+  </section>
+
+  <!-- ========== 7 · 修正说明 ========== -->
+  <section class="slide" data-slide="7" data-notes="我必须强调：脚本中'章生一'、'张志耀'是创作笔误。这一修正，让整部作品的'持守与开创'获得了最清晰的视觉对应。">
+    <div class="slide-num">07 / 24</div>
+    <div class="slide-inner">
+      <div class="eyebrow">REVISION · 关键修正</div>
+      <h2 class="huge" style="font-size: clamp(32px, 4.5vw, 64px); margin-bottom: 1em;">
+        人物关系的<span class="accent">最终设定</span>
+      </h2>
+      <p class="body-text" style="margin-bottom: 2em;">
+        在原始脚本中，名字确实存在混用（如"章生一"、"张志耀"、"张寄"），
+        这或许是<em>创作过程中的笔误</em>。您给出的明确设定，是<strong>解读人物关系的唯一正确钥匙</strong>。
+      </p>
+      <table class="evidence-table">
+        <thead>
+          <tr>
+            <th style="width: 12%;">角色</th>
+            <th style="width: 22%;">正确设定</th>
+            <th style="width: 28%;">核心特质</th>
+            <th style="width: 38%;">视觉象征</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color: var(--celadon-light); font-size: 22px;">哥哥</td>
+            <td style="color: var(--paper); font-size: 18px;">张寄</td>
+            <td>守护者 · 理性 · 承担</td>
+            <td>持灯者 · 锚点 · "线"的定音鼓</td>
+          </tr>
+          <tr>
+            <td style="color: var(--kiln-gold); font-size: 22px;">弟弟</td>
+            <td style="color: var(--paper); font-size: 18px;">张志元</td>
+            <td>探索者 · 感性 · 天赋</td>
+            <td>行路人 · 延伸 · "线"的延伸</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ========== 8 · 人物对照 ========== -->
+  <section class="slide" data-slide="8" data-notes="现在让我们把这两兄弟并排比较。请大家注意三组对应：节拍与旋律、锚点与延伸、持守与开创。">
+    <div class="slide-num">08 / 24</div>
+    <div class="slide-inner">
+      <div class="eyebrow">CONTRAST · 人物对照</div>
+      <h2 class="huge" style="font-size: clamp(32px, 4.5vw, 64px); margin-bottom: .8em;">
+        哥哥 vs 弟弟
+      </h2>
+      <div class="character-compare">
+        <div class="card celadon">
+          <h3>张寄</h3>
+          <div class="role">THE ELDER · 哥哥</div>
+          <ul>
+            <li>持灯者 · 守护者 · 锚点</li>
+            <li>理性 · 冷静 · 规划</li>
+            <li>用树枝画出窑体轮廓</li>
+            <li>火候失控时拉住弟弟</li>
+            <li>把弟弟的手按在印上</li>
+          </ul>
+          <div class="quote">"等！现在开窑，全毁了！"</div>
+        </div>
+        <div class="vs">VS</div>
+        <div class="card gold">
+          <h3>张志元</h3>
+          <div class="role">THE YOUNGER · 弟弟</div>
+          <ul>
+            <li>行路人 · 探索者 · 延伸</li>
+            <li>感性 · 敏锐 · 天赋</li>
+            <li>听见"土在唱歌"</li>
+            <li>听出"火太急了"</li>
+            <li>开窑时泪与释然</li>
+          </ul>
+          <div class="quote">"哥，这土……在唱歌。"</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 9 · 哥哥关键时刻 ========== -->
+  <section class="slide" data-slide="9" data-notes="哥哥有四个关键时刻。每一个，都展示了他'持守'的维度——他用守住的那一瞬间，让弟弟的天赋被听见。">
+    <div class="slide-num">09 / 24</div>
+    <div class="slide-inner">
+      <div class="eyebrow green">MOMENTS · 哥哥关键时刻</div>
+      <h2 class="huge" style="font-size: clamp(32px, 4.5vw, 64px); margin-bottom: 1em;">
+        张寄 · 四个<span class="small-accent">守</span>的瞬间
+      </h2>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5em;">
+        <div style="padding: 1.5em; border: 1px solid rgba(126, 168, 154, .25); background: rgba(126, 168, 154, .03);">
+          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: .3em; color: var(--celadon-light); margin-bottom: 1em;">镜号 9 · 接 过</div>
+          <p style="font-size: 16px; line-height: 1.8; color: var(--paper);">战乱中接过父亲的嘱托——"志元，看好你弟弟。"</p>
+        </div>
+        <div style="padding: 1.5em; border: 1px solid rgba(126, 168, 154, .25); background: rgba(126, 168, 154, .03);">
+          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: .3em; color: var(--celadon-light); margin-bottom: 1em;">镜号 17 · 肯 定</div>
+          <p style="font-size: 16px; line-height: 1.8; color: var(--paper);">弟弟发现紫金土时，他笑了——"那就这儿了。"</p>
+        </div>
+        <div style="padding: 1.5em; border: 1px solid rgba(126, 168, 154, .25); background: rgba(126, 168, 154, .03);">
+          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: .3em; color: var(--celadon-light); margin-bottom: 1em;">镜号 23 · 默 契</div>
+          <p style="font-size: 16px; line-height: 1.8; color: var(--paper);">弟弟继续夯土，他<em>默默递来一块布裹住弟弟的手</em>。</p>
+        </div>
+        <div style="padding: 1.5em; border: 1px solid rgba(126, 168, 154, .25); background: rgba(126, 168, 154, .03);">
+          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: .3em; color: var(--celadon-light); margin-bottom: 1em;">镜号 53 · 拉 住</div>
+          <p style="font-size: 16px; line-height: 1.8; color: var(--paper);">一把拉住要冲上去的弟弟——"等！现在开窑，全毁了！"</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 10 · 弟弟关键时刻 ========== -->
+  <section class="slide" data-slide="10" data-notes="弟弟有四个'听见'的瞬间。每一次，他都先于语言，感知到火候的微妙变化。">
+    <div class="slide-num">10 / 24</div>
+    <div class="slide-inner">
+      <div class="eyebrow">MOMENTS · 弟弟关键时刻</div>
+      <h2 class="huge" style="font-size: clamp(32px, 4.5vw, 64px); margin-bottom: 1em;">
+        张志元 · 四个<span class="small-accent" style="color: var(--kiln-gold);">听</span>的瞬间
+      </h2>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5em;">
+        <div style="padding: 1.5em; border: 1px solid rgba(217, 154, 82, .25); background: rgba(217, 154, 82, .03);">
+          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: .3em; color: var(--kiln-gold); margin-bottom: 1em;">镜号 16 · 听 土</div>
+          <p style="font-size: 16px; line-height: 1.8; color: var(--paper);">蹲下抓土，眼神发亮——<em>"哥，这土……在唱歌。"</em></p>
+        </div>
+        <div style="padding: 1.5em; border: 1px solid rgba(217, 154, 82, .25); background: rgba(217, 154, 82, .03);">
+          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: .3em; color: var(--kiln-gold); margin-bottom: 1em;">镜号 29 · 听 火</div>
+          <p style="font-size: 16px; line-height: 1.8; color: var(--paper);">闭眼倾听窑火的声音——"火着了。"</p>
+        </div>
+        <div style="padding: 1.5em; border: 1px solid rgba(217, 154, 82, .25); background: rgba(217, 154, 82, .03);">
+          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: .3em; color: var(--kiln-gold); margin-bottom: 1em;">镜号 51 · 听 危</div>
+          <p style="font-size: 16px; line-height: 1.8; color: var(--paper);">眼睛里映着火光——<em>"哥，火……太急了。"</em></p>
+        </div>
+        <div style="padding: 1.5em; border: 1px solid rgba(217, 154, 82, .25); background: rgba(217, 154, 82, .03);">
+          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: .3em; color: var(--kiln-gold); margin-bottom: 1em;">镜号 57 · 听 成</div>
+          <p style="font-size: 16px; line-height: 1.8; color: var(--paper);">颤抖的手抚过瓷片——<em>"哥……成了。"</em></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 11 · 三幕结构 ========== -->
+  <section class="slide" data-slide="11" data-notes="三幕结构，每一幕都完成一次'火候 + 持守'的对应。">
+    <div class="slide-num">11 / 24</div>
+    <div class="slide-inner">
+      <div class="eyebrow">STRUCTURE · 三幕结构</div>
+      <h2 class="huge" style="font-size: clamp(32px, 4.5vw, 64px); margin-bottom: 1em;">
+        三幕 · 一次<span class="accent">"歌"</span>的成形
+      </h2>
+      <div class="metric-grid">
+        <div class="metric">
+          <div class="num">I</div>
+          <div class="label">历史回溯 · 镜号 6–35</div>
+          <div class="body-text" style="margin-top: 1em; font-size: 14px;">寻土 · 起窑 · 第一把火<br>未开片 · 兄弟奠基</div>
+        </div>
+        <div class="metric">
+          <div class="num">II</div>
+          <div class="label">贡品之印 · 镜号 36–47</div>
+          <div class="body-text" style="margin-top: 1em; font-size: 14px;">朝廷查验 · 天工之赐<br><em>兄弟之印</em> · 全片高潮</div>
+        </div>
+        <div class="metric">
+          <div class="num">III</div>
+          <div class="label">窑火成瓷 · 镜号 48–66</div>
+          <div class="body-text" style="margin-top: 1em; font-size: 14px;">火候失控 · 金丝铁线<br>两个背影 · 闭环</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 12 · 第一幕·开篇 ========== -->
+  <section class="slide" data-slide="12" data-notes="第一幕讲述南下。父亲把两个包袱塞入兄弟手中——瓷土与家谱。">
+    <div class="slide-num">12 / 24</div>
+    <div class="slide-inner">
+      <div class="eyebrow">ACT ONE · 第一幕</div>
+      <h2 class="chapter">
+        <span class="num">ACT I</span>
+        北方窑火 · 南下寻土
+      </h2>
+      <p class="body-text" style="margin-top: 2em;">
+        战马、烽火、流民。<em>父亲的嘱托</em>把两个包袱塞入兄弟手中——<br>
+        一个是<strong>瓷土</strong>，一个是<strong>家谱</strong>。
+      </p>
+      <div class="pull-quote" style="margin-top: 2em;">
+        "往南走，找能烧窑的土地，不能丢。手艺不能断。<br>
+        志元，看好你弟弟。"
+        <cite>—— 镜号 9 · 父亲</cite>
+      </div>
+      <div style="margin-top: 2em;">
+        <a href="act-1.html" class="btn">进入第一幕详情 →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 13 · 第一幕·寻土 ========== -->
+  <section class="slide" data-slide="13" data-notes="寻土。弟弟蹲下抓土的瞬间——是整部作品最'天赋觉醒'的画面。">
+    <div class="slide-num">13 / 24</div>
+    <div class="slide-inner two-col">
+      <div>
+        <div class="eyebrow green">FIRST ACT · 寻 土</div>
+        <h2 class="huge" style="font-size: clamp(36px, 4.5vw, 64px);">
+          紫金土 · <span class="small-accent">听</span>
+        </h2>
+        <p class="body-text" style="margin-top: 1.5em;">
+          丽水群山，<em>晨雾中土质泛红</em>。<br>
+          弟弟突然蹲下，抓起一把土，眼神发亮。
+        </p>
+        <div class="pull-quote" style="font-size: clamp(20px, 2.2vw, 28px);">
+          "哥，这土……在唱歌。"
+          <cite>—— 镜号 16 · 张志元</cite>
+        </div>
+        <p class="body-text">
+          哥哥笑了——那笑容里有<em>欣慰</em>，有<em>骄傲</em>。
+          "那就这儿了。"<br>
+          <strong style="color: var(--celadon-light);">这是弟弟的觉醒时刻，也是哥哥的肯定时刻。</strong>
+        </p>
+      </div>
+      <div style="position: relative;">
+        <div class="celadon-disc"></div>
+        <div style="position: absolute; bottom: 10%; right: 10%; width: 80px; height: 80px; background: radial-gradient(circle, #b53a3a 0%, #6a1a1a 70%); border-radius: 50%; opacity: .7; box-shadow: 0 0 40px rgba(181, 58, 58, .5);"></div>
+        <p class="body-text" style="text-align: center; margin-top: 2em; font-size: 13px; color: var(--ash); letter-spacing: .15em;">紫金土 · 泛红</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 14 · 第一幕·起窑 ========== -->
+  <section class="slide" data-slide="14" data-notes="起窑。哥哥用树枝画窑体——这是他'持守者'姿态最直接的体现。">
+    <div class="slide-num">14 / 24</div>
+    <div class="slide-inner">
+      <div class="eyebrow">FIRST ACT · 起 窑</div>
+      <h2 class="huge" style="font-size: clamp(36px, 4.5vw, 64px); margin-bottom: 1em;">
+        龙窑依山 · 兄弟夯土
+      </h2>
+      <table class="evidence-table">
+        <thead>
+          <tr><th style="width: 12%;">镜号</th><th>画面</th><th>象征</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>19</td><td>张寄丈量坡度，用树枝画出窑体轮廓</td><td><em style="color: var(--celadon-light);">"龙窑要依山而建，火才能顺着山势往上走。"</em></td></tr>
+          <tr><td>21</td><td>兄弟并肩夯土，动作默契如一</td><td>夯土声 · 号子声 · 二人合唱</td></tr>
+          <tr><td>22</td><td>汗水滴入泥土，弟弟的手磨出血泡</td><td>血泡 · 画外关怀</td></tr>
+          <tr><td>23</td><td>哥哥默默递来一块布裹住弟弟的手</td><td><em style="color: var(--celadon-light);">⭐ 沉默中的关怀</em></td></tr>
+          <tr><td>25</td><td>向山民拱手承诺</td><td>恳切 · "烧出的瓷，与大家共分"</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ========== 15 · 第一幕·未开片 ========== -->
+  <section class="slide" data-slide="15" data-notes="第一件青瓷未开片——这是一个重要的'留白'，它告诉我们：哥窑不是一次成型的。">
+    <div class="slide-num">15 / 24</div>
+    <div class="slide-inner" style="text-align: center;">
+      <div class="eyebrow center">FIRST ACT · 未 开 片</div>
+      <h2 class="huge" style="font-size: clamp(40px, 5vw, 72px); margin-bottom: .8em;">
+        第一窑 · <span class="ghost">未开片</span>
+      </h2>
+      <p class="body-text" style="margin: 2em auto; text-align: center; max-width: 600px;">
+        烟散，第一件青瓷出窑——<em>釉色如玉</em>，<br>
+        却<strong style="color: var(--kiln-gold);">未开片</strong>。
+      </p>
+      <div class="pull-quote" style="text-align: center; max-width: 700px; margin: 2em auto; border: none; padding: 0;">
+        真正的杰作，<br>
+        永远不是<em>一次成型</em>的。<br>
+        它是<strong style="color: var(--celadon-light);">守</strong>与<strong style="color: var(--kiln-gold);">走</strong>的反复、<br>
+        是失败与重来的合唱。
+        <cite style="text-align: center;">—— 第一幕尾</cite>
+      </div>
+      <button class="btn" data-sound="kiln" style="margin-top: 2em;">▶ 窑火轰鸣</button>
+    </div>
+  </section>
+
+  <!-- ========== 16 · 第二幕·开篇 ========== -->
+  <section class="slide" data-slide="16" data-notes="第二幕开场——朝廷查验。这是窑火从民间走向庙堂的时刻。">
+    <div class="slide-num">16 / 24</div>
+    <div class="slide-inner">
+      <div class="eyebrow">ACT TWO · 第二幕</div>
+      <h2 class="chapter">
+        <span class="num">ACT II</span>
+        朝廷查验 · 天工之赐
+      </h2>
+      <p class="body-text" style="margin-top: 2em;">
+        几匹快马驰入山谷，<em>官府旗帜飘扬</em>。<br>
+        一位官员下马——朝廷有令，龙泉青瓷可贡于临安。
+      </p>
+      <div class="pull-quote">
+        "这纹路……如冰裂，却浑然天成？"
+        <cite>—— 镜号 40 · 官员</cite>
+      </div>
+      <p class="body-text" style="margin-top: 1em;">
+        这是<em>金丝铁线</em>第一次被看见的时刻。
+        弟弟的<strong>微颤</strong>，官员的<strong>惊讶</strong>——
+        两个反应叠在一起，便是"天工"二字的诞生。
+      </p>
+      <div style="margin-top: 2em;">
+        <a href="act-2.html" class="btn">进入第二幕详情 →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 17 · 第二幕·兄弟之印 ========== -->
+  <section class="slide" data-slide="17" data-notes="这是全片的精神顶点。请大家注意那句反向的致敬——'哥，没有你这盏灯'。">
+    <div class="slide-num">17 / 24</div>
+    <div class="slide-inner">
+      <div class="eyebrow">SECOND ACT · 兄 弟 之 印 ⭐</div>
+      <h2 class="huge" style="font-size: clamp(40px, 5vw, 72px); margin-bottom: .5em;">
+        两双手 · <span class="accent">一方印</span>
+      </h2>
+      <p class="body-text" style="margin-top: 1.5em;">
+        印文——"龙泉章氏"——盖在瓷底。<br>
+        山民们围拢过来，脸上的疑虑化为笑容。
+      </p>
+      <div class="pull-quote" style="font-size: clamp(20px, 2.4vw, 30px);">
+        张志元将印递给弟弟，<br>
+        张寄却摇头，<em>把哥哥的手一起按在印上</em>。<br><br>
+        "哥，没有你这盏灯，<br>
+        我哪能坚持学业……"
+        <cite>—— 镜号 45 · 反向的致敬</cite>
+      </div>
+      <p class="body-text">
+        这一刻，<em>"传承"不再是单线的传递</em>，<br>
+        而是<strong style="color: var(--kiln-gold);">两双手按在同一方印上</strong>的<em>合唱</em>。
+      </p>
+    </div>
+  </section>
+
+  <!-- ========== 18 · 第二幕·证据 ========== -->
+  <section class="slide" data-slide="18" data-notes="证据链——'无意之得，方为天工'。这是弟弟的谦逊，也是整部作品对'灵感'的态度。">
+    <div class="slide-num">18 / 24</div>
+    <div class="slide-inner">
+      <div class="eyebrow green">EVIDENCE · 贡品之印证据</div>
+      <h2 class="huge" style="font-size: clamp(32px, 4.5vw, 64px); margin-bottom: 1em;">
+        "无意之得 · 方为天工"
+      </h2>
+      <table class="evidence-table">
+        <thead>
+          <tr><th style="width: 10%;">镜号</th><th>画面</th><th>深层</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>40</td><td>官员眼中闪过惊讶，手指抚过釉面细纹</td><td>细纹被发现 · 美的觉醒</td></tr>
+          <tr><td>41</td><td>张志元微颤答：<em>"是火候所致，非有意为之。"</em></td><td>弟弟的谦逊 · 天赋不可强求</td></tr>
+          <tr><td>42</td><td>官员笑了，取出一方印</td><td>朝廷认可 · 窑火登堂</td></tr>
+          <tr><td>43</td><td>印文"龙泉章氏"盖下</td><td>姓氏之传 · 章氏之根</td></tr>
+          <tr><td>45</td><td>弟弟把哥哥的手按在印上</td><td><em style="color: var(--kiln-gold);">⭐ 兄的谦让 · 二人的重</em></td></tr>
+          <tr><td>47</td><td>龙窑炊烟升起</td><td>生机 · 传承的起点</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ========== 19 · 第三幕·开篇 ========== -->
+  <section class="slide" data-slide="19" data-notes="第三幕——火候失控。这是'疯狂'与'理性'的最终碰撞。">
+    <div class="slide-num">19 / 24</div>
+    <div class="slide-inner">
+      <div class="eyebrow">ACT THREE · 第三幕</div>
+      <h2 class="chapter">
+        <span class="num">ACT III</span>
+        火候失控 · 金丝铁线
+      </h2>
+      <p class="body-text" style="margin-top: 2em;">
+        张志元彻夜未眠，耳朵贴近窑壁——<em>声音不对</em>。<br>
+        窑火突然转旺，窑孔中喷出金色火焰。
+      </p>
+      <div class="pull-quote">
+        "哥，火……太急了。"
+        <cite>—— 镜号 51 · 张志元</cite>
+      </div>
+      <p class="body-text" style="margin-top: 1em;">
+        弟弟的<em>疯狂</em>遇上了哥哥的<em>理性</em>。<br>
+        <strong style="color: var(--kiln-gold);">这一刻的拉扯，决定了金丝铁线是否诞生。</strong>
+      </p>
+      <div style="margin-top: 2em;">
+        <a href="act-3.html" class="btn">进入第三幕详情 →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 20 · 第三幕·如一人 ========== -->
+  <section class="slide" data-slide="20" data-notes="镜号 54——'如一人'。这是全片的精神图腾。两个人的影子投在山壁上，像一个人。">
+    <div class="slide-num">20 / 24</div>
+    <div class="slide-inner two-col">
+      <div>
+        <div class="eyebrow">THIRD ACT · 如 一 人 ⭐</div>
+        <h2 class="huge" style="font-size: clamp(40px, 5vw, 72px);">
+          一人 · <span class="small-accent">一影</span>
+        </h2>
+        <p class="body-text" style="margin-top: 1.5em;">
+          兄弟二人并肩站在窑前，<br>
+          <em style="color: var(--kiln-gold);">火光将他们的影子投在山壁上，如一人。</em>
+        </p>
+        <p class="body-text" style="margin-top: 1em;">
+          窑火声、心跳声、呼吸声——<br>
+          三个声音叠在一起，<br>
+          就是<em>哥窑之"歌"</em>。
+        </p>
+        <div class="pull-quote" style="margin-top: 1.5em; font-size: 18px; line-height: 1.7;">
+          持守与开创，<br>
+          在这一刻合为<em>同一个剪影</em>。
+          <cite>—— 镜号 54</cite>
+        </div>
+      </div>
+      <div style="position: relative; min-height: 480px;">
+        <div class="flame"></div>
+        <div style="position: absolute; bottom: 20%; left: 50%; transform: translateX(-50%); width: 100px; height: 220px; background: linear-gradient(to top, #1a1814 0%, transparent 100%); clip-path: polygon(35% 100%, 65% 100%, 80% 30%, 50% 0%, 20% 30%); opacity: .6;"></div>
+        <div style="position: absolute; bottom: 20%; left: 50%; transform: translateX(calc(-50% + 20px)); width: 80px; height: 200px; background: linear-gradient(to top, #1a1814 0%, transparent 100%); clip-path: polygon(35% 100%, 65% 100%, 80% 30%, 50% 0%, 20% 30%); opacity: .6;"></div>
+        <p class="body-text" style="text-align: center; position: absolute; bottom: 0; left: 0; right: 0; font-size: 13px; color: var(--ash); letter-spacing: .15em;">如一人</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 21 · 第三幕·金丝铁线 ========== -->
+  <section class="slide" data-slide="21" data-notes="开窑——金丝铁线诞生。这一刻，'持守'与'开创'合为完美和弦。">
+    <div class="slide-num">21 / 24</div>
+    <div class="slide-inner" style="text-align: center;">
+      <div class="eyebrow center">THIRD ACT · 金 丝 铁 线 ⭐</div>
+      <h2 class="huge" style="font-size: clamp(40px, 6vw, 96px);">
+        <span class="accent">金丝</span> · <span style="color: var(--iron-line); text-shadow: 0 0 8px rgba(0, 0, 0, .8);">铁线</span>
+      </h2>
+      <p class="body-text" style="margin: 2em auto; text-align: center; max-width: 600px;">
+        开窑。一片瓷缓缓取出——<em>釉面开片</em>，<br>
+        金丝铁线，<strong style="color: var(--kiln-gold);">前所未见</strong>。<br>
+        瓷片轻响，如<em>钟磬</em>。
+      </p>
+      <div style="margin: 3em auto; max-width: 500px;">
+        <div style="aspect-ratio: 1.4; background: linear-gradient(135deg, var(--celadon) 0%, var(--celadon-deep) 100%); border-radius: 8px; position: relative; overflow: hidden; box-shadow: 0 0 60px rgba(126, 168, 154, .4), inset 0 0 0 2px rgba(181, 138, 74, .5);">
+          <svg width="100%" height="100%" viewBox="0 0 400 280" preserveAspectRatio="none">
+            <g stroke="#b58a4a" stroke-width="1.5" fill="none" opacity=".8">
+              <path d="M50 30 L100 80 L150 50 L200 120 L260 80 L320 140 L350 100"/>
+              <path d="M30 180 L80 130 L140 200 L200 170 L280 220 L340 180"/>
+              <path d="M100 250 L160 200 L220 260 L290 230 L350 270"/>
+            </g>
+            <g stroke="#2a1a0e" stroke-width="1" fill="none" opacity=".6">
+              <path d="M70 60 L130 100 L180 70 L240 130"/>
+              <path d="M40 220 L100 250 L170 230 L240 260"/>
+            </g>
+          </svg>
+        </div>
+        <p class="body-text" style="text-align: center; margin-top: 1em; font-size: 13px; color: var(--ash); letter-spacing: .15em;">金丝铁线 · 釉面开片</p>
+      </div>
+      <div class="pull-quote" style="text-align: center; max-width: 700px; margin: 2em auto; border: none; padding: 0;">
+        "哥……成了。"
+        <cite>—— 镜号 57 · 张志元 · 颤抖的手抚过瓷片，眼泪滑落</cite>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 22 · 主旨升华 ========== -->
+  <section class="slide" data-slide="22" data-notes="这是全片主旨的最终升华——'哥'是'歌'，也是'兄'。">
+    <div class="slide-num">22 / 24</div>
+    <div class="slide-inner" style="text-align: center;">
+      <div class="eyebrow center">RESOLUTION · 主旨升华</div>
+      <div class="pull-quote" style="border: none; padding: 0; font-size: clamp(20px, 2.4vw, 32px);">
+        "哥窑"的"哥"，是"歌"，也是"兄"。<br>
+        哥哥张寄，就是那首"歌"的<br><em style="color: var(--kiln-gold);">定音鼓和节拍器</em>。
+      </div>
+      <div class="two-col" style="margin-top: 3em; gap: 2em; text-align: left;">
+        <div style="border-left: 2px solid var(--celadon); padding-left: 1.5em;">
+          <h4 style="color: var(--celadon-light); font-size: 20px; margin-bottom: .5em;">哥哥 · 张寄</h4>
+          <p class="body-text" style="font-size: 14px;">持守 · 理性 · 守护</p>
+          <p class="body-text" style="font-size: 13px; margin-top: .5em; color: var(--ash);">The Anchor · 锚</p>
+        </div>
+        <div style="border-left: 2px solid var(--kiln-gold); padding-left: 1.5em;">
+          <h4 style="color: var(--kiln-gold); font-size: 20px; margin-bottom: .5em;">弟弟 · 张志元</h4>
+          <p class="body-text" style="font-size: 14px;">开创 · 感性 · 探索</p>
+          <p class="body-text" style="font-size: 13px; margin-top: .5em; color: var(--ash);">The Extension · 延伸</p>
+        </div>
+      </div>
+      <p class="body-text" style="margin: 3em auto 0; text-align: center; font-size: clamp(18px, 1.8vw, 24px); color: var(--paper);">
+        哥窑之美，正在于<em style="color: var(--kiln-gold);">持守与开创的完美和弦</em>。
+      </p>
+    </div>
+  </section>
+
+  <!-- ========== 23 · 主题字幕 ========== -->
+  <section class="slide" data-slide="23" data-notes="主题字幕——这是整部作品最后一句台词。请允许我把它念一遍。">
+    <div class="slide-num">23 / 24</div>
+    <div class="slide-inner" style="text-align: center;">
+      <div class="eyebrow center">THE FINAL SENTENCE · 主题字幕</div>
+      <div style="margin: 4em 0;">
+        <p style="font-family: var(--font-serif-cn); font-size: clamp(24px, 3.2vw, 44px); line-height: 2; color: var(--paper); letter-spacing: .1em;">
+          哥窑之"哥"，<br>
+          非长幼之序，<br>
+          <em style="color: var(--kiln-gold);">乃"歌"之古字</em>——<br>
+          窑火如歌，<br>
+          <em style="color: var(--kiln-gold);">兄弟如线</em>。
+        </p>
+      </div>
+      <p class="body-text" style="margin: 2em auto; text-align: center; max-width: 600px; font-style: italic; color: var(--ash);">
+        —— 镜号 64 · 黑场字幕<br>
+        古琴最后一个音
+      </p>
+      <button class="btn" data-sound="guqin2" style="margin-top: 2em;">▶ 古琴 · 最后一个音</button>
+    </div>
+  </section>
+
+  <!-- ========== 24 · 片尾·致谢 ========== -->
+  <section class="slide" data-slide="24" data-notes="最后，我想用两句话作为结尾。第一句是这部作品的；最后一句，是我想对在座各位说的。">
+    <div class="bg-grid"></div>
+    <div class="slide-inner" style="text-align: center;">
+      <div class="eyebrow center">CREDITS · 致 谢</div>
+      <h2 class="huge" style="font-size: clamp(48px, 7vw, 100px); margin-top: 1em;">
+        <span class="ghost">哥</span><span class="accent">窑</span>
+      </h2>
+      <div class="subtitle" style="margin-top: 1em;">窑火不灭 · 兄弟如线</div>
+      <div style="margin: 4em auto; max-width: 600px;">
+        <p class="body-text" style="text-align: center;">
+          <em>两个时代的背影重叠。</em><br>
+          <em>那是一双手，按在同一方印上。</em>
+        </p>
+      </div>
+      <div class="credits">
+        <div>主旨解读 · 正式文稿</div>
+        <div>24 SLIDES · 66 SHOTS · 3 ACTS</div>
+        <div style="color: var(--kiln-gold); margin-top: 1em;">— 谢 谢 —</div>
+      </div>
+      <div style="display: flex; justify-content: center; gap: 2em; margin-top: 3em; flex-wrap: wrap;">
+        <a href="essay.html" class="btn">深度解读</a>
+        <a href="gallery.html" class="btn">所有分镜</a>
+        <a href="theme.html" class="btn">主旨专题</a>
+        <button class="btn" id="printBtn">打印 / 导出 PDF</button>
+      </div>
+      <div style="margin-top: 4em;">
+        <button data-sound="demo" class="btn" style="background: transparent;">▶ 收听 · 古琴 + 窑火</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="controls">
+  <button data-deck-prev title="上一页 (←)">‹</button>
+  <button data-deck-next title="下一页 (→)">›</button>
+</div>
+
+<!-- 文稿模式 -->
+<div class="document-mode" id="docMode">
+  <button class="doc-close" id="closeDoc">× 关闭文稿模式</button>
+  <div id="docContent"></div>
+</div>
+
+<script src="assets/js/audio.js"></script>
+<script>
+/* =================================================================
+   PPT 翻页 + 文稿模式 + 发言稿
+   ================================================================= */
+(function () {
+  'use strict';
+
+  const deck = document.querySelector('.deck');
+  if (!deck) return;
+
+  const slides = Array.from(deck.querySelectorAll('.slide'));
+  const total  = slides.length;
+  let current  = 0;
+  let isAnimating = false;
+
+  const progressBar = document.querySelector('.progress-bar');
+  const curPage  = document.querySelector('.cur-page');
+  const totalPage = document.querySelector('.total-page');
+
+  if (totalPage) totalPage.textContent = String(total).padStart(2, '0');
+
+  function show(index) {
+    if (index < 0 || index >= total || isAnimating) return;
+    isAnimating = true;
+    slides.forEach((s, i) => {
+      s.classList.remove('active', 'prev');
+      if (i < index) s.classList.add('prev');
+      else if (i === index) s.classList.add('active');
+    });
+    current = index;
+    if (curPage) curPage.textContent = String(current + 1).padStart(2, '0');
+    if (progressBar) progressBar.style.width = ((current + 1) / total * 100) + '%';
+    setTimeout(() => { isAnimating = false; }, 600);
+    // 更新发言稿
+    updateNotes();
+  }
+
+  function next() { show(current + 1); }
+  function prev() { show(current - 1); }
+  function goTo(i) { show(i); }
+
+  // 翻页事件
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    switch (e.key) {
+      case 'ArrowRight':
+      case ' ':
+      case 'PageDown':
+        e.preventDefault(); next(); break;
+      case 'ArrowLeft':
+      case 'PageUp':
+        e.preventDefault(); prev(); break;
+      case 'Home':
+        e.preventDefault(); goTo(0); break;
+      case 'End':
+        e.preventDefault(); goTo(total - 1); break;
+      case 'Escape':
+        e.preventDefault(); goTo(0); break;
+      case 'n':
+      case 'N':
+        e.preventDefault(); toggleNotes(); break;
+      case 'd':
+      case 'D':
+        e.preventDefault(); toggleDocMode(); break;
+      case 'p':
+      case 'P':
+        e.preventDefault(); window.print(); break;
+    }
+  });
+
+  let touchStartX = 0;
+  document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 60) (dx < 0 ? next() : prev());
+  });
+
+  document.querySelectorAll('[data-deck-next]').forEach(b => b.addEventListener('click', next));
+  document.querySelectorAll('[data-deck-prev]').forEach(b => b.addEventListener('click', prev));
+  document.querySelectorAll('[data-jump]').forEach(el => {
+    el.addEventListener('click', (e) => { e.preventDefault(); goTo(parseInt(el.dataset.jump, 10) - 1); });
+  });
+
+  // ========== 发言稿 ==========
+  const speakerPanel = document.getElementById('speakerPanel');
+  const notesContent = document.getElementById('notesContent');
+  const notesBtn = document.getElementById('notesBtn');
+  const closeNotes = document.getElementById('closeNotes');
+
+  function updateNotes() {
+    const slide = slides[current];
+    if (!slide) return;
+    const note = slide.dataset.notes;
+    const slideNum = current + 1;
+    const headings = slide.querySelectorAll('h1, h2, h3');
+    const heading = headings[0] ? headings[0].textContent.trim() : '当前幻灯片';
+
+    const pauseAt = note ? `<div class="pause">· · ·</div>` : '';
+    notesContent.innerHTML = `
+      <h3>镜号 / 幻灯片 ${slideNum}</h3>
+      <h4>${heading}</h4>
+      ${note ? `<div class="note">${note}</div>` : '<div class="note">（本页无发言稿）</div>'}
+      ${pauseAt}
+      <h4>提示</h4>
+      <p style="font-size: 14px; color: var(--ash);">
+        翻到下一页时，本面板会自动更新。按 <span style="color: var(--kiln-gold);">N</span> 关闭发言稿。
+      </p>
+    `;
+  }
+  function toggleNotes() { speakerPanel.classList.toggle('open'); }
+  notesBtn.addEventListener('click', toggleNotes);
+  closeNotes.addEventListener('click', toggleNotes);
+
+  // ========== 文稿模式 ==========
+  const docMode = document.getElementById('docMode');
+  const docContent = document.getElementById('docContent');
+  const docModeBtn = document.getElementById('docModeBtn');
+  const closeDoc = document.getElementById('closeDoc');
+  const printBtn = document.getElementById('printBtn');
+
+  function buildDocContent() {
+    let html = '';
+    slides.forEach((slide, i) => {
+      const inner = slide.querySelector('.slide-inner');
+      if (!inner) return;
+      const clone = inner.cloneNode(true);
+      // 移除按钮（防误点击）
+      clone.querySelectorAll('button').forEach(b => b.remove());
+      const slideNum = String(i + 1).padStart(2, '0');
+      html += `<div class="doc-slide">
+        <div class="doc-num">${slideNum} / ${String(total).padStart(2, '0')}</div>
+        ${clone.innerHTML}
+      </div>`;
+    });
+    docContent.innerHTML = html;
+  }
+
+  function toggleDocMode() {
+    if (docMode.classList.contains('active')) {
+      docMode.classList.remove('active');
+      document.body.style.overflow = 'hidden';
+    } else {
+      buildDocContent();
+      docMode.classList.add('active');
+      document.body.style.overflow = 'auto';
+      docMode.scrollTop = 0;
+    }
+  }
+  docModeBtn.addEventListener('click', toggleDocMode);
+  closeDoc.addEventListener('click', toggleDocMode);
+  if (printBtn) printBtn.addEventListener('click', () => {
+    if (!docMode.classList.contains('active')) {
+      buildDocContent();
+      docMode.classList.add('active');
+    }
+    setTimeout(() => window.print(), 100);
+  });
+
+  // ========== 计时器 ==========
+  const startTime = Date.now();
+  const elapsedEl = document.getElementById('elapsed');
+  setInterval(() => {
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const m = String(Math.floor(elapsed / 60)).padStart(2, '0');
+    const s = String(elapsed % 60).padStart(2, '0');
+    if (elapsedEl) elapsedEl.textContent = `${m}:${s}`;
+  }, 1000);
+
+  // 启动
+  show(0);
+  updateNotes();
+})();
+</script>
+
+</body>
+</html>
