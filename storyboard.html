@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>分镜长卷 · 哥窑</title>
+  <meta name="description" content="《哥窑》全 62 镜分镜长卷，按 6 段结构 / 4 章节分组。">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -12,25 +13,39 @@
 <body>
   <nav class="nav">
     <a href="index.html" class="nav__brand"><span class="seal">哥</span>哥窑 · GE KILN</a>
+    <ul class="nav__chapter">
+      <li><a href="preface.html"><span class="num">前</span>幕</a></li>
+      <li><a href="chapter-1.html"><span class="num">I</span>第一章</a></li>
+      <li><a href="chapter-2.html"><span class="num">II</span>第二章</a></li>
+      <li><a href="chapter-3.html"><span class="num">III</span>第三章</a></li>
+      <li><a href="chapter-4.html"><span class="num">IV</span>第四章</a></li>
+      <li><a href="epilogue.html"><span class="num">尾</span>幕</a></li>
+    </ul>
     <ul class="nav__links">
-      <li><a href="ppt.html">PPT 演示</a></li>
-      <li><a href="storyboard.html">分镜长卷</a></li>
-      <li><a href="analysis.html">主旨解读</a></li>
+      <li><a href="storyboard.html">分镜</a></li>
+      <li><a href="analysis.html">解读</a></li>
       <li><a href="about.html">关于</a></li>
     </ul>
   </nav>
 
-  <header style="padding: 80px 32px 40px; text-align: center; background: linear-gradient(180deg, var(--paper-soft), var(--paper));">
+  <header style="padding: 80px 32px 32px; text-align: center; background: linear-gradient(180deg, var(--paper-soft), var(--paper));">
     <div class="section__eyebrow">Storyboard · 分镜长卷</div>
-    <h1 style="font-size: clamp(2.4rem, 5vw, 3.6rem); margin: 12px 0 16px;">四幕 · <span style="color: var(--seal-red);">36+ 镜</span> · 一部兄弟史诗</h1>
-    <p class="section__lead" style="max-width: 680px; margin: 0 auto;">序幕·现代 → 第一幕·历史回溯 → 第二幕·贡品之印 → 第三幕·窑火成瓷</p>
-    <div style="display: flex; gap: 32px; justify-content: center; margin-top: 32px; font-family: var(--font-display); letter-spacing: 0.15em; color: var(--ink-soft); font-size: 0.95rem;">
+    <h1 style="font-size: clamp(2.4rem, 5vw, 3.6rem); margin: 12px 0 16px;">4 章 · <span style="color: var(--seal-red);">62 镜</span> · 一部兄弟史诗</h1>
+    <p class="section__lead" style="max-width: 680px; margin: 0 auto;">
+      第一章·角色·离别-入梦 → 第二章·梦中·制窑-入境-反思 → 第三章·弟归 → 第四章·共窑-传名
+    </p>
+    <div style="display: flex; gap: 32px; justify-content: center; margin-top: 32px; flex-wrap: wrap; font-family: var(--font-display); letter-spacing: 0.15em; color: var(--ink-soft); font-size: 0.95rem;">
       <span>共 <strong id="statTotal" style="color: var(--kiln-fire);">—</strong> 镜</span>
       <span>·</span>
-      <span>共 <strong id="statActs" style="color: var(--kiln-fire);">—</strong> 幕</span>
+      <span>共 <strong id="statActs" style="color: var(--kiln-fire);">—</strong> 章</span>
       <span>·</span>
       <span>共 <strong id="statLines" style="color: var(--kiln-fire);">—</strong> 句台词</span>
+      <span>·</span>
+      <span>共 <strong id="statDuration" style="color: var(--kiln-fire);">—</strong></span>
     </div>
+
+    <!-- 章节筛选条 -->
+    <div class="filter" id="chapterFilter" style="margin-top: 36px;"></div>
   </header>
 
   <main class="storyboard" id="storyboardList">
@@ -43,15 +58,17 @@
     <div class="footer__brand">哥窑 · GE KILN</div>
     <div class="footer__lead">窑火如歌，兄弟如线</div>
     <div class="footer__small">
-      <a href="ppt.html">PPT</a> ·
-      <a href="analysis.html">主旨解读</a> ·
-      <a href="about.html">关于</a>
+      <a href="preface.html">前幕</a> ·
+      <a href="chapter-1.html">第一章</a> ·
+      <a href="chapter-2.html">第二章</a> ·
+      <a href="chapter-3.html">第三章</a> ·
+      <a href="chapter-4.html">第四章</a> ·
+      <a href="epilogue.html">尾幕</a>
     </div>
   </footer>
 
   <script src="js/data.js"></script>
   <script src="js/site.js"></script>
   <script src="js/storyboard.js"></script>
-  <script>KE.markNav('storyboard.html');</script>
 </body>
 </html>

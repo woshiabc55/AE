@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>尾幕 · 展开 PPT · 哥窑</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/site.css">
+  <style>
+    .embed-ppt {
+      position: fixed;
+      inset: 0;
+      background: var(--ink-deep);
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div class="embed-ppt">
+    <div class="embed-ppt__bar">
+      <div class="embed-ppt__title">
+        <span class="seal">哥</span>尾幕 · 展开 PPT · 哥窑
+      </div>
+      <div class="embed-ppt__actions">
+        <a href="epilogue.html" class="embed-ppt__btn">← 返回尾幕</a>
+        <a href="ppt.html" class="embed-ppt__btn">独立 PPT 页</a>
+        <a href="index.html" class="embed-ppt__btn">首页</a>
+      </div>
+    </div>
+
+    <div class="embed-ppt__viewport" id="pptViewport"></div>
+
+    <div class="ppt__controls">
+      <button class="ppt__btn" id="pptPrev" title="上一张 (←)">‹</button>
+      <div class="ppt__progress" id="pptDots"></div>
+      <span id="pptProgress" style="font-family:var(--font-display);font-size:0.85rem;letter-spacing:0.1em;min-width:56px;text-align:center;">01 / 11</span>
+      <button class="ppt__btn" id="pptNext" title="下一张 (→)">›</button>
+      <button class="ppt__btn" id="pptFullscreen" title="全屏 (F)">⛶</button>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/site.js"></script>
+  <script src="js/ppt.js"></script>
+</body>
+</html>

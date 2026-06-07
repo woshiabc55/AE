@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>单镜详情 · 哥窑</title>
+  <title>尾幕 · 展开 PPT · 哥窑</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -18,7 +18,7 @@
       <li><a href="chapter-2.html"><span class="num">II</span>第二章</a></li>
       <li><a href="chapter-3.html"><span class="num">III</span>第三章</a></li>
       <li><a href="chapter-4.html"><span class="num">IV</span>第四章</a></li>
-      <li><a href="epilogue.html"><span class="num">尾</span>幕</a></li>
+      <li><a href="epilogue.html" class="active"><span class="num">尾</span>幕</a></li>
     </ul>
     <ul class="nav__links">
       <li><a href="storyboard.html">分镜</a></li>
@@ -27,27 +27,34 @@
     </ul>
   </nav>
 
-  <main class="shot-detail" id="shotRoot">
-    <div style="text-align:center;padding:80px;color:var(--ink-soft);">
-      <div style="font-family:var(--font-display);letter-spacing:0.3em;">LOADING · 加载镜号数据</div>
+  <main class="epilogue">
+    <div class="epilogue__inner">
+      <div class="epilogue__seal">尾幕</div>
+      <h1 class="epilogue__title">展开 PPT</h1>
+      <div class="epilogue__subtitle">THE EPILOGUE</div>
+      <p class="epilogue__intro" id="epIntro">
+        153 秒的故事，到这里就讲完了。
+      </p>
+      <p class="epilogue__next" id="epNext">
+        接下来，11 页 PPT 演示将为您展开整部《哥窑》的主旨——从「哥」通「歌」说起。
+      </p>
+      <a href="epilogue-ppt.html" class="epilogue__cta" id="epCta">
+        展开 PPT →
+      </a>
+      <div class="epilogue__back">
+        <a href="chapter-4.html">← 回到第四章</a>
+      </div>
     </div>
   </main>
 
-  <footer class="footer">
-    <div class="footer__brand">哥窑 · GE KILN</div>
-    <div class="footer__lead">窑火如歌，兄弟如线</div>
-    <div class="footer__small">
-      <a href="preface.html">前幕</a> ·
-      <a href="chapter-1.html">第一章</a> ·
-      <a href="chapter-2.html">第二章</a> ·
-      <a href="chapter-3.html">第三章</a> ·
-      <a href="chapter-4.html">第四章</a> ·
-      <a href="epilogue.html">尾幕</a>
-    </div>
-  </footer>
-
   <script src="js/data.js"></script>
   <script src="js/site.js"></script>
-  <script src="js/shot.js"></script>
+  <script>
+    KE.loadStructure().then(function (s) {
+      const e = s.epilogue;
+      if (e.intro) document.getElementById('epIntro').textContent = e.intro;
+      if (e.next) document.getElementById('epNext').textContent = e.next;
+    });
+  </script>
 </body>
 </html>

@@ -1,6 +1,5 @@
 /* =========================================================
-   ppt.js — PPT 演示（重塑版）
-   11 页结构：封面 / 目录 / 三章节（扉页+内容） / 尾声 / 谢幕
+   ppt.js — PPT 演示（v2: 11 页 · 6 段结构对齐）
    ========================================================= */
 (function () {
   'use strict';
@@ -16,11 +15,11 @@
       title: '哥窑',
       titleAccent: '',
       subtitle: '窑火如歌，兄弟如线',
-      lead: '《哥窑》剧本 · 视觉史诗 · 修订版分镜与主旨解读',
+      lead: '《哥窑》6 段结构总览 · 153 秒 · 62 镜',
       bullets: [
-        { num: '壹', text: '总纲：关于"传承"的视觉史诗——"哥"通"歌"' },
-        { num: '贰', text: '证据：兄弟二人两条动作链——守护 / 探索' },
-        { num: '叁', text: '升华：持守与开创的和弦 = 哥窑之美' }
+        { num: '前', text: '前幕·制作组自白 — 我们为什么拍这个故事' },
+        { num: '壹', text: '第一~四章 — 4 章节 · 角色 / 制窑 / 弟归 / 共窑' },
+        { num: '尾', text: '尾幕 — 展开 PPT · 从「哥」通「歌」说起' }
       ]
     },
 
@@ -30,91 +29,98 @@
       chapter: 'CONTENTS',
       title: '目录',
       titleAccent: '',
-      subtitle: '三章一尾声',
-      lead: '修订版《哥窑》主旨解读，按章节展开。',
+      subtitle: '6 段结构 · 4 章节',
+      lead: '修订版《哥窑》6 段结构总览与主旨解读。',
       items: [
-        { num: 'I', title: '总纲', desc: '哥窑之"哥"——是"歌"，也是"兄"', page: 4 },
-        { num: 'II', title: '证据', desc: '兄弟二人两条动作链：守护 / 探索', page: 6 },
-        { num: 'III', title: '升华', desc: '持守与开创的和弦 = 哥窑之美', page: 9 },
-        { num: '尾', title: '尾声', desc: '两双手按在同一方印上', page: 10 }
+        { num: '前', title: '前幕', desc: '制作组·自白介绍', page: 3 },
+        { num: 'I', title: '第一章', desc: '角色 · 离别-入梦（36s / 9 镜）', page: 4 },
+        { num: 'II', title: '第二章', desc: '梦中 · 制窑-入境-反思（51s / 22 镜）', page: 6 },
+        { num: 'III', title: '第三章', desc: '弟归（30s / 12 镜）', page: 7 },
+        { num: 'IV', title: '第四章', desc: '共窑-传名（12s / 19 镜）', page: 8 },
+        { num: '尾', title: '尾幕', desc: '展开 PPT · 升华', page: 10 }
       ]
     },
 
-    // ---------- 3. 章节扉页 I · 总纲 ----------
+    // ---------- 3. 前幕·制作组 ----------
     {
       type: 'divider',
-      chapter: 'I',
-      chapterLabel: 'CHAPTER ONE',
-      title: '总纲',
-      titleAccent: '—— 不变的核心',
-      subtitle: '《哥窑》',
-      lead: '「《哥窑》是关于"传承"的视觉史诗。"哥"通"歌"——窑火如歌，兄弟如线。」'
+      chapter: '前',
+      chapterLabel: 'PROLOGUE',
+      title: '前幕',
+      titleAccent: '—— 制作组自白',
+      subtitle: '为什么拍这个故事',
+      lead: '「我们想用 153 秒讲一个关于「哥窑」的故事。在动笔之前，我们想先告诉你——为什么是这个名字，为什么是两个男人、为什么是一座窑。」'
     },
 
-    // ---------- 4. 总纲内容 ----------
-    {
-      type: 'content',
-      chapter: 'I · 总纲',
-      title: '三条核心命题',
-      titleAccent: '',
-      subtitle: '《哥窑》讲什么',
-      bullets: [
-        { num: '01', text: '<strong>剧本名：</strong>哥窑——以"窑"为名，却讲的是"人"。' },
-        { num: '02', text: '<strong>结构：</strong>序幕·现代 + 第一/二/三幕（历史回溯 / 贡品之印 / 窑火成瓷）。' },
-        { num: '03', text: '<strong>核心命题：</strong>持守与开创、个人与传承、技艺与时代——三组张力同构于兄弟二人。' }
-      ]
-    },
-
-    // ---------- 5. 章节扉页 II · 证据 ----------
-    {
-      type: 'divider',
-      chapter: 'II',
-      chapterLabel: 'CHAPTER TWO',
-      title: '证据',
-      titleAccent: '—— 兄弟的两条动作链',
-      subtitle: '修订版关系（重要）',
-      lead: '本项目以修订版"哥哥=张寄，弟弟=张志元"为准。原始脚本中"章生一""张志耀""张寄"等混用视为笔误。'
-    },
-
-    // ---------- 6. 人物 + 证据一 · 守护 ----------
+    // ---------- 4. 第一~四章 · 角色 / 制窑 / 弟归 / 共窑 ----------
     {
       type: 'duo',
-      chapter: 'II · 证据',
-      title: '兄弟二人 · 守护与探索',
+      chapter: 'I · 第一章',
+      title: '第一章 · 角色 · 离别-入梦',
       titleAccent: '',
-      subtitle: '修订版人物定位',
+      subtitle: '36s · 镜 1–9 · 当代送别与战乱烽火',
       left: {
-        role: '哥哥 · 张寄',
-        seal: '持灯者',
-        traits: ['守护', '理性', '承担', '持守'],
-        desc: '年长、稳重、理性。他负责规划、守护、在关键时刻拉住冲动的弟弟。',
-        keyLine: { shot: 53, text: '「等！现在开窑，全毁了！」' }
+        role: '当代',
+        seal: '送别',
+        traits: ['地铁', '嘱托', '兄弟', '光影'],
+        desc: '老匠人送弟弟去上学。父亲把瓷土与家谱塞入兄弟手中——「往南走，找能烧窑的土地，不能丢。手艺不能断。」',
+        keyLine: { shot: 9, text: '「手艺不能断。」' }
       },
       right: {
-        role: '弟弟 · 张志元',
-        seal: '行路人',
-        traits: ['探索', '感性', '天赋', '开创'],
-        desc: '年轻、敏感、天赋异禀。他能听见"土在唱歌"，感知火候的微妙变化。',
-        keyLine: { shot: 16, text: '「哥，这土……在唱歌。」' }
+        role: '历史',
+        seal: '烽火',
+        traits: ['父亲', '瓷土', '家谱', '南迁'],
+        desc: '战乱烽火中父亲将紫金土与家谱塞入兄弟手中。一句嘱托，兄弟南迁。',
+        keyLine: { shot: 5, text: '「往南走，找能烧窑的土地。」' }
       },
       bullets: [
-        { num: '镜 9', text: '<strong>父亲嘱托（修订）：</strong>"看好你弟弟。"——父亲托付哥哥张寄照看弟弟志元。' },
-        { num: '镜 45', text: '<strong>持守·最高点：</strong>张志元反将哥哥的手按在印上——"哥，没有你这盏灯……"' }
+        { num: '镜 1', text: '<strong>开篇意象：</strong>当代地铁站，老匠人送弟弟去上学。' },
+        { num: '镜 9', text: '<strong>父亲嘱托：</strong>「往南走，找能烧窑的土地，不能丢。手艺不能断。」' }
       ]
     },
 
-    // ---------- 7. 证据二 · 探索 ----------
+    // ---------- 5. 第二章·制窑 ----------
     {
       type: 'content',
-      chapter: 'II · 证据',
-      title: '证据二 · 弟弟张志元的探索',
-      titleAccent: '开创者的天赋之眼',
-      subtitle: '镜头里那个能"听见土在唱歌"的人',
+      chapter: 'II · 第二章',
+      title: '第二章 · 梦中 · 制窑-入境-反思',
+      titleAccent: '',
+      subtitle: '51s · 镜 11–33 · 紫金土在唱歌',
       bullets: [
-        { num: '镜 16', text: '「哥，这土……在唱歌。」 —— 发现紫金土的精准感知。' },
-        { num: '镜 29', text: '「火着了。」 —— 第一窑开火前的聆听。' },
-        { num: '镜 51', text: '「哥，火……太急了。」 —— 火候失控前的预警。' },
-        { num: '镜 57', text: '「哥……成了。」 —— 金丝铁线开片之时的释然。' }
+        { num: '镜 11', text: '<strong>南下途中：</strong>弟弟听见紫金土在唱歌。' },
+        { num: '镜 16', text: '<strong>发现之眼：</strong>「哥，这土……在唱歌。」—— 找到建窑之所。' },
+        { num: '镜 18-27', text: '<strong>依山建龙窑：</strong>兄弟并肩夯土、砌窑。' },
+        { num: '镜 29', text: '<strong>第一窑开火：</strong>釉色如玉，却未开片。反思火候。' }
+      ]
+    },
+
+    // ---------- 6. 第三章·弟归 ----------
+    {
+      type: 'content',
+      chapter: 'III · 第三章',
+      title: '第三章 · 弟归',
+      titleAccent: '—— 龙泉章氏贡印',
+      subtitle: '30s · 镜 36–47 · 朝廷查验与赐印',
+      bullets: [
+        { num: '镜 36', text: '<strong>朝廷官员查验：</strong>第二窑出窑的青瓷釉色更润、隐隐有细纹。' },
+        { num: '镜 40', text: '<strong>赐「龙泉章氏」贡印：</strong>朝廷赐印，兄弟受命。' },
+        { num: '镜 45', text: '<strong>持守·最高点：</strong>两双手按在同一方印上——张志元：哥，没有你这盏灯……' },
+        { num: '镜 47', text: '<strong>弟归：</strong>弟弟归来，兄弟重聚。' }
+      ]
+    },
+
+    // ---------- 7. 第四章·共窑-传名 ----------
+    {
+      type: 'content',
+      chapter: 'IV · 第四章',
+      title: '第四章 · 共窑-传名',
+      titleAccent: '—— 金丝铁线',
+      subtitle: '12s · 镜 48–66 · 火候失控与开片',
+      bullets: [
+        { num: '镜 51', text: '<strong>火候预警：</strong>弟弟察觉「火……太急了。」' },
+        { num: '镜 53', text: '<strong>持守·守护：</strong>哥哥拉住弟弟——「等！现在开窑，全毁了！」' },
+        { num: '镜 57', text: '<strong>开片释然：</strong>「哥……成了。」—— 金丝铁线前所未见。' },
+        { num: '镜 66', text: '<strong>背影重叠：</strong>两个时代的背影，窑火不灭。' }
       ]
     },
 
@@ -126,7 +132,7 @@
       title: '升华',
       titleAccent: '—— 哥窑之"哥"',
       subtitle: '是"歌"，也是"兄"',
-      lead: '从镜号 1 到镜号 66，所有线索最终汇向一句话——'
+      lead: '从前幕到尾幕，所有线索最终汇向一句话——'
     },
 
     // ---------- 9. 升华核心 ----------
@@ -166,12 +172,13 @@
       chapter: '',
       title: '感谢观看',
       titleAccent: '',
-      subtitle: '《哥窑》修订版分镜与主旨解读',
+      subtitle: '《哥窑》6 段结构 · 修订版分镜与主旨解读',
       lead: '请进入下方入口查看完整内容',
       bullets: [
-        { num: '01', text: '<a href="storyboard.html">分镜长卷 · 62 镜 →</a>' },
-        { num: '02', text: '<a href="analysis.html">主旨解读 →</a>' },
-        { num: '03', text: '<a href="about.html">关于项目 →</a>' }
+        { num: '01', text: '<a href="preface.html">前幕 · 制作组自白 →</a>' },
+        { num: '02', text: '<a href="storyboard.html">分镜长卷 · 62 镜 →</a>' },
+        { num: '03', text: '<a href="analysis.html">主旨解读 →</a>' },
+        { num: '04', text: '<a href="about.html">关于项目 →</a>' }
       ]
     }
   ];
@@ -297,7 +304,7 @@
         renderDuoCard(s.left) +
         '<div class="duo__center">' +
           '<div class="duo__chord">二重唱</div>' +
-          '<div class="duo__chord-line"></div>' +
+          (s.left && s.right ? '<div class="duo__verse">' + KE.esc(s.left.seal || '') + ' ⟷ ' + KE.esc(s.right.seal || '') + '</div>' : '') +
         '</div>' +
         renderDuoCard(s.right) +
       '</div>' +
@@ -305,46 +312,43 @@
   }
 
   function renderDuoCard(c) {
-    const traits = c.traits.map(function (t) {
-      return '<span>' + KE.esc(t) + '</span>';
-    }).join('');
+    if (!c) return '';
+    const traits = (c.traits || []).map(function (t) { return '<span>' + KE.esc(t) + '</span>'; }).join('');
     const keyLine = c.keyLine
-      ? '<div class="duo__line"><span class="duo__line-shot">镜 ' + c.keyLine.shot + '</span>' + c.keyLine.text + '</div>'
+      ? '<div class="duo__keyline"><span class="duo__shot">镜 ' + c.keyLine.shot + '</span>' + KE.formatDialogue(c.keyLine.text) + '</div>'
       : '';
     return '' +
       '<div class="duo__card">' +
-        '<div class="duo__seal">' + KE.esc(c.seal) + '</div>' +
-        '<div class="duo__role">' + KE.esc(c.role) + '</div>' +
-        '<div class="duo__desc">' + KE.esc(c.desc) + '</div>' +
+        '<div class="duo__role">' + KE.esc(c.role || '') + '</div>' +
+        '<div class="duo__seal">' + KE.esc(c.seal || '') + '</div>' +
+        '<div class="duo__desc">' + KE.esc(c.desc || '') + '</div>' +
         '<div class="duo__traits">' + traits + '</div>' +
         keyLine +
       '</div>';
   }
 
   function renderQuoteSlide(s) {
-    const list = (s.bullets || []).map(function (b) {
+    const bullets = (s.bullets || []).map(function (b) {
       return '<li data-num="' + KE.esc(b.num) + '">' + b.text + '</li>';
     }).join('');
     return '' +
       renderTitle(s.title, s.titleAccent) +
       (s.subtitle ? '<p class="ppt__subtitle">' + KE.esc(s.subtitle) + '</p>' : '') +
-      '<div class="quote__big">' + s.quote + '</div>' +
-      '<div class="quote__attr">' + KE.esc(s.quoteAttr || '') + '</div>' +
-      (list ? '<ul class="ppt__list">' + list + '</ul>' : '');
+      '<div class="quote__inner">' +
+        '<div class="quote__text">' + KE.esc(s.quote || '') + '</div>' +
+        (s.quoteAttr ? '<div class="quote__attr">' + KE.esc(s.quoteAttr) + '</div>' : '') +
+      '</div>' +
+      (bullets ? '<ul class="ppt__list">' + bullets + '</ul>' : '');
   }
 
   function renderDuet(s) {
     const quotes = (s.quotes || []).map(function (q) {
-      return '' +
-        '<div class="duet__quote">' +
-          '<span class="duet__shot">镜 ' + q.shot + '</span>' +
-          '<div class="duet__text">' + KE.esc(q.text) + '</div>' +
-        '</div>';
+      return '<div class="duet__quote"><span class="duet__shot">镜 ' + q.shot + '</span><span class="duet__line">' + KE.esc(q.text) + '</span></div>';
     }).join('');
     return '' +
       renderTitle(s.title, s.titleAccent) +
       (s.subtitle ? '<p class="ppt__subtitle">' + KE.esc(s.subtitle) + '</p>' : '') +
-      '<div class="duet__lead">' + KE.esc(s.lead) + '</div>' +
+      (s.lead ? '<p class="ppt__lead">' + KE.esc(s.lead) + '</p>' : '') +
       '<div class="duet__grid">' + quotes + '</div>';
   }
 
@@ -353,114 +357,92 @@
       return '<li data-num="' + KE.esc(b.num) + '">' + b.text + '</li>';
     }).join('');
     return '' +
-      '<div class="end__seal">谢谢</div>' +
-      '<h2 class="ppt__title end__title">' + KE.esc(s.title) + '</h2>' +
+      '<div class="end__seal">哥<br>窑</div>' +
+      renderTitle(s.title, s.titleAccent, 'end__title') +
       '<div class="end__subtitle">' + KE.esc(s.subtitle) + '</div>' +
-      (s.lead ? '<div class="end__lead">' + KE.esc(s.lead) + '</div>' : '') +
-      (list ? '<ul class="end__list">' + list + '</ul>' : '') +
-      '<div class="end__back">' +
-        '<a href="index.html" class="end__home">← 返回首页</a>' +
-      '</div>';
+      '<p class="end__lead">' + KE.esc(s.lead) + '</p>' +
+      '<ul class="end__list">' + list + '</ul>' +
+      '<div class="end__meta">— 感谢观看 —</div>';
   }
 
-  function buildAll() {
+  // =========================================================
+  // 控制
+  // =========================================================
+  function render() {
     viewport.innerHTML = SLIDES.map(buildSlide).join('');
+    renderDots();
+    update();
+  }
 
-    // 进度条
-    const dots = SLIDES.map(function (_, i) {
-      return '<span class="ppt__dot' + (i === 0 ? ' active' : '') + '" data-goto="' + i + '" title="Slide ' + (i + 1) + '"></span>';
+  function renderDots() {
+    dotsEl.innerHTML = SLIDES.map(function (_, i) {
+      return '<button class="ppt__dot" data-goto="' + i + '" aria-label="跳到第 ' + (i + 1) + ' 页"></button>';
     }).join('');
-    dotsEl.innerHTML = dots;
-
-    // TOC 点击跳转
-    viewport.querySelectorAll('.toc__item').forEach(function (a) {
-      a.addEventListener('click', function (e) {
-        e.preventDefault();
-        const n = parseInt(a.dataset.goto, 10);
-        if (!isNaN(n)) go(n);
+    dotsEl.querySelectorAll('.ppt__dot').forEach(function (dot) {
+      dot.addEventListener('click', function () {
+        goTo(parseInt(dot.getAttribute('data-goto'), 10));
+      });
+    });
+    viewport.querySelectorAll('[data-goto]').forEach(function (a) {
+      a.addEventListener('click', function () {
+        const idx = parseInt(a.getAttribute('data-goto'), 10);
+        if (!isNaN(idx)) goTo(idx);
       });
     });
   }
 
-  function go(n) {
-    n = Math.max(0, Math.min(SLIDES.length - 1, n));
-    const slides = viewport.querySelectorAll('.ppt__slide');
-    slides.forEach(function (el) {
-      const idx = parseInt(el.dataset.index, 10);
-      el.classList.remove('active', 'prev');
-      if (idx === n) el.classList.add('active');
-      else if (idx < n) el.classList.add('prev');
-    });
+  function update() {
+    progressEl.textContent = KE.pad2(current + 1) + ' / ' + KE.pad2(SLIDES.length);
     dotsEl.querySelectorAll('.ppt__dot').forEach(function (d, i) {
-      d.classList.toggle('active', i === n);
+      d.classList.toggle('is-active', i === current);
     });
-    progressEl.textContent = KE.pad2(n + 1) + ' / ' + KE.pad2(SLIDES.length);
-    current = n;
-    if (brandLink) {
-      brandLink.style.color = SLIDES[n].type === 'cover' || SLIDES[n].type === 'end' ? 'var(--paper)' : 'var(--paper)';
-      brandLink.style.opacity = '0.85';
-    }
+    viewport.querySelectorAll('.ppt__slide').forEach(function (s, i) {
+      s.classList.toggle('is-active', i === current);
+    });
   }
 
-  function next() { go(current + 1); }
-  function prev() { go(current - 1); }
+  function goTo(i) {
+    if (i < 0) i = 0;
+    if (i > SLIDES.length - 1) i = SLIDES.length - 1;
+    current = i;
+    update();
+  }
 
-  function bindKeys() {
-    document.addEventListener('keydown', function (e) {
-      // 在输入框中不拦截
-      const tag = (e.target && e.target.tagName) || '';
-      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
-        e.preventDefault();
-        next();
-      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
-        e.preventDefault();
-        prev();
-      } else if (e.key === 'Home') {
-        e.preventDefault();
-        go(0);
-      } else if (e.key === 'End') {
-        e.preventDefault();
-        go(SLIDES.length - 1);
-      } else if (e.key === 'f' || e.key === 'F') {
-        toggleFullscreen();
-      } else if (e.key === 'Escape' && document.fullscreenElement) {
-        document.exitFullscreen();
+  function next() { goTo(current + 1); }
+  function prev() { goTo(current - 1); }
+
+  prevBtn.addEventListener('click', prev);
+  nextBtn.addEventListener('click', next);
+
+  if (fullscreenBtn) {
+    fullscreenBtn.addEventListener('click', function () {
+      const el = document.documentElement;
+      if (!document.fullscreenElement) {
+        (el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen).call(el);
+      } else {
+        (document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen).call(document);
       }
     });
-
-    // 点击翻页（左右区域），避免点击链接/按钮/TOC时翻页
-    viewport.addEventListener('click', function (e) {
-      if (e.target.closest('a, button, .toc__item, .duo__card, .end__home')) return;
-      const rect = viewport.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      if (x > rect.width * 0.65) next();
-      else if (x < rect.width * 0.35) prev();
-    });
-
-    dotsEl.addEventListener('click', function (e) {
-      const t = e.target;
-      if (t && t.dataset && t.dataset.goto != null) {
-        go(parseInt(t.dataset.goto, 10));
-      }
-    });
-
-    prevBtn.addEventListener('click', prev);
-    nextBtn.addEventListener('click', next);
-    fullscreenBtn.addEventListener('click', toggleFullscreen);
   }
 
-  function toggleFullscreen() {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(function () {});
-    } else {
-      document.exitFullscreen();
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { next(); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { prev(); e.preventDefault(); }
+    else if (e.key === 'Home') { goTo(0); e.preventDefault(); }
+    else if (e.key === 'End') { goTo(SLIDES.length - 1); e.preventDefault(); }
+    else if (e.key === 'f' || e.key === 'F') {
+      if (fullscreenBtn) fullscreenBtn.click();
     }
-  }
-
-  document.addEventListener('DOMContentLoaded', function () {
-    buildAll();
-    bindKeys();
-    go(0);
   });
+
+  if (brandLink) {
+    brandLink.addEventListener('click', function (e) {
+      if (document.referrer && document.referrer.indexOf(window.location.origin) === 0) {
+        e.preventDefault();
+        history.back();
+      }
+    });
+  }
+
+  render();
 })();

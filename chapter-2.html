@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>第二章 · 梦中 · 制窑-入境-反思 · 哥窑</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+  <nav class="nav">
+    <a href="index.html" class="nav__brand"><span class="seal">哥</span>哥窑 · GE KILN</a>
+    <ul class="nav__chapter">
+      <li><a href="preface.html"><span class="num">前</span>幕</a></li>
+      <li><a href="chapter-1.html" class=""><span class="num">I</span>第一章</a></li>
+      <li><a href="chapter-2.html" class="active"><span class="num">II</span>第二章</a></li>
+      <li><a href="chapter-3.html" class=""><span class="num">III</span>第三章</a></li>
+      <li><a href="chapter-4.html" class=""><span class="num">IV</span>第四章</a></li>
+      <li><a href="epilogue.html"><span class="num">尾</span>幕</a></li>
+    </ul>
+    <ul class="nav__links">
+      <li><a href="storyboard.html">分镜</a></li>
+      <li><a href="analysis.html">解读</a></li>
+      <li><a href="about.html">关于</a></li>
+    </ul>
+  </nav>
+
+  <main class="chapter-page">
+    <header class="chapter-hero" id="chapterHero">
+      <div style="text-align:center;padding:60px;color:var(--ink-soft);">
+        <div style="font-family:var(--font-display);letter-spacing:0.3em;">LOADING · 加载章节</div>
+      </div>
+    </header>
+
+    <section>
+      <div class="chapter-shots__head" id="shotsHead"></div>
+      <div class="chapter-shots" id="shotsGrid"></div>
+    </section>
+
+    <div class="chapter-nav" id="chapterNav"></div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__brand">哥窑 · GE KILN</div>
+    <div class="footer__lead">窑火如歌，兄弟如线</div>
+    <div class="footer__small">
+      <a href="index.html">首页</a> ·
+      <a href="preface.html">前幕</a> ·
+      <a href="epilogue.html">尾幕</a>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/site.js"></script>
+  <script src="js/chapter.js"></script>
+  <script>
+    KE.loadStructure().then(function (s) {
+      const ch = s.chapters.find(function (c) { return c.id === 'ch2'; });
+      if (!ch) return;
+      return KE.loadShots().then(function (sd) {
+        const chapterShots = ch.shots.map(function (id) {
+          return sd.shots.find(function (x) { return x.id === id; });
+        }).filter(Boolean);
+        // 上下导航
+        const order = s.chapters;
+        const idx = order.findIndex(function (c) { return c.id === ch.id; });
+        const prev = idx > 0
+          ? {
+              href: 'chapter-' + (idx) + '.html',
+              num: order[idx - 1].title,
+              title: order[idx - 1].subtitle,
+              color: order[idx - 1].color
+            }
+          : { href: 'preface.html', num: '前幕', title: '制作组·自白介绍', color: s.preface.color };
+        const next = idx < order.length - 1
+          ? {
+              href: 'chapter-' + (idx + 2) + '.html',
+              num: order[idx + 1].title,
+              title: order[idx + 1].subtitle,
+              color: order[idx + 1].color
+            }
+          : { href: 'epilogue.html', num: '尾幕', title: '展开 PPT', color: s.epilogue.color };
+        KE.renderChapter(ch, chapterShots, prev, next);
+      });
+    });
+  </script>
+</body>
+</html>

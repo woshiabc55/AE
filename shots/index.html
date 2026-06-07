@@ -35,12 +35,15 @@
       border-radius: 2px;
       text-align: center;
       transition: all 0.25s var(--ease);
+      text-decoration: none;
+      color: inherit;
     }
     .shot-grid a:hover {
       border-color: var(--kiln-fire);
       background: var(--paper);
       transform: translateY(-2px);
       box-shadow: var(--shadow-soft);
+      color: inherit;
     }
     .shot-grid .num {
       font-family: var(--font-display);
@@ -68,17 +71,35 @@
       font-size: 1.6rem;
       margin-bottom: 20px;
       padding-left: 16px;
-      border-left: 4px solid var(--seal-red);
+      border-left: 4px solid var(--act-color, var(--seal-red));
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .act-section h2 .act-section__count {
+      font-family: var(--font-display);
+      color: var(--ink-soft);
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.15em;
     }
   </style>
 </head>
 <body>
   <nav class="nav">
     <a href="../index.html" class="nav__brand"><span class="seal">哥</span>哥窑 · GE KILN</a>
+    <ul class="nav__chapter">
+      <li><a href="../preface.html"><span class="num">前</span>幕</a></li>
+      <li><a href="../chapter-1.html"><span class="num">I</span>第一章</a></li>
+      <li><a href="../chapter-2.html"><span class="num">II</span>第二章</a></li>
+      <li><a href="../chapter-3.html"><span class="num">III</span>第三章</a></li>
+      <li><a href="../chapter-4.html"><span class="num">IV</span>第四章</a></li>
+      <li><a href="../epilogue.html"><span class="num">尾</span>幕</a></li>
+    </ul>
     <ul class="nav__links">
-      <li><a href="../ppt.html">PPT 演示</a></li>
-      <li><a href="../storyboard.html">分镜长卷</a></li>
-      <li><a href="../analysis.html">主旨解读</a></li>
+      <li><a href="../storyboard.html">分镜</a></li>
+      <li><a href="../analysis.html">解读</a></li>
       <li><a href="../about.html">关于</a></li>
     </ul>
   </nav>
@@ -87,94 +108,12 @@
     <header class="shot-index__head">
       <div class="section__eyebrow">Shot Index · 镜号索引</div>
       <h1>62 个独立镜号页</h1>
-      <p class="section__lead">点击任一镜号，进入其独立 HTML 页面。每一页都包含：画面 / 声音 / 时长 / 生图提示词 / 关键语境。</p>
+      <p class="section__lead">按 6 段结构 / 4 章节分组。点击任一镜号，进入其独立 HTML 页面。</p>
     </header>
 
-    <section class="act-section">
-      <h2>序幕 · 现代（5 镜）</h2>
-      <div class="shot-grid">
-        <a href="shot-001.html"><span class="num">001</span><span class="size">黑场</span><span class="act">序幕</span></a>
-        <a href="shot-002.html"><span class="num">002</span><span class="size">特写</span><span class="act">序幕</span></a>
-        <a href="shot-003.html"><span class="num">003</span><span class="size">中景</span><span class="act">序幕</span></a>
-        <a href="shot-004.html"><span class="num">004</span><span class="size">大特写</span><span class="act">序幕</span></a>
-        <a href="shot-005.html"><span class="num">005</span><span class="size">黑场字幕</span><span class="act">序幕</span></a>
-      </div>
-    </section>
-
-    <section class="act-section">
-      <h2>第一幕 · 历史回溯（26 镜）</h2>
-      <div class="shot-grid">
-        <a href="shot-006.html"><span class="num">006</span><span class="size">字幕浮现</span><span class="act">第一幕</span></a>
-        <a href="shot-007.html"><span class="num">007</span><span class="size">快切蒙太奇</span><span class="act">第一幕</span></a>
-        <a href="shot-008.html"><span class="num">008</span><span class="size">全景</span><span class="act">第一幕</span></a>
-        <a href="shot-009.html"><span class="num">009</span><span class="size">中景</span><span class="act">第一幕</span></a>
-        <a href="shot-011.html"><span class="num">011</span><span class="size">全景</span><span class="act">第一幕</span></a>
-        <a href="shot-012.html"><span class="num">012</span><span class="size">中景</span><span class="act">第一幕</span></a>
-        <a href="shot-014.html"><span class="num">014</span><span class="size">全景</span><span class="act">第一幕</span></a>
-        <a href="shot-015.html"><span class="num">015</span><span class="size">航拍</span><span class="act">第一幕</span></a>
-        <a href="shot-016.html"><span class="num">016</span><span class="size">中景</span><span class="act">第一幕</span></a>
-        <a href="shot-017.html"><span class="num">017</span><span class="size">双人中景</span><span class="act">第一幕</span></a>
-        <a href="shot-018.html"><span class="num">018</span><span class="size">全景</span><span class="act">第一幕</span></a>
-        <a href="shot-019.html"><span class="num">019</span><span class="size">中景</span><span class="act">第一幕</span></a>
-        <a href="shot-020.html"><span class="num">020</span><span class="size">特写</span><span class="act">第一幕</span></a>
-        <a href="shot-021.html"><span class="num">021</span><span class="size">中景</span><span class="act">第一幕</span></a>
-        <a href="shot-022.html"><span class="num">022</span><span class="size">特写</span><span class="act">第一幕</span></a>
-        <a href="shot-023.html"><span class="num">023</span><span class="size">中景</span><span class="act">第一幕</span></a>
-        <a href="shot-024.html"><span class="num">024</span><span class="size">全景</span><span class="act">第一幕</span></a>
-        <a href="shot-025.html"><span class="num">025</span><span class="size">中景</span><span class="act">第一幕</span></a>
-        <a href="shot-026.html"><span class="num">026</span><span class="size">特写</span><span class="act">第一幕</span></a>
-        <a href="shot-027.html"><span class="num">027</span><span class="size">全景</span><span class="act">第一幕</span></a>
-        <a href="shot-028.html"><span class="num">028</span><span class="size">中景</span><span class="act">第一幕</span></a>
-        <a href="shot-029.html"><span class="num">029</span><span class="size">特写</span><span class="act">第一幕</span></a>
-        <a href="shot-030.html"><span class="num">030</span><span class="size">全景</span><span class="act">第一幕</span></a>
-        <a href="shot-031.html"><span class="num">031</span><span class="size">中景</span><span class="act">第一幕</span></a>
-        <a href="shot-032.html"><span class="num">032</span><span class="size">特写</span><span class="act">第一幕</span></a>
-        <a href="shot-033.html"><span class="num">033</span><span class="size">大特写</span><span class="act">第一幕</span></a>
-      </div>
-    </section>
-
-    <section class="act-section">
-      <h2>第二幕 · 贡品之印（12 镜）</h2>
-      <div class="shot-grid">
-        <a href="shot-036.html"><span class="num">036</span><span class="size">全景</span><span class="act">第二幕</span></a>
-        <a href="shot-037.html"><span class="num">037</span><span class="size">中景</span><span class="act">第二幕</span></a>
-        <a href="shot-038.html"><span class="num">038</span><span class="size">特写</span><span class="act">第二幕</span></a>
-        <a href="shot-039.html"><span class="num">039</span><span class="size">中景</span><span class="act">第二幕</span></a>
-        <a href="shot-040.html"><span class="num">040</span><span class="size">大特写</span><span class="act">第二幕</span></a>
-        <a href="shot-041.html"><span class="num">041</span><span class="size">中景</span><span class="act">第二幕</span></a>
-        <a href="shot-042.html"><span class="num">042</span><span class="size">特写</span><span class="act">第二幕</span></a>
-        <a href="shot-043.html"><span class="num">043</span><span class="size">大特写</span><span class="act">第二幕</span></a>
-        <a href="shot-044.html"><span class="num">044</span><span class="size">全景</span><span class="act">第二幕</span></a>
-        <a href="shot-045.html"><span class="num">045</span><span class="size">中景</span><span class="act">第二幕</span></a>
-        <a href="shot-046.html"><span class="num">046</span><span class="size">双人中景</span><span class="act">第二幕</span></a>
-        <a href="shot-047.html"><span class="num">047</span><span class="size">航拍</span><span class="act">第二幕</span></a>
-      </div>
-    </section>
-
-    <section class="act-section">
-      <h2>第三幕 · 窑火成瓷（19 镜）</h2>
-      <div class="shot-grid">
-        <a href="shot-048.html"><span class="num">048</span><span class="size">全景</span><span class="act">第三幕</span></a>
-        <a href="shot-049.html"><span class="num">049</span><span class="size">特写</span><span class="act">第三幕</span></a>
-        <a href="shot-050.html"><span class="num">050</span><span class="size">中景</span><span class="act">第三幕</span></a>
-        <a href="shot-051.html"><span class="num">051</span><span class="size">大特写</span><span class="act">第三幕</span></a>
-        <a href="shot-052.html"><span class="num">052</span><span class="size">全景</span><span class="act">第三幕</span></a>
-        <a href="shot-053.html"><span class="num">053</span><span class="size">特写</span><span class="act">第三幕</span></a>
-        <a href="shot-054.html"><span class="num">054</span><span class="size">双人中景</span><span class="act">第三幕</span></a>
-        <a href="shot-055.html"><span class="num">055</span><span class="size">黑场</span><span class="act">第三幕</span></a>
-        <a href="shot-056.html"><span class="num">056</span><span class="size">大特写</span><span class="act">第三幕</span></a>
-        <a href="shot-057.html"><span class="num">057</span><span class="size">特写</span><span class="act">第三幕</span></a>
-        <a href="shot-058.html"><span class="num">058</span><span class="size">中景</span><span class="act">第三幕</span></a>
-        <a href="shot-059.html"><span class="num">059</span><span class="size">全景</span><span class="act">第三幕</span></a>
-        <a href="shot-060.html"><span class="num">060</span><span class="size">中景</span><span class="act">第三幕</span></a>
-        <a href="shot-061.html"><span class="num">061</span><span class="size">特写</span><span class="act">第三幕</span></a>
-        <a href="shot-062.html"><span class="num">062</span><span class="size">大特写</span><span class="act">第三幕</span></a>
-        <a href="shot-063.html"><span class="num">063</span><span class="size">航拍</span><span class="act">第三幕</span></a>
-        <a href="shot-064.html"><span class="num">064</span><span class="size">黑场字幕</span><span class="act">第三幕</span></a>
-        <a href="shot-065.html"><span class="num">065</span><span class="size">片尾</span><span class="act">第三幕</span></a>
-        <a href="shot-066.html"><span class="num">066</span><span class="size">片尾</span><span class="act">第三幕</span></a>
-      </div>
-    </section>
+    <div id="shotIndexRoot">
+      <div style="text-align:center;padding:60px;color:var(--ink-soft);">LOADING · 加载镜号数据</div>
+    </div>
 
     <div style="text-align:center;margin-top:60px;padding-top:40px;border-top:1px solid rgba(74,74,74,0.1);">
       <a href="../index.html" class="btn">← 返回首页</a>
@@ -184,6 +123,74 @@
   <footer class="footer">
     <div class="footer__brand">哥窑 · GE KILN</div>
     <div class="footer__lead">窑火如歌，兄弟如线</div>
+    <div class="footer__small">
+      <a href="../preface.html">前幕</a> ·
+      <a href="../chapter-1.html">第一章</a> ·
+      <a href="../chapter-2.html">第二章</a> ·
+      <a href="../chapter-3.html">第三章</a> ·
+      <a href="../chapter-4.html">第四章</a> ·
+      <a href="../epilogue.html">尾幕</a>
+    </div>
   </footer>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/site.js"></script>
+  <script>
+    Promise.all([KE.loadShots(), KE.loadStructure()]).then(function (results) {
+      const shots = results[0].shots;
+      const structure = results[1];
+
+      const root = document.getElementById('shotIndexRoot');
+
+      // 按章节分组
+      const groups = {};
+      const order = [];
+      shots.forEach(function (s) {
+        if (!groups[s.act]) { groups[s.act] = []; order.push(s.act); }
+        groups[s.act].push(s);
+      });
+
+      const colorMap = {
+        ch1: '#6b8e7f',
+        ch2: '#8a4a2c',
+        ch3: '#b53028',
+        ch4: '#d96b27'
+      };
+
+      function getChapterMeta(actId) {
+        if (!structure || !structure.chapters) return null;
+        return structure.chapters.find(function (c) { return c.id === actId; });
+      }
+
+      let html = '';
+      order.forEach(function (act) {
+        const meta = getChapterMeta(act);
+        const title = meta ? meta.title + ' · ' + meta.subtitle : (KE.ACT_NAMES[act] || act.toUpperCase());
+        const count = groups[act].length;
+        const color = (meta && meta.color) || colorMap[act] || 'var(--seal-red)';
+
+        html += '<section class="act-section" style="--act-color:' + color + '">' +
+          '<h2>' + KE.esc(title) +
+            '<span class="act-section__count">· ' + count + ' 镜 · ' + (meta ? meta.duration : '—') + '</span>' +
+          '</h2>' +
+          '<div class="shot-grid">';
+
+        groups[act].forEach(function (s) {
+          html += '<a href="shot-' + String(s.id).padStart(3, '0') + '.html">' +
+            '<span class="num">' + String(s.id).padStart(3, '0') + '</span>' +
+            '<span class="size">' + KE.esc(s.shotSize || '—') + '</span>' +
+            '<span class="act">' + KE.esc(KE.ACT_NAMES[act] || act) + '</span>' +
+          '</a>';
+        });
+
+        html += '</div></section>';
+      });
+
+      root.innerHTML = html;
+    }).catch(function (err) {
+      document.getElementById('shotIndexRoot').innerHTML =
+        '<div style="text-align:center;padding:60px;color:var(--seal-red)">数据加载失败：' + (err.message) + '</div>';
+    });
+  </script>
 </body>
 </html>

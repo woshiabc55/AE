@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>前幕 · 制作组自白 · 哥窑</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+  <nav class="nav">
+    <a href="index.html" class="nav__brand"><span class="seal">哥</span>哥窑 · GE KILN</a>
+    <ul class="nav__chapter">
+      <li><a href="preface.html" class="active"><span class="num">前</span>幕</a></li>
+      <li><a href="chapter-1.html"><span class="num">I</span>第一章</a></li>
+      <li><a href="chapter-2.html"><span class="num">II</span>第二章</a></li>
+      <li><a href="chapter-3.html"><span class="num">III</span>第三章</a></li>
+      <li><a href="chapter-4.html"><span class="num">IV</span>第四章</a></li>
+      <li><a href="epilogue.html"><span class="num">尾</span>幕</a></li>
+    </ul>
+    <ul class="nav__links">
+      <li><a href="storyboard.html">分镜</a></li>
+      <li><a href="analysis.html">解读</a></li>
+      <li><a href="about.html">关于</a></li>
+    </ul>
+  </nav>
+
+  <main class="preface">
+    <div class="preface__inner">
+      <header class="preface__head">
+        <div class="preface__eyebrow">PROLOGUE · 前幕</div>
+        <h1 class="preface__title">前幕</h1>
+        <div class="preface__subtitle">制作组 · 自白介绍</div>
+        <div class="preface__duration">24s · META</div>
+      </header>
+
+      <div class="preface__intro" id="prefaceIntro">
+        我们想用 153 秒讲一个关于「哥窑」的故事。在动笔之前，我们想先告诉你——为什么是这个名字，为什么是两个男人、为什么是一座窑。
+      </div>
+
+      <ul class="preface__manifesto" id="prefaceManifesto">
+        <li>「哥」通「歌」——窑火如歌，兄弟如线。</li>
+        <li>这不是一个人的独唱，是两双手按在同一方印上的二重唱。</li>
+        <li>我们想让你看见紫金土的颜色、龙窑的弧线、金丝铁线裂开的声音。</li>
+        <li>我们也想让你听见——在那个最危急的火候里，哥哥拉住弟弟的那一声：「等！」</li>
+      </ul>
+
+      <section class="preface__team">
+        <h3>制作组</h3>
+        <div class="preface__team-grid" id="teamGrid"></div>
+      </section>
+
+      <div class="preface__next">
+        <a href="chapter-1.html" class="btn btn--ghost">进入 第一章 · 角色 离别-入梦 →</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__brand">哥窑 · GE KILN</div>
+    <div class="footer__lead">窑火如歌，兄弟如线</div>
+    <div class="footer__small">
+      <a href="index.html">首页</a> ·
+      <a href="preface.html">前幕</a> ·
+      <a href="chapter-1.html">第一~四章</a> ·
+      <a href="epilogue.html">尾幕</a>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/site.js"></script>
+  <script>
+    KE.loadStructure().then(function (s) {
+      const p = s.preface;
+      document.getElementById('prefaceIntro').textContent = p.intro;
+      const list = document.getElementById('prefaceManifesto');
+      list.innerHTML = p.manifesto.map(function (m) { return '<li>' + KE.esc(m) + '</li>'; }).join('');
+      const grid = document.getElementById('teamGrid');
+      grid.innerHTML = p.team.map(function (m) {
+        return '' +
+          '<div class="preface__team-card">' +
+            '<div class="preface__team-role">' + KE.esc(m.role) + '</div>' +
+            '<div class="preface__team-name">' + KE.esc(m.name) + '</div>' +
+            '<div class="preface__team-note">' + KE.esc(m.note) + '</div>' +
+          '</div>';
+      }).join('');
+    });
+  </script>
+</body>
+</html>

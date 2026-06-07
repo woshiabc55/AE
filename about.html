@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>关于 · 哥窑</title>
+  <meta name="description" content="《哥窑》项目关于页：6 段结构、人物关系、版本说明、技术栈。">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -12,25 +13,38 @@
 <body>
   <nav class="nav">
     <a href="index.html" class="nav__brand"><span class="seal">哥</span>哥窑 · GE KILN</a>
+    <ul class="nav__chapter">
+      <li><a href="preface.html"><span class="num">前</span>幕</a></li>
+      <li><a href="chapter-1.html"><span class="num">I</span>第一章</a></li>
+      <li><a href="chapter-2.html"><span class="num">II</span>第二章</a></li>
+      <li><a href="chapter-3.html"><span class="num">III</span>第三章</a></li>
+      <li><a href="chapter-4.html"><span class="num">IV</span>第四章</a></li>
+      <li><a href="epilogue.html"><span class="num">尾</span>幕</a></li>
+    </ul>
     <ul class="nav__links">
-      <li><a href="ppt.html">PPT 演示</a></li>
-      <li><a href="storyboard.html">分镜长卷</a></li>
-      <li><a href="analysis.html">主旨解读</a></li>
+      <li><a href="storyboard.html">分镜</a></li>
+      <li><a href="analysis.html">解读</a></li>
       <li><a href="about.html">关于</a></li>
     </ul>
   </nav>
 
   <main class="about">
     <div class="section__eyebrow">About · 关于本项目</div>
-    <h1>哥窑 · 修订版分镜与主旨解读</h1>
+    <h1>哥窑 · <span style="color:var(--seal-red)">6 段结构</span> 修订版</h1>
     <p class="about__lead">
-      本项目以短片《哥窑》剧本为核心，输出两类内容：(1) HTML 形态的 PPT 演示文稿；(2) 覆盖 36+ 镜号的分镜长卷与单镜详情页。
-      项目采用修订版的兄弟关系——<strong style="color:var(--seal-red)">哥哥=张寄，弟弟=张志元</strong>。
+      本项目以短片《哥窑》剧本为核心，输出两类内容：(1) HTML 形态的 11 页 PPT 演示文稿；(2) 覆盖 62 镜的分镜长卷与单镜详情页。
+      项目采用修订版的兄弟关系——<strong style="color:var(--seal-red)">哥哥=张寄，弟弟=张志元</strong>，并按
+      <strong>前幕·制作组自白 → 第一~四章 → 尾幕·展开 PPT</strong> 的 6 段结构组织内容。
     </p>
+
+    <h2>6 段结构总览</h2>
+    <ol class="about-list" id="aboutStructure">
+      <li style="color:var(--ink-soft)">加载中…</li>
+    </ol>
 
     <h2>创作说明</h2>
     <ul>
-      <li><strong>剧本来源</strong>：用户提供的《哥窑》分镜表，涵盖序幕与三个主要幕。</li>
+      <li><strong>剧本来源</strong>：用户提供的《哥窑》分镜表，按 6 段结构（前幕 / 第一~四章 / 尾幕）重新组织。</li>
       <li><strong>姓名修正</strong>：原始脚本中存在"章生一""张志耀""张寄"等混用，本项目以修订版"哥哥=张寄，弟弟=张志元"为绝对准则。</li>
       <li><strong>图像生成</strong>：每一镜都附有 SDXL 风格的英文提示词，可通过 <code>text_to_image</code> 接口生成；详见 <a href="data/shots.json">data/shots.json</a>。</li>
       <li><strong>技术栈</strong>：纯 HTML + CSS + 原生 JavaScript，零依赖，零构建。</li>
@@ -93,17 +107,14 @@
       </svg>
     </div>
 
-    <h2>四幕概览</h2>
-    <ul>
-      <li><strong>序幕·现代</strong>（镜 1–5）—— 当代送别，引出"哥窑的'哥'是谁"。</li>
-      <li><strong>第一幕·历史回溯</strong>（镜 6–33）—— 战乱南迁、发现紫金土、依山建龙窑、第一窑开火。</li>
-      <li><strong>第二幕·贡品之印</strong>（镜 36–47）—— 朝廷查验、赐"龙泉章氏"贡印、山民欢呼。</li>
-      <li><strong>第三幕·窑火成瓷</strong>（镜 48–66）—— 火候失控、兄弟守候、金丝铁线开片、两个时代背影重叠。</li>
-    </ul>
+    <h2>4 章节概览</h2>
+    <ol class="about-list" id="aboutChapters">
+      <li style="color:var(--ink-soft)">加载中…</li>
+    </ol>
 
     <h2>关键技术点</h2>
     <ul>
-      <li><strong>数据驱动</strong>：所有镜号存于 <code>data/shots.json</code>，页面通过 fetch 加载并渲染。</li>
+      <li><strong>数据驱动</strong>：所有镜号存于 <code>data/shots.json</code>，6 段结构存于 <code>data/structure.json</code>，页面通过 fetch 加载并渲染。</li>
       <li><strong>图像生成</strong>：每镜都有 <code>prompt</code> 字段，可调用 <code>text_to_image</code> 生成对应缩略图。</li>
       <li><strong>翻页交互</strong>：PPT 页支持键盘 ← / → / Space / Home / End 翻页，全屏按 F。</li>
       <li><strong>响应式</strong>：桌面 1440px 设计，平板/移动端单列自适应。</li>
@@ -112,10 +123,15 @@
 
     <h2>相关链接</h2>
     <ul>
-      <li><a href="index.html">首页</a></li>
-      <li><a href="ppt.html">PPT 演示</a></li>
+      <li><a href="index.html">首页（6 段时间线）</a></li>
+      <li><a href="preface.html">前幕 · 制作组自白</a></li>
+      <li><a href="chapter-1.html">第一章</a> · <a href="chapter-2.html">第二章</a> · <a href="chapter-3.html">第三章</a> · <a href="chapter-4.html">第四章</a></li>
+      <li><a href="epilogue.html">尾幕 · 展开 PPT</a></li>
+      <li><a href="epilogue-ppt.html">完整 PPT（11 页）</a></li>
+      <li><a href="ppt.html">独立 PPT 演示页</a></li>
       <li><a href="storyboard.html">分镜长卷</a></li>
       <li><a href="analysis.html">主旨解读</a></li>
+      <li><a href="data/structure.json" target="_blank">6 段结构数据 (JSON)</a></li>
       <li><a href="data/shots.json" target="_blank">原始分镜数据 (JSON)</a></li>
     </ul>
   </main>
@@ -124,14 +140,47 @@
     <div class="footer__brand">哥窑 · GE KILN</div>
     <div class="footer__lead">窑火如歌，兄弟如线</div>
     <div class="footer__small">
-      <a href="ppt.html">PPT</a> ·
-      <a href="storyboard.html">分镜长卷</a> ·
-      <a href="analysis.html">主旨解读</a>
+      <a href="preface.html">前幕</a> ·
+      <a href="chapter-1.html">第一章</a> ·
+      <a href="chapter-2.html">第二章</a> ·
+      <a href="chapter-3.html">第三章</a> ·
+      <a href="chapter-4.html">第四章</a> ·
+      <a href="epilogue.html">尾幕</a>
     </div>
   </footer>
 
   <script src="js/data.js"></script>
   <script src="js/site.js"></script>
-  <script>KE.markNav('about.html');</script>
+  <script>
+    KE.loadStructure().then(function (s) {
+      // 6 段总览
+      const struct = document.getElementById('aboutStructure');
+      const items = [
+        { href: 'preface.html', title: s.preface.title, sub: s.preface.subtitle, dur: s.preface.duration, color: s.preface.color },
+        ...s.chapters.map(function (c, i) {
+          return { href: 'chapter-' + (i + 1) + '.html', title: c.title, sub: c.subtitle, dur: c.duration, color: c.color };
+        }),
+        { href: 'epilogue.html', title: s.epilogue.title, sub: s.epilogue.subtitle, dur: '—', color: s.epilogue.color }
+      ];
+      struct.innerHTML = items.map(function (it) {
+        return '<li style="border-left-color:' + it.color + '">' +
+          '<strong><a href="' + it.href + '">' + KE.esc(it.title) + '</a></strong> ' +
+          '<span style="color:var(--ink-soft);">· ' + KE.esc(it.sub) + '</span> ' +
+          '<span style="font-family:var(--font-display);color:' + it.color + '">· ' + KE.esc(it.dur) + '</span>' +
+          '</li>';
+      }).join('');
+
+      // 4 章节详细
+      const ch = document.getElementById('aboutChapters');
+      ch.innerHTML = s.chapters.map(function (c) {
+        return '<li style="border-left-color:' + c.color + '">' +
+          '<strong>' + KE.esc(c.title) + ' · ' + KE.esc(c.subtitle) + '</strong> ' +
+          '<span style="font-family:var(--font-display);color:' + c.color + '">· ' + KE.esc(c.duration) + ' · 镜 ' + c.shotRange[0] + '–' + c.shotRange[1] + '</span>' +
+          '<div style="color:var(--ink-gray);font-size:0.95em;margin-top:6px">' + KE.esc(c.desc) + '</div>' +
+          '<div style="color:' + c.color + ';font-style:italic;margin-top:4px">「' + KE.esc(c.keyline) + '」</div>' +
+          '</li>';
+      }).join('');
+    });
+  </script>
 </body>
 </html>

@@ -3,15 +3,84 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>哥窑 · PPT 演示</title>
+  <title>哥窑 · PPT 演示（11 页 · 6 段结构）</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/site.css">
+  <style>
+    .ppt__topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background: rgba(14, 14, 16, 0.7);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(244, 236, 216, 0.12);
+      color: var(--paper-soft);
+      font-family: var(--font-display);
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+    }
+    .ppt__topbar__chapters {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .ppt__topbar__chapters a {
+      color: var(--paper-soft);
+      text-decoration: none;
+      padding: 4px 8px;
+      border-radius: 2px;
+      transition: all 0.2s var(--ease);
+    }
+    .ppt__topbar__chapters a:hover {
+      background: var(--kiln-fire);
+      color: var(--paper);
+    }
+    .ppt__topbar__chapters a.active {
+      color: var(--kiln-glow);
+      border-bottom: 1px solid var(--kiln-glow);
+    }
+    .ppt__topbar__chapters .sep {
+      color: rgba(244, 236, 216, 0.3);
+    }
+    .ppt__topbar__home {
+      color: var(--kiln-glow);
+      text-decoration: none;
+      font-family: var(--font-serif);
+      letter-spacing: 0.05em;
+    }
+    .ppt__topbar__home:hover { color: var(--paper); }
+
+    @media (max-width: 720px) {
+      .ppt__topbar__chapters { display: none; }
+    }
+  </style>
 </head>
 <body>
+  <div class="ppt__topbar">
+    <a href="index.html" class="ppt__topbar__home">← 哥窑 · 首页</a>
+    <div class="ppt__topbar__chapters" id="pptTopbarChapters">
+      <a href="preface.html"><span class="num">前</span>幕</a>
+      <span class="sep">·</span>
+      <a href="chapter-1.html"><span class="num">I</span>第一章</a>
+      <a href="chapter-2.html"><span class="num">II</span>第二章</a>
+      <a href="chapter-3.html"><span class="num">III</span>第三章</a>
+      <a href="chapter-4.html"><span class="num">IV</span>第四章</a>
+      <span class="sep">·</span>
+      <a href="epilogue.html"><span class="num">尾</span>幕</a>
+    </div>
+  </div>
+
   <div class="ppt">
-    <div class="ppt__viewport" id="pptViewport"></div>
+    <div class="ppt__viewport" id="pptViewport" style="padding-top: 36px;"></div>
 
     <div class="ppt__controls">
       <button class="ppt__btn" id="pptPrev" title="上一张 (←)">‹</button>
@@ -21,7 +90,7 @@
       <button class="ppt__btn" id="pptFullscreen" title="全屏 (F)">⛶</button>
     </div>
 
-    <a href="index.html" class="nav__brand" id="pptBrand" style="position:fixed;top:18px;left:32px;z-index:60;color:var(--paper);opacity:0.85;">
+    <a href="index.html" class="nav__brand" id="pptBrand" style="position:fixed;top:50px;left:32px;z-index:60;color:var(--paper);opacity:0.85;">
       <span class="seal">哥</span>哥窑
     </a>
 
