@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>2025 热梗大爆炸 · 自动出片 HTML</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Big+Shoulders+Display:wght@900&family=Space+Grotesk:wght@400;700&family=Noto+Sans+SC:wght@400;700;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0A0A12;
+  --paper:#F4F1EA;
+  --cyan:#00E0FF;
+  --acid:#F5FF00;
+  --pink:#FF2E93;
+  --green:#39FF14;
+  --violet:#7B2EFF;
+  --line:rgba(255,255,255,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--ink);color:var(--paper);font-family:'Space Grotesk','Noto Sans SC',system-ui,sans-serif;overflow-x:hidden}
+body{
+  background:
+    radial-gradient(1200px 800px at 10% -10%, rgba(123,46,255,.35), transparent 60%),
+    radial-gradient(1000px 700px at 110% 10%, rgba(0,224,255,.25), transparent 60%),
+    radial-gradient(900px 600px at 50% 120%, rgba(255,46,147,.25), transparent 60%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 2px, transparent 2px 4px),
+    var(--ink);
+  min-height:100vh;
+  position:relative;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:1;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .15 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  opacity:.18;mix-blend-mode:overlay;
+}
+.cursor-light{
+  position:fixed;width:520px;height:520px;border-radius:50%;pointer-events:none;z-index:2;
+  background:radial-gradient(closest-side, rgba(245,255,0,.18), transparent 70%);
+  transform:translate(-50%,-50%);
+  transition:opacity .3s;
+}
+.shell{position:relative;z-index:5;max-width:1480px;margin:0 auto;padding:28px 32px 80px}
+header.top{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;
+  border-bottom:2px dashed var(--line);padding-bottom:22px;margin-bottom:28px;
+}
+.brand{
+  font-family:'Bungee',cursive;
+  font-size:clamp(38px,5.4vw,76px);
+  line-height:.95;
+  letter-spacing:.02em;
+  background:linear-gradient(92deg,var(--cyan) 0%,var(--acid) 38%,var(--pink) 72%,var(--violet) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  position:relative;
+  filter:drop-shadow(0 4px 0 rgba(0,0,0,.4));
+}
+.brand .sub{font-family:'Space Grotesk';font-weight:700;font-size:14px;letter-spacing:.4em;color:var(--acid);text-transform:uppercase;display:block;margin-top:8px;-webkit-text-fill-color:var(--acid);background:none}
+.brand .under{position:absolute;left:0;right:0;bottom:-14px;height:6px;background:repeating-linear-gradient(90deg,var(--acid) 0 12px,transparent 12px 22px);filter:drop-shadow(0 0 6px var(--acid))}
+.kpi-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.kpi{font-family:'JetBrains Mono';font-size:12px;color:var(--paper);padding:8px 12px;border:1px solid var(--line);border-radius:6px;background:rgba(255,255,255,.03);letter-spacing:.08em}
+.kpi b{color:var(--cyan);font-weight:700;margin-right:6px}
+.kpi.warn{border-color:var(--acid);color:var(--acid)}
+
+.layout{
+  display:grid;grid-template-columns:340px 1fr 320px;gap:24px;align-items:start;
+}
+@media (max-width:1180px){ .layout{grid-template-columns:1fr} }
+
+.panel{
+  background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:18px;
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  position:relative;
+  overflow:hidden;
+}
+.panel::after{
+  content:"";position:absolute;left:0;right:0;top:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--cyan),var(--acid),var(--pink),transparent);
+  opacity:.6;
+}
+.panel h3{font-family:'Big Shoulders Display';font-weight:900;letter-spacing:.08em;font-size:18px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.panel h3::before{content:"";width:8px;height:18px;background:var(--acid);box-shadow:0 0 12px var(--acid);display:inline-block}
+
+.field{margin-bottom:14px}
+.field label{display:flex;justify-content:space-between;align-items:center;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:rgba(244,241,234,.65);margin-bottom:6px}
+.field label b{color:var(--acid);font-family:'JetBrains Mono';font-weight:700}
+select,input[type=range],input[type=checkbox]{
+  width:100%;
+}
+select{
+  background:#0E0E18;color:var(--paper);
+  border:1px solid var(--line);border-radius:8px;
+  padding:10px 12px;font-family:'JetBrains Mono';font-size:13px;letter-spacing:.06em;
+  appearance:none;cursor:pointer;
+  background-image:linear-gradient(45deg,transparent 50%,var(--acid) 50%),linear-gradient(135deg,var(--acid) 50%,transparent 50%);
+  background-position:calc(100% - 18px) 50%,calc(100% - 13px) 50%;background-size:5px 5px;background-repeat:no-repeat;
+}
+input[type=range]{-webkit-appearance:none;height:6px;background:linear-gradient(90deg,var(--cyan),var(--pink));border-radius:6px;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--acid);border:2px solid #000;box-shadow:0 0 10px var(--acid);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--acid);border:2px solid #000;box-shadow:0 0 10px var(--acid);cursor:pointer}
+.toggle{display:flex;gap:8px;flex-wrap:wrap}
+.toggle button{
+  background:transparent;color:var(--paper);border:1px solid var(--line);
+  padding:6px 10px;border-radius:6px;font-family:'JetBrains Mono';font-size:12px;letter-spacing:.05em;cursor:pointer;transition:all .2s;
+}
+.toggle button:hover{border-color:var(--cyan);color:var(--cyan)}
+.toggle button.on{background:var(--acid);color:#000;border-color:var(--acid);box-shadow:0 0 14px rgba(245,255,0,.6);font-weight:700}
+
+.cta{
+  margin-top:6px;
+  font-family:'Bungee';font-size:22px;letter-spacing:.05em;
+  background:linear-gradient(180deg,#FF2E93,#7B2EFF);
+  color:#fff;border:none;width:100%;padding:18px;border-radius:10px;cursor:pointer;
+  box-shadow:0 8px 0 #4a0a5c,0 12px 30px rgba(255,46,147,.4);
+  transition:transform .12s,box-shadow .12s;
+  position:relative;overflow:hidden;
+}
+.cta::after{content:"";position:absolute;left:-50%;top:0;width:50%;height:100%;background:linear-gradient(110deg,transparent,rgba(255,255,255,.4),transparent);transform:skewX(-20deg);transition:left .6s}
+.cta:hover{transform:translateY(-3px);box-shadow:0 11px 0 #4a0a5c,0 18px 40px rgba(255,46,147,.55)}
+.cta:hover::after{left:120%}
+.cta:active{transform:translateY(4px);box-shadow:0 4px 0 #4a0a5c}
+.cta[disabled]{filter:grayscale(.8) brightness(.6);cursor:not-allowed;box-shadow:0 4px 0 #222}
+
+.preview-wrap{position:relative}
+.stage{
+  position:relative;width:100%;aspect-ratio:16/9;
+  background:#000;border-radius:12px;overflow:hidden;
+  box-shadow:0 0 0 8px #F5FF00, 0 0 0 12px #000, 0 0 0 14px #F5FF00, 0 30px 60px rgba(0,0,0,.5);
+  isolation:isolate;
+}
+.stage::before{
+  content:"";position:absolute;inset:0;z-index:30;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.15) 0 2px,transparent 2px 4px);
+  mix-blend-mode:multiply;opacity:.35;
+}
+.stage canvas{display:block;width:100%;height:100%}
+.stage .ticker{position:absolute;left:14px;top:14px;z-index:40;font-family:'JetBrains Mono';font-size:11px;color:var(--acid);background:rgba(0,0,0,.7);padding:4px 8px;border-radius:4px;letter-spacing:.1em}
+.stage .rec-dot{position:absolute;right:14px;top:14px;z-index:40;display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono';font-size:11px;color:#fff;background:rgba(255,46,147,.85);padding:4px 8px;border-radius:4px;letter-spacing:.1em}
+.stage .rec-dot::before{content:"";width:8px;height:8px;border-radius:50%;background:#fff;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+
+.under-preview{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;align-items:center}
+.under-preview .info{font-family:'JetBrains Mono';font-size:12px;color:rgba(244,241,234,.65);letter-spacing:.05em}
+.under-preview .info b{color:var(--cyan)}
+
+.stats{display:flex;flex-direction:column;gap:10px}
+.stat{
+  display:flex;justify-content:space-between;align-items:center;
+  border:1px solid var(--line);border-radius:8px;padding:10px 12px;
+  background:linear-gradient(90deg, rgba(255,255,255,.04), transparent);
+  transform:skewX(-8deg);
+}
+.stat > *{transform:skewX(8deg)}
+.stat .k{font-family:'Space Grotesk';font-size:13px;letter-spacing:.05em;color:rgba(244,241,234,.7)}
+.stat .v{font-family:'JetBrains Mono';font-size:18px;color:var(--cyan);font-weight:700}
+.stat .v.hi{color:var(--acid)}
+.stat .v.pink{color:var(--pink)}
+.stat .v.green{color:var(--green)}
+
+.logbox{
+  margin-top:18px;background:#06060C;border:1px solid var(--line);border-radius:10px;
+  font-family:'JetBrains Mono';font-size:11px;color:rgba(244,241,234,.6);
+  padding:10px 12px;height:140px;overflow:hidden;line-height:1.55;letter-spacing:.04em;
+}
+.logbox .ok{color:var(--green)}
+.logbox .warn{color:var(--acid)}
+.logbox .err{color:var(--pink)}
+
+.overlay{
+  position:fixed;inset:0;z-index:100;background:rgba(5,5,12,.96);backdrop-filter:blur(20px);
+  display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;
+}
+.overlay.on{display:flex}
+.overlay h2{font-family:'Bungee';font-size:clamp(40px,7vw,110px);line-height:1;background:linear-gradient(92deg,var(--cyan),var(--acid),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 0 #000)}
+.overlay .bigtime{font-family:'JetBrains Mono';font-size:clamp(60px,12vw,180px);color:var(--acid);margin:20px 0;font-weight:700;letter-spacing:.04em;text-shadow:0 0 30px rgba(245,255,0,.5)}
+.overlay .now{font-family:'Big Shoulders Display';font-weight:900;font-size:clamp(20px,3vw,38px);color:var(--paper);letter-spacing:.04em;max-width:90vw;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.overlay .now span{color:var(--cyan);font-family:'JetBrains Mono';font-size:.5em;display:block;margin-top:6px;letter-spacing:.2em}
+.overlay .bar{width:min(640px,80vw);height:14px;background:#1a1a2a;border-radius:8px;overflow:hidden;margin-top:30px;border:1px solid var(--line)}
+.overlay .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--acid),var(--pink));transition:width .4s}
+.overlay .hint{margin-top:24px;font-size:13px;color:rgba(244,241,234,.6);letter-spacing:.16em;text-transform:uppercase}
+.overlay .emojis{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.overlay .emojis i{position:absolute;top:-40px;font-size:32px;animation:rain linear infinite}
+@keyframes rain{to{transform:translateY(110vh) rotate(540deg)}}
+
+.toast{
+  position:fixed;left:50%;bottom:30px;transform:translateX(-50%);z-index:200;
+  background:#000;color:var(--acid);border:1px solid var(--acid);
+  padding:12px 22px;border-radius:6px;font-family:'JetBrains Mono';font-size:13px;letter-spacing:.08em;
+  box-shadow:0 0 20px rgba(245,255,0,.4);display:none;
+}
+.toast.on{display:block;animation:tin .4s}
+@keyframes tin{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}
+
+footer{margin-top:32px;text-align:center;font-family:'JetBrains Mono';font-size:11px;color:rgba(244,241,234,.35);letter-spacing:.18em;text-transform:uppercase}
+footer b{color:var(--cyan)}
+</style>
+</head>
+<body>
+<div class="cursor-light" id="cursorLight"></div>
+
+<div class="shell">
+  <header class="top">
+    <div>
+      <div class="brand">2025 热梗<br/>大爆炸<span class="under"></span></div>
+      <span class="sub">Auto · Generate · WebM</span>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi warn"><b id="kpiDur">10 min</b>默认出片时长</div>
+      <div class="kpi"><b id="libCount">0</b>条梗</div>
+      <div class="kpi"><b>10</b>大分类</div>
+      <div class="kpi"><b>1080p</b>最高支持</div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <section class="panel" id="panelCtl">
+      <h3>控制台</h3>
+
+      <div class="field">
+        <label>视频时长 <b id="lblMin">10 min</b></label>
+        <div class="toggle" id="durToggle">
+          <button data-v="10" class="on">10 分</button>
+          <button data-v="20">20 分</button>
+          <button data-v="40">40 分</button>
+          <button data-v="60">60 分</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>分辨率 <b id="lblRes">1920×1080</b></label>
+        <div class="toggle" id="resToggle">
+          <button data-v="720">720p</button>
+          <button data-v="1080" class="on">1080p</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>语速 <b id="lblSpd">1.0×</b></label>
+        <div class="toggle" id="spdToggle">
+          <button data-v="0.5">0.5×</button>
+          <button data-v="1" class="on">1.0×</button>
+          <button data-v="1.5">1.5×</button>
+          <button data-v="2">2.0×</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>BGM 音量 <b id="lblVol">60%</b></label>
+        <input type="range" min="0" max="100" value="60" id="volRange">
+      </div>
+
+      <div class="field">
+        <label>风格预设 <b id="lblStyle">Brainrot</b></label>
+        <select id="styleSel">
+          <option value="brainrot">Brainrot · 抽象酸涩</option>
+          <option value="neon">Neon · 霓虹故障</option>
+          <option value="newspaper">Newspaper · 报纸头条</option>
+          <option value="bauhaus">Bauhaus · 包豪斯几何</option>
+          <option value="magazine">Magazine · 时尚杂志</option>
+          <option value="pixel">Pixel · 像素复古</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>附加项</label>
+        <div class="toggle" id="extraToggle">
+          <button data-k="watermark" class="on">水印</button>
+          <button data-k="particles" class="on">粒子</button>
+          <button data-k="subtitles" class="on">标签字幕</button>
+        </div>
+      </div>
+
+      <button class="cta" id="goBtn">▶ 开始生成 10 分钟视频</button>
+    </section>
+
+    <section class="preview-wrap">
+      <div class="stage">
+        <canvas id="cv" width="1920" height="1080"></canvas>
+        <div class="ticker" id="ticker">LIVE PREVIEW</div>
+        <div class="rec-dot" id="recDot" style="display:none">REC</div>
+      </div>
+      <div class="under-preview">
+        <div class="info">分辨率 <b id="infoRes">1920×1080</b></div>
+        <div class="info">帧率 <b>30 fps</b></div>
+        <div class="info">编码 <b id="infoCodec">VP9 / Opus</b></div>
+        <div class="info">剩余 <b id="infoLeft">--:--</b></div>
+      </div>
+
+      <div class="logbox" id="log"></div>
+    </section>
+
+    <section class="panel">
+      <h3>梗库雷达</h3>
+      <div class="stats" id="stats"></div>
+    </section>
+  </div>
+
+  <footer>
+    单文件 HTML · Canvas + MediaRecorder · 纯前端 · 建议 Chrome / Edge 桌面端 · <b>by 2025</b>
+  </footer>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="emojis" id="rain"></div>
+  <h2 id="ovTitle">RECORDING</h2>
+  <div class="bigtime" id="ovTime">10:00</div>
+  <div class="now" id="ovNow">等待出片…<span id="ovCard">—</span></div>
+  <div class="bar"><i id="ovBar"></i></div>
+  <div class="hint" id="ovHint">请勿切换标签页 · 正在本地合成 WebM</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+ *  2025 热梗大爆炸 · 单文件自动出片
+ *  默认 10 分钟 · 可切 20/40/60 · 1080p · 30fps
+ * =======================================================*/
+
+/* ---------------- 1. 梗库 ---------------- */
+/* 字段：[分类key, 标题, 副标, 标签, 背景色, 主色, emoji, 动画] */
+const M = [
+/* 章节封面 */
+['CHAP','2025 热梗大爆炸','年度梗图鉴 · 自动出片','START|2025|ANNUAL','#0A0A12','#F5FF00','💥','zoom'],
+['CHAP','中文热梗','zh-CN memes of the year','CHAPTER|CN','#0A0A12','#00E0FF','🀄','stamp'],
+['CHAP','国际梗','global brainrot 2025','CHAPTER|INTL','#0A0A12','#FF2E93','🌍','flip'],
+['CHAP','AI 抽象','absurd AI generated memes','CHAPTER|AI','#0A0A12','#7B2EFF','🤖','glitch'],
+['CHAP','视觉趋势','visual trends 2025','CHAPTER|VIS','#0A0A12','#39FF14','🎨','rain'],
+['CHAP','官方榜单','annual buzzword lists','CHAPTER|OFF','#0A0A12','#F5FF00','📜','typewriter'],
+['CHAP','情绪标签','emotional captions','CHAPTER|MOOD','#0A0A12','#FF2E93','💖','shake'],
+['CHAP','二次元','anime · itabag · goods','CHAPTER|SUB','#0A0A12','#00E0FF','🎀','bounce'],
+['CHAP','机器人','robots go viral','CHAPTER|BOT','#0A0A12','#39FF14','🦾','split'],
+['CHAP','完结撒花','the end · thanks 2025','END|THX','#0A0A12','#F5FF00','🎉','zoom'],
+
+/* 中文热梗 */
+['CN','xx基础，xx就不基础','张琪 JIEJI 穿搭公式出圈','基础款|显贵|反差|2025最热','#0A0A12','#F5FF00','🔥','glitch'],
+['CN','如何呢，又能怎','单依纯《歌手2025》歌词出圈','认命式|乐观|情绪出口','#0A0A12','#00E0FF','🤷','shake'],
+['CN','喝碗丝瓜汤','家庭短剧衍生的温柔劝慰','丝瓜汤|emo|治愈','#F4F1EA','#0A0A12','🍲','bounce'],
+['CN','高雅人士','自嘲式优雅解压梗','高雅|解压|自嘲','#7B2EFF','#F5FF00','🦢','stamp'],
+['CN','企鹅舞','高雅人士同款魔性舞步','企鹅|舞蹈|魔性','#0A0A12','#39FF14','🐧','rain'],
+['CN','蒜鸟蒜鸟','河南方言，算了算了','方言|算了|和解','#F5FF00','#0A0A12','🧄','bounce'],
+['CN','俺不中嘞','河南经典口头禅','方言|认命|可爱','#0A0A12','#F5FF00','🥲','shake'],
+['CN','City不City','旅游 + 时尚反差梗','city|旅游|反差','#FF2E93','#F4F1EA','🏙️','flip'],
+['CN','浪浪山小妖怪','《大圣归来》后衍生动画','小妖怪|打工人|动画','#0A0A12','#00E0FF','👹','zoom'],
+['CN','魔丸 & 灵珠','《哪吒2》刷屏','哪吒|神话|人格','#0A0A12','#FF2E93','🔥','glitch'],
+['CN','邪修','修仙小说术语大众化','邪修|修仙|网络语','#0A0A12','#7B2EFF','⚡','split'],
+['CN','误闯天家','古代书生科举梗','科举|天家|共鸣','#0A0A12','#F5FF00','📜','typewriter'],
+['CN','主理人','2025年网友投票最高','主理人|旧词新生','#0A0A12','#00E0FF','🧑‍💼','stamp'],
+['CN','做完你的做你的','多线程忙碌状态','忙碌|打工人|多线程','#0A0A12','#F5FF00','🌀','shake'],
+['CN','当个事儿办','郑重回应网络梗','郑重|回应|态度','#0A0A12','#39FF14','✅','bounce'],
+['CN','拼好×','拼多多式万能句式','拼好|句式|万能','#FF2E93','#F4F1EA','🧩','stamp'],
+['CN','敬自己一杯','与生活和解的仪式','和解|仪式|自洽','#0A0A12','#F5FF00','🥃','zoom'],
+['CN','助我破鼎','《哪吒2》破鼎名场面','哪吒|破鼎|名场面','#0A0A12','#FF2E93','⚔️','glitch'],
+['CN','千百次练习只为这一刻','歌手舞台同款','歌手|练习|舞台','#0A0A12','#00E0FF','🎤','typewriter'],
+['CN','情绪价值','关系中核心需求词','情绪|关系|价值','#0A0A12','#7B2EFF','💞','bounce'],
+['CN','村咖','村里开咖啡馆的反差潮','村|咖啡|反差','#F4F1EA','#0A0A12','☕','flip'],
+['CN','来财','招财进宝的口头祝福','招财|祝福|可爱','#0A0A12','#F5FF00','🐉','rain'],
+['CN','快哉快哉','遇好事时的放声','快哉|放声|豪迈','#0A0A12','#39FF14','🎉','bounce'],
+['CN','栓Q','我真的会谢的延伸','栓Q|谢谢|反转','#0A0A12','#FF2E93','🙃','shake'],
+['CN','绝绝子','情绪夸张表达','绝绝|夸张|情绪','#0A0A12','#7B2EFF','💯','stamp'],
+['CN','退退退','拒绝与驱赶手势梗','退退|拒绝|驱赶','#0A0A12','#F5FF00','🙅','rain'],
+['CN','芭比Q了','完蛋了的谐音','芭比Q|完蛋|谐音','#0A0A12','#FF2E93','💀','glitch'],
+['CN','city walk','城市漫步生活风','walk|城市|生活','#0A0A12','#00E0FF','🚶','flip'],
+['CN','电子榨菜','下饭视频的戏称','榨菜|下饭|视频','#0A0A12','#F5FF00','🥬','bounce'],
+['CN','显眼包','爱表现的人','显眼|包|人','#0A0A12','#39FF14','🎒','stamp'],
+['CN','特种兵旅游','高强度打卡式旅游','特种兵|旅游|打卡','#0A0A12','#FF2E93','🪖','split'],
+['CN','多巴胺穿搭','高饱和色彩搭配','多巴胺|穿搭|色彩','#FF2E93','#F5FF00','👗','rain'],
+['CN','发疯文学','情绪失控的文字','发疯|文学|情绪','#0A0A12','#7B2EFF','🤪','shake'],
+['CN','挖野菜','恋爱脑的反向自嘲','野菜|恋爱脑|自嘲','#0A0A12','#39FF14','🌿','zoom'],
+['CN','cos 不出','难以模仿的反差','cos|模仿|反差','#0A0A12','#00E0FF','🎭','flip'],
+['CN','班味儿','打工人身上的疲惫味','班味|疲惫|打工人','#0A0A12','#F5FF00','🥱','shake'],
+['CN','淡人 vs 浓人','MBTI 后的新标签','淡人|浓人|标签','#0A0A12','#FF2E93','🧂','bounce'],
+['CN','i 人 / e 人','MBTI 简写梗','i人|e人|MBTI','#0A0A12','#7B2EFF','🫥','stamp'],
+['CN','公主请上车','老板语气反讽梗','公主|上车|反讽','#0A0A12','#F5FF00','👸','rain'],
+['CN','命运的齿轮开始转动','转折点的标志性句子','命运|齿轮|转折','#0A0A12','#00E0FF','⚙️','glitch'],
+['CN','这河里吗','这合理吗的谐音梗','河里|合理|谐音','#0A0A12','#F5FF00','🌊','shake'],
+['CN','尊嘟假嘟','真的假的可爱版','尊嘟|假嘟|可爱','#0A0A12','#7B2EFF','🐶','bounce'],
+['CN','偷感很重','做某事怕被发现的尴尬','偷感|尴尬|怕被发现','#0A0A12','#FF2E93','🤫','stamp'],
+['CN','命运的馈赠','一切都是最好的安排','命运|馈赠|安排','#0A0A12','#F5FF00','🎁','zoom'],
+['CN','拿捏','精准掌控的反差梗','拿捏|掌控|反差','#0A0A12','#00E0FF','🤏','rain'],
+['CN','摆烂','索性放弃的从容','摆烂|放弃|从容','#0A0A12','#39FF14','🛌','bounce'],
+['CN','内卷','过度竞争的代名词','内卷|竞争|焦虑','#0A0A12','#FF2E93','🌀','glitch'],
+['CN','躺平','与内卷对立的姿态','躺平|佛系|姿态','#0A0A12','#F5FF00','🛏️','flip'],
+['CN','松弛感','不紧绷的生活状态','松弛|不紧绷|状态','#F4F1EA','#0A0A12','🧘','zoom'],
+['CN','你人还怪好的嘞','反讽表扬式吐槽','怪好|反讽|表扬','#0A0A12','#F5FF00','😇','bounce'],
+['CN','泰裤辣','太酷啦的鬼畜变体','泰裤|鬼畜|变体','#0A0A12','#FF2E93','🕺','split'],
+['CN','偷感很重','反讽式自嘲','偷感|自嘲|反讽','#0A0A12','#7B2EFF','🤫','stamp'],
+['CN','班儿·早八','早八是打工人的早课','早八|打工|课','#0A0A12','#F5FF00','⏰','shake'],
+['CN','命运的咖啡','续命咖啡的隐喻','咖啡|续命|隐喻','#0A0A12','#00E0FF','☕','flip'],
+['CN','请假的艺术','高情商请假模板','请假|艺术|模板','#0A0A12','#F5FF00','📝','stamp'],
+['CN','我推·二次元','我推=我支持的二次元角色','我推|二次元|角色','#0A0A12','#FF2E93','🌸','bounce'],
+['CN','谷子·吃谷','二次元买周边的代称','谷子|吃谷|周边','#0A0A12','#39FF14','🎀','rain'],
+['CN','痛包','二次元徽章密集装饰的包','痛包|徽章|装饰','#0A0A12','#7B2EFF','👛','glitch'],
+['CN','痛车','喷涂动漫角色的车','痛车|喷涂|角色','#0A0A12','#F5FF00','🚗','split'],
+['CN','万物皆可痛','1.37亿人的具身化运动','万物|痛|运动','#0A0A12','#00E0FF','💥','flip'],
+['CN','活人感·官方','00后小编带火的官方语态','活人|官方|语态','#0A0A12','#00E0FF','🫀','flip'],
+['CN','预制·xx','工业感合成的隐喻','预制|工业|隐喻','#0A0A12','#F5FF00','🏭','zoom'],
+['CN','韧性·年度字','2025 年度国内字','韧性|年度|国内','#0A0A12','#7B2EFF','🪢','typewriter'],
+['CN','具身智能·政府','写进 2025 政府工作报告','具身|智能|政府','#0A0A12','#39FF14','🤖','stamp'],
+['CN','苏超·江苏','江苏省城市足球联赛','苏超|江苏|足球','#0A0A12','#F5FF00','⚽','split'],
+['CN','赛博对账·跨年','TikTok 大撤离衍生的梗','赛博|对账|跨年','#0A0A12','#FF2E93','🧾','bounce'],
+['CN','数字游民·远程','远程办公的新身份','数字|游民|远程','#0A0A12','#00E0FF','💻','rain'],
+['CN','谷子经济·二次元','1.37亿人撑起的经济','谷子|经济|二次元','#0A0A12','#F5FF00','📈','glitch'],
+['CN','高能量的一天','年度正能量问候','高能量|问候|一天','#F5FF00','#0A0A12','⚡','flip'],
+['CN','雪豹闭嘴','雪豹闭嘴成为情绪代表','雪豹|闭嘴|情绪','#0A0A12','#F4F1EA','🐆','flip'],
+['CN','邪修·vs 正修','网络修仙梗','邪修|正修|修仙','#0A0A12','#7B2EFF','🪄','shake'],
+['CN','命运的kpi','打工人终极考核','kpi|打工人|考核','#0A0A12','#F5FF00','📉','glitch'],
+['CN','猫meme·emo','猫meme 表达 emo','猫|emo|表情','#F4F1EA','#0A0A12','😿','flip'],
+['CN','命运的乙方','打工人的乙方身份','乙方|打工人|身份','#0A0A12','#00E0FF','📑','shake'],
+['CN','命运的 leader','打工人的 leader 梗','leader|打工人|梗','#0A0A12','#F5FF00','🧑‍💼','glitch'],
+['CN','命运的 OKR','打工人的 OKR 梗','OKR|打工人|梗','#0A0A12','#FF2E93','🎯','flip'],
+['CN','命运的会议纪要','冗长会议纪要的反讽','纪要|反讽|冗长','#0A0A12','#F5FF00','🗒️','bounce'],
+['CN','这班上的像度假','反讽上班梗','反讽|上班|度假','#0A0A12','#FF2E93','🏝️','stamp'],
+
+/* 国际梗 */
+['INTL','Italian Brainrot','2025 全球现象级迷因','italian|brainrot|ai','#0A0A12','#FF2E93','🇮🇹','glitch'],
+['INTL','Tralalero Tralala','穿 Nike 的三腿鲨鱼','shark|nike|trala','#0A0A12','#00E0FF','🦈','rain'],
+['INTL','Bombardiro Crocodilo','鳄鱼轰炸机混种','croc|bomber|ai','#0A0A12','#7B2EFF','🐊','split'],
+['INTL','Ballerina Cappuccina','拿咖啡杯当头的芭蕾','ballerina|cappuccino','#0A0A12','#F5FF00','☕','flip'],
+['INTL','Tung Tung Tung Sahur','印尼版 tree-man','tung|sahur|indonesia','#0A0A12','#39FF14','🌳','shake'],
+['INTL','Brr Brr Patapim','森林猴杂交种','brr|patapim|monkey','#0A0A12','#FF2E93','🐒','bounce'],
+['INTL','Lirili Larila','穿 Birkenstock 的仙人掌象','cactus|elephant','#F4F1EA','#0A0A12','🌵','zoom'],
+['INTL','Boneca Ambalabu','印尼青蛙轮胎人','frog|tire|indo','#0A0A12','#7B2EFF','🐸','stamp'],
+['INTL','Cappuccino Assassino','咖啡刺客','assassino|coffee','#0A0A12','#F5FF00','🔪','split'],
+['INTL','Group 7','这组才正常吗？梗','group7|odd|normal','#0A0A12','#FF2E93','7️⃣','rain'],
+['INTL','Coldplay Concert Couple','演唱会 Kiss Cam 出圈','kiss|cam|coldplay','#0A0A12','#00E0FF','💋','flip'],
+['INTL','Justin Bieber Crashout','比伯崩溃合集','bieber|crashout','#0A0A12','#39FF14','😵','shake'],
+['INTL','Chicken Jockey','《我的世界》生物梗','minecraft|chicken','#0A0A12','#F5FF00','🐔','bounce'],
+['INTL','100 Men vs 1 Gorilla','100 人 vs 大猩猩的争论','gorilla|fight|debate','#0A0A12','#FF2E93','🦍','glitch'],
+['INTL','Noooo La Policia','意式警察梗','policia|italian|nooo','#0A0A12','#7B2EFF','🚓','split'],
+['INTL','Khaby Lame Mechanism','无声反讽的模因机制','khaby|silent|react','#0A0A12','#39FF14','🤫','rain'],
+['INTL','JP Salary Woman Saori','日本社畜女性梗','saori|japan|salary','#0A0A12','#00E0FF','👩‍💼','flip'],
+['INTL','Jet 2 Holiday','Nothing beats a Jet 2 holiday','holiday|jet|vacay','#F5FF00','#0A0A12','✈️','shake'],
+['INTL','AI Vlogs','AI 生成的 vlog','ai|vlog|fake','#0A0A12','#7B2EFF','🤖','bounce'],
+['INTL','F Students Are Inventors','F 学生才是发明家','student|f|inventor','#0A0A12','#FF2E93','🧪','zoom'],
+['INTL','Holy Airball','夸张空篮的"圣空"','airball|holy|nba','#0A0A12','#00E0FF','🏀','split'],
+['INTL','Cooked Dog','灰毛拉布拉多眯眼','dog|cooked|sunset','#F5FF00','#0A0A12','🐕','rain'],
+['INTL','Fluffy Hair','Z 世代的铲子发型','fluffy|genz|hair','#0A0A12','#FF2E93','💇','flip'],
+['INTL','TikTok refugees → RedNote','TikTok 难民涌入小红书','tiktok|rednote|migrate','#0A0A12','#39FF14','📱','bounce'],
+['INTL','Melania Kiss Condom Hat','帽子挡吻名场面','melania|hat|inauguration','#0A0A12','#7B2EFF','👒','stamp'],
+['INTL','Beyoncé Shocked Grammys','碧昂斯震惊表情','beyonce|grammys|shock','#0A0A12','#FF2E93','😮','glitch'],
+['INTL','6-7','6-7 数字迷因','67|number|kid','#0A0A12','#00E0FF','6️⃣','split'],
+['INTL','Pope in the Microwave','教皇在微波炉里','pope|meme|absurd','#0A0A12','#7B2EFF','⛪','zoom'],
+['INTL','AI Slop','AI 烂梗内容','slop|ai|low','#0A0A12','#39FF14','🗑️','bounce'],
+['INTL','Skibidi Toilet','Skibidi 马桶的回响','skibidi|toilet|series','#0A0A12','#00E0FF','🚽','split'],
+['INTL','Rizz','吸引力的人格魅力','rizz|genz|charm','#0A0A12','#FF2E93','✨','glitch'],
+['INTL','Brainrot','2024 牛津年度词','brainrot|oxford|word','#0A0A12','#7B2EFF','🧠','flip'],
+['INTL','Sigma Male','Sigma 男性气质','sigma|male|trait','#0A0A12','#F5FF00','🐺','zoom'],
+['INTL','Ohio','Ohio 梗的延续','ohio|state|weird','#0A0A12','#00E0FF','🌽','glitch'],
+['INTL','Let him cook','让他去发挥吧','cook|let|him','#0A0A12','#F5FF00','🍳','shake'],
+['INTL','Hawk Tuah','Hawk Tuah 女孩','hawk|tuah|girl','#0A0A12','#F5FF00','🪶','zoom'],
+['INTL','Mascot Horror','吉祥物恐怖','mascot|horror|scary','#0A0A12','#FF2E93','😱','flip'],
+['INTL','Liminal Spaces','阈限空间','liminal|space|backroom','#0A0A12','#7B2EFF','🚪','bounce'],
+['INTL','Backrooms','后室文化','backrooms|yellow|level','#0A0A12','#F5FF00','🟨','split'],
+['INTL','VHS Glitch','VHS 故障美学','vhs|glitch|aes','#F4F1EA','#0A0A12','📺','stamp'],
+['INTL','Tomato Girl','番茄女孩风','tomato|girl|summer','#FF2E93','#F4F1EA','🍅','shake'],
+['INTL','Mob Wife','黑帮妻子美学','mob|wife|fur','#0A0A12','#F5FF00','🧥','zoom'],
+['INTL','Strawberry Milk','草莓牛奶美学','strawberry|milk|aes','#0A0A12','#FF2E93','🍓','glitch'],
+['INTL','Coquette','娇媚风','coquette|bow|pink','#0A0A12','#7B2EFF','🎀','flip'],
+['INTL','Balletcore','芭蕾核风','ballet|core|fit','#0A0A12','#F5FF00','🩰','bounce'],
+['INTL','Gorpcore','户外机能风','gorp|core|outdoor','#0A0A12','#00E0FF','🥾','split'],
+['INTL','Old Money Aesthetic','老钱美学','oldmoney|aes|rich','#0A0A12','#F5FF00','💰','stamp'],
+['INTL','NPC Energy','NPC 能量','npc|energy|side','#0A0A12','#F5FF00','🤖','flip'],
+['INTL','Girl Dinner','女孩晚餐','girl|dinner|tiny','#0A0A12','#7B2EFF','🍓','bounce'],
+['INTL','Quiet Luxury','安静奢华风','quiet|luxury|oldmoney','#F4F1EA','#0A0A12','💎','rain'],
+['INTL','Main Character','主角日','main|character|day','#0A0A12','#FF2E93','🌟','glitch'],
+['INTL','No Cap','真的不骗','nocap|real|genz','#0A0A12','#F5FF00','💯','stamp'],
+['INTL','Drip','潮人穿搭术语','drip|fashion|style','#0A0A12','#7B2EFF','👟','shake'],
+['INTL','Vibe Check','氛围感检测','vibe|check|mood','#0A0A12','#39FF14','🌈','zoom'],
+['INTL','Cap','You are capping','cap|lying|genz','#0A0A12','#00E0FF','🧢','rain'],
+['INTL','Mewing','Mewing 表情训练','mewing|jaw|fit','#0A0A12','#7B2EFF','😶','flip'],
+['INTL','Aura','Aura 分计算','aura|points|score','#0A0A12','#F5FF00','💫','split'],
+['INTL','Fanum Tax','抢饭梗 tax','fanum|tax|food','#0A0A12','#39FF14','🥪','stamp'],
+['INTL','Looksmaxxing','外形提升哲学','looks|maxxing|fit','#0A0A12','#FF2E93','💪','bounce'],
+['INTL','What da dog doing','狗在做什么？','dog|doing|absurd','#0A0A12','#7B2EFF','🐕‍🦺','glitch'],
+['INTL','Hasan Dog Shock Collar','哈桑狗电击圈','hasan|dog|collar','#0A0A12','#FF2E93','🐶','flip'],
+['INTL','Pastrami Fantastico','Pastrami 梗','pastrami|fantastico','#F5FF00','#0A0A12','🥩','shake'],
+['INTL','AI Pope','AI 教皇图','pope|ai|art','#0A0A12','#7B2EFF','⛪','zoom'],
+['INTL','Ship-ification','万物船化','ship|ify|trends','#0A0A12','#F5FF00','⛵','glitch'],
+['INTL','Catloaf','猫面包坐姿','cat|loaf|cute','#F4F1EA','#0A0A12','🐈‍⬛','bounce'],
+['INTL','Standing Up SIGMA','Sigma 站姿','sigma|stand|walk','#0A0A12','#FF2E93','🚶','split'],
+['INTL','Boho','波西米亚风','boho|free|fit','#0A0A12','#39FF14','🌾','stamp'],
+['INTL','Librarian chic','图书管理员 chic','lib|chic|quiet','#F4F1EA','#0A0A12','📚','flip'],
+['INTL','Coastal Grandmother','海岸奶奶风','coastal|grandma','#0A0A12','#00E0FF','🧺','bounce'],
+['INTL','Cottagecore 2.0','2.0 版田园风','cottage|core|2.0','#0A0A12','#39FF14','🏡','split'],
+['INTL','Mob Wife Fur','Mob 妻子皮草','mob|fur|wife','#0A0A12','#39FF14','🦊','rain'],
+['INTL','Tomato Soup Girl','番茄汤女孩','tomato|soup|girl','#FF2E93','#F4F1EA','🥣','zoom'],
+['INTL','AI Cover Art','AI 封面艺术','ai|cover|art','#0A0A12','#00E0FF','🎨','glitch'],
+['INTL','Analog Horror','模拟恐怖','analog|horror|vhs','#0A0A12','#39FF14','📼','flip'],
+['INTL','New Money Loud','新钱显眼','newmoney|loud|flash','#0A0A12','#FF2E93','💸','bounce'],
+['INTL','Pick Me','Pick me girl','pickme|girl|toxic','#0A0A12','#00E0FF','🙋','split'],
+['INTL','Blokette','男孩穿女装的混搭','blokette|gender|style','#0A0A12','#FF2E93','🩳','rain'],
+
+/* AI 抽象 */
+['AI','Tralalero Tralala','穿 Nike 的三腿鲨鱼','ai|italian|shark','#0A0A12','#FF2E93','🦈','glitch'],
+['AI','Bombardiro Crocodilo','鳄鱼轰炸机','ai|croc|bomber','#0A0A12','#7B2EFF','🐊','split'],
+['AI','Ballerina Cappuccina','咖啡杯头芭蕾','ai|ballerina|cap','#0A0A12','#F5FF00','☕','flip'],
+['AI','Tung Tung Tung Sahur','印尼 tree-man','ai|tree|indo','#0A0A12','#39FF14','🌳','shake'],
+['AI','Brr Brr Patapim','森林猴','ai|monkey|forest','#0A0A12','#FF2E93','🐒','bounce'],
+['AI','Lirili Larila','仙人掌象','ai|cactus|elephant','#F4F1EA','#0A0A12','🌵','zoom'],
+['AI','Boneca Ambalabu','青蛙轮胎','ai|frog|tire','#0A0A12','#7B2EFF','🐸','stamp'],
+['AI','Pope in Microwave','教皇在微波炉','ai|pope|microwave','#0A0A12','#F5FF00','⛪','rain'],
+['AI','AI Slop','AI 烂内容','ai|slop|meme','#0A0A12','#FF2E93','🗑️','glitch'],
+['AI','AI Cover Art','AI 封面','ai|cover|art','#0A0A12','#00E0FF','🎨','flip'],
+['AI','Magnifico AI Style','Magnifico 风格','ai|style|art','#0A0A12','#39FF14','🖌️','split'],
+['AI','Walking Shark in Nike','鲨鱼穿 Nike','ai|shark|nike','#0A0A12','#FF2E93','👟','shake'],
+['AI','AI Vlogs','AI 生成的 vlog','ai|vlog|fake','#0A0A12','#7B2EFF','🤖','zoom'],
+['AI','Use a Dash Meme','讽刺 AI 破折号','ai|dash|roast','#0A0A12','#F5FF00','—','stamp'],
+['AI','We Used to Google It','从前我们都用谷歌','ai|google|past','#0A0A12','#39FF14','🔍','rain'],
+['AI','Ship-ification','万物船化','ai|ship|trends','#0A0A12','#FF2E93','⛵','glitch'],
+['AI','Ballerina Family','芭蕾家族的 lore','ai|family|lore','#0A0A12','#7B2EFF','👨‍👩‍👧','flip'],
+['AI','Cappuccino Lore','咖啡刺客的 lore','ai|lore|coffee','#0A0A12','#F5FF00','☕','split'],
+['AI','AI Italian Animals','AI 意大利动物总称','ai|italian|animal','#0A0A12','#39FF14','🐾','shake'],
+['AI','ElevenLabs TTS','AI 语音合成','ai|tts|voice','#0A0A12','#FF2E93','🗣️','zoom'],
+['AI','CapCut Brainrot','CapCut 剪辑风格','ai|capcut|brainrot','#0A0A12','#7B2EFF','🎬','stamp'],
+['AI','ROT Meme Coin','脑腐 meme 币','ai|coin|rot','#0A0A12','#F5FF00','🪙','rain'],
+['AI','Indo Brainrot','印尼脑腐','ai|indo|brainrot','#0A0A12','#FF2E93','🇮🇩','glitch'],
+['AI','Spanish Brainrot','西班牙脑腐','ai|es|brainrot','#0A0A12','#00E0FF','🇪🇸','flip'],
+['AI','German Brainrot','德国脑腐','ai|de|brainrot','#0A0A12','#39FF14','🇩🇪','split'],
+['AI','AI Hand Gesture','AI 意式手势','ai|hand|italian','#0A0A12','#7B2EFF','🤌','shake'],
+['AI','AI Generated Demon','AI 生成的恶魔','ai|demon|weird','#0A0A12','#FF2E93','👹','zoom'],
+['AI','AI Latin Chanting','拉丁语吟唱','ai|latin|chant','#0A0A12','#39FF14','🕯️','stamp'],
+['AI','AI Balloon Dog','AI 气球狗','ai|balloon|dog','#0A0A12','#F5FF00','🐕','rain'],
+['AI','AI Fruit Slasher','水果切切乐','ai|fruit|slasher','#0A0A12','#FF2E93','🍉','glitch'],
+['AI','AI Glass Cutting ASMR','玻璃切割 ASMR','ai|glass|asmr','#0A0A12','#7B2EFF','🔪','flip'],
+['AI','AI Wallpaper Bro','AI 壁纸兄弟','ai|wallpaper|bro','#0A0A12','#00E0FF','🖼️','split'],
+['AI','AI Confused Statue','AI 困惑雕像','ai|statue|confused','#0A0A12','#39FF14','🗿','bounce'],
+['AI','AI Saint Painting','AI 圣像画','ai|saint|painting','#F4F1EA','#0A0A12','🎨','shake'],
+['AI','AI Reinterpretation','AI 再诠释','ai|reinterpret|art','#0A0A12','#F5FF00','🔁','zoom'],
+['AI','AI Meme Anime','AI 动画风','ai|anime|meme','#0A0A12','#39FF14','🎌','glitch'],
+['AI','AI Cannon','AI 加农炮','ai|cannon|brainrot','#0A0A12','#FF2E93','💣','flip'],
+['AI','AI Banana Animal','AI 香蕉动物','ai|banana|animal','#0A0A12','#00E0FF','🍌','split'],
+['AI','AI Frog Hybrid','AI 青蛙混种','ai|frog|hybrid','#0A0A12','#F5FF00','🐸','bounce'],
+['AI','AI Submarine Apple','AI 潜艇苹果','ai|submarine|apple','#0A0A12','#7B2EFF','🍎','shake'],
+['AI','AI Tree-man','AI 树人','ai|tree|man','#0A0A12','#39FF14','🌳','zoom'],
+['AI','AI Croc-bomber','AI 鳄鱼轰炸机','ai|croc|bomber','#0A0A12','#F5FF00','🐊','stamp'],
+['AI','AI Cactus-elephant','AI 仙人象','ai|cactus|elephant','#0A0A12','#7B2EFF','🌵','rain'],
+['AI','AI Coffee Head','AI 咖啡头','ai|coffee|head','#0A0A12','#39FF14','☕','glitch'],
+['AI','AI Plumber Bros','AI 管道兄弟','ai|plumber|bro','#0A0A12','#F5FF00','🔧','flip'],
+['AI','AI Sage Meme','AI 贤者迷因','ai|sage|wisdom','#0A0A12','#FF2E93','🧙','split'],
+['AI','AI Saint Brainrot','AI 圣徒脑腐','ai|saint|brainrot','#0A0A12','#7B2EFF','😇','bounce'],
+['AI','AI Operatic Voice','AI 美声','ai|opera|voice','#0A0A12','#39FF14','🎼','shake'],
+['AI','AI Fish-Walker','AI 步行鱼','ai|fish|walker','#0A0A12','#F5FF00','🐟','zoom'],
+['AI','AI Penguin CEO','AI 企鹅 CEO','ai|penguin|ceo','#F4F1EA','#0A0A12','🐧','stamp'],
+['AI','AI Tea-cup Cat','AI 茶杯猫','ai|tea|cat','#0A0A12','#7B2EFF','🐈','rain'],
+['AI','AI Pencil Twins','AI 铅笔双胞胎','ai|pencil|twins','#0A0A12','#FF2E93','✏️','glitch'],
+['AI','AI Sky Whale','AI 天空鲸','ai|whale|sky','#0A0A12','#39FF14','🐋','flip'],
+['AI','AI Train-fish','AI 火车鱼','ai|train|fish','#0A0A12','#F5FF00','🚂','split'],
+['AI','AI Meme Father','AI 迷因之父','ai|father|meme','#0A0A12','#FF2E93','👨','bounce'],
+['AI','AI Mashup','AI 混搭','ai|mashup|absurd','#0A0A12','#39FF14','🔀','shake'],
+['AI','AI Cannon-bird','AI 加农鸟','ai|bird|cannon','#0A0A12','#F5FF00','🐦','zoom'],
+['AI','AI Bald Eagle Muscle','AI 鹰肌肉','ai|eagle|muscle','#0A0A12','#FF2E93','🦅','stamp'],
+['AI','AI Donut Spider','AI 甜甜圈蜘蛛','ai|donut|spider','#0A0A12','#00E0FF','🍩','rain'],
+['AI','AI Train Cat','AI 火车猫','ai|train|cat','#0A0A12','#7B2EFF','🚆','glitch'],
+['AI','AI Meme Oracle','AI 神谕','ai|oracle|meme','#F4F1EA','#0A0A12','🔮','flip'],
+['AI','AI Trash Panda','AI 浣熊','ai|trash|panda','#0A0A12','#39FF14','🦝','bounce'],
+['AI','AI Family Tree','AI 家族族谱','ai|tree|family','#0A0A12','#F5FF00','🌲','split'],
+['AI','AI Balloon Cat','AI 气球猫','ai|balloon|cat','#0A0A12','#7B2EFF','🎈','stamp'],
+['AI','AI Snake Apple','AI 蛇苹果','ai|snake|apple','#0A0A12','#39FF14','🐍','shake'],
+
+/* 视觉趋势 */
+['VIS','故障色散','chromatic aberration','glitch|rgb|trends','#0A0A12','#FF2E93','📺','glitch'],
+['VIS','VHS 噪点','VHS noise','vhs|noise|retro','#0A0A12','#F5FF00','📼','rain'],
+['VIS','酸性设计','acid graphics','acid|90s|trends','#0A0A12','#39FF14','🟢','flip'],
+['VIS','迷因海报','meme poster','poster|meme|2025','#0A0A12','#7B2EFF','🖼️','stamp'],
+['VIS','杂志风大字','big magazine type','magazine|type|bold','#0A0A12','#00E0FF','🅰️','bounce'],
+['VIS','包豪斯几何','bauhaus','bauhaus|geometry','#F5FF00','#0A0A12','🔷','zoom'],
+['VIS','像素复古','pixel retro','pixel|retro|8bit','#0A0A12','#FF2E93','👾','split'],
+['VIS','超现实拼贴','surreal collage','surreal|collage','#0A0A12','#F5FF00','🖼️','shake'],
+['VIS','手绘涂鸦','hand drawn','doodle|hand|raw','#F4F1EA','#0A0A12','✏️','flip'],
+['VIS','报纸头条','newspaper','news|headline|trends','#F4F1EA','#0A0A12','📰','stamp'],
+['VIS','赛博朋克','cyberpunk','cyber|neon|future','#0A0A12','#7B2EFF','🌃','rain'],
+['VIS','蒸汽波','vaporwave','vapor|wave|pastel','#7B2EFF','#F4F1EA','🌴','bounce'],
+['VIS','孟菲斯风','memphis','memphis|80s|pop','#FF2E93','#F5FF00','🔴','glitch'],
+['VIS','极简主义','minimal','minimal|white|type','#F4F1EA','#0A0A12','⚪','zoom'],
+['VIS','胶带叠加','tape overlay','tape|overlay|poster','#0A0A12','#F5FF00','🟨','stamp'],
+['VIS','涂鸦喷绘','graffiti','graffiti|street|tag','#0A0A12','#39FF14','🖌️','split'],
+['VIS','噪点纹理','grain','grain|noise|trends','#F4F1EA','#0A0A12','📡','shake'],
+['VIS','贴纸化','sticker','sticker|pop|pack','#0A0A12','#FF2E93','🪧','flip'],
+['VIS','大字标语','big slogan','slogan|big|type','#0A0A12','#F5FF00','🗣️','bounce'],
+['VIS','强对比撞色','high contrast','contrast|clash','#0A0A12','#7B2EFF','🟣','rain'],
+['VIS','故障字体','glitch type','glitch|type|trends','#0A0A12','#39FF14','🅱️','glitch'],
+['VIS','低分辨率艺术','lo-fi art','lofi|art|trends','#F4F1EA','#0A0A12','📼','zoom'],
+['VIS','高饱和','hyper saturated','saturation|color','#0A0A12','#FF2E93','🌈','stamp'],
+['VIS','低饱和电影感','cinematic','cinema|grade|low','#0A0A12','#F5FF00','🎬','split'],
+['VIS','末日 Y2K','doom Y2K','y2k|doom|2000','#0A0A12','#7B2EFF','💿','bounce'],
+['VIS','新丑风','new ugly','ugly|design|2025','#0A0A12','#39FF14','🟢','shake'],
+['VIS','多巴胺','dopamine','dopamine|color|happy','#FF2E93','#F5FF00','🧠','flip'],
+['VIS','糖果色','pastel','pastel|candy|soft','#F4F1EA','#FF2E93','🍭','stamp'],
+['VIS','极繁','maximalist','maximalist|chaos','#0A0A12','#F5FF00','🎉','rain'],
+['VIS','极简','minimalist','minimal|less|type','#F4F1EA','#0A0A12','⭕','zoom'],
+['VIS','手写体','handwriting','hand|write|font','#0A0A12','#7B2EFF','✍️','split'],
+['VIS','显示体','display type','display|bold|font','#0A0A12','#F5FF00','🅰️','bounce'],
+['VIS','粗野主义','brutalism','brutal|raw|site','#0A0A12','#39FF14','🧱','shake'],
+['VIS','黑底荧光','black + neon','black|neon|pop','#0A0A12','#FF2E93','💡','flip'],
+['VIS','白底黑字','white + black','white|black|clean','#F4F1EA','#0A0A12','🅰️','stamp'],
+['VIS','网格化','grid system','grid|system|trends','#0A0A12','#F5FF00','🔲','rain'],
+['VIS','不对称','asymmetric','asymmetric|layout','#0A0A12','#7B2EFF','◢','glitch'],
+['VIS','海报式','poster style','poster|big|type','#0A0A12','#FF2E93','📜','zoom'],
+['VIS','二次元海报','anime poster','anime|poster|japan','#0A0A12','#39FF14','🎌','split'],
+['VIS','复古 Vibe','retro vibe','retro|80s|90s','#7B2EFF','#F4F1EA','📼','bounce'],
+['VIS','热粉霓虹','hot pink + neon','pink|neon|trends','#FF2E93','#0A0A12','💗','shake'],
+['VIS','紫雾蓝电','violet + cyan','violet|cyan|cool','#7B2EFF','#00E0FF','⚡','flip'],
+['VIS','酸性黄黑','acid yellow + black','acid|yellow|danger','#F5FF00','#0A0A12','⚠️','stamp'],
+['VIS','墨黑奶白','ink + paper','ink|paper|simple','#0A0A12','#F4F1EA','📜','rain'],
+['VIS','涂鸦式排版','graffiti layout','graffiti|layout|tag','#0A0A12','#39FF14','🖍️','glitch'],
+['VIS','包裹式贴纸','sticker wrap','sticker|wrap|2025','#0A0A12','#FF2E93','🎁','zoom'],
+['VIS','Aesthetic 蝴蝶','aesthetic butterfly','butterfly|aes|2000','#7B2EFF','#F5FF00','🦋','split'],
+['VIS','Aesthetic 蝴蝶结','aesthetic bow','bow|aes|cute','#FF2E93','#F4F1EA','🎀','bounce'],
+['VIS','Y2K 亮片','Y2K sparkle','y2k|sparkle|2000','#0A0A12','#F5FF00','✨','shake'],
+['VIS','Y2K 镭射','Y2K laser','y2k|laser|metal','#0A0A12','#7B2EFF','🔮','flip'],
+['VIS','Y2K 透明','Y2K clear','y2k|clear|2000','#F4F1EA','#0A0A12','💎','stamp'],
+['VIS','蒸汽波网格','vapor grid','vapor|grid|wave','#7B2EFF','#F4F1EA','📐','rain'],
+['VIS','互联网废墟','internet ruin','ruin|net|web1','#0A0A12','#39FF14','🕸️','glitch'],
+['VIS','网页 1.0','web 1.0','web1|old|com','#F4F1EA','#0A0A12','🌐','zoom'],
+['VIS','超链接蓝','link blue','link|blue|web','#00E0FF','#0A0A12','🔗','split'],
+['VIS','免费素材感','stock free','free|stock|photo','#F4F1EA','#0A0A12','🖼️','bounce'],
+['VIS','AI 出图风','AI art vibe','ai|art|vibe','#0A0A12','#7B2EFF','🤖','shake'],
+['VIS','3D 渲染低保真','3D low-fi','3d|lowfi|render','#0A0A12','#FF2E93','🧊','flip'],
+['VIS','盲盒手办感','blindbox','blindbox|figure|pop','#0A0A12','#F5FF00','🎁','stamp'],
+['VIS','地铁站海报','subway poster','subway|poster|nyc','#0A0A12','#39FF14','🚇','rain'],
+['VIS','拼贴式海报','collage poster','collage|poster|trends','#0A0A12','#FF2E93','🧩','glitch'],
+['VIS','报纸大字','big newspaper','big|news|type','#F4F1EA','#0A0A12','📰','bounce'],
+
+/* 官方榜单 */
+['OFF','韧性·年度字','2025《咬文嚼字》榜首','rank|top|年度','#0A0A12','#F5FF00','1️⃣','typewriter'],
+['OFF','具身智能','写进 2025 政府工作报告','rank|official|ai','#0A0A12','#7B2EFF','2️⃣','stamp'],
+['OFF','苏超','江苏省城市足球联赛','rank|sports|off','#0A0A12','#39FF14','3️⃣','bounce'],
+['OFF','赛博对账','跨年 TikTok 大撤离','rank|net|event','#0A0A12','#FF2E93','4️⃣','rain'],
+['OFF','数字游民','远程工作身份','rank|job|net','#0A0A12','#00E0FF','5️⃣','flip'],
+['OFF','谷子','二次元周边总称','rank|subcult|经济','#0A0A12','#F5FF00','6️⃣','glitch'],
+['OFF','预制 xx','工业合成感隐喻','rank|food|crit','#0A0A12','#7B2EFF','7️⃣','split'],
+['OFF','活人感','00 后带火的官方语态','rank|gov|style','#0A0A12','#39FF14','8️⃣','shake'],
+['OFF','xx基础，xx就不基础','三榜共识词','rank|all|consensus','#0A0A12','#FF2E93','9️⃣','zoom'],
+['OFF','从从容容……连滚带爬','长句式流行语','rank|phrase|long','#F4F1EA','#0A0A12','🔟','stamp'],
+['OFF','DeepSeek（深度求索）','国家语言资源中心榜单','rank|llm|hit','#0A0A12','#F5FF00','🤖','glitch'],
+['OFF','敬自己一杯','和解仪式','rank|mood|self','#0A0A12','#7B2EFF','🥃','split'],
+['OFF','助我破鼎','哪吒 2 衍生','rank|cine|hot','#0A0A12','#FF2E93','⚔️','bounce'],
+['OFF','千百次练习……这一刻','歌手舞台同款','rank|show|song','#0A0A12','#39FF14','🎤','rain'],
+['OFF','情绪价值','关系核心词','rank|rel|emo','#0A0A12','#F5FF00','💞','flip'],
+['OFF','如何呢又能怎','单依纯同款','rank|song|line','#0A0A12','#00E0FF','🤷','shake'],
+['OFF','村咖','村里咖啡馆','rank|life|trend','#F4F1EA','#0A0A12','☕','stamp'],
+['OFF','来财','招财祝福语','rank|bless|word','#0A0A12','#F5FF00','🐉','zoom'],
+['OFF','浪浪山小妖怪','打工人动画梗','rank|cartoon|life','#0A0A12','#7B2EFF','👹','split'],
+['OFF','主理人','《语言文字周报》榜首','rank|top|word','#0A0A12','#FF2E93','🧑‍💼','bounce'],
+['OFF','邪修','修仙梗','rank|book|sub','#0A0A12','#39FF14','⚡','rain'],
+['OFF','魔丸&灵珠','哪吒 2 衍生','rank|cine|char','#0A0A12','#F5FF00','🔥','glitch'],
+['OFF','高雅人士','解压式优雅','rank|mood|self','#7B2EFF','#F5FF00','🦢','flip'],
+['OFF','做完你的做你的','多线程忙碌','rank|work|life','#0A0A12','#7B2EFF','🌀','stamp'],
+['OFF','误闯天家','古代科举梗','rank|book|hist','#0A0A12','#F5FF00','📜','shake'],
+['OFF','当个事儿办','郑重态度','rank|attitude|life','#0A0A12','#39FF14','✅','zoom'],
+['OFF','拼好×','拼多多句式','rank|brand|meme','#FF2E93','#F4F1EA','🧩','split'],
+['OFF','最棒的小羊','备选流行语','rank|backup|word','#F4F1EA','#0A0A12','🐑','bounce'],
+['OFF','高能量的一天','正能量问候','rank|hello|mood','#F5FF00','#0A0A12','⚡','rain'],
+['OFF','丝瓜汤文学','温柔劝慰','rank|warm|food','#F4F1EA','#0A0A12','🍲','flip'],
+['OFF','邪修·备选','修仙梗备选','rank|backup|word','#0A0A12','#7B2EFF','🪄','stamp'],
+['OFF','主理人现象','反思主理人','rank|crit|reflect','#0A0A12','#FF2E93','🪞','glitch'],
+['OFF','旧词新生','2025 流行语特征','rank|trend|lang','#0A0A12','#F5FF00','🆕','split'],
+['OFF','传统文化渗入','流行语致敬经典','rank|trend|cult','#0A0A12','#39FF14','🏮','bounce'],
+['OFF','情绪精细表达','流行语愈发细腻','rank|trend|emo','#0A0A12','#7B2EFF','🎭','zoom'],
+['OFF','圈层化明显','不同榜单差异大','rank|trend|layer','#0A0A12','#FF2E93','🧅','shake'],
+['OFF','流行语大年','2025 当选大年','rank|trend|year','#0A0A12','#F5FF00','📅','stamp'],
+['OFF','78 亿字符语料','语料规模','rank|data|corp','#0A0A12','#00E0FF','📚','rain'],
+['OFF','智能信息处理','评选方法','rank|method|ai','#0A0A12','#7B2EFF','🧮','flip'],
+['OFF','专家评议','评选方法','rank|method|judge','#0A0A12','#39FF14','🧑‍⚖️','glitch'],
+['OFF','1.8 万网友推荐','推荐阶段','rank|crowd|vote','#0A0A12','#F5FF00','🗳️','split'],
+['OFF','4000 余条推荐词','数据规模','rank|data|word','#0A0A12','#FF2E93','📊','bounce'],
+['OFF','36 个候选词','第二阶段','rank|list|filter','#0A0A12','#7B2EFF','📋','zoom'],
+['OFF','网络海选','评选方式','rank|method|net','#0A0A12','#39FF14','🌐','shake'],
+['OFF','韧·年度字','汉语盘点','rank|char|annual','#0A0A12','#F5FF00','🪢','stamp'],
+['OFF','DeepSeek·年度词','汉语盘点','rank|word|annual','#0A0A12','#7B2EFF','🧠','rain'],
+['OFF','三份榜单同期发布','2025 现象','rank|trend|event','#0A0A12','#FF2E93','📰','flip'],
+['OFF','你的流行未必是我的流行','圈层化宣言','rank|trend|say','#F4F1EA','#0A0A12','🗣️','glitch'],
+['OFF','年度十大流行语','《咬文嚼字》','rank|official|list','#0A0A12','#F5FF00','🪧','split'],
+['OFF','网络流行语','《语言文字周报》','rank|official|list','#0A0A12','#7B2EFF','📜','bounce'],
+
+/* 情绪标签 */
+['MOOD','敬自己一杯','与生活和解','mood|self|heal','#0A0A12','#F5FF00','🥃','bounce'],
+['MOOD','如何呢又能怎','成年人的认命式乐观','mood|accept|smile','#0A0A12','#00E0FF','🤷','shake'],
+['MOOD','喝碗丝瓜汤','温柔的劝慰','mood|heal|food','#F4F1EA','#0A0A12','🍲','zoom'],
+['MOOD','情绪价值','关系里的核心需求','mood|rel|need','#0A0A12','#7B2EFF','💞','stamp'],
+['MOOD','松弛感','不紧绷的生活状态','mood|life|chill','#F4F1EA','#0A0A12','🧘','flip'],
+['MOOD','班味儿','打工人身上那股味道','mood|work|tired','#0A0A12','#F5FF00','🥱','rain'],
+['MOOD','做自己','勇敢做自己','mood|self|brave','#0A0A12','#FF2E93','🦋','split'],
+['MOOD','高敏感','高敏感人群的共鸣','mood|self|sense','#0A0A12','#39FF14','💧','bounce'],
+['MOOD','已读不回','不回消息的反差','mood|chat|gap','#0A0A12','#7B2EFF','📱','glitch'],
+['MOOD','班味儿浓郁','打工人疲惫感','mood|work|tired','#0A0A12','#F5FF00','☕','shake'],
+['MOOD','活人感','活着的真实感','mood|life|real','#0A0A12','#FF2E93','🫀','stamp'],
+['MOOD','命运的礼物','每一份都是礼物','mood|life|gift','#0A0A12','#39FF14','🎁','zoom'],
+['MOOD','做情绪的主人','不被情绪裹挟','mood|emo|lead','#0A0A12','#7B2EFF','🪄','flip'],
+['MOOD','容错率高','允许自己犯错','mood|self|allow','#0A0A12','#F5FF00','🟢','bounce'],
+['MOOD','低能量日','不消耗自己','mood|self|low','#F4F1EA','#0A0A12','🔋','rain'],
+['MOOD','高能量日','元气满满','mood|self|hi','#F5FF00','#0A0A12','⚡','split'],
+['MOOD','接纳自我','与自我和解','mood|self|accept','#0A0A12','#7B2EFF','🫶','glitch'],
+['MOOD','命里有时终须有','接受命运','mood|life|fate','#0A0A12','#39FF14','🍀','stamp'],
+['MOOD','干杯自己','和自己干杯','mood|self|cheers','#0A0A12','#F5FF00','🥂','shake'],
+['MOOD','允许一切发生','允许一切','mood|self|allow','#0A0A12','#FF2E93','🌈','flip'],
+['MOOD','打工人互助','打工人之间','mood|work|help','#0A0A12','#00E0FF','🤝','bounce'],
+['MOOD','互助式 emo','情绪互助','mood|emo|help','#0A0A12','#7B2EFF','🆘','zoom'],
+['MOOD','情绪过山车','情绪起伏','mood|emo|ride','#0A0A12','#39FF14','🎢','split'],
+['MOOD','明日再说','拖延的哲学','mood|life|tomorrow','#0A0A12','#F5FF00','🌙','rain'],
+['MOOD','今日已废','宣告今日报废','mood|self|done','#0A0A12','#FF2E93','🪫','glitch'],
+['MOOD','保持愤怒','允许愤怒','mood|emo|allow','#0A0A12','#7B2EFF','🔥','stamp'],
+['MOOD','无所谓·摆烂','无所谓','mood|life|meh','#0A0A12','#F5FF00','🤷','shake'],
+['MOOD','有点累·猫meme','猫 m 式 emo','mood|cat|emo','#F4F1EA','#0A0A12','😿','flip'],
+['MOOD','无语·猫meme','猫 m 无语','mood|cat|done','#F4F1EA','#0A0A12','🙀','bounce'],
+['MOOD','偷感很重','怕被发现的尴尬','mood|self|stealth','#0A0A12','#FF2E93','🤫','zoom'],
+['MOOD','命苦·自嘲','自嘲式认命','mood|self|bitter','#0A0A12','#39FF14','🥲','split'],
+['MOOD','命运的皮筋','被弹一下','mood|fate|elastic','#0A0A12','#7B2EFF','🪀','rain'],
+['MOOD','命运的咽喉','关键时刻','mood|fate|key','#0A0A12','#F5FF00','👄','glitch'],
+['MOOD','被世界爱着','被爱着','mood|love|world','#0A0A12','#FF2E93','💗','stamp'],
+['MOOD','允许休息','允许休息','mood|self|rest','#0A0A12','#00E0FF','🛌','shake'],
+['MOOD','快乐就好','快乐就行','mood|happy|life','#0A0A12','#F5FF00','😄','flip'],
+['MOOD','命运共同体','一起 emo','mood|emo|with','#0A0A12','#39FF14','🤝','bounce'],
+['MOOD','命运的入场券','机会的隐喻','mood|fate|ticket','#0A0A12','#7B2EFF','🎫','zoom'],
+['MOOD','命里无时莫强求','不强求','mood|fate|relax','#0A0A12','#F5FF00','🍃','split'],
+['MOOD','还能咋地','还能怎样','mood|life|meh','#0A0A12','#FF2E93','🤷','rain'],
+['MOOD','就这样吧','就这样','mood|life|done','#0A0A12','#39FF14','🫠','glitch'],
+['MOOD','别回头','不回头','mood|life|forward','#0A0A12','#7B2EFF','🚶','stamp'],
+['MOOD','卡皮巴拉·淡定','卡皮巴拉式淡定','mood|capy|chill','#F4F1EA','#0A0A12','🦫','shake'],
+['MOOD','会好的','未来会好','mood|life|future','#0A0A12','#F5FF00','🌤️','flip'],
+['MOOD','被理解','被理解的瞬间','mood|rel|connect','#0A0A12','#00E0FF','🤝','bounce'],
+['MOOD','孤勇者','一个人的勇敢','mood|self|brave','#0A0A12','#FF2E93','🗡️','zoom'],
+['MOOD','先爱自己','先爱己','mood|self|love','#0A0A12','#F5FF00','💝','split'],
+['MOOD','命运快递','命中注定的','mood|fate|deliver','#0A0A12','#39FF14','📦','rain'],
+['MOOD','命运的电梯','起落的隐喻','mood|fate|lift','#0A0A12','#7B2EFF','🛗','glitch'],
+['MOOD','命运的齿轮','命运齿轮','mood|fate|wheel','#0A0A12','#F5FF00','⚙️','stamp'],
+
+/* 二次元 */
+['SUB','谷子经济','1.37亿人撑起的周边消费','subcult|goods|2025','#0A0A12','#F5FF00','🎀','bounce'],
+['SUB','痛包','密集徽章的包','subcult|itabag|2025','#0A0A12','#FF2E93','👛','rain'],
+['SUB','痛车','喷绘角色车','subcult|itacar','#0A0A12','#00E0FF','🚗','split'],
+['SUB','痛屋','角色主题房间','subcult|room|2025','#0A0A12','#7B2EFF','🏠','flip'],
+['SUB','痛学士服','毕业季的痛系列','subcult|gradu','#0A0A12','#F5FF00','🎓','zoom'],
+['SUB','万物皆可痛','1.37亿人的具身化运动','subcult|trend|2025','#0A0A12','#FF2E93','💥','glitch'],
+['SUB','我推','支持的二次元角色','subcult|me|推','#0A0A12','#39FF14','💖','stamp'],
+['SUB','吃谷','购买周边的动词','subcult|eat|goods','#0A0A12','#F5FF00','🍙','shake'],
+['SUB','盲盒','未拆开前不知道款式','subcult|blindbox','#0A0A12','#7B2EFF','🎁','bounce'],
+['SUB','吧唧','徽章 pin 的别称','subcult|pin|baji','#0A0A12','#FF2E93','📌','split'],
+['SUB','亚克力','亚克力立牌/挂件','subcult|acrylic','#0A0A12','#00E0FF','🪟','flip'],
+['SUB','流麻','流沙麻将的简称','subcult|liusha','#0A0A12','#39FF14','🟡','zoom'],
+['SUB','谷美','展示谷子的场景美陈','subcult|goodmei','#0A0A12','#7B2EFF','🎀','glitch'],
+['SUB','痛包·全红婵','奥运冠军同款','subcult|idol|quanhong','#0A0A12','#F5FF00','🏅','rain'],
+['SUB','线上漫展','云参展体验','subcult|onfair','#0A0A12','#FF2E93','💻','stamp'],
+['SUB','二次元新春会','新春主题痛包','subcult|newyear','#0A0A12','#39FF14','🧧','shake'],
+['SUB','娃妈','养 BJD 娃的玩家','subcult|bjd|娃','#0A0A12','#7B2EFF','🧸','bounce'],
+['SUB','BJD','球关节人偶','subcult|bjd|doll','#0A0A12','#F5FF00','🎎','flip'],
+['SUB','谷子店·商场','商场里开谷子店','subcult|store','#0A0A12','#FF2E93','🏬','split'],
+['SUB','痛伞','角色主题雨伞','subcult|umbrella','#0A0A12','#00E0FF','☂️','rain'],
+['SUB','痛键盘','键盘贴膜装扮','subcult|keyboard','#0A0A12','#39FF14','⌨️','zoom'],
+['SUB','痛手机壳','角色主题手机壳','subcult|phone','#0A0A12','#7B2EFF','📱','glitch'],
+['SUB','吧唧矩阵','徽章墙装饰','subcult|matrix','#0A0A12','#F5FF00','🟦','stamp'],
+['SUB','吃谷·吧唧','吧唧收集','subcult|pin','#0A0A12','#FF2E93','🟣','bounce'],
+['SUB','二游','二次元游戏的简称','subcult|game','#0A0A12','#7B2EFF','🎮','shake'],
+['SUB','二游周年庆','周年庆活动','subcult|anni','#0A0A12','#F5FF00','🎂','flip'],
+['SUB','cos·二月','二次月 cos 潮','subcult|cos','#0A0A12','#39FF14','🎭','split'],
+['SUB','动漫嘉年华','线下动漫节','subcult|event','#0A0A12','#FF2E93','🎪','rain'],
+['SUB','动漫咖啡','痛主题咖啡馆','subcult|cafe','#0A0A12','#00E0FF','☕','zoom'],
+['SUB','日谷·国谷','日本/国产谷子','subcult|goods|jp','#0A0A12','#7B2EFF','🇯🇵','glitch'],
+['SUB','吧唧交换','徽章交换活动','subcult|trade','#0A0A12','#F5FF00','🔁','stamp'],
+['SUB','同人本','同人创作本','subcult|doujin','#0A0A12','#FF2E93','📖','bounce'],
+['SUB','漫展 coser','漫展里的 coser','subcult|coser','#0A0A12','#39FF14','👗','shake'],
+['SUB','磕 CP','CP 配对','subcult|cp','#0A0A12','#7B2EFF','💑','flip'],
+['SUB','产粮','同人产粮','subcult|make','#0A0A12','#F5FF00','🍚','split'],
+['SUB','谷子抽卡','扭蛋式抽卡','subcult|gacha','#0A0A12','#FF2E93','🎰','rain'],
+['SUB','谷子·原价','原价购入','subcult|orig','#0A0A12','#00E0FF','💴','zoom'],
+['SUB','黄牛·痛包','黄牛炒痛包','subcult|scalper','#0A0A12','#7B2EFF','🐃','glitch'],
+['SUB','痛塔','塔型展示架','subcult|tower','#0A0A12','#F5FF00','🗼','stamp'],
+['SUB','痛食玩','食物玩具的痛化','subcult|foodtoy','#0A0A12','#39FF14','🍱','bounce'],
+
+/* 机器人 */
+['BOT','宇树《秧 BOT》','央视春晚机器人','bot|springfestival','#0A0A12','#F5FF00','🤖','split'],
+['BOT','天工 Ultra','100米 21.50秒','bot|sprint|win','#0A0A12','#39FF14','🏃','rain'],
+['BOT','小鹏 IRON','自然猫步登台','bot|xiaopeng|iron','#0A0A12','#FF2E93','🐱','flip'],
+['BOT','具身智能','写进 2025 政府工作报告','bot|gov|report','#0A0A12','#7B2EFF','🤖','stamp'],
+['BOT','人形机器人','人形机器人总称','bot|humanoid','#0A0A12','#F5FF00','🦾','bounce'],
+['BOT','机器人马拉松','人形机器人运动会','bot|marathon','#0A0A12','#00E0FF','🏅','zoom'],
+['BOT','钢铁小可爱','春晚机器人萌称','bot|cute','#0A0A12','#FF2E93','❤️','glitch'],
+['BOT','蛇形走位','机器人乌龙走位','bot|funny','#0A0A12','#7B2EFF','🐍','shake'],
+['BOT','累瘫在地','赛后瘫倒','bot|tired','#0A0A12','#F5FF00','😵','flip'],
+['BOT','全自主导航','自主导航技术','bot|navi','#0A0A12','#39FF14','🧭','split'],
+['BOT','马斯克点赞','马斯克点赞 IRON','bot|musk','#0A0A12','#FF2E93','👍','rain'],
+['BOT','特斯拉对标','中国速度对标','bot|tesla','#0A0A12','#F5FF00','🚗','stamp'],
+['BOT','从追赶到领跑','中国科技加速度','bot|china','#0A0A12','#7B2EFF','🇨🇳','bounce'],
+['BOT','机器人奥运','机器人运动会','bot|olympic','#0A0A12','#39FF14','🥇','shake'],
+['BOT','机器人舞蹈','扭秧歌/丢手绢','bot|dance','#0A0A12','#F5FF00','💃','flip'],
+['BOT','机器人摔倒','摔倒名场面','bot|fall','#0A0A12','#FF2E93','🤕','split'],
+['BOT','AI 训练场','机器人训练','bot|train','#0A0A12','#00E0FF','🏟️','rain'],
+['BOT','机器人主播','AI 主播','bot|streamer','#0A0A12','#7B2EFF','📺','zoom'],
+['BOT','扫地机器人','家用机器人代表','bot|home','#0A0A12','#F5FF00','🧹','glitch'],
+['BOT','送餐机器人','餐饮机器人','bot|food','#0A0A12','#39FF14','🍱','stamp'],
+['BOT','巡检机器人','工业巡检','bot|inspect','#0A0A12','#FF2E93','🔍','bounce'],
+['BOT','陪伴机器人','情感陪伴','bot|companion','#0A0A12','#7B2EFF','🫂','shake'],
+['BOT','仿生手','仿生机械手','bot|hand','#0A0A12','#F5FF00','🤚','flip'],
+['BOT','机器狗','四足机器人','bot|dog','#0A0A12','#00E0FF','🐕‍🦺','split'],
+['BOT','机器鱼','水下机器人','bot|fish','#0A0A12','#FF2E93','🐟','rain'],
+['BOT','机器鸟','飞行机器人','bot|bird','#0A0A12','#39FF14','🐦','zoom'],
+['BOT','机器人咖啡师','机器人做咖啡','bot|barista','#0A0A12','#7B2EFF','☕','stamp'],
+['BOT','机器人画家','机器人画画','bot|artist','#0A0A12','#F5FF00','🎨','glitch'],
+['BOT','机器人快递员','机器人物流','bot|delivery','#0A0A12','#FF2E93','📦','bounce'],
+['BOT','机器人服务员','机器人服务','bot|service','#0A0A12','#00E0FF','🤵','shake'],
+
+/* 标语金句 / 过渡 */
+['TAG','2025 一句话总结','谁懂啊家人们','tag|end|say','#0A0A12','#F5FF00','🗣️','typewriter'],
+['TAG','愿你被这个世界爱着','2025 祝福','tag|wish','#0A0A12','#FF2E93','💗','bounce'],
+['TAG','命运的齿轮还在转','命运在转','tag|fate','#0A0A12','#7B2EFF','⚙️','flip'],
+['TAG','明天会是新的一天','鸡汤','tag|day','#0A0A12','#F5FF00','☀️','zoom'],
+['TAG','你比你想象的更勇敢','鼓励','tag|bold','#0A0A12','#39FF14','🦁','stamp'],
+['TAG','接受不完美','完美主义','tag|self','#0A0A12','#00E0FF','🫧','shake'],
+['TAG','先休息再说','休息','tag|rest','#0A0A12','#F5FF00','🛌','rain'],
+['TAG','这是你应得的','你值得','tag|deserve','#0A0A12','#FF2E93','🎁','split'],
+['TAG','你已经在路上了','在路上','tag|way','#0A0A12','#7B2EFF','🛣️','glitch'],
+['TAG','允许一切如其所是','如其所是','tag|allow','#0A0A12','#F5FF00','🌸','bounce'],
+['TAG','做自己的主角','主角','tag|hero','#0A0A12','#39FF14','🦸','flip'],
+['TAG','慢慢来，比较快','慢慢来','tag|slow','#0A0A12','#FF2E93','🐢','stamp'],
+['TAG','被爱是底气','爱是底气','tag|love','#0A0A12','#7B2EFF','🫶','zoom'],
+['TAG','行动是答案','行动','tag|act','#0A0A12','#F5FF00','🚶','shake'],
+['TAG','热爱可抵岁月漫长','热爱','tag|love','#0A0A12','#00E0FF','🔥','split'],
+['TAG','你已经是最好的版本','你已足够','tag|self','#0A0A12','#FF2E93','✨','rain'],
+['TAG','穿越风暴','穿过风暴','tag|storm','#0A0A12','#39FF14','⛈️','glitch'],
+['TAG','迎难而上','迎难','tag|hard','#0A0A12','#7B2EFF','⛰️','bounce'],
+['TAG','不疾而速','不疾而速','tag|speed','#0A0A12','#F5FF00','💨','flip'],
+['TAG','相信时间的力量','相信','tag|time','#0A0A12','#00E0FF','⏳','stamp'],
+['TAG','你的努力终有回响','回响','tag|effort','#0A0A12','#FF2E93','🔔','zoom'],
+['TAG','这世界远比想象温柔','温柔','tag|world','#0A0A12','#7B2EFF','🌷','shake'],
+['TAG','命运自有安排','命运','tag|fate','#0A0A12','#F5FF00','🔮','split'],
+['TAG','万物皆有裂隙','裂隙','tag|gap','#0A0A12','#39FF14','🌌','rain'],
+['TAG','那是光照进来的地方','光','tag|light','#0A0A12','#FF2E93','🌅','glitch'],
+['TAG','完结撒花 🎉','the end','tag|end','#0A0A12','#F5FF00','🎉','zoom'],
+['TAG','下集再见','next','tag|next','#0A0A12','#7B2EFF','⏭️','flip'],
+['TAG','完整版请见主页','home','tag|home','#0A0A12','#00E0FF','🏠','stamp'],
+['TAG','一键三连','triple','tag|triple','#0A0A12','#F5FF00','👍','bounce'],
+['TAG','感谢 2025 · 拥抱 2026','2026','tag|new','#0A0A12','#FF2E93','🎆','split'],
+];
+
+const CAT_KEY = {'CHAP':'章节封面','CN':'中文热梗','INTL':'国际梗','AI':'AI 抽象','VIS':'视觉趋势','OFF':'官方榜单','MOOD':'情绪标签','SUB':'二次元','BOT':'机器人','TAG':'标语金句'};
+
+const MEME = M.map((r,i)=>({
+  id: i,
+  category: CAT_KEY[r[0]] || '中文热梗',
+  categoryKey: r[0],
+  title: r[1],
+  subtitle: r[2] || '',
+  tags: r[3].split('|'),
+  bg: r[4],
+  fg: r[5],
+  emoji: r[6],
+  anim: r[7],
+}));
+
+/* ---------------- 2. UI 工具 ---------------- */
+const $ = sel => document.querySelector(sel);
+function log(msg, type='ok'){
+  const box = $('#log');
+  const ts = new Date().toTimeString().slice(0,8);
+  const line = document.createElement('div');
+  line.innerHTML = `<span style="color:#7B2EFF">[${ts}]</span> <span class="${type}">${msg}</span>`;
+  box.appendChild(line);
+  box.scrollTop = box.scrollHeight;
+  while(box.children.length>200) box.removeChild(box.firstChild);
+}
+function toast(msg, t=2400){
+  const el = $('#toast');
+  el.textContent = msg;
+  el.classList.add('on');
+  setTimeout(()=>el.classList.remove('on'), t);
+}
+const light = $('#cursorLight');
+window.addEventListener('mousemove', e=>{
+  light.style.left = e.clientX + 'px';
+  light.style.top  = e.clientY + 'px';
+});
+
+/* ---------------- 3. 状态与配置 ---------------- */
+const state = {
+  totalMinutes: 10,
+  resolution: 1080,
+  speed: 1.0,
+  volume: 0.6,
+  style: 'brainrot',
+  watermark: true,
+  particles: true,
+  subtitles: true,
+  running: false,
+  fps: 30,
+  width: 1920,
+  height: 1080,
+  cardDuration: 5000,
+};
+
+/* ---------------- 4. 渲染引擎 ---------------- */
+const cv = $('#cv');
+const ctx = cv.getContext('2d');
+
+function fitCanvas(){
+  if(state.resolution===720){state.width=1280;state.height=720}
+  else{state.width=1920;state.height=1080}
+  cv.width = state.width;
+  cv.height = state.height;
+}
+fitCanvas();
+
+/* 噪点纹理 */
+let noiseCanvas = document.createElement('canvas');
+function regenNoise(){
+  noiseCanvas.width = 256;
+  noiseCanvas.height = 256;
+  const nctx = noiseCanvas.getContext('2d');
+  const img = nctx.createImageData(256,256);
+  for(let i=0;i<img.data.length;i+=4){
+    const v = Math.random()*255|0;
+    img.data[i]=img.data[i+1]=img.data[i+2]=v;
+    img.data[i+3]=32;
+  }
+  nctx.putImageData(img,0,0);
+}
+regenNoise();
+
+function roundRect(c,x,y,w,h,r){
+  r = Math.min(r,w/2,h/2);
+  c.beginPath();
+  c.moveTo(x+r,y);
+  c.arcTo(x+w,y,x+w,y+h,r);
+  c.arcTo(x+w,y+h,x,y+h,r);
+  c.arcTo(x,y+h,x,y,r);
+  c.arcTo(x,y,x+w,y,r);
+  c.closePath();
+}
+
+function wrapText(c,text,x,y,maxW,lineH){
+  const chars = Array.from(text);
+  const lines=[];let line='';
+  for(const ch of chars){
+    const t = line+ch;
+    if(c.measureText(t).width>maxW && line){lines.push(line);line=ch}
+    else line=t;
+  }
+  if(line) lines.push(line);
+  lines.forEach((l,i)=>c.fillText(l, x, y+i*lineH));
+  return lines.length;
+}
+
+function pickFont(size, weight='900'){ return `${weight} ${size}px "Bungee", "Big Shoulders Display", "Noto Sans SC", sans-serif`; }
+function pickBody(size, weight='700'){ return `${weight} ${size}px "Space Grotesk", "Noto Sans SC", sans-serif`; }
+function pickMono(size, weight='700'){ return `${weight} ${size}px "JetBrains Mono", "Noto Sans SC", monospace`; }
+
+function drawBackground(card){
+  const {width:W, height:H} = state;
+  ctx.fillStyle = card.bg;
+  ctx.fillRect(0,0,W,H);
+  const grad = ctx.createLinearGradient(0,0,W,H);
+  grad.addColorStop(0, card.bg);
+  grad.addColorStop(1, card.fg + '22');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle = 'rgba(255,255,255,.05)';
+  ctx.lineWidth = 1;
+  const gs = 80;
+  for(let x=0;x<W;x+=gs){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}
+  for(let y=0;y<H;y+=gs){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}
+  ctx.globalAlpha = .35;
+  for(let i=0;i<18;i++){
+    const x = Math.random()*W;
+    const y = Math.random()*H;
+    ctx.drawImage(noiseCanvas, x, y, 200, 200);
+  }
+  ctx.globalAlpha = 1;
+  if(card.anim!=='rain'){
+    ctx.fillStyle = card.fg + '11';
+    ctx.fillRect(0,0,W,H);
+  }
+}
+
+function drawCornerBadge(card){
+  const {width:W} = state;
+  const x=40, y=40, w=300, h=64;
+  ctx.save();
+  ctx.translate(x,y);
+  ctx.fillStyle = card.fg;
+  roundRect(ctx,0,0,w,h,8);ctx.fill();
+  ctx.fillStyle = card.bg;
+  ctx.font = pickMono(20);
+  ctx.textBaseline = 'middle';
+  ctx.fillText(`#${card.category}`, 16, 32);
+  ctx.font = pickMono(14);
+  ctx.textAlign = 'right';
+  ctx.fillText(`ID ${String(card.id).padStart(4,'0')}`, w-16, 32);
+  ctx.restore();
+}
+
+function drawRank(card){
+  const {width:W} = state;
+  ctx.save();
+  ctx.font = pickFont(60);
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'top';
+  ctx.fillStyle = card.fg + '22';
+  ctx.fillText(String(card.id+1).padStart(4,'0'), W-50, 30);
+  ctx.restore();
+}
+
+function drawTitle(card, progress01){
+  const {width:W, height:H} = state;
+  const cx = W/2;
+  let offY = 0, sc = 1, op = 1;
+  const enter = Math.min(1, progress01*3);
+  if(card.anim==='stamp'){ sc = .5 + .5*enter; offY = (1-enter)*60 }
+  if(card.anim==='flip'){ const a = enter*Math.PI; sc = Math.abs(Math.cos(a)); offY=0 }
+  if(card.anim==='glitch'){ offY = Math.sin(progress01*40)*8 }
+  if(card.anim==='shake'){ offY = (Math.random()-.5)*8 * (1-enter) }
+  if(card.anim==='zoom'){ sc = .7 + .3*enter }
+  if(card.anim==='bounce'){ sc = 1 + Math.sin(enter*Math.PI)*.12 }
+  if(card.anim==='rain'){ offY = (1-enter) * -H }
+  if(card.anim==='split'){ sc = enter }
+  if(card.anim==='typewriter'){ op = enter }
+  ctx.save();
+  ctx.translate(cx, H*.42 + offY);
+  ctx.scale(sc,sc);
+  ctx.globalAlpha = op;
+  ctx.font = pickFont(120);
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  if(card.anim==='glitch' || state.style==='neon'){
+    ctx.fillStyle = '#FF2E93';
+    ctx.fillText(card.title, -4, 0);
+    ctx.fillStyle = '#00E0FF';
+    ctx.fillText(card.title, 4, 0);
+  }
+  ctx.fillStyle = card.fg;
+  wrapText(ctx, card.title, 0, 0, W*.78, 130);
+  if(card.subtitle){
+    ctx.font = pickBody(36, '700');
+    ctx.fillStyle = card.fg + 'cc';
+    wrapText(ctx, card.subtitle, 0, 130 + (card.title.length>8?40:0), W*.7, 50);
+  }
+  if(state.subtitles){
+    ctx.font = pickMono(22);
+    ctx.fillStyle = card.fg + 'aa';
+    const tagStr = card.tags.slice(0,6).map(t=>'#'+t).join('  ');
+    wrapText(ctx, tagStr, 0, 250 + (card.title.length>8?40:0), W*.8, 32);
+  }
+  ctx.restore();
+}
+
+function drawEmoji(card, progress01){
+  const {width:W, height:H} = state;
+  const enter = Math.min(1, progress01*2);
+  const size = state.style==='magazine' ? 280 : 360;
+  const x = state.style==='magazine' ? W*.78 : W*.18;
+  const y = H*.78;
+  ctx.save();
+  ctx.translate(x,y);
+  const rot = card.anim==='shake' ? (Math.random()-.5)*0.2 : Math.sin(progress01*Math.PI)*0.1;
+  ctx.rotate(rot);
+  ctx.scale(enter,enter);
+  ctx.font = `${size}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`;
+  ctx.textAlign='center';
+  ctx.textBaseline='middle';
+  ctx.fillText(card.emoji, 0, 0);
+  ctx.globalAlpha = .2;
+  ctx.fillText(card.emoji, 8, 0);
+  ctx.restore();
+}
+
+function drawProgressBar(card, progress01, global01){
+  const {width:W, height:H} = state;
+  const barH = 10;
+  const y = H - barH - 30;
+  ctx.fillStyle = 'rgba(255,255,255,.1)';
+  ctx.fillRect(60, y, W-120, barH);
+  const grad = ctx.createLinearGradient(60,0,W-60,0);
+  grad.addColorStop(0,'#00E0FF');
+  grad.addColorStop(.5,'#F5FF00');
+  grad.addColorStop(1,'#FF2E93');
+  ctx.fillStyle = grad;
+  ctx.fillRect(60, y, (W-120)*global01, barH);
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(60, y, (W-120)*progress01, 2);
+}
+
+function drawWatermark(){
+  if(!state.watermark) return;
+  const {width:W, height:H} = state;
+  ctx.save();
+  ctx.font = pickMono(20);
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'bottom';
+  ctx.fillStyle = 'rgba(255,255,255,.4)';
+  ctx.fillText('2025 热梗大爆炸 · AutoCut', W-40, H-8);
+  ctx.restore();
+}
+
+const particles = [];
+function spawnParticle(card){
+  for(let i=0;i<4;i++){
+    particles.push({
+      x: Math.random()*state.width,
+      y: -40,
+      vy: 2 + Math.random()*4,
+      vx: (Math.random()-.5)*1.4,
+      rot: Math.random()*Math.PI,
+      vr: (Math.random()-.5)*0.1,
+      size: 32+Math.random()*48,
+      ch: card.emoji,
+      life: 0,
+      max: 200 + Math.random()*200,
+    });
+  }
+}
+function drawParticles(){
+  for(let i=particles.length-1;i>=0;i--){
+    const p = particles[i];
+    p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.life++;
+    ctx.save();
+    ctx.translate(p.x,p.y);
+    ctx.rotate(p.rot);
+    ctx.globalAlpha = Math.max(0, 1 - p.life/p.max);
+    ctx.font = `${p.size}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`;
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(p.ch, 0,0);
+    ctx.restore();
+    if(p.life>=p.max) particles.splice(i,1);
+  }
+}
+
+function drawFrame(card, progress01, global01){
+  const {width:W, height:H} = state;
+  ctx.save();
+  let fade = 1;
+  if(progress01>0.85){ fade = 1 - (progress01-0.85)/0.15*0.2 }
+  ctx.globalAlpha = fade;
+  drawBackground(card);
+  drawCornerBadge(card);
+  drawRank(card);
+  drawTitle(card, progress01);
+  drawEmoji(card, progress01);
+  if(state.particles) drawParticles();
+  drawProgressBar(card, progress01, global01);
+  drawWatermark();
+  ctx.font = pickMono(18);
+  ctx.fillStyle = 'rgba(255,255,255,.55)';
+  ctx.textAlign = 'left';
+  ctx.fillText(`#${card.category} · ${card.title.slice(0,14)}`, 40, 22);
+  ctx.textAlign = 'right';
+  ctx.fillText(new Date().toISOString().slice(11,19), W-40, 22);
+  ctx.restore();
+}
+
+/* ---------------- 5. 时间轴 ---------------- */
+function buildTimeline(){
+  const targetMs = state.totalMinutes * 60 * 1000;
+  const items = [];
+  const covers = MEME.filter(m=>m.categoryKey==='CHAP');
+  const pool = [...MEME.filter(m=>m.categoryKey!=='CHAP')].sort(()=>Math.random()-.5);
+  items.push(...covers);
+  let i = 0;
+  while(items.length * state.cardDuration < targetMs){
+    items.push(pool[i % pool.length]);
+    i++;
+  }
+  return { items, totalMs: items.length*state.cardDuration, targetMs };
+}
+
+/* ---------------- 6. 音频合成 ---------------- */
+let audioCtx = null;
+let audioDest = null;
+function startBGM(){
+  audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  audioDest = audioCtx.createMediaStreamDestination();
+  const master = audioCtx.createGain();
+  master.gain.value = state.volume;
+  master.connect(audioDest);
+  master.connect(audioCtx.destination);
+  const bpm = 84;
+  const beat = 60/bpm;
+  let step = 0;
+  function tick(){
+    if(!audioCtx || audioCtx.state==='closed') return;
+    const t = audioCtx.currentTime;
+    if(step%2===0){
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.frequency.setValueAtTime(120, t);
+      o.frequency.exponentialRampToValueAtTime(40, t+0.15);
+      g.gain.setValueAtTime(0.6, t);
+      g.gain.exponentialRampToValueAtTime(0.001, t+0.2);
+      o.connect(g).connect(master);
+      o.start(t); o.stop(t+0.2);
+    }
+    if(step%4===0){
+      const bufSize = audioCtx.sampleRate*0.1|0;
+      const buf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+      const d = buf.getChannelData(0);
+      for(let i=0;i<bufSize;i++) d[i] = (Math.random()*2-1) * (1 - i/bufSize);
+      const src = audioCtx.createBufferSource();
+      src.buffer = buf;
+      const g = audioCtx.createGain();
+      g.gain.value = 0.2;
+      src.connect(g).connect(master);
+      src.start(t);
+    }
+    const notes = [220, 247, 262, 294, 330, 294, 262, 247];
+    if(step%8===0){
+      const f = notes[(step/8|0) % notes.length];
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = 'triangle';
+      o.frequency.value = f;
+      g.gain.setValueAtTime(0.12, t);
+      g.gain.exponentialRampToValueAtTime(0.001, t+0.4);
+      o.connect(g).connect(master);
+      o.start(t); o.stop(t+0.4);
+    }
+    step++;
+  }
+  setInterval(tick, beat*1000);
+  tick();
+  return audioDest.stream;
+}
+function stopBGM(){
+  if(audioCtx){try{audioCtx.close()}catch(e){}; audioCtx=null;}
+}
+
+/* ---------------- 7. 录制 ---------------- */
+let recorder = null;
+let chunks = [];
+
+function pickMime(){
+  const cands = [
+    'video/webm;codecs=vp9,opus',
+    'video/webm;codecs=vp9',
+    'video/webm;codecs=h264,opus',
+    'video/webm;codecs=vp8,opus',
+    'video/webm;codecs=vp8',
+    'video/webm',
+  ];
+  for(const m of cands){
+    if(window.MediaRecorder && MediaRecorder.isTypeSupported(m)) return m;
+  }
+  return 'video/webm';
+}
+
+function showOverlay(){
+  $('#overlay').classList.add('on');
+  $('#ovBar').style.width = '0%';
+  $('#rain').innerHTML = '';
+  for(let i=0;i<40;i++){
+    const e = document.createElement('i');
+    e.textContent = MEME[i%MEME.length].emoji;
+    e.style.left = Math.random()*100+'%';
+    e.style.animationDuration = (4+Math.random()*6)+'s';
+    e.style.animationDelay = Math.random()*5+'s';
+    e.style.fontSize = (24+Math.random()*40)+'px';
+    $('#rain').appendChild(e);
+  }
+}
+function hideOverlay(){ $('#overlay').classList.remove('on') }
+
+function updateOverlay(elapsed, card, idx, total){
+  const totalMs = state.totalMinutes*60*1000;
+  const remain = Math.max(0, totalMs - elapsed);
+  const m = Math.floor(remain/60000);
+  const s = Math.floor((remain%60000)/1000);
+  $('#ovTime').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  $('#ovCard').textContent = `${idx} / ${total} · ${card.category} · ${card.title}`;
+  $('#ovBar').style.width = ((elapsed/totalMs)*100).toFixed(1) + '%';
+  $('#infoLeft').textContent = `${m}:${String(s).padStart(2,'0')}`;
+}
+
+async function startRender(){
+  if(state.running) return;
+  state.running = true;
+  $('#goBtn').disabled = true;
+  $('#goBtn').textContent = '生成中…请勿切换标签页';
+  log('▶ 开始生成 · ' + state.totalMinutes + ' 分钟 · ' + state.width + 'x' + state.height, 'ok');
+
+  const tl = buildTimeline();
+  log('时间轴: ' + tl.items.length + ' 张卡 · ' + (tl.totalMs/1000).toFixed(1) + ' 秒', 'ok');
+
+  showOverlay();
+  $('#ovTitle').textContent = 'RECORDING';
+
+  // 启动音频
+  let audioStream = null;
+  try{ audioStream = startBGM(); }catch(e){log('音频启动失败：'+e.message,'warn')}
+
+  // 启动 canvas 流
+  const canvasStream = cv.captureStream(state.fps);
+  let combined;
+  if(audioStream){
+    combined = new MediaStream([
+      ...canvasStream.getVideoTracks(),
+      ...audioStream.getAudioTracks(),
+    ]);
+  }else{
+    combined = canvasStream;
+  }
+
+  const mime = pickMime();
+  $('#infoCodec').textContent = mime.includes('vp9') ? 'VP9 / Opus' : (mime.includes('h264')?'H.264/AAC':'VP8 / Opus');
+  log('编码: ' + mime, 'ok');
+
+  try{
+    recorder = new MediaRecorder(combined, { mimeType: mime, videoBitsPerSecond: state.resolution===1080? 6_000_000 : 3_500_000 });
+  }catch(e){
+    log('MediaRecorder 创建失败：'+e.message, 'err');
+    toast('当前浏览器不支持录制，请用 Chrome/Edge 桌面版');
+    state.running=false;
+    $('#goBtn').disabled=false;
+    $('#goBtn').textContent = '▶ 开始生成 '+state.totalMinutes+' 分钟视频';
+    return;
+  }
+  chunks = [];
+  recorder.ondataavailable = e => { if(e.data && e.data.size) chunks.push(e.data) };
+  recorder.onstop = ()=>{
+    log('■ 录制完成，合成 Blob…', 'ok');
+    const blob = new Blob(chunks, { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `2025-meme-explosion-${state.totalMinutes}min-${Date.now()}.webm`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 60000);
+    log('已下载：' + (blob.size/1024/1024).toFixed(1) + ' MB', 'ok');
+    toast('视频已下载 · ' + (blob.size/1024/1024).toFixed(1) + ' MB');
+    state.running=false;
+    $('#goBtn').disabled=false;
+    $('#goBtn').textContent = '▶ 再生成一次';
+    $('#recDot').style.display='none';
+    hideOverlay();
+  };
+  recorder.start(1000);
+  $('#recDot').style.display = 'flex';
+
+  // 渲染循环
+  const startTs = performance.now();
+  let cardIdx = 0;
+  let cardStart = startTs;
+  let lastLog = 0;
+  let lastFrameDraw = 0;
+  const cardDur = state.cardDuration / state.speed;
+
+  function loop(){
+    if(!state.running) return;
+    const now = performance.now();
+    const elapsed = now - startTs;
+    const cardElapsed = now - cardStart;
+    const cardProgress = Math.min(1, cardElapsed / cardDur);
+    const globalProgress = Math.min(1, elapsed / (state.totalMinutes*60*1000));
+
+    if(now - lastFrameDraw >= 1000/state.fps){
+      const card = tl.items[cardIdx];
+      spawnParticle(card);
+      drawFrame(card, cardProgress, globalProgress);
+      lastFrameDraw = now;
+      updateOverlay(elapsed, card, cardIdx+1, tl.items.length);
+    }
+
+    if(cardElapsed >= cardDur){
+      cardIdx++;
+      cardStart = now;
+      if(cardIdx >= tl.items.length){
+        drawFrame(tl.items[tl.items.length-1], 1, 1);
+        updateOverlay(state.totalMinutes*60*1000, tl.items[tl.items.length-1], tl.items.length, tl.items.length);
+        setTimeout(()=>{ try{recorder && recorder.state==='recording' && recorder.stop(); stopBGM();}catch(e){} }, 500);
+        return;
+      }
+    }
+    if(now - lastLog > 3000){
+      log(`渲染中 · 第 ${cardIdx+1}/${tl.items.length} 张 · 用时 ${(elapsed/1000).toFixed(1)}s`);
+      lastLog = now;
+    }
+    requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+/* ---------------- 8. UI 绑定 ---------------- */
+function bindToggle(parent, key, callback){
+  parent.querySelectorAll('button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      parent.querySelectorAll('button').forEach(b=>b.classList.remove('on'));
+      btn.classList.add('on');
+      const v = btn.dataset.v;
+      callback(v);
+    });
+  });
+}
+
+bindToggle($('#durToggle'), 'dur', v=>{
+  state.totalMinutes = +v;
+  $('#lblMin').textContent = v + ' min';
+  $('#kpiDur').textContent = v + ' min';
+  $('#goBtn').textContent = '▶ 开始生成 ' + v + ' 分钟视频';
+});
+bindToggle($('#resToggle'), 'res', v=>{
+  state.resolution = +v;
+  $('#lblRes').textContent = v==1080 ? '1920×1080' : '1280×720';
+  $('#infoRes').textContent = v==1080 ? '1920×1080' : '1280×720';
+  fitCanvas();
+  drawFrame(MEME[0], 0.5, 0);
+});
+bindToggle($('#spdToggle'), 'spd', v=>{
+  state.speed = +v;
+  $('#lblSpd').textContent = (+v).toFixed(1) + '×';
+});
+$('#volRange').addEventListener('input', e=>{
+  state.volume = +e.target.value/100;
+  $('#lblVol').textContent = e.target.value + '%';
+});
+$('#styleSel').addEventListener('change', e=>{
+  state.style = e.target.value;
+  const map = {brainrot:'Brainrot', neon:'Neon', newspaper:'Newspaper', bauhaus:'Bauhaus', magazine:'Magazine', pixel:'Pixel'};
+  $('#lblStyle').textContent = map[e.target.value] || 'Brainrot';
+});
+$('#extraToggle').querySelectorAll('button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    btn.classList.toggle('on');
+    state[btn.dataset.k] = btn.classList.contains('on');
+  });
+});
+$('#goBtn').addEventListener('click', startRender);
+
+/* 防止页面隐藏时录制继续 */
+document.addEventListener('visibilitychange', ()=>{
+  if(document.hidden && state.running){
+    toast('检测到标签页切换，录制已暂停');
+    try{recorder && recorder.state==='recording' && recorder.pause()}catch(e){}
+  }else if(!document.hidden && state.running && recorder && recorder.state==='paused'){
+    try{recorder.resume()}catch(e){}
+  }
+});
+
+/* ---------------- 9. 初始化 ---------------- */
+function init(){
+  $('#libCount').textContent = MEME.length;
+  // 统计各分类
+  const stat = {};
+  for(const m of MEME){
+    stat[m.category] = (stat[m.category]||0)+1;
+  }
+  const colors = ['hi','','pink','green','','hi','pink','','green','hi'];
+  const ctn = $('#stats');
+  ctn.innerHTML = '';
+  let i=0;
+  for(const [k,v] of Object.entries(stat)){
+    const el = document.createElement('div');
+    el.className='stat';
+    el.innerHTML = `<div class="k">${k}</div><div class="v ${colors[i%colors.length]}">${v}</div>`;
+    ctn.appendChild(el);
+    i++;
+  }
+  // 绘制首帧
+  drawFrame(MEME[0], 0.5, 0);
+  log('■ 初始化完成 · 共 ' + MEME.length + ' 条梗', 'ok');
+  log('■ 选择时长并点击开始生成即可', 'ok');
+}
+init();
+</script>
+</body>
+</html>
