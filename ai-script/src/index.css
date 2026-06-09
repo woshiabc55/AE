@@ -1,0 +1,154 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --grain-opacity: 0.08;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background-color: #0E0B08;
+    color: #E8DCC4;
+    font-family: 'EB Garamond', Georgia, serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* 选区颜色 */
+  ::selection {
+    background-color: #C8341B;
+    color: #F5EEDB;
+  }
+
+  /* 滚动条 */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0E0B08;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #4D4129;
+    border: 1px solid #6B5C3E;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #6B5C3E;
+  }
+}
+
+@layer components {
+  /* 剧本版心 */
+  .script-paper {
+    background-color: #0E0B08;
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(107, 92, 62, 0.18), transparent 45%),
+      radial-gradient(circle at 85% 80%, rgba(200, 52, 27, 0.08), transparent 50%);
+    position: relative;
+  }
+
+  /* 羊皮纸颗粒噪点 */
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.55  0 0 0 0 0.48  0 0 0 0 0.32  0 0 0 0.18 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    mix-blend-mode: overlay;
+    opacity: 0.45;
+    z-index: 1;
+  }
+
+  /* 装订线 */
+  .binding-line {
+    background-image: linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 8px,
+      #6B5C3E 8px,
+      #6B5C3E 9px,
+      transparent 9px,
+      transparent 16px
+    );
+    background-size: 1px 16px;
+    background-repeat: repeat-y;
+  }
+
+  /* 场记编号 (uppercase mono) */
+  .slate {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  /* 字段标签 */
+  .label {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: #8E7A55;
+  }
+
+  /* 硬边按钮 */
+  .btn-hard {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border: 1px solid #6B5C3E;
+    color: #E8DCC4;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    background: transparent;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .btn-hard:hover {
+    background: #C8341B;
+    border-color: #C8341B;
+    color: #F5EEDB;
+  }
+  .btn-hard.gilt {
+    border-color: #B8A074;
+    color: #B8A074;
+  }
+  .btn-hard.gilt:hover {
+    background: #B8A074;
+    color: #0E0B08;
+  }
+
+  /* 幕分隔线 */
+  .act-rule {
+    height: 1px;
+    background: linear-gradient(to right, transparent, #6B5C3E 20%, #6B5C3E 80%, transparent);
+  }
+
+  /* 文字竖排 */
+  .vertical-rl {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+  .hover-bg-fade:hover {
+    background-color: rgba(184, 160, 116, 0.08);
+  }
+}
