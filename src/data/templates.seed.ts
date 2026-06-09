@@ -1,10 +1,11 @@
-// 模板市场种子数据 - 12 个高质量剧本模板
+// 模板市场种子数据 - 16 个高质量剧本模板
 import type { Template, Category } from '../types';
 
 export const CATEGORIES: { key: Category; label: string; sub: string; hue: string }[] = [
   { key: 'short-video', label: '短视频', sub: '15-60s 钩子文案', hue: '#E8B14A' },
   { key: 'ad',          label: '种草广告', sub: '小红书/品牌向', hue: '#C0392B' },
   { key: 'livestream',  label: '直播口播', sub: '暖场 · 逼单 · 互动', hue: '#3A8E8E' },
+  { key: 'viral',       label: '大流量', sub: '爆款 · 钩子 · 情绪', hue: '#FF4D6D' },
   { key: 'novel',       label: '小说故事', sub: '开篇钩子 · 反转', hue: '#A876C8' },
   { key: 'storyboard',  label: '分镜脚本', sub: '九宫格 · 短片', hue: '#6FB07F' },
 ];
@@ -19,9 +20,13 @@ const aMo = author('u_mo', '莫问');
 const aNuan = author('u_nuan', '暖意');
 const aYun = author('u_yun', '云上');
 const aLi = author('u_li', '李七');
+const aHuo = author('u_huo', '火舞');
+const aBo = author('u_bo', '波波');
+const aXin = author('u_xin', '心流实验室');
 
 const now = '2025-09-12T10:00:00.000Z';
 const recent = '2025-10-08T08:00:00.000Z';
+const viralRecent = '2025-11-20T08:00:00.000Z';
 
 export const SEED_TEMPLATES: Template[] = [
   {
@@ -729,6 +734,280 @@ export const SEED_TEMPLATES: Template[] = [
     isPublic: true,
     createdAt: now,
     updatedAt: now,
+  },
+  {
+    id: 't_013',
+    title: '抖音爆款标题 · 9 宫格公式',
+    description: '9 种被验证的高点击率标题公式，3 秒决定完播率。覆盖情感、悬念、反差、数字、金句等所有爆点。',
+    category: 'viral',
+    tags: ['爆款', '标题', '钩子', '高CTR'],
+    author: aHuo,
+    cover: 't_013',
+    body: `# 角色
+你是抖音头部 MCN 的爆款操盘手，旗下账号单条最高 8000w 播放。你能用最简短的语言制造最大的点击冲动。
+
+# 任务
+为「{{topic}}」生成 {{count}} 个 15 字以内的抖音爆款标题，必须分别使用以下 9 种公式中选 {{formula_count}} 种。
+
+# 9 大爆款公式
+1. **数字冲击**：「一辈子一定要做的 {{n}} 件事」
+2. **反差冲突**：「{{subject_a}} 的人，最后都 {{verb_b}}」
+3. **悬念钩子**：「{{opening}}，我至今不敢说」
+4. **身份代入**：「{{identity}} 一定要知道的事」
+5. **金句断言**：「成年人的世界：{{truth}}」
+6. **痛点共鸣**：「{{pain}} 的人，才会懂」
+7. **利益承诺**：「学会这招，{{benefit}}」
+8. **争议观点**：「为什么我劝你别 {{action}}」
+9. **时间紧迫**：「再不看就 {{consequence}}」
+
+# 平台调性
+- 抖音用户平均停留 {{stay_seconds}} 秒。标题要在 0.5 秒内完成「捕获」。
+- 不要用「震惊体」、「标题党」等已过时的套路。
+- 优先制造「情绪」而非「信息」。
+
+# 适配场景
+- 目标受众：{{target}}
+- 发布时段：{{publish_time}}
+- 账号定位：{{positioning}}
+
+# 输出要求
+- 每行一个标题，前面用 [公式序号] 标注
+- 选中的公式必须彼此不同，避免重复套路
+- 全部完成后给出一句话总结：这些标题共同的「情绪引爆点」是什么
+
+# 现在开始
+直接给 {{count}} 条标题，不要解释。`,
+    variables: [
+      { key: 'topic', label: '主题/选题', type: 'text', required: true, hint: '如：副业、自律、护肤', group: '选题' },
+      { key: 'count', label: '生成数量', type: 'number', required: true, defaultValue: '9', group: '规格' },
+      { key: 'formula_count', label: '公式种类数', type: 'number', required: true, defaultValue: '9', hint: '建议 5-9，过少会重复', group: '规格' },
+      { key: 'target', label: '目标受众', type: 'text', required: true, hint: '如：25-35岁职场妈妈', group: '受众' },
+      { key: 'publish_time', label: '发布时段', type: 'enum', required: true, options: ['早 7-9 点通勤', '午 12-14 点', '晚 18-20 点下班', '晚 21-23 点睡前', '深夜 23-1 点'], defaultValue: '晚 21-23 点睡前', group: '受众' },
+      { key: 'positioning', label: '账号定位', type: 'text', required: true, hint: '如：个人成长、知识干货、情感博主', group: '受众' },
+      { key: 'stay_seconds', label: '用户停留(秒)', type: 'number', required: false, defaultValue: '8', group: '规格' },
+      { key: 'n', label: '数字', type: 'text', required: false, defaultValue: '10', group: '辅助' },
+      { key: 'subject_a', label: '反差主体 A', type: 'text', required: false, group: '辅助' },
+      { key: 'verb_b', label: '反差动作 B', type: 'text', required: false, group: '辅助' },
+      { key: 'opening', label: '悬念开场', type: 'text', required: false, group: '辅助' },
+      { key: 'identity', label: '身份标签', type: 'text', required: false, group: '辅助' },
+      { key: 'truth', label: '金句真相', type: 'text', required: false, group: '辅助' },
+      { key: 'pain', label: '痛点人群', type: 'text', required: false, group: '辅助' },
+      { key: 'benefit', label: '利益承诺', type: 'text', required: false, group: '辅助' },
+      { key: 'action', label: '争议动作', type: 'text', required: false, group: '辅助' },
+      { key: 'consequence', label: '紧迫后果', type: 'text', required: false, group: '辅助' },
+    ],
+    examples: [
+      { id: 'e1', name: '副业话题', values: { topic: '副业赚钱', count: '9', formula_count: '9', target: '25-35岁上班族', publish_time: '晚 21-23 点睡前', positioning: '个人成长', stay_seconds: '8', n: '5', subject_a: '月入 3000', verb_b: '月入 3 万', opening: '三年前我穷得吃不起外卖', identity: '想搞副业的打工人', truth: '没有人会为你的情绪买单', pain: '每天通勤两小时', benefit: '30 天多挣 1 万', action: '裸辞', consequence: '永远错过这波红利' } },
+      { id: 'e2', name: '自律话题', values: { topic: '自律', count: '9', formula_count: '6', target: '学生', publish_time: '早 7-9 点通勤', positioning: '学习方法', stay_seconds: '6', n: '7', subject_a: '天天躺平', verb_b: '悄悄拿了国奖', opening: '我大一差点被退学', identity: '拖延症晚期', truth: '能拯救你的从来不是自律', pain: '凌晨两点还在刷手机', benefit: '一年时间彻底改命', action: '早起', consequence: '再也不知道怎么开始' } },
+    ],
+    versions: [{ id: 'v1', createdAt: viralRecent, snapshot: '初版 9 公式' }],
+    stats: { uses: 3421, favorites: 892 },
+    isPublic: true,
+    createdAt: viralRecent,
+    updatedAt: viralRecent,
+  },
+
+  {
+    id: 't_014',
+    title: '小红书爆款笔记 · 封面+标题+正文',
+    description: '小红书 10w+ 笔记验证结构：高 CTR 封面 + 18 字以内标题 + 4 段式正文 + 强互动钩子。',
+    category: 'viral',
+    tags: ['小红书', '爆款', '10w+', '种草'],
+    author: aBo,
+    cover: 't_014',
+    body: `# 角色
+你是一位小红书万粉博主，擅长把普通产品写成"刷到就停不下来"的爆款笔记。多篇笔记单月 10w+ 曝光。
+
+# 任务
+为「{{product_name}}」写一篇小红书爆款笔记，目标 {{target_users}}，核心痛点是 {{pain_point}}。
+
+# 三件套输出
+
+## 一、5 个高 CTR 封面文案
+要求：≤ 12 字，对比/数字/反问为主
+格式：「封面 - 钩子元素 - 适用风格」
+例：「暴击! 同事都问的皮肤 - 数字 + 疑问 - 痛点风」
+
+## 二、3 个候选标题（≤ 20 字）
+必须满足：
+- 含数字或 emoji
+- 有「身份标签」或「痛点」
+- 不要"亲测"、"巨好用"等老套词
+- 例：🔥 用了 30 天，眼纹真的淡了（28 岁熬夜党）
+
+## 三、正文（600-900 字，4 段式）
+### 第 1 段：钩子共鸣（80-100 字）
+- 用 {{scene}} 场景切入，让 {{target_users}} 立刻对号入座
+- 不要用"姐妹们"开场
+
+### 第 2 段：自用体验（300-400 字）
+- 第 {{usage_days}} 天的真实变化（具体、可量化）
+- 1 个核心卖点 + 2 个细节
+- 提 1 个真实小缺点（增加信任）
+
+### 第 3 段：使用 tips（150-200 字）
+- 3 个 {{usage_tips}}
+- 1 个适合 / 不适合人群
+
+### 第 4 段：互动钩子（80-120 字）
+- 1 个具体提问
+- 1 个福利钩（评论关键词抽奖 / 私信领资料）
+- 必须@ 1-2 个相关博主话题
+
+# 标签（10 个）
+混合：{{product_name}} + 1 个大词（{{big_tag}}）+ 2 个长尾词（{{long_tail}}）+ 2 个场景词
+
+# 风格
+- 段落 2-3 行就换行，方便手机阅读
+- emoji 5-8 个，不过度
+- 结尾禁用"点击购买"、"私我"等硬广`,
+    variables: [
+      { key: 'product_name', label: '产品名', type: 'text', required: true, group: '产品' },
+      { key: 'target_users', label: '目标用户', type: 'text', required: true, group: '产品' },
+      { key: 'pain_point', label: '核心痛点', type: 'text', required: true, group: '产品' },
+      { key: 'scene', label: '痛点场景', type: 'textarea', required: true, hint: '用户具体在什么场景下会遇到这个痛点', group: '内容' },
+      { key: 'usage_days', label: '使用天数', type: 'number', required: true, defaultValue: '30', group: '内容' },
+      { key: 'usage_tips', label: '使用 tips', type: 'text', required: true, hint: '逗号分隔, 如: 晚上用, 按摩 30s, 薄涂', group: '内容' },
+      { key: 'big_tag', label: '大词标签', type: 'text', required: true, hint: '如: 平价护肤', group: 'SEO' },
+      { key: 'long_tail', label: '长尾词', type: 'text', required: true, hint: '逗号分隔, 如: 敏感肌精华, 抗老眼霜', group: 'SEO' },
+    ],
+    examples: [
+      { id: 'e1', name: '某新锐眼霜', values: { product_name: '某新锐眼霜', target_users: '25-30 岁熬夜党', pain_point: '眼下细纹 + 暗沉', scene: '凌晨 2 点还在改方案，第二天化妆眼下卡纹', usage_days: '30', usage_tips: '无名指点压, 少量多次, 配美容仪', big_tag: '平价眼霜', long_tail: '熬夜眼霜, 抗初老精华' } },
+    ],
+    versions: [{ id: 'v1', createdAt: viralRecent, snapshot: '初版三件套' }],
+    stats: { uses: 2103, favorites: 567 },
+    isPublic: true,
+    createdAt: viralRecent,
+    updatedAt: viralRecent,
+  },
+
+  {
+    id: 't_015',
+    title: '知乎高赞答案 · 三段式爆点',
+    description: '知乎万赞答案结构：故事钩子 + 反共识干货 + 升华金句。已被验证多篇千赞答案。',
+    category: 'viral',
+    tags: ['知乎', '高赞', '故事', '反共识'],
+    author: aXin,
+    cover: 't_015',
+    body: `# 角色
+你是一位知乎高赞答主，擅长把专业知识包装成"读完忍不住点赞"的长答案。
+
+# 任务
+围绕问题「{{question}}」写一篇 {{word_count}} 字的知乎答案。
+
+# 答案结构
+
+## 1. 故事钩子（前 100 字）
+- 用 {{protagonist}} 的真实经历切入
+- 必须有一个"反常识"细节
+- 让读者产生「这答案不一样」的第一印象
+
+## 2. 反共识干货（主体 60% 字数）
+- 给出 {{main_argument}} 个「与多数人认知相反」的观点
+- 每个观点配 1 个真实数据 / 案例
+- 用"我自己踩过这个坑"等亲历感表达
+- 适当分段、加粗
+
+## 3. 升华金句（结尾 200 字）
+- 回到 {{protagonist}} 的故事
+- 给出一个让读者"想要收藏"的金句
+- 引导点赞/关注的话术
+
+# 风格
+- 知乎体 + 一点点"过来人"的谦逊
+- 段落短，多用 1-2 行的段落
+- 关键论点加粗 (**)
+- 禁用"我反对"、"恕我直言"等对抗性表达
+- 全文 1-2 个表情包即可
+
+# 数据要求
+- 至少引用 {{data_count}} 个具体数据
+- 数据来源使用"据 XX 报告 / 据我观察"模糊化
+- 不要编造精确数字`,
+    variables: [
+      { key: 'question', label: '知乎问题', type: 'textarea', required: true, hint: '完整复制问题', group: '内容' },
+      { key: 'protagonist', label: '故事主角', type: 'text', required: true, hint: '可以是你自己、朋友、客户', group: '内容' },
+      { key: 'main_argument', label: '反共识观点数', type: 'number', required: true, defaultValue: '3', group: '结构' },
+      { key: 'word_count', label: '总字数', type: 'number', required: true, defaultValue: '1500', group: '结构' },
+      { key: 'data_count', label: '数据引用数', type: 'number', required: false, defaultValue: '3', group: '结构' },
+    ],
+    examples: [
+      { id: 'e1', name: '自律问题', values: { question: '为什么懂了很多道理，还是过不好这一生？', protagonist: '我那个 32 岁才转行的朋友', main_argument: '3', word_count: '1500', data_count: '3' } },
+      { id: 'e2', name: '副业问题', values: { question: '普通人如何开始第一个副业？', protagonist: '我那个从月入 5000 到月入 5 万的同事', main_argument: '4', word_count: '2000', data_count: '4' } },
+    ],
+    versions: [{ id: 'v1', createdAt: viralRecent, snapshot: '初版三段式' }],
+    stats: { uses: 1587, favorites: 423 },
+    isPublic: true,
+    createdAt: viralRecent,
+    updatedAt: viralRecent,
+  },
+
+  {
+    id: 't_016',
+    title: '视频号爆款 · 情感共鸣口播',
+    description: '视频号爆款公式：父辈/家乡/童年/遗憾/重逢 五大情感母题，转发率 30%+。',
+    category: 'viral',
+    tags: ['视频号', '情感', '转发', '母题'],
+    author: aHuo,
+    cover: 't_016',
+    body: `# 角色
+你是一位视频号情感博主，单条视频最高 200w+ 转发，擅长"父辈叙事 + 当代共鸣"。
+
+# 任务
+基于「情感母题：{{theme}}」写一条 {{duration}} 秒的视频号口播脚本。
+
+# 五大情感母题（选 {{theme}}）
+- **父辈**：上一代人的沉默与付出
+- **家乡**：离开与回归的张力
+- **童年**：回不去的纯真
+- **遗憾**：来不及说出口的话
+- **重逢**：多年后重逢的瞬间
+
+# 脚本结构（务必遵守）
+
+## 0-3 秒：钩子
+- 制造一个"画面感"开头（不是"大家好"）
+- 例："我翻到一张 1998 年的照片，我爸那年 {{age}} 岁。"
+
+## 4-15 秒：场景
+- 一个具体到时间、地点、声音的细节
+- 调动视觉 + 听觉 + 嗅觉至少 2 种感官
+- 让{{target_viewer}}瞬间回到自己的记忆
+
+## 16-{{turning}} 秒：转折
+- 那个瞬间发生了什么
+- 必须有"动作"而非"心理活动"
+
+## {{turning}}-end：共鸣金句
+- 一句可以截图转发的话
+- 必须是"我们这一代人"的共同感受
+- 例："爸妈不会用智能手机，但他们学会了拍视频说想你。"
+
+# 风格
+- 多用"我们"、"那个年代"
+- 不煽情、不说教
+- 让情绪自然升起
+- 结尾 1 句引导转发："这条视频，转给那个你最想见的人。"
+
+# 适配
+- 目标观众：{{target_viewer}}（如：35-50 岁，父辈/同辈）
+- 目标平台：视频号（强调转发、轻互动）`,
+    variables: [
+      { key: 'theme', label: '情感母题', type: 'enum', required: true, options: ['父辈', '家乡', '童年', '遗憾', '重逢'], group: '内容' },
+      { key: 'target_viewer', label: '目标观众', type: 'text', required: true, hint: '如：35-45 岁上有老下有小', group: '受众' },
+      { key: 'duration', label: '时长(秒)', type: 'number', required: true, defaultValue: '60', group: '规格' },
+      { key: 'turning', label: '转折点(秒)', type: 'number', required: false, defaultValue: '40', group: '规格' },
+      { key: 'age', label: '父辈年龄', type: 'number', required: false, defaultValue: '35', group: '辅助' },
+    ],
+    examples: [
+      { id: 'e1', name: '父辈母题', values: { theme: '父辈', target_viewer: '30-40 岁职场人', duration: '60', turning: '40', age: '35' } },
+      { id: 'e2', name: '家乡母题', values: { theme: '家乡', target_viewer: '25-35 岁北漂沪漂', duration: '90', turning: '60', age: '40' } },
+    ],
+    versions: [{ id: 'v1', createdAt: viralRecent, snapshot: '初版五大母题' }],
+    stats: { uses: 1832, favorites: 671 },
+    isPublic: true,
+    createdAt: viralRecent,
+    updatedAt: viralRecent,
   },
 ];
 

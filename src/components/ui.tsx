@@ -322,6 +322,7 @@ export function CoverArt({ seed, category, size = 'md', className }: { seed: str
     livestream: '#3A8E8E',
     novel: '#A876C8',
     storyboard: '#6FB07F',
+    viral: '#FF4D6D',
   };
   return (
     <div

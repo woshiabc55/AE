@@ -5,7 +5,8 @@ export type Category =
   | 'ad'            // 广告种草
   | 'livestream'    // 直播口播
   | 'novel'         // 小说/故事
-  | 'storyboard';   // 分镜脚本
+  | 'storyboard'    // 分镜脚本
+  | 'viral';        // 大流量爆款
 
 export type VariableType = 'text' | 'textarea' | 'enum' | 'number' | 'slider';
 

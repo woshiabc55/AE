@@ -325,6 +325,7 @@ textarea.input-base { resize: vertical; min-height: 80px; line-height: 1.6; }
 .cat-livestream { --cat: #3A8E8E; }
 .cat-novel { --cat: #A876C8; }
 .cat-storyboard { --cat: #6FB07F; }
+.cat-viral { --cat: #FF4D6D; }
 
 .cat-dot { width: 6px; height: 6px; border-radius: 999px; background: var(--cat, var(--paper-2)); }
 .cat-bar { width: 2px; height: 14px; background: var(--cat, var(--paper-2)); border-radius: 1px; }
