@@ -67,25 +67,26 @@ function Hero() {
   return (
     <section className="relative overflow-hidden pt-16 lg:pt-24 pb-20">
       {/* 背景光斑 */}
-      <div className="absolute -top-40 right-0 w-[800px] h-[800px] rounded-full bg-[radial-gradient(circle,rgba(232,177,74,0.12),transparent_60%)]" />
-      <div className="absolute top-40 left-0 w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,rgba(58,142,142,0.08),transparent_60%)]" />
+      <div className="absolute -top-40 right-0 w-[800px] h-[800px] rounded-full bg-[radial-gradient(circle,rgba(232,177,74,0.12),transparent_60%)] pointer-events-none" />
+      <div className="absolute top-40 left-0 w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,rgba(58,142,142,0.08),transparent_60%)] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/3 w-[500px] h-[500px] rounded-full bg-[radial-gradient(circle,rgba(192,57,43,0.04),transparent_60%)] pointer-events-none" />
 
       <div className="max-w-[1440px] mx-auto px-5 lg:px-8 relative">
         <div className="grid lg:grid-cols-12 gap-10 items-end">
           <div className="lg:col-span-7 stagger-children">
-            <div className="inline-flex items-center gap-2 h-7 px-3 rounded-full bg-[var(--ink-3)] border border-[var(--ink-4)] text-[11px] text-[var(--paper-2)] mono tracking-wider mb-8">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--jade)] animate-pulse-dot" />
+            <div className="inline-flex items-center gap-2 h-7 px-3 rounded-full glass border border-[rgba(232,177,74,0.25)] text-[11px] text-[var(--amber-1)] mono tracking-wider mb-8">
+              <span className="dot-amber" />
               v1.0 · 公开测试中
             </div>
             <h1 className="text-cinematic text-[80px] sm:text-[120px] lg:text-[160px]">
               写一次<br />用一千次
             </h1>
             <p className="mt-6 max-w-[540px] text-[16px] leading-relaxed text-[var(--paper-2)]">
-              剧幕 PromptStage 是<span className="text-[var(--amber-1)]">面向中文创作者的云端剧本提示词工作台</span>。
+              剧幕 PromptStage 是<span className="text-amber-gradient font-medium">面向中文创作者的云端剧本提示词工作台</span>。
               把散落在备忘录、Notion、群聊里的提示词，沉淀成可变量、可复用、可协作的剧目资产。
             </p>
             <div className="mt-10 flex flex-wrap items-center gap-3">
-              <Button size="lg" variant="primary" iconRight={<ArrowRight size={18} />} onClick={() => nav('/gallery')}>
+              <Button size="lg" variant="primary" iconRight={<ArrowRight size={18} />} onClick={() => nav('/gallery')} className="btn-amber-glow">
                 浏览模板展厅
               </Button>
               <Button size="lg" variant="outline-amber" onClick={() => nav('/editor')}>
@@ -96,24 +97,30 @@ function Hero() {
               <span className="inline-flex items-center gap-1.5"><Cloud size={13} className="text-[var(--jade)]" /> 云端同步</span>
               <span className="inline-flex items-center gap-1.5"><Zap size={13} className="text-[var(--amber-2)]" /> 一键复制</span>
               <span className="inline-flex items-center gap-1.5"><Users size={13} className="text-[var(--teal-2)]" /> 团队协作</span>
+              <span className="inline-flex items-center gap-1.5 text-[var(--paper-3)]">·</span>
+              <span className="mono text-[11px] text-[var(--paper-3)]">12+ 模板 / 1GB / 永久免费</span>
             </div>
           </div>
 
           <div className="lg:col-span-5 relative" style={{ perspective: 1200 }}>
             <motion.div style={{ y: y1 }} className="relative">
-              <CoverArt seed="featured_01" category="short-video" size="xl" className="!aspect-[4/3] shadow-[var(--shadow-3)]" />
-              <div className="absolute -top-4 -right-4 bg-[var(--amber-2)] text-[var(--ink-0)] px-3 py-1.5 rounded-[6px] text-[11px] font-bold tracking-wider mono">
+              <div className="amber-border-glow rounded-[12px] overflow-hidden">
+                <CoverArt seed="featured_01" category="short-video" size="xl" className="!aspect-[4/3] shadow-[var(--shadow-3)]" />
+              </div>
+              <div className="absolute -top-4 -right-4 bg-[var(--amber-2)] text-[var(--ink-0)] px-3 py-1.5 rounded-[6px] text-[11px] font-bold tracking-wider mono shadow-[0_4px_16px_rgba(232,177,74,0.4)]">
                 钩子 30s
               </div>
             </motion.div>
             <motion.div style={{ y: y2 }} className="absolute -bottom-10 -left-8 w-[60%]">
-              <CoverArt seed="featured_02" category="novel" size="lg" className="shadow-[var(--shadow-2)]" />
+              <div className="amber-border-glow rounded-[12px] overflow-hidden">
+                <CoverArt seed="featured_02" category="novel" size="lg" className="shadow-[var(--shadow-2)]" />
+              </div>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.6, duration: 0.6 }}
-              className="absolute top-1/2 -right-6 w-[55%] bg-[var(--ink-2)] border border-[var(--ink-4)] rounded-[10px] p-4 shadow-[var(--shadow-2)]"
+              className="absolute top-1/2 -right-6 w-[55%] glass rounded-[10px] p-4 shadow-[var(--shadow-2)]"
             >
               <div className="flex items-center gap-2 mb-2">
                 <span className="tag tag-amber">{'{{product_name}}'}</span>
@@ -125,6 +132,10 @@ function Hero() {
                 2. 痛点放大<br />
                 3. 价值递进<br />
                 4. 限时逼单
+              </div>
+              <div className="mt-3 pt-2 border-t border-[var(--ink-4)] flex items-center gap-1.5 text-[10px] text-[var(--paper-3)] mono">
+                <span className="dot-amber" />
+                <span>实时生成中</span>
               </div>
             </motion.div>
           </div>
@@ -350,18 +361,19 @@ function CTASection() {
   const nav = useNavigate();
   return (
     <section className="max-w-[1440px] mx-auto px-5 lg:px-8 py-24">
-      <div className="relative rounded-[20px] overflow-hidden bg-[var(--ink-2)] border border-[var(--ink-4)] p-10 lg:p-16">
-        <div className="absolute -top-20 -right-20 w-[400px] h-[400px] rounded-full bg-[radial-gradient(circle,rgba(232,177,74,0.15),transparent_60%)]" />
+      <div className="relative rounded-[20px] overflow-hidden glass-strong p-10 lg:p-16 film-edge">
+        <div className="absolute -top-20 -right-20 w-[500px] h-[500px] rounded-full bg-[radial-gradient(circle,rgba(232,177,74,0.2),transparent_60%)] pointer-events-none" />
+        <div className="absolute -bottom-32 -left-20 w-[400px] h-[400px] rounded-full bg-[radial-gradient(circle,rgba(58,142,142,0.12),transparent_60%)] pointer-events-none" />
         <div className="relative grid lg:grid-cols-2 gap-10 items-center">
           <div>
-            <div className="eyebrow eyebrow-amber mb-3">START NOW · 现在开始</div>
-            <h2 className="display text-4xl lg:text-5xl text-[var(--paper-0)] mb-4">搭一座属于你的<br />剧目库</h2>
+            <div className="eyebrow eyebrow-amber mb-3 section-rule">START NOW · 现在开始</div>
+            <h2 className="display text-4xl lg:text-5xl text-paper-gradient mb-4">搭一座属于你的<br />剧目库</h2>
             <p className="text-[15px] text-[var(--paper-2)] max-w-md leading-relaxed">
-              注册即获得 1GB 云端空间。无需信用卡，无需邀请码。
+              注册即获得 <span className="text-[var(--amber-1)] mono">1GB</span> 云端空间。无需信用卡，无需邀请码。
             </p>
           </div>
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-            <Button size="lg" variant="primary" iconRight={<ArrowRight size={18} />} onClick={() => nav(user ? '/editor' : '/login')}>
+            <Button size="lg" variant="primary" iconRight={<ArrowRight size={18} />} onClick={() => nav(user ? '/editor' : '/login')} className="btn-amber-glow">
               {user ? '前往编辑器' : '免费注册'}
             </Button>
             {!user && (
@@ -371,6 +383,8 @@ function CTASection() {
             )}
           </div>
         </div>
+        {/* 顶部进度光条 */}
+        <div className="absolute top-0 left-0 right-0 progress-line" />
       </div>
     </section>
   );

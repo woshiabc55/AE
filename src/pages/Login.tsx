@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mail, Lock, User as UserIcon, ArrowRight, Film, Sparkles } from 'lucide-react';
+import { Mail, Lock, User as UserIcon, ArrowRight, Sparkles } from 'lucide-react';
 import { Button, Input } from '../components/ui';
 import { useApp } from '../store/useApp';
 
@@ -109,7 +109,7 @@ export default function Login() {
               size="lg"
               loading={loading}
               iconRight={<ArrowRight size={16} />}
-              className="w-full"
+              className="w-full btn-amber-glow"
             >
               {mode === 'login' ? '登录' : '注册并进入'}
             </Button>
@@ -145,14 +145,18 @@ export default function Login() {
       </div>
 
       {/* 右：装饰 */}
-      <div className="hidden lg:flex relative overflow-hidden border-l border-[var(--ink-4)] bg-[var(--ink-2)] items-center justify-center p-12">
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,rgba(232,177,74,0.25),transparent_60%)]" />
-          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full bg-[radial-gradient(circle,rgba(58,142,142,0.18),transparent_60%)]" />
+      <div className="hidden lg:flex relative overflow-hidden border-l border-[var(--ink-4)] bg-[var(--ink-2)] items-center justify-center p-12 film-edge">
+        <div className="absolute inset-0 opacity-40">
+          <div className="absolute top-0 right-0 w-[700px] h-[700px] rounded-full bg-[radial-gradient(circle,rgba(232,177,74,0.3),transparent_60%)]" />
+          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,rgba(58,142,142,0.2),transparent_60%)]" />
+          <div className="absolute top-1/3 left-1/3 w-[300px] h-[300px] rounded-full bg-[radial-gradient(circle,rgba(192,57,43,0.08),transparent_60%)]" />
         </div>
         <div className="relative max-w-md space-y-8">
-          <Film size={48} className="text-[var(--amber-2)] opacity-60" />
-          <h2 className="display text-4xl text-[var(--paper-0)] leading-tight">
+          <div className="inline-flex items-center gap-2 h-7 px-3 rounded-full glass border border-[rgba(232,177,74,0.25)] text-[11px] text-[var(--amber-1)] mono tracking-wider">
+            <span className="dot-amber" />
+            创作从此高效
+          </div>
+          <h2 className="display text-[40px] leading-[1.05] tracking-tight text-paper-gradient">
             你的每一次创作，<br />
             都值得被记住
           </h2>
@@ -165,10 +169,23 @@ export default function Login() {
             <Mini value="1GB" label="云端空间" />
             <Mini value="∞" label="变量复用" />
           </div>
-          <div className="rounded-[10px] bg-[var(--ink-3)] border border-[var(--ink-4)] p-4 mono text-[12px] text-[var(--paper-2)] space-y-1.5">
-            <div className="text-[var(--paper-3)]">// 演示账号</div>
-            <div>email: demo@promptstage.app</div>
-            <div>password: demo1234</div>
+          <div className="rounded-[10px] glass border border-[var(--ink-4)] p-4 mono text-[12px] text-[var(--paper-2)] space-y-1.5">
+            <div className="flex items-center gap-1.5 text-[var(--amber-1)] mb-1.5">
+              <Sparkles size={12} />
+              <span className="text-[10px] tracking-wider">演示账号 · 一键登录</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-[var(--paper-3)]">email</span>
+              <span>demo@promptstage.app</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-[var(--paper-3)]">password</span>
+              <span>demo1234</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 text-[10px] text-[var(--paper-3)] mono tracking-wider">
+            <span className="dot-jade" />
+            <span>PASSKEY-READY · 数据本地化 · 离线可用</span>
           </div>
         </div>
       </div>

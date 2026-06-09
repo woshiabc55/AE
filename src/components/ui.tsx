@@ -576,3 +576,55 @@ export function Modal({ open, onClose, children, title }: { open: boolean; onClo
     </div>
   );
 }
+
+// ============================================================
+// 骨架屏：加载占位
+// ============================================================
+export function Skeleton({
+  width,
+  height = 12,
+  rounded = 'rounded-[6px]',
+  className = '',
+  fast = false,
+}: {
+  width?: number | string;
+  height?: number | string;
+  rounded?: string;
+  className?: string;
+  fast?: boolean;
+}) {
+  return (
+    <span
+      className={cn('skeleton', fast && 'skeleton-fast', rounded, className)}
+      style={{ width, height: typeof height === 'number' ? `${height}px` : height }}
+    />
+  );
+}
+
+/** 模板卡片骨架 */
+export function TemplateCardSkeleton() {
+  return (
+    <div className="rounded-[10px] bg-[var(--ink-2)] border border-[var(--ink-4)] overflow-hidden">
+      <Skeleton height={140} rounded="rounded-none" />
+      <div className="p-4 space-y-2.5">
+        <Skeleton width={64} height={16} />
+        <Skeleton width="80%" height={16} />
+        <Skeleton width="100%" height={12} />
+        <Skeleton width="55%" height={12} />
+      </div>
+    </div>
+  );
+}
+
+/** 列表行骨架 */
+export function ListRowSkeleton() {
+  return (
+    <div className="flex items-center gap-3 p-3 rounded-[8px] bg-[var(--ink-2)] border border-[var(--ink-4)]">
+      <Skeleton width={36} height={36} rounded="rounded-[6px]" />
+      <div className="flex-1 space-y-2">
+        <Skeleton width="40%" height={12} />
+        <Skeleton width="70%" height={10} />
+      </div>
+    </div>
+  );
+}

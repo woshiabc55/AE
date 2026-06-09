@@ -334,3 +334,213 @@ textarea.input-base { resize: vertical; min-height: 80px; line-height: 1.6; }
 .press-down:active { transform: translateY(1px); }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; }
+
+/* ============================================================
+   全面美化 · v1.1
+   ============================================================ */
+
+/* —— 骨架屏 / 闪烁加载 —— */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton {
+  display: block;
+  border-radius: var(--r-2);
+  background: linear-gradient(
+    90deg,
+    var(--ink-2) 0%,
+    var(--ink-3) 30%,
+    var(--ink-4) 50%,
+    var(--ink-3) 70%,
+    var(--ink-2) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+}
+.skeleton.skeleton-fast { animation-duration: 1.2s; }
+
+/* —— 琥珀渐变描边（卡片悬停） —— */
+@keyframes border-rotate {
+  to { transform: rotate(360deg); }
+}
+.amber-border-glow {
+  position: relative;
+  isolation: isolate;
+}
+.amber-border-glow::before {
+  content: '';
+  position: absolute; inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    var(--amber-2) 25%,
+    transparent 50%,
+    var(--amber-2) 75%,
+    transparent 100%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+  animation: border-rotate 4s linear infinite;
+}
+.amber-border-glow:hover::before { opacity: 1; }
+
+/* —— 玻璃拟态（浮层） —— */
+.glass {
+  background: rgba(17, 17, 22, 0.65);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.glass-strong {
+  background: rgba(11, 11, 15, 0.85);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* —— 重点字渐变（琥珀→奶白） —— */
+.text-amber-gradient {
+  background: linear-gradient(180deg, var(--amber-0) 0%, var(--amber-2) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.text-paper-gradient {
+  background: linear-gradient(180deg, var(--paper-0) 0%, var(--paper-2) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* —— 琥珀辉光按钮 —— */
+.btn-amber-glow {
+  position: relative;
+  box-shadow:
+    0 0 0 1px rgba(232, 177, 74, 0.3),
+    0 8px 24px -4px rgba(232, 177, 74, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+.btn-amber-glow:hover {
+  box-shadow:
+    0 0 0 1px rgba(232, 177, 74, 0.5),
+    0 12px 32px -4px rgba(232, 177, 74, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+/* —— 通用入场动画 —— */
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-up { animation: slide-up 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+
+/* —— 摇曳入场（左右交替） —— */
+@keyframes swing-in-left {
+  from { opacity: 0; transform: translateX(-12px) rotate(-1deg); }
+  to { opacity: 1; transform: translateX(0) rotate(0); }
+}
+.animate-swing-in-left { animation: swing-in-left 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+
+/* —— 焦点环（accessibility） —— */
+:focus-visible {
+  outline: 2px solid var(--amber-2);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+button:focus-visible,
+a:focus-visible {
+  outline-offset: 3px;
+}
+
+/* —— 顶栏滚动后高亮底边 —— */
+.header-glow {
+  box-shadow:
+    0 1px 0 0 var(--ink-4),
+    0 8px 24px -8px rgba(0, 0, 0, 0.5),
+    0 1px 0 0 rgba(232, 177, 74, 0.15) inset;
+}
+
+/* —— 章节大标题左侧琥珀条 —— */
+.section-rule {
+  position: relative;
+  padding-left: 16px;
+}
+.section-rule::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0.35em; bottom: 0.35em;
+  width: 3px;
+  background: linear-gradient(180deg, var(--amber-1) 0%, var(--amber-3) 100%);
+  border-radius: 2px;
+}
+
+/* —— 装饰性胶片孔边缘（用于面板） —— */
+.film-edge {
+  position: relative;
+}
+.film-edge::before,
+.film-edge::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 4px;
+  background-image:
+    radial-gradient(circle at 4px 2px, var(--ink-0) 2px, transparent 2.5px);
+  background-size: 12px 4px;
+  background-repeat: repeat-x;
+  opacity: 0.5;
+  pointer-events: none;
+}
+.film-edge::before { top: 0; }
+.film-edge::after { bottom: 0; transform: scaleY(-1); }
+
+/* —— 进度光条（顶部细线） —— */
+.progress-line {
+  position: relative;
+  height: 2px;
+  background: var(--ink-3);
+  overflow: hidden;
+  border-radius: 1px;
+}
+.progress-line::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 0;
+  width: 35%;
+  background: linear-gradient(90deg, transparent, var(--amber-2), transparent);
+  animation: progress-slide 2.4s ease-in-out infinite;
+}
+@keyframes progress-slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
+
+/* —— 状态徽章 dot —— */
+.dot-amber { width: 6px; height: 6px; border-radius: 999px; background: var(--amber-2); box-shadow: 0 0 8px rgba(232, 177, 74, 0.6); }
+.dot-jade { width: 6px; height: 6px; border-radius: 999px; background: var(--jade); box-shadow: 0 0 8px rgba(111, 176, 127, 0.5); }
+.dot-vermilion { width: 6px; height: 6px; border-radius: 999px; background: var(--vermilion); }
+
+/* —— 字幕投影（重要段落文字） —— */
+.subtitle-shadow {
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4), 0 0 24px rgba(0, 0, 0, 0.3);
+}
+
+/* —— 减动效偏好 —— */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
