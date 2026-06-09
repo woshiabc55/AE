@@ -1,0 +1,70 @@
+/* =========================================================
+   全局变量与重置 — 《沙丘》低饱和+水墨金
+   ========================================================= */
+:root {
+  /* 主色调 - 沙丘低饱和 */
+  --c-bg-0: #0b0907;          /* 最深黑 */
+  --c-bg-1: #15110c;          /* 暗赭 */
+  --c-bg-2: #1d1812;          /* 卡其褐 */
+  --c-bg-3: #2a221a;          /* 浅褐 */
+  --c-line: #3a2f23;          /* 描边 */
+  --c-line-2: #5a4630;        /* 亮线 */
+
+  --c-sand: #c8a464;          /* 主金 */
+  --c-sand-dim: #8a6f44;      /* 暗金 */
+  --c-rust: #a8512a;          /* 锈红 */
+  --c-jade: #4a6b5a;          /* 玉青 */
+  --c-ink: #1a1611;           /* 水墨 */
+  --c-ink-warm: #2a2017;      /* 暖墨 */
+
+  --c-text: #e8d9b6;          /* 主文字 */
+  --c-text-dim: #a18a68;      /* 暗文 */
+  --c-text-faint: #6a5944;    /* 微弱 */
+
+  --c-accent: #f0c878;        /* 高光金 */
+  --c-danger: #c84a2a;        /* 警示 */
+
+  --c-imax-bar: #000000;      /* IMAX黑边 */
+
+  /* 字体 */
+  --f-serif: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+  --f-display: 'Cinzel', 'Noto Serif SC', serif;
+  --f-mono: 'JetBrains Mono', 'Menlo', monospace;
+
+  /* 缓动 */
+  --ease-cine: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* 尺寸 */
+  --imax-aspect: 16 / 9;
+  --bar-w: 0.045;             /* IMAX上下黑边比例 */
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  background: var(--c-bg-0);
+  color: var(--c-text);
+  font-family: var(--f-serif);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+}
+
+button {
+  font-family: inherit;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+::selection { background: var(--c-sand-dim); color: var(--c-bg-0); }
+
+/* 滚动条 */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--c-bg-1); }
+::-webkit-scrollbar-thumb { background: var(--c-line-2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-sand-dim); }
