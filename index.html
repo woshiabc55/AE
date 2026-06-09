@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>上线手段全景 · Deployment Strategies Atlas</title>
+  <meta name="description" content="线上平台主流上线（发布）手段全景：蓝绿、灰度、滚动、A/B、影子发布与全链路灰度" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Fira+Code:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <!-- ============== 顶部装饰条 ============== -->
+  <div class="status-bar" aria-hidden="true">
+    <span class="dot dot-r"></span>
+    <span class="dot dot-y"></span>
+    <span class="dot dot-g"></span>
+    <span class="path">~/deployment-strategies-atlas — bash — 80×24</span>
+  </div>
+
+  <!-- ============== 顶部导航 ============== -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo-mark">⟫⟫</span>
+      <span class="logo-text">Deploy<em>·</em>Atlas</span>
+    </div>
+    <nav class="topnav" aria-label="主导航">
+      <a href="#core">核心策略</a>
+      <a href="#advanced">进阶策略</a>
+      <a href="#fullchain">全链路</a>
+      <a href="#compare">对比</a>
+      <a href="#cases">大厂</a>
+      <a href="#roadmap">演进</a>
+    </nav>
+    <div class="topbar-actions">
+      <button id="themeToggle" class="ghost-btn" aria-label="切换主题">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="ghost-btn" href="https://kubernetes.io/zh-cn/docs/concepts/workloads/controllers/deployment/" target="_blank" rel="noreferrer">K8s Docs ↗</a>
+    </div>
+  </header>
+
+  <!-- ============== 浮动目录 (TOC) ============== -->
+  <aside class="toc" aria-label="文章目录">
+    <div class="toc-title">ON THIS PAGE</div>
+    <ol>
+      <li><a href="#hero" data-spy>00 · 总览</a></li>
+      <li><a href="#core" data-spy>01 · 核心策略</a></li>
+      <li><a href="#advanced" data-spy>02 · 进阶策略</a></li>
+      <li><a href="#fullchain" data-spy>03 · 全链路灰度</a></li>
+      <li><a href="#compare" data-spy>04 · 策略对比</a></li>
+      <li><a href="#cases" data-spy>05 · 大厂实践</a></li>
+      <li><a href="#monitoring" data-spy>06 · 监控与踩坑</a></li>
+      <li><a href="#roadmap" data-spy>07 · 演进路线</a></li>
+      <li><a href="#selection" data-spy>08 · 选型建议</a></li>
+    </ol>
+    <div class="toc-foot">
+      <div class="live-tag"><span class="pulse"></span>LIVE</div>
+      <div class="version">v1.0 · 2026-06</div>
+    </div>
+  </aside>
+
+  <main class="page">
+    <!-- ============== HERO ============== -->
+    <section id="hero" class="hero">
+      <div class="hero-bg" aria-hidden="true">
+        <div class="grid-mask"></div>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+      </div>
+      <div class="hero-inner reveal">
+        <div class="kicker">DEPLOYMENT · RELEASE · ROLLOUT</div>
+        <h1 class="hero-title">
+          线上平台<br />
+          <span class="grad">上线手段</span>全景图
+        </h1>
+        <p class="hero-sub">
+          12 种发布策略 + 5 家大厂实践 + 8 阶段演进路线，
+          <br />把"安全上线"这件事，写成一份可查阅、可决策的工程文档。
+        </p>
+
+        <div class="hero-meta">
+          <div class="meta-item"><span class="meta-num">12</span><span class="meta-lbl">核心策略</span></div>
+          <div class="meta-item"><span class="meta-num">5+</span><span class="meta-lbl">大厂案例</span></div>
+          <div class="meta-item"><span class="meta-num">8</span><span class="meta-lbl">演进阶段</span></div>
+          <div class="meta-item"><span class="meta-num">0</span><span class="meta-lbl">停机目标</span></div>
+        </div>
+
+        <div class="chip-cloud" aria-label="12 种策略速览">
+          <a class="chip" href="#sec-blue-green" style="--c:var(--accent-blue)">蓝绿发布</a>
+          <a class="chip" href="#sec-canary" style="--c:var(--accent-mint)">灰度发布</a>
+          <a class="chip" href="#sec-rolling" style="--c:var(--accent-cyan)">滚动发布</a>
+          <a class="chip" href="#sec-red-black" style="--c:var(--accent-purple)">红黑发布</a>
+          <a class="chip" href="#sec-ab" style="--c:var(--accent-yellow)">A/B 测试</a>
+          <a class="chip" href="#sec-shadow" style="--c:var(--accent-pink)">影子发布</a>
+          <a class="chip" href="#sec-toggle" style="--c:var(--accent-orange)">功能开关</a>
+          <a class="chip" href="#sec-region" style="--c:var(--accent-blue)">区域发布</a>
+          <a class="chip" href="#sec-incremental" style="--c:var(--accent-mint)">增量发布</a>
+          <a class="chip" href="#sec-hot" style="--c:var(--accent-cyan)">热部署</a>
+          <a class="chip" href="#sec-bigbang" style="--c:var(--accent-purple)">大爆炸发布</a>
+          <a class="chip" href="#sec-cd" style="--c:var(--accent-yellow)">持续交付</a>
+        </div>
+
+        <div class="hero-cta">
+          <a href="#core" class="btn primary">开始阅读 →</a>
+          <a href="#compare" class="btn ghost">查看对比表</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 01 核心策略 ============== -->
+    <section id="core" class="chapter">
+      <div class="ch-head reveal">
+        <span class="ch-num">01</span>
+        <h2>基础核心策略</h2>
+        <p>四种最常用、最经典的发布模式，是所有变体策略的基石。</p>
+      </div>
+
+      <!-- 1.1 蓝绿发布 -->
+      <article id="sec-blue-green" class="strategy reveal" data-color="blue">
+        <header class="str-head">
+          <div class="str-tag" style="--c:var(--accent-blue)">CORE</div>
+          <h3>蓝绿发布 <span class="en">Blue-Green Deployment</span></h3>
+        </header>
+        <p class="tagline">两套环境、一键切换、秒级回滚</p>
+        <div class="str-grid">
+          <div>
+            <h4>原理</h4>
+            <p>维护两套完全一致的生产环境（蓝=旧，绿=新），新版本先在闲置环境部署验证，测试通过后通过负载均衡把流量瞬间从蓝切到绿。出问题立即切回蓝。</p>
+            <h4>优点</h4>
+            <ul class="pros">
+              <li>零停机，秒级切换</li>
+              <li>回滚极快，毫秒级切回</li>
+              <li>新旧版本完全隔离，无兼容风险</li>
+            </ul>
+            <h4>缺点</h4>
+            <ul class="cons">
+              <li>资源成本翻倍（双套环境）</li>
+              <li>数据库迁移 / 兼容问题需提前处理</li>
+            </ul>
+            <h4>适用场景</h4>
+            <p class="scenario">对停机零容忍的关键业务：金融、支付、银行、电信核心系统；大促、版本大升级。</p>
+          </div>
+          <div class="svg-box">
+            <svg viewBox="0 0 360 240" class="arch-svg" aria-label="蓝绿发布架构">
+              <defs>
+                <linearGradient id="lg1" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0" stop-color="#00ff9c"/><stop offset="1" stop-color="#4ecdc4"/>
+                </linearGradient>
+              </defs>
+              <rect x="140" y="10" width="80" height="34" rx="6" fill="#111827" stroke="url(#lg1)"/>
+              <text x="180" y="32" text-anchor="middle" fill="#00ff9c" font-family="JetBrains Mono" font-size="12">LB</text>
+              <line x1="180" y1="44" x2="80" y2="100" stroke="#4ecdc4" stroke-dasharray="3 3"/>
+              <line x1="180" y1="44" x2="280" y2="100" stroke="#7a7a7a" stroke-dasharray="3 3"/>
+              <rect x="20" y="100" width="120" height="80" rx="8" fill="#0a2540" stroke="#3b82f6"/>
+              <text x="80" y="135" text-anchor="middle" fill="#60a5fa" font-family="JetBrains Mono" font-size="14">BLUE</text>
+              <text x="80" y="155" text-anchor="middle" fill="#94a3b8" font-size="11">v1 · 在线</text>
+              <rect x="220" y="100" width="120" height="80" rx="8" fill="#0a3329" stroke="#00ff9c" stroke-dasharray="4 2"/>
+              <text x="280" y="135" text-anchor="middle" fill="#00ff9c" font-family="JetBrains Mono" font-size="14">GREEN</text>
+              <text x="280" y="155" text-anchor="middle" fill="#94a3b8" font-size="11">v2 · 灰度</text>
+              <text x="180" y="220" text-anchor="middle" fill="#64748b" font-size="10">100% 流量瞬间切换 → 0 停机</text>
+            </svg>
+          </div>
+        </div>
+      </article>
+
+      <!-- 1.2 灰度 / 金丝雀 -->
+      <article id="sec-canary" class="strategy reveal" data-color="mint">
+        <header class="str-head">
+          <div class="str-tag" style="--c:var(--accent-mint)">CORE</div>
+          <h3>灰度 / 金丝雀发布 <span class="en">Gray / Canary Release</span></h3>
+        </header>
+        <p class="tagline">小步试错 · 逐步放量 · 金丝雀探路</p>
+        <div class="str-grid">
+          <div>
+            <h4>原理</h4>
+            <p>先让 1% 的用户或流量走新版本，像金丝雀探毒气一样验证稳定性。指标正常后再逐步放量：1% → 5% → 20% → 50% → 100%。一旦异常，仅影响小范围，立即回滚。</p>
+            <h4>三种灰度方式</h4>
+            <ul class="pros">
+              <li><b>按流量比例：</b>Istio / Nginx 权重（80/20）</li>
+              <li><b>按请求内容：</b>用户 ID、地域、设备、Cookie</li>
+              <li><b>按实例数量：</b>10 个 Pod 先升级 2 个</li>
+            </ul>
+            <h4>优点</h4>
+            <ul class="pros">
+              <li>风险极小，影响范围可控</li>
+              <li>真实流量验证新版本表现</li>
+              <li>可结合 A/B 测试，兼顾稳定性与产品决策</li>
+            </ul>
+            <h4>缺点</h4>
+            <ul class="cons">
+              <li>需要强大的流量调度能力（Istio / SCG）</li>
+              <li>新 / 老版本共存，需做好接口兼容性</li>
+            </ul>
+            <h4>适用场景</h4>
+            <p class="scenario">互联网产品新功能上线、AI 算法验证、用户体验敏感型产品（抖音、淘宝）。</p>
+          </div>
+          <div class="svg-box">
+            <svg viewBox="0 0 360 240" class="arch-svg" aria-label="灰度发布放量">
+              <defs>
+                <linearGradient id="canaryGrad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0" stop-color="#4ecdc4"/><stop offset="1" stop-color="#00ff9c"/>
+                </linearGradient>
+              </defs>
+              <g font-family="JetBrains Mono" font-size="11" fill="#cbd5e1">
+                <!-- 1% -->
+                <rect x="20" y="30" width="320" height="30" fill="#0a3329" stroke="#00ff9c"/>
+                <rect x="20" y="30" width="316" height="30" fill="#0a2540" stroke="#3b82f6" stroke-width="2"/>
+                <text x="170" y="50" text-anchor="middle">v1  99%   |   v2  1%</text>
+                <text x="20" y="22" fill="#00ff9c">▸ 1% Canary</text>
+                <!-- 10% -->
+                <rect x="20" y="85" width="320" height="30" fill="#0a3329" stroke="#00ff9c"/>
+                <rect x="20" y="85" width="288" height="30" fill="#0a2540" stroke="#3b82f6" stroke-width="2"/>
+                <text x="170" y="105" text-anchor="middle">v1  90%   |   v2  10%</text>
+                <text x="20" y="77" fill="#00ff9c">▸ 10% 验证</text>
+                <!-- 50% -->
+                <rect x="20" y="140" width="320" height="30" fill="#0a3329" stroke="#00ff9c"/>
+                <rect x="20" y="140" width="160" height="30" fill="#0a2540" stroke="#3b82f6" stroke-width="2"/>
+                <text x="170" y="160" text-anchor="middle">v1  50%   |   v2  50%</text>
+                <text x="20" y="132" fill="#00ff9c">▸ 50% 放量</text>
+                <!-- 100% -->
+                <rect x="20" y="195" width="320" height="30" fill="#0a3329" stroke="#00ff9c"/>
+                <text x="180" y="215" text-anchor="middle">v2  100% — 灰度完成</text>
+                <text x="20" y="187" fill="#00ff9c">▸ 100% 全量</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+      </article>
+
+      <!-- 1.3 滚动发布 -->
+      <article id="sec-rolling" class="strategy reveal" data-color="cyan">
+        <header class="str-head">
+          <div class="str-tag" style="--c:var(--accent-cyan)">CORE</div>
+          <h3>滚动发布 <span class="en">Rolling Update</span></h3>
+        </header>
+        <p class="tagline">渐进替换 · 资源节省 · K8s 原生</p>
+        <div class="str-grid">
+          <div>
+            <h4>原理</h4>
+            <p>不搞两套环境，边升级边替换。比如 10 个实例，每次只下线 2 个升级为新版本，健康后再继续下一批，像滚雪球一样逐步替换完全部实例。</p>
+            <h4>K8s 原生配置</h4>
+<pre class="codeblock" data-lang="yaml"><code>apiVersion: apps/v1
+kind: Deployment
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%        # 最大激增 Pod 数
+      maxUnavailable: 25%  # 最大不可用 Pod 数</code><button class="copy-btn" aria-label="复制">⎘</button></pre>
+            <h4>优点</h4>
+            <ul class="pros">
+              <li>资源最省，无需双倍环境</li>
+              <li>Kubernetes 原生 <code>kubectl rollout</code> 一行命令</li>
+              <li>用户基本无感（配好就绪探针）</li>
+            </ul>
+            <h4>缺点</h4>
+            <ul class="cons">
+              <li>回滚慢（要逐个实例换回）</li>
+              <li>升级过程新老版本共存，需考虑兼容</li>
+            </ul>
+            <h4>适用场景</h4>
+            <p class="scenario">微服务常规迭代、容器化集群、K8s 默认升级策略。</p>
+          </div>
+          <div class="svg-box">
+            <svg viewBox="0 0 360 240" class="arch-svg" aria-label="滚动发布">
+              <g font-family="JetBrains Mono" font-size="10" fill="#cbd5e1">
+                <!-- 阶段 1 -->
+                <text x="20" y="22" fill="#4ecdc4">▸ 阶段 1: v1×4 + v2×1</text>
+                <g transform="translate(20,30)">
+                  <rect width="50" height="30" fill="#0a2540" stroke="#3b82f6"/><text x="25" y="20" text-anchor="middle">v1</text>
+                  <rect x="60" width="50" height="30" fill="#0a2540" stroke="#3b82f6"/><text x="85" y="20" text-anchor="middle">v1</text>
+                  <rect x="120" width="50" height="30" fill="#0a2540" stroke="#3b82f6"/><text x="145" y="20" text-anchor="middle">v1</text>
+                  <rect x="180" width="50" height="30" fill="#0a2540" stroke="#3b82f6"/><text x="205" y="20" text-anchor="middle">v1</text>
+                  <rect x="240" width="50" height="30" fill="#0a3329" stroke="#00ff9c"/><text x="265" y="20" text-anchor="middle" fill="#00ff9c">v2</text>
+                </g>
+                <!-- 阶段 2 -->
+                <text x="20" y="92" fill="#4ecdc4">▸ 阶段 2: v1×2 + v2×3</text>
+                <g transform="translate(20,100)">
+                  <rect width="50" height="30" fill="#0a2540" stroke="#3b82f6"/><text x="25" y="20" text-anchor="middle">v1</text>
+                  <rect x="60" width="50" height="30" fill="#0a2540" stroke="#3b82f6"/><text x="85" y="20" text-anchor="middle">v1</text>
+                  <rect x="120" width="50" height="30" fill="#0a3329" stroke="#00ff9c"/><text x="145" y="20" text-anchor="middle" fill="#00ff9c">v2</text>
+                  <rect x="180" width="50" height="30" fill="#0a3329" stroke="#00ff9c"/><text x="205" y="20" text-anchor="middle" fill="#00ff9c">v2</text>
+                  <rect x="240" width="50" height="30" fill="#0a3329" stroke="#00ff9c"/><text x="265" y="20" text-anchor="middle" fill="#00ff9c">v2</text>
+                </g>
+                <!-- 阶段 3 -->
+                <text x="20" y="162" fill="#4ecdc4">▸ 阶段 3: v2×5 — 完成</text>
+                <g transform="translate(20,170)">
+                  <rect width="50" height="30" fill="#0a3329" stroke="#00ff9c"/><text x="25" y="20" text-anchor="middle" fill="#00ff9c">v2</text>
+                  <rect x="60" width="50" height="30" fill="#0a3329" stroke="#00ff9c"/><text x="85" y="20" text-anchor="middle" fill="#00ff9c">v2</text>
+                  <rect x="120" width="50" height="30" fill="#0a3329" stroke="#00ff9c"/><text x="145" y="20" text-anchor="middle" fill="#00ff9c">v2</text>
+                  <rect x="180" width="50" height="30" fill="#0a3329" stroke="#00ff9c"/><text x="205" y="20" text-anchor="middle" fill="#00ff9c">v2</text>
+                  <rect x="240" width="50" height="30" fill="#0a3329" stroke="#00ff9c"/><text x="265" y="20" text-anchor="middle" fill="#00ff9c">v2</text>
+                </g>
+              </g>
+            </svg>
+          </div>
+        </div>
+      </article>
+
+      <!-- 1.4 红黑发布 -->
+      <article id="sec-red-black" class="strategy reveal" data-color="purple">
+        <header class="str-head">
+          <div class="str-tag" style="--c:var(--accent-purple)">CORE</div>
+          <h3>红黑发布 <span class="en">Red-Black Deployment</span></h3>
+        </header>
+        <p class="tagline">类蓝绿 · 释放旧环境 · 云原生最爱</p>
+        <div class="str-grid">
+          <div>
+            <h4>原理</h4>
+            <p>与蓝绿几乎一致：红=旧版在线，黑=新版待发布。区别在于<strong>切换完成后立即销毁红环境释放资源</strong>，是云厂商弹性伸缩时代的"轻量蓝绿"。</p>
+            <h4>典型平台</h4>
+            <p>OpenShift、阿里云 SAE、AWS Elastic Beanstalk 默认策略。</p>
+            <h4>优点</h4>
+            <ul class="pros">
+              <li>同蓝绿：零停机、秒级回滚</li>
+              <li>切换后立即释放旧资源，成本更低</li>
+            </ul>
+            <h4>缺点</h4>
+            <ul class="cons">
+              <li>切回需重新拉起旧环境（RTO 稍长）</li>
+              <li>强依赖云平台弹性能力</li>
+            </ul>
+            <h4>适用场景</h4>
+            <p class="scenario">云原生环境、追求资源利用率最大化的场景。</p>
+          </div>
+          <div class="svg-box">
+            <svg viewBox="0 0 360 240" class="arch-svg" aria-label="红黑发布">
+              <g font-family="JetBrains Mono" font-size="11" fill="#cbd5e1">
+                <rect x="60" y="20" width="240" height="36" rx="6" fill="#111827" stroke="#a855f7"/>
+                <text x="180" y="42" text-anchor="middle" fill="#c084fc">Router / LB</text>
+                <line x1="120" y1="56" x2="80" y2="110" stroke="#a855f7" stroke-dasharray="3 3"/>
+                <line x1="240" y1="56" x2="280" y2="110" stroke="#a855f7" stroke-dasharray="3 3"/>
+                <rect x="20" y="110" width="120" height="80" rx="8" fill="#3b0a0a" stroke="#ef4444"/>
+                <text x="80" y="145" text-anchor="middle" fill="#fca5a5">RED · v1</text>
+                <text x="80" y="165" text-anchor="middle" fill="#94a3b8" font-size="10">在线服务</text>
+                <rect x="220" y="110" width="120" height="80" rx="8" fill="#0a0a0a" stroke="#a855f7" stroke-dasharray="4 2"/>
+                <text x="280" y="145" text-anchor="middle" fill="#c084fc">BLACK · v2</text>
+                <text x="280" y="165" text-anchor="middle" fill="#94a3b8" font-size="10">验证中</text>
+                <text x="180" y="220" text-anchor="middle" fill="#94a3b8" font-size="10">切换 → 销毁 RED → 释放资源</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ============== 02 进阶策略 ============== -->
+    <section id="advanced" class="chapter">
+      <div class="ch-head reveal">
+        <span class="ch-num">02</span>
+        <h2>进阶优化策略</h2>
+        <p>面向业务验证、精细控制和效率提升的扩展手段。</p>
+      </div>
+
+      <div class="adv-grid">
+        <article id="sec-ab" class="adv-card reveal" data-color="yellow">
+          <div class="adv-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg>
+          </div>
+          <h3>A/B 测试 <span class="en">A/B Testing</span></h3>
+          <p>同时运行多版本对比<strong>业务指标</strong>（点击率、转化率、停留时长），目的不是稳定性而是<strong>产品决策</strong>。常以灰度为技术底座。</p>
+          <div class="kv">
+            <div><span>关注点</span><b>业务效果</b></div>
+            <div><span>流量分组</span><b>实验 vs 控制</b></div>
+            <div><span>决策依据</span><b>统计显著性</b></div>
+          </div>
+        </article>
+
+        <article id="sec-shadow" class="adv-card reveal" data-color="pink">
+          <div class="adv-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 9 9h-9z" fill="currentColor"/></svg>
+          </div>
+          <h3>影子发布 <span class="en">Shadow Deployment</span></h3>
+          <p>把生产流量<strong>复制一份</strong>发到新版本，但<strong>不返回结果</strong>给用户。用于压测、算法比对，零风险验证。</p>
+          <div class="kv">
+            <div><span>典型用途</span><b>推荐算法验证</b></div>
+            <div><span>数据隔离</span><b>影子环境不污染</b></div>
+            <div><span>实现</span><b>Kafka 异步复制</b></div>
+          </div>
+        </article>
+
+        <article id="sec-toggle" class="adv-card reveal" data-color="orange">
+          <div class="adv-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="22" height="12" rx="6"/><circle cx="17" cy="12" r="4" fill="currentColor"/></svg>
+          </div>
+          <h3>功能开关 <span class="en">Feature Toggle</span></h3>
+          <p>代码嵌入开关，通过<strong>配置中心</strong>（Nacos / Apollo）动态启停。<strong>部署 ≠ 发布</strong>，可随时熔断、A/B、定向灰度。</p>
+          <div class="kv">
+            <div><span>代表</span><b>LaunchDarkly / Apollo</b></div>
+            <div><span>优势</span><b>部署与发布解耦</b></div>
+            <div><span>风险</span><b>开关债需治理</b></div>
+          </div>
+        </article>
+
+        <article id="sec-region" class="adv-card reveal" data-color="blue">
+          <div class="adv-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20"/></svg>
+          </div>
+          <h3>区域发布 <span class="en">Regional Release</span></h3>
+          <p>按地理 / 机房分批上线：先东南亚 → 再欧美 → 再全球。出海产品 & 合规分域的常用做法。</p>
+          <div class="kv">
+            <div><span>代表</span><b>TikTok / 滴滴出海</b></div>
+            <div><span>优势</span><b>分域验证</b></div>
+            <div><span>注意</span><b>多活架构</b></div>
+          </div>
+        </article>
+
+        <article id="sec-incremental" class="adv-card reveal" data-color="mint">
+          <div class="adv-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/><path d="M12 2l4 4M12 22l-4-4M2 12l4-4M22 12l-4 4"/></svg>
+          </div>
+          <h3>增量发布 <span class="en">Incremental Release</span></h3>
+          <p>按<strong>功能模块</strong>逐个上线，避免一次性大变更。常用于大型重构、库升级。</p>
+          <div class="kv">
+            <div><span>代表</span><b>Flutter 引擎升级</b></div>
+            <div><span>优势</span><b>细粒度风险</b></div>
+            <div><span>挑战</span><b>模块耦合治理</b></div>
+          </div>
+        </article>
+
+        <article id="sec-hot" class="adv-card reveal" data-color="cyan">
+          <div class="adv-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7z" fill="currentColor"/></svg>
+          </div>
+          <h3>热部署 <span class="en">Hot Deployment</span></h3>
+          <p>不停止服务直接替换代码 / 资源：Tomcat 热加载、Nginx reload、Webpack HMR、JRebel。</p>
+          <div class="kv">
+            <div><span>典型</span><b>前端 HMR / Nginx -s reload</b></div>
+            <div><span>优势</span><b>毫秒级生效</b></div>
+            <div><span>局限</span><b>仅轻量资源 / 配置</b></div>
+          </div>
+        </article>
+
+        <article id="sec-bigbang" class="adv-card reveal" data-color="purple">
+          <div class="adv-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
+          </div>
+          <h3>大爆炸发布 <span class="en">Big Bang Release</span></h3>
+          <p>一次性全量发布所有变更。App Store / Google Play 审核通过后即全量；功能成熟的小项目。</p>
+          <div class="kv">
+            <div><span>风险</span><b>极高</b></div>
+            <div><span>回滚</span><b>几乎不可能</b></div>
+            <div><span>适用</span><b>移动 App 发版</b></div>
+          </div>
+        </article>
+
+        <article id="sec-cd" class="adv-card reveal" data-color="yellow">
+          <div class="adv-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.5 0 4.7 1 6.4 2.6"/><path d="M21 3v6h-6"/></svg>
+          </div>
+          <h3>持续交付 / 部署 <span class="en">CD</span></h3>
+          <p>把"上线"做成自动化流水线（CI → 自动化测试 → 预发 → 生产），支撑<strong>按需发布</strong>。</p>
+          <div class="kv">
+            <div><span>代表</span><b>GitOps / ArgoCD</b></div>
+            <div><span>价值</span><b>任何时刻可发</b></div>
+            <div><span>配套</span><b>Pipeline as Code</b></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============== 03 全链路灰度 ============== -->
+    <section id="fullchain" class="chapter">
+      <div class="ch-head reveal">
+        <span class="ch-num">03</span>
+        <h2>全链路灰度</h2>
+        <p>微服务架构下的"必杀器"——从网关到 DB 全程路由正确版本。</p>
+      </div>
+
+      <div class="reveal">
+        <div class="callout">
+          <strong>为什么需要"全链路"？</strong>
+          微服务下 A → B → C → DB，<strong>只在入口网关灰度不够</strong>，链路中间件、MQ、缓存都可能路由错版本。
+        </div>
+
+        <h3>两种实现思路对比</h3>
+        <div class="compare-2col">
+          <div class="cc-card" data-color="red">
+            <h4>❌ 物理环境隔离</h4>
+            <ul>
+              <li>搭一套完整灰度环境</li>
+              <li>资源成本高（双倍）</li>
+              <li>灵活度差，运维重</li>
+              <li>典型代表：传统蓝绿</li>
+            </ul>
+          </div>
+          <div class="cc-card" data-color="green">
+            <h4>✅ 逻辑环境隔离（推荐）</h4>
+            <ul>
+              <li>流量染色 + 标签路由</li>
+              <li>资源成本低（共享环境）</li>
+              <li>灵活，按规则实时调整</li>
+              <li>典型代表：阿里 MSE / Istio</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>落地四步走</h3>
+        <ol class="steps">
+          <li><b>流量染色：</b>网关给灰度请求打标（HTTP Header / Cookie）</li>
+          <li><b>标签路由：</b>微服务框架识别标签路由到对应版本</li>
+          <li><b>中间件透传：</b>RPC、MQ、缓存要透传染色标记</li>
+          <li><b>可观测：</b>全链路 Trace 关联到具体灰度批次</li>
+        </ol>
+
+        <h3>Istio 灰度路由示例</h3>
+<pre class="codeblock" data-lang="yaml"><code>apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata: { name: product-svc }
+spec:
+  hosts: [product-svc]
+  http:
+  - match:
+    - headers: { x-user-group: { exact: "internal" } }
+    route: [{ destination: { host: product-svc, subset: v2 }}]
+  - route:
+    - destination: { host: product-svc, subset: v1 }, weight: 90
+    - destination: { host: product-svc, subset: v2 }, weight: 10</code><button class="copy-btn" aria-label="复制">⎘</button></pre>
+      </div>
+    </section>
+
+    <!-- ============== 04 对比表 ============== -->
+    <section id="compare" class="chapter">
+      <div class="ch-head reveal">
+        <span class="ch-num">04</span>
+        <h2>策略对比总览</h2>
+        <p>一张表看清所有策略的取舍。</p>
+      </div>
+
+      <div class="reveal table-wrap">
+        <table class="big-table">
+          <thead>
+            <tr>
+              <th>策略</th>
+              <th>资源消耗</th>
+              <th>回滚速度</th>
+              <th>风险控制</th>
+              <th>自动化要求</th>
+              <th>典型场景</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><b>蓝绿</b></td><td><span class="badge red">高（2×）</span></td><td><span class="badge green">⚡ 极快</span></td><td><span class="badge yellow">中</span></td><td><span class="badge yellow">中</span></td><td>金融、核心交易</td></tr>
+            <tr><td><b>灰度 / 金丝雀</b></td><td><span class="badge yellow">中</span></td><td><span class="badge green">快</span></td><td><span class="badge green">✅ 极高</span></td><td><span class="badge red">高</span></td><td>互联网产品、新功能</td></tr>
+            <tr><td><b>滚动</b></td><td><span class="badge green">低</span></td><td><span class="badge red">慢</span></td><td><span class="badge yellow">中</span></td><td><span class="badge yellow">中高</span></td><td>K8s 常规迭代</td></tr>
+            <tr><td><b>红黑</b></td><td><span class="badge yellow">中（释放快）</span></td><td><span class="badge green">快</span></td><td><span class="badge yellow">中</span></td><td><span class="badge yellow">中</span></td><td>云原生弹性</td></tr>
+            <tr><td><b>影子</b></td><td><span class="badge yellow">中</span></td><td>—</td><td><span class="badge green">极低风险</span></td><td><span class="badge red">高</span></td><td>算法验证、压测</td></tr>
+            <tr><td><b>A/B 测试</b></td><td><span class="badge yellow">中</span></td><td>—</td><td><span class="badge green">业务层高</span></td><td><span class="badge red">高</span></td><td>产品决策、UI 优化</td></tr>
+            <tr><td><b>功能开关</b></td><td><span class="badge green">低</span></td><td><span class="badge green">⚡ 极快</span></td><td><span class="badge green">极高</span></td><td><span class="badge yellow">中</span></td><td>细粒度、熔断</td></tr>
+            <tr><td><b>区域发布</b></td><td><span class="badge yellow">中</span></td><td><span class="badge yellow">中</span></td><td><span class="badge yellow">中</span></td><td><span class="badge yellow">中</span></td><td>出海、合规分域</td></tr>
+            <tr><td><b>热部署</b></td><td><span class="badge green">极低</span></td><td><span class="badge green">快</span></td><td><span class="badge red">低</span></td><td><span class="badge green">低</span></td><td>开发态、轻量资源</td></tr>
+            <tr><td><b>大爆炸</b></td><td><span class="badge green">极低</span></td><td><span class="badge red">难</span></td><td><span class="badge red">低</span></td><td><span class="badge green">低</span></td><td>App 发版、小项目</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============== 05 大厂实践 ============== -->
+    <section id="cases" class="chapter">
+      <div class="ch-head reveal">
+        <span class="ch-num">05</span>
+        <h2>大厂发布实践</h2>
+        <p>从一线大厂的方案里，看出"灰度"与"AB"的统一基础设施趋势。</p>
+      </div>
+
+      <div class="cases-grid reveal">
+        <div class="case-card" data-color="blue">
+          <div class="case-logo">淘</div>
+          <div>
+            <h4>阿里巴巴</h4>
+            <p>Diamond / 开关平台 + AHAS + EDAS · <b>全链路灰度</b>，按业务/地域/账号精细化分流；阿里云 MSE Nacos 是当下云原生标配。</p>
+          </div>
+        </div>
+        <div class="case-card" data-color="purple">
+          <div class="case-logo">字</div>
+          <div>
+            <h4>字节跳动</h4>
+            <p><b>统一 AB Test 平台</b>，灰度（技术验证）与 AB（业务评估）共用一套基础设施。ByteLLM 动态路由支撑 AI 模型灰度。</p>
+          </div>
+        </div>
+        <div class="case-card" data-color="yellow">
+          <div class="case-logo">美</div>
+          <div>
+            <h4>美团</h4>
+            <p>前端<b>统一分流框架</b>支持灰度 + AB；后端埋点平台收集多维数据辅助决策；外卖链路在 O2O 高并发场景验证。</p>
+          </div>
+        </div>
+        <div class="case-card" data-color="green">
+          <div class="case-logo">腾</div>
+          <div>
+            <h4>腾讯</h4>
+            <p>TSF（Tencent Service Framework）：服务治理 + 灰度 + 分布式事务一体化；混元 MaaS 平台做 AI 模型灰度。</p>
+          </div>
+        </div>
+        <div class="case-card" data-color="pink">
+          <div class="case-logo">ⵟ</div>
+          <div>
+            <h4>青团社</h4>
+            <p>亿级灵活用工平台：<b>业务容器化（ACK）→ 引入 MSE 微服务引擎实现全链路灰度</b>，日均高频发布零事故。</p>
+          </div>
+        </div>
+        <div class="case-card" data-color="cyan">
+          <div class="case-logo">滴</div>
+          <div>
+            <h4>滴滴 / 京东 / 华为</h4>
+            <p>均采用"<b>微服务治理平台 + 灰度发布</b>"双轮驱动：滴滴用 EDM、京东用 JDC、华为用 FusionStage。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 06 监控 & 踩坑 ============== -->
+    <section id="monitoring" class="chapter">
+      <div class="ch-head reveal">
+        <span class="ch-num">06</span>
+        <h2>监控体系 & 踩坑案例</h2>
+        <p>发布时盯住五个维度；自动回滚是底线能力。</p>
+      </div>
+
+      <div class="reveal">
+        <h3>五维监控</h3>
+        <div class="monitor-grid">
+          <div class="mon" data-color="green"><span>性能</span><b>QPS · P99 · 错误率</b></div>
+          <div class="mon" data-color="blue"><span>业务</span><b>转化率 · 订单成功率</b></div>
+          <div class="mon" data-color="purple"><span>系统</span><b>CPU · 内存 · 连接池</b></div>
+          <div class="mon" data-color="yellow"><span>日志</span><b>异常堆栈 · 慢 SQL</b></div>
+          <div class="mon" data-color="pink"><span>链路</span><b>Trace 失败节点</b></div>
+        </div>
+
+        <h3>自动回滚硬指标（业界经验值）</h3>
+        <ul class="rollback">
+          <li><b>错误率 &gt; 1%</b> 持续 5 分钟 → 自动回滚（RTO &lt; 3min）</li>
+          <li><b>P99 延迟 &gt; 阈值 2 倍</b> → 自动回滚</li>
+          <li><b>核心业务指标下降 &gt; 10%</b> → 自动回滚 + 告警</li>
+        </ul>
+
+        <h3>经典踩坑复盘</h3>
+        <div class="pitfall-grid">
+          <div class="pit" data-color="red">
+            <h4>DB 连接池泄漏</h4>
+            <p>灰度 10% 后 DB 连接数飙升。新版未释放连接 → 监控 <code>Threads_connected</code>。</p>
+          </div>
+          <div class="pit" data-color="yellow">
+            <h4>配置中心不兼容</h4>
+            <p>新版读不到旧配置 → 双写兼容 + 格式校验中间件。</p>
+          </div>
+          <div class="pit" data-color="orange">
+            <h4>缓存穿透雪崩</h4>
+            <p>灰度用户无缓存预热 → 预热缓存 + 布隆过滤器。</p>
+          </div>
+          <div class="pit" data-color="blue">
+            <h4>JVM 预热不足</h4>
+            <p>刚扩容 Pod 响应慢 → readiness 探针 + 流量渐进。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 07 演进路线 ============== -->
+    <section id="roadmap" class="chapter">
+      <div class="ch-head reveal">
+        <span class="ch-num">07</span>
+        <h2>落地演进路线</h2>
+        <p>从"能发"到"智能发"，8 阶段逐级进化。</p>
+      </div>
+
+      <div class="reveal roadmap">
+        <div class="rm-step" data-color="blue">
+          <div class="rm-num">1</div>
+          <h4>手工脚本发布</h4>
+          <p>SSH + 脚本</p>
+        </div>
+        <div class="rm-arrow">→</div>
+        <div class="rm-step" data-color="cyan">
+          <div class="rm-num">2</div>
+          <h4>Jenkins 流水线</h4>
+          <p>CI 自动化</p>
+        </div>
+        <div class="rm-arrow">→</div>
+        <div class="rm-step" data-color="mint">
+          <div class="rm-num">3</div>
+          <h4>K8s 滚动</h4>
+          <p>Deployment 默认</p>
+        </div>
+        <div class="rm-arrow">→</div>
+        <div class="rm-step" data-color="green">
+          <div class="rm-num">4</div>
+          <h4>Ingress-Nginx 权重</h4>
+          <p>轻量灰度</p>
+        </div>
+        <div class="rm-arrow">→</div>
+        <div class="rm-step" data-color="yellow">
+          <div class="rm-num">5</div>
+          <h4>功能开关 + 配置中心</h4>
+          <p>动态灰度</p>
+        </div>
+        <div class="rm-arrow">→</div>
+        <div class="rm-step" data-color="orange">
+          <div class="rm-num">6</div>
+          <h4>全链路灰度</h4>
+          <p>Istio / MSE</p>
+        </div>
+        <div class="rm-arrow">→</div>
+        <div class="rm-step" data-color="pink">
+          <div class="rm-num">7</div>
+          <h4>Argo Rollouts</h4>
+          <p>指标驱动</p>
+        </div>
+        <div class="rm-arrow">→</div>
+        <div class="rm-step" data-color="purple">
+          <div class="rm-num">8</div>
+          <h4>智能化发布</h4>
+          <p>AI 风险预测</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 08 选型建议 ============== -->
+    <section id="selection" class="chapter">
+      <div class="ch-head reveal">
+        <span class="ch-num">08</span>
+        <h2>选型建议</h2>
+        <p>不选最火的，只选最适合当前阶段的。</p>
+      </div>
+
+      <div class="reveal sel-grid">
+        <div class="sel" data-color="green">
+          <h4>初创 / 小团队</h4>
+          <p>单体或少量服务</p>
+          <code>Nginx 权重 + 功能开关 + 滚动发布</code>
+        </div>
+        <div class="sel" data-color="cyan">
+          <h4>成长型</h4>
+          <p>微服务 10–50 个</p>
+          <code>Spring Cloud Gateway + Nacos + 蓝绿</code>
+        </div>
+        <div class="sel" data-color="blue">
+          <h4>中大型</h4>
+          <p>微服务 50+、日发布频繁</p>
+          <code>Istio 服务网格 + 全链路灰度 + Argo Rollouts</code>
+        </div>
+        <div class="sel" data-color="purple">
+          <h4>金融 / 电信</h4>
+          <p>零中断、零容忍</p>
+          <code>双机房蓝绿 + 严格变更窗口 + 灰度熔断</code>
+        </div>
+        <div class="sel" data-color="pink">
+          <h4>AI / 算法业务</h4>
+          <p>模型频繁迭代</p>
+          <code>模型注册中心 + 影子发布 + 业务指标 AB</code>
+        </div>
+      </div>
+
+      <div class="reveal final-takeaway">
+        <h3>🎯 三句话总结</h3>
+        <p><span class="grad">灰度发布的本质不是"部署技术"，而是"工程治理闭环"</span>：<br />
+        <b>可灰度</b>（能力） + <b>可观测</b>（眼睛） + <b>可回滚</b>（安全网） + <b>可决策</b>（大脑）</p>
+      </div>
+    </section>
+
+    <!-- ============== 页脚 ============== -->
+    <footer class="site-foot reveal">
+      <div class="foot-row">
+        <div>
+          <div class="brand">
+            <span class="logo-mark">⟫⟫</span>
+            <span class="logo-text">Deploy<em>·</em>Atlas</span>
+          </div>
+          <p>整理自 2026 年公开技术博客与大厂实践。</p>
+        </div>
+        <div class="foot-cols">
+          <div>
+            <h5>引用来源</h5>
+            <ul>
+              <li>juejin.cn / cloud.tencent.com / csdn.net</li>
+              <li>developer.aliyun.com / cnblogs.com</li>
+              <li>developer.huawei.com</li>
+            </ul>
+          </div>
+          <div>
+            <h5>工具链</h5>
+            <ul>
+              <li>Istio · Argo Rollouts</li>
+              <li>Nginx · Spring Cloud Gateway</li>
+              <li>Prometheus · SkyWalking</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <span>© 2026 Deploy·Atlas · 仅供技术学习</span>
+        <span class="build">built with ☕ + cyber-dust</span>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Toast for code copy -->
+  <div id="toast" class="toast" role="status" aria-live="polite">已复制 ✓</div>
+
+  <script src="./script.js" defer></script>
+</body>
+</html>
