@@ -13,6 +13,7 @@ import { FOLDERS_SEED } from '../data/templates.seed';
 import { formatRelative, formatDate, compactNumber } from '../lib/utils';
 import type { Template, Folder as FolderT } from '../types';
 import { cn } from '../lib/utils';
+import { AlertTriangle, ShieldAlert, KeyRound } from 'lucide-react';
 
 type Tab = 'mine' | 'favorites' | 'recent';
 
@@ -29,6 +30,10 @@ export default function Library() {
   const [stats, setStats] = useState({ total: 0, thisMonth: 0, drafts: 0 });
   const [newFolderOpen, setNewFolderOpen] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deletePwd, setDeletePwd] = useState('');
+  const [deletePhrase, setDeletePhrase] = useState('');
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -87,6 +92,30 @@ export default function Library() {
     setNewFolderOpen(false);
     setNewFolderName('');
     pushToast({ kind: 'success', message: `已创建文件夹：${f.name}` });
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!user) return;
+    if (deletePhrase !== '确认注销') {
+      pushToast({ kind: 'warn', message: '请输入「确认注销」以继续' });
+      return;
+    }
+    if (deletePwd.length < 6) {
+      pushToast({ kind: 'warn', message: '请输入正确的密码' });
+      return;
+    }
+    setDeleting(true);
+    try {
+      await useApp.getState().deleteAccount(deletePwd);
+      setDeleteOpen(false);
+      setDeletePwd('');
+      setDeletePhrase('');
+      nav('/');
+    } catch (e: any) {
+      pushToast({ kind: 'error', message: e?.message ?? '注销失败' });
+    } finally {
+      setDeleting(false);
+    }
   };
 
   return (
@@ -218,6 +247,27 @@ export default function Library() {
               ))}
             </div>
           )}
+
+          {/* 危险区：账号注销 */}
+          <div className="mt-10 rounded-[12px] border border-[rgba(220,90,90,0.35)] bg-[rgba(220,90,90,0.04)] p-6">
+            <div className="flex items-start gap-3">
+              <ShieldAlert size={18} className="text-[#dc5a5a] mt-0.5 shrink-0" />
+              <div className="flex-1">
+                <h3 className="display text-[15px] text-[var(--paper-0)] mb-1">危险区 · 注销账号</h3>
+                <p className="text-[12px] text-[var(--paper-2)] leading-relaxed mb-4">
+                  注销后<strong className="text-[#dc5a5a]">不可恢复</strong>。你的账号、登录会话、自建模板、文件夹、收藏、草稿将被全部清除。
+                </p>
+                <Button
+                  variant="secondary"
+                  onClick={() => setDeleteOpen(true)}
+                  className="!border-[#dc5a5a] !text-[#dc5a5a] hover:!bg-[#dc5a5a] hover:!text-white"
+                >
+                  <Trash2 size={13} />
+                  永久注销账号
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -233,6 +283,55 @@ export default function Library() {
           <div className="flex justify-end gap-2">
             <Button variant="ghost" onClick={() => setNewFolderOpen(false)}>取消</Button>
             <Button variant="primary" onClick={handleCreateFolder}>创建</Button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal open={deleteOpen} onClose={() => !deleting && setDeleteOpen(false)} title="永久注销账号">
+        <div className="space-y-5">
+          <div className="flex items-start gap-3 p-4 rounded-[8px] bg-[rgba(220,90,90,0.08)] border border-[rgba(220,90,90,0.25)]">
+            <AlertTriangle size={18} className="text-[#dc5a5a] mt-0.5 shrink-0" />
+            <div className="text-[12px] text-[var(--paper-2)] leading-relaxed">
+              此操作<strong className="text-[#dc5a5a]">不可撤销</strong>。将永久删除以下数据：
+              <ul className="list-disc list-inside mt-2 space-y-1 text-[11px] text-[var(--paper-3)]">
+                <li>账号与登录会话（所有设备）</li>
+                <li>所有自建模板（{stats.total} 个）</li>
+                <li>所有文件夹、收藏、草稿</li>
+              </ul>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-[11px] text-[var(--paper-2)] mb-1.5 flex items-center gap-1.5">
+              <KeyRound size={12} /> 输入「确认注销」以继续
+            </label>
+            <Input
+              value={deletePhrase}
+              onChange={(e) => setDeletePhrase(e.target.value)}
+              placeholder="确认注销"
+              autoFocus
+            />
+          </div>
+
+          <div>
+            <label className="block text-[11px] text-[var(--paper-2)] mb-1.5">输入密码</label>
+            <Input
+              type="password"
+              value={deletePwd}
+              onChange={(e) => setDeletePwd(e.target.value)}
+              placeholder="••••••"
+            />
+          </div>
+
+          <div className="flex justify-end gap-2 pt-2">
+            <Button variant="ghost" onClick={() => setDeleteOpen(false)} disabled={deleting}>取消</Button>
+            <Button
+              onClick={handleDeleteAccount}
+              disabled={deleting || deletePhrase !== '确认注销' || deletePwd.length < 6}
+              className="bg-[#dc5a5a] text-white hover:bg-[#c84848] disabled:opacity-40"
+            >
+              {deleting ? '正在清除…' : '我已了解后果，永久注销'}
+            </Button>
           </div>
         </div>
       </Modal>

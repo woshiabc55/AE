@@ -201,6 +201,37 @@ async changePassword(userId, oldPassword, newPassword) {
 - 清 LS token 指针
 - 清缓存
 
+### 5.6 注销账号 `deleteAccount(userId, password)` ✅ v1.1 已上线
+
+永久级联删除账号与全部数据：
+
+```ts
+async deleteAccount(userId, password) {
+  // 1. 校验密码
+  const user = await db.get(STORES.users, userId);
+  const ok = await verifyPassword(password, user.passwordHash, user.passwordSalt);
+  if (!ok) throw '密码不正确，注销已取消';
+  // 2. 级联清理
+  await db.delete(STORES.users, userId);
+  await db.deleteByIndex(STORES.sessions, 'userId', userId);
+  await db.deleteByIndex(STORES.favorites, 'userId', userId);
+  await db.deleteByIndex(STORES.folders, 'userId', userId);
+  // 模板：按 authorId 索引
+  const userTpls = await db.getAllByIndex(STORES.templates, 'authorId', userId);
+  for (const t of userTpls) await db.delete(STORES.templates, t.id);
+  // 草稿 / 编辑器：key 前缀 = `${userId}:`
+  ...
+  // 3. 清登录态
+  await this.clearSession();
+}
+```
+
+UI 入口：「我的剧库」底部 **危险区**。双重确认：
+- 输入固定短语「确认注销」
+- 再次输入密码
+
+满足任一条件不满足时按钮置灰，不可误触。
+
 ## 六、攻击面与防御
 
 | 攻击 | 防御 |
@@ -240,8 +271,8 @@ async changePassword(userId, oldPassword, newPassword) {
 
 ## 十、未来规划
 
-### 10.1 v1.1
-- 注销账号（清空级联）
+### 10.1 v1.1 ✅
+- ✅ 注销账号（清空级联）— 已上线
 - 邮箱验证（OTP）—— 需引入服务端
 - 改密邮件通知
 
@@ -266,6 +297,7 @@ AuthService.register(email, password, name): Promise<User>;
 AuthService.loginAsDemo(): Promise<User>;
 AuthService.changePassword(userId, oldPw, newPw): Promise<void>;
 AuthService.logout(): Promise<void>;
+AuthService.deleteAccount(userId, password): Promise<void>;  // v1.1
 AuthService.listSessions(userId): Promise<Session[]>;
 ```
 

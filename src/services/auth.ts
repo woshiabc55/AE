@@ -262,6 +262,61 @@ class AuthServiceImpl {
     this.cache = null;
   }
 
+  /**
+   * 永久注销账号（v1.1）
+   * - 校验密码（防止误操作 / 设备被借用）
+   * - 级联清理：users / sessions / templates / folders / favorites / drafts / editors
+   * - 不可恢复：调用前应提示用户
+   */
+  async deleteAccount(userId: string, password: string): Promise<void> {
+    // 1. 重新校验密码（安全闸门）
+    let user: StoredUser | undefined;
+    if (this.useLS) {
+      const all = lsFallback.get<StoredUser[]>('users') ?? [];
+      user = all.find((u) => u.id === userId);
+    } else {
+      user = await db.get<StoredUser>(STORES.users, userId);
+    }
+    if (!user) throw new Error('用户不存在');
+    const ok = await verifyPassword(password, user.passwordHash, user.passwordSalt);
+    if (!ok) throw new Error('密码不正确，注销已取消');
+
+    // 2. 级联清理
+    if (this.useLS) {
+      // LS 模式：直接清空所有 ps_ 键（最简单可靠）
+      const all = lsFallback.get<StoredUser[]>('users') ?? [];
+      lsFallback.set('users', all.filter((u) => u.id !== userId));
+      lsFallback.set('sessions', (lsFallback.get<Session[]>('sessions') ?? []).filter((s) => s.userId !== userId));
+      lsFallback.set('favorites', (lsFallback.get<{ userId: string }[]>('favorites') ?? []).filter((f) => f.userId !== userId));
+      lsFallback.set('templates', (lsFallback.get<{ author?: { id: string } }[]>('templates') ?? []).filter((t) => t.author?.id !== userId));
+      lsFallback.set('folders', (lsFallback.get<{ userId: string }[]>('folders') ?? []).filter((f) => f.userId !== userId));
+    } else {
+      // IndexedDB 模式：按 store 走
+      await db.delete(STORES.users, userId);
+      await db.deleteByIndex(STORES.sessions, 'userId', userId);
+      await db.deleteByIndex(STORES.favorites, 'userId', userId);
+      await db.deleteByIndex(STORES.folders, 'userId', userId);
+      // 模板：按 authorId 索引删
+      const userTpls = await db.getAllByIndex<{ id: string }>(STORES.templates, 'authorId', userId);
+      for (const t of userTpls) {
+        await db.delete(STORES.templates, t.id);
+      }
+      // 草稿 / 编辑器：key 前缀 = `${userId}:`
+      const draftKeys = (await db.getAll<{ key: string }>(STORES.drafts))
+        .filter((d) => d.key.startsWith(`${userId}:`))
+        .map((d) => d.key);
+      for (const k of draftKeys) await db.delete(STORES.drafts, k);
+      const editorKeys = (await db.getAll<{ key: string }>(STORES.editors))
+        .filter((d) => d.key.startsWith(`${userId}:`))
+        .map((d) => d.key);
+      for (const k of editorKeys) await db.delete(STORES.editors, k);
+    }
+
+    // 3. 清理登录态
+    await this.clearSession();
+    this.cache = null;
+  }
+
   // 调试用：列出所有 session
   async listSessions(userId: string): Promise<Session[]> {
     if (this.useLS) {

@@ -24,6 +24,7 @@ interface AppState {
   register: (email: string, password: string, name: string) => Promise<void>;
   loginDemo: () => Promise<void>;
   logout: () => Promise<void>;
+  deleteAccount: (password: string) => Promise<void>;
 
   toggleFavorite: (id: string) => void;
 
@@ -69,6 +70,14 @@ export const useApp = create<AppState>((set, get) => ({
     await AuthService.logout();
     set({ user: null });
     get().pushToast({ kind: 'info', message: '已退出登录' });
+  },
+
+  deleteAccount: async (password) => {
+    const u = get().user;
+    if (!u) throw new Error('未登录');
+    await AuthService.deleteAccount(u.id, password);
+    set({ user: null, favorites: new Set() });
+    get().pushToast({ kind: 'info', message: '账号已注销，全部数据已清除' });
   },
 
   toggleFavorite: (id) => {
