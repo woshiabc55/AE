@@ -26,6 +26,8 @@
 | 08 | [使用视频脚本](./08-video-scripts.md) | 3 段使用教学视频分镜与旁白 |
 | 09 | [错误与边界状态](./09-error-states.md) | 异常态、空态、加载态、错误恢复 |
 | 10 | [可访问性指南](./10-accessibility.md) | 键盘导航、屏幕阅读器、色彩对比 |
+| 11 | [数据库设计](./11-database-design.md) | IndexedDB Object Store、索引、迁移、降级 |
+| 12 | [鉴权与安全设计](./12-auth-security.md) | 密码哈希、Session Token、攻击面与防御 |
 
 ## 设计原则（贯穿所有文档）
 

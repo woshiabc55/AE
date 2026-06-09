@@ -16,13 +16,14 @@ interface AppState {
   user: User | null;
   favorites: Set<string>;
   toasts: Toast[];
+  bootstrapped: boolean;
 
   // 动作
-  bootstrap: () => void;
+  bootstrap: () => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, name: string) => Promise<void>;
   loginDemo: () => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
 
   toggleFavorite: (id: string) => void;
 
@@ -34,15 +35,16 @@ export const useApp = create<AppState>((set, get) => ({
   user: null,
   favorites: new Set<string>(),
   toasts: [],
+  bootstrapped: false,
 
-  bootstrap: () => {
-    const u = AuthService.current();
+  bootstrap: async () => {
+    const u = await AuthService.bootstrap();
     const favs = new Set<string>();
     try {
-      const raw = localStorage.getItem('ps_favorites_v1');
-      if (raw) (JSON.parse(raw) as string[]).forEach((id) => favs.add(id));
+      const list = await TemplateService.listFavorites();
+      list.forEach((id) => favs.add(id));
     } catch { /* ignore */ }
-    set({ user: u, favorites: favs });
+    set({ user: u, favorites: favs, bootstrapped: true });
   },
 
   login: async (email, password) => {
@@ -63,8 +65,8 @@ export const useApp = create<AppState>((set, get) => ({
     get().pushToast({ kind: 'info', message: '已进入演示账号，云端模板已同步' });
   },
 
-  logout: () => {
-    AuthService.logout();
+  logout: async () => {
+    await AuthService.logout();
     set({ user: null });
     get().pushToast({ kind: 'info', message: '已退出登录' });
   },
