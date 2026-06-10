@@ -1,10 +1,24 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowDown, ArrowRight, Sparkles, Clapperboard, Layers, Atom, BookOpen, Pen } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowRight,
+  Sparkles,
+  Clapperboard,
+  Layers,
+  Atom,
+  BookOpen,
+  Pen,
+  Wand2,
+  TreePine,
+  Palette,
+  Zap,
+} from "lucide-react";
 import { useAppStore } from "@/store";
 import { TemplateCard } from "@/components/TemplateCard";
 import { FilmReel } from "@/components/FilmReel";
 import { BEAT_MODEL_LABEL, GENRE_LABEL } from "@/data/seed";
+import { SKILL_CATEGORY_LABEL } from "@/data/seed-skills";
 import { cn } from "@/utils/format";
 
 const GENRES = [
@@ -26,6 +40,8 @@ const BEATS = [
 
 export function Home() {
   const templates = useAppStore((s) => s.templates);
+  const skills = useAppStore((s) => s.skills);
+  const styles = useAppStore((s) => s.styles);
   const [genre, setGenre] = useState<string>("all");
   const [beat, setBeat] = useState<string>("all");
 
@@ -42,6 +58,14 @@ export function Home() {
   const featured = filtered.filter((t) => t.usageCount > 1000);
   const fresh = [...filtered].sort((a, b) => b.updatedAt - a.updatedAt);
   const popular = [...filtered].sort((a, b) => b.usageCount - a.usageCount);
+  const builtinSkills = useMemo(
+    () => skills.filter((s) => s.isBuiltin === 1),
+    [skills]
+  );
+  const builtinStyles = useMemo(
+    () => styles.filter((s) => s.isBuiltin === 1),
+    [styles]
+  );
 
   return (
     <div className="relative">
@@ -126,6 +150,105 @@ export function Home() {
 
         {/* 底部胶片条 */}
         <div className="absolute bottom-0 left-0 right-0 h-3 film-strip" />
+      </section>
+
+      {/* ====== v1 新模块三连击 ====== */}
+      <section className="border-b border-ink-700 bg-ink-800/30">
+        <div className="mx-auto max-w-[1480px] px-6 lg:px-10 py-16">
+          <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
+            <div>
+              <span className="scene-tag">REEL 01.5 · v1 NEW</span>
+              <h2 className="mt-3 font-display text-[44px] leading-[1.05] text-paper-50">
+                三个新工具，<span className="italic text-amber">让你的剧本长出根</span>
+              </h2>
+              <p className="mt-3 font-serif text-paper-200 max-w-2xl">
+                萤幕 v1 正式版新增 <span className="font-mono text-amber">Skill 库</span> ·
+                <span className="font-mono text-amber mx-1">结构树画布</span> ·
+                <span className="font-mono text-amber">Style 工作室</span>。
+                三个工具相互补全，构成"提示词零件化 → 视觉/风格一键布置"的完整闭环。
+              </p>
+            </div>
+            <span className="label-overline">
+              {builtinSkills.length} Skills · {builtinStyles.length} Styles 内置
+            </span>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-5">
+            <ModuleCard
+              to="/skills"
+              icon={Wand2}
+              tag="SKILLS"
+              title="剧本 Skill 库"
+              tagline="碎片化的剧本配方"
+              desc="在任意提示词中插入 @skill:key，渲染时自动展开。片段负责填实肌理，宏负责动态生长。"
+              stat={`${builtinSkills.length} 个内置技能`}
+              hint="覆盖开场 / 人物 / 场景 / 反转 / 收束 / 母题 等 11 个分类"
+              accent="amber"
+            />
+            <ModuleCard
+              to="/library"
+              icon={TreePine}
+              tag="CANVAS"
+              title="结构树画布"
+              tagline="节拍 = 树"
+              desc="进入任意剧本详情页 → 右上角「结构树画布」自动生成节拍层级，可拖拽重排、绑定字段、追加到提示词。"
+              stat="5 套节拍骨架"
+              hint="三幕 / 英雄之旅 / 救猫咪 / 短剧 / 互动"
+              accent="reel"
+            />
+            <ModuleCard
+              to="/style"
+              icon={Palette}
+              tag="STYLE"
+              title="Style 风格工作室"
+              tagline="一键布置视觉 + 剧本风格"
+              desc="选一个 Style（黑色电影 / 王家卫风 / 赛博朋克 / 现实主义），决定它要覆盖哪些剧本，一键注入系统指令 + 视觉主题。"
+              stat={`${builtinStyles.length} 套风格`}
+              hint="同时修改 CSS 变量与提示词"
+              accent="cyan"
+            />
+          </div>
+
+          {/* 内置 Skill 速览 */}
+          <div className="mt-10 panel p-5">
+            <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+              <div className="flex items-center gap-2">
+                <Zap size={12} className="text-amber" />
+                <span className="label-overline">内置 Skill 速览</span>
+              </div>
+              <Link to="/skills" className="text-[10px] font-mono text-amber hover:underline">
+                查看全部 →
+              </Link>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {builtinSkills.map((s) => (
+                <Link
+                  to="/skills"
+                  key={s.id}
+                  className="px-2.5 py-1.5 border border-ink-700 hover:border-amber transition group flex items-center gap-1.5"
+                  title={s.description}
+                >
+                  <span
+                    className={cn(
+                      "px-1 py-0.5 text-[9px] font-mono uppercase tracking-widest2 border",
+                      s.type === "macro"
+                        ? "border-violet-500 text-violet-300"
+                        : "border-amber text-amber"
+                    )}
+                  >
+                    {s.type === "macro" ? "宏" : "片"}
+                  </span>
+                  <span className="font-serif text-[12px] text-paper-100 group-hover:text-amber transition">
+                    {s.name}
+                  </span>
+                  <code className="font-mono text-[10px] text-ink-300">
+                    @{s.key}
+                  </code>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* 筛选 */}
@@ -300,7 +423,7 @@ export function Home() {
           现在，<span className="italic text-amber">开拍。</span>
         </h2>
         <p className="mt-6 font-serif italic text-[18px] text-paper-200 max-w-xl mx-auto">
-          8 套精选模板 · 0 元起步 · 数据全部留在你本地。
+          8 套精选模板 · 8 个剧本 Skill · 4 套风格预设 · 0 元起步 · 数据全部留在你本地。
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
           <Link to="/studio" className="reel-button">
@@ -312,5 +435,63 @@ export function Home() {
         </div>
       </section>
     </div>
+  );
+}
+
+function ModuleCard({
+  to,
+  icon: Icon,
+  tag,
+  title,
+  tagline,
+  desc,
+  stat,
+  hint,
+  accent,
+}: {
+  to: string;
+  icon: any;
+  tag: string;
+  title: string;
+  tagline: string;
+  desc: string;
+  stat: string;
+  hint: string;
+  accent: "amber" | "reel" | "cyan";
+}) {
+  const accentMap = {
+    amber: "border-amber/40 text-amber",
+    reel: "border-reel/40 text-reel",
+    cyan: "border-cyan-500/40 text-cyan-300",
+  };
+  return (
+    <Link
+      to={to}
+      className="panel panel-hover p-6 group flex flex-col gap-3 relative overflow-hidden"
+    >
+      <span
+        className={cn(
+          "absolute top-0 right-0 px-2 py-0.5 text-[9px] font-mono uppercase tracking-widest2 border-l border-b",
+          accentMap[accent]
+        )}
+      >
+        {tag}
+      </span>
+      <div className="flex items-center gap-2">
+        <Icon size={20} className="text-amber" />
+        <h3 className="font-display text-[26px] text-paper-50">{title}</h3>
+      </div>
+      <p className="font-display italic text-[15px] text-paper-300">{tagline}</p>
+      <p className="font-serif text-[13px] text-paper-200 leading-relaxed flex-1">
+        {desc}
+      </p>
+      <div className="mt-2 pt-3 border-t border-ink-700/60 flex items-center justify-between text-[11px] font-mono">
+        <span className="text-amber">{stat}</span>
+        <span className="text-ink-300 group-hover:text-paper-200 transition flex items-center gap-1">
+          {hint}
+          <ArrowRight size={10} className="opacity-0 group-hover:opacity-100 transition" />
+        </span>
+      </div>
+    </Link>
   );
 }

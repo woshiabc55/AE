@@ -12,11 +12,14 @@ import {
   History,
   Wand2,
   Eye,
+  Edit3,
 } from "lucide-react";
 import { useAppStore } from "@/store";
 import { FieldEditor } from "@/components/FieldEditor";
 import { PromptPreview } from "@/components/PromptPreview";
 import { LlmPanel } from "@/components/LlmPanel";
+import { SkillPicker } from "@/components/SkillPicker";
+import { Modal } from "@/components/ui/Modal";
 import { extractVars, renderPrompt, estimateTokens } from "@/utils/prompt";
 import { copyText, timeAgo } from "@/utils/format";
 import { BEAT_MODEL_LABEL, GENRE_LABEL } from "@/data/seed";
@@ -40,6 +43,8 @@ export function Studio() {
   const toggleFav = useAppStore((s) => s.toggleFavorite);
   const listVersions = useAppStore.getState().listVersions;
   const [versionCount, setVersionCount] = useState<number>(0);
+  const [skillPickerOpen, setSkillPickerOpen] = useState(false);
+  const [editPromptOpen, setEditPromptOpen] = useState(false);
 
   const seed = useMemo<TemplateRecord | null>(() => {
     if (params.id) {
@@ -406,6 +411,20 @@ export function Studio() {
                 <Copy size={11} /> 另存为
               </button>
               <button
+                onClick={() => setSkillPickerOpen(true)}
+                className="ghost-button text-[10px] py-1.5 px-3"
+                title="从 Skill 库挑选并插入到提示词"
+              >
+                <Wand2 size={11} /> 插入 Skill
+              </button>
+              <button
+                onClick={() => setEditPromptOpen(true)}
+                className="ghost-button text-[10px] py-1.5 px-3"
+                title="编辑原始提示词模板"
+              >
+                <Edit3 size={11} /> 编辑提示词
+              </button>
+              <button
                 onClick={async () => {
                   await copyText(rendered);
                   toast.success("提示词已复制");
@@ -481,7 +500,125 @@ export function Studio() {
           {vars.filter((v) => values[v] && values[v].trim()).length}/{vars.length} filled
         </span>
       </div>
+
+      {/* 提示词编辑器 Modal */}
+      <PromptEditor
+        open={editPromptOpen}
+        onClose={() => setEditPromptOpen(false)}
+        tpl={tpl}
+        onSave={(newTpl, newSys) => {
+          setTpl({ ...tpl, promptTpl: newTpl, systemPrompt: newSys });
+          setEditPromptOpen(false);
+          toast.success("提示词已更新", "记得 ⌘S 保存到草稿");
+        }}
+      />
+
+      {/* Skill 选择器 */}
+      <SkillPicker
+        open={skillPickerOpen}
+        onClose={() => setSkillPickerOpen(false)}
+        currentTpl={tpl.promptTpl}
+        onInsert={(newTpl, list) => {
+          setTpl({ ...tpl, promptTpl: newTpl });
+          toast.success(`已插入 ${list.length} 个 Skill`, list.map((s) => "@" + s.key).join(" "));
+        }}
+      />
     </div>
+  );
+}
+
+function PromptEditor({
+  open,
+  onClose,
+  tpl,
+  onSave,
+}: {
+  open: boolean;
+  onClose: () => void;
+  tpl: TemplateRecord;
+  onSave: (promptTpl: string, systemPrompt: string) => void;
+}) {
+  const [promptTpl, setPromptTpl] = useState(tpl.promptTpl);
+  const [systemPrompt, setSystemPrompt] = useState(tpl.systemPrompt ?? "");
+  const [pickerOpen, setPickerOpen] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setPromptTpl(tpl.promptTpl);
+      setSystemPrompt(tpl.systemPrompt ?? "");
+    }
+  }, [open, tpl.promptTpl, tpl.systemPrompt]);
+
+  return (
+    <>
+      <Modal
+        open={open}
+        onClose={onClose}
+        title="编辑提示词模板"
+        subtitle="支持 {{var}} 引用字段，以及 @skill:key 插入剧本技能。"
+        size="lg"
+        footer={
+          <>
+            <button onClick={onClose} className="ghost-button text-[10px] py-1.5 px-3">
+              取消
+            </button>
+            <button
+              onClick={() => onSave(promptTpl, systemPrompt)}
+              className="reel-button text-[10px] py-1.5 px-3"
+            >
+              <Save size={11} /> 保存到模板
+            </button>
+          </>
+        }
+      >
+        <div className="p-5 space-y-4 max-h-[60vh] overflow-y-auto">
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <label className="label-overline">User Prompt Template</label>
+              <button
+                onClick={() => setPickerOpen(true)}
+                className="ghost-button text-[10px] py-1 px-2"
+                title="从 Skill 库插入"
+              >
+                <Wand2 size={10} /> 插入 Skill
+              </button>
+            </div>
+            <textarea
+              value={promptTpl}
+              onChange={(e) => setPromptTpl(e.target.value)}
+              className="field-input font-mono text-[12px] leading-relaxed"
+              rows={14}
+            />
+            <div className="mt-1 flex items-center justify-between text-[10px] font-mono text-ink-300">
+              <span>≈ {estimateTokens(promptTpl)} tok</span>
+              <span>
+                {promptTpl.match(/\{\{\s*[\w-]+\s*\}\}/g)?.length ?? 0} vars ·{" "}
+                {promptTpl.match(/@skill:[\w-]+/g)?.length ?? 0} skills
+              </span>
+            </div>
+          </div>
+          <div>
+            <label className="label-overline">System Prompt</label>
+            <textarea
+              value={systemPrompt}
+              onChange={(e) => setSystemPrompt(e.target.value)}
+              className="field-input font-mono text-[12px] leading-relaxed mt-1"
+              rows={5}
+              placeholder="设定模型的角色与风格…"
+            />
+          </div>
+        </div>
+      </Modal>
+      <SkillPicker
+        open={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        currentTpl={promptTpl}
+        onInsert={(newTpl) => {
+          setPromptTpl(newTpl);
+          setPickerOpen(false);
+        }}
+      />
+    </>
   );
 }
 
