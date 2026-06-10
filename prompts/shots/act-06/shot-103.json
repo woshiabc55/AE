@@ -1,0 +1,43 @@
+{
+  "shot_id": "103",
+  "act": 6,
+  "order": 3,
+  "duration_sec": 1.0,
+  "title": "默契配合舞蹈",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "gugu",
+    "gaga"
+  ],
+  "location": "客厅",
+  "time_of_day": "night",
+  "image_prompt": {
+    "main": "Gugu and gaga passing toys hand-to-wing in dance-like rhythm, perfect couple sync, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Gugu and gaga passing toys hand-to-wing in dance-like rhythm, perfect couple sync, pan_left motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "pan_left",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "dream soft",
+    "sfx": [],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "默契",
+    "父母"
+  ],
+  "notes": "第6幕第3个镜头",
+  "linked_shots": [
+    "102",
+    "104"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

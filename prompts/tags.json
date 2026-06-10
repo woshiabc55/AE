@@ -1,0 +1,40 @@
+{
+  "scene_type": [
+    "establishing", "portrait", "action", "dialogue",
+    "montage", "dream", "ending"
+  ],
+  "time_of_day": [
+    "morning", "noon", "afternoon", "evening", "night", "dream"
+  ],
+  "location": [
+    "home", "bedroom", "kitchen", "living_room", "entrance",
+    "school", "classroom", "playground", "bakery", "creek",
+    "sakura_road", "bus", "market", "grass", "dream_world",
+    "cloud_forest", "space", "intersection"
+  ],
+  "mood": [
+    "warm", "funny", "soft", "uplifting", "tense", "sad"
+  ],
+  "character": [
+    "gugu", "gaga", "doro", "baizi", "feibi-jiubi"
+  ],
+  "tag_categories": {
+    "scene_type_desc": {
+      "establishing": "环境建立镜头",
+      "portrait": "角色特写",
+      "action": "动作镜头",
+      "dialogue": "对白镜头",
+      "montage": "蒙太奇/群像",
+      "dream": "梦境/想象",
+      "ending": "片尾"
+    },
+    "time_desc": {
+      "morning": "清晨",
+      "noon": "中午",
+      "afternoon": "下午",
+      "evening": "傍晚",
+      "night": "夜晚",
+      "dream": "梦境"
+    }
+  }
+}

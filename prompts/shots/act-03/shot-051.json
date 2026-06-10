@@ -1,0 +1,45 @@
+{
+  "shot_id": "051",
+  "act": 3,
+  "order": 11,
+  "duration_sec": 1.0,
+  "title": "doro抢最大饭团",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "doro",
+    "baizi"
+  ],
+  "location": "草地",
+  "time_of_day": "noon",
+  "image_prompt": {
+    "main": "Doro grabbing the largest rice ball, baizi gently tapping doro's head, classic sibling moment, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Doro grabbing the largest rice ball, baizi gently tapping doro's head, classic sibling moment, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "soft piano",
+    "sfx": [
+      "tap"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "doro",
+    "搞笑"
+  ],
+  "notes": "第3幕第11个镜头",
+  "linked_shots": [
+    "050",
+    "052"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

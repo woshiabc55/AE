@@ -1,0 +1,42 @@
+{
+  "shot_id": "117",
+  "act": 6,
+  "order": 17,
+  "duration_sec": 1.0,
+  "title": "doro喊飞到宇宙",
+  "scene_type": "dialogue",
+  "characters_in_shot": [
+    "doro"
+  ],
+  "location": "梦境",
+  "time_of_day": "dream",
+  "image_prompt": {
+    "main": "Doro shouting let's fly to the universe, arms spread wide, full of imagination, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Doro shouting let's fly to the universe, arms spread wide, full of imagination, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "epic gentle",
+    "sfx": [],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "doro——飞到宇宙去！",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "doro",
+    "梦想"
+  ],
+  "notes": "第6幕第17个镜头",
+  "linked_shots": [
+    "116",
+    "118"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

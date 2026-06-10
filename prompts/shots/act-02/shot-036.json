@@ -1,0 +1,44 @@
+{
+  "shot_id": "036",
+  "act": 2,
+  "order": 16,
+  "duration_sec": 1.0,
+  "title": "父母对视感慨",
+  "scene_type": "dialogue",
+  "characters_in_shot": [
+    "gugu",
+    "gaga"
+  ],
+  "location": "校车站路口",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Gugu and gaga looking at each other with nostalgic smile, time-flies feeling, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Gugu and gaga looking at each other with nostalgic smile, time-flies feeling, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "soft piano",
+    "sfx": [],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "时间过得真快。",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "对话",
+    "父母",
+    "感慨"
+  ],
+  "notes": "第2幕第16个镜头",
+  "linked_shots": [
+    "035",
+    "037"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

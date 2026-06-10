@@ -1,0 +1,45 @@
+{
+  "shot_id": "032",
+  "act": 2,
+  "order": 12,
+  "duration_sec": 1.0,
+  "title": "doro抢到前排",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "doro"
+  ],
+  "location": "校车内",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Doro rushing to front seat of school bus, arms in victory pose, claiming front row, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Doro rushing to front seat of school bus, arms in victory pose, claiming front row, tracking motion, fast speed, cinematic 24fps, 1.0 second",
+    "motion": "tracking",
+    "speed": "fast"
+  },
+  "audio": {
+    "bgm": "playful tune",
+    "sfx": [
+      "victory cheer"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "doro抢到前排啦！",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "doro",
+    "校车",
+    "抢座"
+  ],
+  "notes": "第2幕第12个镜头",
+  "linked_shots": [
+    "031",
+    "033"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

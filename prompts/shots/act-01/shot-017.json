@@ -1,0 +1,46 @@
+{
+  "shot_id": "017",
+  "act": 1,
+  "order": 17,
+  "duration_sec": 1.0,
+  "title": "doro偷草莓被拦",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "doro",
+    "gaga"
+  ],
+  "location": "餐桌",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Doro reaching sneaky wing toward strawberry, mama gaga tapping wing with wooden spoon, classic family scene, comedic, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Doro reaching sneaky wing toward strawberry, mama gaga tapping wing with wooden spoon, classic family scene, comedic, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "soft piano",
+    "sfx": [
+      "slap"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "搞笑",
+    "doro",
+    "嘎嘎"
+  ],
+  "notes": "第1幕第17个镜头",
+  "linked_shots": [
+    "016",
+    "018"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

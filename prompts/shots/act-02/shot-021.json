@@ -1,0 +1,45 @@
+{
+  "shot_id": "021",
+  "act": 2,
+  "order": 1,
+  "duration_sec": 1.0,
+  "title": "咕咕整理书包带",
+  "scene_type": "portrait",
+  "characters_in_shot": [
+    "gugu"
+  ],
+  "location": "玄关",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Papa gugu kneeling tying each child's schoolbag strap carefully, loving gaze, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Papa gugu kneeling tying each child's schoolbag strap carefully, loving gaze, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "playful tune",
+    "sfx": [
+      "zipper"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "咕咕",
+    "父爱",
+    "准备"
+  ],
+  "notes": "第2幕第1个镜头",
+  "linked_shots": [
+    "020",
+    "022"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

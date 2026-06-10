@@ -1,0 +1,43 @@
+{
+  "shot_id": "002",
+  "act": 1,
+  "order": 2,
+  "duration_sec": 1.0,
+  "title": "推近蘑菇形小屋",
+  "scene_type": "establishing",
+  "characters_in_shot": [],
+  "location": "蘑菇形小屋外观",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Push-in to a mushroom-shaped cozy cottage with a sleeping orange bird on the roof, morning dew, fairy tale style, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Push-in to a mushroom-shaped cozy cottage with a sleeping orange bird on the roof, morning dew, fairy tale style, camera_dolly_in motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "camera_dolly_in",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "soft piano arpeggio",
+    "sfx": [
+      "wind chime"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "推近",
+    "建筑",
+    "清晨"
+  ],
+  "notes": "第1幕第2个镜头",
+  "linked_shots": [
+    "001",
+    "003"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

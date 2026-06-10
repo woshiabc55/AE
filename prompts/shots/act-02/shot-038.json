@@ -1,0 +1,42 @@
+{
+  "shot_id": "038",
+  "act": 2,
+  "order": 18,
+  "duration_sec": 1.0,
+  "title": "菜市场全景",
+  "scene_type": "establishing",
+  "characters_in_shot": [],
+  "location": "菜市场",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Colorful vegetable and fruit market with piles of fresh produce, morning bustle, family market vibe, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Colorful vegetable and fruit market with piles of fresh produce, morning bustle, family market vibe, pan_right motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "pan_right",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "folk tune",
+    "sfx": [
+      "market chatter"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "菜市场",
+    "全景"
+  ],
+  "notes": "第2幕第18个镜头",
+  "linked_shots": [
+    "037",
+    "039"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

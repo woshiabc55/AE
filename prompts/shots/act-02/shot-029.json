@@ -1,0 +1,45 @@
+{
+  "shot_id": "029",
+  "act": 2,
+  "order": 9,
+  "duration_sec": 1.0,
+  "title": "啾比拍手笑",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "feibi-jiubi"
+  ],
+  "location": "小溪边",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Feibi-jiubi clapping tiny wings laughing at frog jumping, baby joy expression, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Feibi-jiubi clapping tiny wings laughing at frog jumping, baby joy expression, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "playful tune",
+    "sfx": [
+      "baby clap",
+      "giggle"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "啾比！啾比！",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "啾比",
+    "可爱"
+  ],
+  "notes": "第2幕第9个镜头",
+  "linked_shots": [
+    "028",
+    "030"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

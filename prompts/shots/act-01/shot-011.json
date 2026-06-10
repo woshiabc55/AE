@@ -1,0 +1,43 @@
+{
+  "shot_id": "011",
+  "act": 1,
+  "order": 11,
+  "duration_sec": 1.0,
+  "title": "嘎嘎喊孩子们吃早餐",
+  "scene_type": "dialogue",
+  "characters_in_shot": [
+    "gaga"
+  ],
+  "location": "楼梯口",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Mama gaga bird standing at staircase calling children for breakfast, warm light pouring behind her, gentle smile, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Mama gaga bird standing at staircase calling children for breakfast, warm light pouring behind her, gentle smile, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "cheerful strum",
+    "sfx": [],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "孩子们，下来吃早餐啦～",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "对白",
+    "嘎嘎",
+    "召唤"
+  ],
+  "notes": "第1幕第11个镜头",
+  "linked_shots": [
+    "010",
+    "012"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

@@ -1,0 +1,44 @@
+{
+  "shot_id": "063",
+  "act": 4,
+  "order": 3,
+  "duration_sec": 1.0,
+  "title": "doro自信满满",
+  "scene_type": "portrait",
+  "characters_in_shot": [
+    "doro"
+  ],
+  "location": "客厅",
+  "time_of_day": "evening",
+  "image_prompt": {
+    "main": "Doro confident jumping with chest puffed, claiming he is the best at games, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Doro confident jumping with chest puffed, claiming he is the best at games, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "playful tune",
+    "sfx": [
+      "boast"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "doro最会玩游戏！",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "doro",
+    "自信"
+  ],
+  "notes": "第4幕第3个镜头",
+  "linked_shots": [
+    "062",
+    "064"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

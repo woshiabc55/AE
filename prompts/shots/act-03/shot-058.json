@@ -1,0 +1,47 @@
+{
+  "shot_id": "058",
+  "act": 3,
+  "order": 18,
+  "duration_sec": 1.0,
+  "title": "咕咕张开翅膀抱孩子",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "gugu",
+    "doro",
+    "baizi",
+    "feibi-jiubi"
+  ],
+  "location": "校门口",
+  "time_of_day": "afternoon",
+  "image_prompt": {
+    "main": "Papa gugu spreading big wings hugging all three children at once, warm family huddle, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Papa gugu spreading big wings hugging all three children at once, warm family huddle, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "emotional piano",
+    "sfx": [
+      "hug"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "拥抱",
+    "父爱"
+  ],
+  "notes": "第3幕第18个镜头",
+  "linked_shots": [
+    "057",
+    "059"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

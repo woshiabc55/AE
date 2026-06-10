@@ -1,0 +1,43 @@
+{
+  "shot_id": "083",
+  "act": 5,
+  "order": 3,
+  "duration_sec": 1.0,
+  "title": "爷爷教小咕咕飞翔",
+  "scene_type": "dream",
+  "characters_in_shot": [],
+  "location": "梦境·云朵森林",
+  "time_of_day": "dream",
+  "image_prompt": {
+    "main": "Grandpa gugu with long beard teaching little gugu to fly, wings spread, encouraging smile, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Grandpa gugu with long beard teaching little gugu to fly, wings spread, encouraging smile, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "dream orchestra",
+    "sfx": [
+      "wind whoosh"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "祖孙",
+    "教学",
+    "梦境"
+  ],
+  "notes": "第5幕第3个镜头",
+  "linked_shots": [
+    "082",
+    "084"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

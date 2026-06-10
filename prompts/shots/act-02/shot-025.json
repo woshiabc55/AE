@@ -1,0 +1,45 @@
+{
+  "shot_id": "025",
+  "act": 2,
+  "order": 5,
+  "duration_sec": 1.0,
+  "title": "doro盯奶油卷",
+  "scene_type": "portrait",
+  "characters_in_shot": [
+    "doro"
+  ],
+  "location": "面包店橱窗",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Doro staring at cream roll in bakery window with sparkling hungry eyes, mouth watering, comedic still, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Doro staring at cream roll in bakery window with sparkling hungry eyes, mouth watering, comedic still, zoom_in motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "zoom_in",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "playful tune",
+    "sfx": [
+      "stomach growl"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "doro",
+    "美食",
+    "搞笑"
+  ],
+  "notes": "第2幕第5个镜头",
+  "linked_shots": [
+    "024",
+    "026"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

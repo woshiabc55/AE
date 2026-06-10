@@ -1,0 +1,44 @@
+{
+  "shot_id": "046",
+  "act": 3,
+  "order": 6,
+  "duration_sec": 1.0,
+  "title": "doro和小狐狸赛跑",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "doro"
+  ],
+  "location": "操场",
+  "time_of_day": "noon",
+  "image_prompt": {
+    "main": "Doro racing with fox classmate around the playground, three laps, energetic motion lines, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Doro racing with fox classmate around the playground, three laps, energetic motion lines, tracking motion, fast speed, cinematic 24fps, 1.0 second",
+    "motion": "tracking",
+    "speed": "fast"
+  },
+  "audio": {
+    "bgm": "energetic beat",
+    "sfx": [
+      "running footsteps"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "doro",
+    "运动"
+  ],
+  "notes": "第3幕第6个镜头",
+  "linked_shots": [
+    "045",
+    "047"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

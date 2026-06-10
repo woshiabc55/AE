@@ -1,0 +1,44 @@
+{
+  "shot_id": "022",
+  "act": 2,
+  "order": 2,
+  "duration_sec": 1.0,
+  "title": "嘎嘎别上橘子挂饰",
+  "scene_type": "dialogue",
+  "characters_in_shot": [
+    "gaga",
+    "doro"
+  ],
+  "location": "玄关",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Mama gaga pinning a tiny orange charm on doro's schoolbag, doro looking down with curious eyes, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Mama gaga pinning a tiny orange charm on doro's schoolbag, doro looking down with curious eyes, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "playful tune",
+    "sfx": [],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "路上小心。",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "嘎嘎",
+    "doro",
+    "挂饰"
+  ],
+  "notes": "第2幕第2个镜头",
+  "linked_shots": [
+    "021",
+    "023"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

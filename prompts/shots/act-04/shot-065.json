@@ -1,0 +1,44 @@
+{
+  "shot_id": "065",
+  "act": 4,
+  "order": 5,
+  "duration_sec": 1.0,
+  "title": "白子画doro",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "baizi"
+  ],
+  "location": "客厅",
+  "time_of_day": "evening",
+  "image_prompt": {
+    "main": "Baizi drawing a round yellow bird on whiteboard, everyone immediately guesses doro, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Baizi drawing a round yellow bird on whiteboard, everyone immediately guesses doro, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "playful tune",
+    "sfx": [
+      "chalk scribble"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "是doro！",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "白子",
+    "画画"
+  ],
+  "notes": "第4幕第5个镜头",
+  "linked_shots": [
+    "064",
+    "066"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

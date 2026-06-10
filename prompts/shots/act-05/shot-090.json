@@ -1,0 +1,41 @@
+{
+  "shot_id": "090",
+  "act": 5,
+  "order": 10,
+  "duration_sec": 1.0,
+  "title": "祖先的约定",
+  "scene_type": "dream",
+  "characters_in_shot": [],
+  "location": "梦境·星空下",
+  "time_of_day": "dream",
+  "image_prompt": {
+    "main": "Ancestors making promise under starry sky, raising wings together, family oath moment, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Ancestors making promise under starry sky, raising wings together, family oath moment, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "emotional strings",
+    "sfx": [],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "无论走多远，都要一起回家吃饭。",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "约定",
+    "家族",
+    "梦境"
+  ],
+  "notes": "第5幕第10个镜头",
+  "linked_shots": [
+    "089",
+    "091"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

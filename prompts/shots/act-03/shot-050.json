@@ -1,0 +1,42 @@
+{
+  "shot_id": "050",
+  "act": 3,
+  "order": 10,
+  "duration_sec": 1.0,
+  "title": "便当盒打开",
+  "scene_type": "montage",
+  "characters_in_shot": [],
+  "location": "草地",
+  "time_of_day": "noon",
+  "image_prompt": {
+    "main": "Lunch box opening reveal: smiley rice balls, heart-shaped fried egg, food-art close-up, cute bento, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Lunch box opening reveal: smiley rice balls, heart-shaped fried egg, food-art close-up, cute bento, zoom_in motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "zoom_in",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "soft piano",
+    "sfx": [
+      "box open"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "美食",
+    "便当"
+  ],
+  "notes": "第3幕第10个镜头",
+  "linked_shots": [
+    "049",
+    "051"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

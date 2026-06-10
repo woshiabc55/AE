@@ -1,0 +1,44 @@
+{
+  "shot_id": "040",
+  "act": 2,
+  "order": 20,
+  "duration_sec": 1.0,
+  "title": "嘎嘎拎战利品",
+  "scene_type": "portrait",
+  "characters_in_shot": [
+    "gaga"
+  ],
+  "location": "菜市场出口",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Mama gaga holding shopping bags with three small fish and a bag of cherries, triumphant smile, ready to go home, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Mama gaga holding shopping bags with three small fish and a bag of cherries, triumphant smile, ready to go home, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "folk tune",
+    "sfx": [
+      "bag rustle"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "嘎嘎",
+    "收获"
+  ],
+  "notes": "第2幕第20个镜头",
+  "linked_shots": [
+    "039",
+    "041"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

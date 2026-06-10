@@ -1,0 +1,46 @@
+{
+  "shot_id": "034",
+  "act": 2,
+  "order": 14,
+  "duration_sec": 1.0,
+  "title": "校车启动合唱",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "doro",
+    "baizi",
+    "feibi-jiubi"
+  ],
+  "location": "校车内",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Children singing together in moving school bus, view from window shows scenery passing, joyful choir moment, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Children singing together in moving school bus, view from window shows scenery passing, joyful choir moment, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "children choir",
+    "sfx": [
+      "children singing"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "校车",
+    "合唱"
+  ],
+  "notes": "第2幕第14个镜头",
+  "linked_shots": [
+    "033",
+    "035"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

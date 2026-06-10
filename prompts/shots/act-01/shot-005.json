@@ -1,0 +1,45 @@
+{
+  "shot_id": "005",
+  "act": 1,
+  "order": 5,
+  "duration_sec": 1.0,
+  "title": "嘎嘎妈妈煎蛋",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "gaga"
+  ],
+  "location": "厨房",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Mama gaga bird in apron frying eggs in a pan, eggs sizzling with cute gaga sound effect bubbles, warm kitchen, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Mama gaga bird in apron frying eggs in a pan, eggs sizzling with cute gaga sound effect bubbles, warm kitchen, pan_right motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "pan_right",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "ukulele strum",
+    "sfx": [
+      "sizzling eggs"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "厨房",
+    "嘎嘎",
+    "煎蛋"
+  ],
+  "notes": "第1幕第5个镜头",
+  "linked_shots": [
+    "004",
+    "006"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

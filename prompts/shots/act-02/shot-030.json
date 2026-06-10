@@ -1,0 +1,44 @@
+{
+  "shot_id": "030",
+  "act": 2,
+  "order": 10,
+  "duration_sec": 1.0,
+  "title": "云朵校车驶来",
+  "scene_type": "establishing",
+  "characters_in_shot": [],
+  "location": "校车站",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Cloud-shaped vintage school bus driving in with jingling bell, dreamy sky background, fairy-tale transport, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Cloud-shaped vintage school bus driving in with jingling bell, dreamy sky background, fairy-tale transport, pan_left motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "pan_left",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "playful tune",
+    "sfx": [
+      "bell jingle",
+      "engine"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "校车",
+    "云朵",
+    "建立"
+  ],
+  "notes": "第2幕第10个镜头",
+  "linked_shots": [
+    "029",
+    "031"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

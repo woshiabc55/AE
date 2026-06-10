@@ -1,0 +1,43 @@
+{
+  "shot_id": "084",
+  "act": 5,
+  "order": 4,
+  "duration_sec": 1.0,
+  "title": "小咕咕撞进棉花糖云",
+  "scene_type": "dream",
+  "characters_in_shot": [],
+  "location": "梦境·云朵森林",
+  "time_of_day": "dream",
+  "image_prompt": {
+    "main": "Little gugu flying for first time, crashing into cotton-candy cloud with a poof, funny landing pose, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Little gugu flying for first time, crashing into cotton-candy cloud with a poof, funny landing pose, tracking motion, fast speed, cinematic 24fps, 1.0 second",
+    "motion": "tracking",
+    "speed": "fast"
+  },
+  "audio": {
+    "bgm": "dream orchestra",
+    "sfx": [
+      "poof"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "搞笑",
+    "飞行",
+    "梦境"
+  ],
+  "notes": "第5幕第4个镜头",
+  "linked_shots": [
+    "083",
+    "085"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

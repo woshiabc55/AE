@@ -1,0 +1,44 @@
+{
+  "shot_id": "098",
+  "act": 5,
+  "order": 18,
+  "duration_sec": 1.0,
+  "title": "doro梦中笑",
+  "scene_type": "dream",
+  "characters_in_shot": [
+    "doro"
+  ],
+  "location": "梦境",
+  "time_of_day": "dream",
+  "image_prompt": {
+    "main": "Doro laughing in sleep, dreaming about strawberry cake, sleep-smile close-up, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Doro laughing in sleep, dreaming about strawberry cake, sleep-smile close-up, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "dream soft",
+    "sfx": [
+      "sleep laugh"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "嘿嘿……草莓蛋糕……",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "doro",
+    "梦"
+  ],
+  "notes": "第5幕第18个镜头",
+  "linked_shots": [
+    "097",
+    "099"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

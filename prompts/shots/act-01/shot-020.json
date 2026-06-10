@@ -1,0 +1,49 @@
+{
+  "shot_id": "020",
+  "act": 1,
+  "order": 20,
+  "duration_sec": 1.0,
+  "title": "全家合影开动",
+  "scene_type": "dialogue",
+  "characters_in_shot": [
+    "gugu",
+    "gaga",
+    "doro",
+    "baizi",
+    "feibi-jiubi"
+  ],
+  "location": "餐桌",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Whole family of five birds at dining table raising wings together, big smiles, photo freeze moment, family togetherness, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Whole family of five birds at dining table raising wings together, big smiles, photo freeze moment, family togetherness, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "cheerful finish",
+    "sfx": [
+      "camera shutter"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "谢谢招待——开动啦！",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "合影",
+    "全家",
+    "开动"
+  ],
+  "notes": "第1幕第20个镜头",
+  "linked_shots": [
+    "019",
+    "021"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

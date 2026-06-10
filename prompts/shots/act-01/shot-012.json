@@ -1,0 +1,45 @@
+{
+  "shot_id": "012",
+  "act": 1,
+  "order": 12,
+  "duration_sec": 1.0,
+  "title": "doro蹦跳下楼",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "doro"
+  ],
+  "location": "楼梯",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Round doro bouncing down wooden staircase, each step with a doro sound effect, energetic and joyful, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Round doro bouncing down wooden staircase, each step with a doro sound effect, energetic and joyful, tracking_down motion, fast speed, cinematic 24fps, 1.0 second",
+    "motion": "tracking_down",
+    "speed": "fast"
+  },
+  "audio": {
+    "bgm": "cheerful strum",
+    "sfx": [
+      "boing boing"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "doro！doro！",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "动作",
+    "doro",
+    "楼梯"
+  ],
+  "notes": "第1幕第12个镜头",
+  "linked_shots": [
+    "011",
+    "013"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

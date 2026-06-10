@@ -1,0 +1,47 @@
+{
+  "shot_id": "074",
+  "act": 4,
+  "order": 14,
+  "duration_sec": 1.0,
+  "title": "嘎嘎亲亲妈妈格",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "gaga",
+    "doro",
+    "baizi",
+    "feibi-jiubi"
+  ],
+  "location": "客厅",
+  "time_of_day": "evening",
+  "image_prompt": {
+    "main": "Mama gaga landing on kiss-mama square, kissing each child's forehead one by one, group hug moment, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Mama gaga landing on kiss-mama square, kissing each child's forehead one by one, group hug moment, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "soft piano",
+    "sfx": [
+      "kiss sound"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "母爱",
+    "温馨"
+  ],
+  "notes": "第4幕第14个镜头",
+  "linked_shots": [
+    "073",
+    "075"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

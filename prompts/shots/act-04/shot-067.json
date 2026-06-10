@@ -1,0 +1,44 @@
+{
+  "shot_id": "067",
+  "act": 4,
+  "order": 7,
+  "duration_sec": 1.0,
+  "title": "啾比意外答对",
+  "scene_type": "dialogue",
+  "characters_in_shot": [
+    "feibi-jiubi"
+  ],
+  "location": "客厅",
+  "time_of_day": "evening",
+  "image_prompt": {
+    "main": "Feibi-jiubi answering cake in baby voice, accidentally correct, everyone surprised and happy, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Feibi-jiubi answering cake in baby voice, accidentally correct, everyone surprised and happy, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "playful tune",
+    "sfx": [
+      "correct bell"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "是……蛋糕？",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "啾比",
+    "可爱"
+  ],
+  "notes": "第4幕第7个镜头",
+  "linked_shots": [
+    "066",
+    "068"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

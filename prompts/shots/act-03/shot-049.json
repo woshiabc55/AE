@@ -1,0 +1,48 @@
+{
+  "shot_id": "049",
+  "act": 3,
+  "order": 9,
+  "duration_sec": 1.0,
+  "title": "草地野餐",
+  "scene_type": "establishing",
+  "characters_in_shot": [
+    "gaga",
+    "doro",
+    "baizi",
+    "feibi-jiubi"
+  ],
+  "location": "校园草地",
+  "time_of_day": "noon",
+  "image_prompt": {
+    "main": "Family picnic on school grass, checkered cloth, five birds sitting in circle, lunch boxes open, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Family picnic on school grass, checkered cloth, five birds sitting in circle, lunch boxes open, pan_right motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "pan_right",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "soft piano",
+    "sfx": [
+      "wind",
+      "birds"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "野餐",
+    "校园"
+  ],
+  "notes": "第3幕第9个镜头",
+  "linked_shots": [
+    "048",
+    "050"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

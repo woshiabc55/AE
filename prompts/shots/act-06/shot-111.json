@@ -1,0 +1,42 @@
+{
+  "shot_id": "111",
+  "act": 6,
+  "order": 11,
+  "duration_sec": 1.0,
+  "title": "萤火虫停相册",
+  "scene_type": "portrait",
+  "characters_in_shot": [],
+  "location": "卧室",
+  "time_of_day": "night",
+  "image_prompt": {
+    "main": "A firefly landing on family album cover, glowing like a small star on the book, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "A firefly landing on family album cover, glowing like a small star on the book, zoom_in motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "zoom_in",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "magical chime",
+    "sfx": [
+      "wing flutter"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "相册",
+    "萤火虫"
+  ],
+  "notes": "第6幕第11个镜头",
+  "linked_shots": [
+    "110",
+    "112"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

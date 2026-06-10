@@ -1,0 +1,46 @@
+{
+  "shot_id": "007",
+  "act": 1,
+  "order": 7,
+  "duration_sec": 1.0,
+  "title": "doro滚下床",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "doro"
+  ],
+  "location": "doro卧室",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Round doro bird rolling off bed with a poof sound, landing in pile of plush toys, surprised comic face, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Round doro bird rolling off bed with a poof sound, landing in pile of plush toys, surprised comic face, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "ukulele strum",
+    "sfx": [
+      "poof",
+      "toy squeak"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "动作",
+    "doro",
+    "搞笑"
+  ],
+  "notes": "第1幕第7个镜头",
+  "linked_shots": [
+    "006",
+    "008"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

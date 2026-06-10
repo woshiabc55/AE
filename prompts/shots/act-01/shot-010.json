@@ -1,0 +1,44 @@
+{
+  "shot_id": "010",
+  "act": 1,
+  "order": 10,
+  "duration_sec": 1.0,
+  "title": "啾比奶声叫妈妈",
+  "scene_type": "dialogue",
+  "characters_in_shot": [
+    "feibi-jiubi",
+    "gaga"
+  ],
+  "location": "婴儿房",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Feibi-jiubi looking up with sparkling eyes calling mama, gaga leaning in from doorway with wooden spoon, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Feibi-jiubi looking up with sparkling eyes calling mama, gaga leaning in from doorway with wooden spoon, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "music box melody",
+    "sfx": [],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "啾……啾比？",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "对白",
+    "啾比",
+    "嘎嘎"
+  ],
+  "notes": "第1幕第10个镜头",
+  "linked_shots": [
+    "009",
+    "011"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

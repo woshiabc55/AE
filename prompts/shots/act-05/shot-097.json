@@ -1,0 +1,46 @@
+{
+  "shot_id": "097",
+  "act": 5,
+  "order": 17,
+  "duration_sec": 1.0,
+  "title": "三张小床半圆",
+  "scene_type": "portrait",
+  "characters_in_shot": [
+    "doro",
+    "baizi",
+    "feibi-jiubi"
+  ],
+  "location": "卧室",
+  "time_of_day": "night",
+  "image_prompt": {
+    "main": "Three small beds arranged in semicircle, family album in center, children peacefully sleeping, soft night light glow, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Three small beds arranged in semicircle, family album in center, children peacefully sleeping, soft night light glow, pan_right motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "pan_right",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "silence",
+    "sfx": [
+      "breathing"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "睡眠",
+    "孩子"
+  ],
+  "notes": "第5幕第17个镜头",
+  "linked_shots": [
+    "096",
+    "098"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

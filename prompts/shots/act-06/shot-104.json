@@ -1,0 +1,43 @@
+{
+  "shot_id": "104",
+  "act": 6,
+  "order": 4,
+  "duration_sec": 1.0,
+  "title": "嘎嘎看合照",
+  "scene_type": "portrait",
+  "characters_in_shot": [
+    "gaga"
+  ],
+  "location": "客厅",
+  "time_of_day": "night",
+  "image_prompt": {
+    "main": "Mama gaga stops to look at today's family photo for a long time, emotional mother moment, gentle smile, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Mama gaga stops to look at today's family photo for a long time, emotional mother moment, gentle smile, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "emotional piano",
+    "sfx": [],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "嘎嘎",
+    "照片",
+    "感慨"
+  ],
+  "notes": "第6幕第4个镜头",
+  "linked_shots": [
+    "103",
+    "105"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

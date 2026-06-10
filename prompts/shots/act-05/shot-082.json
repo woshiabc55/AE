@@ -1,0 +1,43 @@
+{
+  "shot_id": "082",
+  "act": 5,
+  "order": 2,
+  "duration_sec": 1.0,
+  "title": "云朵森林想象",
+  "scene_type": "dream",
+  "characters_in_shot": [],
+  "location": "梦境·云朵森林",
+  "time_of_day": "dream",
+  "image_prompt": {
+    "main": "Imagination sequence: cloud forest in the sky, floating trees, soft white clouds as ground, fairy-tale wonderland, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Imagination sequence: cloud forest in the sky, floating trees, soft white clouds as ground, fairy-tale wonderland, pan_right motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "pan_right",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "dream orchestra",
+    "sfx": [
+      "magical chime"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "想象",
+    "云朵",
+    "梦境"
+  ],
+  "notes": "第5幕第2个镜头",
+  "linked_shots": [
+    "081",
+    "083"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

@@ -1,0 +1,46 @@
+{
+  "shot_id": "023",
+  "act": 2,
+  "order": 3,
+  "duration_sec": 1.0,
+  "title": "白子啾比戴帽子围巾",
+  "scene_type": "portrait",
+  "characters_in_shot": [
+    "baizi",
+    "feibi-jiubi"
+  ],
+  "location": "玄关",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Baizi putting on white beret, feibi-jiubi wearing tiny blue scarf, adorable kids dressing up, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Baizi putting on white beret, feibi-jiubi wearing tiny blue scarf, adorable kids dressing up, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "playful tune",
+    "sfx": [
+      "cloth rustle"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "白子",
+    "啾比",
+    "穿搭"
+  ],
+  "notes": "第2幕第3个镜头",
+  "linked_shots": [
+    "022",
+    "024"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

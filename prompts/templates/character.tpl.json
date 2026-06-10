@@ -1,0 +1,15 @@
+{
+  "template_id": "character.tpl",
+  "version": "1.0",
+  "description": "角色卡提示词模板",
+  "schema": {
+    "id": "string, 角色唯一ID",
+    "name": "string, 角色中文名",
+    "role": "string, 家庭角色",
+    "species": "string, 物种",
+    "traits": "array of string, 性格特征",
+    "voice_tone": "string, 声线",
+    "catchphrase": "string, 口头禅",
+    "color_palette": "array of hex color"
+  }
+}

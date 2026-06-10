@@ -1,0 +1,44 @@
+{
+  "shot_id": "085",
+  "act": 5,
+  "order": 5,
+  "duration_sec": 1.0,
+  "title": "doro笑出声",
+  "scene_type": "portrait",
+  "characters_in_shot": [
+    "doro"
+  ],
+  "location": "客厅",
+  "time_of_day": "night",
+  "image_prompt": {
+    "main": "Doro laughing out loud at story, throwing head back, big belly laugh, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Doro laughing out loud at story, throwing head back, big belly laugh, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "music box",
+    "sfx": [
+      "big laugh"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "doro也撞过！",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "doro",
+    "笑"
+  ],
+  "notes": "第5幕第5个镜头",
+  "linked_shots": [
+    "084",
+    "086"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

@@ -1,0 +1,44 @@
+{
+  "shot_id": "066",
+  "act": 4,
+  "order": 6,
+  "duration_sec": 1.0,
+  "title": "doro画神秘物体",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "doro"
+  ],
+  "location": "客厅",
+  "time_of_day": "evening",
+  "image_prompt": {
+    "main": "Doro drawing a mysterious blob on whiteboard, family tilting heads in confusion, comedic guessing moment, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Doro drawing a mysterious blob on whiteboard, family tilting heads in confusion, comedic guessing moment, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "playful tune",
+    "sfx": [
+      "chalk scribble"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "doro",
+    "搞笑"
+  ],
+  "notes": "第4幕第6个镜头",
+  "linked_shots": [
+    "065",
+    "067"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

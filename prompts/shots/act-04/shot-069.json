@@ -1,0 +1,40 @@
+{
+  "shot_id": "069",
+  "act": 4,
+  "order": 9,
+  "duration_sec": 1.0,
+  "title": "家庭大冒险棋",
+  "scene_type": "establishing",
+  "characters_in_shot": [],
+  "location": "客厅地板",
+  "time_of_day": "evening",
+  "image_prompt": {
+    "main": "Giant life-size board game spread on living room floor, colored squares visible, dice in center, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Giant life-size board game spread on living room floor, colored squares visible, dice in center, pan_right motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "pan_right",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "playful tune",
+    "sfx": [],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "棋盘",
+    "游戏"
+  ],
+  "notes": "第4幕第9个镜头",
+  "linked_shots": [
+    "068",
+    "070"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

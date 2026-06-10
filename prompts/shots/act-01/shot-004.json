@@ -1,0 +1,45 @@
+{
+  "shot_id": "004",
+  "act": 1,
+  "order": 4,
+  "duration_sec": 1.0,
+  "title": "咕咕按掉闹钟微笑",
+  "scene_type": "portrait",
+  "characters_in_shot": [
+    "gugu"
+  ],
+  "location": "主卧",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Papa gugu bird pressing alarm with wing, smiling with sleepy eyes, glasses slightly askew, soft morning light, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Papa gugu bird pressing alarm with wing, smiling with sleepy eyes, glasses slightly askew, soft morning light, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "soft piano arpeggio",
+    "sfx": [
+      "alarm click"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "特写",
+    "咕咕",
+    "表情"
+  ],
+  "notes": "第1幕第4个镜头",
+  "linked_shots": [
+    "003",
+    "005"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

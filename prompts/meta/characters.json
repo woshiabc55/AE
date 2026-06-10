@@ -1,0 +1,55 @@
+{
+  "characters": [
+    {
+      "id": "gugu",
+      "name": "咕咕",
+      "role": "爸爸",
+      "species": "橘黄羽毛鸟",
+      "traits": ["温和", "戴眼镜", "慈祥", "爱看书"],
+      "voice_tone": "低沉温柔",
+      "catchphrase": "咕咕咕～",
+      "color_palette": ["#F5A623", "#FFFFFF", "#8B4513"]
+    },
+    {
+      "id": "gaga",
+      "name": "嘎嘎",
+      "role": "妈妈",
+      "species": "奶白羽毛鸟",
+      "traits": ["细心", "戴围裙", "善厨", "温柔"],
+      "voice_tone": "温柔甜美",
+      "catchphrase": "嘎嘎～吃饭啦",
+      "color_palette": ["#FFF8E7", "#FFC0CB", "#FFE4B5"]
+    },
+    {
+      "id": "doro",
+      "name": "doro",
+      "role": "哥哥",
+      "species": "圆滚滚黄色小鸟",
+      "traits": ["爱捣蛋", "活泼", "贪吃", "勇敢"],
+      "voice_tone": "元气童声",
+      "catchphrase": "doro!",
+      "color_palette": ["#FFD93D", "#FFB800", "#FFA500"]
+    },
+    {
+      "id": "baizi",
+      "name": "白子",
+      "role": "姐姐",
+      "species": "白色小精灵",
+      "traits": ["文静", "乖巧", "爱整洁", "善解人意"],
+      "voice_tone": "清澈少女音",
+      "catchphrase": "嗯……",
+      "color_palette": ["#FFFFFF", "#E8F4F8", "#F0F8FF"]
+    },
+    {
+      "id": "feibi-jiubi",
+      "name": "菲比啾比",
+      "role": "弟弟",
+      "species": "紫蓝色小鸟",
+      "traits": ["爱哭爱笑", "奶声奶气", "最小", "爱抱玩偶"],
+      "voice_tone": "奶娃娃音",
+      "catchphrase": "啾比～",
+      "color_palette": ["#9B8CFF", "#7FB3FF", "#B19CD9"]
+    }
+  ],
+  "family_motto": "咕咕嘎嘎，咕咕嘎咕，一家人在一起就是最好的家"
+}

@@ -1,0 +1,43 @@
+{
+  "shot_id": "107",
+  "act": 6,
+  "order": 7,
+  "duration_sec": 1.0,
+  "title": "咕咕温柔回答",
+  "scene_type": "dialogue",
+  "characters_in_shot": [
+    "gugu"
+  ],
+  "location": "客厅",
+  "time_of_day": "night",
+  "image_prompt": {
+    "main": "Papa gugu answering yes they will, because we will always be like this, loving gaze at gaga, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Papa gugu answering yes they will, because we will always be like this, loving gaze at gaga, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "emotional piano",
+    "sfx": [],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "会的，因为我们会一直这样。",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "对话",
+    "咕咕",
+    "承诺"
+  ],
+  "notes": "第6幕第7个镜头",
+  "linked_shots": [
+    "106",
+    "108"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

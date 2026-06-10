@@ -1,0 +1,46 @@
+{
+  "shot_id": "094",
+  "act": 5,
+  "order": 14,
+  "duration_sec": 1.0,
+  "title": "白子帮弟弟脱鞋",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "baizi",
+    "feibi-jiubi"
+  ],
+  "location": "卧室",
+  "time_of_day": "night",
+  "image_prompt": {
+    "main": "Baizi helping feibi-jiubi take off small shoes, placing them neatly beside bed, sisterly bedtime routine, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Baizi helping feibi-jiubi take off small shoes, placing them neatly beside bed, sisterly bedtime routine, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "music box fade",
+    "sfx": [
+      "shoe drop"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "白子",
+    "啾比",
+    "睡前"
+  ],
+  "notes": "第5幕第14个镜头",
+  "linked_shots": [
+    "093",
+    "095"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

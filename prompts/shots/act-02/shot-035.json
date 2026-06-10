@@ -1,0 +1,47 @@
+{
+  "shot_id": "035",
+  "act": 2,
+  "order": 15,
+  "duration_sec": 1.0,
+  "title": "咕咕嘎嘎挥手告别",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "gugu",
+    "gaga"
+  ],
+  "location": "校车站路口",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Papa and mama gugu waving at school bus from intersection, bus disappearing in distance, loving farewell, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Papa and mama gugu waving at school bus from intersection, bus disappearing in distance, loving farewell, zoom_out motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "zoom_out",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "soft piano",
+    "sfx": [
+      "wave",
+      "bus fading"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "告别",
+    "咕咕",
+    "嘎嘎"
+  ],
+  "notes": "第2幕第15个镜头",
+  "linked_shots": [
+    "034",
+    "036"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

@@ -1,0 +1,45 @@
+{
+  "shot_id": "072",
+  "act": 4,
+  "order": 12,
+  "duration_sec": 1.0,
+  "title": "白子帮爸爸捶背",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "baizi",
+    "gugu"
+  ],
+  "location": "客厅",
+  "time_of_day": "evening",
+  "image_prompt": {
+    "main": "Baizi landing on massage-back square, seriously massaging papa gugu's wings, papa moved to tears, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Baizi landing on massage-back square, seriously massaging papa gugu's wings, papa moved to tears, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "soft piano",
+    "sfx": [
+      "tap tap"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "温馨",
+    "白子"
+  ],
+  "notes": "第4幕第12个镜头",
+  "linked_shots": [
+    "071",
+    "073"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

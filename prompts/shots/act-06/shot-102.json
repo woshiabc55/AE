@@ -1,0 +1,45 @@
+{
+  "shot_id": "102",
+  "act": 6,
+  "order": 2,
+  "duration_sec": 1.0,
+  "title": "父母收拾玩具",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "gugu",
+    "gaga"
+  ],
+  "location": "客厅",
+  "time_of_day": "night",
+  "image_prompt": {
+    "main": "Gugu and gaga tidying up toys in living room, working together silently in moonlight, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Gugu and gaga tidying up toys in living room, working together silently in moonlight, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "dream soft",
+    "sfx": [
+      "toy clink"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "父母",
+    "收拾"
+  ],
+  "notes": "第6幕第2个镜头",
+  "linked_shots": [
+    "101",
+    "103"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

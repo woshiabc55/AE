@@ -1,0 +1,44 @@
+{
+  "shot_id": "026",
+  "act": 2,
+  "order": 6,
+  "duration_sec": 1.0,
+  "title": "咕咕劝doro",
+  "scene_type": "dialogue",
+  "characters_in_shot": [
+    "gugu",
+    "doro"
+  ],
+  "location": "面包店前",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Papa gugu kneeling eye-level with doro, promising after-school family time, doro's eyes lightening up, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Papa gugu kneeling eye-level with doro, promising after-school family time, doro's eyes lightening up, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "playful tune",
+    "sfx": [],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "放学后的亲子时间哦。",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "对话",
+    "咕咕",
+    "doro"
+  ],
+  "notes": "第2幕第6个镜头",
+  "linked_shots": [
+    "025",
+    "027"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

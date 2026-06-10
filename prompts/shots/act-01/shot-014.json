@@ -1,0 +1,43 @@
+{
+  "shot_id": "014",
+  "act": 1,
+  "order": 14,
+  "duration_sec": 1.0,
+  "title": "餐厅长桌",
+  "scene_type": "establishing",
+  "characters_in_shot": [],
+  "location": "餐厅",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Long family dining table with checkered cloth and five high chairs neatly arranged, soft morning light, breakfast set, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Long family dining table with checkered cloth and five high chairs neatly arranged, soft morning light, breakfast set, pan_right motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "pan_right",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "cheerful strum",
+    "sfx": [
+      "ambient room"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "全景",
+    "餐厅",
+    "早餐"
+  ],
+  "notes": "第1幕第14个镜头",
+  "linked_shots": [
+    "013",
+    "015"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

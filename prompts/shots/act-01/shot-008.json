@@ -1,0 +1,45 @@
+{
+  "shot_id": "008",
+  "act": 1,
+  "order": 8,
+  "duration_sec": 1.0,
+  "title": "白子姐姐轻嘘",
+  "scene_type": "portrait",
+  "characters_in_shot": [
+    "baizi"
+  ],
+  "location": "doro卧室",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "White spirit girl baizi peeking from toy pile, putting finger to lips with a gentle shhh gesture, soft glow, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "White spirit girl baizi peeking from toy pile, putting finger to lips with a gentle shhh gesture, soft glow, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "ukulele strum",
+    "sfx": [
+      "shhh"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "嘘～",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "特写",
+    "白子",
+    "安静"
+  ],
+  "notes": "第1幕第8个镜头",
+  "linked_shots": [
+    "007",
+    "009"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

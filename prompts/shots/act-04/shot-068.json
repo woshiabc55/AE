@@ -1,0 +1,47 @@
+{
+  "shot_id": "068",
+  "act": 4,
+  "order": 8,
+  "duration_sec": 1.0,
+  "title": "父母抛高啾比",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "gugu",
+    "gaga",
+    "feibi-jiubi"
+  ],
+  "location": "客厅",
+  "time_of_day": "evening",
+  "image_prompt": {
+    "main": "Gugu and gaga high-fiving and tossing feibi-jiubi gently in the air, baby laughing with joy, family celebration, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Gugu and gaga high-fiving and tossing feibi-jiubi gently in the air, baby laughing with joy, family celebration, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "celebrate chime",
+    "sfx": [
+      "baby laugh",
+      "high five"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "庆祝",
+    "啾比"
+  ],
+  "notes": "第4幕第8个镜头",
+  "linked_shots": [
+    "067",
+    "069"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

@@ -1,0 +1,44 @@
+{
+  "shot_id": "079",
+  "act": 4,
+  "order": 19,
+  "duration_sec": 1.0,
+  "title": "嘎嘎拿故事书",
+  "scene_type": "portrait",
+  "characters_in_shot": [
+    "gaga"
+  ],
+  "location": "客厅",
+  "time_of_day": "evening",
+  "image_prompt": {
+    "main": "Mama gaga picking up the legend of gugu gaga story book, book cover visible, children gathering around, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Mama gaga picking up the legend of gugu gaga story book, book cover visible, children gathering around, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "night ambient",
+    "sfx": [
+      "book open"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "嘎嘎",
+    "故事"
+  ],
+  "notes": "第4幕第19个镜头",
+  "linked_shots": [
+    "078",
+    "080"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

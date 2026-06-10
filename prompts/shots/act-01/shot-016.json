@@ -1,0 +1,44 @@
+{
+  "shot_id": "016",
+  "act": 1,
+  "order": 16,
+  "duration_sec": 1.0,
+  "title": "早餐美食特写",
+  "scene_type": "montage",
+  "characters_in_shot": [],
+  "location": "餐桌",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Close-up montage of breakfast: fried egg, honey toast, corn soup, strawberry platter, steam rising, food illustration style, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Close-up montage of breakfast: fried egg, honey toast, corn soup, strawberry platter, steam rising, food illustration style, zoom_in motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "zoom_in",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "soft piano",
+    "sfx": [
+      "sizzle",
+      "pour"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "美食",
+    "特写",
+    "早餐"
+  ],
+  "notes": "第1幕第16个镜头",
+  "linked_shots": [
+    "015",
+    "017"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

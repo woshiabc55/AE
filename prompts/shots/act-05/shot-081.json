@@ -1,0 +1,45 @@
+{
+  "shot_id": "081",
+  "act": 5,
+  "order": 1,
+  "duration_sec": 1.0,
+  "title": "故事开始旁白",
+  "scene_type": "dialogue",
+  "characters_in_shot": [
+    "gaga"
+  ],
+  "location": "客厅",
+  "time_of_day": "night",
+  "image_prompt": {
+    "main": "Mama gaga opening story book, voice-over narration style, soft glow around the book, magical reading moment, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Mama gaga opening story book, voice-over narration style, soft glow around the book, magical reading moment, zoom_in motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "zoom_in",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "music box",
+    "sfx": [
+      "page turn"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "很久很久以前……",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "旁白",
+    "故事",
+    "嘎嘎"
+  ],
+  "notes": "第5幕第1个镜头",
+  "linked_shots": [
+    "080",
+    "082"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

@@ -1,0 +1,46 @@
+{
+  "shot_id": "091",
+  "act": 5,
+  "order": 11,
+  "duration_sec": 1.0,
+  "title": "嘎嘎声音变轻",
+  "scene_type": "portrait",
+  "characters_in_shot": [
+    "gaga",
+    "feibi-jiubi"
+  ],
+  "location": "客厅",
+  "time_of_day": "night",
+  "image_prompt": {
+    "main": "Mama gaga voice getting softer, feibi-jiubi's eyelids starting to droop, sleepiness spreading, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Mama gaga voice getting softer, feibi-jiubi's eyelids starting to droop, sleepiness spreading, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "music box fade",
+    "sfx": [
+      "yawn"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "睡眠",
+    "嘎嘎",
+    "啾比"
+  ],
+  "notes": "第5幕第11个镜头",
+  "linked_shots": [
+    "090",
+    "092"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

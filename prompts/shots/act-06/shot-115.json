@@ -1,0 +1,41 @@
+{
+  "shot_id": "115",
+  "act": 6,
+  "order": 15,
+  "duration_sec": 1.0,
+  "title": "云朵上的家",
+  "scene_type": "dream",
+  "characters_in_shot": [],
+  "location": "梦境·云朵",
+  "time_of_day": "dream",
+  "image_prompt": {
+    "main": "Cloud shaped like a sign reading gugu gaga family, with subtitle always together, magical typography in sky, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Cloud shaped like a sign reading gugu gaga family, with subtitle always together, magical typography in sky, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "dream orchestra",
+    "sfx": [],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "永远在一起",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "云朵",
+    "家族",
+    "梦境"
+  ],
+  "notes": "第6幕第15个镜头",
+  "linked_shots": [
+    "114",
+    "116"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

@@ -1,0 +1,44 @@
+{
+  "shot_id": "044",
+  "act": 3,
+  "order": 4,
+  "duration_sec": 1.0,
+  "title": "白子认真做笔记",
+  "scene_type": "portrait",
+  "characters_in_shot": [
+    "baizi"
+  ],
+  "location": "教室座位",
+  "time_of_day": "noon",
+  "image_prompt": {
+    "main": "Baizi quietly taking notes, handwriting neat like flower petals, focused expression, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Baizi quietly taking notes, handwriting neat like flower petals, focused expression, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "school melody",
+    "sfx": [
+      "pen writing"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "白子",
+    "学习"
+  ],
+  "notes": "第3幕第4个镜头",
+  "linked_shots": [
+    "043",
+    "045"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

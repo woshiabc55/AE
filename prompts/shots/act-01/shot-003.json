@@ -1,0 +1,45 @@
+{
+  "shot_id": "003",
+  "act": 1,
+  "order": 3,
+  "duration_sec": 1.0,
+  "title": "咕咕闹钟响起",
+  "scene_type": "portrait",
+  "characters_in_shot": [
+    "gugu"
+  ],
+  "location": "主卧床头",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Close-up of a feather-shaped alarm clock ringing gugu-gugu, a yellow-orange bird papa reaching out with fluffy wing, warm bedroom, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Close-up of a feather-shaped alarm clock ringing gugu-gugu, a yellow-orange bird papa reaching out with fluffy wing, warm bedroom, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "soft piano arpeggio",
+    "sfx": [
+      "alarm ringing"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "特写",
+    "咕咕",
+    "闹钟"
+  ],
+  "notes": "第1幕第3个镜头",
+  "linked_shots": [
+    "002",
+    "004"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

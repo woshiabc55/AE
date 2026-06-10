@@ -1,0 +1,44 @@
+{
+  "shot_id": "001",
+  "act": 1,
+  "order": 1,
+  "duration_sec": 1.0,
+  "title": "航拍俯瞰云层小镇",
+  "scene_type": "establishing",
+  "characters_in_shot": [],
+  "location": "云层下日式小镇",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Aerial view of a cozy Japanese-style small town under morning clouds, soft golden sunlight, smoke rising from chimneys, watercolor 3D render style, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Aerial view of a cozy Japanese-style small town under morning clouds, soft golden sunlight, smoke rising from chimneys, watercolor 3D render style, camera_dolly_in motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "camera_dolly_in",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "soft piano arpeggio",
+    "sfx": [
+      "birds chirping",
+      "wind ambient"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "咕咕嘎嘎之家",
+  "transition_in": "fade_in",
+  "transition_out": "cut",
+  "tags": [
+    "航拍",
+    "开场",
+    "清晨",
+    "全景"
+  ],
+  "notes": "第1幕第1个镜头",
+  "linked_shots": [
+    "002"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

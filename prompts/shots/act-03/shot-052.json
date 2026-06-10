@@ -1,0 +1,44 @@
+{
+  "shot_id": "052",
+  "act": 3,
+  "order": 12,
+  "duration_sec": 1.0,
+  "title": "啾比饭粒粘鼻尖",
+  "scene_type": "portrait",
+  "characters_in_shot": [
+    "feibi-jiubi"
+  ],
+  "location": "草地",
+  "time_of_day": "noon",
+  "image_prompt": {
+    "main": "Feibi-jiubi with rice grain stuck on nose tip, confused adorable face, family laughing in background, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Feibi-jiubi with rice grain stuck on nose tip, confused adorable face, family laughing in background, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "soft piano",
+    "sfx": [
+      "giggle"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "啾比",
+    "可爱"
+  ],
+  "notes": "第3幕第12个镜头",
+  "linked_shots": [
+    "051",
+    "053"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

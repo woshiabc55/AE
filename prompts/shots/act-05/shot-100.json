@@ -1,0 +1,42 @@
+{
+  "shot_id": "100",
+  "act": 5,
+  "order": 20,
+  "duration_sec": 1.0,
+  "title": "白子闭眼微笑",
+  "scene_type": "dream",
+  "characters_in_shot": [
+    "baizi"
+  ],
+  "location": "梦境",
+  "time_of_day": "dream",
+  "image_prompt": {
+    "main": "Baizi closing eyes with gentle smile, eyelashes like crescents, peaceful sleep, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Baizi closing eyes with gentle smile, eyelashes like crescents, peaceful sleep, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "dream soft",
+    "sfx": [],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "白子",
+    "睡"
+  ],
+  "notes": "第5幕第20个镜头",
+  "linked_shots": [
+    "099",
+    "101"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

@@ -1,0 +1,44 @@
+{
+  "shot_id": "071",
+  "act": 4,
+  "order": 11,
+  "duration_sec": 1.0,
+  "title": "doro抢先捡骰子",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "doro"
+  ],
+  "location": "厨房门口",
+  "time_of_day": "evening",
+  "image_prompt": {
+    "main": "Doro rushing to pick up the dice, victoriously holding it up, claiming 6 steps, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Doro rushing to pick up the dice, victoriously holding it up, claiming 6 steps, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "playful tune",
+    "sfx": [
+      "victory"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "doro走6步！",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "doro",
+    "搞笑"
+  ],
+  "notes": "第4幕第11个镜头",
+  "linked_shots": [
+    "070",
+    "072"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

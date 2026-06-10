@@ -1,0 +1,42 @@
+{
+  "shot_id": "073",
+  "act": 4,
+  "order": 13,
+  "duration_sec": 1.0,
+  "title": "咕咕感动胡子抖",
+  "scene_type": "portrait",
+  "characters_in_shot": [
+    "gugu"
+  ],
+  "location": "客厅",
+  "time_of_day": "evening",
+  "image_prompt": {
+    "main": "Papa gugu's mustache quivering with emotion, big fatherly tears, calling baizi dear daughter, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Papa gugu's mustache quivering with emotion, big fatherly tears, calling baizi dear daughter, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "soft piano",
+    "sfx": [],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "乖女儿……",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "父女",
+    "感动"
+  ],
+  "notes": "第4幕第13个镜头",
+  "linked_shots": [
+    "072",
+    "074"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

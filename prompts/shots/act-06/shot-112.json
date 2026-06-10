@@ -1,0 +1,42 @@
+{
+  "shot_id": "112",
+  "act": 6,
+  "order": 12,
+  "duration_sec": 1.0,
+  "title": "进入梦境世界",
+  "scene_type": "dream",
+  "characters_in_shot": [],
+  "location": "梦境",
+  "time_of_day": "dream",
+  "image_prompt": {
+    "main": "Transition to dream world, fade-in to magical sky landscape, family of five about to fly, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Transition to dream world, fade-in to magical sky landscape, family of five about to fly, fade_in motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "fade_in",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "dream orchestra",
+    "sfx": [
+      "magical whoosh"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "fade_in",
+  "transition_out": "cut",
+  "tags": [
+    "梦境",
+    "过渡"
+  ],
+  "notes": "第6幕第12个镜头",
+  "linked_shots": [
+    "111",
+    "113"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

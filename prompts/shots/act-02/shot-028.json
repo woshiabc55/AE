@@ -1,0 +1,46 @@
+{
+  "shot_id": "028",
+  "act": 2,
+  "order": 8,
+  "duration_sec": 1.0,
+  "title": "小溪边白子遇青蛙",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "baizi"
+  ],
+  "location": "小溪边",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Baizi discovering a small frog by creek, frog croaking and jumping into water, splash effect, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Baizi discovering a small frog by creek, frog croaking and jumping into water, splash effect, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "playful tune",
+    "sfx": [
+      "frog croak",
+      "splash"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "白子",
+    "青蛙",
+    "自然"
+  ],
+  "notes": "第2幕第8个镜头",
+  "linked_shots": [
+    "027",
+    "029"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

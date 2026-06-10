@@ -1,0 +1,43 @@
+{
+  "shot_id": "089",
+  "act": 5,
+  "order": 9,
+  "duration_sec": 1.0,
+  "title": "家族迁徙讲述",
+  "scene_type": "dream",
+  "characters_in_shot": [],
+  "location": "梦境·迁徙场景",
+  "time_of_day": "dream",
+  "image_prompt": {
+    "main": "Ancestors migrating from cloud forest down to earth town, long line of bird family walking together, epic but gentle, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Ancestors migrating from cloud forest down to earth town, long line of bird family walking together, epic but gentle, tracking motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "tracking",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "epic gentle",
+    "sfx": [
+      "wind epic"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "迁徙",
+    "家族",
+    "梦境"
+  ],
+  "notes": "第5幕第9个镜头",
+  "linked_shots": [
+    "088",
+    "090"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

@@ -1,0 +1,49 @@
+{
+  "shot_id": "113",
+  "act": 6,
+  "order": 13,
+  "duration_sec": 1.0,
+  "title": "全家云朵飞翔",
+  "scene_type": "dream",
+  "characters_in_shot": [
+    "gugu",
+    "gaga",
+    "doro",
+    "baizi",
+    "feibi-jiubi"
+  ],
+  "location": "梦境·云朵森林",
+  "time_of_day": "dream",
+  "image_prompt": {
+    "main": "Family of five flying together in cloud forest dream world, holding wings, free and happy, magical wonderland, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Family of five flying together in cloud forest dream world, holding wings, free and happy, magical wonderland, tracking motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "tracking",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "dream orchestra",
+    "sfx": [
+      "wind whoosh"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "飞翔",
+    "全家",
+    "梦境"
+  ],
+  "notes": "第6幕第13个镜头",
+  "linked_shots": [
+    "112",
+    "114"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

@@ -1,0 +1,44 @@
+{
+  "shot_id": "043",
+  "act": 3,
+  "order": 3,
+  "duration_sec": 1.0,
+  "title": "doro举手积极",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "doro"
+  ],
+  "location": "教室座位",
+  "time_of_day": "noon",
+  "image_prompt": {
+    "main": "Doro's wing raised high, almost jumping out of chair with eagerness, comic energy, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Doro's wing raised high, almost jumping out of chair with eagerness, comic energy, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "school melody",
+    "sfx": [
+      "hand raise"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "doro",
+    "学校"
+  ],
+  "notes": "第3幕第3个镜头",
+  "linked_shots": [
+    "042",
+    "044"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

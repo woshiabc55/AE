@@ -1,0 +1,43 @@
+{
+  "shot_id": "076",
+  "act": 4,
+  "order": 16,
+  "duration_sec": 1.0,
+  "title": "夜幕萤火虫",
+  "scene_type": "establishing",
+  "characters_in_shot": [],
+  "location": "窗边",
+  "time_of_day": "evening",
+  "image_prompt": {
+    "main": "Fireflies starting to glow outside window, night falling, magical twilight transition, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Fireflies starting to glow outside window, night falling, magical twilight transition, pan_left motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "pan_left",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "night ambient",
+    "sfx": [
+      "crickets",
+      "fireflies"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "夜景",
+    "萤火虫"
+  ],
+  "notes": "第4幕第16个镜头",
+  "linked_shots": [
+    "075",
+    "077"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

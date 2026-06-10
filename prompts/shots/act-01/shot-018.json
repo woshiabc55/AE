@@ -1,0 +1,46 @@
+{
+  "shot_id": "018",
+  "act": 1,
+  "order": 18,
+  "duration_sec": 1.0,
+  "title": "doro啾比装委屈",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "doro",
+    "feibi-jiubi"
+  ],
+  "location": "餐桌",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Doro and feibi-jiubi both making fake sad face, then eye-contact and bursting into laughter, sibling chemistry, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Doro and feibi-jiubi both making fake sad face, then eye-contact and bursting into laughter, sibling chemistry, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "soft piano",
+    "sfx": [
+      "giggle"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "搞笑",
+    "doro",
+    "啾比"
+  ],
+  "notes": "第1幕第18个镜头",
+  "linked_shots": [
+    "017",
+    "019"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

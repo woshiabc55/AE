@@ -1,0 +1,43 @@
+{
+  "shot_id": "087",
+  "act": 5,
+  "order": 7,
+  "duration_sec": 1.0,
+  "title": "月亮流口水",
+  "scene_type": "dream",
+  "characters_in_shot": [],
+  "location": "梦境·云朵森林夜空",
+  "time_of_day": "dream",
+  "image_prompt": {
+    "main": "Moon in sky with drool dripping down at the cake aroma, funny celestial reaction, drool animation, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Moon in sky with drool dripping down at the cake aroma, funny celestial reaction, drool animation, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "dream orchestra",
+    "sfx": [
+      "drool drop"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "月亮",
+    "搞笑",
+    "梦境"
+  ],
+  "notes": "第5幕第7个镜头",
+  "linked_shots": [
+    "086",
+    "088"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

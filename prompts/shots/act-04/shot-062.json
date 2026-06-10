@@ -1,0 +1,43 @@
+{
+  "shot_id": "062",
+  "act": 4,
+  "order": 2,
+  "duration_sec": 1.0,
+  "title": "咕咕宣布游戏夜",
+  "scene_type": "dialogue",
+  "characters_in_shot": [
+    "gugu"
+  ],
+  "location": "客厅",
+  "time_of_day": "evening",
+  "image_prompt": {
+    "main": "Papa gugu announcing family game night, loser does the dishes, excited announcement pose, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Papa gugu announcing family game night, loser does the dishes, excited announcement pose, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "playful tune",
+    "sfx": [],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "输的人洗碗！",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "对话",
+    "咕咕",
+    "游戏"
+  ],
+  "notes": "第4幕第2个镜头",
+  "linked_shots": [
+    "061",
+    "063"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

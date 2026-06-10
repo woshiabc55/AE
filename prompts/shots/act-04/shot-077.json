@@ -1,0 +1,44 @@
+{
+  "shot_id": "077",
+  "act": 4,
+  "order": 17,
+  "duration_sec": 1.0,
+  "title": "星星灯点亮",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "gugu"
+  ],
+  "location": "客厅",
+  "time_of_day": "evening",
+  "image_prompt": {
+    "main": "Papa gugu turning off main light, switching on star-shaped lamp, room turning warm orange, magical cozy atmosphere, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Papa gugu turning off main light, switching on star-shaped lamp, room turning warm orange, magical cozy atmosphere, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "night ambient",
+    "sfx": [
+      "light switch click"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "灯光",
+    "咕咕"
+  ],
+  "notes": "第4幕第17个镜头",
+  "linked_shots": [
+    "076",
+    "078"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

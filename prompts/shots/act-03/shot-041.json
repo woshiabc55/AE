@@ -1,0 +1,41 @@
+{
+  "shot_id": "041",
+  "act": 3,
+  "order": 1,
+  "duration_sec": 1.0,
+  "title": "教室门口木牌",
+  "scene_type": "establishing",
+  "characters_in_shot": [],
+  "location": "教室门口",
+  "time_of_day": "noon",
+  "image_prompt": {
+    "main": "Wooden sign at classroom door reading today we learn to share, cozy school entrance, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Wooden sign at classroom door reading today we learn to share, cozy school entrance, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "school bell ring",
+    "sfx": [],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "今天我们学分享",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "学校",
+    "教室",
+    "分享"
+  ],
+  "notes": "第3幕第1个镜头",
+  "linked_shots": [
+    "040",
+    "042"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

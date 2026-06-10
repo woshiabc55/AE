@@ -1,0 +1,43 @@
+{
+  "shot_id": "106",
+  "act": 6,
+  "order": 6,
+  "duration_sec": 1.0,
+  "title": "嘎嘎感慨长大",
+  "scene_type": "dialogue",
+  "characters_in_shot": [
+    "gaga"
+  ],
+  "location": "客厅",
+  "time_of_day": "night",
+  "image_prompt": {
+    "main": "Mama gaga saying will they remember today when they grow up, emotional mother worry, soft lighting, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Mama gaga saying will they remember today when they grow up, emotional mother worry, soft lighting, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "emotional piano",
+    "sfx": [],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "以后他们长大了，会不会记得今天？",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "对话",
+    "嘎嘎",
+    "母爱"
+  ],
+  "notes": "第6幕第6个镜头",
+  "linked_shots": [
+    "105",
+    "107"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

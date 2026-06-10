@@ -1,0 +1,44 @@
+{
+  "shot_id": "019",
+  "act": 1,
+  "order": 19,
+  "duration_sec": 1.0,
+  "title": "白子分草莓给弟弟",
+  "scene_type": "dialogue",
+  "characters_in_shot": [
+    "baizi",
+    "feibi-jiubi"
+  ],
+  "location": "餐桌",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "White baizi placing strawberry on feibi-jiubi's plate with gentle smile, sisterly love, warm light, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "White baizi placing strawberry on feibi-jiubi's plate with gentle smile, sisterly love, warm light, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "soft piano",
+    "sfx": [],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "吃吧，啾比。",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "温馨",
+    "白子",
+    "啾比"
+  ],
+  "notes": "第1幕第19个镜头",
+  "linked_shots": [
+    "018",
+    "020"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

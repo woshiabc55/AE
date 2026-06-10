@@ -1,0 +1,45 @@
+{
+  "shot_id": "057",
+  "act": 3,
+  "order": 17,
+  "duration_sec": 1.0,
+  "title": "父母校门口等候",
+  "scene_type": "portrait",
+  "characters_in_shot": [
+    "gugu",
+    "gaga"
+  ],
+  "location": "校门口",
+  "time_of_day": "afternoon",
+  "image_prompt": {
+    "main": "Gugu and gaga waiting at school gate with hot tea, smiling and waving at children coming out, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Gugu and gaga waiting at school gate with hot tea, smiling and waving at children coming out, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "soft piano",
+    "sfx": [
+      "tea steam"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "父母",
+    "接娃"
+  ],
+  "notes": "第3幕第17个镜头",
+  "linked_shots": [
+    "056",
+    "058"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

@@ -1,0 +1,48 @@
+{
+  "shot_id": "059",
+  "act": 3,
+  "order": 19,
+  "duration_sec": 1.0,
+  "title": "嘎嘎按快门",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "gaga",
+    "gugu",
+    "doro",
+    "baizi",
+    "feibi-jiubi"
+  ],
+  "location": "校门口",
+  "time_of_day": "afternoon",
+  "image_prompt": {
+    "main": "Mama gaga pressing camera shutter, family of five posing together, instant photo developing animation, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Mama gaga pressing camera shutter, family of five posing together, instant photo developing animation, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "emotional piano",
+    "sfx": [
+      "shutter click"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "合影",
+    "温馨"
+  ],
+  "notes": "第3幕第19个镜头",
+  "linked_shots": [
+    "058",
+    "060"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

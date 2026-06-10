@@ -1,0 +1,50 @@
+{
+  "shot_id": "024",
+  "act": 2,
+  "order": 4,
+  "duration_sec": 1.0,
+  "title": "手拉手走在樱花路",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "gugu",
+    "gaga",
+    "doro",
+    "baizi",
+    "feibi-jiubi"
+  ],
+  "location": "樱花路",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Family of five walking hand-in-wing along sakura petal road, petals falling, golden hour morning light, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Family of five walking hand-in-wing along sakura petal road, petals falling, golden hour morning light, tracking motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "tracking",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "playful tune",
+    "sfx": [
+      "footsteps",
+      "wind"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "全家",
+    "樱花",
+    "上学路"
+  ],
+  "notes": "第2幕第4个镜头",
+  "linked_shots": [
+    "023",
+    "025"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

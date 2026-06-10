@@ -1,0 +1,43 @@
+{
+  "shot_id": "086",
+  "act": 5,
+  "order": 6,
+  "duration_sec": 1.0,
+  "title": "嘎嘎奶奶蛋糕店",
+  "scene_type": "dream",
+  "characters_in_shot": [],
+  "location": "梦境·云朵森林",
+  "time_of_day": "dream",
+  "image_prompt": {
+    "main": "Grandma gaga as the best pastry chef in forest, making giant cloud cake, decorations everywhere, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Grandma gaga as the best pastry chef in forest, making giant cloud cake, decorations everywhere, pan_right motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "pan_right",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "dream orchestra",
+    "sfx": [
+      "baking sizzle"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "奶奶",
+    "烘焙",
+    "梦境"
+  ],
+  "notes": "第5幕第6个镜头",
+  "linked_shots": [
+    "085",
+    "087"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

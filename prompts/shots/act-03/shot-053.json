@@ -1,0 +1,45 @@
+{
+  "shot_id": "053",
+  "act": 3,
+  "order": 13,
+  "duration_sec": 1.0,
+  "title": "蝴蝶停在指尖",
+  "scene_type": "portrait",
+  "characters_in_shot": [
+    "feibi-jiubi"
+  ],
+  "location": "草地",
+  "time_of_day": "noon",
+  "image_prompt": {
+    "main": "A small butterfly landing on feibi-jiubi's tiny finger, baby bird holding breath, magical close-up moment, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "A small butterfly landing on feibi-jiubi's tiny finger, baby bird holding breath, magical close-up moment, zoom_in motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "zoom_in",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "magical chime",
+    "sfx": [
+      "wing flutter"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "啾比",
+    "蝴蝶",
+    "梦"
+  ],
+  "notes": "第3幕第13个镜头",
+  "linked_shots": [
+    "052",
+    "054"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

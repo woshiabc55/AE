@@ -1,0 +1,42 @@
+{
+  "shot_id": "042",
+  "act": 3,
+  "order": 2,
+  "duration_sec": 1.0,
+  "title": "猫头鹰老师上课",
+  "scene_type": "portrait",
+  "characters_in_shot": [],
+  "location": "教室",
+  "time_of_day": "noon",
+  "image_prompt": {
+    "main": "Owl teacher with glasses standing at blackboard beginning lesson, wise and friendly look, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Owl teacher with glasses standing at blackboard beginning lesson, wise and friendly look, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "school melody",
+    "sfx": [
+      "chalk writing"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "老师",
+    "猫头鹰"
+  ],
+  "notes": "第3幕第2个镜头",
+  "linked_shots": [
+    "041",
+    "043"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

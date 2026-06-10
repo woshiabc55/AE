@@ -1,0 +1,42 @@
+{
+  "shot_id": "054",
+  "act": 3,
+  "order": 14,
+  "duration_sec": 1.0,
+  "title": "啾比说再见",
+  "scene_type": "dialogue",
+  "characters_in_shot": [
+    "feibi-jiubi"
+  ],
+  "location": "草地",
+  "time_of_day": "noon",
+  "image_prompt": {
+    "main": "Feibi-jiubi watching butterfly fly away, whispering goodbye with gentle smile, emotional growth moment, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Feibi-jiubi watching butterfly fly away, whispering goodbye with gentle smile, emotional growth moment, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "magical chime",
+    "sfx": [],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "再见。",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "啾比",
+    "成长"
+  ],
+  "notes": "第3幕第14个镜头",
+  "linked_shots": [
+    "053",
+    "055"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

@@ -1,0 +1,42 @@
+{
+  "shot_id": "101",
+  "act": 6,
+  "order": 1,
+  "duration_sec": 1.0,
+  "title": "镜头拉远卧室窗",
+  "scene_type": "establishing",
+  "characters_in_shot": [],
+  "location": "卧室窗外",
+  "time_of_day": "night",
+  "image_prompt": {
+    "main": "Camera slowly pulling back from bedroom window, moon and stars in sky, peaceful house exterior, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Camera slowly pulling back from bedroom window, moon and stars in sky, peaceful house exterior, zoom_out motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "zoom_out",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "dream soft",
+    "sfx": [
+      "night ambient"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "拉远",
+    "夜景"
+  ],
+  "notes": "第6幕第1个镜头",
+  "linked_shots": [
+    "100",
+    "102"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

@@ -1,0 +1,45 @@
+{
+  "shot_id": "055",
+  "act": 3,
+  "order": 15,
+  "duration_sec": 1.0,
+  "title": "doro冲出教室",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "doro"
+  ],
+  "location": "教室门口",
+  "time_of_day": "noon",
+  "image_prompt": {
+    "main": "Doro bursting out of classroom at school bell, arms wide, yelling freedom, energetic exit, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Doro bursting out of classroom at school bell, arms wide, yelling freedom, energetic exit, tracking motion, fast speed, cinematic 24fps, 1.0 second",
+    "motion": "tracking",
+    "speed": "fast"
+  },
+  "audio": {
+    "bgm": "energetic beat",
+    "sfx": [
+      "bell ring",
+      "cheer"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "自由啦——doro！",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "doro",
+    "放学"
+  ],
+  "notes": "第3幕第15个镜头",
+  "linked_shots": [
+    "054",
+    "056"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

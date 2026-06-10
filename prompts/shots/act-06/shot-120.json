@@ -1,0 +1,42 @@
+{
+  "shot_id": "120",
+  "act": 6,
+  "order": 20,
+  "duration_sec": 1.0,
+  "title": "片尾字幕与歌曲",
+  "scene_type": "ending",
+  "characters_in_shot": [],
+  "location": "银河",
+  "time_of_day": "night",
+  "image_prompt": {
+    "main": "Closing subtitle appears: gugu gaga, a family's voice is the warmest song in the world, end credits roll with song, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Closing subtitle appears: gugu gaga, a family's voice is the warmest song in the world, end credits roll with song, fade_out motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "fade_out",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "ending song gugu gaga",
+    "sfx": [
+      "end song"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "咕咕嘎嘎，一家人的声音，是世界上最温暖的歌。",
+  "transition_in": "cut",
+  "transition_out": "fade_out",
+  "tags": [
+    "片尾",
+    "字幕",
+    "结束"
+  ],
+  "notes": "第6幕第20个镜头",
+  "linked_shots": [
+    "119"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

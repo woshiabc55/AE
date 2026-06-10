@@ -1,0 +1,44 @@
+{
+  "shot_id": "039",
+  "act": 2,
+  "order": 19,
+  "duration_sec": 1.0,
+  "title": "咕咕讨价还价",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "gugu"
+  ],
+  "location": "菜摊",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Papa gugu haggling with vegetable vendor, animated wing gestures, comedic bargaining scene, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Papa gugu haggling with vegetable vendor, animated wing gestures, comedic bargaining scene, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "folk tune",
+    "sfx": [
+      "bargain chatter"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "咕咕",
+    "搞笑"
+  ],
+  "notes": "第2幕第19个镜头",
+  "linked_shots": [
+    "038",
+    "040"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

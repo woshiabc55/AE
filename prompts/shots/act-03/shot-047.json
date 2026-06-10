@@ -1,0 +1,44 @@
+{
+  "shot_id": "047",
+  "act": 3,
+  "order": 7,
+  "duration_sec": 1.0,
+  "title": "doro输了趴地",
+  "scene_type": "portrait",
+  "characters_in_shot": [
+    "doro"
+  ],
+  "location": "操场",
+  "time_of_day": "noon",
+  "image_prompt": {
+    "main": "Doro lying on ground panting after losing race, stubborn expression saying next time for sure, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Doro lying on ground panting after losing race, stubborn expression saying next time for sure, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "energetic beat",
+    "sfx": [
+      "panting"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "下次……下次一定……",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "doro",
+    "失败"
+  ],
+  "notes": "第3幕第7个镜头",
+  "linked_shots": [
+    "046",
+    "048"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

@@ -1,0 +1,44 @@
+{
+  "shot_id": "096",
+  "act": 5,
+  "order": 16,
+  "duration_sec": 1.0,
+  "title": "咕咕关灯留小夜灯",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "gugu"
+  ],
+  "location": "卧室",
+  "time_of_day": "night",
+  "image_prompt": {
+    "main": "Papa gugu turning off main light, keeping small night light on, careful not to wake children, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Papa gugu turning off main light, keeping small night light on, careful not to wake children, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "silence",
+    "sfx": [
+      "light click"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "咕咕",
+    "夜灯"
+  ],
+  "notes": "第5幕第16个镜头",
+  "linked_shots": [
+    "095",
+    "097"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

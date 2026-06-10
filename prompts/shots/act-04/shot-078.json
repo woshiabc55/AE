@@ -1,0 +1,48 @@
+{
+  "shot_id": "078",
+  "act": 4,
+  "order": 18,
+  "duration_sec": 1.0,
+  "title": "全家围坐沙发",
+  "scene_type": "portrait",
+  "characters_in_shot": [
+    "gugu",
+    "gaga",
+    "doro",
+    "baizi",
+    "feibi-jiubi"
+  ],
+  "location": "客厅",
+  "time_of_day": "evening",
+  "image_prompt": {
+    "main": "Family cuddled on big sofa under checkered blanket, ready for story time, warm starry lamp light, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Family cuddled on big sofa under checkered blanket, ready for story time, warm starry lamp light, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "night ambient",
+    "sfx": [
+      "blanket rustle"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "全家",
+    "温馨"
+  ],
+  "notes": "第4幕第18个镜头",
+  "linked_shots": [
+    "077",
+    "079"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

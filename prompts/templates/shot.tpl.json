@@ -1,0 +1,39 @@
+{
+  "template_id": "shot.tpl",
+  "version": "1.0",
+  "description": "标准镜头提示词模板",
+  "schema": {
+    "shot_id": "string, 3位数字 001-120",
+    "act": "int, 1-6",
+    "order": "int, 镜头序号",
+    "duration_sec": "float, 默认 1.0",
+    "title": "string, 镜头标题",
+    "scene_type": "enum: establishing|portrait|action|dialogue|montage|dream|ending",
+    "characters_in_shot": "array of character_id",
+    "location": "string, 场景地点",
+    "time_of_day": "enum: morning|noon|afternoon|evening|night|dream",
+    "image_prompt": {
+      "main": "string, 图像生成主提示词",
+      "negative": "string, 负面提示词"
+    },
+    "video_prompt": {
+      "main": "string, 视频生成主提示词",
+      "motion": "string, 运镜方式",
+      "speed": "enum: slow|normal|fast"
+    },
+    "audio": {
+      "bgm": "string, 背景音乐描述",
+      "sfx": "array of string, 音效",
+      "dialogue": "array of {character, line}",
+      "narration": "string, 旁白"
+    },
+    "subtitle": "string, 字幕文本",
+    "transition_in": "enum: fade_in|cut|dissolve|wipe_left",
+    "transition_out": "enum: fade_out|cut|dissolve|wipe_right",
+    "tags": "array of string",
+    "notes": "string, 备注",
+    "linked_shots": "array of shot_id",
+    "version": "string, 语义化版本",
+    "status": "enum: draft|review|final|archived"
+  }
+}

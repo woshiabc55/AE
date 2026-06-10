@@ -1,0 +1,47 @@
+{
+  "shot_id": "095",
+  "act": 5,
+  "order": 15,
+  "duration_sec": 1.0,
+  "title": "嘎嘎掖被角亲额头",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "gaga",
+    "doro",
+    "baizi",
+    "feibi-jiubi"
+  ],
+  "location": "卧室",
+  "time_of_day": "night",
+  "image_prompt": {
+    "main": "Mama gaga tucking in each child and kissing foreheads three times, ritual of love, soft warm light, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Mama gaga tucking in each child and kissing foreheads three times, ritual of love, soft warm light, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "music box fade",
+    "sfx": [
+      "kiss"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "母爱",
+    "温馨"
+  ],
+  "notes": "第5幕第15个镜头",
+  "linked_shots": [
+    "094",
+    "096"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

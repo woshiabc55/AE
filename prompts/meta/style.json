@@ -1,0 +1,25 @@
+{
+  "visual_style": {
+    "art_direction": "日系治愈手绘 + 3D 渲染混合",
+    "color_tone": "暖橙、奶白、樱粉为主色调",
+    "lighting": "柔光、晨光与夕阳",
+    "composition": "中央构图，留白舒适",
+    "reference": ["吉卜力", "皮克斯短片", "Loewe 童趣插画"],
+    "aspect_ratio": "16:9",
+    "resolution": "4K"
+  },
+  "audio_style": {
+    "bgm": "原声木吉他 + 钢琴",
+    "sfx": "轻量化、生活化",
+    "voice": "童声合唱 / 家庭对白",
+    "tempo": "舒缓、温暖"
+  },
+  "negative_prompt": [
+    "恐怖元素", "血腥", "成人内容", "过度写实", "暴力",
+    "dark scene", "horror", "realistic photo", "watermark", "text overlay"
+  ],
+  "global_keywords": [
+    "cozy", "warm", "Studio Ghibli inspired", "soft lighting",
+    "治愈系", "萌系", "家庭", "儿童友好"
+  ]
+}

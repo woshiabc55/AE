@@ -1,0 +1,49 @@
+{
+  "shot_id": "060",
+  "act": 3,
+  "order": 20,
+  "duration_sec": 1.0,
+  "title": "夕阳回家路",
+  "scene_type": "establishing",
+  "characters_in_shot": [
+    "gugu",
+    "gaga",
+    "doro",
+    "baizi",
+    "feibi-jiubi"
+  ],
+  "location": "回家路",
+  "time_of_day": "afternoon",
+  "image_prompt": {
+    "main": "Family walking home under sunset, five long shadows stretching on road, golden warm light, peaceful ending of day, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Family walking home under sunset, five long shadows stretching on road, golden warm light, peaceful ending of day, tracking_back motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "tracking_back",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "warm guitar",
+    "sfx": [
+      "footsteps",
+      "wind"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "夕阳",
+    "回家"
+  ],
+  "notes": "第3幕第20个镜头",
+  "linked_shots": [
+    "059",
+    "061"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

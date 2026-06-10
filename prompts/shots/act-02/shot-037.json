@@ -1,0 +1,45 @@
+{
+  "shot_id": "037",
+  "act": 2,
+  "order": 17,
+  "duration_sec": 1.0,
+  "title": "牵手去菜市场",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "gugu",
+    "gaga"
+  ],
+  "location": "小镇街道",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Gugu and gaga walking arm-in-wing toward market, planning shopping, cheerful couple moment, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Gugu and gaga walking arm-in-wing toward market, planning shopping, cheerful couple moment, tracking motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "tracking",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "soft piano",
+    "sfx": [
+      "footsteps"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "走，给孩子们加菜。",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "父母",
+    "菜市场"
+  ],
+  "notes": "第2幕第17个镜头",
+  "linked_shots": [
+    "036",
+    "038"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

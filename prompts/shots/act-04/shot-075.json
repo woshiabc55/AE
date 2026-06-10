@@ -1,0 +1,44 @@
+{
+  "shot_id": "075",
+  "act": 4,
+  "order": 15,
+  "duration_sec": 1.0,
+  "title": "doro再掷一次",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "doro"
+  ],
+  "location": "客厅",
+  "time_of_day": "evening",
+  "image_prompt": {
+    "main": "Doro landing on roll-again square, ecstatic doing somersault, joyful flips, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Doro landing on roll-again square, ecstatic doing somersault, joyful flips, static motion, fast speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "fast"
+  },
+  "audio": {
+    "bgm": "playful tune",
+    "sfx": [
+      "cheer"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "doro",
+    "庆祝"
+  ],
+  "notes": "第4幕第15个镜头",
+  "linked_shots": [
+    "074",
+    "076"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

@@ -1,0 +1,43 @@
+{
+  "shot_id": "119",
+  "act": 6,
+  "order": 19,
+  "duration_sec": 1.0,
+  "title": "星星组成字",
+  "scene_type": "ending",
+  "characters_in_shot": [],
+  "location": "银河",
+  "time_of_day": "dream",
+  "image_prompt": {
+    "main": "Countless stars in galaxy arranging into gugu gaga four characters, cosmic typographic art, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Countless stars in galaxy arranging into gugu gaga four characters, cosmic typographic art, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "emotional strings",
+    "sfx": [
+      "star chime"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "星星",
+    "宇宙",
+    "文字"
+  ],
+  "notes": "第6幕第19个镜头",
+  "linked_shots": [
+    "118",
+    "120"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

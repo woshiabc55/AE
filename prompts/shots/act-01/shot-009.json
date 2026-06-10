@@ -1,0 +1,45 @@
+{
+  "shot_id": "009",
+  "act": 1,
+  "order": 9,
+  "duration_sec": 1.0,
+  "title": "菲比啾比揉眼",
+  "scene_type": "portrait",
+  "characters_in_shot": [
+    "feibi-jiubi"
+  ],
+  "location": "婴儿房",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Tiny purple-blue baby bird feibi-jiubi rubbing eyes in crib, yawning, hugging plush toy, milk-bottle nearby, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Tiny purple-blue baby bird feibi-jiubi rubbing eyes in crib, yawning, hugging plush toy, milk-bottle nearby, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "music box melody",
+    "sfx": [
+      "baby yawn"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "特写",
+    "菲比啾比",
+    "婴儿"
+  ],
+  "notes": "第1幕第9个镜头",
+  "linked_shots": [
+    "008",
+    "010"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

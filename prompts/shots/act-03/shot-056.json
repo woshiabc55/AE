@@ -1,0 +1,44 @@
+{
+  "shot_id": "056",
+  "act": 3,
+  "order": 16,
+  "duration_sec": 1.0,
+  "title": "白子收拾文具",
+  "scene_type": "portrait",
+  "characters_in_shot": [
+    "baizi"
+  ],
+  "location": "教室",
+  "time_of_day": "noon",
+  "image_prompt": {
+    "main": "Baizi carefully organizing all stationery, even helping classmates, neat and responsible big sister, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Baizi carefully organizing all stationery, even helping classmates, neat and responsible big sister, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "soft piano",
+    "sfx": [
+      "stationery click"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "白子",
+    "懂事"
+  ],
+  "notes": "第3幕第16个镜头",
+  "linked_shots": [
+    "055",
+    "057"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

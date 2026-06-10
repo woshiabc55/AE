@@ -1,0 +1,17 @@
+{
+  "project_id": "gugu-doro-2026",
+  "title": "咕咕嘎嘎的大家庭",
+  "version": "1.0.0",
+  "total": 120,
+  "duration_sec": 120,
+  "acts": [
+    {"act": 1, "key": "act-01", "theme": "清晨苏醒", "range": "001-020", "shot_count": 20, "mood": "warm"},
+    {"act": 2, "key": "act-02", "theme": "上学路上", "range": "021-040", "shot_count": 20, "mood": "uplifting"},
+    {"act": 3, "key": "act-03", "theme": "校园日常", "range": "041-060", "shot_count": 20, "mood": "funny"},
+    {"act": 4, "key": "act-04", "theme": "家庭游戏", "range": "061-080", "shot_count": 20, "mood": "warm"},
+    {"act": 5, "key": "act-05", "theme": "睡前故事", "range": "081-100", "shot_count": 20, "mood": "soft"},
+    {"act": 6, "key": "act-06", "theme": "夜之温柔", "range": "101-120", "shot_count": 20, "mood": "uplifting"}
+  ],
+  "shots": [f"{i:03d}" for i in range(1, 121)],
+  "generated_at": "2026-06-10"
+}

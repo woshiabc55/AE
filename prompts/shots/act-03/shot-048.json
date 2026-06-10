@@ -1,0 +1,45 @@
+{
+  "shot_id": "048",
+  "act": 3,
+  "order": 8,
+  "duration_sec": 1.0,
+  "title": "白子递水壶",
+  "scene_type": "dialogue",
+  "characters_in_shot": [
+    "baizi",
+    "doro"
+  ],
+  "location": "操场",
+  "time_of_day": "noon",
+  "image_prompt": {
+    "main": "Baizi handing water bottle to doro, doro's eyes welling with grateful tears, sisterly moment, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Baizi handing water bottle to doro, doro's eyes welling with grateful tears, sisterly moment, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "soft piano",
+    "sfx": [
+      "water pouring"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "温馨",
+    "兄妹"
+  ],
+  "notes": "第3幕第8个镜头",
+  "linked_shots": [
+    "047",
+    "049"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

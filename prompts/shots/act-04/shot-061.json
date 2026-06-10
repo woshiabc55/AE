@@ -1,0 +1,40 @@
+{
+  "shot_id": "061",
+  "act": 4,
+  "order": 1,
+  "duration_sec": 1.0,
+  "title": "客厅玩具全景",
+  "scene_type": "establishing",
+  "characters_in_shot": [],
+  "location": "客厅",
+  "time_of_day": "evening",
+  "image_prompt": {
+    "main": "Living room carpet covered with blocks, puzzles and plush toys, warm evening light, game night setup, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Living room carpet covered with blocks, puzzles and plush toys, warm evening light, game night setup, pan_right motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "pan_right",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "playful tune",
+    "sfx": [],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "客厅",
+    "游戏"
+  ],
+  "notes": "第4幕第1个镜头",
+  "linked_shots": [
+    "060",
+    "062"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

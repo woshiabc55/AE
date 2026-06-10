@@ -1,0 +1,44 @@
+{
+  "shot_id": "045",
+  "act": 3,
+  "order": 5,
+  "duration_sec": 1.0,
+  "title": "啾比堆城堡",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "feibi-jiubi"
+  ],
+  "location": "教室角落",
+  "time_of_day": "noon",
+  "image_prompt": {
+    "main": "Feibi-jiubi building a small castle with blocks in classroom corner, deep in concentration, baby cuteness, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Feibi-jiubi building a small castle with blocks in classroom corner, deep in concentration, baby cuteness, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "school melody",
+    "sfx": [
+      "block stacking"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "啾比",
+    "玩"
+  ],
+  "notes": "第3幕第5个镜头",
+  "linked_shots": [
+    "044",
+    "046"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

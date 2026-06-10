@@ -1,0 +1,45 @@
+{
+  "shot_id": "070",
+  "act": 4,
+  "order": 10,
+  "duration_sec": 1.0,
+  "title": "骰子滚到厨房",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "feibi-jiubi"
+  ],
+  "location": "客厅",
+  "time_of_day": "evening",
+  "image_prompt": {
+    "main": "Feibi-jiubi throwing dice that rolls into kitchen, whole family running after it in line, comedic chase, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Feibi-jiubi throwing dice that rolls into kitchen, whole family running after it in line, comedic chase, tracking motion, fast speed, cinematic 24fps, 1.0 second",
+    "motion": "tracking",
+    "speed": "fast"
+  },
+  "audio": {
+    "bgm": "playful tune",
+    "sfx": [
+      "dice roll",
+      "running"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "搞笑",
+    "啾比"
+  ],
+  "notes": "第4幕第10个镜头",
+  "linked_shots": [
+    "069",
+    "071"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

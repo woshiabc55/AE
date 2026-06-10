@@ -1,0 +1,46 @@
+{
+  "shot_id": "013",
+  "act": 1,
+  "order": 13,
+  "duration_sec": 1.0,
+  "title": "白子牵着啾比下楼",
+  "scene_type": "action",
+  "characters_in_shot": [
+    "baizi",
+    "feibi-jiubi"
+  ],
+  "location": "楼梯",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "White baizi carefully holding tiny purple-jiubi's wing, walking down step by step gently, sisterly love, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "White baizi carefully holding tiny purple-jiubi's wing, walking down step by step gently, sisterly love, tracking_down motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "tracking_down",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "cheerful strum",
+    "sfx": [
+      "soft footsteps"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "动作",
+    "白子",
+    "啾比"
+  ],
+  "notes": "第1幕第13个镜头",
+  "linked_shots": [
+    "012",
+    "014"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

@@ -1,0 +1,44 @@
+{
+  "shot_id": "099",
+  "act": 5,
+  "order": 19,
+  "duration_sec": 1.0,
+  "title": "啾比抱玩偶",
+  "scene_type": "dream",
+  "characters_in_shot": [
+    "feibi-jiubi"
+  ],
+  "location": "梦境",
+  "time_of_day": "dream",
+  "image_prompt": {
+    "main": "Feibi-jiubi hugging plush toy, murmuring gugu gaga in sleep, baby dream talk, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Feibi-jiubi hugging plush toy, murmuring gugu gaga in sleep, baby dream talk, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "dream soft",
+    "sfx": [
+      "murmur"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "咕……嘎……",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "啾比",
+    "梦"
+  ],
+  "notes": "第5幕第19个镜头",
+  "linked_shots": [
+    "098",
+    "100"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

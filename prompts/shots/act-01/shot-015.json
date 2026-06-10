@@ -1,0 +1,45 @@
+{
+  "shot_id": "015",
+  "act": 1,
+  "order": 15,
+  "duration_sec": 1.0,
+  "title": "咕咕翻家庭相册",
+  "scene_type": "portrait",
+  "characters_in_shot": [
+    "gugu"
+  ],
+  "location": "餐厅",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Papa gugu opening family photo album, cover says our family, warm nostalgic look, family photos visible, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Papa gugu opening family photo album, cover says our family, warm nostalgic look, family photos visible, static motion, slow speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "slow"
+  },
+  "audio": {
+    "bgm": "soft piano",
+    "sfx": [
+      "page turning"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "我们的家",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "特写",
+    "咕咕",
+    "相册"
+  ],
+  "notes": "第1幕第15个镜头",
+  "linked_shots": [
+    "014",
+    "016"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}

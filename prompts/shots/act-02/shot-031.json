@@ -1,0 +1,42 @@
+{
+  "shot_id": "031",
+  "act": 2,
+  "order": 11,
+  "duration_sec": 1.0,
+  "title": "鸽子司机挥手",
+  "scene_type": "portrait",
+  "characters_in_shot": [],
+  "location": "校车驾驶位",
+  "time_of_day": "morning",
+  "image_prompt": {
+    "main": "Cool pigeon driver with sunglasses waving at children, hip and friendly mascot, Studio Ghibli inspired, soft lighting, warm color palette, watercolor + 3D render, cozy family animation, 4K, cinematic",
+    "negative": "horror, blood, realistic photo, watermark, text, dark scene, violence"
+  },
+  "video_prompt": {
+    "main": "Cool pigeon driver with sunglasses waving at children, hip and friendly mascot, static motion, normal speed, cinematic 24fps, 1.0 second",
+    "motion": "static",
+    "speed": "normal"
+  },
+  "audio": {
+    "bgm": "playful tune",
+    "sfx": [
+      "wave"
+    ],
+    "dialogue": [],
+    "narration": ""
+  },
+  "subtitle": "",
+  "transition_in": "cut",
+  "transition_out": "cut",
+  "tags": [
+    "司机",
+    "校车"
+  ],
+  "notes": "第2幕第11个镜头",
+  "linked_shots": [
+    "030",
+    "032"
+  ],
+  "version": "1.0",
+  "status": "draft"
+}
