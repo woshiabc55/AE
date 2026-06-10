@@ -95,6 +95,8 @@ export interface AnimationClip {
 export interface Project {
   id: string;
   name: string;
+  /** 源模式：pixel（像素画）或 svg（矢量） */
+  sourceMode: "pixel" | "svg";
   canvasWidth: number;
   canvasHeight: number;
   shapes: Shape[];
@@ -102,6 +104,8 @@ export interface Project {
   layers: Layer[];
   nodes: MeshNode[];
   animations: AnimationClip[];
+  /** 像素画布（sourceMode === 'pixel' 时使用） */
+  pixel: PixelCanvas | null;
   /** 当前生成的像素展开贴图 */
   atlas: AtlasResult | null;
   createdAt: number;
@@ -111,6 +115,21 @@ export interface Project {
 export interface HistoryState {
   shapes: Shape[];
   groups: ShapeGroup[];
+  pixel: PixelCanvas | null;
+}
+
+/** 像素画布数据 */
+export interface PixelCanvas {
+  /** 宽（像素数） */
+  width: number;
+  /** 高（像素数） */
+  height: number;
+  /** 调色板（index 0 = 透明；1..N 对应下方色值） */
+  palette: string[];
+  /** 像素索引数据，长度 = width * height；0 = 透明 */
+  data: number[];
+  /** 当前选中色（palette index，1..N） */
+  currentColor: number;
 }
 
 /** 单个图层在 Atlas 贴图中的位置与尺寸（UV 坐标） */

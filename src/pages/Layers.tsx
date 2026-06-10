@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { ArrowRight, ArrowLeft, RefreshCw, Eye, EyeOff, Download, Layers as LayersIcon, Scissors } from "lucide-react";
 import { useProjectStore } from "@/store/projectStore";
 import { splitIntoLayers } from "@/engine/layer/splitter";
+import { splitPixelIntoLayers } from "@/engine/layer/pixelSplitter";
 import { projectToSvg } from "@/engine/svg/svg";
 import { downloadBlob } from "@/engine/exporter";
+import { PixelPreviewImage } from "@/components/canvas/PixelPreviewImage";
 import { cn } from "@/lib/utils";
 
 export default function Layers() {
@@ -20,7 +22,10 @@ export default function Layers() {
   const handleSplit = async () => {
     setSplitting(true);
     try {
-      const layers = await splitIntoLayers(project);
+      const layers =
+        project.sourceMode === "pixel"
+          ? await splitPixelIntoLayers(project)
+          : await splitIntoLayers(project);
       setLayers(layers);
       if (layers[0]) setSelectedLayerId(layers[0].id);
     } finally {
@@ -28,10 +33,16 @@ export default function Layers() {
     }
   };
 
-  // 自动运行一次如果已有形状
+  // 自动运行一次如果已有形状/像素
   useEffect(() => {
-    if (project.layers.length === 0 && project.groups.length > 0) {
-      handleSplit();
+    if (project.layers.length === 0) {
+      if (project.sourceMode === "svg" && project.groups.length > 0) {
+        handleSplit();
+      } else if (project.sourceMode === "pixel" && project.pixel) {
+        // 像素模式：只要有像素就切
+        const hasPx = project.pixel.data.some((c) => c !== 0);
+        if (hasPx) handleSplit();
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project.id]);
@@ -137,20 +148,44 @@ export default function Layers() {
         <div className="grid grid-cols-2 gap-3 min-h-0">
           <div className="panel p-3 flex flex-col gap-2 min-h-0">
             <div className="flex items-center justify-between">
-              <div className="text-display text-mist-50">原始 SVG</div>
-              <span className="chip">vector</span>
+              <div className="text-display text-mist-50">
+                {project.sourceMode === "pixel" ? "原始像素" : "原始 SVG"}
+              </div>
+              <span className="chip">{project.sourceMode === "pixel" ? "pixel" : "vector"}</span>
             </div>
             <div className="flex-1 rounded-xl bg-grid-light bg-ink-900 overflow-hidden flex items-center justify-center p-4" style={{ backgroundSize: "16px 16px" }}>
-              <div
-                className="max-w-full max-h-full"
-                style={{ filter: "drop-shadow(0 6px 18px rgba(7,10,20,0.5))" }}
-                dangerouslySetInnerHTML={{ __html: fullSvg }}
-              />
+              {project.sourceMode === "pixel" ? (
+                <div
+                  className="bg-ink-50 shadow-2xl"
+                  style={{ filter: "drop-shadow(0 6px 18px rgba(7,10,20,0.5))" }}
+                >
+                  <PixelPreviewImage
+                    pixel={project.pixel}
+                    className="block"
+                  />
+                </div>
+              ) : (
+                <div
+                  className="max-w-full max-h-full"
+                  style={{ filter: "drop-shadow(0 6px 18px rgba(7,10,20,0.5))" }}
+                  dangerouslySetInnerHTML={{ __html: fullSvg }}
+                />
+              )}
             </div>
             <div className="text-[10px] font-mono text-mist-300 flex justify-between">
-              <span>groups: {project.groups.length}</span>
-              <span>shapes: {project.shapes.length}</span>
-              <span>{project.canvasWidth} × {project.canvasHeight}</span>
+              {project.sourceMode === "pixel" ? (
+                <>
+                  <span>palette: {project.pixel?.palette.filter((c) => c !== "#00000000").length ?? 0}</span>
+                  <span>size: {project.pixel?.width ?? 0}×{project.pixel?.height ?? 0}</span>
+                  <span>px: {project.pixel?.data.filter((c) => c !== 0).length ?? 0}</span>
+                </>
+              ) : (
+                <>
+                  <span>groups: {project.groups.length}</span>
+                  <span>shapes: {project.shapes.length}</span>
+                  <span>{project.canvasWidth} × {project.canvasHeight}</span>
+                </>
+              )}
             </div>
           </div>
 

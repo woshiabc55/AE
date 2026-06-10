@@ -2,13 +2,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight, Sparkles, MousePointerClick, Wand2, Download, Eye, ChevronRight } from "lucide-react";
 import { useProjectStore } from "@/store/projectStore";
 import { PRESET_TEMPLATES } from "@/templates/presets";
+import { PIXEL_SAMPLES } from "@/templates/pixelSamples";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import MiniCharacter from "@/components/canvas/MiniCharacter";
+import { PixelPreviewImage } from "@/components/canvas/PixelPreviewImage";
+import { useMemo } from "react";
 
 const WORKFLOW = [
-  { num: "01", name: "绘制", sub: "DRAW", desc: "用矢量工具快速勾勒身体、衣服、表情", color: "from-sakura-400 to-sakura-600" },
-  { num: "02", name: "分层", sub: "SPLIT", desc: "一键把 SVG 拆成可独立移动的 PNG 图层", color: "from-butter-400 to-sakura-400" },
+  { num: "01", name: "绘制", sub: "DRAW", desc: "像素画工具：铅笔、橡皮、油漆桶、吸管，支持镜像", color: "from-sakura-400 to-sakura-600" },
+  { num: "02", name: "分层", sub: "SPLIT", desc: "按颜色族自动切分，每种颜色 = 一个图层", color: "from-butter-400 to-sakura-400" },
   { num: "03", name: "网格", sub: "MESH", desc: "智能生成树形骨骼，绑定到每个图层", color: "from-leaf to-sky" },
   { num: "04", name: "展开", sub: "ATLAS", desc: "把所有图层打包成一张贴图（含 UV 坐标）", color: "from-butter-300 to-flame" },
   { num: "05", name: "动画", sub: "ANIMATE", desc: "套用预设动画模板，实时预览", color: "from-sky to-sakura-400" },
@@ -17,13 +20,23 @@ const WORKFLOW = [
 export default function Home() {
   const loadTemplate = useProjectStore((s) => s.loadTemplate);
   const newBlank = useProjectStore((s) => s.newBlankProject);
+  const setPixel = useProjectStore((s) => s.setPixel);
   const navigate = useNavigate();
   const [hover, setHover] = useState<string | null>(null);
+
+  const heroPixel = useMemo(() => PIXEL_SAMPLES[0].build(), []);
 
   const handleLoad = (id: string) => {
     const tpl = PRESET_TEMPLATES.find((p) => p.id === id);
     if (!tpl) return;
     loadTemplate(tpl.build());
+    navigate("/draw");
+  };
+
+  const handleStartPixelSample = () => {
+    newBlank();
+    const sample = PIXEL_SAMPLES[0].build();
+    setPixel(sample);
     navigate("/draw");
   };
 
@@ -50,20 +63,23 @@ export default function Home() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <button
+                onClick={handleStartPixelSample}
+                className="btn-primary text-base"
+              >
+                <Wand2 className="w-5 h-5" />
+                打开像素示例
+                <ArrowRight className="w-4 h-4" />
+              </button>
+              <button
                 onClick={() => {
                   newBlank();
                   navigate("/draw");
                 }}
-                className="btn-primary text-base"
+                className="btn-ghost text-base"
               >
-                <Wand2 className="w-5 h-5" />
-                开始空白创作
-                <ArrowRight className="w-4 h-4" />
-              </button>
-              <Link to="/draw" className="btn-ghost text-base">
                 <MousePointerClick className="w-4 h-4" />
-                使用模板
-              </Link>
+                空白画布
+              </button>
               <Link to="/preview" className="btn-ghost text-base">
                 <Eye className="w-4 h-4" />
                 效果预览
@@ -71,7 +87,7 @@ export default function Home() {
             </div>
             <div className="mt-8 flex gap-6 text-xs font-mono text-mist-300">
               <div className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-leaf" />纯前端</div>
-              <div className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-sakura-400" />4 步出片</div>
+              <div className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-sakura-400" />5 步出片</div>
               <div className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-butter-400" />5+ 动画模板</div>
               <div className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-sky" />moc3 / JSON / WebM</div>
             </div>
@@ -83,7 +99,15 @@ export default function Home() {
               <div className="absolute inset-0 bg-sakura-glow opacity-60" />
               <div className="relative h-full flex flex-col items-center justify-center">
                 <div className="animate-float">
-                  <MiniCharacter templateId="fox" className="w-64 h-80" />
+                  <div
+                    className="w-64 h-80 bg-ink-50 shadow-2xl rounded-lg flex items-center justify-center"
+                    style={{ filter: "drop-shadow(0 8px 20px rgba(7,10,20,0.4))" }}
+                  >
+                    <PixelPreviewImage
+                      pixel={heroPixel}
+                      className="w-56 h-72 block"
+                    />
+                  </div>
                 </div>
                 <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between">
                   <div className="panel-solid p-3 flex items-center gap-3">
@@ -114,6 +138,12 @@ export default function Home() {
               <div className="flex items-center gap-2 text-xs font-mono">
                 <span className="w-1.5 h-1.5 rounded-full bg-butter-400 animate-pulse" />
                 <span className="text-mist-100">bone · head → body</span>
+              </div>
+            </div>
+            <div className="absolute bottom-24 -right-3 panel-solid p-2.5 animate-float" style={{ animationDelay: "-3s" }}>
+              <div className="flex items-center gap-2 text-xs font-mono">
+                <span className="w-1.5 h-1.5 rounded-full bg-leaf animate-pulse" />
+                <span className="text-mist-100">64 × 96 · 像素画</span>
               </div>
             </div>
           </div>

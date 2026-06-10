@@ -44,8 +44,8 @@ export const buildMeshFromLayers = (project: Project): MeshNode[] => {
     return { layer: l, nodeName, centerX, centerY };
   });
 
-  // 2. body 节点（如果存在名为"身体/躯干/Body"等 layer）
-  const bodyLayer = layerInfo.find((li) => /^body|body|身体|躯干|衣服|上衣|裙子$/.test(li.nodeName));
+  // 2. body 节点（如果存在名为"身体/躯干/Body/skin"等 layer）
+  const bodyLayer = layerInfo.find((li) => /^(body|body|身体|躯干|衣服|上衣|裙子|skin)$/.test(li.nodeName));
   if (bodyLayer) {
     defs.push({
       id: uid(),
@@ -60,8 +60,8 @@ export const buildMeshFromLayers = (project: Project): MeshNode[] => {
     colorMap.set("body", "#FF7AB6");
   }
 
-  // 3. 头节点（位于画布上 1/3）
-  const headLayer = layerInfo.find((li) => li.nodeName === "head" || li.nodeName === "face" || li.nodeName === "hair");
+  // 3. 头节点（位于画布上 1/3，识别 hair/head/face）
+  const headLayer = layerInfo.find((li) => ["head", "face", "hair"].includes(li.nodeName));
   if (headLayer) {
     const parentName = defs[0]?.name ?? null;
     defs.push({
