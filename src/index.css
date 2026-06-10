@@ -2,18 +2,57 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+/* ===================== 设计令牌 ===================== */
+/* 默认（暗色） */
+:root,
+.dark {
   color-scheme: dark;
+  --ink-bg-rgb: 11 11 12;        /* #0B0B0C */
+  --ink-fg-rgb: 245 241 232;     /* #F5F1E8 */
+  --ink-100-rgb: 232 228 216;    /* #E8E4D8 */
+  --ink-200-rgb: 58 58 60;       /* #3A3A3C */
+  --ink-300-rgb: 107 107 110;    /* #6B6B6E */
+  --ink-400-rgb: 26 26 28;       /* #1A1A1C */
+  --vermillion-rgb: 232 69 60;   /* #E8453C */
+  --vermillion-soft-rgb: 255 107 92;
+  --ink-bg: rgb(var(--ink-bg-rgb));
+  --ink-fg: rgb(var(--ink-fg-rgb));
+  --ink-200: rgb(var(--ink-200-rgb));
+  --ink-300: rgb(var(--ink-300-rgb));
+  --selection-bg: rgb(var(--vermillion-rgb));
+  --selection-fg: rgb(var(--ink-bg-rgb));
+  --noise-opacity: 0.04;
+}
+
+/* 亮色主题 */
+.light {
+  color-scheme: light;
+  --ink-bg-rgb: 245 241 232;     /* #F5F1E8 */
+  --ink-fg-rgb: 11 11 12;        /* #0B0B0C */
+  --ink-100-rgb: 26 26 28;
+  --ink-200-rgb: 11 11 12;
+  --ink-300-rgb: 107 107 110;    /* #6B6B6E */
+  --ink-400-rgb: 255 255 255;    /* #FFFFFF */
+  --vermillion-rgb: 232 69 60;   /* #E8453C */
+  --vermillion-soft-rgb: 200 51 43;
+  --ink-bg: rgb(var(--ink-bg-rgb));
+  --ink-fg: rgb(var(--ink-fg-rgb));
+  --ink-200: rgb(var(--ink-200-rgb));
+  --ink-300: rgb(var(--ink-300-rgb));
+  --selection-bg: rgb(var(--vermillion-rgb));
+  --selection-fg: rgb(var(--ink-400-rgb));
+  --noise-opacity: 0.03;
 }
 
 html,
 body,
 #root {
   height: 100%;
-  background-color: #0B0B0C;
-  color: #F5F1E8;
+  background-color: var(--ink-bg);
+  color: var(--ink-fg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 body {
@@ -28,7 +67,7 @@ body::before {
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.04;
+  opacity: var(--noise-opacity);
   background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
@@ -38,20 +77,20 @@ body::before {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0B0B0C;
+  background: var(--ink-bg);
 }
 ::-webkit-scrollbar-thumb {
-  background: #3A3A3C;
+  background: var(--ink-300);
   border-radius: 0;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #6B6B6E;
+  background: var(--ink-fg);
 }
 
 /* 全局选择颜色 */
 ::selection {
-  background: #E8453C;
-  color: #0B0B0C;
+  background: var(--selection-bg);
+  color: var(--selection-fg);
 }
 
 /* 文字渐入动画 */
@@ -77,7 +116,7 @@ body::before {
 
 /* 焦点态 */
 *:focus-visible {
-  outline: 2px solid #E8453C;
+  outline: 2px solid rgb(var(--vermillion-rgb));
   outline-offset: 2px;
 }
 
@@ -92,7 +131,7 @@ body::before {
   bottom: -2px;
   width: 0;
   height: 1px;
-  background: #E8453C;
+  background: rgb(var(--vermillion-rgb));
   transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .link-underline:hover::after {
@@ -103,7 +142,7 @@ body::before {
 .cursor-blink::after {
   content: '_';
   animation: blink 1s steps(1) infinite;
-  color: #E8453C;
+  color: rgb(var(--vermillion-rgb));
 }
 @keyframes blink {
   50% { opacity: 0; }

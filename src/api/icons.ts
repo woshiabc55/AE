@@ -7,6 +7,7 @@ import { PHOSPHOR_ICONS } from '@/data/phosphor';
 import { ICONPARK_ICONS } from '@/data/iconpark';
 import { MATERIAL_ICONS } from '@/data/material';
 import { ICONFONT_ICONS } from '@/data/iconfont';
+import { EXTRA_LINE_ICONS, EXTRA_FILLED_ICONS } from '@/data/extra';
 
 type IconDefinition = {
   name: string;
@@ -58,6 +59,14 @@ export const ALL_ICONS: IconItem[] = [
   ...buildItems('iconpark', ICONPARK_ICONS, STYLE_MAP.iconpark, 'ip'),
   ...buildItems('material', MATERIAL_ICONS, STYLE_MAP.material, 'mt'),
   ...buildItems('iconfont', ICONFONT_ICONS, STYLE_MAP.iconfont, 'if'),
+  // 追加扩展图标（与基础数据同源同风格，总量 ~750+）
+  ...buildItems('lucide', EXTRA_LINE_ICONS, 0, 'lc'),
+  ...buildItems('heroicons', EXTRA_LINE_ICONS, 0, 'hi'),
+  ...buildItems('tabler', EXTRA_LINE_ICONS, 0, 'tb'),
+  ...buildItems('phosphor', EXTRA_LINE_ICONS, 0, 'ph'),
+  ...buildItems('iconpark', EXTRA_LINE_ICONS, 0, 'ip'),
+  ...buildItems('material', EXTRA_FILLED_ICONS, 1, 'mt'),
+  ...buildItems('iconfont', EXTRA_FILLED_ICONS, 1, 'if'),
 ];
 
 // 计数（按源）
@@ -114,4 +123,12 @@ export function compareAcrossSources(keyword: string, sources: IconSource[]): Re
 /** 单个查询（按 id） */
 export function getIcon(id: string): IconItem | undefined {
   return ALL_ICONS.find((i) => i.id === id);
+}
+
+/** 随机一个图标（可选按源过滤） */
+export function getRandomIcon(source?: IconSource | 'all'): IconItem {
+  const pool =
+    source && source !== 'all' ? ALL_ICONS.filter((i) => i.source === source) : ALL_ICONS;
+  if (pool.length === 0) return ALL_ICONS[0];
+  return pool[Math.floor(Math.random() * pool.length)];
 }

@@ -1,20 +1,23 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  darkMode: ['class', '.dark'],
   theme: {
     extend: {
       colors: {
+        // 使用 CSS 变量驱动，明暗主题切换无需改类名
+        // 变量以 "R G B" 形式定义，Tailwind 通过 <alpha-value> 注入透明度
         ink: {
-          DEFAULT: '#0B0B0C',
-          50: '#F5F1E8',
-          100: '#E8E4D8',
-          200: '#3A3A3C',
-          300: '#6B6B6E',
-          400: '#1A1A1C',
+          DEFAULT: 'rgb(var(--ink-bg-rgb) / <alpha-value>)',
+          50: 'rgb(var(--ink-fg-rgb) / <alpha-value>)',
+          100: 'rgb(var(--ink-100-rgb) / <alpha-value>)',
+          200: 'rgb(var(--ink-200-rgb) / <alpha-value>)',
+          300: 'rgb(var(--ink-300-rgb) / <alpha-value>)',
+          400: 'rgb(var(--ink-400-rgb) / <alpha-value>)',
         },
         vermillion: {
-          DEFAULT: '#E8453C',
-          soft: '#FF6B5C',
+          DEFAULT: 'rgb(var(--vermillion-rgb) / <alpha-value>)',
+          soft: 'rgb(var(--vermillion-soft-rgb) / <alpha-value>)',
         },
       },
       fontFamily: {

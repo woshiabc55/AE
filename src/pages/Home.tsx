@@ -1,13 +1,15 @@
-import { useMemo, useEffect, useState } from 'react';
-import { ArrowDown, X } from 'lucide-react';
+import { useMemo, useEffect, useState, useCallback } from 'react';
+import { ArrowDown, X, Shuffle } from 'lucide-react';
 import { useExplorer } from '@/store/explorer';
 import { useDebounce } from '@/hooks/useDebounce';
-import { queryIcons } from '@/api/icons';
+import { queryIcons, getRandomIcon, SOURCE_COUNT } from '@/api/icons';
 import { SourceTabs } from '@/components/SourceTabs';
 import { CategorySidebar } from '@/components/CategorySidebar';
 import { IconGrid } from '@/components/IconGrid';
+import { IconDetailModal } from '@/components/IconDetailModal';
 import { SOURCE_META, ALL_SOURCES } from '@/api/types';
-import { SOURCE_COUNT } from '@/api/icons';
+import { useToast } from '@/store/toast';
+import type { IconItem } from '@/api/types';
 
 const HERO_TITLE = 'ONE GALLERY.\nEVERY ICON.';
 
@@ -15,6 +17,8 @@ export function Home() {
   const { keyword, activeSource, activeCategory, setKeyword, reset } = useExplorer();
   const debounced = useDebounce(keyword, 180);
   const [showHero, setShowHero] = useState(true);
+  const [surprise, setSurprise] = useState<IconItem | null>(null);
+  const pushToast = useToast((s) => s.push);
 
   const results = useMemo(
     () => queryIcons({ source: activeSource, category: activeCategory, keyword: debounced }),
@@ -26,6 +30,12 @@ export function Home() {
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  const onSurprise = useCallback(() => {
+    const icon = getRandomIcon(activeSource);
+    setSurprise(icon);
+    pushToast(`Surprise! ${icon.displayName} · ${SOURCE_META[icon.source].label}`, 'info');
+  }, [activeSource, pushToast]);
 
   return (
     <div>
@@ -57,7 +67,7 @@ export function Home() {
 
             <div className="mt-8 flex flex-wrap items-end justify-between gap-6">
               <p className="max-w-xl font-mono text-sm leading-relaxed text-ink-300">
-                A <span className="text-ink-50">7-source, 350+ icon</span> visual index for designers & developers.
+                A <span className="text-ink-50">7-source, 750+ icon</span> visual index for designers & developers.
                 Search, preview, copy and download — all in one editorial-style browser.
               </p>
               <div className="flex items-center gap-6 font-mono text-xs text-ink-300">
@@ -69,8 +79,8 @@ export function Home() {
               </div>
             </div>
 
-            {/* 源标签条 */}
-            <div className="mt-10 flex flex-wrap gap-2">
+            {/* 源标签条 + Surprise Me */}
+            <div className="mt-10 flex flex-wrap items-center gap-2">
               {ALL_SOURCES.map((src, i) => {
                 const meta = SOURCE_META[src];
                 const active = activeSource === src;
@@ -92,6 +102,16 @@ export function Home() {
                   </button>
                 );
               })}
+
+              <button
+                onClick={onSurprise}
+                title="Roll a random icon"
+                className="ml-auto flex items-center gap-2 border border-vermillion bg-vermillion/10 px-3 py-1.5 font-mono text-xs text-vermillion transition-all hover:bg-vermillion hover:text-ink"
+              >
+                <Shuffle size={12} strokeWidth={2} />
+                <span className="font-semibold uppercase tracking-wider">Surprise Me</span>
+                <span className="text-vermillion/70 group-hover:text-ink/70">↵</span>
+              </button>
             </div>
           </div>
 
@@ -133,6 +153,11 @@ export function Home() {
           <IconGrid icons={results} />
         </main>
       </div>
+
+      {/* Surprise Me 弹窗 */}
+      {surprise && (
+        <IconDetailModal icon={surprise} onClose={() => setSurprise(null)} />
+      )}
     </div>
   );
 }

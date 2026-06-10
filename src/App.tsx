@@ -4,8 +4,11 @@ import { Toaster } from './components/Toaster';
 import { Home } from './pages/Home';
 import { Favorites } from './pages/Favorites';
 import { Compare } from './pages/Compare';
+import { useThemeSync } from './hooks/useThemeSync';
 
 export default function App() {
+  useThemeSync();
+
   return (
     <div className="relative min-h-screen bg-ink text-ink-50">
       <Header />
