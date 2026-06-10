@@ -7,7 +7,6 @@ import {
   Crown,
   Wand2,
   Sun,
-  Moon,
   X,
 } from "lucide-react";
 import { useAppStore } from "@/store";
@@ -15,6 +14,7 @@ import type { StylePreset, TemplateRecord } from "@/types";
 import { toast } from "@/store/toast";
 import { confirmDialog } from "@/components/ui/ConfirmDialog";
 import { cn } from "@/utils/format";
+import { PackIO } from "@/components/PackIO";
 
 export function StyleStudio() {
   const styles = useAppStore((s) => s.styles);
@@ -22,6 +22,7 @@ export function StyleStudio() {
   const saveSettings = useAppStore((s) => s.saveSettings);
   const templates = useAppStore((s) => s.templates);
   const upsertTemplate = useAppStore((s) => s.upsertTemplate);
+  const upsertStyle = useAppStore((s) => s.upsertStyle);
 
   const [active, setActive] = useState<string | null>(null);
   const [previewTpl, setPreviewTpl] = useState<string>("");
@@ -83,16 +84,26 @@ export function StyleStudio() {
   return (
     <div className="space-y-6">
       <header>
-        <div className="flex items-center gap-2">
-          <Palette size={20} className="text-amber" />
-          <h1 className="font-display text-[36px] text-paper-50 leading-none">
-            Style 风格工作室
-          </h1>
+        <div className="flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <div className="flex items-center gap-2">
+              <Palette size={20} className="text-amber" />
+              <h1 className="font-display text-[36px] text-paper-50 leading-none">
+                Style 风格工作室
+              </h1>
+            </div>
+            <p className="mt-2 font-serif text-paper-200 max-w-2xl">
+              一键把视觉主题（颜色 / 字体）与剧本风格（导演指令）同时布置到任意剧本。
+              选一个 Style，决定它要覆盖哪些剧本，一键完成。
+            </p>
+          </div>
+          <PackIO
+            kind="style"
+            styles={styles}
+            upsertSkill={async () => {}}
+            upsertStyle={upsertStyle}
+          />
         </div>
-        <p className="mt-2 font-serif text-paper-200 max-w-2xl">
-          一键把视觉主题（颜色 / 字体）与剧本风格（导演指令）同时布置到任意剧本。
-          选一个 Style，决定它要覆盖哪些剧本，一键完成。
-        </p>
       </header>
 
       {/* Style 卡片墙 */}

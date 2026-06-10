@@ -21,6 +21,7 @@ import { toast } from "@/store/toast";
 import { confirmDialog } from "@/components/ui/ConfirmDialog";
 import { cn, copyText } from "@/utils/format";
 import { Modal } from "@/components/ui/Modal";
+import { PackIO } from "@/components/PackIO";
 
 const CATS: SkillCategory[] = [
   "hook",
@@ -102,12 +103,20 @@ export function Skills() {
             渲染时会自动展开。
           </p>
         </div>
-        <button
-          onClick={() => setCreating(true)}
-          className="reel-button text-[11px] py-2 px-4"
-        >
-          <Plus size={12} /> 新建技能
-        </button>
+        <div className="flex items-center gap-2">
+          <PackIO
+            kind="skill"
+            skills={skills}
+            upsertSkill={upsert}
+            upsertStyle={async () => {}}
+          />
+          <button
+            onClick={() => setCreating(true)}
+            className="reel-button text-[11px] py-2 px-4"
+          >
+            <Plus size={12} /> 新建技能
+          </button>
+        </div>
       </header>
 
       {/* 过滤栏 */}

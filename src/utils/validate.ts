@@ -131,6 +131,77 @@ export const ImportBundleSchema = z.object({
   exportedAt: z.number().optional(),
 });
 
+// ---------- Skill / Style / Resource Pack（v1.2 资源包） ----------
+export const SkillCategoryEnum = z.enum([
+  "hook",
+  "character",
+  "scene",
+  "twist",
+  "climax",
+  "ending",
+  "monologue",
+  "dialogue",
+  "world",
+  "pacing",
+  "other",
+]);
+
+export const SkillTypeEnum = z.enum(["fragment", "macro"]);
+
+export const SkillRecordSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1, "技能名必填").max(60),
+  key: z
+    .string()
+    .min(1, "key 必填")
+    .max(40)
+    .regex(/^[a-z0-9-]+$/, "key 仅允许小写字母、数字、横线"),
+  category: SkillCategoryEnum,
+  type: SkillTypeEnum,
+  content: z.string().min(1, "内容不能为空").max(20_000),
+  description: z.string().max(400).optional(),
+  tags: z.array(z.string().max(30)).max(20).optional(),
+  isBuiltin: z.union([z.literal(0), z.literal(1)]).optional(),
+  createdAt: z.number().int().optional(),
+  updatedAt: z.number().int().optional(),
+});
+
+export const StyleVisualSchema = z.object({
+  primary: z.string().min(1).max(40),
+  secondary: z.string().max(40).optional(),
+  font: z.string().min(1).max(120),
+  vibe: z.string().max(200),
+});
+
+export const StylePresetSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1, "风格名必填").max(40),
+  key: z
+    .string()
+    .min(1, "key 必填")
+    .max(40)
+    .regex(/^[a-z0-9-]+$/, "key 仅允许小写字母、数字、横线"),
+  visual: StyleVisualSchema,
+  scriptDirective: z.string().min(1).max(8_000),
+  promptSuffix: z.string().min(1).max(8_000),
+  isBuiltin: z.union([z.literal(0), z.literal(1)]).optional(),
+  createdAt: z.number().int().optional(),
+});
+
+export const ResourcePackMetaSchema = z.object({
+  name: z.string().min(1, "Pack 名必填").max(60),
+  source: z.literal("lumiere-v1"),
+  version: z.literal(1),
+  exportedAt: z.number().int(),
+  description: z.string().max(400).optional(),
+});
+
+export const ResourcePackSchema = z.object({
+  meta: ResourcePackMetaSchema,
+  skills: z.array(SkillRecordSchema).max(200).optional(),
+  styles: z.array(StylePresetSchema).max(50).optional(),
+});
+
 // ---------- 便利函数 ----------
 // 使用重载让 TypeScript 精确推断 ok: true / ok: false
 export type ValidationResult<T> =
