@@ -1,0 +1,61 @@
+// Tabler 风格 - 24x24, 2px stroke, square ends
+import type { IconCategory } from '../api/types';
+
+export const TABLER_ICONS: Array<{
+  name: string;
+  displayName: string;
+  category: IconCategory;
+  tags: string[];
+  d: string;
+}> = [
+  { name: 'home', displayName: 'Home', category: 'general', tags: ['home'], d: 'M5 12l-2 0l9 -9l9 9l-2 0M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6' },
+  { name: 'user', displayName: 'User', category: 'general', tags: ['user'], d: 'M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2' },
+  { name: 'settings', displayName: 'Settings', category: 'system', tags: ['settings'], d: 'M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0' },
+  { name: 'search', displayName: 'Search', category: 'general', tags: ['search'], d: 'M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0M21 21l-6 -6' },
+  { name: 'heart', displayName: 'Heart', category: 'general', tags: ['heart'], d: 'M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572' },
+  { name: 'star', displayName: 'Star', category: 'general', tags: ['star'], d: 'M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.087 6.253l6.9 1l-5 4.867l1.179 6.873z' },
+  { name: 'bell', displayName: 'Bell', category: 'communication', tags: ['bell'], d: 'M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6M9 17v1a3 3 0 0 0 6 0v-1' },
+  { name: 'mail', displayName: 'Mail', category: 'communication', tags: ['mail'], d: 'M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10zM3 7l9 6l9 -6' },
+  { name: 'calendar', displayName: 'Calendar', category: 'system', tags: ['calendar'], d: 'M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12zM16 3v4M8 3v4M4 11h16M11 15h1M12 15v3' },
+  { name: 'camera', displayName: 'Camera', category: 'media', tags: ['camera'], d: 'M5 7h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2zM12 13m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0' },
+  { name: 'photo', displayName: 'Photo', category: 'media', tags: ['photo'], d: 'M15 8h.01M3 6a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-12zM3 16l5 -5l5 5M14 14l1 -1l6 6' },
+  { name: 'play', displayName: 'Play', category: 'media', tags: ['play'], d: 'M6 4v16l14 -8z' },
+  { name: 'pause', displayName: 'Pause', category: 'media', tags: ['pause'], d: 'M6 5h4v14h-4zM14 5h4v14h-4z' },
+  { name: 'arrow-right', displayName: 'Arrow Right', category: 'arrow', tags: ['arrow'], d: 'M5 12l14 0M13 18l6 -6l-6 -6' },
+  { name: 'arrow-left', displayName: 'Arrow Left', category: 'arrow', tags: ['arrow'], d: 'M5 12l14 0M11 6l-6 6l6 6' },
+  { name: 'arrow-up', displayName: 'Arrow Up', category: 'arrow', tags: ['arrow'], d: 'M12 5l0 14M18 11l-6 -6l-6 6' },
+  { name: 'arrow-down', displayName: 'Arrow Down', category: 'arrow', tags: ['arrow'], d: 'M12 5l0 14M6 13l6 6l6 -6' },
+  { name: 'plus', displayName: 'Plus', category: 'system', tags: ['plus'], d: 'M12 5l0 14M5 12l14 0' },
+  { name: 'minus', displayName: 'Minus', category: 'system', tags: ['minus'], d: 'M5 12l14 0' },
+  { name: 'x', displayName: 'X', category: 'system', tags: ['close'], d: 'M18 6l-12 12M6 6l12 12' },
+  { name: 'check', displayName: 'Check', category: 'system', tags: ['check'], d: 'M5 12l5 5l10 -10' },
+  { name: 'pencil', displayName: 'Pencil', category: 'editor', tags: ['edit'], d: 'M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4M13.5 6.5l4 4' },
+  { name: 'trash', displayName: 'Trash', category: 'system', tags: ['trash'], d: 'M4 7l16 0M10 11l0 6M14 11l0 6M5 7l1 13a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -13M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3' },
+  { name: 'download', displayName: 'Download', category: 'system', tags: ['download'], d: 'M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2M7 11l5 5l5 -5M12 4l0 12' },
+  { name: 'upload', displayName: 'Upload', category: 'system', tags: ['upload'], d: 'M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2M7 9l5 -5l5 5M12 4l0 12' },
+  { name: 'share', displayName: 'Share', category: 'communication', tags: ['share'], d: 'M6 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0M18 6m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0M18 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0M8.7 10.7l6.6 -3.7M8.7 13.3l6.6 3.7' },
+  { name: 'copy', displayName: 'Copy', category: 'editor', tags: ['copy'], d: 'M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-2M19 9h-7a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-8a2 2 0 0 0 -2 -2z' },
+  { name: 'folder', displayName: 'Folder', category: 'file', tags: ['folder'], d: 'M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2' },
+  { name: 'file', displayName: 'File', category: 'file', tags: ['file'], d: 'M14 3v4a1 1 0 0 0 1 1h4M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2zM9 9h1M9 13h1M9 17h1' },
+  { name: 'shopping-cart', displayName: 'Cart', category: 'commerce', tags: ['cart'], d: 'M3 3l1.664 1.664m0 0l2.572 11.343a2 2 0 0 0 1.962 1.543h8.604a2 2 0 0 0 1.962 -1.543l1.572 -7.343a1 1 0 0 0 -.97 -1.264h-14.7M3 3h-1M5 3h-1M9 20a1 1 0 1 0 2 0a1 1 0 0 0 -2 0M17 20a1 1 0 1 0 2 0a1 1 0 0 0 -2 0' },
+  { name: 'credit-card', displayName: 'Card', category: 'commerce', tags: ['card'], d: 'M3 8a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-8zM3 10l18 0M7 15l2 0' },
+  { name: 'message-circle', displayName: 'Chat', category: 'communication', tags: ['chat'], d: 'M3 20v-2a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2zM12 12a3 3 0 1 0 0 -6a3 3 0 0 0 0 6z' },
+  { name: 'phone', displayName: 'Phone', category: 'communication', tags: ['phone'], d: 'M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2' },
+  { name: 'video', displayName: 'Video', category: 'media', tags: ['video'], d: 'M15 10l5 -3v10l-5 -3M5 5h7a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-7a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2' },
+  { name: 'microphone', displayName: 'Mic', category: 'media', tags: ['mic'], d: 'M9 5a3 3 0 0 1 6 0v5a3 3 0 0 1 -6 0v-5zM5 11a7 7 0 0 0 14 0M12 18v3M8 22h8' },
+  { name: 'sun', displayName: 'Sun', category: 'weather', tags: ['sun'], d: 'M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0M12 3v1M12 20v1M5 5l.7 .7M18.3 18.3l.7 .7M3 12h1M20 12h1M5 19l.7 -.7M18.3 5.7l.7 -.7' },
+  { name: 'moon', displayName: 'Moon', category: 'weather', tags: ['moon'], d: 'M12 3a6 6 0 0 0 9 9a9 9 0 1 1 -9 -9' },
+  { name: 'cloud', displayName: 'Cloud', category: 'weather', tags: ['cloud'], d: 'M6 17.6a4 4 0 0 1 -1.7 -7.6a5 5 0 0 1 9.7 -1a4 4 0 0 1 1 7.6' },
+  { name: 'world', displayName: 'Globe', category: 'general', tags: ['globe'], d: 'M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0M3 12h18M12 3a14.5 14.5 0 0 1 0 18a14.5 14.5 0 0 1 0 -18' },
+  { name: 'eye', displayName: 'Eye', category: 'general', tags: ['eye'], d: 'M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6' },
+  { name: 'lock', displayName: 'Lock', category: 'system', tags: ['lock'], d: 'M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6zM8 11v-4a4 4 0 1 1 8 0v4' },
+  { name: 'map-pin', displayName: 'Pin', category: 'general', tags: ['pin'], d: 'M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z' },
+  { name: 'wifi', displayName: 'Wifi', category: 'system', tags: ['wifi'], d: 'M12 18l.01 0M9 14a5 5 0 0 1 6 0M5 10a10 10 0 0 1 14 0M1 6a16 16 0 0 1 22 0' },
+  { name: 'battery', displayName: 'Battery', category: 'system', tags: ['battery'], d: 'M6 7h11a2 2 0 0 1 2 2v.5a.5 .5 0 0 0 .5 .5a.5 .5 0 0 1 .5 .5v3a.5 .5 0 0 1 -.5 .5a.5 .5 0 0 0 -.5 .5v.5a2 2 0 0 1 -2 2h-11a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2M7 9v6M10 9v6' },
+  { name: 'menu', displayName: 'Menu', category: 'system', tags: ['menu'], d: 'M4 6l16 0M4 12l16 0M4 18l16 0' },
+  { name: 'filter', displayName: 'Filter', category: 'system', tags: ['filter'], d: 'M3 4h18l-7 9v6l-4 -2v-4z' },
+  { name: 'refresh', displayName: 'Refresh', category: 'system', tags: ['refresh'], d: 'M20 11a8.1 8.1 0 0 0 -15.5 -2l-.3 -2M4 13a8.1 8.1 0 0 0 15.5 2l.3 2M20 4v5h-5M4 20v-5h5' },
+  { name: 'bookmark', displayName: 'Bookmark', category: 'general', tags: ['bookmark'], d: 'M5 4a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v17l-7 -4l-7 4z' },
+  { name: 'tag', displayName: 'Tag', category: 'commerce', tags: ['tag'], d: 'M7.5 7.5a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0 -3 0M3 12l-1.5 -1.5a1.5 1.5 0 0 1 0 -2.121l6.879 -6.879a1.5 1.5 0 0 1 2.121 0l11.379 11.379a1.5 1.5 0 0 1 0 2.121l-6.879 6.879a1.5 1.5 0 0 1 -2.121 0l-11.379 -11.379zM3 12l9 9' },
+  { name: 'grid', displayName: 'Grid', category: 'system', tags: ['grid'], d: 'M3 3h7v7H3V3Zm11 0h7v7h-7V3Zm0 11h7v7h-7v-7Zm-11 0h7v7H3v-7Z' },
+];
