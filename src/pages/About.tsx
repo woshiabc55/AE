@@ -49,6 +49,37 @@ export function About() {
             <li className="panel p-3">互动分支</li>
           </ul>
         </section>
+
+        <section>
+          <h2 className="font-display text-[28px] text-paper-50 mb-3">五、v1 新功能</h2>
+          <div className="space-y-3">
+            <div>
+              <Link to="/skills" className="font-display text-[20px] text-amber hover:underline">
+                → Skills · 剧本技能库
+              </Link>
+              <p>
+                片段（Fragment）+ 宏（Macro）双轨。提示词中插入
+                <code className="font-mono text-amber mx-1">@skill:cold-open</code>，
+                渲染时自动展开，并支持 <code className="font-mono">{"{{var}}"}</code> 字段插值。
+              </p>
+            </div>
+            <div>
+              <Link to="/style" className="font-display text-[20px] text-amber hover:underline">
+                → Style · 风格工作室
+              </Link>
+              <p>
+                一键把视觉主题（颜色、字体）与剧本风格（导演指令、风格清单）同时布置到任意剧本。
+              </p>
+            </div>
+            <div>
+              <span className="font-display text-[20px] text-amber">→ 结构树画布</span>
+              <p>
+                在剧本详情页右上角点击「结构树画布」进入。基于 beatModel
+                自动生成节拍层级，可拖拽重排、绑定字段、追加到提示词。
+              </p>
+            </div>
+          </div>
+        </section>
       </div>
 
       <div className="mt-12 flex items-center gap-3">

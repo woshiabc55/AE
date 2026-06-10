@@ -10,6 +10,9 @@ import { Settings } from "@/pages/Settings";
 import { About } from "@/pages/About";
 import { Marketplace } from "@/pages/Marketplace";
 import { VersionDiff } from "@/pages/VersionDiff";
+import { Skills } from "@/pages/Skills";
+import { StyleStudio } from "@/pages/StyleStudio";
+import { StructureCanvas } from "@/pages/StructureCanvas";
 import { CommandPalette } from "@/components/CommandPalette";
 import { ToastHost } from "@/components/ui/Toast";
 import { ConfirmHost } from "@/components/ui/ConfirmDialog";
@@ -44,6 +47,9 @@ export default function App() {
             <Route path="/library" element={<Library />} />
             <Route path="/library/:id" element={<ScriptView />} />
             <Route path="/library/:id/versions" element={<VersionDiff />} />
+            <Route path="/library/:id/canvas" element={<StructureCanvas />} />
+            <Route path="/skills" element={<Skills />} />
+            <Route path="/style" element={<StyleStudio />} />
             <Route path="/studio" element={<Studio />} />
             <Route path="/studio/:id" element={<Studio />} />
             <Route path="/marketplace" element={<Marketplace />} />

@@ -7,6 +7,8 @@ import {
   Settings,
   ScrollText,
   Store,
+  Wand2,
+  Palette,
 } from "lucide-react";
 import { cn } from "@/utils/format";
 import { Marquee } from "@/components/Marquee";
@@ -18,6 +20,8 @@ const NAV = [
   { to: "/", label: "Discover", icon: Compass, end: true },
   { to: "/library", label: "Library", icon: Library },
   { to: "/marketplace", label: "Market", icon: Store },
+  { to: "/skills", label: "Skills", icon: Wand2 },
+  { to: "/style", label: "Style", icon: Palette },
   { to: "/studio", label: "Studio", icon: Pen },
   { to: "/workshop", label: "Workshop", icon: ScrollText },
   { to: "/settings", label: "Settings", icon: Settings },
@@ -98,7 +102,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               <span className="font-mono">⌘K</span>
               <span>搜索</span>
             </button>
-            <span className="label-overline">v0.2 · stable</span>
+            <span className="label-overline">v1.0 · official</span>
             <NetworkDot />
           </div>
 

@@ -1,7 +1,7 @@
 // 全局命令面板 (⌘K)
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, ArrowRight, FileText, Pen, Compass, Library, Settings, ScrollText, Store, History, Sparkles } from "lucide-react";
+import { Search, ArrowRight, FileText, Pen, Compass, Library, Settings, ScrollText, Store, History, Sparkles, Wand2, Palette } from "lucide-react";
 import { useAppStore } from "@/store";
 import { useShortcuts } from "@/hooks/useShortcuts";
 
@@ -42,6 +42,8 @@ export function CommandPalette() {
       { id: "p-home", label: "Discover · 首页", kind: "page", to: "/", icon: Compass },
       { id: "p-lib", label: "Library · 公共模板库", kind: "page", to: "/library", icon: Library },
       { id: "p-mkt", label: "Marketplace · 模板市场", kind: "page", to: "/marketplace", icon: Store },
+      { id: "p-skl", label: "Skills · 剧本技能库", kind: "page", to: "/skills", icon: Wand2 },
+      { id: "p-stl", label: "Style · 风格工作室", kind: "page", to: "/style", icon: Palette },
       { id: "p-stu", label: "Studio · 新建模板", kind: "page", to: "/studio", icon: Pen },
       { id: "p-ws", label: "Workshop · 我的工作台", kind: "page", to: "/workshop", icon: ScrollText },
       { id: "p-set", label: "Settings · 设置", kind: "page", to: "/settings", icon: Settings },

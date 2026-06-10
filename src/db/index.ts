@@ -6,6 +6,9 @@ import type {
   FavoriteRecord,
   CommentRecord,
   RatingRecord,
+  SkillRecord,
+  StylePreset,
+  BeatNodeRecord,
 } from "@/types";
 
 export class LumiereDB extends Dexie {
@@ -15,6 +18,9 @@ export class LumiereDB extends Dexie {
   favorites!: Table<FavoriteRecord, string>;
   comments!: Table<CommentRecord, string>;
   ratings!: Table<RatingRecord, string>;
+  skills!: Table<SkillRecord, string>;
+  styles!: Table<StylePreset, string>;
+  beatNodes!: Table<BeatNodeRecord, string>;
 
   constructor() {
     super("lumiere-db");
@@ -32,6 +38,17 @@ export class LumiereDB extends Dexie {
       comments: "id, templateId, fieldKey, createdAt",
       ratings: "id, templateId, createdAt",
     });
+    this.version(3).stores({
+      templates: "id, slug, genre, beatModel, isPublic, updatedAt, usageCount",
+      versions: "id, templateId, versionNo, createdAt",
+      callLogs: "id, templateId, createdAt",
+      favorites: "id, templateId, createdAt",
+      comments: "id, templateId, fieldKey, createdAt",
+      ratings: "id, templateId, createdAt",
+      skills: "id, key, category, isBuiltin, updatedAt",
+      styles: "id, key, isBuiltin",
+      beatNodes: "id, templateId, parentId, order",
+    });
   }
 }
 
@@ -45,6 +62,9 @@ export async function clearAll() {
     db.favorites.clear(),
     db.comments.clear(),
     db.ratings.clear(),
+    db.skills.clear(),
+    db.styles.clear(),
+    db.beatNodes.clear(),
   ]);
 }
 

@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { db, safePut } from "@/db";
 import { SEED_TEMPLATES } from "@/data/seed";
+import { SEED_SKILLS } from "@/data/seed-skills";
+import { SEED_STYLES } from "@/data/seed-styles";
 import type {
   TemplateRecord,
   FavoriteRecord,
@@ -8,6 +10,9 @@ import type {
   CommentRecord,
   RatingRecord,
   VersionRecord,
+  SkillRecord,
+  StylePreset,
+  BeatNodeRecord,
 } from "@/types";
 import { nanoid } from "nanoid";
 
@@ -16,6 +21,10 @@ interface AppState {
   favorites: FavoriteRecord[];
   settings: AppSettings;
   loaded: boolean;
+  // v1 新增
+  skills: SkillRecord[];
+  styles: StylePreset[];
+  beatNodes: BeatNodeRecord[];
   // 派生
   loadAll: () => Promise<void>;
   // 模板
@@ -35,6 +44,16 @@ interface AppState {
   // 版本
   listVersions: (templateId: string) => Promise<VersionRecord[]>;
   rollbackToVersion: (versionId: string) => Promise<void>;
+  // v1 Skill
+  upsertSkill: (s: SkillRecord) => Promise<void>;
+  removeSkill: (id: string) => Promise<void>;
+  // v1 Style
+  upsertStyle: (s: StylePreset) => Promise<void>;
+  removeStyle: (id: string) => Promise<void>;
+  // v1 Beat Node
+  upsertBeatNode: (n: BeatNodeRecord) => Promise<void>;
+  removeBeatNode: (id: string) => Promise<void>;
+  removeBeatNodesByTemplate: (templateId: string) => Promise<void>;
   // 设置
   saveSettings: (s: Partial<AppSettings>) => void;
   addCustomProvider: (label: string, baseUrl: string, model: string) => void;
@@ -76,6 +95,10 @@ export const useAppStore = create<AppState>((set, get) => ({
   favorites: [],
   settings: loadSettings(),
   loaded: false,
+  // v1
+  skills: [],
+  styles: [],
+  beatNodes: [],
 
   async loadAll() {
     if (get().loaded) return;
@@ -85,7 +108,26 @@ export const useAppStore = create<AppState>((set, get) => ({
       tpls = SEED_TEMPLATES;
     }
     const favs = await db.favorites.toArray();
-    set({ templates: tpls, favorites: favs, loaded: true });
+    // 加载 skills / styles
+    let skills = await db.skills.toArray();
+    if (skills.length === 0) {
+      await db.skills.bulkPut(SEED_SKILLS);
+      skills = SEED_SKILLS;
+    }
+    let styles = await db.styles.toArray();
+    if (styles.length === 0) {
+      await db.styles.bulkPut(SEED_STYLES);
+      styles = SEED_STYLES;
+    }
+    const beatNodes = await db.beatNodes.toArray();
+    set({
+      templates: tpls,
+      favorites: favs,
+      skills,
+      styles,
+      beatNodes,
+      loaded: true,
+    });
   },
 
   async upsertTemplate(tpl, opts) {
@@ -352,8 +394,83 @@ export const useAppStore = create<AppState>((set, get) => ({
       db.favorites.clear(),
       db.comments.clear(),
       db.ratings.clear(),
+      db.skills.clear(),
+      db.styles.clear(),
+      db.beatNodes.clear(),
     ]);
-    set({ loaded: false, templates: [], favorites: [] });
+    set({
+      loaded: false,
+      templates: [],
+      favorites: [],
+      skills: [],
+      styles: [],
+      beatNodes: [],
+    });
     await get().loadAll();
+  },
+
+  // ==== v1 Skill ====
+  async upsertSkill(s) {
+    const next = { ...s, updatedAt: Date.now() };
+    await safePut(db.skills, next);
+    const list = get().skills;
+    const idx = list.findIndex((x) => x.id === next.id);
+    if (idx >= 0) {
+      const arr = [...list];
+      arr[idx] = next;
+      set({ skills: arr });
+    } else {
+      set({ skills: [next, ...list] });
+    }
+  },
+
+  async removeSkill(id) {
+    await db.skills.delete(id);
+    set({ skills: get().skills.filter((s) => s.id !== id) });
+  },
+
+  // ==== v1 Style ====
+  async upsertStyle(s) {
+    await safePut(db.styles, s);
+    const list = get().styles;
+    const idx = list.findIndex((x) => x.id === s.id);
+    if (idx >= 0) {
+      const arr = [...list];
+      arr[idx] = s;
+      set({ styles: arr });
+    } else {
+      set({ styles: [s, ...list] });
+    }
+  },
+
+  async removeStyle(id) {
+    await db.styles.delete(id);
+    set({ styles: get().styles.filter((s) => s.id !== id) });
+  },
+
+  // ==== v1 Beat Node ====
+  async upsertBeatNode(n) {
+    await safePut(db.beatNodes, n);
+    const list = get().beatNodes;
+    const idx = list.findIndex((x) => x.id === n.id);
+    if (idx >= 0) {
+      const arr = [...list];
+      arr[idx] = n;
+      set({ beatNodes: arr });
+    } else {
+      set({ beatNodes: [n, ...list] });
+    }
+  },
+
+  async removeBeatNode(id) {
+    await db.beatNodes.delete(id);
+    set({ beatNodes: get().beatNodes.filter((n) => n.id !== id) });
+  },
+
+  async removeBeatNodesByTemplate(templateId) {
+    await db.beatNodes.where("templateId").equals(templateId).delete();
+    set({
+      beatNodes: get().beatNodes.filter((n) => n.templateId !== templateId),
+    });
   },
 }));

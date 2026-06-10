@@ -4,7 +4,7 @@ import { Send, Square, Settings2, AlertTriangle, Sparkles, RotateCw } from "luci
 import { Link } from "react-router-dom";
 import { useAppStore } from "@/store";
 import { streamChat } from "@/utils/llm";
-import { renderPrompt, estimateTokens } from "@/utils/prompt";
+import { renderPrompt, estimateTokens, expandMacros } from "@/utils/prompt";
 import { timeAgo } from "@/utils/format";
 import { toast } from "@/store/toast";
 import type { TemplateRecord } from "@/types";
@@ -20,17 +20,26 @@ interface Props {
 
 export function LlmPanel({ tpl, values, streaming, setStreaming }: Props) {
   const settings = useAppStore((s) => s.settings);
+  const skills = useAppStore((s) => s.skills);
   const [output, setOutput] = useState("");
   const [err, setErr] = useState<string | null>(null);
   const [lastLatency, setLastLatency] = useState<number | null>(null);
   const [retrying, setRetrying] = useState<string | null>(null);
   const ctrlRef = useRef<AbortController | null>(null);
 
-  const rendered = renderPrompt(tpl.promptTpl, values);
+  // 先展开 @skill:xxx 宏，再渲染 {{var}}
+  const expanded = expandMacros(tpl.promptTpl, skills, values);
+  const rendered = expanded.text;
   const pt = estimateTokens(tpl.systemPrompt);
   const ut = estimateTokens(rendered);
 
   const onCall = async () => {
+    if (expanded.missing.length > 0) {
+      toast.warn(
+        "提示词里有未定义的技能",
+        expanded.missing.map((k) => "@skill:" + k).join(", ")
+      );
+    }
     setErr(null);
     setOutput("");
     setStreaming(true);

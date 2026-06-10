@@ -17,6 +17,7 @@ import {
   GitBranch,
   Star,
   MessageSquare,
+  TreePine,
 } from "lucide-react";
 import { useAppStore } from "@/store";
 import { renderPrompt, estimateTokens } from "@/utils/prompt";
@@ -114,6 +115,12 @@ export function ScriptView() {
             <History size={11} /> {versionCount} 个版本
           </Link>
         )}
+        <Link
+          to={`/library/${tpl.id}/canvas`}
+          className="ghost-button text-[10px] py-1.5 px-3"
+        >
+          <TreePine size={11} /> 结构树画布
+        </Link>
       </div>
 
       {/* Header */}
