@@ -2,6 +2,7 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { X } from "lucide-react";
 import { cn } from "@/utils/format";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 
 interface Props {
   open: boolean;
@@ -23,6 +24,7 @@ const SIZES = {
 
 export function Modal({ open, onClose, title, subtitle, size = "md", children, footer }: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
+  useFocusTrap(ref, open);
 
   useEffect(() => {
     if (!open) return;
@@ -30,6 +32,7 @@ export function Modal({ open, onClose, title, subtitle, size = "md", children, f
       if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     setTimeout(() => {
       const el = ref.current?.querySelector<HTMLElement>(
@@ -39,7 +42,7 @@ export function Modal({ open, onClose, title, subtitle, size = "md", children, f
     }, 50);
     return () => {
       window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
+      document.body.style.overflow = prevOverflow;
     };
   }, [open, onClose]);
 
@@ -49,11 +52,12 @@ export function Modal({ open, onClose, title, subtitle, size = "md", children, f
       className="fixed inset-0 z-[80] flex items-center justify-center px-4"
       role="dialog"
       aria-modal="true"
-      aria-label={title}
+      aria-labelledby={title ? "modal-title" : undefined}
     >
       <div
         className="absolute inset-0 bg-ink-950/85 backdrop-blur"
         onClick={onClose}
+        aria-hidden="true"
       />
       <div
         ref={ref}
@@ -65,7 +69,7 @@ export function Modal({ open, onClose, title, subtitle, size = "md", children, f
         {title && (
           <header className="flex items-start justify-between border-b border-ink-600 px-5 py-4">
             <div>
-              <h2 className="font-display text-[22px] text-paper-50 leading-tight">
+              <h2 id="modal-title" className="font-display text-[22px] text-paper-50 leading-tight">
                 {title}
               </h2>
               {subtitle && (
@@ -77,7 +81,7 @@ export function Modal({ open, onClose, title, subtitle, size = "md", children, f
             <button
               onClick={onClose}
               className="text-ink-300 hover:text-paper-100 p-1"
-              aria-label="关闭"
+              aria-label="关闭对话框"
             >
               <X size={16} />
             </button>

@@ -1,4 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
+import { memo } from "react";
 import {
   Clapperboard,
   Compass,
@@ -14,7 +15,6 @@ import { cn } from "@/utils/format";
 import { Marquee } from "@/components/Marquee";
 import { NetworkDot } from "@/components/ui/NetworkStatus";
 import { useShortcuts } from "@/hooks/useShortcuts";
-import { useRef } from "react";
 
 const NAV = [
   { to: "/", label: "Discover", icon: Compass, end: true },
@@ -27,9 +27,12 @@ const NAV = [
   { to: "/settings", label: "Settings", icon: Settings },
 ];
 
-export function AppLayout({ children }: { children: React.ReactNode }) {
+export const AppLayout = memo(function AppLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const loc = useLocation();
-  const triggerRef = useRef<(() => void) | null>(null);
 
   useShortcuts([
     {
@@ -154,4 +157,4 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       </footer>
     </div>
   );
-}
+});

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Search, ArrowRight, FileText, Pen, Compass, Library, Settings, ScrollText, Store, History, Sparkles, Wand2, Palette } from "lucide-react";
 import { useAppStore } from "@/store";
 import { useShortcuts } from "@/hooks/useShortcuts";
+import { cn } from "@/utils/format";
 
 export function CommandPalette() {
   const [open, setOpen] = useState(false);
@@ -11,7 +12,6 @@ export function CommandPalette() {
   const [activeIdx, setActiveIdx] = useState(0);
   const nav = useNavigate();
   const templates = useAppStore((s) => s.templates);
-  const listVersions = useAppStore.getState().listVersions;
 
   useEffect(() => {
     const onOpen = () => setOpen(true);
@@ -66,7 +66,7 @@ export function CommandPalette() {
             (t) =>
               t.title.toLowerCase().includes(ql) ||
               t.logline.toLowerCase().includes(ql) ||
-              t.tags.some((tg) => tg.toLowerCase().includes(ql))
+              (t.tags || []).some((tg) => tg.toLowerCase().includes(ql))
           )
           .slice(0, 8)
           .map((t) => ({
@@ -91,7 +91,7 @@ export function CommandPalette() {
       );
     }
     return items;
-  }, [q, templates, nav, listVersions]);
+  }, [q, templates, nav]);
 
   useEffect(() => {
     setActiveIdx(0);
@@ -219,9 +219,5 @@ export function CommandPalette() {
       </div>
     </div>
   );
-}
-
-function cn(...c: Array<string | false | undefined | null>) {
-  return c.filter(Boolean).join(" ");
 }
 
