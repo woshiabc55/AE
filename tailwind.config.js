@@ -46,6 +46,7 @@ export default {
         leaf: "#7CE3B5",
         sky: "#7CC0FF",
         flame: "#FF8B5C",
+        purple: "#C7A8FF",
       },
       boxShadow: {
         soft: "0 1px 2px rgba(7,10,20,0.06), 0 4px 16px rgba(7,10,20,0.08)",

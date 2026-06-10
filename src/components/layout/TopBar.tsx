@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, NavLink, Link } from "react-router-dom";
-import { Sparkles, Brush, Layers, GitBranch, LayoutGrid, PlayCircle, Download, Eye, Wand2 } from "lucide-react";
+import { Sparkles, Brush, Layers, GitBranch, LayoutGrid, PlayCircle, Download, Eye, Wand2, Sliders, ScanFace } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const STEPS = [
@@ -9,6 +9,8 @@ const STEPS = [
   { to: "/mesh", label: "网格", sub: "Mesh", icon: GitBranch, color: "text-leaf" },
   { to: "/atlas", label: "展开", sub: "Atlas", icon: LayoutGrid, color: "text-butter-300" },
   { to: "/animate", label: "动画", sub: "Animate", icon: PlayCircle, color: "text-sky" },
+  { to: "/optimize", label: "优化", sub: "Optimize", icon: Sliders, color: "text-purple" },
+  { to: "/capture", label: "面捕", sub: "Capture", icon: ScanFace, color: "text-flame" },
   { to: "/export", label: "导出", sub: "Export", icon: Download, color: "text-flame" },
 ];
 

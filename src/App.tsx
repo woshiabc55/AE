@@ -8,6 +8,8 @@ import Atlas from "@/pages/Atlas";
 import Animate from "@/pages/Animate";
 import ExportPage from "@/pages/Export";
 import Preview from "@/pages/Preview";
+import Optimize from "@/pages/Optimize";
+import Capture from "@/pages/Capture";
 
 export default function App() {
   return (
@@ -20,6 +22,8 @@ export default function App() {
           <Route path="/mesh" element={<Mesh />} />
           <Route path="/atlas" element={<Atlas />} />
           <Route path="/animate" element={<Animate />} />
+          <Route path="/optimize" element={<Optimize />} />
+          <Route path="/capture" element={<Capture />} />
           <Route path="/export" element={<ExportPage />} />
           <Route path="/preview" element={<Preview />} />
         </Route>

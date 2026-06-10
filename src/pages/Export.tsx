@@ -1,19 +1,45 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, FileJson, FileImage, FileVideo, Box, Download, Check } from "lucide-react";
+import { ArrowLeft, FileJson, FileImage, FileVideo, Box, Download, Check, Layers, Camera } from "lucide-react";
 import { useProjectStore } from "@/store/projectStore";
 import { exportProjectJson, exportMocLikeJson, exportSvg, exportWebM } from "@/engine/exporter";
+import { exportLive2DBundle } from "@/engine/exporter/live2d";
+import { exportPsdMerged, exportLayeredBundle } from "@/engine/exporter/psd";
 import { cn } from "@/lib/utils";
 
-type Format = "moc3" | "json" | "svg" | "webm";
+type Format = "live2d-zip" | "moc3" | "json" | "svg" | "webm" | "psd-zip" | "psd-merged";
 
 const FORMATS: { id: Format; name: string; desc: string; icon: any; gradient: string; ext: string }[] = [
   {
-    id: "moc3",
-    name: "moc3 · Live2D",
-    desc: "导出 moc3-like 描述，附 PNG 图层与关键帧",
+    id: "live2d-zip",
+    name: "Live2D 完整包",
+    desc: "moc3.json + mtn/*.mtn.json + textures/*.png 打成 ZIP",
     icon: Box,
     gradient: "from-sakura-400 to-butter-400",
+    ext: "live2d.zip",
+  },
+  {
+    id: "psd-zip",
+    name: "PSD 分层包",
+    desc: "分层 PNG 序列 + 灰度蒙板 + manifest.json，Photoshop 友好",
+    icon: Layers,
+    gradient: "from-sky to-sakura-400",
+    ext: "layered.zip",
+  },
+  {
+    id: "psd-merged",
+    name: "PSD 合并单图",
+    desc: "输出 8-bit RGB+A 单图层 PSD（Photoshop/GIMP/Krita 可读）",
+    icon: Camera,
+    gradient: "from-butter-400 to-leaf",
+    ext: "merged.psd",
+  },
+  {
+    id: "moc3",
+    name: "moc3 描述",
+    desc: "教学用 moc3-like 描述，附图层引用与关键帧",
+    icon: FileJson,
+    gradient: "from-sakura-400 to-flame",
     ext: "moc3.json",
   },
   {
@@ -57,7 +83,10 @@ export default function Export() {
     setDone(null);
     try {
       const filename = `${project.name || "project"}_${author}`;
-      if (format === "moc3") exportMocLikeJson(project);
+      if (format === "live2d-zip") exportLive2DBundle(project);
+      else if (format === "psd-zip") await exportLayeredBundle(project);
+      else if (format === "psd-merged") await exportPsdMerged(project);
+      else if (format === "moc3") exportMocLikeJson(project);
       else if (format === "json") exportProjectJson(project);
       else if (format === "svg") exportSvg(project);
       else if (format === "webm") {
@@ -109,9 +138,17 @@ export default function Export() {
           <span className="text-mist-200 text-sm">/</span>
           <span className="text-display text-mist-50">导出 · 多格式</span>
         </div>
-        <button onClick={() => navigate("/animate")} className="btn-ghost">
-          <ArrowLeft className="w-4 h-4" /> 上一步
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => navigate("/animate")} className="btn-ghost">
+            <ArrowLeft className="w-4 h-4" /> 上一步
+          </button>
+          <button onClick={() => navigate("/optimize")} className="btn-ghost">
+            批量优化
+          </button>
+          <button onClick={() => navigate("/capture")} className="btn-ghost">
+            面部捕捉
+          </button>
+        </div>
       </div>
 
       <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-3">
