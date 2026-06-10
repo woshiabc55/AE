@@ -1,0 +1,62 @@
+{
+  "name": "萤幕 Lumière · 云端 AI 剧本提示词模板器",
+  "short_name": "萤幕",
+  "description": "把灵感变成可复用的剧本资产：模板、Skill 库、风格预设、结构树画布。",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "categories": ["productivity", "creativity", "utilities"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "新建模板",
+      "url": "/studio",
+      "description": "打开 Studio 创作新模板"
+    },
+    {
+      "name": "素材库",
+      "url": "/library",
+      "description": "浏览公共模板"
+    },
+    {
+      "name": "Skill 库",
+      "url": "/skills",
+      "description": "管理剧本 Skill"
+    },
+    {
+      "name": "风格工作室",
+      "url": "/style",
+      "description": "一键全局布置"
+    }
+  ]
+}

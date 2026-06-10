@@ -6,6 +6,7 @@ import { ToastHost } from "@/components/ui/Toast";
 import { ConfirmHost } from "@/components/ui/ConfirmDialog";
 import { NetworkStatus } from "@/components/ui/NetworkStatus";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
+import { PWAUI } from "@/components/PWAUI";
 import { useAppStore } from "@/store";
 
 // 路由级代码分割：首屏只加载 Home，其他页面按需加载
@@ -110,6 +111,7 @@ export default function App() {
           <ConfirmHost />
           <ShortcutHelp />
         </Suspense>
+        <PWAUI />
       </ErrorBoundary>
     </Router>
   );
