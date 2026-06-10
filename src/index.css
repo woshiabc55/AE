@@ -1,0 +1,297 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-base: #0A0A0B;
+  --bg-elevated: #111114;
+  --bg-raised: #1A1A1F;
+  --text-primary: #F5F0E8;
+  --text-secondary: #A8A39A;
+  --text-muted: #6B6760;
+  --accent: #D4A574;
+  --accent-soft: rgba(212, 165, 116, 0.12);
+  --border-subtle: rgba(245, 240, 232, 0.08);
+  --border-strong: rgba(245, 240, 232, 0.16);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* 胶片噪点背景 */
+.film-grain::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.5;
+  z-index: 100;
+  mix-blend-mode: overlay;
+}
+
+/* 胶片暗角 */
+.vignette::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.4) 100%);
+  z-index: 99;
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(212, 165, 116, 0.2);
+  border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 165, 116, 0.4);
+}
+
+/* 文本选区 */
+::selection {
+  background: rgba(212, 165, 116, 0.3);
+  color: #F5F0E8;
+}
+
+/* 变量高亮 chip */
+.variable-chip {
+  display: inline-block;
+  padding: 1px 8px;
+  margin: 0 2px;
+  background: rgba(212, 165, 116, 0.15);
+  border: 1px solid rgba(212, 165, 116, 0.35);
+  color: #E0BC8A;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+  border-radius: 2px;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.variable-chip:hover {
+  background: rgba(212, 165, 116, 0.25);
+  border-color: rgba(212, 165, 116, 0.6);
+}
+.variable-chip.missing {
+  background: rgba(139, 58, 58, 0.15);
+  border-color: rgba(139, 58, 58, 0.4);
+  color: #C76A6A;
+}
+
+/* 打字机光标 */
+.caret {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: #D4A574;
+  margin-left: 2px;
+  animation: blink 1s step-end infinite;
+  vertical-align: text-bottom;
+}
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* 描边按钮 */
+.btn-outline {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transition: all 0.25s ease;
+  cursor: pointer;
+  border-radius: 0;
+}
+.btn-outline:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.btn-outline:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--accent);
+  color: #0A0A0B;
+  border: 1px solid var(--accent);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transition: all 0.25s ease;
+  cursor: pointer;
+  border-radius: 0;
+}
+.btn-primary:hover {
+  background: #E0BC8A;
+  border-color: #E0BC8A;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(212, 165, 116, 0.3);
+}
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  color: var(--text-secondary);
+  border: none;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+  cursor: pointer;
+  border-radius: 0;
+}
+.btn-ghost:hover {
+  color: var(--text-primary);
+  background: rgba(245, 240, 232, 0.04);
+}
+
+/* 输入框 */
+.input-base {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.875rem;
+  border-radius: 0;
+  transition: all 0.2s;
+  outline: none;
+}
+.input-base:focus {
+  border-color: var(--accent);
+  background: var(--bg-raised);
+}
+.input-base::placeholder {
+  color: var(--text-muted);
+}
+
+/* 卡片 */
+.card {
+  position: relative;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+.card:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-raised);
+}
+
+/* 章节序号徽章 */
+.scene-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+/* 金色分隔线 */
+.gold-line {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--accent), transparent);
+  opacity: 0.5;
+}
+
+/* 标签 */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 2px 8px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-family: 'JetBrains Mono', monospace;
+  border: 1px solid rgba(212, 165, 116, 0.25);
+  border-radius: 0;
+}
+
+/* 隐藏滚动条 */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* 淡入动画 */
+.fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-up {
+  animation: fadeUp 0.6s ease-out;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 渐入延迟 */
+.delay-100 { animation-delay: 0.1s; animation-fill-mode: backwards; }
+.delay-200 { animation-delay: 0.2s; animation-fill-mode: backwards; }
+.delay-300 { animation-delay: 0.3s; animation-fill-mode: backwards; }
+.delay-400 { animation-delay: 0.4s; animation-fill-mode: backwards; }
+.delay-500 { animation-delay: 0.5s; animation-fill-mode: backwards; }
