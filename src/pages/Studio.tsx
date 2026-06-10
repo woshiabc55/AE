@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import {
   ArrowLeft,
   Save,
@@ -9,7 +9,9 @@ import {
   Trash2,
   Sparkles,
   Heart,
-  RotateCcw,
+  History,
+  Wand2,
+  Eye,
 } from "lucide-react";
 import { useAppStore } from "@/store";
 import { FieldEditor } from "@/components/FieldEditor";
@@ -19,16 +21,25 @@ import { extractVars, renderPrompt, estimateTokens } from "@/utils/prompt";
 import { copyText, timeAgo } from "@/utils/format";
 import { BEAT_MODEL_LABEL, GENRE_LABEL } from "@/data/seed";
 import { nanoid } from "nanoid";
+import { useAutoSave, loadDraft, clearDraft } from "@/hooks/useAutoSave";
+import { useShortcuts } from "@/hooks/useShortcuts";
+import { useToast, toast } from "@/store/toast";
+import { confirmDialog } from "@/components/ui/ConfirmDialog";
+import { validate, TemplateDraftSchema } from "@/utils/validate";
 import type { TemplateRecord } from "@/types";
+import { Link } from "react-router-dom";
 
 export function Studio() {
   const params = useParams();
   const nav = useNavigate();
+  const [search] = useSearchParams();
   const templates = useAppStore((s) => s.templates);
   const upsert = useAppStore((s) => s.upsertTemplate);
   const remove = useAppStore((s) => s.removeTemplate);
   const isFav = useAppStore((s) => s.isFavorite);
   const toggleFav = useAppStore((s) => s.toggleFavorite);
+  const listVersions = useAppStore.getState().listVersions;
+  const [versionCount, setVersionCount] = useState<number>(0);
 
   const seed = useMemo<TemplateRecord | null>(() => {
     if (params.id) {
@@ -37,40 +48,125 @@ export function Studio() {
     return null;
   }, [params.id, templates]);
 
-  const [tpl, setTpl] = useState<TemplateRecord>(() => seed ?? newTemplate());
-  const [values, setValues] = useState<Record<string, string>>({});
+  const [tpl, setTpl] = useState<TemplateRecord>(() => {
+    if (params.id) {
+      const found = templates.find((t) => t.id === params.id);
+      if (found) return found;
+    }
+    // 加载草稿
+    const draft = loadDraft<TemplateRecord>("studio.new");
+    if (draft) return draft;
+    return newTemplate();
+  });
+  const [values, setValues] = useState<Record<string, string>>(() => {
+    const initial: Record<string, string> = {};
+    tpl.fields.forEach((f) => (initial[f.key] = defaultFor(f.key)));
+    return initial;
+  });
   const [streaming, setStreaming] = useState(false);
   const [savedTip, setSavedTip] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"edit" | "preview" | "roll">("edit");
+  const lastSavedRef = useRef<string>(JSON.stringify({ tpl, values }));
 
+  // 自动保存草稿
+  useAutoSave(
+    seed ? `studio.${seed.id}` : "studio.new",
+    { tpl, values }
+  );
+
+  // 从 ScriptView 通过 ?opt= 跳来时，应用 patch
+  useEffect(() => {
+    const opt = search.get("opt");
+    if (opt) {
+      try {
+        const json = decodeURIComponent(escape(atob(opt)));
+        const patch = JSON.parse(json);
+        setTpl((prev) => ({
+          ...prev,
+          ...(patch.promptTpl ? { promptTpl: patch.promptTpl } : {}),
+          ...(patch.systemPrompt ? { systemPrompt: patch.systemPrompt } : {}),
+        }));
+        toast.success("已应用优化结果", "记得点击「保存为版本」以生成新快照");
+      } catch {
+        toast.error("无法应用优化结果");
+      }
+    }
+  }, [search]);
+
+  // 加载版本数
   useEffect(() => {
     if (seed) {
-      setTpl(seed);
-      // 初始化 values
-      const initial: Record<string, string> = {};
-      seed.fields.forEach((f) => (initial[f.key] = defaultFor(f.key)));
-      setValues(initial);
+      listVersions(seed.id).then((vs) => setVersionCount(vs.length));
     }
   }, [seed?.id]);
 
   const vars = useMemo(() => extractVars(tpl.promptTpl), [tpl.promptTpl]);
   const rendered = useMemo(() => renderPrompt(tpl.promptTpl, values), [tpl.promptTpl, values]);
   const tokens = estimateTokens(rendered + tpl.systemPrompt);
+  const dirty = JSON.stringify({ tpl, values }) !== lastSavedRef.current;
 
-  const onSave = async () => {
+  const onSave = async (snapshot = false, changelog?: string) => {
+    // 校验草稿
+    const result = validate(TemplateDraftSchema, {
+      title: tpl.title,
+      slug: tpl.slug,
+      logline: tpl.logline ?? "",
+      genre: tpl.genre,
+      beatModel: tpl.beatModel,
+      tone: tpl.tone ?? "",
+      cover: tpl.cover ?? "",
+      fields: tpl.fields,
+      promptTpl: tpl.promptTpl,
+      systemPrompt: tpl.systemPrompt ?? "",
+      tags: tpl.tags ?? [],
+      description: tpl.description ?? "",
+    });
+    if (result.ok === false) {
+      toast.error("保存失败", result.errors[0]);
+      return;
+    }
     const next: TemplateRecord = {
       ...tpl,
       updatedAt: Date.now(),
-      version: seed ? tpl.version : 1,
     };
-    await upsert(next);
+    await upsert(next, { snapshot, changelog });
     setTpl(next);
-    setSavedTip("已保存 · " + timeAgo(next.updatedAt));
-    setTimeout(() => setSavedTip(null), 2200);
+    lastSavedRef.current = JSON.stringify({ tpl: next, values });
+    setSavedTip(snapshot ? "已保存为新版本" : "已保存");
     if (!seed) {
+      clearDraft("studio.new");
       nav(`/studio/${next.id}`, { replace: true });
+    } else {
+      clearDraft(`studio.${seed.id}`);
     }
+    setTimeout(() => setSavedTip(null), 2200);
   };
+
+  useShortcuts([
+    {
+      combo: "Mod+S",
+      description: "save",
+      handler: () => onSave(false),
+      allowInInputs: true,
+    },
+    {
+      combo: "Mod+Shift+S",
+      description: "save as version",
+      handler: async () => {
+        const r = await confirmDialog({
+          title: "保存为新版本快照？",
+          description: "将创建一个版本历史节点，可随时回滚。",
+          input: {
+            label: "Changelog（修改说明）",
+            placeholder: "优化节拍表 / 修复字段类型 / …",
+          },
+          confirmText: "保存",
+        });
+        if (r.ok) onSave(true, r.value || "snapshot");
+      },
+      allowInInputs: true,
+    },
+  ]);
 
   const onSaveAsNew = async () => {
     const next: TemplateRecord = {
@@ -78,6 +174,8 @@ export function Studio() {
       id: "tpl_" + nanoid(8),
       title: tpl.title + " · 副本",
       slug: tpl.slug + "-copy",
+      authorId: "me",
+      authorName: "You",
       isPublic: 0,
       version: 1,
       createdAt: Date.now(),
@@ -85,13 +183,26 @@ export function Studio() {
       usageCount: 0,
     };
     await upsert(next);
+    toast.success("已另存", `「${next.title}」`);
     nav(`/studio/${next.id}`);
   };
 
   const onDelete = async () => {
     if (!seed) return;
-    if (!confirm("确定删除该模板？此操作不可撤销。")) return;
+    const r = await confirmDialog({
+      title: "确定删除该模板？",
+      description: `「${seed.title}」将被永久删除，且无法恢复。`,
+      danger: true,
+      confirmText: "确认删除",
+      input: {
+        label: "输入模板名以确认",
+        placeholder: seed.title,
+        validate: (v) => (v === seed.title ? null : "名称不匹配"),
+      },
+    });
+    if (!r.ok) return;
     await remove(seed.id);
+    toast.success("已删除", seed.title);
     nav("/workshop");
   };
 
@@ -113,6 +224,7 @@ export function Studio() {
             value={tpl.title}
             onChange={(e) => setTpl({ ...tpl, title: e.target.value })}
             className="bg-transparent outline-none font-display text-[22px] text-paper-50 w-full"
+            placeholder="未命名模板"
           />
           <div className="flex items-center gap-2 label-overline mt-0.5">
             <span className="text-amber">{GENRE_LABEL[tpl.genre]}</span>
@@ -122,10 +234,21 @@ export function Studio() {
             <span>v{tpl.version.toString().padStart(2, "0")}</span>
             <span className="stat-divider" />
             <span>≈ {tokens} tok</span>
+            {dirty && (
+              <>
+                <span className="stat-divider" />
+                <span className="text-amber">● 未保存</span>
+              </>
+            )}
+            {!seed && (
+              <>
+                <span className="stat-divider" />
+                <span className="text-ink-300">草稿已自动暂存</span>
+              </>
+            )}
           </div>
         </div>
 
-        {/* tabs - 移动端 */}
         <div className="flex md:hidden border border-ink-600">
           {[
             { k: "edit", l: "字段" },
@@ -146,26 +269,56 @@ export function Studio() {
           ))}
         </div>
 
-        <button onClick={onSave} className="reel-button text-[10px] py-1.5 px-3">
+        <button
+          onClick={() => onSave(false)}
+          className="reel-button text-[10px] py-1.5 px-3"
+        >
           <Save size={11} /> {savedTip ?? "保存"}
         </button>
 
         {seed && (
-          <button
-            onClick={() => toggleFav(tpl.id)}
-            className={`ghost-button text-[10px] py-1.5 px-3 ${
-              isFavorited ? "border-reel text-reel" : ""
-            }`}
-          >
-            <Heart size={11} fill={isFavorited ? "#C8102E" : "none"} />
-            {isFavorited ? "已收藏" : "收藏"}
-          </button>
+          <>
+            <button
+              onClick={async () => {
+                const r = await confirmDialog({
+                  title: "保存为版本快照？",
+                  description: "将记录当前全部字段到版本历史。",
+                  input: {
+                    label: "Changelog",
+                    placeholder: "修改了节拍 / 风格调整 / …",
+                  },
+                  confirmText: "保存版本",
+                });
+                if (r.ok) onSave(true, r.value || "snapshot");
+              }}
+              className="ghost-button text-[10px] py-1.5 px-3"
+              title="保存为新版本（⌘⇧S）"
+            >
+              <History size={11} /> 快照
+            </button>
+            {versionCount > 0 && (
+              <Link
+                to={`/library/${seed.id}/versions`}
+                className="ghost-button text-[10px] py-1.5 px-3"
+              >
+                <History size={11} /> {versionCount}
+              </Link>
+            )}
+            <button
+              onClick={() => toggleFav(tpl.id)}
+              className={`ghost-button text-[10px] py-1.5 px-3 ${
+                isFavorited ? "border-reel text-reel" : ""
+              }`}
+            >
+              <Heart size={11} fill={isFavorited ? "#C8102E" : "none"} />
+              {isFavorited ? "已收藏" : "收藏"}
+            </button>
+          </>
         )}
       </div>
 
       {/* 桌面三栏 / 移动 tab */}
       <div className="flex-1 grid grid-cols-1 md:grid-cols-12 gap-0 overflow-hidden">
-        {/* 左：字段 */}
         <section
           className={`md:col-span-4 border-r border-ink-700 overflow-auto ${
             activeTab !== "edit" ? "hidden md:block" : ""
@@ -176,7 +329,6 @@ export function Studio() {
             <span className="label-overline">{tpl.fields.length} 个</span>
           </div>
           <div className="px-5 py-6 space-y-7">
-            {/* 元信息 */}
             <div className="space-y-3 pb-5 border-b border-ink-700">
               <div className="grid grid-cols-2 gap-3">
                 <div>
@@ -223,7 +375,6 @@ export function Studio() {
               </div>
             </div>
 
-            {/* 字段 */}
             {tpl.fields.map((f) => (
               <div key={f.key}>
                 <FieldEditor
@@ -243,8 +394,7 @@ export function Studio() {
               <button
                 onClick={async () => {
                   await copyText(rendered);
-                  setSavedTip("提示词已复制");
-                  setTimeout(() => setSavedTip(null), 1500);
+                  toast.success("提示词已复制");
                 }}
                 className="ghost-button text-[10px] py-1.5 px-3"
               >
@@ -262,7 +412,6 @@ export function Studio() {
           </div>
         </section>
 
-        {/* 中：提示词预览 */}
         <section
           className={`md:col-span-4 border-r border-ink-700 overflow-hidden ${
             activeTab !== "preview" ? "hidden md:block" : ""
@@ -276,7 +425,6 @@ export function Studio() {
           />
         </section>
 
-        {/* 右：开拍 / LLM */}
         <section
           className={`md:col-span-4 overflow-hidden ${
             activeTab !== "roll" ? "hidden md:block" : ""

@@ -1,11 +1,23 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { Clapperboard, Compass, Pen, Library, Settings, ScrollText } from "lucide-react";
+import {
+  Clapperboard,
+  Compass,
+  Pen,
+  Library,
+  Settings,
+  ScrollText,
+  Store,
+} from "lucide-react";
 import { cn } from "@/utils/format";
 import { Marquee } from "@/components/Marquee";
+import { NetworkDot } from "@/components/ui/NetworkStatus";
+import { useShortcuts } from "@/hooks/useShortcuts";
+import { useRef } from "react";
 
 const NAV = [
   { to: "/", label: "Discover", icon: Compass, end: true },
   { to: "/library", label: "Library", icon: Library },
+  { to: "/marketplace", label: "Market", icon: Store },
   { to: "/studio", label: "Studio", icon: Pen },
   { to: "/workshop", label: "Workshop", icon: ScrollText },
   { to: "/settings", label: "Settings", icon: Settings },
@@ -13,12 +25,25 @@ const NAV = [
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const loc = useLocation();
+  const triggerRef = useRef<(() => void) | null>(null);
+
+  useShortcuts([
+    {
+      combo: "Mod+K",
+      description: "open command palette",
+      handler: () => {
+        const el = document.querySelector<HTMLButtonElement>(
+          "[data-cmd-k-trigger]"
+        );
+        el?.click();
+      },
+    },
+  ]);
+
   return (
     <div className="min-h-screen flex flex-col bg-ink-900 text-paper-100">
-      {/* 顶部 marquee */}
       <Marquee />
 
-      {/* 顶栏 */}
       <header className="sticky top-0 z-30 border-b border-ink-700 bg-ink-900/85 backdrop-blur">
         <div className="mx-auto max-w-[1480px] px-6 lg:px-10 h-16 flex items-center justify-between">
           <NavLink to="/" className="group flex items-center gap-3">
@@ -35,7 +60,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             </div>
           </NavLink>
 
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-1" aria-label="主导航">
             {NAV.map((n) => {
               const active = n.end
                 ? loc.pathname === n.to
@@ -60,12 +85,27 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
-            <span className="label-overline">v0.1 · beta</span>
-            <span className="block w-1.5 h-1.5 rounded-full bg-reel animate-pulse" />
+            <button
+              data-cmd-k-trigger
+              onClick={() => {
+                const ev = new CustomEvent("lumiere:open-palette");
+                window.dispatchEvent(ev);
+              }}
+              className="ghost-button text-[10px] py-1.5 px-3"
+              aria-label="打开命令面板"
+              title="⌘K"
+            >
+              <span className="font-mono">⌘K</span>
+              <span>搜索</span>
+            </button>
+            <span className="label-overline">v0.2 · stable</span>
+            <NetworkDot />
           </div>
 
-          {/* 移动端菜单 */}
-          <nav className="flex md:hidden items-center gap-1">
+          <nav
+            className="flex md:hidden items-center gap-1"
+            aria-label="移动端导航"
+          >
             {NAV.map((n) => {
               const active = n.end
                 ? loc.pathname === n.to
@@ -88,10 +128,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      {/* 主内容 */}
-      <main className="flex-1 relative">{children}</main>
+      <main className="flex-1 relative" id="main-content">
+        {children}
+      </main>
 
-      {/* 页脚 */}
       <footer className="border-t border-ink-700 mt-12">
         <div className="mx-auto max-w-[1480px] px-6 lg:px-10 py-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center gap-3 text-ink-300">
@@ -100,11 +140,11 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             </span>
           </div>
           <div className="flex items-center gap-3 label-overline">
-            <span>“Action.”</span>
+            <span>"Action."</span>
             <span className="stat-divider" />
-            <span>“Cut.”</span>
+            <span>"Cut."</span>
             <span className="stat-divider" />
-            <span>“Print.”</span>
+            <span>"Print."</span>
           </div>
         </div>
       </footer>

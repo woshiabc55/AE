@@ -1,24 +1,56 @@
 import { useState } from "react";
-import { Key, Cpu, Sliders, Save, Check, Eye, EyeOff, ExternalLink } from "lucide-react";
+import {
+  Key,
+  Cpu,
+  Sliders,
+  Save,
+  Check,
+  Eye,
+  EyeOff,
+  ExternalLink,
+  Plus,
+  Trash2,
+} from "lucide-react";
 import { useAppStore } from "@/store";
+import { toast } from "@/store/toast";
+import { confirmDialog } from "@/components/ui/ConfirmDialog";
+import { validate, CustomProviderSchema } from "@/utils/validate";
+
+const BUILTIN_PRESETS: Array<{ l: string; u: string; m: string }> = [
+  { l: "OpenAI", u: "https://api.openai.com/v1", m: "gpt-4o-mini" },
+  { l: "DeepSeek", u: "https://api.deepseek.com/v1", m: "deepseek-chat" },
+  { l: "智谱 GLM", u: "https://open.bigmodel.cn/api/paas/v4", m: "glm-4-flash" },
+  { l: "月之暗面 Moonshot", u: "https://api.moonshot.cn/v1", m: "moonshot-v1-8k" },
+  { l: "通义千问 DashScope", u: "https://dashscope.aliyuncs.com/compatible-mode/v1", m: "qwen-plus" },
+  { l: "Ollama (本地)", u: "http://localhost:11434/v1", m: "llama3.1" },
+];
 
 export function Settings() {
   const settings = useAppStore((s) => s.settings);
   const save = useAppStore((s) => s.saveSettings);
+  const addCustom = useAppStore((s) => s.addCustomProvider);
+  const removeCustom = useAppStore((s) => s.removeCustomProvider);
   const [draft, setDraft] = useState(settings);
   const [showKey, setShowKey] = useState(false);
   const [tip, setTip] = useState<string | null>(null);
+
+  // 自定义 provider 草稿
+  const [cLabel, setCLabel] = useState("");
+  const [cUrl, setCUrl] = useState("");
+  const [cModel, setCModel] = useState("");
 
   const onSave = () => {
     save(draft);
     setTip("设置已保存");
     setTimeout(() => setTip(null), 1500);
+    toast.success("设置已保存", "参数已写入 localStorage");
   };
 
   const onTest = async () => {
     if (!draft.llmApiKey) {
       setTip("请先填入 API Key");
       setTimeout(() => setTip(null), 1500);
+      toast.warn("缺少 API Key", "请先在 API Key 栏粘贴密钥");
       return;
     }
     setTip("正在测试连接…");
@@ -26,12 +58,47 @@ export function Settings() {
       const r = await fetch(draft.llmBaseUrl.replace(/\/+$/, "") + "/models", {
         headers: { Authorization: `Bearer ${draft.llmApiKey}` },
       });
-      if (r.ok) setTip("连接成功 ✓");
-      else setTip(`连接失败 ${r.status}`);
+      if (r.ok) {
+        setTip("连接成功 ✓");
+        toast.success("连接成功", `${draft.llmBaseUrl} 返回 ${r.status}`);
+      } else {
+        setTip(`连接失败 ${r.status}`);
+        toast.error("连接失败", `状态码 ${r.status}`);
+      }
     } catch (e) {
       setTip("网络错误：" + (e as Error).message);
+      toast.error("网络错误", (e as Error).message);
     }
     setTimeout(() => setTip(null), 2500);
+  };
+
+  const onAddCustom = () => {
+    const r = validate(CustomProviderSchema, {
+      label: cLabel,
+      baseUrl: cUrl,
+      model: cModel,
+    });
+    if (r.ok === false) {
+      toast.error("参数非法", r.errors[0]);
+      return;
+    }
+    addCustom(r.data.label, r.data.baseUrl.replace(/\/+$/, ""), r.data.model);
+    setCLabel("");
+    setCUrl("");
+    setCModel("");
+    toast.success("已添加自定义预设", r.data.label);
+  };
+
+  const onRemoveCustom = async (idx: number, label: string) => {
+    const r = await confirmDialog({
+      title: "删除自定义预设？",
+      description: `将移除「${label}」，此操作不可撤销。`,
+      confirmText: "删除",
+      danger: true,
+    });
+    if (!r.ok) return;
+    removeCustom(idx);
+    toast.info("已移除", label);
   };
 
   return (
@@ -191,29 +258,135 @@ export function Settings() {
         </p>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {[
-            { l: "OpenAI", u: "https://api.openai.com/v1", m: "gpt-4o-mini" },
-            { l: "DeepSeek", u: "https://api.deepseek.com/v1", m: "deepseek-chat" },
-            { l: "智谱 GLM", u: "https://open.bigmodel.cn/api/paas/v4", m: "glm-4-flash" },
-            { l: "月之暗面 Moonshot", u: "https://api.moonshot.cn/v1", m: "moonshot-v1-8k" },
-            { l: "通义千问 DashScope", u: "https://dashscope.aliyuncs.com/compatible-mode/v1", m: "qwen-plus" },
-            { l: "Ollama (本地)", u: "http://localhost:11434/v1", m: "llama3.1" },
-          ].map((p) => (
-            <button
-              key={p.l}
-              onClick={() =>
-                setDraft({ ...draft, llmBaseUrl: p.u, llmModel: p.m })
+            ...BUILTIN_PRESETS,
+            ...settings.customProviders.map((c) => ({ l: c.label, u: c.baseUrl, m: c.model })),
+          ].map((p, i) => {
+            const isCustom = i >= BUILTIN_PRESETS.length;
+            return (
+              <div key={p.l + i} className="relative group">
+                <button
+                  onClick={() =>
+                    setDraft({ ...draft, llmBaseUrl: p.u, llmModel: p.m })
+                  }
+                  className="panel panel-hover p-3 w-full text-left"
+                >
+                  <div className="font-display text-[15px] text-paper-50 flex items-center gap-2">
+                    {p.l}
+                    {isCustom && (
+                      <span className="font-mono text-[9px] text-amber border border-amber/40 px-1">
+                        自定义
+                      </span>
+                    )}
+                  </div>
+                  <div className="font-mono text-[11px] text-ink-300 truncate mt-0.5">
+                    {p.m}
+                  </div>
+                  <div className="font-mono text-[10px] text-ink-400 truncate mt-0.5">
+                    {p.u}
+                  </div>
+                </button>
+                {isCustom && (
+                  <button
+                    onClick={() => onRemoveCustom(i - BUILTIN_PRESETS.length, p.l)}
+                    className="absolute top-1.5 right-1.5 p-1 text-ink-300 hover:text-reel opacity-0 group-hover:opacity-100 transition"
+                    aria-label={`删除 ${p.l}`}
+                  >
+                    <Trash2 size={11} />
+                  </button>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* 添加自定义 */}
+        <div className="mt-5 panel p-4 bg-ink-900/40">
+          <div className="flex items-center gap-2 mb-3">
+            <Plus size={12} className="text-amber" />
+            <span className="label-overline">添加自定义 Provider</span>
+          </div>
+          <div className="grid md:grid-cols-3 gap-2">
+            <input
+              value={cLabel}
+              onChange={(e) => setCLabel(e.target.value)}
+              className="field-input font-mono text-[13px]"
+              placeholder="名称（例：自建网关）"
+            />
+            <input
+              value={cUrl}
+              onChange={(e) => setCUrl(e.target.value)}
+              className="field-input font-mono text-[13px]"
+              placeholder="Base URL（https://...）"
+            />
+            <div className="flex gap-2">
+              <input
+                value={cModel}
+                onChange={(e) => setCModel(e.target.value)}
+                className="field-input font-mono text-[13px] flex-1"
+                placeholder="模型名"
+              />
+              <button onClick={onAddCustom} className="reel-button text-[10px] py-1.5 px-3">
+                <Plus size={11} /> 添加
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 重试策略 */}
+      <section className="panel p-6 mb-6">
+        <div className="flex items-center gap-2 mb-4">
+          <Sliders size={16} className="text-amber" />
+          <h2 className="font-display text-[22px] text-paper-50">重试与容错</h2>
+        </div>
+        <p className="font-serif text-[14px] text-paper-200 leading-relaxed mb-4">
+          当 LLM 调用失败（429 / 5xx / 网络中断）时，萤幕会按指数退避自动重试。
+        </p>
+        <div className="grid md:grid-cols-2 gap-6">
+          <div>
+            <div className="flex items-center justify-between">
+              <label className="label-overline">重试次数</label>
+              <span className="font-mono text-amber text-[12px]">
+                {draft.retryCount}
+              </span>
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="5"
+              step="1"
+              value={draft.retryCount}
+              onChange={(e) =>
+                setDraft({ ...draft, retryCount: parseInt(e.target.value) })
               }
-              className="panel panel-hover p-3 text-left"
-            >
-              <div className="font-display text-[15px] text-paper-50">{p.l}</div>
-              <div className="font-mono text-[11px] text-ink-300 truncate mt-0.5">
-                {p.m}
-              </div>
-              <div className="font-mono text-[10px] text-ink-400 truncate mt-0.5">
-                {p.u}
-              </div>
-            </button>
-          ))}
+              className="w-full mt-2 accent-amber"
+            />
+            <p className="mt-1 text-[11px] text-ink-300 font-serif italic">
+              0 表示不重试。建议 2-3 次。
+            </p>
+          </div>
+          <div>
+            <div className="flex items-center justify-between">
+              <label className="label-overline">初始退避（毫秒）</label>
+              <span className="font-mono text-amber text-[12px]">
+                {draft.retryDelay}ms
+              </span>
+            </div>
+            <input
+              type="range"
+              min="300"
+              max="5000"
+              step="100"
+              value={draft.retryDelay}
+              onChange={(e) =>
+                setDraft({ ...draft, retryDelay: parseInt(e.target.value) })
+              }
+              className="w-full mt-2 accent-amber"
+            />
+            <p className="mt-1 text-[11px] text-ink-300 font-serif italic">
+              每次重试间隔会翻倍（300 → 600 → 1200…）。
+            </p>
+          </div>
         </div>
       </section>
 

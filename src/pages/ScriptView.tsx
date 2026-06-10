@@ -12,6 +12,11 @@ import {
   Film,
   Tag as TagIcon,
   Share2,
+  History,
+  Wand2,
+  GitBranch,
+  Star,
+  MessageSquare,
 } from "lucide-react";
 import { useAppStore } from "@/store";
 import { renderPrompt, estimateTokens } from "@/utils/prompt";
@@ -19,6 +24,14 @@ import { copyText, formatTime, timeAgo } from "@/utils/format";
 import { BEAT_MODEL_LABEL, GENRE_LABEL } from "@/data/seed";
 import { FieldEditor } from "@/components/FieldEditor";
 import { PromptPreview } from "@/components/PromptPreview";
+import { ShareModal } from "@/components/marketplace/ShareModal";
+import { CommentSection } from "@/components/marketplace/CommentSection";
+import { RatingSection } from "@/components/marketplace/RatingSection";
+import { PromptOptimizer } from "@/components/prompt/PromptOptimizer";
+import { useLiveQuery } from "dexie-react-hooks";
+import { db } from "@/db";
+import { toast } from "@/store/toast";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 export function ScriptView() {
   const { id } = useParams();
@@ -27,10 +40,20 @@ export function ScriptView() {
   const isFav = useAppStore((s) => s.isFavorite);
   const toggleFav = useAppStore((s) => s.toggleFavorite);
   const incrementUsage = useAppStore((s) => s.incrementUsage);
+  const duplicate = useAppStore((s) => s.duplicateTemplate);
 
   const [values, setValues] = useState<Record<string, string>>({});
   const [copied, setCopied] = useState<string | null>(null);
   const [showRaw, setShowRaw] = useState(true);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [optimizeOpen, setOptimizeOpen] = useState(false);
+  const [tplOverride, setTplOverride] = useState<any | null>(null);
+
+  // 实时版本数
+  const versionCount = useLiveQuery(
+    () => db.versions.where("templateId").equals(id ?? "").count(),
+    [id]
+  );
 
   useEffect(() => {
     if (tpl) {
@@ -38,6 +61,7 @@ export function ScriptView() {
       tpl.fields.forEach((f) => (init[f.key] = defaultExample(f.key, f.type)));
       setValues(init);
       incrementUsage(tpl.id);
+      localStorage.setItem("lumiere.lastTemplateId", tpl.id);
     }
   }, [tpl?.id]);
 
@@ -54,39 +78,62 @@ export function ScriptView() {
     );
   }
 
-  const rendered = renderPrompt(tpl.promptTpl, values);
-  const tokens = estimateTokens(rendered + tpl.systemPrompt);
-  const filled = tpl.fields.filter((f) => values[f.key]?.trim()).length;
-  const fav = isFav(tpl.id);
+  // 优化器可能已应用了重写，临时覆盖展示
+  const displayTpl = tplOverride
+    ? { ...tpl, ...tplOverride }
+    : tpl;
+
+  const rendered = renderPrompt(displayTpl.promptTpl, values);
+  const tokens = estimateTokens(rendered + displayTpl.systemPrompt);
+  const filled = displayTpl.fields.filter((f) => values[f.key]?.trim()).length;
+  const fav = isFav(displayTpl.id);
 
   const onCopy = async (text: string, key: string) => {
     await copyText(text);
     setCopied(key);
+    toast.success("已复制", text.length > 60 ? `${text.slice(0, 60)}…` : undefined);
     setTimeout(() => setCopied(null), 1500);
   };
 
   return (
     <div className="mx-auto max-w-[1480px] px-6 lg:px-10 py-8">
       {/* 顶部导航条 */}
-      <div className="flex items-center gap-3 mb-8">
+      <div className="flex items-center gap-3 mb-8 flex-wrap">
         <button onClick={() => nav(-1)} className="ghost-button text-[10px] py-1.5 px-3">
           <ArrowLeft size={11} /> 返回
         </button>
-        <span className="label-overline">SCENE 02 / SCRIPT VIEW</span>
+        <span className="scene-tag">SCENE 02 / SCRIPT VIEW</span>
         <span className="ml-auto label-overline flex items-center gap-2">
           <Eye size={11} /> {tpl.usageCount.toLocaleString()} 次调用
         </span>
+        {versionCount !== undefined && versionCount > 0 && (
+          <Link
+            to={`/library/${tpl.id}/versions`}
+            className="ghost-button text-[10px] py-1.5 px-3"
+          >
+            <History size={11} /> {versionCount} 个版本
+          </Link>
+        )}
       </div>
 
       {/* Header */}
       <div className="grid lg:grid-cols-12 gap-8 mb-10">
         <div className="lg:col-span-8">
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center gap-2 mb-3 flex-wrap">
             <span className="scene-tag">{BEAT_MODEL_LABEL[tpl.beatModel]}</span>
             <span className="scene-tag border-paper-300 text-paper-200">
               {GENRE_LABEL[tpl.genre]}
             </span>
             <span className="label-overline">v{tpl.version.toString().padStart(2, "0")}</span>
+            <span
+              className={`px-2 py-0.5 text-[10px] font-mono uppercase tracking-widest2 border ${
+                tpl.isPublic
+                  ? "border-amber text-amber"
+                  : "border-ink-500 text-ink-300"
+              }`}
+            >
+              {tpl.isPublic ? "Public" : "Private"}
+            </span>
           </div>
           <h1 className="font-display text-[56px] md:text-[72px] leading-[0.95] text-paper-50">
             {tpl.title}
@@ -123,18 +170,6 @@ export function ScriptView() {
               <span className="label-overline">Created</span>
               <span className="font-mono text-[12px] text-paper-100">{timeAgo(tpl.createdAt)}</span>
             </div>
-            <div className="flex items-center justify-between">
-              <span className="label-overline">Status</span>
-              <span
-                className={`px-2 py-0.5 text-[10px] font-mono uppercase tracking-widest2 border ${
-                  tpl.isPublic
-                    ? "border-amber text-amber"
-                    : "border-ink-500 text-ink-300"
-                }`}
-              >
-                {tpl.isPublic ? "Public" : "Private"}
-              </span>
-            </div>
             <div className="pt-3 border-t border-ink-700 grid grid-cols-2 gap-2">
               <Link to={`/studio/${tpl.id}`} className="reel-button text-[10px] py-2">
                 <Pen size={11} /> 派生副本
@@ -149,11 +184,28 @@ export function ScriptView() {
               </button>
             </div>
             <button
-              onClick={() => onCopy(JSON.stringify({ tpl, values }, null, 2), "json")}
+              onClick={() => setShareOpen(true)}
               className="ghost-button text-[10px] py-2 w-full"
             >
-              {copied === "json" ? <Check size={11} /> : <Share2 size={11} />}
-              {copied === "json" ? "已复制 JSON" : "分享为 JSON"}
+              <Share2 size={11} /> 分享
+            </button>
+            <button
+              onClick={() => setOptimizeOpen(true)}
+              className="ghost-button text-[10px] py-2 w-full"
+            >
+              <Wand2 size={11} /> AI 优化提示词
+            </button>
+            <button
+              onClick={async () => {
+                const dup = await duplicate(tpl.id);
+                if (dup) {
+                  toast.success("已派生", `「${dup.title}」已创建`);
+                  nav(`/studio/${dup.id}`);
+                }
+              }}
+              className="ghost-button text-[10px] py-2 w-full"
+            >
+              <GitBranch size={11} /> 派生为我的草稿
             </button>
           </div>
         </div>
@@ -161,7 +213,6 @@ export function ScriptView() {
 
       {/* 主体三栏：阅读视图 / 字段 / 提示词 */}
       <div className="grid lg:grid-cols-12 gap-6">
-        {/* 阅读视图 / 字段填写 */}
         <section className="lg:col-span-7 panel p-8">
           <div className="flex items-center justify-between mb-6 border-b border-ink-700 pb-3">
             <div className="flex items-center gap-2">
@@ -178,8 +229,9 @@ export function ScriptView() {
 
           {showRaw ? (
             <article className="line-numbers max-w-[720px] mx-auto font-serif text-[16px] leading-[2] text-paper-100">
-              {/* 模拟剧本阅读视图 */}
-              <h2 className="font-display text-[28px] text-paper-50 mb-1">{tpl.title}</h2>
+              <h2 className="font-display text-[28px] text-paper-50 mb-1">
+                {tpl.title}
+              </h2>
               <p className="text-ink-300 italic mb-6">— by {tpl.authorName}</p>
 
               <h3 className="text-amber text-[18px] font-display mt-8 mb-2">LOGLINE</h3>
@@ -242,7 +294,6 @@ export function ScriptView() {
           )}
         </section>
 
-        {/* 右侧：提示词 */}
         <aside className="lg:col-span-5 flex flex-col gap-4">
           <div className="flex items-center gap-2">
             <span className="scene-tag">PROMPT</span>
@@ -251,8 +302,8 @@ export function ScriptView() {
             </span>
           </div>
           <PromptPreview
-            tpl={tpl.promptTpl}
-            systemPrompt={tpl.systemPrompt}
+            tpl={displayTpl.promptTpl}
+            systemPrompt={displayTpl.systemPrompt}
             values={values}
             onValuesChange={setValues}
           />
@@ -264,6 +315,32 @@ export function ScriptView() {
           </Link>
         </aside>
       </div>
+
+      {/* 评论 / 评分 */}
+      <div className="mt-10 grid lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <CommentSection templateId={tpl.id} />
+        </div>
+        <div>
+          <RatingSection templateId={tpl.id} />
+        </div>
+      </div>
+
+      <ShareModal open={shareOpen} onClose={() => setShareOpen(false)} tpl={tpl} />
+      <PromptOptimizer
+        open={optimizeOpen}
+        onClose={() => setOptimizeOpen(false)}
+        tpl={tpl}
+        values={values}
+        onApply={(patch) => {
+          // 优化器应用时跳转到 Studio
+          const newTitle = `${tpl.title} · 优化版`;
+          toast.info("已跳转到 Studio", "请在 Studio 中点击「保存为版本」");
+          // 简单做法：直接跳 Studio，使用 URL hash 携带 patch
+          const hash = btoa(unescape(encodeURIComponent(JSON.stringify(patch))));
+          nav(`/studio/${tpl.id}?opt=${encodeURIComponent(hash)}`);
+        }}
+      />
     </div>
   );
 }

@@ -4,6 +4,8 @@ import type {
   VersionRecord,
   CallLogRecord,
   FavoriteRecord,
+  CommentRecord,
+  RatingRecord,
 } from "@/types";
 
 export class LumiereDB extends Dexie {
@@ -11,6 +13,8 @@ export class LumiereDB extends Dexie {
   versions!: Table<VersionRecord, string>;
   callLogs!: Table<CallLogRecord, string>;
   favorites!: Table<FavoriteRecord, string>;
+  comments!: Table<CommentRecord, string>;
+  ratings!: Table<RatingRecord, string>;
 
   constructor() {
     super("lumiere-db");
@@ -19,6 +23,14 @@ export class LumiereDB extends Dexie {
       versions: "id, templateId, versionNo, createdAt",
       callLogs: "id, templateId, createdAt",
       favorites: "id, templateId, createdAt",
+    });
+    this.version(2).stores({
+      templates: "id, slug, genre, beatModel, isPublic, updatedAt, usageCount",
+      versions: "id, templateId, versionNo, createdAt",
+      callLogs: "id, templateId, createdAt",
+      favorites: "id, templateId, createdAt",
+      comments: "id, templateId, fieldKey, createdAt",
+      ratings: "id, templateId, createdAt",
     });
   }
 }
@@ -31,5 +43,19 @@ export async function clearAll() {
     db.versions.clear(),
     db.callLogs.clear(),
     db.favorites.clear(),
+    db.comments.clear(),
+    db.ratings.clear(),
   ]);
+}
+
+// 安全的 IndexedDB 写入，自动捕获 quota 错误
+export async function safePut<T>(table: Table<T, any>, value: T): Promise<void> {
+  try {
+    await table.put(value);
+  } catch (e) {
+    if ((e as Error).name === "QuotaExceededError") {
+      throw new Error("本地存储已满，请前往 Workshop 清理或导出数据。");
+    }
+    throw e;
+  }
 }

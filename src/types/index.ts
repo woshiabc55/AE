@@ -63,6 +63,7 @@ export interface CallLogRecord {
   completionTokens: number;
   latencyMs: number;
   status: "ok" | "fail";
+  error?: string;
   createdAt: number;
 }
 
@@ -80,4 +81,31 @@ export interface AppSettings {
   topP: number;
   maxTokens: number;
   theme: "dark" | "light";
+  retryCount: number;
+  retryDelay: number;
+  customProviders: Array<{ label: string; baseUrl: string; model: string }>;
+}
+
+export interface CommentRecord {
+  id: string;
+  templateId: string;
+  fieldKey?: string; // 关联字段
+  author: string;
+  body: string;
+  createdAt: number;
+}
+
+export interface RatingRecord {
+  id: string;
+  templateId: string;
+  stars: number; // 1-5
+  reviewer: string;
+  body?: string;
+  createdAt: number;
+}
+
+export interface DraftRecord {
+  key: string;
+  data: any;
+  updatedAt: number;
 }

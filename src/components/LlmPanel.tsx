@@ -1,11 +1,12 @@
-// 大模型调用面板
+// 大模型调用面板 - 含重试提示
 import { useRef, useState } from "react";
-import { Send, Square, Settings2, AlertTriangle, Sparkles } from "lucide-react";
+import { Send, Square, Settings2, AlertTriangle, Sparkles, RotateCw } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAppStore } from "@/store";
 import { streamChat } from "@/utils/llm";
 import { renderPrompt, estimateTokens } from "@/utils/prompt";
 import { timeAgo } from "@/utils/format";
+import { toast } from "@/store/toast";
 import type { TemplateRecord } from "@/types";
 import { db } from "@/db";
 import { nanoid } from "nanoid";
@@ -22,6 +23,7 @@ export function LlmPanel({ tpl, values, streaming, setStreaming }: Props) {
   const [output, setOutput] = useState("");
   const [err, setErr] = useState<string | null>(null);
   const [lastLatency, setLastLatency] = useState<number | null>(null);
+  const [retrying, setRetrying] = useState<string | null>(null);
   const ctrlRef = useRef<AbortController | null>(null);
 
   const rendered = renderPrompt(tpl.promptTpl, values);
@@ -42,12 +44,32 @@ export function LlmPanel({ tpl, values, streaming, setStreaming }: Props) {
       ],
       signal: ctrl.signal,
       onDelta: (d) => setOutput((prev) => prev + d),
+      onRetry: (attempt, delay, reason) => {
+        setRetrying(`第 ${attempt} 次重试中（${(delay / 1000).toFixed(1)}s）… ${reason.slice(0, 60)}`);
+        toast.warn("重试中", `第 ${attempt} 次：${reason.slice(0, 60)}`);
+      },
     });
+    setRetrying(null);
     setStreaming(false);
     if (!res.ok) {
       setErr(res.error || "调用失败");
+      toast.error("调用失败", res.error);
+      await db.callLogs.put({
+        id: "cl_" + nanoid(8),
+        templateId: tpl.id,
+        model: settings.llmModel,
+        promptTokens: ut + pt,
+        completionTokens: 0,
+        latencyMs: res.latencyMs,
+        status: "fail",
+        error: res.error,
+        createdAt: Date.now(),
+      });
     } else {
       setLastLatency(res.latencyMs);
+      if (res.attempts > 1) {
+        toast.success("调用成功", `第 ${res.attempts} 次重试后完成`);
+      }
       await db.callLogs.put({
         id: "cl_" + nanoid(8),
         templateId: tpl.id,
@@ -84,7 +106,6 @@ export function LlmPanel({ tpl, values, streaming, setStreaming }: Props) {
         </Link>
       </div>
 
-      {/* 模型信息条 */}
       <div className="grid grid-cols-3 gap-2 px-4 py-3 border-b border-ink-600 bg-ink-800/50">
         <div>
           <div className="label-overline">Model</div>
@@ -106,7 +127,13 @@ export function LlmPanel({ tpl, values, streaming, setStreaming }: Props) {
         </div>
       </div>
 
-      {/* 输出区 */}
+      {retrying && (
+        <div className="px-4 py-2 border-b border-amber/40 bg-amber/10 flex items-center gap-2 text-amber">
+          <RotateCw size={12} className="animate-spin" />
+          <span className="text-[11px] font-mono">{retrying}</span>
+        </div>
+      )}
+
       <div className="flex-1 overflow-auto p-5 font-serif text-[13.5px] leading-[1.85] text-paper-100 whitespace-pre-wrap">
         {streaming && !output && (
           <div className="flex items-center gap-2 text-ink-300">
@@ -117,7 +144,8 @@ export function LlmPanel({ tpl, values, streaming, setStreaming }: Props) {
         {output ? (
           <div className={streaming ? "cursor" : ""}>{output}</div>
         ) : (
-          !streaming && (
+          !streaming &&
+          !retrying && (
             <div className="text-ink-400 italic">
               填写左侧字段后点击「开拍」，将由「{settings.llmModel}」接棒输出剧本。
             </div>
@@ -132,7 +160,6 @@ export function LlmPanel({ tpl, values, streaming, setStreaming }: Props) {
         </div>
       )}
 
-      {/* 操作栏 */}
       <div className="border-t border-ink-600 bg-ink-800/50 px-4 py-3 flex items-center gap-3">
         {!streaming ? (
           <button onClick={onCall} className="reel-button flex-1">
@@ -145,7 +172,7 @@ export function LlmPanel({ tpl, values, streaming, setStreaming }: Props) {
         )}
         {lastLatency !== null && !streaming && (
           <span className="label-overline whitespace-nowrap">
-            {timeAgo(Date.now() - lastLatency)} · {Math.round(lastLatency)} ms
+            {Math.round(lastLatency)} ms
           </span>
         )}
       </div>
