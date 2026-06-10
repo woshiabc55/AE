@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import {
   ArrowLeft,
@@ -48,19 +48,33 @@ export function Studio() {
     return null;
   }, [params.id, templates]);
 
-  const [tpl, setTpl] = useState<TemplateRecord>(() => {
+  const [tpl, setTplRaw] = useState<TemplateRecord>(() => {
     if (params.id) {
       const found = templates.find((t) => t.id === params.id);
       if (found) return found;
     }
     // 加载草稿
     const draft = loadDraft<TemplateRecord>("studio.new");
-    if (draft) return draft;
+    if (draft && Array.isArray(draft.fields) && typeof draft.promptTpl === "string") {
+      return { ...newTemplate(), ...draft, fields: draft.fields };
+    }
     return newTemplate();
   });
+  // 包装 setTpl：保证 fields 永远是数组，避免下游 .forEach/.map 崩溃
+  const setTpl: typeof setTplRaw = useCallback((updater) => {
+    setTplRaw((prev) => {
+      const next = typeof updater === "function" ? (updater as any)(prev) : updater;
+      if (next && !Array.isArray(next.fields)) {
+        return { ...next, fields: [] };
+      }
+      return next;
+    });
+  }, []);
   const [values, setValues] = useState<Record<string, string>>(() => {
     const initial: Record<string, string> = {};
-    tpl.fields.forEach((f) => (initial[f.key] = defaultFor(f.key)));
+    (Array.isArray(tpl.fields) ? tpl.fields : []).forEach((f) => {
+      initial[f.key] = defaultFor(f.key);
+    });
     return initial;
   });
   const [streaming, setStreaming] = useState(false);
