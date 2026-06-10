@@ -207,11 +207,16 @@ function PublishModal({
   open: boolean;
   onClose: () => void;
 }) {
-  const myDrafts = useAppStore((s) =>
-    s.templates.filter((t) => t.authorId === "me" && !t.isPublic)
+  // 仅在 open=true 时才订阅草稿列表，避免每次 render 返回新数组
+  const templates = useAppStore((s) => s.templates);
+  const myDrafts = useMemo(
+    () =>
+      open
+        ? templates.filter((t) => t.authorId === "me" && !t.isPublic)
+        : [],
+    [open, templates]
   );
   const publish = useAppStore((s) => s.publishTemplate);
-  const upsert = useAppStore((s) => s.upsertTemplate);
   const [selected, setSelected] = useState<string | null>(null);
 
   return (
