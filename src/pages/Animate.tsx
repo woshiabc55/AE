@@ -96,12 +96,12 @@ export default function Animate() {
     <div className="flex-1 flex flex-col min-h-0 px-4 py-3 gap-3">
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <span className="label-cap">04 · ANIMATE</span>
+          <span className="label-cap">05 · ANIMATE</span>
           <span className="text-mist-200 text-sm">/</span>
           <span className="text-display text-mist-50">套用动画 · 实时预览</span>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => navigate("/mesh")} className="btn-ghost">
+          <button onClick={() => navigate("/atlas")} className="btn-ghost">
             <ArrowLeft className="w-4 h-4" /> 上一步
           </button>
           <button

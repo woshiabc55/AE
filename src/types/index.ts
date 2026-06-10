@@ -102,6 +102,8 @@ export interface Project {
   layers: Layer[];
   nodes: MeshNode[];
   animations: AnimationClip[];
+  /** 当前生成的像素展开贴图 */
+  atlas: AtlasResult | null;
   createdAt: number;
   updatedAt: number;
 }
@@ -109,4 +111,37 @@ export interface Project {
 export interface HistoryState {
   shapes: Shape[];
   groups: ShapeGroup[];
+}
+
+/** 单个图层在 Atlas 贴图中的位置与尺寸（UV 坐标） */
+export interface AtlasSlot {
+  layerId: string;
+  /** 在 atlas 图像中的像素区域 */
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  /** UV 归一化坐标（0~1） */
+  u0: number;
+  v0: number;
+  u1: number;
+  v1: number;
+  /** 旋转 0/90 度（暂时只支持 0） */
+  rotated: boolean;
+}
+
+export interface AtlasResult {
+  /** atlas 的最终尺寸（2 的幂次） */
+  width: number;
+  height: number;
+  /** 整张 PNG dataURL */
+  pngDataUrl: string;
+  /** 各图层在 atlas 中的位置 */
+  slots: AtlasSlot[];
+  /** packing 模式 */
+  mode: "shelf" | "grid" | "strip";
+  /** packing 效率（被占用像素 / 总像素） */
+  efficiency: number;
+  /** 生成时间 */
+  generatedAt: number;
 }

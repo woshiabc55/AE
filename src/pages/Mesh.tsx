@@ -137,11 +137,11 @@ export default function Mesh() {
             <RefreshCw className="w-4 h-4" /> 重新生成
           </button>
           <button
-            onClick={() => navigate("/animate")}
+            onClick={() => navigate("/atlas")}
             disabled={nodes.length === 0}
             className="btn-primary"
           >
-            下一步：套用动画 <ArrowRight className="w-4 h-4" />
+            下一步：像素展开 <ArrowRight className="w-4 h-4" />
           </button>
         </div>
       </div>

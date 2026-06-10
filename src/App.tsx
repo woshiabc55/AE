@@ -4,6 +4,7 @@ import Home from "@/pages/Home";
 import Draw from "@/pages/Draw";
 import Layers from "@/pages/Layers";
 import Mesh from "@/pages/Mesh";
+import Atlas from "@/pages/Atlas";
 import Animate from "@/pages/Animate";
 import ExportPage from "@/pages/Export";
 import Preview from "@/pages/Preview";
@@ -17,6 +18,7 @@ export default function App() {
           <Route path="/draw" element={<Draw />} />
           <Route path="/layers" element={<Layers />} />
           <Route path="/mesh" element={<Mesh />} />
+          <Route path="/atlas" element={<Atlas />} />
           <Route path="/animate" element={<Animate />} />
           <Route path="/export" element={<ExportPage />} />
           <Route path="/preview" element={<Preview />} />

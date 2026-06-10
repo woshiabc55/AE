@@ -10,7 +10,8 @@ const WORKFLOW = [
   { num: "01", name: "绘制", sub: "DRAW", desc: "用矢量工具快速勾勒身体、衣服、表情", color: "from-sakura-400 to-sakura-600" },
   { num: "02", name: "分层", sub: "SPLIT", desc: "一键把 SVG 拆成可独立移动的 PNG 图层", color: "from-butter-400 to-sakura-400" },
   { num: "03", name: "网格", sub: "MESH", desc: "智能生成树形骨骼，绑定到每个图层", color: "from-leaf to-sky" },
-  { num: "04", name: "动画", sub: "ANIMATE", desc: "套用预设动画模板，实时预览", color: "from-sky to-sakura-400" },
+  { num: "04", name: "展开", sub: "ATLAS", desc: "把所有图层打包成一张贴图（含 UV 坐标）", color: "from-butter-300 to-flame" },
+  { num: "05", name: "动画", sub: "ANIMATE", desc: "套用预设动画模板，实时预览", color: "from-sky to-sakura-400" },
 ];
 
 export default function Home() {
@@ -130,7 +131,7 @@ export default function Home() {
             立即开始 <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {WORKFLOW.map((step, i) => (
             <div
               key={step.num}

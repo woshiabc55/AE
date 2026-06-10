@@ -105,7 +105,7 @@ export default function Export() {
     <div className="flex-1 flex flex-col min-h-0 px-4 py-3 gap-3">
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <span className="label-cap">05 · EXPORT</span>
+          <span className="label-cap">06 · EXPORT</span>
           <span className="text-mist-200 text-sm">/</span>
           <span className="text-display text-mist-50">导出 · 多格式</span>
         </div>

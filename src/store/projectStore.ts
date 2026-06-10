@@ -12,6 +12,7 @@ import type {
   AnimationClip,
   KeyFrame,
   HistoryState,
+  AtlasResult,
 } from "@/types";
 
 interface ProjectState {
@@ -54,6 +55,8 @@ interface ProjectState {
   addAnimation: (anim: AnimationClip) => void;
   updateKeyFrame: (animId: string, frame: KeyFrame) => void;
   addKeyFrame: (animId: string, frame: KeyFrame) => void;
+  // atlas
+  setAtlas: (atlas: AtlasResult | null) => void;
   // 历史
   pushHistory: () => void;
   undo: () => void;
@@ -76,6 +79,7 @@ const blankProject = (): Project => ({
   layers: [],
   nodes: [],
   animations: [],
+  atlas: null,
   createdAt: now(),
   updatedAt: now(),
 });
@@ -248,6 +252,9 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       next.updatedAt = now();
       return { project: next };
     }),
+
+  setAtlas: (atlas) =>
+    set((state) => ({ project: { ...state.project, atlas, updatedAt: now() } })),
 
   pushHistory: () =>
     set((state) => {

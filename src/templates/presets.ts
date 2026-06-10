@@ -82,6 +82,7 @@ export const foxGirl = (): Project => {
     layers,
     nodes,
     animations,
+    atlas: null,
     createdAt: now,
     updatedAt: now,
   };
@@ -133,6 +134,7 @@ export const mechKid = (): Project => {
     layers: [],
     nodes: [],
     animations: [],
+    atlas: null,
     createdAt: now,
     updatedAt: now,
   };
@@ -177,6 +179,7 @@ export const blob = (): Project => {
     layers: [],
     nodes: [],
     animations: [],
+    atlas: null,
     createdAt: now,
     updatedAt: now,
   };
