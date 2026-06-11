@@ -1,0 +1,2003 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>大流士之冕 · 提示词展开艺术节</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; }
+  body {
+    font-family: "Songti SC", "STSong", "Noto Serif SC", "Times New Roman", serif;
+    color: #efe6d2;
+    background: radial-gradient(ellipse at 50% 0%, #1d2a44 0%, #0b1224 45%, #050912 100%);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+  }
+  :root {
+    --gold: #d9b25c;
+    --gold-bright: #f1d27a;
+    --gold-deep: #8a6a2a;
+    --ink: #efe6d2;
+    --ink-dim: #b5ab8e;
+    --ink-low: #6e664c;
+    --bg: #0b1224;
+    --bg-2: #131a30;
+    --line: rgba(217, 178, 92, 0.28);
+    --line-soft: rgba(217, 178, 92, 0.14);
+    --shadow: 0 6px 30px rgba(0,0,0,0.5);
+  }
+
+  /* ========== 通用层 ========== */
+  .screen {
+    position: fixed; inset: 0;
+    display: none;
+    flex-direction: column;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .35s ease;
+    z-index: 10;
+  }
+  .screen.active {
+    display: flex;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .btn {
+    appearance: none;
+    border: 1px solid var(--gold);
+    background: linear-gradient(180deg, rgba(217,178,92,.18), rgba(217,178,92,.05));
+    color: var(--ink);
+    padding: 12px 22px;
+    font-size: 15px;
+    letter-spacing: 0.1em;
+    border-radius: 2px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: transform .15s ease, background .2s ease, box-shadow .2s ease;
+    min-width: 88px;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn:hover { background: linear-gradient(180deg, rgba(217,178,92,.32), rgba(217,178,92,.12)); }
+  .btn-primary {
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+    color: #1a1306;
+    font-weight: 600;
+    border-color: var(--gold-bright);
+    box-shadow: 0 6px 20px rgba(217,178,92,.25);
+  }
+  .btn-ghost {
+    border-color: var(--line);
+    color: var(--ink-dim);
+    background: transparent;
+  }
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+
+  .tag {
+    display: inline-block;
+    border: 1px solid var(--line);
+    color: var(--gold);
+    padding: 3px 10px;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    border-radius: 2px;
+  }
+
+  /* ========== 开屏：片头 ========== */
+  #screen-intro {
+    align-items: center;
+    justify-content: center;
+    background:
+      radial-gradient(circle at 50% 35%, rgba(217,178,92,.18) 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 100%, rgba(13,21,45,.9), #050912 70%);
+  }
+  .intro-frame {
+    position: relative;
+    width: min(92vw, 480px);
+    aspect-ratio: 3/5;
+    border: 1px solid var(--line);
+    background:
+      linear-gradient(180deg, rgba(15,22,46,.6), rgba(8,12,24,.8));
+    padding: 26px 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .intro-frame::before, .intro-frame::after {
+    content: "";
+    position: absolute;
+    left: 6px; right: 6px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .intro-frame::before { top: 6px; }
+  .intro-frame::after { bottom: 6px; }
+  .faravahar {
+    width: 110px; height: 110px;
+    margin-top: 10px;
+    color: var(--gold);
+    filter: drop-shadow(0 0 12px rgba(217,178,92,.45));
+    animation: floatY 5s ease-in-out infinite;
+  }
+  @keyframes floatY { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+  .intro-title {
+    font-size: 30px;
+    letter-spacing: 0.3em;
+    color: var(--gold-bright);
+    margin: 12px 0 4px;
+    text-indent: 0.3em;
+  }
+  .intro-en {
+    font-size: 11px;
+    letter-spacing: 0.45em;
+    color: var(--ink-dim);
+    margin-bottom: 10px;
+  }
+  .intro-divider {
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 14px 0;
+  }
+  .intro-desc {
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--ink-dim);
+    padding: 0 4px;
+  }
+  .intro-cta { margin-bottom: 6px; }
+  .intro-tip {
+    font-size: 10px;
+    color: var(--ink-low);
+    letter-spacing: 0.3em;
+    margin-top: 8px;
+  }
+  .pulse-dot {
+    display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--gold); margin-right: 6px; vertical-align: middle;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:.3;transform:scale(0.8)} 50%{opacity:1;transform:scale(1.2)} }
+
+  /* ========== 顶部导航 ========== */
+  .topbar {
+    flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line-soft);
+    background: linear-gradient(180deg, rgba(11,18,36,.85), rgba(11,18,36,.4));
+    backdrop-filter: blur(6px);
+  }
+  .topbar-title {
+    font-size: 14px;
+    letter-spacing: 0.3em;
+    color: var(--gold-bright);
+  }
+  .topbar-back {
+    appearance: none; border: none; background: transparent;
+    color: var(--ink-dim); font-size: 13px; cursor: pointer; padding: 6px 8px;
+    font-family: inherit;
+  }
+  .topbar-back:active { color: var(--gold); }
+
+  /* ========== 展厅（主页） ========== */
+  #screen-gallery { background: var(--bg); }
+  .gallery-wrap {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 18px 16px 100px;
+  }
+  .gallery-header {
+    text-align: center;
+    padding: 12px 0 22px;
+  }
+  .gallery-header h2 {
+    margin: 0 0 6px;
+    font-size: 22px;
+    letter-spacing: 0.25em;
+    color: var(--gold-bright);
+  }
+  .gallery-header p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--ink-dim);
+    letter-spacing: 0.15em;
+  }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .shot-card {
+    position: relative;
+    border: 1px solid var(--line);
+    background: linear-gradient(180deg, var(--bg-2), #0c1326);
+    padding: 16px 16px 14px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform .2s ease, border-color .2s ease;
+  }
+  .shot-card:active { transform: scale(0.985); }
+  .shot-card::after {
+    content: "";
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--gold);
+    opacity: 0.4;
+  }
+  .shot-card.visited::after { opacity: 1; background: var(--gold-bright); }
+  .shot-card-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .shot-id {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--gold-bright);
+    letter-spacing: 0.1em;
+  }
+  .shot-stage { font-size: 11px; color: var(--ink-dim); letter-spacing: 0.2em; }
+  .shot-title {
+    font-size: 16px;
+    color: var(--ink);
+    margin: 0 0 4px;
+    letter-spacing: 0.05em;
+  }
+  .shot-en {
+    font-size: 10px;
+    color: var(--ink-low);
+    letter-spacing: 0.3em;
+    margin-bottom: 10px;
+  }
+  .shot-line {
+    font-size: 12px;
+    color: var(--ink-dim);
+    line-height: 1.7;
+    border-top: 1px dashed var(--line-soft);
+    padding-top: 10px;
+  }
+  .shot-line b { color: var(--gold); font-weight: 500; }
+
+  /* 浮动播放控制 */
+  .fab-bar {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    z-index: 20;
+    padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+    background: linear-gradient(180deg, transparent, rgba(5,9,18,.9) 35%);
+    display: flex; gap: 10px; align-items: center; justify-content: space-between;
+  }
+  .fab-play {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 13px 18px;
+    border: 1px solid var(--gold);
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+    color: #1a1306;
+    font-family: inherit; font-size: 14px; font-weight: 600;
+    letter-spacing: 0.2em; cursor: pointer;
+    box-shadow: 0 6px 24px rgba(217,178,92,.25);
+  }
+  .fab-play:active { transform: scale(0.98); }
+  .fab-icon {
+    flex: 0 0 auto;
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--line);
+    color: var(--gold);
+    background: rgba(11,18,36,.7);
+    font-size: 18px; cursor: pointer;
+  }
+
+  /* ========== 详情页 ========== */
+  #screen-detail {
+    background: var(--bg);
+  }
+  .detail-scroll {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px 16px 30px;
+  }
+  .detail-hero {
+    text-align: center;
+    padding: 10px 0 18px;
+    border-bottom: 1px solid var(--line-soft);
+    margin-bottom: 18px;
+  }
+  .detail-id {
+    font-size: 56px;
+    color: var(--gold-bright);
+    letter-spacing: 0.05em;
+    line-height: 1;
+    text-shadow: 0 0 24px rgba(217,178,92,.3);
+  }
+  .detail-stage {
+    font-size: 12px; color: var(--gold); letter-spacing: 0.3em; margin-top: 6px;
+  }
+  .detail-title {
+    font-size: 19px; color: var(--ink); margin: 8px 0 4px; letter-spacing: 0.05em;
+  }
+  .detail-en {
+    font-size: 10px; color: var(--ink-low); letter-spacing: 0.4em;
+  }
+
+  .block {
+    border: 1px solid var(--line-soft);
+    background: rgba(19,26,48,.5);
+    margin-bottom: 12px;
+    padding: 14px;
+  }
+  .block-label {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11px; color: var(--gold);
+    letter-spacing: 0.25em;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  .block-label::before {
+    content: ""; width: 14px; height: 1px; background: var(--gold);
+  }
+  .block-content {
+    font-size: 13px;
+    line-height: 1.85;
+    color: var(--ink);
+    word-break: break-word;
+  }
+  .block-content.eng { font-family: "Times New Roman", serif; font-style: italic; color: var(--ink-dim); }
+  .block-sub {
+    font-size: 11px;
+    color: var(--ink-low);
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--line-soft);
+    line-height: 1.7;
+  }
+  .block-sub b { color: var(--gold); font-weight: 500; }
+
+  .check-list {
+    list-style: none; padding: 0; margin: 6px 0 0;
+  }
+  .check-list li {
+    font-size: 12px;
+    color: var(--ink-dim);
+    padding: 4px 0;
+    display: flex; align-items: flex-start; gap: 6px;
+  }
+  .check-list li::before {
+    content: "✓"; color: var(--gold); font-weight: 700; flex: 0 0 auto;
+  }
+
+  .ext-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .ext-cell {
+    border: 1px solid var(--line-soft);
+    padding: 10px;
+    font-size: 11px;
+    line-height: 1.65;
+    color: var(--ink-dim);
+  }
+  .ext-cell.full { grid-column: 1 / -1; }
+  .ext-cell b { display: block; color: var(--gold); font-size: 10px; letter-spacing: 0.2em; margin-bottom: 4px; }
+
+  .nav-row {
+    display: flex; gap: 10px; justify-content: space-between; margin-top: 18px;
+  }
+  .nav-row .btn { flex: 1; min-width: 0; font-size: 13px; padding: 11px 8px; }
+
+  /* ========== 播放模式 ========== */
+  #screen-play {
+    background: #050912;
+  }
+  .play-stage {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    pointer-events: none;
+  }
+  .play-stage.active { opacity: 1; pointer-events: auto; }
+  .play-canvas {
+    position: relative;
+    flex: 1 1 auto;
+    overflow: hidden;
+  }
+  .play-painting {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .play-overlay {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 20px 18px calc(20px + env(safe-area-inset-bottom));
+    background: linear-gradient(180deg, transparent, rgba(0,0,0,.85) 60%);
+    color: var(--ink);
+  }
+  .play-id {
+    font-size: 64px;
+    font-weight: 700;
+    color: var(--gold-bright);
+    line-height: 1;
+    text-shadow: 0 0 30px rgba(217,178,92,.5);
+  }
+  .play-stage-tag {
+    font-size: 12px; color: var(--gold); letter-spacing: 0.3em; margin-top: 4px;
+  }
+  .play-title {
+    font-size: 18px; color: var(--ink); margin: 8px 0 4px; letter-spacing: 0.05em;
+  }
+  .play-en { font-size: 10px; color: var(--ink-low); letter-spacing: 0.3em; }
+  .play-prompt {
+    margin-top: 10px;
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--ink-dim);
+    max-height: 30vh;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .play-controls {
+    position: absolute; top: 0; left: 0; right: 0;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 16px;
+    z-index: 5;
+  }
+  .play-progress {
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: rgba(255,255,255,.08);
+    z-index: 6;
+  }
+  .play-progress-bar {
+    height: 100%; width: 0;
+    background: linear-gradient(90deg, var(--gold-deep), var(--gold-bright));
+    transition: width 0.1s linear;
+  }
+  .play-icon-btn {
+    appearance: none; border: 1px solid var(--line);
+    background: rgba(11,18,36,.55);
+    color: var(--ink);
+    width: 38px; height: 38px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 14px;
+    backdrop-filter: blur(4px);
+  }
+  .play-icon-btn:active { transform: scale(0.94); }
+
+  /* 画作（动态生成的艺术视觉） */
+  .painting {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  /* Stage 1: Apadana 大殿 */
+  .p-apadana {
+    background:
+      radial-gradient(ellipse at 50% 100%, rgba(217,120,40,.4) 0%, transparent 50%),
+      linear-gradient(180deg, #0e1530 0%, #1a1f3a 60%, #2a1f0a 100%);
+  }
+  .p-apadana::before {
+    content: "";
+    position: absolute;
+    left: 50%; bottom: 0;
+    transform: translateX(-50%);
+    width: 2px; height: 30%;
+    background: linear-gradient(180deg, transparent, var(--gold-bright));
+    filter: blur(2px);
+    animation: flame 1.6s ease-in-out infinite;
+  }
+  .p-apadana::after {
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+      repeating-linear-gradient(90deg,
+        transparent 0,
+        transparent calc(100%/14 - 6px),
+        rgba(217,178,92,0.18) calc(100%/14 - 6px),
+        rgba(217,178,92,0.18) calc(100%/14));
+    mask-image: linear-gradient(180deg, transparent 30%, black 60%, black 100%);
+  }
+  @keyframes flame {
+    0%,100% { height: 30%; opacity: 0.7; }
+    50% { height: 35%; opacity: 1; }
+  }
+  .col {
+    position: absolute;
+    bottom: 0;
+    width: 5px;
+    background: linear-gradient(180deg, rgba(217,178,92,.5), rgba(217,178,92,.15));
+    transform-origin: bottom;
+  }
+  .col-1 { left: 10%; height: 60%; }
+  .col-2 { left: 25%; height: 70%; }
+  .col-3 { left: 40%; height: 75%; }
+  .col-4 { left: 55%; height: 80%; }
+  .col-5 { left: 70%; height: 70%; }
+  .col-6 { left: 85%; height: 60%; }
+  .col-7 { right: 5%; height: 55%; }
+  .figure-1 {
+    position: absolute;
+    left: 50%; bottom: 12%;
+    transform: translateX(-50%);
+    width: 60px; height: 110px;
+    background: linear-gradient(180deg, var(--gold), var(--gold-deep));
+    clip-path: polygon(40% 0, 60% 0, 70% 25%, 80% 100%, 20% 100%, 30% 25%);
+    box-shadow: 0 0 40px rgba(217,178,92,.5);
+  }
+  .figure-1::before {
+    content: ""; position: absolute;
+    left: 50%; top: -10px; transform: translateX(-50%);
+    width: 24px; height: 24px; border-radius: 50%;
+    background: radial-gradient(circle, #f1d27a, #8a6a2a);
+    box-shadow: 0 0 20px rgba(241,210,122,.7);
+  }
+
+  /* Stage 2: 王座 */
+  .p-throne {
+    background:
+      radial-gradient(ellipse at 50% 60%, rgba(80,40,20,.6) 0%, transparent 50%),
+      linear-gradient(180deg, #1a1408 0%, #2a1f10 60%, #0a0805 100%);
+  }
+  .throne {
+    position: absolute;
+    left: 50%; top: 40%;
+    transform: translate(-50%, -50%);
+    width: 130px; height: 170px;
+    background: linear-gradient(180deg, #3a2810, #1a0f04);
+    border: 2px solid var(--gold-deep);
+    box-shadow: 0 10px 40px rgba(0,0,0,.6), inset 0 0 30px rgba(217,178,92,.15);
+  }
+  .throne::before {
+    content: ""; position: absolute;
+    inset: 6px; border: 1px solid rgba(217,178,92,.4);
+  }
+  .throne::after {
+    content: "𐎧"; position: absolute;
+    left: 50%; top: 30%; transform: translate(-50%, -50%);
+    font-size: 60px; color: var(--gold-bright);
+    text-shadow: 0 0 20px rgba(217,178,92,.5);
+  }
+  .rim-light {
+    position: absolute;
+    left: 50%; top: 30%;
+    transform: translateX(-50%);
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, transparent 50%, rgba(255,200,100,.15) 60%, transparent 80%);
+  }
+  .window-glow {
+    position: absolute;
+    top: 5%; right: 5%;
+    width: 30%; height: 25%;
+    background: radial-gradient(ellipse, rgba(140,180,255,.3), transparent 70%);
+  }
+
+  /* Stage 3: 大台阶 36民族 */
+  .p-stairs {
+    background:
+      linear-gradient(180deg, #0a1530 0%, #1a2848 50%, #3a2810 100%);
+  }
+  .stairs {
+    position: absolute;
+    left: 50%; bottom: 0;
+    transform: translateX(-50%);
+    width: 100%; height: 50%;
+    background:
+      repeating-linear-gradient(0deg,
+        rgba(217,178,92,.08) 0,
+        rgba(217,178,92,.08) 8px,
+        rgba(0,0,0,.4) 8px,
+        rgba(0,0,0,.4) 16px);
+  }
+  .stairs::before {
+    content: ""; position: absolute;
+    left: 50%; top: 10%;
+    transform: translateX(-50%);
+    width: 30px; height: 80px;
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+    clip-path: polygon(40% 0, 60% 0, 70% 30%, 90% 100%, 10% 100%, 30% 30%);
+  }
+  .dust {
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(255,220,150,.3) 1px, transparent 2px),
+      radial-gradient(circle at 70% 40%, rgba(255,220,150,.3) 1px, transparent 2px),
+      radial-gradient(circle at 40% 60%, rgba(255,220,150,.2) 1px, transparent 2px),
+      radial-gradient(circle at 80% 70%, rgba(255,220,150,.3) 1px, transparent 2px);
+    background-size: 200px 200px;
+    animation: dustFloat 8s linear infinite;
+  }
+  @keyframes dustFloat {
+    from { background-position: 0 0, 50px 0, 100px 0, 150px 0; }
+    to { background-position: 0 200px, 50px 200px, 100px 200px, 150px 200px; }
+  }
+
+  /* Stage 4: 穹顶 */
+  .p-dome {
+    background:
+      radial-gradient(circle at 50% 30%, rgba(217,120,40,.4) 0%, transparent 40%),
+      linear-gradient(180deg, #0a0815 0%, #1a0f1a 60%, #3a1810 100%);
+  }
+  .dome {
+    position: absolute;
+    left: 50%; top: 10%;
+    transform: translateX(-50%);
+    width: 90%; max-width: 400px;
+    aspect-ratio: 2/1;
+    background: radial-gradient(ellipse at 50% 100%, rgba(217,178,92,.3), transparent 70%);
+    border-top: 1px solid var(--gold);
+    border-radius: 50% 50% 0 0;
+  }
+  .dome::before {
+    content: ""; position: absolute;
+    left: 50%; top: 30%; transform: translateX(-50%);
+    width: 30%; aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--gold-bright), var(--gold-deep));
+    box-shadow: 0 0 40px var(--gold);
+  }
+  .dome::after {
+    content: "𐏏"; position: absolute;
+    left: 50%; top: calc(30% - 18px); transform: translateX(-50%);
+    font-size: 24px; color: #fff;
+    text-shadow: 0 0 8px var(--gold-bright);
+  }
+  .under-light {
+    position: absolute;
+    left: 50%; bottom: 20%;
+    transform: translateX(-50%);
+    width: 100px; height: 60px;
+    background: radial-gradient(ellipse, rgba(255,150,80,.4), transparent 70%);
+  }
+  .up-glow {
+    position: absolute;
+    left: 50%; top: 30%;
+    transform: translateX(-50%);
+    width: 60%; height: 30%;
+    background: radial-gradient(ellipse, rgba(255,180,80,.2), transparent 70%);
+  }
+
+  /* Stage 5: 万国之门 */
+  .p-gate {
+    background:
+      linear-gradient(180deg, #ff8c42 0%, #c44a1a 30%, #4a1a08 60%, #1a0805 100%);
+  }
+  .gate {
+    position: absolute;
+    left: 50%; bottom: 0;
+    transform: translateX(-50%);
+    width: 60%; max-width: 280px;
+    height: 60%;
+    background: linear-gradient(180deg, #2a1a08, #1a0f04);
+    border: 2px solid var(--gold-deep);
+  }
+  .gate::before {
+    content: ""; position: absolute;
+    left: 50%; top: 10%;
+    transform: translateX(-50%);
+    width: 30px; height: 60px;
+    background: var(--gold-bright);
+    clip-path: polygon(50% 0, 80% 30%, 70% 100%, 30% 100%, 20% 30%);
+  }
+  .lamassu {
+    position: absolute;
+    bottom: 0;
+    width: 50px; height: 80px;
+    background: linear-gradient(180deg, #4a3a1a, #2a1f10);
+  }
+  .lamassu::before {
+    content: ""; position: absolute;
+    left: 10px; top: 0;
+    width: 30px; height: 20px;
+    background: #5a4a2a;
+    border-radius: 50% 50% 0 0;
+  }
+  .lamassu-left { left: 12%; }
+  .lamassu-right { right: 12%; }
+  .first-star {
+    position: absolute;
+    top: 8%; right: 15%;
+    width: 3px; height: 3px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #fff, 0 0 16px rgba(255,255,200,.5);
+    animation: twinkle 2s ease-in-out infinite;
+  }
+  @keyframes twinkle {
+    0%,100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+  .mountain {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 30%;
+    background: linear-gradient(180deg, #2a1a08, #0a0503);
+    clip-path: polygon(0 100%, 0 60%, 15% 40%, 30% 55%, 50% 30%, 70% 50%, 85% 35%, 100% 55%, 100% 100%);
+  }
+  .procession {
+    position: absolute;
+    bottom: 8%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px; height: 30px;
+  }
+  .proc-fig {
+    position: absolute;
+    bottom: 0;
+    width: 4px; height: 14px;
+    background: #1a0805;
+  }
+
+  /* Stage 6: 天堂花园 */
+  .p-garden {
+    background:
+      linear-gradient(180deg, #1a3a1a 0%, #0a2a1a 50%, #1a4a2a 100%);
+  }
+  .palm {
+    position: absolute;
+    bottom: 0;
+    width: 8px;
+    background: linear-gradient(180deg, #5a3a1a, #3a2a0a);
+  }
+  .palm-1 { left: 15%; height: 60%; }
+  .palm-2 { right: 15%; height: 70%; }
+  .palm-3 { left: 30%; height: 50%; }
+  .palm-4 { right: 30%; height: 55%; }
+  .palm::before {
+    content: ""; position: absolute;
+    left: 50%; top: -4px; transform: translateX(-50%);
+    width: 50px; height: 30px;
+    background: radial-gradient(ellipse, #2a5a1a, transparent 70%);
+  }
+  .palm::after {
+    content: ""; position: absolute;
+    left: 50%; top: -2px; transform: translateX(-50%);
+    width: 70px; height: 20px;
+    background: radial-gradient(ellipse, #3a6a2a 30%, transparent 60%);
+  }
+  .water {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 20%;
+    background:
+      linear-gradient(180deg, rgba(60,140,180,.5), rgba(40,100,140,.8));
+    animation: ripple 4s ease-in-out infinite;
+  }
+  @keyframes ripple {
+    0%,100% { transform: translateX(0); }
+    50% { transform: translateX(-3px); }
+  }
+  .water::before {
+    content: ""; position: absolute;
+    left: 50%; top: 30%;
+    transform: translateX(-50%);
+    width: 80%; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,200,.5), transparent);
+    animation: shine 3s ease-in-out infinite;
+  }
+  @keyframes shine {
+    0%,100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+  .lotus {
+    position: absolute;
+    bottom: 18%;
+    width: 8px; height: 8px;
+    background: radial-gradient(circle, #f5d5e5, #d59ab5);
+    border-radius: 50% 50% 0 50%;
+  }
+  .lotus-1 { left: 30%; }
+  .lotus-2 { right: 35%; }
+  .lotus-3 { left: 60%; }
+
+  /* Stage 7: 遗址幽灵 */
+  .p-ruins {
+    background:
+      linear-gradient(180deg, #4a5060 0%, #2a3040 50%, #1a1f2a 100%);
+  }
+  .ruin-col {
+    position: absolute;
+    bottom: 0;
+    width: 30px;
+    background: linear-gradient(180deg, #5a5060, #2a2030);
+    opacity: 0.5;
+  }
+  .ruin-1 { left: 10%; height: 30%; }
+  .ruin-2 { left: 25%; height: 50%; }
+  .ruin-3 { right: 25%; height: 55%; }
+  .ruin-4 { right: 10%; height: 35%; }
+  .ghost {
+    position: absolute;
+    left: 50%; top: 35%;
+    transform: translateX(-50%);
+    width: 80px; height: 120px;
+    background: linear-gradient(180deg, rgba(217,178,92,.4), rgba(217,178,92,.1));
+    clip-path: polygon(40% 0, 60% 0, 70% 25%, 80% 100%, 20% 100%, 30% 25%);
+    opacity: 0.5;
+    animation: ghostFloat 4s ease-in-out infinite;
+  }
+  @keyframes ghostFloat {
+    0%,100% { transform: translateX(-50%) translateY(0); opacity: 0.4; }
+    50% { transform: translateX(-50%) translateY(-10px); opacity: 0.7; }
+  }
+  .ghost::before {
+    content: ""; position: absolute;
+    left: 50%; top: -8px; transform: translateX(-50%);
+    width: 20px; height: 20px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(241,210,122,.7), transparent);
+  }
+  .tourist {
+    position: absolute;
+    bottom: 10%;
+    width: 6px; height: 14px;
+    background: #1a1f2a;
+  }
+  .tourist-1 { left: 20%; }
+  .tourist-2 { left: 35%; }
+  .tourist-3 { left: 65%; }
+  .tourist-4 { right: 20%; }
+
+  /* ========== 配置弹层 ========== */
+  .config-section {
+    margin-bottom: 18px;
+  }
+  .config-section h4 {
+    font-size: 13px; color: var(--gold); letter-spacing: 0.2em;
+    margin: 0 0 10px; font-weight: 500;
+  }
+  .config-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .config-row:last-child { border-bottom: none; }
+  .config-row .label { color: var(--ink-dim); }
+  .config-value {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .seg {
+    display: inline-flex;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .seg button {
+    appearance: none; border: none; background: transparent;
+    color: var(--ink-dim); font-family: inherit;
+    padding: 6px 12px; font-size: 12px; cursor: pointer;
+    letter-spacing: 0.1em;
+  }
+  .seg button.on {
+    background: var(--gold);
+    color: #1a1306;
+  }
+  .switch {
+    position: relative;
+    width: 42px; height: 22px;
+    background: rgba(217,178,92,.2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background .2s ease;
+  }
+  .switch::after {
+    content: "";
+    position: absolute;
+    left: 2px; top: 50%; transform: translateY(-50%);
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--ink-dim);
+    transition: left .2s ease, background .2s ease;
+  }
+  .switch.on { background: rgba(217,178,92,.5); }
+  .switch.on::after { left: 22px; background: var(--gold-bright); }
+
+  /* ========== 通用弹层 ========== */
+  .modal-card {
+    position: relative;
+    width: min(92vw, 480px);
+    max-height: 80vh;
+    border: 1px solid var(--gold);
+    background:
+      linear-gradient(180deg, rgba(19,26,48,.98), rgba(8,12,24,.98));
+    padding: 24px 22px 22px;
+    overflow-y: auto;
+    box-shadow: var(--shadow);
+  }
+  .modal-card::before, .modal-card::after {
+    content: "";
+    position: absolute;
+    left: 8px; right: 8px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .modal-card::before { top: 6px; }
+  .modal-card::after { bottom: 6px; }
+  .modal-title {
+    text-align: center;
+    margin: 6px 0 14px;
+    font-size: 18px;
+    color: var(--gold-bright);
+    letter-spacing: 0.2em;
+  }
+  .modal-message {
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--ink-dim);
+    text-align: center;
+    margin: 0 0 18px;
+  }
+  .modal-actions {
+    display: flex; gap: 10px; justify-content: center;
+  }
+
+  /* 屏幕居中 */
+  .center-screen {
+    position: fixed; inset: 0;
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 20px;
+    background: rgba(5,9,18,.85);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+  }
+  .center-screen.active { display: flex; }
+
+  /* 帮助说明 */
+  .help-list {
+    list-style: none; padding: 0; margin: 0;
+    font-size: 13px; line-height: 1.9;
+  }
+  .help-list li {
+    padding: 6px 0;
+    color: var(--ink-dim);
+    border-bottom: 1px dashed var(--line-soft);
+  }
+  .help-list li:last-child { border-bottom: none; }
+  .help-list b { color: var(--gold); font-weight: 500; }
+
+  /* 暂停遮罩 */
+  .pause-mask {
+    position: absolute; inset: 0;
+    display: none;
+    align-items: center; justify-content: center;
+    background: rgba(5,9,18,.88);
+    backdrop-filter: blur(6px);
+    z-index: 50;
+  }
+  .pause-mask.active { display: flex; }
+  .pause-icon {
+    font-size: 60px;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  /* 滚动条 */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+  /* 短动画 */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-up { animation: fadeUp .5s ease both; }
+  .delay-1 { animation-delay: .1s; }
+  .delay-2 { animation-delay: .2s; }
+  .delay-3 { animation-delay: .3s; }
+</style>
+</head>
+<body>
+
+<!-- ============ 开屏 ============ -->
+<div id="screen-intro" class="screen active" aria-hidden="false">
+  <div class="intro-frame">
+    <div>
+      <svg class="faravahar" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="30" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M30 30 Q50 10 70 30 M30 30 Q50 50 70 30" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M50 40 L40 60 L50 55 L60 60 Z" fill="currentColor"/>
+        <path d="M50 55 L50 85 M30 75 Q50 90 70 75" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="50" cy="88" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <h1 class="intro-title">大流士之冕</h1>
+      <div class="intro-en">PROMETHEUS · OPS · ART FESTIVAL</div>
+      <div class="intro-divider"></div>
+      <p class="intro-desc">
+        七幕镜头，<br/>
+        从阿帕达纳大殿到现代遗址的<br/>
+        时间纵深。<br/>
+        每一帧，皆为提示词的<br/>
+        展开与延展。
+      </p>
+    </div>
+    <div class="intro-cta">
+      <button class="btn btn-primary" data-action="enter">进入展厅</button>
+      <div style="margin-top: 10px;">
+        <button class="btn btn-ghost" data-action="show-help" style="font-size:12px; padding:8px 16px;">展览说明</button>
+      </div>
+      <div class="intro-tip"><span class="pulse-dot"></span>建议竖屏 · 触控体验</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 展厅主页 ============ -->
+<div id="screen-gallery" class="screen" aria-hidden="true">
+  <div class="topbar">
+    <button class="topbar-back" data-action="back-to-intro">‹ 返回</button>
+    <div class="topbar-title">提示词展开艺术节</div>
+    <button class="topbar-back" data-action="show-config" aria-label="配置">⚙</button>
+  </div>
+  <div class="gallery-wrap" id="galleryScroll">
+    <div class="gallery-header">
+      <h2>七幕镜头 · 提示词展开</h2>
+      <p>SEVEN SHOTS · PROMPT UNFOLDING</p>
+    </div>
+    <div class="gallery-grid" id="shotGrid"></div>
+  </div>
+  <div class="fab-bar">
+    <button class="fab-icon" data-action="show-config" aria-label="配置">⚙</button>
+    <button class="fab-play" data-action="play">▶ 连续播放 · PLAY ALL</button>
+    <button class="fab-icon" data-action="show-help" aria-label="帮助">?</button>
+  </div>
+</div>
+
+<!-- ============ 详情页 ============ -->
+<div id="screen-detail" class="screen" aria-hidden="true">
+  <div class="topbar">
+    <button class="topbar-back" data-action="back-to-gallery">‹ 返回展厅</button>
+    <div class="topbar-title" id="detailTopbarTitle">镜头详情</div>
+    <button class="topbar-back" data-action="share-shot" aria-label="分享">⤴</button>
+  </div>
+  <div class="detail-scroll" id="detailScroll">
+    <!-- 动态填充 -->
+  </div>
+</div>
+
+<!-- ============ 播放模式 ============ -->
+<div id="screen-play" class="screen" aria-hidden="true">
+  <div class="play-progress"><div class="play-progress-bar" id="playProgressBar"></div></div>
+  <div class="play-controls">
+    <button class="play-icon-btn" data-action="exit-play">✕</button>
+    <button class="play-icon-btn" data-action="toggle-pause" id="playPauseBtn">⏸</button>
+  </div>
+  <div class="play-canvas" id="playCanvas">
+    <!-- 动态生成 -->
+  </div>
+  <div class="pause-mask" id="pauseMask">
+    <div style="text-align:center;">
+      <div class="pause-icon">⏸</div>
+      <div style="color: var(--ink-dim); letter-spacing: 0.3em; font-size: 12px;">已暂停 · PAUSED</div>
+      <div style="margin-top: 24px;">
+        <button class="btn btn-primary" data-action="resume">继续播放</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 配置弹层 ============ -->
+<div id="screen-config" class="center-screen" aria-hidden="true">
+  <div class="modal-card">
+    <h2 class="modal-title">展览配置</h2>
+    <div class="config-section">
+      <h4>播放时长</h4>
+      <div class="config-row">
+        <span class="label">每幕停留</span>
+        <div class="config-value">
+          <div class="seg" id="durationSeg">
+            <button data-dur="6" class="">6s</button>
+            <button data-dur="10" class="on">10s</button>
+            <button data-dur="15" class="">15s</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="config-section">
+      <h4>播放方式</h4>
+      <div class="config-row">
+        <span class="label">自动循环</span>
+        <div class="switch on" id="loopSwitch" data-toggle="loop"></div>
+      </div>
+      <div class="config-row">
+        <span class="label">淡入淡出过渡</span>
+        <div class="switch on" id="fadeSwitch" data-toggle="fade"></div>
+      </div>
+    </div>
+    <div class="config-section">
+      <h4>显示</h4>
+      <div class="config-row">
+        <span class="label">提示词原文</span>
+        <div class="switch on" id="showPromptSwitch" data-toggle="showPrompt"></div>
+      </div>
+    </div>
+    <div class="config-section">
+      <h4>数据</h4>
+      <div class="config-row">
+        <span class="label">重置观看进度</span>
+        <div class="config-value">
+          <button class="btn btn-ghost" data-action="reset-progress" style="font-size:12px; padding:6px 12px;">重置</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" data-action="close-config">完成</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 帮助弹层 ============ -->
+<div id="screen-help" class="center-screen" aria-hidden="true">
+  <div class="modal-card">
+    <h2 class="modal-title">展览说明</h2>
+    <p class="modal-message">
+      本展览以「提示词展开」为核心方法，<br/>
+      透过七幕镜头呈现大流士一世的视觉叙事。
+    </p>
+    <ul class="help-list">
+      <li><b>展厅</b> · 浏览全部七幕镜头，点击卡片查看完整提示词分解</li>
+      <li><b>详情</b> · 每幕展示：环境/光影/材质/空间/情绪五维展开</li>
+      <li><b>延展</b> · 前景/中景/背景/环境/画幅专属五个延展维度</li>
+      <li><b>播放</b> · 连续播放模式，按设定时长自动切换镜头</li>
+      <li><b>配置</b> · 调整每幕停留时长、循环、过渡效果等</li>
+      <li><b>进度</b> · 浏览过的镜头会标记金色高亮，跨会话保留</li>
+    </ul>
+    <div class="modal-actions" style="margin-top:18px;">
+      <button class="btn btn-primary" data-action="close-help">开始体验</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 错误兜底 ============ -->
+<div id="fallback" style="display:none; position:fixed; inset:0; background:#0b1224; color:#efe6d2; z-index:9999; align-items:center; justify-content:center; text-align:center; padding:24px; font-size:14px;">
+  <div>
+    <div style="font-size:40px; color:#d9b25c; margin-bottom:12px;">𐎧</div>
+    <div>作品加载遇到问题，请刷新重试</div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* ============================================================
+ *  数据层：七幕镜头提示词展开
+ * ============================================================ */
+const SHOTS = [
+  {
+    id: "1A",
+    stage: "初始 · Stage 1",
+    stageCode: "1",
+    cn: "阿帕达纳大殿",
+    en: "APADANA PALACE",
+    character: "大流士一世（Darius I）",
+    inclusive: "皇家长袍、Myrtus花冠、Barsom圣草、Faravahar金饰、面部特征、皮肤纹理、眼神",
+    initial: "Darius I, Achaemenid royal robes, Myrtus coronet, Barsom sacred grass, Faravahar golden ornament, weathered skin, commanding eyes",
+    unfolds: {
+      env: "Persepolis Apadana palace interior, 72 columns, stone architecture, Zoroastrian fire altar, eternal flame",
+      light: "natural firelight, warm desaturated tones, golden hour, volumetric light rays, god rays, sacred atmosphere",
+      material: "limestone texture, stone pores, fabric embroidery detail, gold leaf reflection, grass fiber detail",
+      space: "deep perspective, columns receding into depth, fire altar glow in distance, architectural symmetry",
+      mood: "divine authority, ancient wisdom, spiritual weight, timelessness, reverence"
+    },
+    final: "Darius I in Achaemenid royal robes with Myrtus coronet and Barsom sacred grass, Faravahar golden ornament on forehead, weathered skin texture, commanding eyes reflecting firelight, inside Persepolis Apadana palace with 72 columns, natural firelight, warm desaturated tones, golden hour volumetric god rays, limestone texture, deep perspective, divine authority, Greig Fraser cinematography, IMAX 1.43:1, 8K, photorealistic",
+    extensibility: {
+      fg: "Barsom圣草纤维（微距景深）",
+      mid: "大流士面部（眼神光）",
+      bg: "Apadana浮雕（浅景深虚化）",
+      env: "火祭坛体积光（丁达尔效应）",
+      ratio: "1.43:1专属：神殿穹顶至地面完整纵深感"
+    },
+    check: ["角色面部清晰", "环境不抢主体", "光影服务情绪", "空间层次分明"]
+  },
+  {
+    id: "1B",
+    stage: "展开 · Stage 2",
+    stageCode: "2",
+    cn: "王座厅·接见",
+    en: "THRONE ROOM",
+    character: "大流士一世（Darius I）",
+    inclusive: "皇家长袍、Myrtus花冠、Barsom圣草、Faravahar金饰、面部特征、皮肤纹理、眼神、手部姿态",
+    initial: "Darius I, royal robes, Myrtus coronet, Barsom, Faravahar ornament, weathered skin, commanding eyes, hand gesture",
+    unfolds: {
+      env: "Persepolis throne room, Apadana relief carvings of tribute bearers, stone walls, cedar wood ceiling",
+      light: "firelight + window light dual source, warm-cold contrast, chiaroscuro, rim light on shoulders",
+      material: "fabric silk texture, embroidery gold thread, stone relief depth, wood grain, ash texture from fire",
+      space: "throne elevated on platform, delegations in background depth, relief carvings telling stories on walls",
+      mood: "solemnity, burden of empire, divine right, isolation of power, connection to history"
+    },
+    final: "Darius I seated on elevated throne in Persepolis throne room, Apadana relief carvings of tribute bearers on stone walls, cedar wood ceiling, firelight and window light dual source creating warm-cold contrast, chiaroscuro lighting with rim light on shoulders, silk fabric texture with gold thread embroidery, stone relief depth, delegations in background depth, solemn divine authority, Greig Fraser cinematography, IMAX 1.43:1, 8K, photorealistic",
+    extensibility: {
+      fg: "Barsom圣草束根部细节（微距）",
+      mid: "大流士面部+肩部轮廓光",
+      bg: "Apadana浮雕各族朝贡者",
+      env: "双光源冷暖对比（火+窗）",
+      ratio: "1.43:1专属：穹顶 cedar 木梁至地面完整空间"
+    },
+    check: ["圣草前景不抢戏", "浮雕背景有叙事", "双光源塑造体积", "木梁增强垂直"]
+  },
+  {
+    id: "2A",
+    stage: "递进 · Stage 3",
+    stageCode: "3",
+    cn: "万国大台阶",
+    en: "GRAND STAIRCASE",
+    character: "大流士一世（Darius I）",
+    inclusive: "皇家长袍、Myrtus花冠、Barsom圣草、Faravahar金饰、面部特征、皮肤纹理、眼神、手部姿态、身体姿态",
+    initial: "Darius I, royal robes, Myrtus coronet, Barsom, Faravahar, weathered skin, commanding eyes, hand gesture, body posture",
+    unfolds: {
+      env: "Apadana grand staircase, 36 nations delegations, Indian spices, Ethiopian ivory, Armenian horses, Lydian gold",
+      light: "natural sunlight, high angle god's perspective, long shadows, dust particles in light beams",
+      material: "stone staircase texture, delegation costumes, horse musculature, gold reflection, spice colors desaturated",
+      space: "symmetrical composition, vanishing point at Darius, depth of 36 rows, aerial perspective on mountains",
+      mood: "imperial unity, diversity under one rule, cosmic order, Ahura Mazda's blessing, eternal empire"
+    },
+    final: "Darius I on central throne at Apadana grand staircase, 36 nations delegations in symmetrical composition, Indian spices Ethiopian ivory Armenian horses Lydian gold, natural sunlight from high angle god's perspective, long shadows, dust particles in light beams, stone staircase texture, aerial perspective on Zagros mountains, imperial unity cosmic order, Greig Fraser cinematography, IMAX 1.43:1, 8K, photorealistic, epic scale",
+    extensibility: {
+      fg: "台阶莲花Nymphaea浮雕",
+      mid: "大流士全身+宝座",
+      bg: "36民族代表团纵深排列",
+      env: "阳光光束+尘埃粒子",
+      ratio: "1.43:1专属：台阶从下至上完整纵深"
+    },
+    check: ["浮雕前景引导视线", "36民族背景有规模", "尘埃增强光线体积", "台阶垂直纵深"]
+  },
+  {
+    id: "2B",
+    stage: "深化 · Stage 4",
+    stageCode: "4",
+    cn: "阿胡拉·马兹达神殿",
+    en: "AHURA MAZDA TEMPLE",
+    character: "大流士一世（Darius I）",
+    inclusive: "皇家长袍、Myrtus花冠、Barsom圣草、Faravahar金饰、面部特征、皮肤纹理、眼神、手部姿态、身体姿态、面部微表情",
+    initial: "Darius I, royal robes, Myrtus coronet, Barsom, Faravahar, weathered skin, commanding eyes, hand gesture, body posture, facial micro-expression",
+    unfolds: {
+      env: "Ahura Mazda temple dome interior, Faravahar winged disc on ceiling, sacred geometry patterns, fire altar below",
+      light: "firelight from below creating upward illumination, golden light on face from below, shadows on ceiling dome",
+      material: "skin pore detail, sweat droplets, gold ornament micro-scratches, fabric weave pattern, stone dome texture",
+      space: "dome curvature creating fisheye perspective, fire altar as light source at bottom, Faravahar at top center",
+      mood: "divine communion, fear and awe, mortal confronting eternal, spiritual transcendence, acceptance of destiny"
+    },
+    final: "Darius I looking upward in Ahura Mazda temple dome, Faravahar winged disc on ceiling with sacred geometry patterns, firelight from below creating upward illumination on face, skin pore detail sweat droplets, gold ornament micro-scratches, dome curvature fisheye perspective, fire altar as light source at bottom, divine communion spiritual transcendence, Greig Fraser cinematography, IMAX 1.43:1, 8K, photorealistic, macro detail",
+    extensibility: {
+      fg: "皮肤毛孔+汗珠+金饰划痕",
+      mid: "大流士面部微表情",
+      bg: "穹顶Faravahar+神圣几何",
+      env: "底火光源+穹顶反射",
+      ratio: "1.43:1专属：穹顶完整弧形至地面火祭坛"
+    },
+    check: ["微观前景有质感", "穹顶背景有神性", "底光塑造神秘", "弧形纵深沉浸"]
+  },
+  {
+    id: "3A",
+    stage: "合成 · Stage 5",
+    stageCode: "5",
+    cn: "万国之门·归途",
+    en: "GATE OF ALL NATIONS",
+    character: "大流士一世（Darius I）",
+    inclusive: "皇家长袍、Myrtus花冠、Barsom圣草、Faravahar金饰、面部特征、皮肤纹理、眼神、手部姿态、身体姿态、面部微表情、全身动态",
+    initial: "Darius I, royal robes, Myrtus coronet, Barsom, Faravahar, weathered skin, commanding eyes, hand gesture, body posture, facial micro-expression, full body dynamic",
+    unfolds: {
+      env: "Gate of All Nations exterior, Lamassu statues, procession entering, desert landscape, Zagros mountains sunset",
+      light: "sunset golden hour, long shadows, rim light on silhouettes, sky gradient from orange to deep blue, first star",
+      material: "stone weathering, Lamassu carving detail, sand texture, mountain rock strata, dust in wind",
+      space: "procession depth, multiple layers of people, horses, chariots, mountains in far distance, sky vastness",
+      mood: "journey's end, homecoming, empire's reach, mortality and eternity, Ahura Mazda's watchful eye"
+    },
+    final: "Darius I leading procession through Gate of All Nations at sunset, Lamassu statues guarding entrance, long shadows rim light on silhouettes, sky gradient orange to deep blue with first star Tishtrya appearing, stone weathering sand texture, Zagros mountains in far distance, procession depth with horses chariots, empire's reach mortality and eternity, Greig Fraser cinematography, IMAX 1.43:1, 8K, photorealistic, epic scale",
+    extensibility: {
+      fg: "Lamassu石雕风化纹理",
+      mid: "大流士全身动态+队列",
+      bg: "扎格罗斯山脉+Tishtrya首星",
+      env: "夕阳渐变+风沙粒子",
+      ratio: "1.43:1专属：天空从橙到蓝的完整渐变+山脉天际线"
+    },
+    check: ["拉玛苏前景有守护", "山脉背景有永恒", "首星暗示神性", "夕阳渐变时间感"]
+  },
+  {
+    id: "3B",
+    stage: "延展 · Stage 6",
+    stageCode: "6",
+    cn: "波斯波利斯花园",
+    en: "PAIRI-DAEZA",
+    character: "大流士一世（Darius I）",
+    inclusive: "皇家长袍、Myrtus花冠、Barsom圣草、Faravahar金饰、面部特征、皮肤纹理、眼神、手部姿态、身体姿态、面部微表情、全身动态、环境互动",
+    initial: "Darius I, royal robes, Myrtus coronet, Barsom, Faravahar, weathered skin, commanding eyes, hand gesture, body posture, facial micro-expression, full body dynamic, environmental interaction",
+    unfolds: {
+      env: "Persepolis terrace garden, pairi-daeza paradise, geometric water channels, qanat irrigation, palm trees, lotus flowers",
+      light: "dappled sunlight through palm leaves, water reflection, cool green tones contrasting warm skin, breeze movement",
+      material: "water ripples, palm leaf texture, lotus petal detail, wet stone, fabric movement in wind, hair strands",
+      space: "garden depth, water channels leading to throne, four-part garden symmetry, mountains framing background",
+      mood: "peace after conquest, harmony with nature, divine garden, Eden-like paradise, balance of power and grace"
+    },
+    final: "Darius I walking through Persepolis terrace garden pairi-daeza paradise, geometric water channels qanat irrigation, palm trees Phoenix dactylifera lotus flowers Nymphaea, dappled sunlight through palm leaves, water reflection cool green tones, water ripples lotus petal detail, wet stone fabric movement in wind, four-part garden symmetry, peace harmony divine garden, Greig Fraser cinematography, IMAX 1.43:1, 8K, photorealistic, tranquil",
+    extensibility: {
+      fg: "水面涟漪+莲花倒影",
+      mid: "大流士行走+衣摆飘动",
+      bg: "天堂花园四重对称+山脉",
+      env: "阳光斑驳+微风+水声",
+      ratio: "1.43:1专属：棕榈树顶至水面完整倒影"
+    },
+    check: ["水面前景有灵动", "花园背景有和谐", "斑驳光影有层次", "倒影垂直对称"]
+  },
+  {
+    id: "4A",
+    stage: "终极 · Stage 7",
+    stageCode: "7",
+    cn: "现代遗址·幽灵叠化",
+    en: "MODERN RUINS",
+    character: "大流士一世（Darius I）",
+    inclusive: "皇家长袍、Myrtus花冠、Barsom圣草、Faravahar金饰、面部特征、皮肤纹理、眼神、手部姿态、身体姿态、面部微表情、全身动态、环境互动、时间维度",
+    initial: "Darius I, royal robes, Myrtus coronet, Barsom, Faravahar, weathered skin, commanding eyes, hand gesture, body posture, facial micro-expression, full body dynamic, environmental interaction, temporal dimension",
+    unfolds: {
+      env: "Persepolis ruins in modern day, broken columns, overgrown vegetation, tourists in distance, museum atmosphere",
+      light: "overcast sky, flat documentary light, muted colors, time's passage visible in stone erosion, melancholy",
+      material: "stone erosion patterns, lichen growth, cracked limestone, faded relief carvings, modern vs ancient contrast",
+      space: "depth of time, ghostly overlay of ancient ceremony, transparent layers of past and present, eternity",
+      mood: "impermanence of empire, legacy enduring, Ahura Mazda's eternal light vs mortal stone, philosophical weight"
+    },
+    final: "Ghostly overlay of Darius I in ancient Persepolis ceremony transparently layered over modern day ruins, broken columns overgrown vegetation, tourists in distance, overcast sky flat documentary light, stone erosion patterns lichen growth, faded relief carvings, depth of time past and present transparent layers, impermanence legacy eternity, Greig Fraser cinematography, IMAX 1.43:1, 8K, photorealistic, melancholy, temporal",
+    extensibility: {
+      fg: "现代游客剪影（虚化）",
+      mid: "幽灵大流士（半透明叠加）",
+      bg: "古今建筑叠化",
+      env: "阴天平光+侵蚀纹理",
+      ratio: "1.43:1专属：从现代地面到古代穹顶的完整时空"
+    },
+    check: ["游客前景有对比", "古今叠化有纵深", "幽灵半透明有神性", "侵蚀纹理有岁月"]
+  }
+];
+
+/* 视觉样式映射 */
+const PAINTING_MAP = {
+  "1A": "p-apadana",
+  "1B": "p-throne",
+  "2A": "p-stairs",
+  "2B": "p-dome",
+  "3A": "p-gate",
+  "3B": "p-garden",
+  "4A": "p-ruins"
+};
+
+/* ============================================================
+ *  状态
+ * ============================================================ */
+const STATE = {
+  visited: {},     // 已浏览过的镜头
+  config: {
+    duration: 10,  // 每幕停留秒数
+    loop: true,
+    fade: true,
+    showPrompt: true
+  },
+  play: {
+    index: 0,
+    timer: null,
+    progressTimer: null,
+    progressStart: 0,
+    paused: false,
+    running: false
+  }
+};
+
+const STORAGE_KEY = "darius_crown_v1";
+const STORAGE_CFG = "darius_crown_cfg_v1";
+
+/* ============================================================
+ *  存储
+ * ============================================================ */
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const obj = JSON.parse(raw);
+      Object.assign(STATE.visited, obj.visited || {});
+    }
+    const cfg = localStorage.getItem(STORAGE_CFG);
+    if (cfg) {
+      Object.assign(STATE.config, JSON.parse(cfg));
+    }
+  } catch (e) {
+    console.warn("load state failed", e);
+  }
+}
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ visited: STATE.visited }));
+  } catch (e) {}
+}
+function saveConfig() {
+  try {
+    localStorage.setItem(STORAGE_CFG, JSON.stringify(STATE.config));
+  } catch (e) {}
+}
+
+/* ============================================================
+ *  屏幕切换
+ * ============================================================ */
+function showScreen(id) {
+  const ids = ["screen-intro", "screen-gallery", "screen-detail", "screen-play", "screen-config", "screen-help"];
+  ids.forEach(sid => {
+    const el = document.getElementById(sid);
+    if (!el) return;
+    if (sid === id) {
+      el.classList.add("active");
+      el.setAttribute("aria-hidden", "false");
+    } else {
+      el.classList.remove("active");
+      el.setAttribute("aria-hidden", "true");
+    }
+  });
+  // 重置滚动
+  if (id === "screen-gallery") {
+    requestAnimationFrame(() => {
+      const w = document.getElementById("galleryScroll");
+      if (w) w.scrollTop = 0;
+    });
+  }
+  if (id === "screen-detail") {
+    requestAnimationFrame(() => {
+      const w = document.getElementById("detailScroll");
+      if (w) w.scrollTop = 0;
+    });
+  }
+}
+
+function showModal(id) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.classList.add("active");
+    el.setAttribute("aria-hidden", "false");
+  }
+}
+function hideModal(id) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.classList.remove("active");
+    el.setAttribute("aria-hidden", "true");
+  }
+}
+
+/* ============================================================
+ *  渲染：展厅网格
+ * ============================================================ */
+function renderGallery() {
+  const grid = document.getElementById("shotGrid");
+  if (!grid) return;
+  grid.innerHTML = "";
+  SHOTS.forEach((s, idx) => {
+    const visited = !!STATE.visited[s.id];
+    const card = document.createElement("div");
+    card.className = "shot-card" + (visited ? " visited" : "") + " fade-up";
+    card.style.animationDelay = (0.05 * idx) + "s";
+    card.dataset.shotId = s.id;
+    card.setAttribute("role", "button");
+    card.setAttribute("tabindex", "0");
+    card.innerHTML = `
+      <div class="shot-card-head">
+        <div class="shot-id">${s.id}</div>
+        <div class="shot-stage">${s.stage}</div>
+      </div>
+      <div class="shot-title">${s.cn}</div>
+      <div class="shot-en">${s.en}</div>
+      <div class="shot-line">
+        <b>镜头主题</b>：${truncate(s.final, 64)}<br/>
+        <b>角色焦点</b>：${truncate(s.character + " · " + s.inclusive, 56)}
+      </div>
+    `;
+    card.addEventListener("click", () => openDetail(s.id));
+    card.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openDetail(s.id); }
+    });
+    grid.appendChild(card);
+  });
+}
+
+function truncate(s, n) {
+  if (!s) return "";
+  return s.length > n ? s.slice(0, n) + "…" : s;
+}
+
+/* ============================================================
+ *  详情页
+ * ============================================================ */
+function openDetail(shotId) {
+  const shot = SHOTS.find(s => s.id === shotId);
+  if (!shot) return;
+  STATE.visited[shotId] = Date.now();
+  saveState();
+
+  document.getElementById("detailTopbarTitle").textContent = shot.id + " · " + shot.cn;
+
+  const scroll = document.getElementById("detailScroll");
+  scroll.innerHTML = `
+    <div class="detail-hero fade-up">
+      <div class="detail-id">${shot.id}</div>
+      <div class="detail-stage">${shot.stage}</div>
+      <div class="detail-title">${shot.cn}</div>
+      <div class="detail-en">${shot.en}</div>
+    </div>
+
+    <div class="block fade-up delay-1">
+      <div class="block-label">角色 · Character Inclusive</div>
+      <div class="block-content">${shot.character}</div>
+      <div class="block-sub"><b>已包含</b>：${shot.inclusive}</div>
+    </div>
+
+    <div class="block fade-up delay-2">
+      <div class="block-label">初始提示词 · Initial Prompt</div>
+      <div class="block-content eng">${shot.initial}</div>
+    </div>
+
+    <div class="block fade-up delay-3">
+      <div class="block-label">展开进程 · Unfolding</div>
+      <div class="block-content">
+        <p><b style="color:var(--gold)">① 环境建立</b><br/>${shot.unfolds.env}</p>
+        <p style="margin-top:8px;"><b style="color:var(--gold)">② 光影氛围</b><br/>${shot.unfolds.light}</p>
+        <p style="margin-top:8px;"><b style="color:var(--gold)">③ 材质细节</b><br/>${shot.unfolds.material}</p>
+        <p style="margin-top:8px;"><b style="color:var(--gold)">④ 空间延展</b><br/>${shot.unfolds.space}</p>
+        <p style="margin-top:8px;"><b style="color:var(--gold)">⑤ 情绪层次</b><br/>${shot.unfolds.mood}</p>
+      </div>
+    </div>
+
+    <div class="block fade-up">
+      <div class="block-label">最终合成提示词 · Final Prompt</div>
+      <div class="block-content eng">${shot.final}</div>
+    </div>
+
+    <div class="block fade-up">
+      <div class="block-label">画面延展性 · Extensibility</div>
+      <div class="ext-grid">
+        <div class="ext-cell"><b>前景 · FG</b>${shot.extensibility.fg}</div>
+        <div class="ext-cell"><b>中景 · MID</b>${shot.extensibility.mid}</div>
+        <div class="ext-cell"><b>背景 · BG</b>${shot.extensibility.bg}</div>
+        <div class="ext-cell"><b>环境 · ENV</b>${shot.extensibility.env}</div>
+        <div class="ext-cell full"><b>画幅专属 · 1.43:1</b>${shot.extensibility.ratio}</div>
+      </div>
+    </div>
+
+    <div class="block fade-up">
+      <div class="block-label">视觉验证 · Visual Check</div>
+      <ul class="check-list">
+        ${shot.check.map(c => `<li>${c}</li>`).join("")}
+      </ul>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-ghost" data-nav="prev" data-shot="${shot.id}">‹ 上一幕</button>
+      <button class="btn btn-primary" data-nav="play-this" data-shot="${shot.id}">从此幕开始播放</button>
+      <button class="btn btn-ghost" data-nav="next" data-shot="${shot.id}">下一幕 ›</button>
+    </div>
+  `;
+
+  // 绑定详情内导航
+  scroll.querySelectorAll("[data-nav]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const nav = btn.dataset.nav;
+      const curId = btn.dataset.shot;
+      if (nav === "prev") {
+        const idx = SHOTS.findIndex(s => s.id === curId);
+        const target = SHOTS[(idx - 1 + SHOTS.length) % SHOTS.length];
+        openDetail(target.id);
+      } else if (nav === "next") {
+        const idx = SHOTS.findIndex(s => s.id === curId);
+        const target = SHOTS[(idx + 1) % SHOTS.length];
+        openDetail(target.id);
+      } else if (nav === "play-this") {
+        const idx = SHOTS.findIndex(s => s.id === curId);
+        startPlay(idx);
+      }
+    });
+  });
+
+  showScreen("screen-detail");
+}
+
+/* ============================================================
+ *  播放模式
+ * ============================================================ */
+function renderPlayStage(index) {
+  const canvas = document.getElementById("playCanvas");
+  if (!canvas) return;
+  const shot = SHOTS[index];
+  if (!shot) return;
+  const paintClass = PAINTING_MAP[shot.id] || "p-apadana";
+
+  let extra = "";
+  if (paintClass === "p-apadana") {
+    extra = `<div class="col col-1"></div><div class="col col-2"></div><div class="col col-3"></div>
+             <div class="col col-4"></div><div class="col col-5"></div><div class="col col-6"></div>
+             <div class="col col-7"></div><div class="figure-1"></div>`;
+  } else if (paintClass === "p-throne") {
+    extra = `<div class="rim-light"></div><div class="window-glow"></div><div class="throne"></div>`;
+  } else if (paintClass === "p-stairs") {
+    extra = `<div class="dust"></div><div class="stairs"></div>`;
+  } else if (paintClass === "p-dome") {
+    extra = `<div class="dome"></div><div class="under-light"></div><div class="up-glow"></div>`;
+  } else if (paintClass === "p-gate") {
+    extra = `<div class="first-star"></div>
+             <div class="lamassu lamassu-left"></div>
+             <div class="lamassu lamassu-right"></div>
+             <div class="gate"></div>
+             <div class="mountain"></div>
+             <div class="procession">
+               <div class="proc-fig" style="left:0"></div>
+               <div class="proc-fig" style="left:18px"></div>
+               <div class="proc-fig" style="left:36px"></div>
+               <div class="proc-fig" style="left:54px"></div>
+               <div class="proc-fig" style="left:72px"></div>
+             </div>`;
+  } else if (paintClass === "p-garden") {
+    extra = `<div class="palm palm-1"></div><div class="palm palm-2"></div>
+             <div class="palm palm-3"></div><div class="palm palm-4"></div>
+             <div class="lotus lotus-1"></div><div class="lotus lotus-2"></div><div class="lotus lotus-3"></div>
+             <div class="water"></div>`;
+  } else if (paintClass === "p-ruins") {
+    extra = `<div class="ruin-col ruin-1"></div><div class="ruin-col ruin-2"></div>
+             <div class="ruin-col ruin-3"></div><div class="ruin-col ruin-4"></div>
+             <div class="ghost"></div>
+             <div class="tourist tourist-1"></div>
+             <div class="tourist tourist-2"></div>
+             <div class="tourist tourist-3"></div>
+             <div class="tourist tourist-4"></div>`;
+  }
+
+  const promptHtml = STATE.config.showPrompt
+    ? `<div class="play-prompt">${truncate(shot.final, 140)}</div>`
+    : "";
+
+  canvas.innerHTML = `
+    <div class="play-stage active">
+      <div class="play-painting">
+        <div class="painting ${paintClass}">${extra}</div>
+      </div>
+      <div class="play-overlay">
+        <div class="play-id">${shot.id}</div>
+        <div class="play-stage-tag">${shot.stage}</div>
+        <div class="play-title">${shot.cn}</div>
+        <div class="play-en">${shot.en}</div>
+        ${promptHtml}
+      </div>
+    </div>
+  `;
+}
+
+function clearPlayTimers() {
+  if (STATE.play.timer) { clearTimeout(STATE.play.timer); STATE.play.timer = null; }
+  if (STATE.play.progressTimer) { clearInterval(STATE.play.progressTimer); STATE.play.progressTimer = null; }
+}
+
+function startProgress(duration) {
+  const bar = document.getElementById("playProgressBar");
+  if (!bar) return;
+  STATE.play.progressStart = performance.now();
+  const total = duration * 1000;
+  bar.style.width = "0%";
+  STATE.play.progressTimer = setInterval(() => {
+    if (STATE.play.paused) return;
+    const elapsed = performance.now() - STATE.play.progressStart;
+    const pct = Math.min(100, (elapsed / total) * 100);
+    bar.style.width = pct + "%";
+  }, 60);
+}
+
+function startPlay(startIndex) {
+  if (typeof startIndex !== "number" || isNaN(startIndex)) startIndex = 0;
+  STATE.play.index = Math.max(0, Math.min(SHOTS.length - 1, startIndex));
+  STATE.play.paused = false;
+  STATE.play.running = true;
+  showScreen("screen-play");
+  renderPlayStage(STATE.play.index);
+  updatePlayPauseBtn();
+  scheduleNext();
+}
+
+function scheduleNext() {
+  clearPlayTimers();
+  if (!STATE.play.running) return;
+  startProgress(STATE.config.duration);
+  STATE.play.timer = setTimeout(() => {
+    if (STATE.play.paused) return;
+    const next = STATE.play.index + 1;
+    if (next >= SHOTS.length) {
+      if (STATE.config.loop) {
+        STATE.play.index = 0;
+        transitionToStage(0);
+      } else {
+        stopPlay();
+        showToast("播放完成");
+      }
+    } else {
+      STATE.play.index = next;
+      transitionToStage(next);
+    }
+  }, STATE.config.duration * 1000);
+}
+
+function transitionToStage(index) {
+  const canvas = document.getElementById("playCanvas");
+  if (!canvas) return;
+  if (STATE.config.fade) {
+    const cur = canvas.querySelector(".play-stage");
+    if (cur) cur.style.opacity = "0";
+    setTimeout(() => {
+      renderPlayStage(index);
+    }, 600);
+  } else {
+    renderPlayStage(index);
+  }
+  scheduleNext();
+}
+
+function stopPlay() {
+  STATE.play.running = false;
+  STATE.play.paused = false;
+  clearPlayTimers();
+  showScreen("screen-gallery");
+}
+
+function togglePause() {
+  if (!STATE.play.running) return;
+  STATE.play.paused = !STATE.play.paused;
+  if (STATE.play.paused) {
+    clearPlayTimers();
+    document.getElementById("pauseMask").classList.add("active");
+  } else {
+    document.getElementById("pauseMask").classList.remove("active");
+    STATE.play.progressStart = performance.now() - 0;
+    scheduleNext();
+  }
+  updatePlayPauseBtn();
+}
+
+function updatePlayPauseBtn() {
+  const btn = document.getElementById("playPauseBtn");
+  if (!btn) return;
+  btn.textContent = STATE.play.paused ? "▶" : "⏸";
+}
+
+/* ============================================================
+ *  简短的吐司（自绘）
+ * ============================================================ */
+let toastTimer = null;
+function showToast(msg) {
+  let t = document.getElementById("toastEl");
+  if (!t) {
+    t = document.createElement("div");
+    t.id = "toastEl";
+    t.style.cssText = "position:fixed; left:50%; top:30%; transform:translate(-50%,-50%); background:rgba(11,18,36,.95); color:#f1d27a; border:1px solid #d9b25c; padding:12px 24px; font-size:13px; letter-spacing:0.15em; z-index:200; opacity:0; transition:opacity .25s ease; pointer-events:none;";
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = "1";
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    t.style.opacity = "0";
+  }, 1800);
+}
+
+/* ============================================================
+ *  配置
+ * ============================================================ */
+function renderConfig() {
+  // duration seg
+  document.querySelectorAll("#durationSeg button").forEach(b => {
+    b.classList.toggle("on", parseInt(b.dataset.dur, 10) === STATE.config.duration);
+  });
+  // switches
+  const setSwitch = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle("on", !!val);
+  };
+  setSwitch("loopSwitch", STATE.config.loop);
+  setSwitch("fadeSwitch", STATE.config.fade);
+  setSwitch("showPromptSwitch", STATE.config.showPrompt);
+}
+
+function bindConfig() {
+  // duration
+  document.querySelectorAll("#durationSeg button").forEach(b => {
+    b.addEventListener("click", () => {
+      STATE.config.duration = parseInt(b.dataset.dur, 10) || 10;
+      saveConfig();
+      renderConfig();
+    });
+  });
+  // switches
+  ["loopSwitch", "fadeSwitch", "showPromptSwitch"].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener("click", () => {
+      const key = el.dataset.toggle;
+      STATE.config[key] = !STATE.config[key];
+      saveConfig();
+      renderConfig();
+    });
+  });
+}
+
+/* ============================================================
+ *  分享（自绘弹层）
+ * ============================================================ */
+function shareShot() {
+  if (STATE.play.running) return;
+  // 简单实现：提示文本
+  showModal("screen-help");
+  const card = document.querySelector("#screen-help .modal-card");
+  if (card) {
+    card.innerHTML = `
+      <h2 class="modal-title">分享当前镜头</h2>
+      <p class="modal-message">
+        本作品为离线 H5，无网络分享能力。<br/>
+        您可以截屏保存当前画面。
+      </p>
+      <div class="modal-actions">
+        <button class="btn btn-primary" data-action="close-help">我知道了</button>
+      </div>
+    `;
+  }
+}
+
+/* ============================================================
+ *  重置进度
+ * ============================================================ */
+function resetProgress() {
+  STATE.visited = {};
+  saveState();
+  renderGallery();
+  showToast("已重置观看进度");
+}
+
+/* ============================================================
+ *  事件绑定
+ * ============================================================ */
+function bindEvents() {
+  document.body.addEventListener("click", (e) => {
+    const target = e.target.closest("[data-action], [data-shot], .shot-card");
+    if (!target) return;
+    if (target.classList.contains("shot-card")) return; // 已单独绑定
+    const action = target.dataset.action;
+    if (!action) return;
+    switch (action) {
+      case "enter": showScreen("screen-gallery"); break;
+      case "back-to-intro": stopPlay(); showScreen("screen-intro"); break;
+      case "back-to-gallery": showScreen("screen-gallery"); break;
+      case "play":
+      case "play-from-gallery": startPlay(0); break;
+      case "play-this": {
+        const id = target.dataset.shot;
+        const idx = SHOTS.findIndex(s => s.id === id);
+        startPlay(idx >= 0 ? idx : 0);
+        break;
+      }
+      case "exit-play": stopPlay(); break;
+      case "toggle-pause": togglePause(); break;
+      case "resume": togglePause(); break;
+      case "show-config": renderConfig(); showModal("screen-config"); break;
+      case "close-config": hideModal("screen-config"); break;
+      case "show-help": showModal("screen-help"); break;
+      case "close-help": hideModal("screen-help"); break;
+      case "reset-progress": resetProgress(); break;
+      case "share-shot": shareShot(); break;
+    }
+  });
+
+  // 触摸友好：长按说明按钮
+  document.querySelectorAll("[data-action='show-help']").forEach(btn => {
+    btn.addEventListener("contextmenu", e => e.preventDefault());
+  });
+
+  // 播放模式下的左右滑动手势（移动端）
+  let touchStartX = 0;
+  const canvas = document.getElementById("playCanvas");
+  if (canvas) {
+    canvas.addEventListener("touchstart", (e) => {
+      if (!STATE.play.running) return;
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+    canvas.addEventListener("touchend", (e) => {
+      if (!STATE.play.running) return;
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) < 40) return;
+      if (dx > 0) {
+        // 右滑 - 上一幕
+        const prev = (STATE.play.index - 1 + SHOTS.length) % SHOTS.length;
+        STATE.play.index = prev;
+        transitionToStage(prev);
+      } else {
+        // 左滑 - 下一幕
+        const next = (STATE.play.index + 1) % SHOTS.length;
+        STATE.play.index = next;
+        transitionToStage(next);
+      }
+    }, { passive: true });
+  }
+
+  // 键盘：详情页左右键翻页
+  document.addEventListener("keydown", (e) => {
+    const detail = document.getElementById("screen-detail");
+    if (!detail || !detail.classList.contains("active")) return;
+    const active = document.querySelector(".shot-card:focus");
+    // 简单：取当前详情 ID
+    const title = document.getElementById("detailTopbarTitle");
+    if (!title) return;
+    const idMatch = title.textContent.match(/^(\d[A-Z])/);
+    if (!idMatch) return;
+    const curId = idMatch[1];
+    const idx = SHOTS.findIndex(s => s.id === curId);
+    if (e.key === "ArrowLeft") {
+      const t = SHOTS[(idx - 1 + SHOTS.length) % SHOTS.length];
+      openDetail(t.id);
+    } else if (e.key === "ArrowRight") {
+      const t = SHOTS[(idx + 1) % SHOTS.length];
+      openDetail(t.id);
+    }
+  });
+
+  // 播放模式：空格暂停
+  document.addEventListener("keydown", (e) => {
+    const playScreen = document.getElementById("screen-play");
+    if (!playScreen || !playScreen.classList.contains("active")) return;
+    if (e.key === " " || e.code === "Space") {
+      e.preventDefault();
+      togglePause();
+    }
+  });
+
+  // 关闭弹层：点击遮罩
+  ["screen-config", "screen-help"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("click", (e) => {
+        if (e.target === el) hideModal(id);
+      });
+    }
+  });
+
+  // 防止移动端双击缩放
+  document.addEventListener('dblclick', (e) => e.preventDefault(), { passive: false });
+  document.addEventListener('gesturestart', (e) => e.preventDefault());
+}
+
+/* ============================================================
+ *  启动
+ * ============================================================ */
+function initApp() {
+  loadState();
+  renderGallery();
+  bindConfig();
+  bindEvents();
+}
+
+window.addEventListener("load", () => {
+  try {
+    initApp();
+  } catch (err) {
+    console.error(err);
+    const fb = document.getElementById("fallback");
+    if (fb) fb.style.display = "flex";
+  }
+});
+
+// 防止意外刷新误操作
+window.addEventListener("beforeunload", (e) => {
+  if (STATE.play.running && !STATE.play.paused) {
+    e.preventDefault();
+    e.returnValue = "";
+  }
+});
+</script>
+</body>
+</html>
