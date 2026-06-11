@@ -1,0 +1,66 @@
+:root {
+  /* 宇宙深空 */
+  --color-void: #05050a;
+  --color-deep: #0a0a14;
+  --color-ink: #1a1a24;
+
+  /* 水墨灰 */
+  --color-ash: #2a2a35;
+  --color-mist: #4a4a55;
+  --color-fog: #7a7a85;
+
+  /* 神圣金 */
+  --color-gold: #d4af37;
+  --color-gold-bright: #f4d03f;
+  --color-gold-deep: #8b7500;
+
+  /* 能量色 */
+  --color-fire: #ff6b35;
+  --color-flame: #e85d04;
+  --color-blood: #9d0208;
+  --color-ember: #d62828;
+
+  /* 星辰 */
+  --color-star: #e8e8f0;
+  --color-dim: #a0a0b0;
+  --color-whisper: #6c6c7c;
+
+  /* 字体 */
+  --font-display: 'Ma Shan Zheng', 'Noto Serif SC', serif;
+  --font-heading: 'Noto Serif SC', 'ZCOOL XiaoWei', serif;
+  --font-body: 'Noto Sans SC', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* 间距 */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* 过渡 */
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --ease-ink: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  /* 字号 */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+  --text-6xl: 3.75rem;
+  --text-7xl: 4.5rem;
+  --text-8xl: 6rem;
+  --text-9xl: 8rem;
+}
