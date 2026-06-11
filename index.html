@@ -228,49 +228,129 @@
     padding: 0 0 80px;
   }
   .layout {
-    max-width: 1480px; margin: 0 auto;
-    display: grid; grid-template-columns: 200px 1fr;
-    gap: 80px; padding: 0 32px;
-  }
-  @media (max-width: 1024px) {
-    .layout { grid-template-columns: 1fr; gap: 0; }
+    position: relative;
+    margin: 0 auto;
   }
 
-  /* ====== Timeline ====== */
-  .timeline {
-    position: sticky; top: 100px;
-    height: max-content;
-    align-self: start;
+  /* ====== Horizontal shots track ====== */
+  .shots-track {
+    position: relative;
+    width: 100%;
+    padding: 0 0 60px;
   }
-  @media (max-width: 1024px) {
-    .timeline {
-      position: relative; top: 0; margin-bottom: 48px;
-      padding: 24px; border: 1px solid rgba(201,163,92,0.15);
-      background: rgba(10,5,18,0.5);
-    }
+  .shots {
+    display: flex;
+    flex-direction: row;
+    gap: 32px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 60px 8vw;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(201,163,92,0.4) rgba(10,5,18,0.5);
+    -webkit-overflow-scrolling: touch;
   }
-  .timeline-title {
+  .shots::-webkit-scrollbar { height: 8px; }
+  .shots::-webkit-scrollbar-track {
+    background: rgba(10,5,18,0.5);
+    border-top: 1px solid rgba(201,163,92,0.1);
+  }
+  .shots::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, var(--c-gold), var(--c-gold-2));
+    border-radius: 0;
+  }
+  /* Edge fade gradients */
+  .shots-track::before,
+  .shots-track::after {
+    content: ''; position: absolute; top: 60px; bottom: 60px; width: 8vw;
+    pointer-events: none; z-index: 5;
+  }
+  .shots-track::before {
+    left: 0;
+    background: linear-gradient(90deg, var(--c-void) 0%, rgba(5,3,9,0.6) 40%, transparent 100%);
+  }
+  .shots-track::after {
+    right: 0;
+    background: linear-gradient(270deg, var(--c-void) 0%, rgba(5,3,9,0.6) 40%, transparent 100%);
+  }
+  .track-progress {
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: rgba(201,163,92,0.1);
+    z-index: 2;
+  }
+  .track-progress::after {
+    content: ''; position: absolute; left: 0; top: 0; height: 100%;
+    width: var(--p, 0%);
+    background: linear-gradient(90deg, var(--c-gold), var(--c-gold-2));
+    box-shadow: 0 0 8px var(--c-gold-2);
+    transition: width 0.1s linear;
+  }
+  .track-label {
+    position: absolute; top: 16px; left: 8vw; z-index: 3;
     font-family: var(--font-mono); font-size: 10px;
     color: var(--c-gold); letter-spacing: 0.4em;
-    text-transform: uppercase; margin-bottom: 24px;
-    padding-left: 8px;
+    text-transform: uppercase;
+    display: flex; align-items: center; gap: 12px;
   }
-  .timeline-list { list-style: none; position: relative; }
+  .track-label::before {
+    content: ''; width: 8px; height: 8px; background: var(--c-gold-2);
+    border-radius: 50%; box-shadow: 0 0 8px var(--c-gold-2);
+    animation: blink 1.6s ease-in-out infinite;
+  }
+  .track-counter {
+    position: absolute; top: 16px; right: 8vw; z-index: 3;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--c-bone-dim); letter-spacing: 0.2em;
+  }
+  .track-counter .cur { color: var(--c-gold-2); font-size: 14px; font-weight: 600; }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  /* ====== Timeline (horizontal sticky) ====== */
+  .timeline {
+    position: sticky; top: 60px;
+    z-index: 50;
+    padding: 14px 0 18px;
+    margin: 0 0 16px;
+    background: linear-gradient(180deg, rgba(5,3,9,0.92) 0%, rgba(5,3,9,0.75) 80%, transparent 100%);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid rgba(201,163,92,0.15);
+    border-bottom: 1px solid rgba(201,163,92,0.1);
+  }
+  .timeline-title {
+    display: none;
+  }
+  .timeline-list {
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    gap: 0;
+    padding: 0 8vw;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    position: relative;
+  }
+  .timeline-list::-webkit-scrollbar { display: none; }
   .timeline-list::before {
     content: ''; position: absolute;
-    left: 14px; top: 8px; bottom: 8px; width: 1px;
-    background: linear-gradient(180deg, transparent, rgba(201,163,92,0.3) 20%, rgba(201,163,92,0.3) 80%, transparent);
+    left: 8vw; right: 8vw; top: 14px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,163,92,0.3) 10%, rgba(201,163,92,0.3) 90%, transparent);
   }
+  .timeline-list li { flex-shrink: 0; }
   .timeline-list a {
-    display: flex; align-items: center; gap: 12px;
-    padding: 7px 8px; color: var(--c-bone-dim);
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 0 8px; min-width: 56px;
+    color: var(--c-bone-dim);
     text-decoration: none;
-    font-family: var(--font-mono); font-size: 11px;
+    font-family: var(--font-mono); font-size: 9px;
     letter-spacing: 0.1em; border-radius: 2px;
     transition: all 0.3s ease;
     position: relative;
+    cursor: pointer;
   }
-  .timeline-list a:hover { color: var(--c-gold-2); background: rgba(201,163,92,0.04); }
+  .timeline-list a:hover { color: var(--c-gold-2); }
+  .timeline-list a .num { font-size: 10px; font-weight: 500; }
   .timeline-list a .dot {
     width: 8px; height: 8px; border-radius: 50%;
     background: rgba(201,163,92,0.2);
@@ -281,11 +361,17 @@
   .timeline-list a.active .dot {
     background: var(--c-gold-2);
     box-shadow: 0 0 12px var(--c-gold-2);
-    transform: scale(1.4);
+    transform: scale(1.6);
   }
-  .timeline-list a.key::after {
-    content: '✦'; position: absolute; right: 8px; color: var(--c-gold);
-    font-size: 10px;
+  .timeline-list a.key .num { color: var(--c-gold); }
+  .timeline-list a.key .dot { border-color: var(--c-gold-2); }
+
+  @media (max-width: 1024px) {
+    .shots { padding: 40px 6vw; gap: 20px; }
+    .timeline-list { padding: 0 6vw; }
+    .timeline-list::before { left: 6vw; right: 6vw; }
+    .track-label { left: 6vw; }
+    .track-counter { right: 6vw; }
   }
 
   /* ====== Section heading ====== */
@@ -311,22 +397,50 @@
     margin-top: 24px; max-width: 720px; margin-left: auto; margin-right: auto;
     color: var(--c-bone-dim); font-size: 15px; line-height: 1.9;
   }
+  .hscroll-hint {
+    margin-top: 28px;
+    display: inline-flex; align-items: center; gap: 16px;
+    padding: 10px 20px;
+    border: 1px solid rgba(201,163,92,0.2);
+    border-radius: 2px;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--c-bone-dim); letter-spacing: 0.2em;
+    background: rgba(201,163,92,0.04);
+  }
+  .hscroll-hint .hint-arrow {
+    color: var(--c-gold-2);
+    font-size: 14px;
+    animation: arrow-pulse 2s ease-in-out infinite;
+  }
+  @keyframes arrow-pulse {
+    0%,100% { opacity: 0.4; transform: translateX(0); }
+    50% { opacity: 1; transform: translateX(2px); }
+  }
+  .hscroll-hint .hint-arrow:first-child { animation-name: arrow-pulse-left; }
+  @keyframes arrow-pulse-left {
+    0%,100% { opacity: 0.4; transform: translateX(0); }
+    50% { opacity: 1; transform: translateX(-2px); }
+  }
 
-  /* ====== Shot card ====== */
-  .shots { display: flex; flex-direction: column; gap: 56px; }
+  /* ====== Shot card (horizontal) ====== */
+  .shots { display: flex; flex-direction: row; gap: 32px; }
   .shot {
     position: relative;
+    flex: 0 0 auto;
+    width: 720px;
+    max-width: 88vw;
     display: grid; grid-template-columns: 200px 1fr;
-    gap: 48px;
-    padding: 40px;
+    gap: 32px;
+    padding: 32px;
     background: linear-gradient(135deg, rgba(26,11,46,0.5) 0%, rgba(10,5,18,0.7) 100%);
     border: 1px solid rgba(201,163,92,0.12);
     border-radius: 4px;
-    opacity: 0; transform: translateY(40px);
+    opacity: 0; transform: translateX(60px) scale(0.96);
     transition: opacity 0.9s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
     overflow: hidden;
+    scroll-snap-align: start;
   }
-  .shot.in-view { opacity: 1; transform: translateY(0); }
+  .shot.in-view { opacity: 1; transform: translateX(0) scale(1); }
   .shot::before {
     content: ''; position: absolute; inset: 0;
     background: var(--g-radial-gold);
@@ -413,12 +527,13 @@
   .shot-art .art-corner.bl { bottom: 6px; left: 6px; border-bottom-width: 1px; border-left-width: 1px; }
   .shot-art .art-corner.br { bottom: 6px; right: 6px; border-bottom-width: 1px; border-right-width: 1px; }
 
-  /* ====== Free-floating key shots (分离游离) ====== */
+  /* ====== Free-floating key shots (横版游离 — 垂直漂浮 + 加宽) ====== */
   .shot.is-floating {
-    grid-template-columns: 320px 1fr;
-    margin: 80px -40px;
-    padding: 48px 56px;
-    transform: translateY(40px) rotate(-0.3deg);
+    width: 880px;
+    grid-template-columns: 240px 1fr;
+    margin-top: -32px;
+    margin-bottom: 32px;
+    padding: 40px 48px;
     border-color: rgba(201,163,92,0.35);
     background:
       linear-gradient(135deg, rgba(75,32,121,0.35) 0%, rgba(26,11,46,0.6) 50%, rgba(10,5,18,0.85) 100%);
@@ -427,30 +542,21 @@
       0 30px 60px rgba(0,0,0,0.5);
     position: relative;
   }
-  .shot.is-floating.in-view {
-    transform: translateY(0) rotate(-0.3deg);
-  }
   .shot.is-floating::after {
     width: 5px;
     background: linear-gradient(180deg, transparent 5%, var(--c-gold-2) 30%, var(--c-gold-2) 70%, transparent 95%);
     box-shadow: 0 0 20px var(--c-gold-2);
   }
-  .shot.is-floating:nth-of-type(odd) {
-    transform: translateY(40px) rotate(0.3deg);
-  }
-  .shot.is-floating:nth-of-type(odd).in-view {
-    transform: translateY(0) rotate(0.3deg);
-  }
   .shot.is-floating .shot-num {
-    font-size: 140px;
+    font-size: 110px;
   }
   .shot.is-floating .shot-art {
     aspect-ratio: 1 / 1;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
   @media (max-width: 900px) {
-    .shot.is-floating { grid-template-columns: 1fr; margin: 60px 0; padding: 32px; transform: none !important; }
-    .shot.is-floating.in-view { transform: none !important; }
+    .shot.is-floating { width: 88vw; grid-template-columns: 1fr; margin-top: 0; padding: 28px; }
+    .shot.is-floating .shot-num { font-size: 88px; }
   }
 
   @media (max-width: 768px) {
@@ -847,24 +953,34 @@
   <!-- MAIN -->
   <main class="main">
     <section class="section-head">
-      <div class="eyebrow">STORYBOARD · 25 SHOTS</div>
+      <div class="eyebrow">STORYBOARD · 25 SHOTS · HORIZONTAL</div>
       <h2>完 整 分 镜 表</h2>
       <div class="rule"></div>
       <p>从 0:00 的算穹万米高空，到 4:00 的拱门闭合——<br />每一镜，皆是<strong style="color:var(--c-gold-2)">天则运转</strong>的一帧。</p>
+      <div class="hscroll-hint">
+        <span class="hint-arrow">←</span>
+        <span>滚轮 / 触控板 / 方向键 / 拖动滚动条 / 点击上方时间线</span>
+        <span class="hint-arrow">→</span>
+      </div>
     </section>
 
     <div class="layout">
-      <!-- Timeline -->
-      <aside class="timeline" aria-label="镜头时间线">
-        <div class="timeline-title">TIMELINE</div>
-        <ul class="timeline-list" id="timeline">
-          <!-- Populated by JS -->
-        </ul>
-      </aside>
+      <div class="shots-track">
+        <div class="track-progress" id="trackProgress"></div>
+        <span class="track-label">HORIZONTAL TRACK · 横 版 推 移</span>
+        <span class="track-counter"><span class="cur" id="trackCur">01</span> &nbsp;/&nbsp; 25</span>
 
-      <!-- Shots -->
-      <div class="shots" id="shots">
-        <!-- Populated by JS -->
+        <!-- Timeline -->
+        <aside class="timeline" aria-label="镜头时间线">
+          <ul class="timeline-list" id="timeline">
+            <!-- Populated by JS -->
+          </ul>
+        </aside>
+
+        <!-- Shots -->
+        <div class="shots" id="shots">
+          <!-- Populated by JS -->
+        </div>
       </div>
     </div>
   </main>
@@ -1139,14 +1255,15 @@
   const keyShots = [1, 13, 19, 23, 25];
   const totalDur = 240;
 
-  // ===== Render timeline =====
+  // ===== Render timeline (horizontal) =====
   const timeline = document.getElementById('timeline');
   shots.forEach(s => {
     const li = document.createElement('li');
     const a = document.createElement('a');
     a.href = '#shot-' + s.id;
     a.dataset.id = s.id;
-    a.innerHTML = `<span class="dot"></span><span>${String(s.id).padStart(2,'0')} · ${s.timecode}</span>`;
+    a.title = `${s.timecode} · ${s.scale}`;
+    a.innerHTML = `<span class="dot"></span><span class="num">${String(s.id).padStart(2,'0')}</span>`;
     if (keyShots.includes(s.id)) a.classList.add('key');
     li.appendChild(a);
     timeline.appendChild(li);
@@ -1711,19 +1828,24 @@
     });
   });
 
-  // ===== IntersectionObserver: in-view + timeline highlight =====
+  // ===== IntersectionObserver: in-view + timeline highlight (horizontal track) =====
   const shotEls = document.querySelectorAll('.shot');
   const tlLinks = document.querySelectorAll('.timeline-list a');
+  const shotsContainer = document.getElementById('shots');
+  const trackProgress = document.getElementById('trackProgress');
+  const trackCur = document.getElementById('trackCur');
+  let activeId = 1;
+
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(en => {
       if (en.isIntersecting) {
         en.target.classList.add('in-view');
       }
     });
-  }, { threshold: 0.15 });
+  }, { root: shotsContainer, threshold: 0.3 });
   shotEls.forEach(el => observer.observe(el));
 
-  // Highlight timeline based on scroll
+  // Highlight timeline + counter based on closest-to-center shot
   const visibleMap = new Map();
   const visObserver = new IntersectionObserver((entries) => {
     entries.forEach(en => {
@@ -1736,12 +1858,89 @@
     let active = null, max = 0;
     visibleMap.forEach((v, k) => { if (v > max) { max = v; active = k; } });
     if (active) {
+      activeId = parseInt(active.replace('shot-', ''), 10);
       tlLinks.forEach(a => {
-        a.classList.toggle('active', a.getAttribute('href') === '#' + active);
+        const isActive = a.getAttribute('href') === '#' + active;
+        a.classList.toggle('active', isActive);
+        if (isActive) {
+          // Center active timeline item
+          const tlList = document.getElementById('timeline');
+          const aRect = a.getBoundingClientRect();
+          const lRect = tlList.getBoundingClientRect();
+          if (aRect.left < lRect.left + 80 || aRect.right > lRect.right - 80) {
+            a.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          }
+        }
       });
+      if (trackCur) trackCur.textContent = String(activeId).padStart(2, '0');
     }
-  }, { threshold: [0.1, 0.3, 0.6], rootMargin: '-20% 0px -40% 0px' });
+  }, { root: shotsContainer, threshold: [0.3, 0.5, 0.7, 0.9] });
   shotEls.forEach(el => visObserver.observe(el));
+
+  // Update track progress bar
+  function updateProgress() {
+    if (!shotsContainer || !trackProgress) return;
+    const max = shotsContainer.scrollWidth - shotsContainer.clientWidth;
+    const cur = shotsContainer.scrollLeft;
+    const pct = max > 0 ? (cur / max * 100) : 0;
+    trackProgress.style.setProperty('--p', pct + '%');
+  }
+  shotsContainer.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  // ===== Wheel → horizontal scroll within track =====
+  shotsContainer.addEventListener('wheel', (e) => {
+    // Vertical wheel or trackpad: convert to horizontal
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      e.preventDefault();
+      shotsContainer.scrollLeft += e.deltaY;
+    }
+  }, { passive: false });
+
+  // ===== Click on timeline → scroll to shot =====
+  tlLinks.forEach(a => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      const id = a.dataset.id;
+      const target = document.getElementById('shot-' + id);
+      if (target) {
+        // Center the shot in the track
+        const cRect = shotsContainer.getBoundingClientRect();
+        const tRect = target.getBoundingClientRect();
+        const targetLeft = tRect.left - cRect.left + shotsContainer.scrollLeft;
+        const center = targetLeft - (shotsContainer.clientWidth - target.offsetWidth) / 2;
+        shotsContainer.scrollTo({ left: center, behavior: 'smooth' });
+      }
+    });
+  });
+
+  // ===== Keyboard navigation: arrow keys within track =====
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      const next = Math.min(25, activeId + 1);
+      const target = document.getElementById('shot-' + next);
+      if (target) {
+        const cRect = shotsContainer.getBoundingClientRect();
+        const tRect = target.getBoundingClientRect();
+        const targetLeft = tRect.left - cRect.left + shotsContainer.scrollLeft;
+        const center = targetLeft - (shotsContainer.clientWidth - target.offsetWidth) / 2;
+        shotsContainer.scrollTo({ left: center, behavior: 'smooth' });
+      }
+      e.preventDefault();
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      const prev = Math.max(1, activeId - 1);
+      const target = document.getElementById('shot-' + prev);
+      if (target) {
+        const cRect = shotsContainer.getBoundingClientRect();
+        const tRect = target.getBoundingClientRect();
+        const targetLeft = tRect.left - cRect.left + shotsContainer.scrollLeft;
+        const center = targetLeft - (shotsContainer.clientWidth - target.offsetWidth) / 2;
+        shotsContainer.scrollTo({ left: center, behavior: 'smooth' });
+      }
+      e.preventDefault();
+    }
+  });
 
   // ===== Particles =====
   const particles = document.getElementById('particles');
