@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, type Ref } from 'vue'
+import { ref, computed, inject, onMounted, onUnmounted, type Ref } from 'vue'
 import { VERSIONS } from '../core/versions'
 import VersionDetail from '../components/VersionDetail.vue'
 
@@ -7,8 +7,10 @@ const selectedId = ref('v1')
 const loadedId = ref<string | null>(null)
 const showDetail = ref(false)
 
-// AgentPanel 已移除，fullscreen 仍保留以支持版本标签的监视模式
+// 注入全屏状态与控制函数
 const fullscreen = inject<Ref<boolean>>('fullscreen', ref(false))
+const enterFullscreen = inject<() => void>('enterFullscreen', () => {})
+const exitFullscreen = inject<() => void>('exitFullscreen', () => {})
 
 const selected = computed(() => VERSIONS.find(v => v.id === selectedId.value)!)
 
@@ -37,9 +39,58 @@ function onTimelineClick(version: typeof VERSIONS[number]) {
 }
 
 function onTimelineDblClick(_version: typeof VERSIONS[number]) {
-  // 双击进入全屏监视（右侧 AgentPanel 已移除，仅切全屏）
-  fullscreen.value = true
+  // 双击进入全屏监视：通过 provide 注入的 setter 切换
+  enterFullscreen()
 }
+
+function exitFullscreenMode() {
+  exitFullscreen()
+}
+
+// 计算 iframe src：路径拼接 + 缓存破坏时间戳，避免浏览器复用旧版 HTML
+const iframeSrc = computed(() => {
+  if (!loadedVersion.value) return ''
+  const p = loadedVersion.value.path
+  const sep = p.endsWith('/') ? '' : '/'
+  return `${p}${sep}index.html?t=${Date.now()}`
+})
+
+// ESC 长按退出全屏：每 500ms 计时
+let escPressStart: number | null = null
+let escTimer: number | null = null
+
+function onKeyDown(e: KeyboardEvent) {
+  if (e.key !== 'Escape' || !fullscreen.value) return
+  if (escPressStart === null) {
+    escPressStart = Date.now()
+    escTimer = window.setTimeout(() => {
+      // 长按 500ms 触发退出
+      exitFullscreen()
+      escPressStart = null
+      escTimer = null
+    }, 500)
+  }
+}
+
+function onKeyUp(e: KeyboardEvent) {
+  if (e.key !== 'Escape') return
+  if (escTimer !== null) {
+    clearTimeout(escTimer)
+    escTimer = null
+  }
+  escPressStart = null
+}
+
+onMounted(() => {
+  document.addEventListener('keydown', onKeyDown)
+  document.addEventListener('keyup', onKeyUp)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('keydown', onKeyDown)
+  document.removeEventListener('keyup', onKeyUp)
+  if (escTimer !== null) clearTimeout(escTimer)
+})
 </script>
 
 <template>
@@ -106,7 +157,15 @@ function onTimelineDblClick(_version: typeof VERSIONS[number]) {
       </div>
 
       <main class="v-main">
-        <div class="v-main-header" v-if="loadedVersion">
+        <div class="v-main-header" v-if="fullscreen && loadedVersion">
+          <span class="v-badge" :style="{ color: loadedVersion.color, borderColor: loadedVersion.color }">{{ loadedVersion.label }}</span>
+          <span class="v-name">{{ loadedVersion.name }}</span>
+          <span class="v-desc-main">监视模式 · 长按 ESC 退出</span>
+          <span class="spacer"></span>
+          <button class="unload-btn" @click="unloadVersion">✕ 关闭</button>
+          <button class="fullscreen-btn" @click="exitFullscreenMode">◐ 退出全屏</button>
+        </div>
+        <div class="v-main-header" v-if="loadedVersion && !fullscreen">
           <span class="v-badge" :style="{ color: loadedVersion.color, borderColor: loadedVersion.color }">{{ loadedVersion.label }}</span>
           <span class="v-name">{{ loadedVersion.name }}</span>
           <span class="v-desc-main">{{ loadedVersion.desc }}</span>
@@ -121,9 +180,10 @@ function onTimelineDblClick(_version: typeof VERSIONS[number]) {
         <div class="v-main-body">
           <div class="v-viewport" v-if="loadedVersion">
             <iframe
-              :src="loadedVersion.path + 'index.html'"
+              :key="loadedVersion.id"
+              :src="iframeSrc"
               class="v-iframe"
-              sandbox="allow-scripts allow-same-origin"
+              referrerpolicy="no-referrer"
             ></iframe>
           </div>
           <div class="v-empty" v-else>
