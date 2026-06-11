@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import { ref, computed, inject, type Ref } from 'vue'
+import { ref, computed, type Ref } from 'vue'
 import { VERSIONS } from '../core/versions'
 import VersionDetail from '../components/VersionDetail.vue'
-import AgentPanel from '../components/AgentPanel.vue'
 
 const selectedId = ref('v1')
 const loadedId = ref<string | null>(null)
 const showDetail = ref(false)
 
+// AgentPanel 已移除，fullscreen 仍保留以支持版本标签的监视模式
 const fullscreen = inject<Ref<boolean>>('fullscreen', ref(false))
-const enterFullscreen = inject<() => void>('enterFullscreen', () => {})
-const exitFullscreen = inject<() => void>('exitFullscreen', () => {})
 
 const selected = computed(() => VERSIONS.find(v => v.id === selectedId.value)!)
 
@@ -38,23 +36,10 @@ function onTimelineClick(version: typeof VERSIONS[number]) {
   loadVersion(version)
 }
 
-function onTimelineDblClick(version: typeof VERSIONS[number]) {
-  loadedId.value = version.id
-  enterFullscreen()
+function onTimelineDblClick(_version: typeof VERSIONS[number]) {
+  // 双击进入全屏监视（右侧 AgentPanel 已移除，仅切全屏）
+  fullscreen.value = true
 }
-
-function closeAgentPanel() {
-  exitFullscreen()
-  setTimeout(() => {
-    loadedId.value = null
-  }, 400)
-}
-
-const monitorTab = computed(() => {
-  if (!loadedId.value) return null
-  const v = VERSIONS.find(ver => ver.id === loadedId.value)
-  return v ? { id: v.id, label: v.label, name: v.name, color: v.color, path: v.path } : null
-})
 </script>
 
 <template>
@@ -160,14 +145,6 @@ const monitorTab = computed(() => {
         </div>
       </main>
     </div>
-
-    <AgentPanel
-      :visible="!!monitorTab"
-      :version-path="monitorTab?.path ?? ''"
-      :version-label="monitorTab?.label ?? ''"
-      :version-color="monitorTab?.color ?? '#00ff88'"
-      @close="closeAgentPanel"
-    />
   </div>
 </template>
 

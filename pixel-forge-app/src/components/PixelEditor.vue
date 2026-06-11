@@ -37,6 +37,33 @@ const selectedDoc = ref<{ ext: string; id: string; name: string } | null>(null)
 
 let sourceSnapshot: Uint8ClampedArray | null = null
 
+// 播放控制：状态机
+// - 'idle'     未播放 (有/无源图)
+// - 'playing'  正在动画
+// - 'paused'   已暂停，保留上一帧画面
+type PlayState = 'idle' | 'playing' | 'paused'
+const playState = ref<PlayState>('idle')
+
+function snapshotIfNeeded() {
+  // 每次进入 playing 之前，把当前 pixelData 拍成"原图快照"，供每帧还原
+  if (sourceSnapshot) return
+  if (!pixelData) return
+  sourceSnapshot = new Uint8ClampedArray(pixelData.data)
+}
+
+function restoreFromSnapshot() {
+  if (!sourceSnapshot || !pixelData) return
+  pixelData.data.set(sourceSnapshot)
+}
+
+function restoreFromSourceImage() {
+  if (!sourceImage || !offCtx || !pixelData) return
+  offCtx.imageSmoothingEnabled = false
+  offCtx.drawImage(sourceImage, 0, 0, canvasW.value, canvasH.value)
+  pixelData.data.set(offCtx.getImageData(0, 0, canvasW.value, canvasH.value).data)
+  renderCanvas()
+}
+
 function initCanvas() {
   if (!canvasRef.value) return
   const c = canvasRef.value
@@ -159,11 +186,18 @@ function onUpload() {
     const img = new Image()
     img.onload = () => {
       sourceImage = img
-      if (offCtx) {
+      if (offCtx && pixelData) {
         offCanvas!.width = canvasW.value; offCanvas!.height = canvasH.value
         offCtx.imageSmoothingEnabled = false
         offCtx.drawImage(img, 0, 0, canvasW.value, canvasH.value)
-        pixelData = offCtx.getImageData(0, 0, canvasW.value, canvasH.value)
+        // 把像素数据复制回原 pixelData.data，保持引用一致
+        const fresh = offCtx.getImageData(0, 0, canvasW.value, canvasH.value)
+        pixelData.data.set(fresh.data)
+        offCtx.putImageData(pixelData, 0, 0)
+        // 重新拍快照，丢弃旧快照
+        sourceSnapshot = new Uint8ClampedArray(pixelData.data)
+        // 上传后自动从 paused/idle 状态开始准备播放
+        if (playState.value === 'playing') stop()
         renderCanvas()
       }
     }
@@ -173,35 +207,65 @@ function onUpload() {
 }
 
 function animateLoop(timestamp: number) {
-  if (!isPlaying.value || !pixelData || !offCtx) return
+  if (playState.value !== 'playing') return
+  if (!pixelData || !offCtx) return
   frame.value++
   frameCount++
   if (timestamp - fpsTime >= 1000) { fps.value = frameCount; frameCount = 0; fpsTime = timestamp }
-  if (!sourceSnapshot) sourceSnapshot = new Uint8ClampedArray(pixelData.data)
-  const src = new Uint8ClampedArray(sourceSnapshot)
-  applyEffect(src, pixelData.data, canvasW.value, canvasH.value, currentEffect.value, effectParams.value, timestamp)
+
+  // 每帧：从快照恢复 → 应用效果 → 渲染
+  restoreFromSnapshot()
+  applyEffect(
+    sourceSnapshot ?? pixelData.data,
+    pixelData.data,
+    canvasW.value,
+    canvasH.value,
+    currentEffect.value,
+    effectParams.value,
+    timestamp,
+  )
   offCtx.putImageData(pixelData, 0, 0)
   renderCanvas()
   animId = requestAnimationFrame(animateLoop)
 }
 
-function play() {
-  if (isPlaying.value) return
-  sourceSnapshot = null
-  isPlaying.value = true; frame.value = 0; fpsTime = performance.now(); frameCount = 0
+function togglePlay() {
+  if (playState.value === 'playing') {
+    // playing → paused
+    playState.value = 'paused'
+    if (animId !== null) cancelAnimationFrame(animId)
+    animId = null
+    isPlaying.value = false
+    return
+  }
+  // idle / paused → playing
+  if (!pixelData) return
+  // 第一次进入：拍快照；后续继续播放：保留之前的快照(已被上一轮 applyEffect 修改，应重新拍)
+  if (playState.value === 'idle') {
+    snapshotIfNeeded()
+  } else if (playState.value === 'paused') {
+    // 暂停后恢复：重置为源图快照(让动画从头开始) 或 保留(从当前位置继续)
+    // 这里选"从源图从头开始"以避免暂停时的残留像素干扰
+    sourceSnapshot = null
+    snapshotIfNeeded()
+  }
+  playState.value = 'playing'
+  isPlaying.value = true
+  frame.value = 0
+  fpsTime = performance.now()
+  frameCount = 0
   animId = requestAnimationFrame(animateLoop)
 }
 
 function stop() {
+  // 任何状态 → idle，恢复源图(若存在)
+  playState.value = 'idle'
   isPlaying.value = false
-  if (animId) cancelAnimationFrame(animId)
+  if (animId !== null) cancelAnimationFrame(animId)
   animId = null
   sourceSnapshot = null
-  if (sourceImage && offCtx) {
-    offCtx.imageSmoothingEnabled = false
-    offCtx.drawImage(sourceImage, 0, 0, canvasW.value, canvasH.value)
-    pixelData = offCtx.getImageData(0, 0, canvasW.value, canvasH.value)
-    renderCanvas()
+  if (sourceImage) {
+    restoreFromSourceImage()
   }
 }
 
@@ -243,8 +307,10 @@ watch([canvasW, canvasH], () => { initCanvas() })
       <span class="ws-badge">{{ workspace.replace('workspace-', '').toUpperCase() }}</span>
       <span class="spacer"></span>
       <button class="tbtn" @click="onUpload">⬆ 上传</button>
-      <button class="tbtn" :class="{ active: isPlaying }" @click="play">▶ 播放</button>
-      <button class="tbtn" @click="stop">■ 停止</button>
+      <button class="tbtn" :class="{ active: playState === 'playing' }" @click="togglePlay">
+        {{ playState === 'playing' ? '⏸ 暂停' : (playState === 'paused' ? '▶ 继续' : '▶ 播放') }}
+      </button>
+      <button class="tbtn" @click="stop" :disabled="playState === 'idle'">■ 停止</button>
       <span class="sep">|</span>
       <button class="tbtn" @click="exportPng">⬇ 导出</button>
     </header>
@@ -376,7 +442,8 @@ watch([canvasW, canvasH], () => { initCanvas() })
     </div>
 
     <footer class="statusbar">
-      <span class="indicator" :style="{ background: isPlaying ? '#ffaa00' : '#00ff88' }"></span>
+      <span class="indicator" :style="{ background: playState === 'playing' ? '#00ff88' : (playState === 'paused' ? '#ffaa00' : '#3a5a3a') }"></span>
+      <span>状态: <span :style="{ color: playState === 'playing' ? '#00ff88' : (playState === 'paused' ? '#ffaa00' : '#6a8a6a') }">{{ playState === 'playing' ? '播放中' : (playState === 'paused' ? '已暂停' : '就绪') }}</span></span>
       <span>坐标: <span style="color:#00ff88">{{ mousePos }}</span></span>
       <span class="sep">|</span>
       <span>颜色: <span style="color:#00ff88">{{ currentColor }}</span></span>
