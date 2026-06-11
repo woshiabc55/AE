@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>《天穹遗子》第一幕「展开」· 完整分镜表</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@300;400;500;600;700;900&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  :root {
+    --c-void: #050309;
+    --c-abyss: #0a0512;
+    --c-deep: #120822;
+    --c-purple: #1a0b2e;
+    --c-purple-2: #2a1346;
+    --c-violet: #4b2079;
+    --c-gold: #c9a35c;
+    --c-gold-2: #e6c878;
+    --c-gold-dim: #8a7040;
+    --c-bone: #e8e2d0;
+    --c-bone-dim: #b8b0a0;
+    --c-starlight: #f4ecd8;
+    --c-blue: #0d1b3d;
+    --c-blue-2: #1c2f5c;
+    --c-warn: #b8324a;
+    --c-obsidian: #0a0a0f;
+    --g-radial-gold: radial-gradient(circle at 30% 20%, rgba(201,163,92,0.18), transparent 60%);
+    --g-radial-purple: radial-gradient(circle at 70% 80%, rgba(75,32,121,0.35), transparent 60%);
+    --font-display: 'Cinzel', 'Noto Serif SC', serif;
+    --font-serif: 'Noto Serif SC', 'EB Garamond', serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --shadow-glow: 0 0 60px rgba(201,163,92,0.12), 0 0 120px rgba(75,32,121,0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-serif);
+    background: var(--c-void);
+    color: var(--c-bone);
+    line-height: 1.7;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ====== Cosmic background layer ====== */
+  .cosmos {
+    position: fixed; inset: 0; z-index: -2; pointer-events: none;
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(75,32,121,0.5) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(13,27,61,0.6) 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 50%, rgba(26,11,46,0.4) 0%, transparent 70%),
+      linear-gradient(180deg, #050309 0%, #0a0512 40%, #120822 100%);
+  }
+  .cosmos::before {
+    content: ''; position: absolute; inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, rgba(244,236,216,0.7), transparent),
+      radial-gradient(1px 1px at 60% 70%, rgba(201,163,92,0.6), transparent),
+      radial-gradient(1px 1px at 80% 20%, rgba(232,226,208,0.5), transparent),
+      radial-gradient(2px 2px at 30% 80%, rgba(201,163,92,0.4), transparent),
+      radial-gradient(1px 1px at 90% 50%, rgba(232,226,208,0.6), transparent),
+      radial-gradient(1px 1px at 10% 60%, rgba(232,226,208,0.5), transparent),
+      radial-gradient(1px 1px at 45% 15%, rgba(201,163,92,0.7), transparent),
+      radial-gradient(1px 1px at 70% 90%, rgba(232,226,208,0.4), transparent);
+    background-size: 100% 100%;
+    opacity: 0.6;
+    animation: drift 120s linear infinite;
+  }
+  @keyframes drift {
+    0% { transform: translate(0,0); }
+    100% { transform: translate(-50px, -30px); }
+  }
+  .cosmos::after {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 50% 30%, rgba(201,163,92,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(75,32,121,0.08) 0%, transparent 50%);
+    filter: blur(40px);
+  }
+
+  /* ====== Sacred geometry overlay ====== */
+  .sacred-bg {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden;
+  }
+  .sacred-bg svg { position: absolute; opacity: 0.4; }
+  .sacred-bg .spiral {
+    top: 10%; left: 50%; transform: translate(-50%, 0) rotate(0deg);
+    animation: rotate-spiral 200s linear infinite;
+  }
+  .sacred-bg .hex {
+    bottom: 5%; right: 5%; opacity: 0.18;
+    animation: pulse-hex 8s ease-in-out infinite;
+  }
+  .sacred-bg .hex-2 {
+    top: 30%; left: 5%; opacity: 0.12;
+    animation: pulse-hex 12s ease-in-out infinite reverse;
+  }
+  .sacred-bg .curve {
+    top: 50%; left: 0; opacity: 0.15;
+    animation: drift-curve 30s ease-in-out infinite;
+  }
+  @keyframes rotate-spiral { to { transform: translate(-50%, 0) rotate(360deg); } }
+  @keyframes pulse-hex { 0%,100% { opacity: 0.12; transform: scale(1); } 50% { opacity: 0.22; transform: scale(1.05); } }
+  @keyframes drift-curve { 0%,100% { transform: translate(0,0); } 50% { transform: translate(40px, -20px); } }
+
+  /* ====== Navigation ====== */
+  nav.topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 18px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: linear-gradient(180deg, rgba(5,3,9,0.92) 0%, rgba(5,3,9,0.4) 80%, transparent 100%);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(201,163,92,0.08);
+  }
+  nav.topbar .brand {
+    font-family: var(--font-display);
+    font-size: 14px; letter-spacing: 0.3em; color: var(--c-gold);
+    text-transform: uppercase;
+  }
+  nav.topbar .meta {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--c-bone-dim); letter-spacing: 0.15em;
+  }
+  nav.topbar .meta span { color: var(--c-gold-2); }
+
+  /* ====== Hero ====== */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 100px 24px 60px;
+    position: relative;
+  }
+  .hero-eyebrow {
+    font-family: var(--font-mono); font-size: 12px;
+    color: var(--c-gold); letter-spacing: 0.5em;
+    margin-bottom: 32px;
+    display: flex; align-items: center; gap: 16px;
+    opacity: 0; animation: rise 1.2s 0.2s forwards;
+  }
+  .hero-eyebrow::before, .hero-eyebrow::after {
+    content: ''; width: 60px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--c-gold), transparent);
+  }
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(48px, 9vw, 120px);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    color: var(--c-starlight);
+    text-shadow: 0 0 80px rgba(201,163,92,0.4);
+    margin-bottom: 12px;
+    opacity: 0; animation: rise 1.4s 0.4s forwards;
+  }
+  .hero-title .accent { color: var(--c-gold-2); font-style: italic; font-weight: 500; }
+  .hero-subtitle {
+    font-family: var(--font-serif);
+    font-size: clamp(20px, 2.5vw, 32px);
+    color: var(--c-bone-dim);
+    margin-top: 16px; margin-bottom: 48px;
+    font-weight: 300; letter-spacing: 0.1em;
+    opacity: 0; animation: rise 1.4s 0.6s forwards;
+  }
+  .hero-subtitle em { color: var(--c-gold); font-style: normal; font-weight: 600; }
+
+  .hero-meta {
+    display: flex; gap: 48px; flex-wrap: wrap; justify-content: center;
+    margin-top: 32px;
+    opacity: 0; animation: rise 1.4s 0.8s forwards;
+  }
+  .hero-meta .item {
+    text-align: center;
+  }
+  .hero-meta .item .num {
+    font-family: var(--font-display);
+    font-size: 36px; color: var(--c-gold-2);
+    line-height: 1; font-weight: 600;
+  }
+  .hero-meta .item .lbl {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--c-bone-dim); letter-spacing: 0.3em;
+    margin-top: 8px; text-transform: uppercase;
+  }
+
+  .scroll-cue {
+    position: absolute; bottom: 32px; left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--c-bone-dim); letter-spacing: 0.4em;
+    text-transform: uppercase;
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    opacity: 0; animation: rise 1.4s 1.2s forwards;
+  }
+  .scroll-cue .line {
+    width: 1px; height: 40px;
+    background: linear-gradient(180deg, transparent, var(--c-gold), transparent);
+    animation: pulse-line 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse-line { 0%,100% { opacity: 0.3; transform: scaleY(0.6); } 50% { opacity: 1; transform: scaleY(1); } }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ====== Decorative verse ====== */
+  .verse {
+    text-align: center; padding: 60px 24px;
+    border-top: 1px solid rgba(201,163,92,0.1);
+    border-bottom: 1px solid rgba(201,163,92,0.1);
+    background: linear-gradient(180deg, transparent, rgba(26,11,46,0.3), transparent);
+  }
+  .verse p {
+    font-family: var(--font-serif);
+    font-size: clamp(16px, 1.8vw, 22px);
+    color: var(--c-bone); line-height: 2;
+    max-width: 720px; margin: 0 auto;
+    font-weight: 300; letter-spacing: 0.1em;
+  }
+  .verse p .em { color: var(--c-gold-2); font-style: italic; }
+
+  /* ====== Main layout ====== */
+  .main {
+    position: relative;
+    padding: 0 0 80px;
+  }
+  .layout {
+    max-width: 1480px; margin: 0 auto;
+    display: grid; grid-template-columns: 200px 1fr;
+    gap: 80px; padding: 0 32px;
+  }
+  @media (max-width: 1024px) {
+    .layout { grid-template-columns: 1fr; gap: 0; }
+  }
+
+  /* ====== Timeline ====== */
+  .timeline {
+    position: sticky; top: 100px;
+    height: max-content;
+    align-self: start;
+  }
+  @media (max-width: 1024px) {
+    .timeline {
+      position: relative; top: 0; margin-bottom: 48px;
+      padding: 24px; border: 1px solid rgba(201,163,92,0.15);
+      background: rgba(10,5,18,0.5);
+    }
+  }
+  .timeline-title {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--c-gold); letter-spacing: 0.4em;
+    text-transform: uppercase; margin-bottom: 24px;
+    padding-left: 8px;
+  }
+  .timeline-list { list-style: none; position: relative; }
+  .timeline-list::before {
+    content: ''; position: absolute;
+    left: 14px; top: 8px; bottom: 8px; width: 1px;
+    background: linear-gradient(180deg, transparent, rgba(201,163,92,0.3) 20%, rgba(201,163,92,0.3) 80%, transparent);
+  }
+  .timeline-list a {
+    display: flex; align-items: center; gap: 12px;
+    padding: 7px 8px; color: var(--c-bone-dim);
+    text-decoration: none;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.1em; border-radius: 2px;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  .timeline-list a:hover { color: var(--c-gold-2); background: rgba(201,163,92,0.04); }
+  .timeline-list a .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(201,163,92,0.2);
+    border: 1px solid rgba(201,163,92,0.4);
+    transition: all 0.3s ease; flex-shrink: 0;
+  }
+  .timeline-list a.active { color: var(--c-gold-2); }
+  .timeline-list a.active .dot {
+    background: var(--c-gold-2);
+    box-shadow: 0 0 12px var(--c-gold-2);
+    transform: scale(1.4);
+  }
+  .timeline-list a.key::after {
+    content: '✦'; position: absolute; right: 8px; color: var(--c-gold);
+    font-size: 10px;
+  }
+
+  /* ====== Section heading ====== */
+  .section-head {
+    text-align: center; padding: 80px 0 60px;
+  }
+  .section-head .eyebrow {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--c-gold); letter-spacing: 0.5em;
+    margin-bottom: 16px;
+  }
+  .section-head h2 {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 4.5vw, 56px);
+    color: var(--c-starlight); font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+  .section-head .rule {
+    width: 80px; height: 1px; margin: 24px auto 0;
+    background: linear-gradient(90deg, transparent, var(--c-gold), transparent);
+  }
+  .section-head p {
+    margin-top: 24px; max-width: 720px; margin-left: auto; margin-right: auto;
+    color: var(--c-bone-dim); font-size: 15px; line-height: 1.9;
+  }
+
+  /* ====== Shot card ====== */
+  .shots { display: flex; flex-direction: column; gap: 56px; }
+  .shot {
+    position: relative;
+    display: grid; grid-template-columns: 200px 1fr;
+    gap: 48px;
+    padding: 40px;
+    background: linear-gradient(135deg, rgba(26,11,46,0.5) 0%, rgba(10,5,18,0.7) 100%);
+    border: 1px solid rgba(201,163,92,0.12);
+    border-radius: 4px;
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 0.9s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+    overflow: hidden;
+  }
+  .shot.in-view { opacity: 1; transform: translateY(0); }
+  .shot::before {
+    content: ''; position: absolute; inset: 0;
+    background: var(--g-radial-gold);
+    pointer-events: none; opacity: 0.5;
+  }
+  .shot::after {
+    content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%;
+    background: linear-gradient(180deg, transparent, var(--c-gold), transparent);
+  }
+  .shot.is-key {
+    border-color: rgba(201,163,92,0.3);
+    box-shadow: 0 0 80px rgba(201,163,92,0.06);
+  }
+  .shot.is-key::after { width: 4px; background: var(--c-gold-2); }
+  .shot.is-flash {
+    border-color: rgba(184,50,74,0.4);
+  }
+  .shot.is-flash::after { background: var(--c-warn); }
+
+  @media (max-width: 768px) {
+    .shot { grid-template-columns: 1fr; gap: 24px; padding: 28px; }
+  }
+
+  .shot-left {
+    text-align: center; border-right: 1px solid rgba(201,163,92,0.15);
+    padding-right: 32px; position: relative;
+  }
+  @media (max-width: 768px) {
+    .shot-left { border-right: none; border-bottom: 1px solid rgba(201,163,92,0.15); padding-right: 0; padding-bottom: 20px; }
+  }
+  .shot-num {
+    font-family: var(--font-display);
+    font-size: 88px; line-height: 1;
+    color: var(--c-gold-2);
+    font-weight: 600;
+    text-shadow: 0 0 30px rgba(201,163,92,0.3);
+    margin-bottom: 4px;
+  }
+  .shot-num-label {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--c-bone-dim); letter-spacing: 0.3em;
+    text-transform: uppercase; margin-bottom: 16px;
+  }
+  .shot-timecode {
+    font-family: var(--font-mono); font-size: 13px;
+    color: var(--c-starlight); letter-spacing: 0.15em;
+    margin-bottom: 8px;
+  }
+  .shot-duration {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--c-bone-dim); letter-spacing: 0.2em;
+  }
+  .shot-bar {
+    margin-top: 20px;
+    width: 100%; height: 2px;
+    background: rgba(201,163,92,0.1);
+    position: relative; overflow: hidden;
+  }
+  .shot-bar::after {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: var(--w, 0%); background: linear-gradient(90deg, var(--c-gold), var(--c-gold-2));
+    animation: bar-fill 1.4s 0.3s ease-out forwards;
+  }
+  @keyframes bar-fill { from { width: 0%; } }
+
+  .shot-right { position: relative; }
+  .shot-tags {
+    display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;
+  }
+  .tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--c-gold); letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border: 1px solid rgba(201,163,92,0.3);
+    border-radius: 2px;
+    background: rgba(201,163,92,0.04);
+  }
+  .tag.scale { color: var(--c-bone-dim); border-color: rgba(232,226,208,0.2); }
+
+  .shot-visual {
+    font-size: 15px; line-height: 1.9;
+    color: var(--c-bone); margin-bottom: 24px;
+    font-weight: 400;
+  }
+  .shot-visual strong { color: var(--c-gold-2); font-weight: 500; }
+
+  .shot-meta-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    margin: 24px 0;
+    padding: 20px 0;
+    border-top: 1px solid rgba(201,163,92,0.1);
+    border-bottom: 1px solid rgba(201,163,92,0.1);
+  }
+  @media (max-width: 640px) {
+    .shot-meta-grid { grid-template-columns: 1fr; }
+  }
+  .shot-meta .label {
+    font-family: var(--font-mono); font-size: 9px;
+    color: var(--c-gold); letter-spacing: 0.3em;
+    text-transform: uppercase; margin-bottom: 6px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .shot-meta .value {
+    font-size: 14px; color: var(--c-bone);
+    line-height: 1.7;
+  }
+  .shot-meta .value.empty { color: var(--c-bone-dim); font-style: italic; }
+
+  .shot-dialogue {
+    margin: 20px 0; padding: 18px 22px;
+    background: rgba(75,32,121,0.18);
+    border-left: 2px solid var(--c-gold-2);
+    font-size: 15px; line-height: 1.8;
+    color: var(--c-starlight);
+    font-style: italic;
+  }
+  .shot-dialogue .who {
+    display: block; font-style: normal;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--c-gold); letter-spacing: 0.2em;
+    text-transform: uppercase; margin-bottom: 4px;
+  }
+
+  .shot-prompt {
+    margin-top: 20px;
+    background: rgba(5,3,9,0.5);
+    border: 1px solid rgba(201,163,92,0.15);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .shot-prompt-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px;
+    background: rgba(201,163,92,0.06);
+    border-bottom: 1px solid rgba(201,163,92,0.12);
+  }
+  .shot-prompt-head .lbl {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--c-gold); letter-spacing: 0.3em;
+    text-transform: uppercase; display: flex; align-items: center; gap: 8px;
+  }
+  .copy-btn {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--c-bone); letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    background: transparent;
+    border: 1px solid rgba(201,163,92,0.3);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .copy-btn:hover {
+    background: rgba(201,163,92,0.1);
+    border-color: var(--c-gold-2);
+    color: var(--c-gold-2);
+  }
+  .copy-btn.copied {
+    background: rgba(201,163,92,0.2);
+    border-color: var(--c-gold-2);
+    color: var(--c-gold-2);
+  }
+  .shot-prompt-body {
+    padding: 16px 20px;
+    font-family: var(--font-mono); font-size: 12px;
+    color: var(--c-bone-dim);
+    line-height: 1.8;
+    letter-spacing: 0.02em;
+  }
+  .shot-note {
+    margin-top: 16px; padding: 10px 16px;
+    background: rgba(184,50,74,0.1);
+    border-left: 2px solid var(--c-warn);
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--c-starlight); letter-spacing: 0.1em;
+  }
+
+  /* ====== Technical notes ====== */
+  .tech-section {
+    max-width: 1200px; margin: 120px auto 0; padding: 0 32px;
+  }
+  .tech-table {
+    width: 100%; border-collapse: collapse;
+    margin-top: 48px;
+  }
+  .tech-table th, .tech-table td {
+    padding: 18px 20px; text-align: left;
+    border-bottom: 1px solid rgba(201,163,92,0.12);
+    font-size: 14px;
+  }
+  .tech-table th {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--c-gold); letter-spacing: 0.3em;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(201,163,92,0.3);
+  }
+  .tech-table td {
+    color: var(--c-bone); vertical-align: top;
+  }
+  .tech-table td:first-child {
+    font-family: var(--font-mono); color: var(--c-gold-2);
+    width: 200px; white-space: nowrap;
+  }
+  .tech-table tr:hover td { background: rgba(201,163,92,0.03); }
+
+  .taboo-card {
+    margin-top: 48px; padding: 32px;
+    border: 1px solid var(--c-warn);
+    background: linear-gradient(135deg, rgba(184,50,74,0.08), rgba(10,5,18,0.6));
+    border-radius: 3px;
+    position: relative;
+  }
+  .taboo-card::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+    background: var(--c-warn);
+  }
+  .taboo-card h3 {
+    font-family: var(--font-display);
+    color: var(--c-warn);
+    font-size: 20px; margin-bottom: 16px;
+    letter-spacing: 0.1em;
+  }
+  .taboo-card p {
+    color: var(--c-bone); line-height: 1.9; font-size: 15px;
+  }
+  .taboo-card .strike {
+    text-decoration: line-through;
+    color: var(--c-bone-dim);
+    margin: 0 6px;
+  }
+  .taboo-card .replacement {
+    color: var(--c-gold-2); font-weight: 500;
+  }
+
+  .rules-grid {
+    margin-top: 48px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  .rule-card {
+    padding: 24px;
+    border: 1px solid rgba(201,163,92,0.15);
+    background: rgba(10,5,18,0.4);
+    border-radius: 3px;
+  }
+  .rule-card .lbl {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--c-gold); letter-spacing: 0.3em;
+    text-transform: uppercase; margin-bottom: 12px;
+  }
+  .rule-card .v {
+    font-size: 15px; line-height: 1.8; color: var(--c-bone);
+  }
+  .rule-card .v code {
+    font-family: var(--font-mono); color: var(--c-gold-2);
+    background: rgba(201,163,92,0.1); padding: 1px 6px;
+    border-radius: 2px; font-size: 13px;
+  }
+
+  /* ====== Ending ====== */
+  .ending {
+    margin-top: 160px; padding: 120px 24px;
+    text-align: center;
+    background: linear-gradient(180deg, transparent, var(--c-obsidian) 50%, transparent);
+    position: relative;
+  }
+  .ending::before {
+    content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 1px; height: 80px;
+    background: linear-gradient(180deg, transparent, var(--c-gold));
+  }
+  .ending-quote {
+    font-family: var(--font-display);
+    font-size: clamp(24px, 4vw, 48px);
+    color: var(--c-starlight);
+    line-height: 1.6; max-width: 900px; margin: 0 auto;
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 40px rgba(201,163,92,0.3);
+  }
+  .ending-quote .em { color: var(--c-gold-2); font-style: italic; }
+  .ending-mark {
+    margin-top: 48px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--c-bone-dim); letter-spacing: 0.5em;
+  }
+  .ending-mark::before, .ending-mark::after {
+    content: '·'; color: var(--c-gold); margin: 0 16px;
+  }
+
+  footer {
+    padding: 60px 24px; text-align: center;
+    border-top: 1px solid rgba(201,163,92,0.08);
+  }
+  footer p {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--c-bone-dim); letter-spacing: 0.3em;
+  }
+  footer p .em { color: var(--c-gold); }
+
+  /* ====== Floating particles ====== */
+  .particles { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+  .particles span {
+    position: absolute; width: 2px; height: 2px;
+    background: var(--c-gold-2); border-radius: 50%;
+    opacity: 0; animation: float-up 12s linear infinite;
+  }
+  @keyframes float-up {
+    0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+    10% { opacity: 0.8; }
+    90% { opacity: 0.6; }
+    100% { transform: translateY(-10vh) translateX(20px); opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="cosmos"></div>
+  <div class="sacred-bg" aria-hidden="true">
+    <!-- Fibonacci spiral -->
+    <svg class="spiral" width="800" height="800" viewBox="0 0 800 800">
+      <g fill="none" stroke="#c9a35c" stroke-width="0.6" opacity="0.6">
+        <path d="M 400 400 Q 400 300 500 300 Q 600 300 600 200 Q 600 100 500 100 Q 400 100 400 200 Q 400 280 320 280 Q 240 280 240 200 Q 240 120 320 120 Q 400 120 400 200" />
+        <path d="M 400 400 Q 400 480 320 480 Q 240 480 240 560 Q 240 640 320 640 Q 400 640 400 560 Q 400 480 480 480 Q 560 480 560 560 Q 560 640 480 640" />
+        <circle cx="400" cy="400" r="380" stroke-dasharray="2 6" />
+        <circle cx="400" cy="400" r="280" stroke-dasharray="2 6" />
+        <circle cx="400" cy="400" r="180" stroke-dasharray="2 6" />
+        <circle cx="400" cy="400" r="80" stroke-dasharray="2 6" />
+      </g>
+    </svg>
+    <!-- Hex grid (right) -->
+    <svg class="hex" width="500" height="500" viewBox="0 0 500 500">
+      <g fill="none" stroke="#c9a35c" stroke-width="0.5">
+        <polygon points="250,30 430,135 430,345 250,450 70,345 70,135" />
+        <polygon points="250,80 390,160 390,320 250,400 110,320 110,160" />
+        <polygon points="250,130 350,185 350,295 250,350 150,295 150,185" />
+        <polygon points="250,180 310,215 310,265 250,300 190,265 190,215" />
+        <polygon points="250,225 270,240 270,260 250,275 230,260 230,240" />
+        <line x1="250" y1="30" x2="250" y2="450" stroke-dasharray="2 4" />
+        <line x1="70" y1="135" x2="430" y2="345" stroke-dasharray="2 4" />
+        <line x1="430" y1="135" x2="70" y2="345" stroke-dasharray="2 4" />
+      </g>
+    </svg>
+    <!-- Hex grid (left) -->
+    <svg class="hex-2" width="400" height="400" viewBox="0 0 400 400">
+      <g fill="none" stroke="#4b2079" stroke-width="0.8">
+        <polygon points="200,30 340,110 340,270 200,350 60,270 60,110" />
+        <polygon points="200,80 300,135 300,245 200,300 100,245 100,135" />
+        <polygon points="200,130 260,165 260,215 200,250 140,215 140,165" />
+      </g>
+    </svg>
+    <!-- Curved line (Riemann surface) -->
+    <svg class="curve" width="1400" height="600" viewBox="0 0 1400 600">
+      <g fill="none" stroke="#c9a35c" stroke-width="0.4">
+        <path d="M 0 300 Q 200 100 400 300 T 800 300 T 1200 300 T 1600 300" />
+        <path d="M 0 320 Q 200 120 400 320 T 800 320 T 1200 320 T 1600 320" opacity="0.6" />
+        <path d="M 0 280 Q 200 80 400 280 T 800 280 T 1200 280 T 1600 280" opacity="0.4" />
+        <path d="M 0 340 Q 200 140 400 340 T 800 340 T 1200 340 T 1600 340" opacity="0.3" />
+      </g>
+    </svg>
+  </div>
+
+  <div class="particles" aria-hidden="true" id="particles"></div>
+
+  <nav class="topbar">
+    <div class="brand">AETHER · ARCHIVE</div>
+    <div class="meta">ACT <span>I</span> · <span>25</span> SHOTS · 4:00</div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-eyebrow">A C T &nbsp; O N E</div>
+    <h1 class="hero-title">天 <span class="accent">穹</span> 遗 子</h1>
+    <div class="hero-subtitle">第 一 幕 · <em>展 开</em></div>
+    <div class="hero-meta">
+      <div class="item">
+        <div class="num">25</div>
+        <div class="lbl">SHOTS</div>
+      </div>
+      <div class="item">
+        <div class="num">4:00</div>
+        <div class="lbl">RUNTIME</div>
+      </div>
+      <div class="item">
+        <div class="num">Ω-07</div>
+        <div class="lbl">DESIGNATION</div>
+      </div>
+    </div>
+    <div class="scroll-cue">
+      <span>SCROLL TO DESCEND</span>
+      <div class="line"></div>
+    </div>
+  </header>
+
+  <section class="verse">
+    <p>
+      算穹之下，<span class="em">晶体平原</span>上没有足迹。<br />
+      唯有一名<strong style="color:var(--c-gold-2)">校服</strong>少年，背着书包，<br />
+      朝<strong style="color:var(--c-gold-2)">倾倒的公式石碑</strong>鞠了一躬。
+    </p>
+  </section>
+
+  <!-- MAIN -->
+  <main class="main">
+    <section class="section-head">
+      <div class="eyebrow">STORYBOARD · 25 SHOTS</div>
+      <h2>完 整 分 镜 表</h2>
+      <div class="rule"></div>
+      <p>从 0:00 的算穹万米高空，到 4:00 的拱门闭合——<br />每一镜，皆是<strong style="color:var(--c-gold-2)">天则运转</strong>的一帧。</p>
+    </section>
+
+    <div class="layout">
+      <!-- Timeline -->
+      <aside class="timeline" aria-label="镜头时间线">
+        <div class="timeline-title">TIMELINE</div>
+        <ul class="timeline-list" id="timeline">
+          <!-- Populated by JS -->
+        </ul>
+      </aside>
+
+      <!-- Shots -->
+      <div class="shots" id="shots">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </main>
+
+  <!-- TECHNICAL NOTES -->
+  <section class="tech-section" id="tech">
+    <div class="section-head">
+      <div class="eyebrow">METADATA</div>
+      <h2>技 术 备 注</h2>
+      <div class="rule"></div>
+      <p>执行此分镜的<strong style="color:var(--c-gold-2)">元规则</strong>。所有"科技遗留"皆以<strong style="color:var(--c-gold-2)">上古神谕</strong>呈现。</p>
+    </div>
+
+    <table class="tech-table">
+      <thead>
+        <tr><th>项目</th><th>说明</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>总时长</td><td>4 分 00 秒（240 秒）</td></tr>
+        <tr><td>镜头数</td><td>25 镜</td></tr>
+        <tr><td>核心美学</td><td>奇幻动漫 × 神圣几何 × 史诗渺小感</td></tr>
+        <tr><td>手持规范</td><td>呼吸感微晃（±2°），非剧烈抖动；跟焦允许 0.3 秒漂移</td></tr>
+        <tr><td>时间线错误</td><td>仅在镜 12（闪回）、镜 25（冻结倒放）使用；其余保持线性流动感</td></tr>
+        <tr><td>后侧显示</td><td>镜 4（影子）、镜 8（墙壁后）、镜 21（水洼倒影）——真相从不正面出现</td></tr>
+      </tbody>
+    </table>
+
+    <div class="taboo-card">
+      <h3>· 禁 忌 元 素 ·</h3>
+      <p>
+        避免
+        <span class="strike">代码</span>
+        <span class="strike">像素</span>
+        <span class="strike">数字界面</span>
+        <span class="strike">科技感 UI</span>
+        ——所有"科技遗留"必须表现为
+        <span class="replacement">上古神谕</span> ·
+        <span class="replacement">符文法则</span> ·
+        <span class="replacement">天则运转</span>。
+      </p>
+    </div>
+
+    <div class="rules-grid">
+      <div class="rule-card">
+        <div class="lbl">AESTHETIC</div>
+        <div class="v">
+          紫金主色，<code>深紫 → 暗金 → 星尘白</code>。<br />
+          神圣几何动画作为背景，<br />营造<span style="color:var(--c-gold-2)">算穹运转</span>的氛围。
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="lbl">CAMERA</div>
+        <div class="v">
+          <code>置换差</code> 作为核心运镜——<br />
+          空间折叠 / 沉降 / 时间污染，<br />镜头本身即<span style="color:var(--c-gold-2)">神判</span>。
+        </div>
+      </div>
+      <div class="rule-card">
+        <div class="lbl">PROTAGONIST</div>
+        <div class="v">
+          朔在校服中的身影，<br />
+          在算穹尺度下<span style="color:var(--c-gold-2)">不足 1/50</span>。<br />
+          渺小即庄严。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ENDING -->
+  <section class="ending">
+    <div class="ending-quote">
+      走 出 <span class="em">不</span> 是 流 放。<br />
+      展 开 <span class="em">才</span> 是 神 判。
+    </div>
+    <div class="ending-mark">SUBTITLE · 25</div>
+  </section>
+
+  <footer>
+    <p>天 <span class="em">·</span> 穹 <span class="em">·</span> 遗 <span class="em">·</span> 子　　AETHER HEIR · ACT I · 展 开</p>
+  </footer>
+
+<script>
+  // ===== 25-shot data =====
+  const shots = [
+    {
+      id:1, timecode:"0:00-0:08", dur:8, scale:"极大全景→全景", movement:"置换差沉降",
+      visual:"从算穹万米高空瞬间沉降至地面，无过渡，空间如折叠。天空是巨大的数学天球仪，黎曼曲面如紫金山脉悬浮，斐波那契螺旋如银河运转。地面是晶体平原。画面底部，朔（校服）作为微小黑点行走，不足画面 1/50。",
+      dialogue:"（无）", dialogueType:"",
+      sfx:"低频天则运转声（管风琴+钟楼混合），宏大的神圣嗡鸣",
+      prompt:"Fantasy apocalyptic anime, extreme wide shot, gigantic mathematical celestial sphere as purple-gold sky, Riemann surfaces as floating mountain ranges, Fibonacci spiral as galaxy, tiny school student in uniform walking on crystalline plain, figure less than 1/50 of frame, displacement difference lens descent from sky to ground, no hard cut, sacred geometry, Makoto Shinkai color palette, 8k, cinematic",
+      key:true
+    },
+    {
+      id:2, timecode:"0:08-0:15", dur:7, scale:"全景→中景", movement:"手持跟随",
+      visual:"沉降完成，镜头落在朔身后 3 米处。朔背着书包，行走在晶体平原上，步伐是普通的上学步速。前方横亘一座倾倒的巨型公式石碑，表面生长晶体苔藓。",
+      dialogue:"（内心独白，平静）今天也要好好记录。", dialogueType:"内心独白",
+      sfx:"脚步声（轻微，几乎被天则声淹没），晶体地面细微的共鸣",
+      prompt:"Handheld following shot, school student in uniform walking on crystalline plain toward giant tilted formula stele, stele covered with crystal moss, breathing motion, micro-shake, natural lighting, purple-gold sky, fantasy anime aesthetic, 8k"
+    },
+    {
+      id:3, timecode:"0:15-0:25", dur:10, scale:"中景", movement:"过肩手持",
+      visual:"朔停在石碑前，微微鞠躬（如对老师问好）。掏出笔记本，用粉笔在晶体石碑上记录。石碑上的公式如上古神谕般发光。",
+      dialogue:"（无）", dialogueType:"",
+      sfx:"粉笔划过晶体的清脆声，书页翻动声",
+      prompt:"Over-shoulder handheld, school student bowing to giant formula stele, writing in notebook with chalk on crystal surface, mathematical runes glowing like sacred text, fantasy anime, soft morning light, 8k"
+    },
+    {
+      id:4, timecode:"0:25-0:32", dur:7, scale:"特写→中景", movement:"焦点漂移",
+      visual:"朔记录完毕。远处，一个\"学生\"骑着\"自行车\"经过。焦点漂移后揭示：自行车车轮不转动，平滑漂移；地面没有自行车影子，只有朔的影子。",
+      dialogue:"（无）", dialogueType:"",
+      sfx:"自行车铃铛声（空洞回响，无金属质感）",
+      prompt:"Rack focus shot, student hand holding chalk, background showing bicycle rider gliding without wheel rotation, no shadow for bicycle, only protagonist's shadow, fantasy surrealism, anime style, shallow depth of field, 8k",
+      note:"后侧显示：真相（车轮不转、无影子）通过焦点漂移揭示"
+    },
+    {
+      id:5, timecode:"0:32-0:40", dur:8, scale:"全景", movement:"展开式推进",
+      visual:"朔走向\"校门\"。校门是两道巨大的半透明非欧几何曲面，向两侧弯曲展开，内部是无限延伸的走廊。朔推门，动作如推普通校门。",
+      dialogue:"（无）", dialogueType:"",
+      sfx:"门轴转动声（如巨石摩擦，非普通门声）",
+      prompt:"School gate as giant translucent non-Euclidean curved surfaces, student pushing gate open, interior showing infinite extending corridor, fantasy architecture, sacred geometry, flowing single shot, Makoto Shinkai lighting, 8k"
+    },
+    {
+      id:6, timecode:"0:40-0:50", dur:10, scale:"全景", movement:"空间折叠",
+      visual:"走廊空间被折叠。镜头跟随朔步入，一步之后已然身处教室门口。走廊两侧是重复的教室门，每扇门上班牌都是\"Ω-07\"。",
+      dialogue:"（内心独白，困惑）走廊...是不是变长了？", dialogueType:"内心独白",
+      sfx:"回声脚步声，远处传来诵经般的晨读声（实则是数学公式朗读）",
+      prompt:"Infinite school corridor with repeating classroom doors, each door plate showing Omega-7, spatial folding effect, student walking, fantasy anime, surreal architecture, soft focus, 8k"
+    },
+    {
+      id:7, timecode:"0:50-1:00", dur:10, scale:"大全景→全景", movement:"微仰固定",
+      visual:"教室门高达十米，门框刻满拓扑符号。朔站在门下，身影渺小如蚁。镜头微仰，门框顶部符号缓慢蠕动如活物。",
+      dialogue:"（无）", dialogueType:"",
+      sfx:"天则运转声渐强，符号蠕动发出低沉共鸣",
+      prompt:"Giant classroom door ten meters high with topological symbols carved on frame, symbols slowly writhing like living creatures, school student standing before door looking up, low angle shot, fantasy scale contrast, sacred and ominous, 8k"
+    },
+    {
+      id:8, timecode:"1:00-1:08", dur:8, scale:"中景", movement:"过肩推近",
+      visual:"教室内坐满\"学生\"，背对镜头。晨读声、翻书声。镜头推近朔的后脑勺，景深虚化中，教室墙壁变得半透明——墙壁后隐约可见巨大的六边形蜂巢结构在搏动。",
+      dialogue:"（无）", dialogueType:"",
+      sfx:"晨读声（实为数学公式念诵），背景低频搏动声",
+      prompt:"Over-shoulder slow push-in, classroom with students, walls becoming semi-transparent in bokeh revealing gigantic hexagonal hive structure pulsating behind, fantasy horror, anime aesthetic, shallow depth of field, 8k",
+      note:"后侧显示：蜂巢结构（真相）通过景深虚化揭示"
+    },
+    {
+      id:9, timecode:"1:08-1:15", dur:7, scale:"近景", movement:"侧拍固定",
+      visual:"同桌（水手服女生）微笑着递来橡皮。朔接过，橡皮穿过他的手掌，掉在地上。女生没有察觉，继续微笑——嘴角是 0.5 秒循环的神像式微笑。",
+      dialogue:"昨天的笔记，借你。", dialogueType:"女生",
+      sfx:"橡皮掉落声（清脆，如晶体碎裂），空洞的笑声回响",
+      prompt:"Side view close-up, schoolgirl in sailor uniform offering eraser with fixed looping smile, eraser passing through protagonist's hand, dropping to ground, horror valley effect, fantasy anime, soft classroom lighting, 8k"
+    },
+    {
+      id:10, timecode:"1:15-1:23", dur:8, scale:"中景", movement:"正面微仰",
+      visual:"\"老师\"转身。面部是缓慢旋转的星图与公式，如戴着宇宙构成的面具。没有五官，只有发光的符文。",
+      dialogue:"今天的课题——识别冗余变量。", dialogueType:"老师",
+      sfx:"管风琴低音，符文旋转的细微电流声",
+      prompt:"Teacher turning around with face of rotating star chart and mathematical formulas, no facial features, cosmic mask made of glowing runes, low angle, fantasy anime, sacred and terrifying, 8k"
+    },
+    {
+      id:11, timecode:"1:23-1:28", dur:5, scale:"特写", movement:"快速甩焦",
+      visual:"黑板上写着发光的 Ω-07。镜头快速甩至朔的袖口——校服袖口内侧绣着同样的编号。",
+      dialogue:"（无）", dialogueType:"",
+      sfx:"板书声（如刻石），甩焦时的空气撕裂声",
+      prompt:"Quick rack focus, blackboard with glowing Omega-7, then to school uniform cuff showing same embroidered number, close-up, fantasy detail, anime style, 8k"
+    },
+    {
+      id:12, timecode:"1:28-1:35", dur:7, scale:"近景", movement:"时间污染闪回",
+      visual:"同一教室，但空无一\"人\"。朔跪在课桌间，手中握着燃烧的笔记本。火焰是金色的拓扑图形。残影持续 0.5 秒，倒退回现在。",
+      dialogue:"（无，只有火焰的噼啪声在闪回中）", dialogueType:"",
+      sfx:"闪回时的倒放钟声，火焰燃烧声（如纸张燃烧），回到现实时的空气爆裂声",
+      prompt:"Time glitch insert, empty classroom with protagonist kneeling holding burning notebook, golden topological flames, flash forward then rewinding back to present, fantasy anime, temporal distortion effect, 8k",
+      note:"时间线错误：本镜为闪回，残影 0.5 秒后倒回现在",
+      flash:true
+    },
+    {
+      id:13, timecode:"1:35-2:00", dur:25, scale:"大全景→全景", movement:"仰拍沉降",
+      visual:"朔推开教室后门。门外是分区墙——由六边形组成的神判之墙，高万仞直入算穹。墙上刻着放逐编号。Ω-01 至 Ω-06 被金色删除线划破，标注\"重置完成\"。Ω-07 唯一发光。朔仰头，身影如尘埃。",
+      dialogue:"（内心独白，颤抖）如果他们是回声...如果学校是流放地...我...是什么？", dialogueType:"内心独白",
+      sfx:"神圣而压抑的管风琴和弦，编号发光时的单一钟声",
+      prompt:"Extreme low angle looking up at gigantic hexagonal partition wall reaching into sky, divine judgment gate, names with golden deletion marks, Omega-7 glowing, school student figure as dust particle, fantasy epic scale, sacred geometry, purple-gold lighting, 8k",
+      key:true
+    },
+    {
+      id:14, timecode:"2:00-2:08", dur:8, scale:"极大全景", movement:"固定微晃",
+      visual:"算穹开始剥落。天空的数学符文如烧尽的符纸卷曲碎裂飘落。黎曼曲面扭曲成哭泣的神像面容，然后蒸发为光尘。",
+      dialogue:"（无）", dialogueType:"",
+      sfx:"符文剥离的撕裂声（如丝绸断裂），管风琴变调成琴弦断裂锐响",
+      prompt:"Wide shot, apocalyptic sky with mathematical runes peeling like burning paper, Riemann surfaces twisting into crying god faces then evaporating, fantasy cosmic collapse, sacred and catastrophic, 8k"
+    },
+    {
+      id:15, timecode:"2:08-2:15", dur:7, scale:"全景", movement:"手持摇晃",
+      visual:"教室内，课桌如泥塑融化，\"学生们\"同时静止，然后像被水冲散的沙画从底部瓦解，化为金色沙粒飘散。",
+      dialogue:"（无）", dialogueType:"",
+      sfx:"沙画瓦解的沙沙声，管风琴低音崩塌",
+      prompt:"Classroom interior, students dissolving from bottom to top like sand paintings washed by water, desks melting like clay, fantasy anime apocalypse, handheld shake, warm light turning cold, 8k"
+    },
+    {
+      id:16, timecode:"2:15-2:25", dur:10, scale:"中景", movement:"置换差飞泻",
+      visual:"朔在走廊奔跑。镜头置换差飞泻：他向前冲，但画面显示他在倒退；他攀爬楼梯，镜头从深渊仰拍，仿佛世界在坠落而他静止。",
+      dialogue:"（喘息，低语）不对...方向...错了...", dialogueType:"喘息",
+      sfx:"错乱的空间回声，脚步声与心跳声错位",
+      prompt:"Displacement difference lens flyby, protagonist running forward but frame showing backward movement, climbing stairs shot from abyss looking up, world falling while character static, non-linear spatial jumps, fantasy anime, surreal motion, 8k"
+    },
+    {
+      id:17, timecode:"2:25-2:32", dur:7, scale:"特写", movement:"手持贴近",
+      visual:"朔的手臂被碎片割伤。伤口没有血，溢出发光的数学拓扑图与二进制圣文，如金色的纹身般在皮肤上流动，然后消散。",
+      dialogue:"（无）", dialogueType:"",
+      sfx:"伤口裂开时的晶体碎裂声，圣文流动的细微嗡鸣",
+      prompt:"Close-up of arm wound spilling light and golden mathematical topology instead of blood, glowing sacred geometry flowing on skin then dissipating, fantasy anime, sacred and grotesque, shallow depth of field, 8k"
+    },
+    {
+      id:18, timecode:"2:32-2:42", dur:10, scale:"全景", movement:"深渊仰拍",
+      visual:"朔站在崩塌的教学楼顶端。镜头从下方深渊仰拍——建筑碎片向上飞散（反重力），天空的算穹如破镜般砸落。朔的校服在狂风中猎猎作响。",
+      dialogue:"（无）", dialogueType:"",
+      sfx:"反重力风暴的呼啸，建筑碎片的共鸣声，风如千万人低语",
+      prompt:"Low angle from abyss looking up at protagonist standing on collapsing building, debris flying upward anti-gravity, shattered celestial dome falling, school uniform fluttering, fantasy apocalypse, epic scale, 8k"
+    },
+    {
+      id:19, timecode:"2:42-3:00", dur:18, scale:"中景", movement:"背拍汇聚",
+      visual:"朔站在崩塌中心。周围一切——虚生息残骸、分区墙壁、算穹碎片、书包、课本——全部向他的掌心汇聚，压缩，凝结成一颗黑曜石球体。球体表面流动金色圣文。",
+      dialogue:"（内心独白，低语）这是...唯一真实的东西？", dialogueType:"内心独白",
+      sfx:"汇聚时的引力嗡鸣，空间收缩的低频咆哮，最终归于寂静",
+      prompt:"Over-shoulder slow push-in, protagonist standing in collapse center, surrounding debris converging into palm compressing into black obsidian sphere with flowing golden mathematical sacred text, fantasy anime, gravitational pull effect, 8k",
+      key:true
+    },
+    {
+      id:20, timecode:"3:00-3:08", dur:8, scale:"中景", movement:"手持环绕",
+      visual:"朔托着黑曜石球体，站在废墟中央。球体不发光，但周围崩塌被它吸引，形成静默的漩涡。晶体碎片悬浮在球体周围，如卫星般缓慢旋转。",
+      dialogue:"（无）", dialogueType:"",
+      sfx:"静默中的细微晶体共鸣，球体核心的低频心跳",
+      prompt:"Handheld orbit shot around protagonist holding black obsidian sphere, floating crystal fragments orbiting like satellites, silent vortex, fantasy anime, sacred object, soft purple-gold lighting, 8k"
+    },
+    {
+      id:21, timecode:"3:08-3:15", dur:7, scale:"特写", movement:"低角度水洼倒影",
+      visual:"地面水洼中，朔的倒影。没有头——校服领口以上是一团旋转的星图。现实中的朔低头看着球体，水洼中的星图缓缓转动。",
+      dialogue:"（无）", dialogueType:"",
+      sfx:"水面涟漪的细微声响，星图旋转的宇宙嗡鸣",
+      prompt:"Low angle puddle reflection showing headless figure with rotating star chart above collar, real protagonist looking down at sphere, water ripple, fantasy surrealism, anime style, 8k",
+      note:"后侧显示：真相（无头、旋转星图）通过水洼倒影揭示"
+    },
+    {
+      id:22, timecode:"3:15-3:25", dur:10, scale:"近景", movement:"正面固定",
+      visual:"朔低头看向自己的身体。胸口开始透明化，校服如被风吹散的经文般消散为光粒。内部不是骨骼内脏，而是拓扑结构——几何线条与星图构成的空洞。",
+      dialogue:"（无）", dialogueType:"",
+      sfx:"透明化时的风铃声，经文消散如纸张燃烧的细响",
+      prompt:"Close-up of chest becoming transparent, school uniform dissolving like scattered scripture into light particles, revealing topological portal structure inside, geometric lines and star chart, fantasy anime, sacred transformation, 8k"
+    },
+    {
+      id:23, timecode:"3:25-3:35", dur:10, scale:"中景", movement:"逆光剪影",
+      visual:"逆光中，朔的整个身体成为一扇门的轮廓。边缘闪烁着 0.3 秒延迟的拓扑尾迹——更高维度的形态在三维空间的投影。校服完全消散，只剩人形的光与暗剪影。",
+      dialogue:"（内心独白，非人类音色）我不是学生...我是...通道。", dialogueType:"内心独白",
+      sfx:"维度展开的宏大和弦，如管风琴与宇宙背景辐射的混合",
+      prompt:"Backlit silhouette of student becoming topological door, 4D trailing effect at body edges, higher dimensional projection revealed, school uniform completely gone, fantasy anime, cosmic revelation, 8k",
+      key:true
+    },
+    {
+      id:24, timecode:"3:35-3:50", dur:15, scale:"全景→大全景", movement:"背拍跟随",
+      visual:"朔（门）将球体（世界种子）抱在怀中，走向崩塌尽头。远处有一扇更大的、由光与暗交织的拱门——无期追向。他的步伐不再像学生，而是像某种不可名状的庄严移动。",
+      dialogue:"（无）", dialogueType:"",
+      sfx:"脚步声变为空间震颤的低频共鸣，拱门发出的召唤性嗡鸣",
+      prompt:"Following shot from behind, silhouette of door-shaped being holding sphere walking toward giant archway of light and darkness, 无期追向, solemn movement, fantasy epic, sacred and ominous, purple-gold and deep blue lighting, 8k"
+    },
+    {
+      id:25, timecode:"3:50-4:00", dur:10, scale:"定格→黑屏", movement:"冻结+倒放+黑屏",
+      visual:"朔即将完全进入拱门时，画面冻结。冻结画面突然闪烁，显示他早已进入。现在看到的 4 分钟只是门闭合时溅射的 0.03 秒残影。画面倒放 3 秒后切至黑屏。",
+      dialogue:"（黑屏字幕）走出不是流放。展开才是神判。", dialogueType:"字幕",
+      sfx:"倒放时的逆诵钟声，最终切至绝对寂静，只剩字幕出现时的细微刻石声",
+      prompt:"Frozen frame at archway entrance, time glitch showing protagonist already inside, reverse playback for 3 seconds, cut to black screen with white subtitle, fantasy anime ending, temporal paradox, 8k",
+      key:true
+    }
+  ];
+
+  const keyShots = [1, 13, 19, 23, 25];
+  const totalDur = 240;
+
+  // ===== Render timeline =====
+  const timeline = document.getElementById('timeline');
+  shots.forEach(s => {
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = '#shot-' + s.id;
+    a.dataset.id = s.id;
+    a.innerHTML = `<span class="dot"></span><span>${String(s.id).padStart(2,'0')} · ${s.timecode}</span>`;
+    if (keyShots.includes(s.id)) a.classList.add('key');
+    li.appendChild(a);
+    timeline.appendChild(li);
+  });
+
+  // ===== Render shot cards =====
+  const shotsEl = document.getElementById('shots');
+  shots.forEach(s => {
+    const isKey = keyShots.includes(s.id);
+    const isFlash = s.flash === true;
+    const div = document.createElement('article');
+    div.id = 'shot-' + s.id;
+    div.className = 'shot' + (isKey ? ' is-key' : '') + (isFlash ? ' is-flash' : '');
+    const barWidth = (s.dur / totalDur * 100 * 8).toFixed(2); // visually emphasize
+    div.innerHTML = `
+      <div class="shot-left">
+        <div class="shot-num">${String(s.id).padStart(2,'0')}</div>
+        <div class="shot-num-label">SHOT</div>
+        <div class="shot-timecode">${s.timecode}</div>
+        <div class="shot-duration">${s.dur} SEC</div>
+        <div class="shot-bar" style="--w:${Math.min(100, s.dur/totalDur*100*4)}%"></div>
+      </div>
+      <div class="shot-right">
+        <div class="shot-tags">
+          <span class="tag scale">景别 · ${s.scale}</span>
+          <span class="tag">运镜 · ${s.movement}</span>
+        </div>
+        <div class="shot-visual">${s.visual}</div>
+        ${s.dialogue && s.dialogue !== '（无）' ? `
+          <div class="shot-dialogue">
+            ${s.dialogueType ? `<span class="who">${s.dialogueType}</span>` : ''}
+            ${s.dialogue}
+          </div>
+        ` : ''}
+        <div class="shot-meta-grid">
+          <div class="shot-meta">
+            <div class="label"><i data-lucide="volume-2" style="width:11px;height:11px"></i> SFX · 音效</div>
+            <div class="value">${s.sfx}</div>
+          </div>
+        </div>
+        ${s.note ? `<div class="shot-note">⚠ ${s.note}</div>` : ''}
+        <div class="shot-prompt">
+          <div class="shot-prompt-head">
+            <span class="lbl"><i data-lucide="wand-2" style="width:11px;height:11px"></i> AI PROMPT</span>
+            <button class="copy-btn" data-prompt="${encodeURIComponent(s.prompt)}">
+              <i data-lucide="copy" style="width:11px;height:11px"></i>
+              <span class="txt">COPY</span>
+            </button>
+          </div>
+          <div class="shot-prompt-body">${s.prompt}</div>
+        </div>
+      </div>
+    `;
+    shotsEl.appendChild(div);
+  });
+
+  // ===== Lucide icons =====
+  if (window.lucide) lucide.createIcons();
+
+  // ===== Copy prompt =====
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const text = decodeURIComponent(btn.dataset.prompt);
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch (e) {
+        const ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta);
+      }
+      btn.classList.add('copied');
+      const txt = btn.querySelector('.txt');
+      const orig = txt.textContent;
+      txt.textContent = 'COPIED';
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        txt.textContent = orig;
+      }, 1500);
+    });
+  });
+
+  // ===== IntersectionObserver: in-view + timeline highlight =====
+  const shotEls = document.querySelectorAll('.shot');
+  const tlLinks = document.querySelectorAll('.timeline-list a');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(en => {
+      if (en.isIntersecting) {
+        en.target.classList.add('in-view');
+      }
+    });
+  }, { threshold: 0.15 });
+  shotEls.forEach(el => observer.observe(el));
+
+  // Highlight timeline based on scroll
+  const visibleMap = new Map();
+  const visObserver = new IntersectionObserver((entries) => {
+    entries.forEach(en => {
+      if (en.isIntersecting) {
+        visibleMap.set(en.target.id, en.intersectionRatio);
+      } else {
+        visibleMap.delete(en.target.id);
+      }
+    });
+    let active = null, max = 0;
+    visibleMap.forEach((v, k) => { if (v > max) { max = v; active = k; } });
+    if (active) {
+      tlLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + active);
+      });
+    }
+  }, { threshold: [0.1, 0.3, 0.6], rootMargin: '-20% 0px -40% 0px' });
+  shotEls.forEach(el => visObserver.observe(el));
+
+  // ===== Particles =====
+  const particles = document.getElementById('particles');
+  for (let i = 0; i < 30; i++) {
+    const s = document.createElement('span');
+    s.style.left = Math.random() * 100 + '%';
+    s.style.animationDelay = (Math.random() * 12) + 's';
+    s.style.animationDuration = (10 + Math.random() * 10) + 's';
+    s.style.opacity = 0.3 + Math.random() * 0.5;
+    particles.appendChild(s);
+  }
+</script>
+</body>
+</html>
