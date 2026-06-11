@@ -1,4 +1,4 @@
-import { ChevronLeft, Crosshair } from 'lucide-react';
+import { ChevronLeft, Crosshair, Sparkles, Film } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { chapters } from '../data/storyboardData';
 
@@ -14,7 +14,7 @@ export default function HeroSection() {
 
       <div className="hero-badge">
         <Crosshair size={12} />
-        <span>STORYBOARD / 18 SHOTS / 6 ACTS</span>
+        <span>STORYBOARD / 72 SHOTS / 6 ACTS</span>
       </div>
 
       <h1 className="hero-title">
@@ -40,13 +40,13 @@ export default function HeroSection() {
         </div>
         <div className="hero-meta-divider" />
         <div className="hero-meta-item">
-          <span>18</span>
+          <span>72</span>
           <span>SHOTS</span>
         </div>
         <div className="hero-meta-divider" />
         <div className="hero-meta-item">
-          <span>90s</span>
-          <span>RUNTIME</span>
+          <span>120</span>
+          <span>MIN</span>
         </div>
         <div className="hero-meta-divider" />
         <div className="hero-meta-item">
@@ -55,38 +55,25 @@ export default function HeroSection() {
         </div>
       </div>
 
+      <div className="hero-actions">
+        <Link to="/script/new" className="action-button primary">
+          <Sparkles size={16} />
+          <span>剧本生成器</span>
+          <ChevronLeft size={14} style={{ transform: 'rotate(180deg)' }} />
+        </Link>
+        <Link to="/script/detail" className="action-button">
+          <Film size={16} />
+          <span>剧本详情</span>
+        </Link>
+        <Link to={`/chapter/${chapters[0]?.id ?? 1}`} className="action-button">
+          <Crosshair size={16} />
+          <span>分镜示例</span>
+        </Link>
+      </div>
+
       <div className="scroll-indicator">
         <span>SCROLL TO ENTER</span>
         <div className="scroll-line" />
-      </div>
-
-      <div style={{ position: 'absolute', bottom: '2rem', right: '2rem', zIndex: 5 }}>
-        <Link
-          to={`/chapter/${chapters[0]?.id ?? 1}`}
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            color: 'var(--color-gold)',
-            fontFamily: 'var(--font-mono)',
-            fontSize: 'var(--text-xs)',
-            letterSpacing: '0.3em',
-            textTransform: 'uppercase',
-            opacity: 0.6,
-            transition: 'all 0.3s var(--ease-ink)',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.opacity = '1';
-            e.currentTarget.style.transform = 'translateX(-4px)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.opacity = '0.6';
-            e.currentTarget.style.transform = 'translateX(0)';
-          }}
-        >
-          <ChevronLeft size={14} style={{ transform: 'rotate(180deg)' }} />
-          ENTER FIRST ACT
-        </Link>
       </div>
     </section>
   );
