@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { marked } from 'marked'
-import { MD_DOCUMENTS, MD_CATEGORIES, type MdDocument } from '../core/mcop'
+import { MD_DOCUMENTS, MD_CATEGORIES, type MdDocument } from '../core/md-docs'
 
 const selectedDocId = ref<string>('overview')
 const imagePreviewUrl = ref<string | null>(null)
