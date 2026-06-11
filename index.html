@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PIXEL HERO LAB · 像素角色动画实验场</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-0: #0e0b1f;
+  --bg-1: #1a1437;
+  --bg-2: #251a52;
+  --neon-pink: #ff3ea5;
+  --neon-cyan: #3ee7ff;
+  --neon-yellow: #ffd23f;
+  --neon-green: #7cffb2;
+  --neon-orange: #ff8a3d;
+  --grid: rgba(62,231,255,.08);
+  --panel: rgba(20,14,46,.78);
+  --panel-edge: #3ee7ff44;
+  --shadow: #00000099;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; min-height: 100vh; }
+body {
+  font-family: 'VT323', monospace;
+  color: #e9e6ff;
+  background:
+    radial-gradient(1200px 600px at 20% -10%, #2a1660 0%, transparent 60%),
+    radial-gradient(900px 500px at 100% 110%, #4b1670 0%, transparent 55%),
+    linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 100%);
+  background-attachment: fixed;
+  overflow-x: hidden;
+  letter-spacing: .02em;
+}
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 16px 16px;
+  pointer-events: none;
+  z-index: 0;
+  mix-blend-mode: screen;
+}
+.crt {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 50;
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(0,0,0,0) 0px,
+    rgba(0,0,0,0) 2px,
+    rgba(0,0,0,.18) 3px,
+    rgba(0,0,0,0) 4px
+  );
+  mix-blend-mode: multiply;
+  opacity: .5;
+}
+.crt::after {
+  content:""; position:absolute; inset:0;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.55) 100%);
+}
+.app {
+  position: relative; z-index: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px 24px 40px;
+}
+.titlebar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  background: var(--panel);
+  border: 2px solid var(--panel-edge);
+  box-shadow: 0 0 0 2px #000, 0 8px 0 var(--shadow);
+}
+.titlebar h1 {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 18px;
+  color: var(--neon-yellow);
+  text-shadow: 2px 2px 0 #000, 0 0 12px #ffd23f66;
+  letter-spacing: 1px;
+}
+.titlebar h1 .accent { color: var(--neon-pink); text-shadow: 2px 2px 0 #000, 0 0 10px #ff3ea588; }
+.titlebar .stats {
+  display: flex; gap: 18px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  color: var(--neon-cyan);
+  text-shadow: 1px 1px 0 #000;
+}
+.titlebar .stats span b { color: var(--neon-green); margin-left: 4px; }
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 18px;
+}
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .titlebar { flex-direction: column; gap: 10px; }
+  .titlebar h1 { font-size: 14px; }
+}
+
+.stage-wrap {
+  position: relative;
+  background: var(--panel);
+  border: 2px solid var(--panel-edge);
+  box-shadow: 0 0 0 2px #000, 0 8px 0 var(--shadow);
+  padding: 10px;
+  display: flex; flex-direction: column;
+  gap: 10px;
+}
+.stage-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: #000;
+  overflow: hidden;
+  border: 2px solid #000;
+  box-shadow: inset 0 0 0 2px var(--neon-cyan), inset 0 0 30px #000;
+}
+#stage {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  display: block;
+}
+.stage-overlay {
+  position: absolute; inset: 0;
+  pointer-events: none;
+}
+.hud {
+  position: absolute; left: 8px; top: 8px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  color: var(--neon-yellow);
+  text-shadow: 1px 1px 0 #000, 0 0 8px #ffd23f55;
+  display: flex; flex-direction: column; gap: 6px;
+  pointer-events: none;
+}
+.hud .row b { color: var(--neon-green); }
+.hud .fx-list { color: var(--neon-cyan); }
+
+.stage-corner {
+  position: absolute;
+  width: 14px; height: 14px;
+  border: 2px solid var(--neon-pink);
+  pointer-events: none;
+}
+.stage-corner.tl { top: 6px; left: 6px; border-right: none; border-bottom: none; }
+.stage-corner.tr { top: 6px; right: 6px; border-left: none; border-bottom: none; }
+.stage-corner.bl { bottom: 6px; left: 6px; border-right: none; border-top: none; }
+.stage-corner.br { bottom: 6px; right: 6px; border-left: none; border-top: none; }
+
+.kbhint {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: #b3a8e8;
+}
+.kbhint kbd {
+  font-family: inherit;
+  background: #2a1f5c;
+  border: 2px solid #000;
+  box-shadow: 0 0 0 1px var(--neon-cyan), 2px 2px 0 #000;
+  padding: 4px 6px;
+  color: var(--neon-cyan);
+  margin: 0 4px 0 0;
+}
+
+/* Right side console */
+.console {
+  display: flex; flex-direction: column; gap: 12px;
+}
+.card {
+  background: var(--panel);
+  border: 2px solid var(--panel-edge);
+  box-shadow: 0 0 0 2px #000, 0 6px 0 var(--shadow);
+  padding: 12px;
+}
+.card h2 {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 11px;
+  color: var(--neon-cyan);
+  text-shadow: 1px 1px 0 #000;
+  margin-bottom: 10px;
+  display: flex; align-items: center; justify-content: space-between;
+  letter-spacing: .5px;
+}
+.card h2::before {
+  content: ""; display: inline-block; width: 8px; height: 8px;
+  background: var(--neon-pink); margin-right: 8px;
+  box-shadow: 0 0 8px var(--neon-pink);
+}
+
+/* Action buttons */
+.actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  color: #fff;
+  background: linear-gradient(180deg, #4a2bb3 0%, #2a1660 100%);
+  border: 2px solid #000;
+  box-shadow: 0 0 0 1px var(--neon-cyan), 4px 4px 0 #000;
+  padding: 12px 8px;
+  cursor: pointer;
+  text-shadow: 1px 1px 0 #000;
+  letter-spacing: .5px;
+  position: relative;
+  transition: transform .05s, box-shadow .05s;
+  user-select: none;
+}
+.btn:hover { filter: brightness(1.15); }
+.btn:active { transform: translate(2px, 2px); box-shadow: 0 0 0 1px var(--neon-cyan), 2px 2px 0 #000; }
+.btn.active {
+  background: linear-gradient(180deg, var(--neon-pink) 0%, #b0186e 100%);
+  box-shadow: 0 0 0 1px var(--neon-yellow), 4px 4px 0 #000, 0 0 12px #ff3ea588;
+}
+.btn .ico {
+  display: block; font-size: 14px; margin-bottom: 6px;
+  filter: drop-shadow(1px 1px 0 #000);
+}
+
+.facing-row { display: flex; gap: 8px; margin-top: 10px; }
+.facing-row .btn { flex: 1; }
+
+/* Toggle */
+.fx-card { padding: 10px 12px; }
+.fx-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+}
+.fx-name {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  color: var(--neon-cyan);
+  text-shadow: 1px 1px 0 #000;
+  display: flex; align-items: center; gap: 8px;
+}
+.fx-icon {
+  width: 14px; height: 14px;
+  background: var(--neon-pink);
+  box-shadow: 0 0 6px var(--neon-pink);
+  display: inline-block;
+}
+.fx-icon.pixel { background: repeating-conic-gradient(#000 0% 25%, var(--neon-yellow) 0% 50%); background-size: 4px 4px; }
+.fx-icon.wave  { background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink), var(--neon-cyan)); }
+.fx-icon.dith  { background: repeating-conic-gradient(#000 0% 12.5%, #fff 0% 25%); background-size: 3px 3px; }
+.fx-icon.scan  { background: repeating-linear-gradient(0deg, #000 0 2px, var(--neon-green) 2px 4px); }
+
+.switch {
+  position: relative; width: 44px; height: 20px;
+  background: #1a1437; border: 2px solid #000;
+  box-shadow: inset 0 0 0 1px #3ee7ff44;
+  cursor: pointer;
+}
+.switch::after {
+  content: ""; position: absolute; top: 2px; left: 2px;
+  width: 12px; height: 12px;
+  background: var(--neon-cyan);
+  box-shadow: 0 0 6px var(--neon-cyan);
+  transition: left .12s, background .12s;
+}
+.switch.on { background: #062a26; }
+.switch.on::after { left: 26px; background: var(--neon-green); box-shadow: 0 0 8px var(--neon-green); }
+
+.fx-params {
+  display: grid; grid-template-columns: 1fr; gap: 6px;
+  padding: 6px 0 2px;
+}
+.fx-params.disabled { opacity: .35; pointer-events: none; }
+.param {
+  display: grid;
+  grid-template-columns: 60px 1fr 36px;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: #c2b9ee;
+}
+.param label { color: var(--neon-cyan); }
+.param .val { text-align: right; color: var(--neon-yellow); }
+.param input[type=range] {
+  -webkit-appearance: none; appearance: none;
+  height: 8px; background: #1a1437;
+  border: 2px solid #000;
+  box-shadow: inset 0 0 0 1px var(--neon-cyan);
+  outline: none; cursor: pointer;
+}
+.param input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 12px; height: 16px; background: var(--neon-pink);
+  border: 2px solid #000;
+  box-shadow: 0 0 6px var(--neon-pink);
+  cursor: grab;
+}
+.param input[type=range]::-moz-range-thumb {
+  width: 12px; height: 16px; background: var(--neon-pink);
+  border: 2px solid #000;
+  box-shadow: 0 0 6px var(--neon-pink);
+  cursor: grab;
+}
+
+/* FPS card */
+.fps-display {
+  display: flex; align-items: baseline; gap: 8px;
+  background: #000;
+  border: 2px solid #000;
+  box-shadow: inset 0 0 0 1px var(--neon-yellow), inset 0 0 12px #ffd23f33;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+}
+.fps-num {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 28px;
+  color: var(--neon-yellow);
+  text-shadow: 2px 2px 0 #000, 0 0 12px #ffd23f88;
+  line-height: 1;
+}
+.fps-unit { font-family: 'Press Start 2P', monospace; font-size: 9px; color: var(--neon-cyan); }
+.fps-tgt { margin-left: auto; font-family: 'Press Start 2P', monospace; font-size: 9px; color: #c2b9ee; }
+.fps-tgt b { color: var(--neon-green); }
+
+.fps-controls { display: flex; gap: 8px; margin-top: 8px; }
+.fps-controls .btn { padding: 10px 8px; flex: 1; }
+
+.slow-row { display: flex; gap: 6px; margin-top: 8px; }
+.slow-row .btn { flex: 1; padding: 8px 4px; font-size: 8px; }
+.slow-row .btn.active { background: linear-gradient(180deg, var(--neon-cyan) 0%, #0a8aa3 100%); color: #000; }
+
+/* Theme */
+.theme-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.theme-swatch {
+  cursor: pointer; user-select: none;
+  border: 2px solid #000;
+  box-shadow: 0 0 0 1px var(--neon-cyan), 4px 4px 0 #000;
+  background: #000;
+  padding: 6px;
+  text-align: center;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: #fff;
+  transition: transform .05s, box-shadow .05s;
+}
+.theme-swatch:active { transform: translate(2px, 2px); box-shadow: 0 0 0 1px var(--neon-yellow), 2px 2px 0 #000; }
+.theme-swatch.active {
+  box-shadow: 0 0 0 1px var(--neon-yellow), 4px 4px 0 #000, 0 0 12px #ffd23f88;
+}
+.theme-swatch .bar {
+  display: flex; height: 14px; margin-bottom: 6px;
+  border: 1px solid #000;
+}
+.theme-swatch .bar span { flex: 1; }
+.theme-swatch.day   .b0 { background: #87ceeb; } .theme-swatch.day   .b1 { background: #ffce4d; } .theme-swatch.day   .b2 { background: #6b3a1c; }
+.theme-swatch.night .b0 { background: #0a0a26; } .theme-swatch.night .b1 { background: #ff5a8a; } .theme-swatch.night .b2 { background: #4b1670; }
+.theme-swatch.cyber .b0 { background: #000814; } .theme-swatch.cyber .b1 { background: #00f5d4; } .theme-swatch.cyber .b2 { background: #ff206e; }
+
+/* Footer */
+.footer {
+  margin-top: 18px;
+  text-align: center;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: #6a5faa;
+  letter-spacing: 1px;
+}
+.footer .blink { color: var(--neon-pink); animation: blink 1.1s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+</style>
+</head>
+<body>
+<div class="crt"></div>
+<div class="app">
+  <header class="titlebar">
+    <h1>PIXEL <span class="accent">HERO</span> LAB <span style="color:#b3a8e8">· 像素角色动画实验场</span></h1>
+    <div class="stats">
+      <span>ACT <b id="uiAction">IDLE</b></span>
+      <span>FRM <b id="uiFrame">0</b></span>
+      <span>DIR <b id="uiDir">→</b></span>
+      <span>THM <b id="uiTheme">DAY</b></span>
+    </div>
+  </header>
+
+  <div class="layout">
+    <!-- LEFT: STAGE -->
+    <section class="stage-wrap">
+      <div class="stage-frame">
+        <canvas id="stage" width="320" height="240"></canvas>
+        <div class="stage-overlay">
+          <span class="stage-corner tl"></span>
+          <span class="stage-corner tr"></span>
+          <span class="stage-corner bl"></span>
+          <span class="stage-corner br"></span>
+          <div class="hud">
+            <div class="row">ACT &gt; <b id="hudAct">IDLE</b></div>
+            <div class="row">FPS &gt; <b id="hudFps">12</b> <span style="color:#7cffb2">/ <b id="hudFpsReal">0</b> REAL</span></div>
+            <div class="row">FX  &gt; <span class="fx-list" id="hudFx">— none —</span></div>
+            <div class="row">DIR &gt; <b id="hudDir">→ RIGHT</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="kbhint">
+        <span><kbd>A</kbd>/<kbd>D</kbd> 转向</span>
+        <span><kbd>1</kbd>~<kbd>4</kbd> 动作</span>
+        <span><kbd>SPACE</kbd> 暂停</span>
+        <span><kbd>P</kbd> 像素化</span>
+        <span><kbd>W</kbd> 波形</span>
+        <span><kbd>B</kbd> 抖动</span>
+        <span><kbd>S</kbd> 扫描线</span>
+        <span><kbd>T</kbd> 主题</span>
+      </div>
+    </section>
+
+    <!-- RIGHT: CONSOLE -->
+    <aside class="console">
+      <div class="card">
+        <h2>角色 · ACTIONS</h2>
+        <div class="actions">
+          <button class="btn active" data-action="idle"><span class="ico">●</span>IDLE</button>
+          <button class="btn" data-action="walk"><span class="ico">▶▶</span>WALK</button>
+          <button class="btn" data-action="attack"><span class="ico">⚔</span>ATTACK</button>
+          <button class="btn" data-action="victory"><span class="ico">★</span>VICTORY</button>
+        </div>
+        <div class="facing-row">
+          <button class="btn" id="btnLeft">◀ LEFT</button>
+          <button class="btn" id="btnRight">RIGHT ▶</button>
+        </div>
+      </div>
+
+      <div class="card fx-card">
+        <h2>效果 · MATH FX</h2>
+
+        <div class="fx-row">
+          <span class="fx-name"><span class="fx-icon pixel"></span>PIXELATE</span>
+          <div class="switch" data-fx="pixel"></div>
+        </div>
+        <div class="fx-params" data-params="pixel">
+          <div class="param">
+            <label>SIZE</label>
+            <input type="range" min="1" max="12" value="4" data-key="size">
+            <span class="val" data-out="size">4</span>
+          </div>
+        </div>
+
+        <div class="fx-row" style="margin-top:8px">
+          <span class="fx-name"><span class="fx-icon wave"></span>WAVE</span>
+          <div class="switch" data-fx="wave"></div>
+        </div>
+        <div class="fx-params" data-params="wave">
+          <div class="param">
+            <label>AMP</label>
+            <input type="range" min="0" max="20" value="6" data-key="amp">
+            <span class="val" data-out="amp">6</span>
+          </div>
+          <div class="param">
+            <label>FREQ</label>
+            <input type="range" min="0" max="60" value="18" data-key="freq">
+            <span class="val" data-out="freq">18</span>
+          </div>
+          <div class="param">
+            <label>DIR</label>
+            <input type="range" min="0" max="1" step="1" value="0" data-key="dir">
+            <span class="val" data-out="dir">X</span>
+          </div>
+        </div>
+
+        <div class="fx-row" style="margin-top:8px">
+          <span class="fx-name"><span class="fx-icon dith"></span>BAYER</span>
+          <div class="switch" data-fx="dither"></div>
+        </div>
+        <div class="fx-params" data-params="dither">
+          <div class="param">
+            <label>LEVEL</label>
+            <input type="range" min="1" max="8" value="3" data-key="level">
+            <span class="val" data-out="level">3</span>
+          </div>
+          <div class="param">
+            <label>PWR</label>
+            <input type="range" min="0" max="100" value="50" data-key="strength">
+            <span class="val" data-out="strength">50</span>
+          </div>
+        </div>
+
+        <div class="fx-row" style="margin-top:8px">
+          <span class="fx-name"><span class="fx-icon scan"></span>SCANLINE</span>
+          <div class="switch" data-fx="scan"></div>
+        </div>
+        <div class="fx-params" data-params="scan">
+          <div class="param">
+            <label>PWR</label>
+            <input type="range" min="0" max="100" value="50" data-key="strength">
+            <span class="val" data-out="strength">50</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>帧率 · FRAME RATE</h2>
+        <div class="fps-display">
+          <span class="fps-num" id="fpsReal">12</span>
+          <span class="fps-unit">FPS REAL</span>
+          <span class="fps-tgt">TARGET &gt; <b id="fpsTarget">12</b></span>
+        </div>
+        <div class="param">
+          <label>FPS</label>
+          <input type="range" id="fpsSlider" min="1" max="60" value="12">
+          <span class="val" id="fpsOut">12</span>
+        </div>
+        <div class="fps-controls">
+          <button class="btn" id="btnPause">❚❚ PAUSE</button>
+          <button class="btn" id="btnStep">STEP +1</button>
+        </div>
+        <div class="slow-row">
+          <button class="btn" data-slow="0.25">0.25×</button>
+          <button class="btn" data-slow="0.5">0.5×</button>
+          <button class="btn active" data-slow="1">1×</button>
+          <button class="btn" data-slow="2">2×</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>主题 · THEME</h2>
+        <div class="theme-row">
+          <div class="theme-swatch day active" data-theme="day">
+            <div class="bar"><span class="b0"></span><span class="b1"></span><span class="b2"></span></div>
+            DAY
+          </div>
+          <div class="theme-swatch night" data-theme="night">
+            <div class="bar"><span class="b0"></span><span class="b1"></span><span class="b2"></span></div>
+            NIGHT
+          </div>
+          <div class="theme-swatch cyber" data-theme="cyber">
+            <div class="bar"><span class="b0"></span><span class="b1"></span><span class="b2"></span></div>
+            CYBER
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="footer">
+    <span class="blink">▶</span> &nbsp; BUILT WITH CANVAS PIXEL FX · ENJOY THE LAG &nbsp; <span class="blink">◀</span>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+/* ============================================================
+   PIXEL HERO LAB
+   - 16x16 character sprite, 4 actions, multiple frames each
+   - Background with 3-layer parallax scrolling
+   - Effects: Pixelation, Wave, Bayer dither, Scanline
+   - Variable FPS / slow-motion
+   ============================================================ */
+
+const W = 320, H = 240;          // stage internal resolution
+const STAGE = document.getElementById('stage');
+const CTX = STAGE.getContext('2d');
+CTX.imageSmoothingEnabled = false;
+
+const THEMES = {
+  day:   { sky:'#87ceeb', sky2:'#b6e3f3', far:'#5fa5d6', mid:'#3a7bbf', ground:'#6b3a1c', ground2:'#8a5a30', accent:'#ffce4d', shadow:'#0007' },
+  night: { sky:'#0a0a26', sky2:'#1a1846', far:'#221a55', mid:'#0e0a2a', ground:'#2a1f5c', ground2:'#3a2b7c', accent:'#ff5a8a', shadow:'#000a' },
+  cyber: { sky:'#000814', sky2:'#001f3f', far:'#003566', mid:'#001022', ground:'#0d1b2a', ground2:'#1b263b', accent:'#00f5d4', shadow:'#000c' },
+};
+
+/* -------------------- character sprite (16x16) -------------------- */
+// palette indices
+// .  = transparent (0)
+// 1  = outline (#000)
+// 2  = skin
+// 3  = hair
+// 4  = armor main
+// 5  = armor light
+// 6  = belt
+// 7  = boots
+// 8  = eyes
+// 9  = sword blade
+// A  = sword hilt
+// B  = sash / cape
+
+const SPRITE_OUTLINE = '#000';
+const PALETTE = {
+  '.': null,
+  '1': '#000',
+  '2': '#f7c896', // skin
+  '3': '#5b2a13', // hair
+  '4': '#c0392b', // armor red
+  '5': '#f5d34a', // armor gold
+  '6': '#5a2d0c', // belt
+  '7': '#2a1a0a', // boots
+  '8': '#ffffff', // eyes
+  '9': '#e9efff', // sword
+  'A': '#a87432', // sword hilt
+  'B': '#3e60c0', // sash
+};
+
+function frameFromRows(rows) {
+  // 16 rows, 16 chars each
+  const pixels = new Uint8Array(16*16);
+  for (let y=0; y<16; y++) {
+    const r = rows[y] || '';
+    for (let x=0; x<16; x++) {
+      const c = r[x] || '.';
+      pixels[y*16 + x] = (c === '.') ? 0 : (c.charCodeAt(0));
+    }
+  }
+  return pixels;
+}
+
+// Knight hero, facing right. 4 actions, several frames each.
+const FRAMES = {
+  idle: [
+    frameFromRows([
+      '................',
+      '.....3333.......',
+      '....333333......',
+      '...33222233.....',
+      '...32882223.....',
+      '...32222223.....',
+      '...33222233.....',
+      '....333333......',
+      '....344443......',
+      '...34444443.....',
+      '..34555555543...',
+      '..34555555543...',
+      '..345BB555B43...',
+      '...344664443....',
+      '....77..77......',
+      '....7...7.......',
+    ]),
+    frameFromRows([
+      '................',
+      '.....3333.......',
+      '....333333......',
+      '...33222233.....',
+      '...32882223.....',
+      '...32222223.....',
+      '...33222233.....',
+      '....333333......',
+      '....344443......',
+      '...34444443.....',
+      '..34555555543...',
+      '..34555555543...',
+      '..345BB555B43...',
+      '...344664443....',
+      '....77..77......',
+      '....7...7.......',
+    ]),
+  ],
+  walk: [
+    frameFromRows([
+      '................',
+      '.....3333.......',
+      '....333333......',
+      '...33222233.....',
+      '...32882223.....',
+      '...32222223.....',
+      '...33222233.....',
+      '....333333......',
+      '....344443......',
+      '...34444443.....',
+      '..34555555543...',
+      '..34555555543...',
+      '..345BB555B43...',
+      '...344664443....',
+      '...77....77.....',
+      '..77......77....',
+    ]),
+    frameFromRows([
+      '................',
+      '.....3333.......',
+      '....333333......',
+      '...33222233.....',
+      '...32882223.....',
+      '...32222223.....',
+      '...33222233.....',
+      '....333333......',
+      '....344443......',
+      '...34444443.....',
+      '..34555555543...',
+      '..34555555543...',
+      '..345BB555B43...',
+      '...344664443....',
+      '....77..77......',
+      '....77..77......',
+    ]),
+    frameFromRows([
+      '................',
+      '.....3333.......',
+      '....333333......',
+      '...33222233.....',
+      '...32882223.....',
+      '...32222223.....',
+      '...33222233.....',
+      '....333333......',
+      '....344443......',
+      '...34444443.....',
+      '..34555555543...',
+      '..34555555543...',
+      '..345BB555B43...',
+      '...344664443....',
+      '..77......77....',
+      '..77......77....',
+    ]),
+    frameFromRows([
+      '................',
+      '.....3333.......',
+      '....333333......',
+      '...33222233.....',
+      '...32882223.....',
+      '...32222223.....',
+      '...33222233.....',
+      '....333333......',
+      '....344443......',
+      '...34444443.....',
+      '..34555555543...',
+      '..34555555543...',
+      '..345BB555B43...',
+      '...344664443....',
+      '....77..77......',
+      '....77..77......',
+    ]),
+  ],
+  attack: [
+    frameFromRows([
+      '................',
+      '.....3333.......',
+      '....333333......',
+      '...33222233.....',
+      '...32882223.....',
+      '...32222223.....',
+      '...33222233.....',
+      '....333333......',
+      '....344443......',
+      '...344444A9.....',
+      '..34555545A99...',
+      '..345555455A9...',
+      '..345BB5554A....',
+      '...344664443....',
+      '....77..77......',
+      '....7...7.......',
+    ]),
+    frameFromRows([
+      '................',
+      '.....3333.......',
+      '....333333......',
+      '...33222233.....',
+      '...32882223.....',
+      '...32222223.....',
+      '...33222233.....',
+      '....333333......',
+      '....344443......',
+      '..993444443.....',
+      '99A534555543....',
+      '..9A34555543....',
+      '...345BB5554....',
+      '...344664443....',
+      '....77..77......',
+      '....7...7.......',
+    ]),
+    frameFromRows([
+      '................',
+      '.....3333.......',
+      '....333333......',
+      '...33222233.....',
+      '...32882223.....',
+      '...32222223.....',
+      '...33222233.....',
+      '....333333......',
+      '.....999........',
+      '...99A999.......',
+      '...A3444443.....',
+      '....34555543....',
+      '....345BB543....',
+      '....34466443....',
+      '....77..77......',
+      '....7...7.......',
+    ]),
+  ],
+  victory: [
+    frameFromRows([
+      '................',
+      '.....3339.......',
+      '....333339......',
+      '...33222233.....',
+      '...32882223.....',
+      '...32222223.....',
+      '...33222233.....',
+      '....333333......',
+      '....344443......',
+      '...34444443.....',
+      '..34555555543...',
+      '..34555555543...',
+      '..345BB555B43...',
+      '...344664443....',
+      '....77..77......',
+      '....7...7.......',
+    ]),
+    frameFromRows([
+      '................',
+      '....9.3339......',
+      '....9933333.....',
+      '...33222233.....',
+      '...32882223.....',
+      '...32222223.....',
+      '...33222233.....',
+      '....333333......',
+      '....344443......',
+      '...34444443.....',
+      '..34555555543...',
+      '..34555555543...',
+      '..345BB555B43...',
+      '...344664443....',
+      '....77..77......',
+      '....7...7.......',
+    ]),
+  ],
+};
+
+/* -------------------- 8x8 Bayer matrix -------------------- */
+const BAYER_8 = (() => {
+  // 8x8 Bayer matrix (values 0..63)
+  const m = [
+    [ 0,32, 8,40, 2,34,10,42],
+    [48,16,56,24,50,18,58,26],
+    [12,44, 4,36,14,46, 6,38],
+    [60,28,52,20,62,30,54,22],
+    [ 3,35,11,43, 1,33, 9,41],
+    [51,19,59,27,49,17,57,25],
+    [15,47, 7,39,13,45, 5,37],
+    [63,31,55,23,61,29,53,21],
+  ];
+  return m;
+})();
+
+/* -------------------- state -------------------- */
+const state = {
+  action: 'idle',
+  facing: 1,
+  frameIndex: 0,
+  fps: 12,
+  playing: true,
+  slowMo: 1,
+  theme: 'day',
+  bgOffset: 0,
+  fx: {
+    pixel:  { on: false, size: 4 },
+    wave:   { on: false, amp: 6, freq: 18, dir: 0 },
+    dither: { on: false, level: 3, strength: 50 },
+    scan:   { on: false, strength: 50 },
+  },
+  lastTick: 0,
+  lastFrameAt: 0,
+  fpsAvg: 0,
+  // ui
+  bobPhase: 0,
+  stepFlash: 0,
+};
+
+/* -------------------- audio (programmatic 8-bit) -------------------- */
+let actx = null;
+function sfx(type) {
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const t = actx.currentTime;
+    const o = actx.createOscillator();
+    const g = actx.createGain();
+    o.type = 'square';
+    o.frequency.setValueAtTime(type==='attack'? 880 : type==='step'? 660 : type==='switch'? 520 : 380, t);
+    g.gain.setValueAtTime(0.05, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
+    o.connect(g); g.connect(actx.destination);
+    o.start(t); o.stop(t + 0.13);
+  } catch(e) {}
+}
+
+/* -------------------- rendering: background -------------------- */
+function drawBackground() {
+  const th = THEMES[state.theme];
+  // sky gradient
+  const g = CTX.createLinearGradient(0,0,0,H);
+  g.addColorStop(0, th.sky);
+  g.addColorStop(1, th.sky2);
+  CTX.fillStyle = g;
+  CTX.fillRect(0,0,W,H);
+
+  // stars for night/cyber
+  if (state.theme !== 'day') {
+    CTX.fillStyle = state.theme === 'cyber' ? '#00f5d4' : '#ffffff';
+    for (let i=0; i<40; i++) {
+      const x = (i*73 + (state.bgOffset*0.1|0)*7) % W;
+      const y = (i*41) % (H*0.5);
+      CTX.fillRect(x, y, 1, 1);
+    }
+  }
+
+  // sun/moon
+  if (state.theme === 'day') {
+    CTX.fillStyle = th.accent;
+    CTX.beginPath();
+    CTX.arc(280, 38, 14, 0, Math.PI*2);
+    CTX.fill();
+  } else if (state.theme === 'night') {
+    CTX.fillStyle = '#f4f1d6';
+    CTX.beginPath();
+    CTX.arc(280, 38, 12, 0, Math.PI*2);
+    CTX.fill();
+    CTX.fillStyle = th.sky2;
+    CTX.beginPath();
+    CTX.arc(286, 34, 10, 0, Math.PI*2);
+    CTX.fill();
+  } else {
+    // cyber: city skyline in distance
+    CTX.fillStyle = '#00f5d4';
+    CTX.fillRect(245, 30, 60, 6);
+    CTX.fillStyle = '#ff206e';
+    CTX.fillRect(250, 38, 4, 2);
+    CTX.fillRect(260, 38, 4, 2);
+  }
+
+  // far mountains (parallax slow)
+  drawMountains(0, 130, 0.2, th.far, 60);
+  // mid hills
+  drawMountains(0, 160, 0.5, th.mid, 50);
+
+  // ground
+  CTX.fillStyle = th.ground;
+  CTX.fillRect(0, 200, W, 40);
+  CTX.fillStyle = th.ground2;
+  for (let i=0; i<W; i+=4) {
+    const yOff = ((i*7 + state.bgOffset*2) % 8);
+    CTX.fillRect(i, 200 + yOff, 2, 2);
+  }
+  // grass tufts
+  CTX.fillStyle = th.accent;
+  for (let i=0; i<W; i+=8) {
+    const yy = 200 - ((i*13 + state.bgOffset*3) % 6);
+    CTX.fillRect(i, yy, 2, 2);
+  }
+
+  // clouds
+  drawClouds();
+}
+
+function drawMountains(baseX, baseY, parallax, color, height) {
+  CTX.fillStyle = color;
+  const off = (state.bgOffset * parallax) % 80;
+  for (let i=-80; i<W+80; i+=80) {
+    const cx = i - off;
+    CTX.beginPath();
+    CTX.moveTo(cx, baseY);
+    CTX.lineTo(cx+40, baseY - height);
+    CTX.lineTo(cx+80, baseY);
+    CTX.closePath();
+    CTX.fill();
+  }
+}
+
+function drawClouds() {
+  CTX.fillStyle = state.theme === 'day' ? '#ffffff' : (state.theme === 'night' ? '#3a2b7c' : '#001f3f');
+  const off = (state.bgOffset * 0.3) % 200;
+  for (let i=-200; i<W+200; i+=200) {
+    const x = i - off;
+    const y = 30 + ((i*3)%30);
+    CTX.fillRect(x, y, 24, 4);
+    CTX.fillRect(x+4, y-2, 16, 2);
+    CTX.fillRect(x+8, y+4, 12, 2);
+  }
+}
+
+/* -------------------- rendering: character shadow + sprite -------------------- */
+function drawCharacter() {
+  const action = state.action;
+  const frames = FRAMES[action];
+  let fi = state.frameIndex % frames.length;
+
+  // bob offset per action
+  let bob = 0;
+  if (action === 'walk') bob = Math.sin(state.bobPhase * Math.PI * 2) * 1.2;
+  else if (action === 'idle') bob = Math.sin(state.bobPhase * Math.PI * 2) * 0.6;
+  else if (action === 'attack') {
+    // attack frame dip
+    bob = (fi === 0) ? 0 : (fi === 1) ? 1 : 2;
+  } else if (action === 'victory') {
+    bob = Math.sin(state.bobPhase * Math.PI * 2) * 1.6;
+  }
+
+  const cx = (W - 16) >> 1;
+  const cy = (H - 16) >> 1;
+  // step flash: quick white flash on attack frame 1
+  let attackFlash = (action === 'attack' && fi === 1) ? 1 : 0;
+
+  // shadow
+  CTX.fillStyle = THEMES[state.theme].shadow;
+  CTX.beginPath();
+  CTX.ellipse(cx + 8, cy + 17, 9, 2, 0, 0, Math.PI*2);
+  CTX.fill();
+
+  // draw pixels (use offscreen to allow scaling)
+  const px = frames[fi];
+  const SCALE = 6; // 16*6 = 96px, plus shadow
+  const ox = (W - 16*SCALE) >> 1;
+  const oy = (H - 16*SCALE) >> 1 - 4 + Math.round(bob);
+
+  for (let y=0; y<16; y++) {
+    for (let x=0; x<16; x++) {
+      const code = px[y*16 + x];
+      if (code === 0) continue;
+      const ch = String.fromCharCode(code);
+      const col = PALETTE[ch];
+      if (!col) continue;
+      // attack flash
+      let c = col;
+      if (attackFlash && (ch === '4' || ch === '5' || ch === '9')) c = '#ffffff';
+      CTX.fillStyle = c;
+      CTX.fillRect(ox + x*SCALE, oy + y*SCALE, SCALE, SCALE);
+    }
+  }
+
+  // facing indicator tint
+  if (state.facing === -1) {
+    // mirror via cover: subtle dark band on right (since sprite faces right by default)
+    // For correctness we'd flip, but using a subtle outline tint:
+    CTX.fillStyle = 'rgba(0,0,0,0)';
+  }
+
+  // sword trail on attack
+  if (action === 'attack' && (fi === 1 || fi === 2)) {
+    CTX.fillStyle = 'rgba(255,255,255,0.7)';
+    const tx = ox + 11*SCALE;
+    const ty = oy + 5*SCALE;
+    CTX.fillRect(tx, ty, SCALE*6, 1);
+    CTX.fillStyle = 'rgba(255,210,63,0.85)';
+    CTX.fillRect(tx+SCALE, ty-1, SCALE*4, 1);
+  }
+}
+
+/* -------------------- effects (post processing) -------------------- */
+function applyEffects() {
+  if (state.fx.pixel.on) applyPixelate(state.fx.pixel.size);
+  if (state.fx.scan.on)  applyScanline(state.fx.scan.strength);
+  if (state.fx.dither.on) applyBayerDither(state.fx.dither.level, state.fx.dither.strength);
+  if (state.fx.wave.on)  applyWave(state.fx.wave.amp, state.fx.wave.freq, state.fx.wave.dir);
+  // vignette always for retro
+  applyVignette();
+}
+
+function applyPixelate(size) {
+  if (size < 1) size = 1;
+  const tmp = document.createElement('canvas');
+  tmp.width  = Math.max(1, (W / size) | 0);
+  tmp.height = Math.max(1, (H / size) | 0);
+  const tctx = tmp.getContext('2d');
+  tctx.imageSmoothingEnabled = false;
+  tctx.drawImage(STAGE, 0, 0, tmp.width, tmp.height);
+  CTX.imageSmoothingEnabled = false;
+  CTX.drawImage(tmp, 0, 0, W, H);
+}
+
+function applyScanline(strength) {
+  const img = CTX.getImageData(0,0,W,H);
+  const d = img.data;
+  const k = 1 - (strength/100) * 0.7;
+  for (let y=0; y<H; y++) {
+    if ((y & 1) === 0) continue;
+    for (let x=0; x<W; x++) {
+      const i = (y*W + x) * 4;
+      d[i]   = d[i]   * k | 0;
+      d[i+1] = d[i+1] * k | 0;
+      d[i+2] = d[i+2] * k | 0;
+    }
+  }
+  CTX.putImageData(img, 0, 0);
+}
+
+function applyBayerDither(level, strength) {
+  if (level < 1) level = 1;
+  const step = Math.max(8, Math.floor(255 / level));
+  const strength01 = (strength/100) * step * 0.8;
+  const img = CTX.getImageData(0,0,W,H);
+  const d = img.data;
+  for (let y=0; y<H; y++) {
+    for (let x=0; x<W; x++) {
+      const i = (y*W + x) * 4;
+      const t = (BAYER_8[x & 7][y & 7] + 0.5) / 64; // 0..1
+      for (let c=0; c<3; c++) {
+        const v = d[i+c];
+        const base = Math.floor(v / step) * step;
+        const next = base + step;
+        const bias = (t < 0.5 ? -1 : 1) * strength01;
+        d[i+c] = Math.max(0, Math.min(255, (v + bias < (base+next)/2 ? base : next)));
+      }
+    }
+  }
+  CTX.putImageData(img, 0, 0);
+}
+
+function applyWave(amp, freq, dir) {
+  if (amp < 0.1) return;
+  const img = CTX.getImageData(0,0,W,H);
+  const src = new Uint8ClampedArray(img.data);
+  const d = img.data;
+  const f = (freq/100) * 0.6;
+  for (let y=0; y<H; y++) {
+    for (let x=0; x<W; x++) {
+      let sx = x, sy = y;
+      if (dir === 0) sx = x + Math.sin(y * f) * amp;
+      else           sy = y + Math.sin(x * f) * amp;
+      sx = sx < 0 ? 0 : (sx >= W ? W-1 : sx|0);
+      sy = sy < 0 ? 0 : (sy >= H ? H-1 : sy|0);
+      const di = (y*W + x) * 4;
+      const si = (sy*W + sx) * 4;
+      d[di]   = src[si];
+      d[di+1] = src[si+1];
+      d[di+2] = src[si+2];
+      d[di+3] = 255;
+    }
+  }
+  CTX.putImageData(img, 0, 0);
+}
+
+function applyVignette() {
+  const g = CTX.createRadialGradient(W/2, H/2, W*0.35, W/2, H/2, W*0.7);
+  g.addColorStop(0, 'rgba(0,0,0,0)');
+  g.addColorStop(1, 'rgba(0,0,0,0.55)');
+  CTX.fillStyle = g;
+  CTX.fillRect(0,0,W,H);
+}
+
+/* -------------------- main loop -------------------- */
+function tick(now) {
+  const interval = 1000 / state.fps / state.slowMo;
+  const dt = now - state.lastTick;
+  if (state.playing && dt >= interval) {
+    const action = state.action;
+    const frames = FRAMES[action];
+    state.frameIndex = (state.frameIndex + 1) % frames.length;
+    state.bobPhase = (state.bobPhase + 1 / frames.length) % 1;
+    state.lastTick = now - (dt % interval);
+  }
+  // fps real
+  if (now - state.lastFrameAt > 250) {
+    const elapsed = (now - state.lastFrameAt) / 1000;
+    const real = (state.playing ? 1 : 0) * (1 / Math.max(0.001, elapsed/2)) * 2; // approx
+    state.fpsAvg = real;
+    state.lastFrameAt = now;
+  } else {
+    // integrate
+    state.fpsAvg = state.fpsAvg * 0.9 + (1000/Math.max(1,dt)) * 0.1;
+  }
+  // background scrolls continuously
+  state.bgOffset += 0.5 * (state.fps/12);
+
+  // render
+  drawBackground();
+  drawCharacter();
+  applyEffects();
+
+  // update HUD
+  document.getElementById('hudAct').textContent = state.action.toUpperCase();
+  document.getElementById('hudFps').textContent = state.fps;
+  document.getElementById('hudFpsReal').textContent = state.fpsAvg.toFixed(0);
+  document.getElementById('hudDir').textContent = state.facing === 1 ? '→ RIGHT' : '← LEFT';
+  const fxList = [];
+  if (state.fx.pixel.on)  fxList.push('PIX');
+  if (state.fx.wave.on)   fxList.push('WAV');
+  if (state.fx.dither.on) fxList.push('BAY');
+  if (state.fx.scan.on)   fxList.push('SCN');
+  document.getElementById('hudFx').textContent = fxList.length ? fxList.join(' + ') : '— none —';
+
+  document.getElementById('fpsReal').textContent = state.fpsAvg.toFixed(0);
+  document.getElementById('fpsTarget').textContent = state.fps;
+
+  document.getElementById('uiAction').textContent = state.action.toUpperCase();
+  document.getElementById('uiFrame').textContent = state.frameIndex;
+  document.getElementById('uiDir').textContent = state.facing === 1 ? '→' : '←';
+  document.getElementById('uiTheme').textContent = state.theme.toUpperCase();
+
+  requestAnimationFrame(tick);
+}
+
+/* -------------------- UI wiring -------------------- */
+function setAction(a) {
+  state.action = a;
+  state.frameIndex = 0;
+  document.querySelectorAll('.actions .btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.action === a);
+  });
+  sfx('switch');
+}
+function setFacing(f) {
+  state.facing = f;
+  sfx('switch');
+}
+function setTheme(t) {
+  state.theme = t;
+  document.querySelectorAll('.theme-swatch').forEach(s => {
+    s.classList.toggle('active', s.dataset.theme === t);
+  });
+  sfx('switch');
+}
+function toggleFx(name) {
+  state.fx[name].on = !state.fx[name].on;
+  refreshFxUI();
+  sfx('switch');
+}
+function refreshFxUI() {
+  document.querySelectorAll('.switch').forEach(sw => {
+    const name = sw.dataset.fx;
+    sw.classList.toggle('on', state.fx[name].on);
+  });
+  document.querySelectorAll('.fx-params').forEach(p => {
+    const name = p.dataset.params;
+    p.classList.toggle('disabled', !state.fx[name].on);
+  });
+  // also re-apply slider values to UI numbers
+  document.querySelectorAll('.fx-params').forEach(p => {
+    const name = p.dataset.params;
+    const cfg = state.fx[name];
+    p.querySelectorAll('input[type=range]').forEach(inp => {
+      const k = inp.dataset.key;
+      inp.value = cfg[k];
+      const out = p.querySelector(`[data-out="${k}"]`);
+      if (out) out.textContent = formatOut(k, cfg[k]);
+    });
+  });
+}
+function formatOut(k, v) {
+  if (k === 'dir') return v === 0 ? 'X' : 'Y';
+  return v;
+}
+
+document.querySelectorAll('.actions .btn').forEach(b => {
+  b.addEventListener('click', () => setAction(b.dataset.action));
+});
+document.getElementById('btnLeft').addEventListener('click', () => setFacing(-1));
+document.getElementById('btnRight').addEventListener('click', () => setFacing(1));
+document.querySelectorAll('.theme-swatch').forEach(s => {
+  s.addEventListener('click', () => setTheme(s.dataset.theme));
+});
+document.querySelectorAll('.switch').forEach(sw => {
+  sw.addEventListener('click', () => toggleFx(sw.dataset.fx));
+});
+document.querySelectorAll('.fx-params input[type=range]').forEach(inp => {
+  inp.addEventListener('input', () => {
+    const params = inp.closest('.fx-params').dataset.params;
+    const key = inp.dataset.key;
+    const v = (key === 'dir') ? parseInt(inp.value) : (key === 'level' || key === 'size' ? parseInt(inp.value) : parseInt(inp.value));
+    state.fx[params][key] = v;
+    const out = inp.parentElement.querySelector(`[data-out="${key}"]`);
+    if (out) out.textContent = formatOut(key, v);
+  });
+});
+
+// FPS slider
+const fpsSlider = document.getElementById('fpsSlider');
+const fpsOut = document.getElementById('fpsOut');
+fpsSlider.addEventListener('input', () => {
+  state.fps = parseInt(fpsSlider.value);
+  fpsOut.textContent = state.fps;
+});
+
+document.getElementById('btnPause').addEventListener('click', () => {
+  state.playing = !state.playing;
+  document.getElementById('btnPause').textContent = state.playing ? '❚❚ PAUSE' : '▶ PLAY';
+  sfx('switch');
+});
+document.getElementById('btnStep').addEventListener('click', () => {
+  const frames = FRAMES[state.action];
+  state.frameIndex = (state.frameIndex + 1) % frames.length;
+  state.bobPhase = (state.bobPhase + 1 / frames.length) % 1;
+  sfx('step');
+});
+
+document.querySelectorAll('.slow-row .btn').forEach(b => {
+  b.addEventListener('click', () => {
+    state.slowMo = parseFloat(b.dataset.slow);
+    document.querySelectorAll('.slow-row .btn').forEach(x => x.classList.toggle('active', x === b));
+    sfx('switch');
+  });
+});
+
+// Keyboard shortcuts
+window.addEventListener('keydown', e => {
+  const k = e.key.toLowerCase();
+  if (k === 'a') { setFacing(-1); e.preventDefault(); }
+  else if (k === 'd') { setFacing(1); e.preventDefault(); }
+  else if (k === ' ') { document.getElementById('btnPause').click(); e.preventDefault(); }
+  else if (k === 'p') toggleFx('pixel');
+  else if (k === 'w') toggleFx('wave');
+  else if (k === 'b') toggleFx('dither');
+  else if (k === 's') toggleFx('scan');
+  else if (k === 't') {
+    const order = ['day','night','cyber'];
+    setTheme(order[(order.indexOf(state.theme)+1) % 3]);
+  }
+  else if (k === '1') setAction('idle');
+  else if (k === '2') setAction('walk');
+  else if (k === '3') setAction('attack');
+  else if (k === '4') setAction('victory');
+});
+
+/* -------------------- start -------------------- */
+refreshFxUI();
+setTheme('day');
+setAction('idle');
+state.lastTick = performance.now();
+state.lastFrameAt = performance.now();
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>
