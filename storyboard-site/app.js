@@ -11,28 +11,31 @@ const ACTS = [
   { num: '06', name: '余韵',   emotion: '紧 → 远', camera: '缓慢拉升 · 固定 · 黑屏',     curve: [50, 30, 25, 20, 15, 10] },
 ];
 
+const IMG = (prompt) =>
+  `https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=${encodeURIComponent(prompt)}&image_size=landscape_16_9`;
+
 const SHOTS = [
-  { act: '第一幕：觉醒', range: '0″ – 5″',   number: '01', framing: '大全景', camera: '地面仰拍 → 急速拉升', content: '巨像（圣像）从地面拔地而起，尘埃与粒子在阳光斜射下形成体积光柱，地面裂纹呈放射状向外扩散。', fx: 'IMAX 渲染 · IMS 粒子模糊 · 大景深 · 镜头径向拉伸', audio: '低频嗡鸣 + 大地结构性震颤', mood: 1 },
-  { act: '第一幕：觉醒', range: '5″ – 12″',  number: '02', framing: '远景',   camera: '长焦压缩 → 横移',     content: '一个中国老头（农夫装扮、衣衫褴褛）站定回望；周围空气呈现实白色线框高速掠过，老头随手抬升地面一块泥土。', fx: '3 渲 2 角色 + IC 现实环境 · 材质对比 · 运动模糊', audio: '急促脚步 + 古老编钟',         mood: 1 },
-  { act: '第一幕：觉醒', range: '12″ – 15″', number: '03', framing: '特写',   camera: '快速变焦（拉近）',   content: '老头抬头：眼神从浑浊瞬间变锐利，瞳孔金光绽放，嘴角露出一丝中式幽默的狡黠笑容。', fx: '面部微表情捕捉 · 瞳孔金光粒子 · 镜片呼吸', audio: '清脆单音「叮」 · 编钟起音',     mood: 1 },
+  { act: '第一幕：觉醒', range: '0″ – 5″',   number: '01', framing: '大全景', camera: '地面仰拍 → 急速拉升', content: '巨像（圣像）从地面拔地而起，尘埃与粒子在阳光斜射下形成体积光柱，地面裂纹呈放射状向外扩散。', fx: 'IMAX 渲染 · IMS 粒子模糊 · 大景深 · 镜头径向拉伸', audio: '低频嗡鸣 + 大地结构性震颤', mood: 1, prompt: 'A colossal ancient saint statue erupting from cracked earth, dust and golden particles rising, low angle looking up, IMAX cinematic, volumetric god rays, photorealistic, dark earth tones with gold light, dark mood, 16:9' },
+  { act: '第一幕：觉醒', range: '5″ – 12″',  number: '02', framing: '远景',   camera: '长焦压缩 → 横移',     content: '一个中国老头（农夫装扮、衣衫褴褛）站定回望；周围空气呈现实白色线框高速掠过，老头随手抬升地面一块泥土。', fx: '3 渲 2 角色 + IC 现实环境 · 材质对比 · 运动模糊', audio: '急促脚步 + 古老编钟',         mood: 1, prompt: 'A Chinese old farmer in tattered clothes standing in a desolate battlefield, a warrior with a great curved blade facing him, dust swirling in air, white speed lines streaking past, cinematic IMAX, golden hour, dark earth tones, 16:9' },
+  { act: '第一幕：觉醒', range: '12″ – 15″', number: '03', framing: '特写',   camera: '快速变焦（拉近）',   content: '老头抬头：眼神从浑浊瞬间变锐利，瞳孔金光绽放，嘴角露出一丝中式幽默的狡黠笑容。', fx: '面部微表情捕捉 · 瞳孔金光粒子 · 镜片呼吸', audio: '清脆单音「叮」 · 编钟起音',     mood: 1, prompt: 'Extreme close-up of a Chinese old man face, eyes turning from cloudy to sharp gold, a cunning smile forming, IMAX portrait, dramatic rim lighting, weathered skin texture, dark background with gold light, 16:9' },
 
-  { act: '第二幕：战场召唤', range: '15″ – 20″', number: '04', framing: '全景',   camera: '不稳定手持 → 环绕',  content: '战场废墟；大刀客抽刀，刀身折射出冷光；中式高塔虚影在远处崩塌，空间开始崩解。', fx: '画面割裂感（镜头故意不稳）· 色彩置换',         audio: '心跳低频 + 刀鸣金属延音',       mood: 2 },
-  { act: '第二幕：战场召唤', range: '20″ – 25″', number: '05', framing: '中景',   camera: '快速推拉',           content: '士兵跌倒，抬头看见老头挡在身前；老头开口："炽龙！逮住他。"水墨巨龙从四周延展而出。', fx: '镜头瞬间模糊 → 清晰 · 水墨线条迸发',         audio: '声音骤停 · 仅余风声',           mood: 2 },
-  { act: '第二幕：战场召唤', range: '25″ – 30″', number: '06', framing: '特写',   camera: '固定',               content: '老头带上斗笠。大刀客问："你到底是谁？"老头答："一个种地的。"——言出法随，空间扭曲。', fx: '嘴唇微动驱动空间扭曲 · 古音 / 方言',         audio: '古老咒语回声 + 多层混响',       mood: 2 },
+  { act: '第二幕：战场召唤', range: '15″ – 20″', number: '04', framing: '全景',   camera: '不稳定手持 → 环绕',  content: '战场废墟；大刀客抽刀，刀身折射出冷光；中式高塔虚影在远处崩塌，空间开始崩解。', fx: '画面割裂感（镜头故意不稳）· 色彩置换',         audio: '心跳低频 + 刀鸣金属延音',       mood: 2, prompt: 'Battlefield ruins after a great war, a warrior drawing a glowing great curved blade, Chinese pagoda silhouette collapsing in background, sky turning to rainbow colors, handheld shaky camera, IMAX cinematic, 16:9' },
+  { act: '第二幕：战场召唤', range: '20″ – 25″', number: '05', framing: '中景',   camera: '快速推拉',           content: '士兵跌倒，抬头看见老头挡在身前；老头开口："炽龙！逮住他。"水墨巨龙从四周延展而出。', fx: '镜头瞬间模糊 → 清晰 · 水墨线条迸发',         audio: '声音骤停 · 仅余风声',           mood: 2, prompt: 'A fallen soldier on dusty ground looking up at a Chinese old man standing in front protectively, water-ink dragon beginning to spiral out from old man body, IMAX cinematic, motion blur, 16:9' },
+  { act: '第二幕：战场召唤', range: '25″ – 30″', number: '06', framing: '特写',   camera: '固定',               content: '老头带上斗笠。大刀客问："你到底是谁？"老头答："一个种地的。"——言出法随，空间扭曲。', fx: '嘴唇微动驱动空间扭曲 · 古音 / 方言',         audio: '古老咒语回声 + 多层混响',       mood: 2, prompt: 'Extreme close-up of an old Chinese man putting on a bamboo conical hat, a warrior with great blade behind him, space distortion around his lips, ancient Chinese atmosphere, IMAX portrait, 16:9' },
 
-  { act: '第三幕：天坠', range: '30″ – 35″', number: '07', framing: '大全景', camera: '天顶俯拍 → 急速下坠', content: '天空撕裂，一颗外星战舰冲破大气层，过程地面崩塌；老头的替身先行离地以"式"镇压姿态迎上。', fx: '大气摩擦粒子 · 冲击波环形扩散 · IMS 模糊',  audio: '次声波压迫 + 耳膜刺痛感',         mood: 3 },
-  { act: '第三幕：天坠', range: '35″ – 40″', number: '08', framing: '中景',   camera: '稳定跟拍',           content: '老头逆光剪影，铠甲碎屑悬浮；尘埃粒子在 IC 级现实渲染下可见单体运动。', fx: '尘埃粒子 IC 级现实渲染 · 逆光剪影',         audio: '金属铠甲碰撞声',                 mood: 3 },
-  { act: '第三幕：天坠', range: '40″ – 45″', number: '09', framing: '特写',   camera: '慢动作（120fps）',   content: '老头面部细节，异域神秘感，瞳孔金光与行星倒影同框。', fx: '面部细节分层渲染 · 异域神秘感',             audio: '英文低沉旁白 · 带古老口音',       mood: 3 },
+  { act: '第三幕：天坠', range: '30″ – 35″', number: '07', framing: '大全景', camera: '天顶俯拍 → 急速下坠', content: '天空撕裂，一颗外星战舰冲破大气层，过程地面崩塌；老头的替身先行离地以"式"镇压姿态迎上。', fx: '大气摩擦粒子 · 冲击波环形扩散 · IMS 模糊',  audio: '次声波压迫 + 耳膜刺痛感',         mood: 3, prompt: 'A massive alien warship or meteor breaking through Earth atmosphere, fireball and shockwave expanding, ground collapsing, top-down to down-tilt camera, IMAX cinematic, cosmic scale, 16:9' },
+  { act: '第三幕：天坠', range: '35″ – 40″', number: '08', framing: '中景',   camera: '稳定跟拍',           content: '老头逆光剪影，铠甲碎屑悬浮；尘埃粒子在 IC 级现实渲染下可见单体运动。', fx: '尘埃粒子 IC 级现实渲染 · 逆光剪影',         audio: '金属铠甲碰撞声',                 mood: 3, prompt: 'Backlit silhouette of a Chinese old man warrior standing against bright cosmic fire, armor fragments floating, dust particles in air, IMAX cinematic, dramatic lighting, golden rim, 16:9' },
+  { act: '第三幕：天坠', range: '40″ – 45″', number: '09', framing: '特写',   camera: '慢动作（120fps）',   content: '老头面部细节，异域神秘感，瞳孔金光与行星倒影同框。', fx: '面部细节分层渲染 · 异域神秘感',             audio: '英文低沉旁白 · 带古老口音',       mood: 3, prompt: 'Close-up of Chinese old man face, mysterious alien aura, golden light reflecting planet in his pupil, slow motion, IMAX portrait, low saturation, 16:9' },
 
-  { act: '第四幕：神力爆发', range: '45″ – 50″', number: '10', framing: '中景', camera: '环绕长镜头',         content: '老头单手平推，动作如农夫推犁般随意——行星瞬间静止，向内坍缩、爆裂、毁灭。', fx: '空间褶皱 · 引力透镜 · 物质崩解为几何碎片',     audio: '绝对静音 → 爆发性白噪音',         mood: 4 },
-  { act: '第四幕：神力爆发', range: '50″ – 55″', number: '11', framing: '大全景', camera: '急速后退',           content: '冲击波几何倍数扩散，环形气浪摧毁方圆百里；但老头和士兵所在之处安然无恙——画面一分为二。', fx: '空间割裂感 · 毁灭与安全的边界清晰可见',     audio: '冲击波低频扫荡',                 mood: 4 },
-  { act: '第四幕：神力爆发', range: '55″ – 60″', number: '12', framing: '近景',   camera: '快速切换（5 帧 / 切）', content: '太空巨兽从裂隙中探出，与老头第一次交锋——打击轨迹呈水墨画风格。', fx: '水墨画打击轨迹 · 瞬间线条勾勒',             audio: '骨骼碰撞的沉闷巨响',             mood: 4 },
+  { act: '第四幕：神力爆发', range: '45″ – 50″', number: '10', framing: '中景', camera: '环绕长镜头',         content: '老头单手平推，动作如农夫推犁般随意——行星瞬间静止，向内坍缩、爆裂、毁灭。', fx: '空间褶皱 · 引力透镜 · 物质崩解为几何碎片',     audio: '绝对静音 → 爆发性白噪音',         mood: 4, prompt: 'Chinese old man pushing hand forward casually like a farmer plowing, a planet in background instantly stopping then collapsing inward, space warping with gravitational lensing, IMAX cinematic, geometric debris, 16:9' },
+  { act: '第四幕：神力爆发', range: '50″ – 55″', number: '11', framing: '大全景', camera: '急速后退',           content: '冲击波几何倍数扩散，环形气浪摧毁方圆百里；但老头和士兵所在之处安然无恙——画面一分为二。', fx: '空间割裂感 · 毁灭与安全的边界清晰可见',     audio: '冲击波低频扫荡',                 mood: 4, prompt: 'Massive shockwave ring expanding across a wasteland, geometric multiple expansion, clear boundary between destroyed area and safe area where two figures stand, IMAX cinematic, 16:9' },
+  { act: '第四幕：神力爆发', range: '55″ – 60″', number: '12', framing: '近景',   camera: '快速切换（5 帧 / 切）', content: '太空巨兽从裂隙中探出，与老头第一次交锋——打击轨迹呈水墨画风格。', fx: '水墨画打击轨迹 · 瞬间线条勾勒',             audio: '骨骼碰撞的沉闷巨响',             mood: 4, prompt: 'A cosmic space beast emerging from a dimensional rift, first clash with old man, water-ink style impact trails, IMAX cinematic, dark void, 16:9' },
 
-  { act: '第五幕：神战', range: '60″ – 66″', number: '13', framing: '特写 → 全景', camera: '镜头瞬间变化（OBS 视觉转换）', content: '老头每一次出拳，冲击波都几何倍扩散，在宇宙中形成涟漪。', fx: '速度线 + 动态模糊 · 镜头跟随拳头轨迹',         audio: '打击音效层层叠加',               mood: 5 },
-  { act: '第五幕：神战', range: '66″ – 72″', number: '14', framing: '中景',   camera: '快速横移',           content: '巨兽被击中，空间本身被撕裂，露出背后虚空与星辰。', fx: '物理法则崩坏的视觉化 · 玻璃碎裂感放大千倍', audio: '玻璃碎裂声放大千倍',             mood: 5 },
-  { act: '第五幕：神战', range: '72″ – 78″', number: '15', framing: '大全景', camera: '360° 环绕',           content: '最终一击——老头跃起，全身化为水墨金龙，贯穿巨兽；中国神话美学全面爆发。', fx: '3 渲 2 角色完全释放 · 水墨金龙 · 神话美学',   audio: '龙吟 + 宇宙寂静',                 mood: 5 },
+  { act: '第五幕：神战', range: '60″ – 66″', number: '13', framing: '特写 → 全景', camera: '镜头瞬间变化（OBS 视觉转换）', content: '老头每一次出拳，冲击波都几何倍扩散，在宇宙中形成涟漪。', fx: '速度线 + 动态模糊 · 镜头跟随拳头轨迹',         audio: '打击音效层层叠加',               mood: 5, prompt: 'Chinese old man throwing a punch, shockwave rippling outward geometrically in deep space, stars in background, speed lines and motion blur, IMAX cinematic, 16:9' },
+  { act: '第五幕：神战', range: '66″ – 72″', number: '14', framing: '中景',   camera: '快速横移',           content: '巨兽被击中，空间本身被撕裂，露出背后虚空与星辰。', fx: '物理法则崩坏的视觉化 · 玻璃碎裂感放大千倍', audio: '玻璃碎裂声放大千倍',             mood: 5, prompt: 'The cosmic beast being struck, space itself tearing apart revealing void and stars behind, IMAX cinematic, shattered glass effect, 16:9' },
+  { act: '第五幕：神战', range: '72″ – 78″', number: '15', framing: '大全景', camera: '360° 环绕',           content: '最终一击——老头跃起，全身化为水墨金龙，贯穿巨兽；中国神话美学全面爆发。', fx: '3 渲 2 角色完全释放 · 水墨金龙 · 神话美学',   audio: '龙吟 + 宇宙寂静',                 mood: 5, prompt: 'Old man leaping and transforming into a giant golden Chinese ink dragon piercing through the cosmic beast, mythological aesthetic, IMAX cinematic, cosmic battle, 16:9' },
 
-  { act: '第六幕：余韵', range: '78″ – 90″', number: '16', framing: '远景',   camera: '缓慢拉升 → 黑屏',     content: '老头平静站立，远处太空舰队缓至；大刀客角色深呼吸；色调严格《沙丘》低饱和。', fx: '低饱和《沙丘》色调 · 苍凉史诗感 · 编钟收束', audio: '风声 + 远处星辰低语 → 编钟收束', mood: 6 },
+  { act: '第六幕：余韵', range: '78″ – 90″', number: '16', framing: '远景',   camera: '缓慢拉升 → 黑屏',     content: '老头平静站立，远处太空舰队缓至；大刀客角色深呼吸；色调严格《沙丘》低饱和。', fx: '低饱和《沙丘》色调 · 苍凉史诗感 · 编钟收束', audio: '风声 + 远处星辰低语 → 编钟收束', mood: 6, prompt: 'Chinese old man standing calmly in vast desert, distant alien space fleet approaching, low saturation Dune color palette, vast empty landscape, IMAX cinematic, 16:9' },
 ];
 
 const CONSTRAINTS = [
@@ -45,12 +48,12 @@ const CONSTRAINTS = [
 ];
 
 const ASSETS = [
-  { name: '圣像粒子崛起',  desc: 'IMS 粒子系统 · 体积光柱 · 放射裂纹',     thumb: 'thumb-1' },
-  { name: '水墨巨龙',      desc: '中国神话美学 · 笔触延展 · 墨分五色',     thumb: 'thumb-2' },
-  { name: '行星几何坍缩',  desc: '引力透镜 · 几何碎片 · 空间褶皱',         thumb: 'thumb-3' },
-  { name: '冲击波扩散',    desc: '几何倍扩散 · 空间割裂 · 边界清晰',       thumb: 'thumb-4' },
-  { name: '水墨金龙',      desc: '全身化龙 · 贯穿巨兽 · 神话美学爆发',     thumb: 'thumb-5' },
-  { name: '太空舰队',      desc: '《沙丘》低饱和 · 苍凉史诗 · 远景剪影',   thumb: 'thumb-6' },
+  { name: '圣像粒子崛起',  desc: 'IMS 粒子系统 · 体积光柱 · 放射裂纹',     thumb: 'thumb-1', prompt: 'Ancient saint statue rising from earth with golden particles, IMS particle effects, IMAX cinematic concept art, dark mood, 16:9' },
+  { name: '水墨巨龙',      desc: '中国神话美学 · 笔触延展 · 墨分五色',     thumb: 'thumb-2', prompt: 'Chinese water-ink giant dragon spiraling in dark void, ink wash painting aesthetic, brush strokes, dark background, 16:9' },
+  { name: '行星几何坍缩',  desc: '引力透镜 · 几何碎片 · 空间褶皱',         thumb: 'thumb-3', prompt: 'Planet collapsing inward, gravitational lensing, geometric fragments exploding, IMAX cinematic, dark space, 16:9' },
+  { name: '冲击波扩散',    desc: '几何倍扩散 · 空间割裂 · 边界清晰',       thumb: 'thumb-4', prompt: 'Concentric shockwave rings expanding across desolate landscape, geometric multiple expansion, IMAX cinematic, low saturation, 16:9' },
+  { name: '水墨金龙',      desc: '全身化龙 · 贯穿巨兽 · 神话美学爆发',     thumb: 'thumb-5', prompt: 'Giant golden Chinese ink dragon coiling in cosmos, mythological aesthetic, dark space with stars, 16:9' },
+  { name: '太空舰队',      desc: '《沙丘》低饱和 · 苍凉史诗 · 远景剪影',   thumb: 'thumb-6', prompt: 'Vast alien space fleet approaching in distance over desert, low saturation Dune color palette, IMAX cinematic, 16:9' },
 ];
 
 /* ==========================================================================
@@ -126,6 +129,7 @@ function renderShots() {
       <article class="shot" data-shot="${s.number}">
         <div class="shot__canvas">
           <div class="shot__frame mood-${s.mood}"></div>
+          <img class="shot__img" loading="lazy" alt="Shot ${s.number} — ${s.framing}" src="${IMG(s.prompt)}" onload="this.classList.add('is-loaded')" onerror="this.classList.add('is-error')" />
           ${motionArrow}
           <span class="shot__num">SHOT ${s.number}</span>
           <span class="shot__framing">${s.framing}</span>
@@ -187,7 +191,9 @@ function renderAssets() {
   if (!root) return;
   root.innerHTML = ASSETS.map((a) => `
     <div class="asset">
-      <div class="asset__thumb ${a.thumb}"></div>
+      <div class="asset__thumb ${a.thumb}">
+        <img class="asset__img" loading="lazy" alt="${a.name}" src="${IMG(a.prompt)}" onload="this.classList.add('is-loaded')" onerror="this.classList.add('is-error')" />
+      </div>
       <div class="asset__info">
         <h3 class="asset__name">${a.name}</h3>
         <p class="asset__desc">${a.desc}</p>
