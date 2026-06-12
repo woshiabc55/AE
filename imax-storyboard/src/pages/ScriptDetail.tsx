@@ -230,6 +230,54 @@ export default function ScriptDetail() {
                   <ChevronRight size={14} className="act-card-arrow" />
                 </div>
               </Link>
+
+              <Link to="/script/pages" className="act-card" style={{ '--accent': '#00d2d3' } as React.CSSProperties}>
+                <div className="act-card-glyph">本</div>
+                <div className="act-card-num">SCRIPT PAGES</div>
+                <h3 className="act-card-title">剧本页</h3>
+                <div className="act-card-subtitle">Formatted Script</div>
+                <p className="act-card-theme">演员圣经 / 场号·人物·台词·表演提示 / 按幕+角色筛选</p>
+                <div className="act-card-footer">
+                  <span>READ</span>
+                  <ChevronRight size={14} className="act-card-arrow" />
+                </div>
+              </Link>
+
+              <Link to="/script/sketch" className="act-card" style={{ '--accent': '#b2bec3' } as React.CSSProperties}>
+                <div className="act-card-glyph">构</div>
+                <div className="act-card-num">SKETCH</div>
+                <h3 className="act-card-title">分镜草图</h3>
+                <div className="act-card-subtitle">Composition Frames</div>
+                <p className="act-card-theme">ASCII 构图符号 / 镜头角度 / 焦点 / 导出文本</p>
+                <div className="act-card-footer">
+                  <span>SKETCH</span>
+                  <ChevronRight size={14} className="act-card-arrow" />
+                </div>
+              </Link>
+
+              <Link to="/script/schedule" className="act-card" style={{ '--accent': '#ff9f43' } as React.CSSProperties}>
+                <div className="act-card-glyph">日</div>
+                <div className="act-card-num">SCHEDULE</div>
+                <h3 className="act-card-title">拍摄计划</h3>
+                <div className="act-card-subtitle">Production Schedule</div>
+                <p className="act-card-theme">按地点/幕/角色/难度聚合 / 列表+甘特双视图</p>
+                <div className="act-card-footer">
+                  <span>PRODUCE</span>
+                  <ChevronRight size={14} className="act-card-arrow" />
+                </div>
+              </Link>
+
+              <Link to="/script/resources" className="act-card" style={{ '--accent': '#ee5a6f' } as React.CSSProperties}>
+                <div className="act-card-glyph">物</div>
+                <div className="act-card-num">RESOURCES</div>
+                <h3 className="act-card-title">资源清单</h3>
+                <div className="act-card-subtitle">Props · Costumes</div>
+                <p className="act-card-theme">8 道具 + 5 服装 / 出现镜头追踪 / 搜索分类</p>
+                <div className="act-card-footer">
+                  <span>INVENTORY</span>
+                  <ChevronRight size={14} className="act-card-arrow" />
+                </div>
+              </Link>
             </div>
           </section>
 

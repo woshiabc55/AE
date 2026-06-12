@@ -1090,6 +1090,236 @@ export const worldLore: WorldLore[] = [
   },
 ];
 
+// ============= 道具与服装 =============
+
+export interface Prop {
+  id: string;
+  name: string;
+  category: 'weapon' | 'tool' | 'costume' | 'document' | 'ritual' | 'tech';
+  owner?: string;                 // 归属角色
+  significance: string;           // 重要性
+  appearsIn: number[];            // 出现镜头
+  estimatedValue?: string;        // 估价
+}
+
+export interface Costume {
+  id: string;
+  characterName: string;
+  outfit: string;
+  scenes: string;                 // 适用场景
+  details: string;
+}
+
+export const props: Prop[] = [
+  {
+    id: 'prop-1',
+    name: '破草帽',
+    category: 'costume',
+    owner: '陈守田',
+    significance: '千年前封印渊时的装束，重披战袍的标志',
+    appearsIn: [6, 10, 19, 20, 21, 25, 26, 50, 64, 67, 70],
+  },
+  {
+    id: 'prop-2',
+    name: '醒田铃',
+    category: 'ritual',
+    owner: '魏镇 → 燕无忧',
+    significance: '可唤醒守田翁尘封记忆的核心道具',
+    appearsIn: [5, 17, 18, 19, 35, 36, 37, 53, 54, 55, 60, 70],
+  },
+  {
+    id: 'prop-3',
+    name: '断潮刀',
+    category: 'weapon',
+    owner: '燕无忧',
+    significance: '无鞘长刀，可切开空间裂隙',
+    appearsIn: [10, 12, 20, 30, 31, 50, 51, 52, 60, 61, 62],
+    estimatedValue: '价值无价 · 传说兵器',
+  },
+  {
+    id: 'prop-4',
+    name: '多维数据眼',
+    category: 'tech',
+    owner: '燕无忧',
+    significance: '机械义眼，可视空间裂隙与维度',
+    appearsIn: [11, 12, 20, 21, 30, 40, 50, 60],
+  },
+  {
+    id: 'prop-5',
+    name: '相机 + 存储卡',
+    category: 'tech',
+    owner: '李清禾',
+    significance: '记录这一刻的人类唯一见证',
+    appearsIn: [4, 5, 9, 13, 17, 18, 28, 31, 50, 66, 67, 68, 71],
+  },
+  {
+    id: 'prop-6',
+    name: '古观铜钟',
+    category: 'ritual',
+    significance: '自鸣千年的古钟，与醒田铃共鸣',
+    appearsIn: [5, 18, 19, 35, 36, 37],
+  },
+  {
+    id: 'prop-7',
+    name: '笔记本',
+    category: 'document',
+    owner: '李清禾',
+    significance: '扉页写着「田有守者」',
+    appearsIn: [13, 28, 67, 71],
+  },
+  {
+    id: 'prop-8',
+    name: '农具（锄头、镰刀）',
+    category: 'tool',
+    owner: '陈守田',
+    significance: '耕种姿态的隐喻——心境的修炼',
+    appearsIn: [2, 3, 6, 9, 19, 20, 24, 27],
+  },
+];
+
+export const costumes: Costume[] = [
+  {
+    id: 'costume-1',
+    characterName: '陈守田',
+    outfit: '农夫装扮',
+    scenes: '所有镜头',
+    details: '破旧的对襟布衣，灰褐色，宽大袖口。赤脚。腰间系一根草绳。手掌厚实如老树皮，指甲缝有洗不净的泥土。',
+  },
+  {
+    id: 'costume-2',
+    characterName: '陈守田',
+    outfit: '战袍（千年之前）',
+    scenes: '回忆 / 闪回镜头',
+    details: '无具体服装，象征性的——破草帽、青灰色长衫。',
+  },
+  {
+    id: 'costume-3',
+    characterName: '燕无忧',
+    outfit: '机械铠甲',
+    scenes: '所有镜头',
+    details: '半身机械铠甲，深铁灰，带有锈迹与战痕。右眼多维数据眼。腰部断潮刀。',
+  },
+  {
+    id: 'costume-4',
+    characterName: '李清禾',
+    outfit: '年轻记者',
+    scenes: '所有镜头',
+    details: '牛仔外套，内搭白 T 恤。马尾。帆布包斜挎。胶卷相机（徕卡 M3 复古款）。',
+  },
+  {
+    id: 'costume-5',
+    characterName: '魏镇',
+    outfit: '青色长衫',
+    scenes: '第 1-4 幕',
+    details: '清瘦，青色长衫，左手无名指缺一节。头发花白但精神矍铄。',
+  },
+];
+
+// ============= 对白剧本页 =============
+
+export interface DialogueLine {
+  actId: number;
+  shotId: number;
+  character: string;
+  parenthetical?: string;           // 表演提示
+  line: string;                     // 对白
+  tone?: string;                    // 语气
+}
+
+export const dialogueScript: DialogueLine[] = [
+  { actId: 1, shotId: 7, character: '魏镇', line: '姑娘，你来找那个种地的？', tone: '平静' },
+  { actId: 1, shotId: 9, character: '守田翁', parenthetical: '没有回头', line: '来了。', tone: '极轻' },
+  { actId: 1, shotId: 12, character: '陈守田', parenthetical: '放下锄头', line: '……', tone: '沉默' },
+
+  { actId: 2, shotId: 17, character: '魏镇', parenthetical: '摇动铜铃', line: '醒来吧，守田。', tone: '苍老' },
+  { actId: 2, shotId: 20, character: '陈守田', line: '一个种地的。', tone: '狡黠' },
+  { actId: 2, shotId: 21, character: '燕无忧', line: '你到底是谁？', tone: '质问' },
+
+  { actId: 3, shotId: 28, character: '李清禾', parenthetical: '对镜头说', line: '我在写一个关于种地的老头。今天他不在田里。', tone: '记者腔' },
+  { actId: 3, shotId: 31, character: '陈守田', line: '孩子，方向反了。', tone: '平静' },
+
+  { actId: 4, shotId: 40, character: '燕无忧', line: '为什么……为什么我劈不开它？', tone: '绝望' },
+  { actId: 4, shotId: 42, character: '陈守田', line: '你那刀意能切开空间，却切不开心中的虚空。', tone: '平静' },
+  { actId: 4, shotId: 45, character: '魏镇', line: '（铃声化作金线飞升）', tone: '无声' },
+
+  { actId: 5, shotId: 50, character: '陈守田', line: '孩子，过来。', tone: '平静' },
+  { actId: 5, shotId: 52, character: '陈守田', line: '你那刀意，少了一颗心。', tone: '温和' },
+
+  { actId: 6, shotId: 67, character: '李清禾', parenthetical: '翻开笔记本', line: '「田有守者」', tone: '低语' },
+  { actId: 6, shotId: 70, character: '燕无忧', line: '我们……是不是该种点东西？', tone: '远方传来' },
+  { actId: 6, shotId: 71, character: '李清禾', parenthetical: '笑了', line: '（第一次笑）', tone: '轻' },
+];
+
+// ============= 分镜草图符号 =============
+
+export interface StoryboardFrame {
+  shotId: number;
+  composition: string;             // 构图符号（ASCII art）
+  focalPoint: string;              // 焦点描述
+  foreground: string;              // 前景
+  midground: string;               // 中景
+  background: string;              // 背景
+  cameraAngle: 'eye-level' | 'low' | 'high' | 'birds-eye' | 'dutch' | 'over-shoulder';
+  shotType: 'close-up' | 'medium' | 'wide' | 'extreme-wide' | 'insert';
+}
+
+export const generateStoryboardFrame = (shotId: number, scene: string, camera: string, mood: string): StoryboardFrame => {
+  const isLow = camera.includes('仰拍') || camera.includes('低角度');
+  const isHigh = camera.includes('俯拍') || camera.includes('天顶') || camera.includes('航拍');
+  const isExtremeWide = scene === '大全景';
+  const isClose = scene === '特写' || scene === '大特写';
+
+  let composition = '';
+  if (isExtremeWide) {
+    composition = `┌────────────────────────────┐
+│                            │
+│   ◯ ◯ ◯   远 山 / 裂 隙     │
+│                            │
+│        ●●●                 │
+│       (人物剪影)            │
+│                            │
+│  ━━━━━━━━━━━━━━━━━━━━━━━━ │
+│  (地平线 / 空间分界)        │
+└────────────────────────────┘`;
+  } else if (isClose) {
+    composition = `┌────────────────────────────┐
+│  ┌──────────────────┐      │
+│  │                  │      │
+│  │      (  )        │      │
+│  │    焦 点 在 此     │      │
+│  │                  │      │
+│  └──────────────────┘      │
+│                            │
+│     背景虚化 · 浅景深        │
+└────────────────────────────┘`;
+  } else {
+    composition = `┌────────────────────────────┐
+│                            │
+│      (前景)                │
+│                            │
+│         ◯                  │
+│        (人物)              │
+│                            │
+│      (背景)                │
+│                            │
+└────────────────────────────┘`;
+  }
+
+  const cameraAngle: StoryboardFrame['cameraAngle'] = isLow ? 'low' : isHigh ? 'high' : 'eye-level';
+  const shotType: StoryboardFrame['shotType'] = isExtremeWide ? 'extreme-wide' : isClose ? 'close-up' : scene === '中景' || scene === '近景' ? 'medium' : 'wide';
+
+  return {
+    shotId,
+    composition,
+    focalPoint: `${mood}情绪的视觉中心`,
+    foreground: scene === '大全景' ? '大地纹理 · 沙尘' : '次要元素',
+    midground: '主要人物动作',
+    background: '环境 / 远景 / 几何元素',
+    cameraAngle,
+    shotType,
+  };
+};
+
 // ============= 人物关系 =============
 
 export const relationships: RelationshipEdge[] = [
