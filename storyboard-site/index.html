@@ -24,6 +24,23 @@
     <div class="progress__sprocket"></div>
   </div>
 
+  <!-- Shot deck (sticky film strip) -->
+  <div class="deck" id="deck" aria-label="16 镜胶片轨道">
+    <div class="deck__track" id="deckTrack">
+      <!-- populated by app.js -->
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox__close" id="lightboxClose" aria-label="关闭">×</button>
+    <button class="lightbox__nav lightbox__nav--prev" id="lightboxPrev" aria-label="上一镜">‹</button>
+    <button class="lightbox__nav lightbox__nav--next" id="lightboxNext" aria-label="下一镜">›</button>
+    <div class="lightbox__inner" id="lightboxInner">
+      <!-- populated by app.js -->
+    </div>
+  </div>
+
   <!-- Top bar (film slate) -->
   <header class="topbar">
     <div class="topbar__left">

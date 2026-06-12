@@ -3,12 +3,18 @@
    ========================================================================== */
 
 const ACTS = [
-  { num: '01', name: '觉醒',   emotion: '沉 → 升', camera: '仰拍 · 拉升 · 变焦',       curve: [10, 25, 45, 60, 70, 85] },
-  { num: '02', name: '战场召唤', emotion: '急 → 静', camera: '手持晃动 · 推拉 · 固定',   curve: [60, 70, 50, 30, 45, 70] },
-  { num: '03', name: '天坠',   emotion: '压 → 爆', camera: '俯拍下坠 · 跟拍 · 慢动作', curve: [70, 65, 80, 50, 30, 90] },
-  { num: '04', name: '神力爆发', emotion: '静 → 爆', camera: '环绕长镜 · 急速后退 · 快速切换', curve: [40, 50, 35, 95, 80, 70] },
-  { num: '05', name: '神战',   emotion: '紧 → 极', camera: '瞬切 · 横移 · 360° 环绕',   curve: [75, 85, 90, 100, 95, 60] },
-  { num: '06', name: '余韵',   emotion: '紧 → 远', camera: '缓慢拉升 · 固定 · 黑屏',     curve: [50, 30, 25, 20, 15, 10] },
+  { num: '01', name: '觉醒',   emotion: '沉 → 升', camera: '仰拍 · 拉升 · 变焦',       curve: [10, 25, 45, 60, 70, 85],
+    prompt: 'A colossal ancient saint statue erupting from cracked earth at dawn, golden volumetric god rays shooting upward, dust particles, low angle cinematic, IMAX, dark earth tones with gold light, epic scale, 16:9' },
+  { num: '02', name: '战场召唤', emotion: '急 → 静', camera: '手持晃动 · 推拉 · 固定',   curve: [60, 70, 50, 30, 45, 70],
+    prompt: 'A warrior drawing a great curved blade on a Chinese ancient battlefield, dust swirling, pagoda silhouette in distance, IMAX cinematic, golden hour, dark earth tones, 16:9' },
+  { num: '03', name: '天坠',   emotion: '压 → 爆', camera: '俯拍下坠 · 跟拍 · 慢动作', curve: [70, 65, 80, 50, 30, 90],
+    prompt: 'A massive alien warship breaking through Earth atmosphere from above, fireball and shockwave, ground collapsing beneath, IMAX cinematic, cosmic scale, dark sky with red fire, 16:9' },
+  { num: '04', name: '神力爆发', emotion: '静 → 爆', camera: '环绕长镜 · 急速后退 · 快速切换', curve: [40, 50, 35, 95, 80, 70],
+    prompt: 'A Chinese old man pushing his hand forward causing a planet to collapse inward with gravitational lensing, geometric debris, IMAX cinematic, dark space, 16:9' },
+  { num: '05', name: '神战',   emotion: '紧 → 极', camera: '瞬切 · 横移 · 360° 环绕',   curve: [75, 85, 90, 100, 95, 60],
+    prompt: 'Old man transforming into a giant golden Chinese ink dragon in cosmic battle, mythological aesthetic, deep space with stars, IMAX cinematic, 16:9' },
+  { num: '06', name: '余韵',   emotion: '紧 → 远', camera: '缓慢拉升 · 固定 · 黑屏',     curve: [50, 30, 25, 20, 15, 10],
+    prompt: 'Chinese old man standing calmly in vast desert, distant alien space fleet approaching, low saturation Dune color palette, IMAX cinematic, 16:9' },
 ];
 
 const IMG = (prompt) =>
@@ -73,6 +79,10 @@ function renderActs() {
       .join(' ');
     return `
       <div class="act">
+        <div class="act__bg">
+          <img class="act__img" loading="lazy" alt="${a.name}" src="${IMG(a.prompt)}" onload="this.classList.add('is-loaded')" onerror="this.classList.add('is-error')" />
+          <div class="act__bg-scrim"></div>
+        </div>
         <span class="act__num">ACT ${a.num}</span>
         <h3 class="act__name">${a.name}</h3>
         <div class="act__curve">
@@ -242,15 +252,17 @@ function setupReveal() {
 }
 
 /* ==========================================================================
-   交互：分镜卡点击 — 模拟音效
+   交互：分镜卡数据区点击 — 模拟音效（避开画框，画框留给 lightbox）
    ========================================================================== */
 function setupShotAudio() {
   const ctx = window.AudioContext || window.webkitAudioContext;
   if (!ctx) return;
   let audio = null;
-  document.querySelectorAll('.shot__canvas').forEach((canvas) => {
-    canvas.addEventListener('click', () => {
-      const num = canvas.closest('.shot').dataset.shot;
+  document.querySelectorAll('.shot__data').forEach((data) => {
+    data.addEventListener('click', (e) => {
+      // 排除链接等真实交互
+      if (e.target.closest('a, button')) return;
+      const num = data.closest('.shot').dataset.shot;
       if (audio) audio.close();
       audio = new ctx();
       const osc = audio.createOscillator();
@@ -292,6 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderShots();
   renderConstraints();
   renderAssets();
+  renderDeck();
   spawnParticles();
   setupReveal();
   setupShotAudio();
@@ -299,11 +312,146 @@ document.addEventListener('DOMContentLoaded', () => {
   setupProgressBar();
   setupScrollSpy();
   setupAmbientAudio();
+  setupLightbox();
+  setupDeckObserver();
 });
 
 /* ==========================================================================
-   进度条
+   渲染：胶片轨道（底部 16 镜小图）
    ========================================================================== */
+function renderDeck() {
+  const track = document.getElementById('deckTrack');
+  if (!track) return;
+  track.innerHTML = SHOTS.map((s) => `
+    <div class="deck__cell" data-shot="${s.number}" data-act="${s.act}" title="Shot ${s.number} — ${s.framing}">
+      <div class="deck__cell-bg"></div>
+      <img class="deck__cell-img" loading="lazy" alt="Shot ${s.number}" src="${IMG(s.prompt)}" onload="this.classList.add('is-loaded')" onerror="this.classList.add('is-error')" />
+      <span class="deck__cell-num">${s.number}</span>
+      <span class="deck__cell-act">${s.act.split('：')[0].replace('第', '').replace('幕', '')}</span>
+    </div>
+  `).join('');
+
+  // 点击 → 滚动到对应分镜
+  track.addEventListener('click', (e) => {
+    const cell = e.target.closest('.deck__cell');
+    if (!cell) return;
+    const num = cell.dataset.shot;
+    const target = document.querySelector(`.shot[data-shot="${num}"]`);
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+}
+
+/* ==========================================================================
+   胶片轨道：显示/隐藏 + 当前镜高亮
+   ========================================================================== */
+function setupDeckObserver() {
+  const deck = document.getElementById('deck');
+  if (!deck) return;
+
+  // Hero 滚出后显示轨道
+  const heroObs = new IntersectionObserver(
+    ([entry]) => {
+      deck.classList.toggle('is-visible', !entry.isIntersecting);
+    },
+    { threshold: 0.1 }
+  );
+  const hero = document.getElementById('hero');
+  if (hero) heroObs.observe(hero);
+
+  // 当前镜高亮
+  const shotObs = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.4) {
+          const num = entry.target.dataset.shot;
+          document.querySelectorAll('.deck__cell').forEach((c) => {
+            c.classList.toggle('is-active', c.dataset.shot === num);
+          });
+          // 同步滚动 deck 到对应 cell
+          const activeCell = document.querySelector(`.deck__cell[data-shot="${num}"]`);
+          if (activeCell) {
+            activeCell.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          }
+        }
+      });
+    },
+    { threshold: [0.4, 0.6] }
+  );
+  document.querySelectorAll('.shot').forEach((el) => shotObs.observe(el));
+}
+
+/* ==========================================================================
+   Lightbox：点击分镜看大图 + 键盘左右切换
+   ========================================================================== */
+let currentShotIdx = 0;
+function openLightbox(num) {
+  const idx = SHOTS.findIndex((s) => s.number === num);
+  if (idx < 0) return;
+  currentShotIdx = idx;
+  renderLightbox();
+  const lb = document.getElementById('lightbox');
+  lb.classList.add('is-open');
+  lb.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  const lb = document.getElementById('lightbox');
+  lb.classList.remove('is-open');
+  lb.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+
+function navLightbox(dir) {
+  currentShotIdx = (currentShotIdx + dir + SHOTS.length) % SHOTS.length;
+  renderLightbox();
+}
+
+function renderLightbox() {
+  const s = SHOTS[currentShotIdx];
+  const inner = document.getElementById('lightboxInner');
+  if (!inner) return;
+  inner.innerHTML = `
+    <div class="lb__canvas">
+      <img class="lb__canvas-img" alt="Shot ${s.number}" src="${IMG(s.prompt)}" />
+      <span class="lb__canvas-num">${s.number}</span>
+      <span class="lb__canvas-act">${s.act}</span>
+      <span class="lb__canvas-timecode">${s.range}</span>
+    </div>
+    <div class="lb__data">
+      <h2>${s.act} · Shot ${s.number}</h2>
+      <div class="lb__row"><span class="lb__label">景别</span><span class="lb__value">${s.framing}</span></div>
+      <div class="lb__row"><span class="lb__label">运镜</span><span class="lb__value"><em>${s.camera}</em></span></div>
+      <div class="lb__row"><span class="lb__label">画面</span><span class="lb__value">${s.content}</span></div>
+      <div class="lb__row"><span class="lb__label">特效</span><span class="lb__value">${s.fx}</span></div>
+      <div class="lb__row"><span class="lb__label">音效</span><span class="lb__value">${s.audio}</span></div>
+      <div class="lb__row"><span class="lb__label">Prompt</span><span class="lb__value" style="font-family:var(--mono); font-size:0.75rem; color:var(--smoke-dim);">${s.prompt}</span></div>
+    </div>
+  `;
+}
+
+function setupLightbox() {
+  document.getElementById('lightboxClose')?.addEventListener('click', closeLightbox);
+  document.getElementById('lightboxPrev')?.addEventListener('click', () => navLightbox(-1));
+  document.getElementById('lightboxNext')?.addEventListener('click', () => navLightbox(1));
+  document.getElementById('lightbox')?.addEventListener('click', (e) => {
+    if (e.target.id === 'lightbox') closeLightbox();
+  });
+  document.addEventListener('keydown', (e) => {
+    const lb = document.getElementById('lightbox');
+    if (!lb?.classList.contains('is-open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') navLightbox(-1);
+    if (e.key === 'ArrowRight') navLightbox(1);
+  });
+  // 分镜画框点击 → 打开 lightbox（之前是播放音效）
+  document.querySelectorAll('.shot__canvas').forEach((canvas) => {
+    canvas.addEventListener('click', () => {
+      const num = canvas.closest('.shot').dataset.shot;
+      openLightbox(num);
+    });
+  });
+}
 function setupProgressBar() {
   const bar = document.getElementById('progressBar');
   if (!bar) return;
