@@ -314,6 +314,18 @@ export default function ScriptDetail() {
                   <ChevronRight size={14} className="act-card-arrow" />
                 </div>
               </Link>
+
+              <Link to="/script/cast" className="act-card" style={{ '--accent': '#54a0ff' } as React.CSSProperties}>
+                <div className="act-card-glyph">演</div>
+                <div className="act-card-num">CAST</div>
+                <h3 className="act-card-title">选角与演员</h3>
+                <div className="act-card-subtitle">Cast & Audition</div>
+                <p className="act-card-theme">4 角色 / 9 试镜 / 10 参考演员 / 5 阶段 16 周排练</p>
+                <div className="act-card-footer">
+                  <span>AUDITION</span>
+                  <ChevronRight size={14} className="act-card-arrow" />
+                </div>
+              </Link>
             </div>
           </section>
 

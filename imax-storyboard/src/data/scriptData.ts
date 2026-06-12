@@ -2689,3 +2689,370 @@ export const renderPipeline: RenderPipelineStage[] = [
     deliverables: ['Nuke 脚本', '最终 EXR', 'DPX 序列'],
   },
 ];
+
+// ============= 选角与演员 =============
+
+export interface CastProfile {
+  id: string;
+  characterId: string;          // 关联到 characters 数组的 id
+  characterName: string;
+  alias: string;
+  physicalRequirements: {
+    ageRange: string;            // '55-70'
+    height: string;              // '170-180cm'
+    build: string;               // '精瘦 / 健硕 / 魁梧'
+    distinctiveFeatures: string; // 面部特征
+  };
+  performanceKeywords: string[];  // 表演关键词
+  emotionalRange: string[];       // 情绪范围
+  specialSkills: string[];        // 特殊技能
+  languageRequirements: string[]; // 语言
+  referenceActors: ReferenceActor[];
+  auditionScenes: AuditionScene[];
+  workshopNotes: string;          // 排练导演备注
+  castingDifficulty: 'low' | 'medium' | 'high' | 'extreme';
+  castingReason: string;          // 选角理由
+  color: string;                  // 角色色
+}
+
+export interface ReferenceActor {
+  name: string;
+  nationality: string;
+  knownFor: string;
+  reasonForReference: string;   // 选这位作参考的原因
+  signature?: string;            // 标志性作品
+}
+
+export interface AuditionScene {
+  id: string;
+  title: string;
+  fromAct: number;
+  description: string;            // 场景描述
+  emotionalContext: string;       // 情绪上下文
+  directionNotes: string;         // 导演指示
+  pageReference: string;          // 剧本页码
+  sidesContent: string;           // 试镜片段对白
+  partnerCharacter?: string;      // 对手戏角色
+}
+
+export interface RehearsalPlan {
+  id: string;
+  phase: string;                  // 阶段名
+  duration: string;               // 时长
+  participants: string[];         // 参与者
+  activities: string[];           // 活动
+  goals: string[];                // 目标
+  notes: string;                  // 备注
+}
+
+export const castProfiles: CastProfile[] = [
+  {
+    id: 'cast-1',
+    characterId: 'char-1',
+    characterName: '陈守田',
+    alias: '守田翁',
+    physicalRequirements: {
+      ageRange: '60-75',
+      height: '170-180 cm',
+      build: '瘦削但筋骨坚实',
+      distinctiveFeatures: '深邃目光、刀刻般皱纹、关节粗大的手、晒黑皮肤',
+    },
+    performanceKeywords: ['隐忍', '苍凉', '坚毅', '沉默的力量', '三千年的重负', '大地般的稳定性'],
+    emotionalRange: ['孤独的坚定', '对土地的深情', '觉醒时的神性爆发', '决战的悲壮', '回归的平静'],
+    specialSkills: ['古琴演奏（基础）', '农活姿态', '长期持刀稳定性', '面部微表情控制'],
+    languageRequirements: ['普通话（带地方口音）', '古汉语吟诵'],
+    referenceActors: [
+      {
+        name: '李雪健',
+        nationality: '中国',
+        knownFor: '《焦裕禄》《杨善洲》',
+        reasonForReference: '中国式农民的骨气与悲悯，三十年演艺生涯积累的厚重感',
+        signature: '焦裕禄在风雪中推车',
+      },
+      {
+        name: '渡边谦',
+        nationality: '日本',
+        knownFor: '《最后的武士》《盗梦空间》',
+        reasonForReference: '武士道精神的"静"——沉默中蕴含巨大力量',
+        signature: '最后的武士 准备切腹',
+      },
+      {
+        name: '乔纳森·普莱斯',
+        nationality: '英国',
+        knownFor: '《加勒比海盗》',
+        reasonForReference: '老年角色的戏剧张力与幽默感',
+        signature: '巴博萨船长在月光下独白',
+      },
+    ],
+    auditionScenes: [
+      {
+        id: 'aud-1a',
+        title: '试镜 1A：破土瞬间',
+        fromAct: 4,
+        description: '陈守田封印解除、神力爆发、破土而出的内心独白',
+        emotionalContext: '三千年的沉眠即将结束，但觉醒也意味着诀别',
+        directionNotes: '演员需表现出"从极度静态到突然爆发"的张力。前 30 秒不动如山，后 30 秒逐渐颤抖、起身。',
+        pageReference: '剧本 P.78 镜头 #43',
+        sidesContent: '『三千年……三千年守这一片田。三千年等一个结果。今天……我等到了。』（停顿）『孩子们，往后这田……就交给你了。』',
+        partnerCharacter: undefined,
+      },
+      {
+        id: 'aud-1b',
+        title: '试镜 1B：田间独白',
+        fromAct: 1,
+        description: '陈守田独自在田间劳作，与土地对话',
+        emotionalContext: '平静的日常，但藏有三千年的疲惫',
+        directionNotes: '最考验演员"在场感"的镜头。台词少，表演多。',
+        pageReference: '剧本 P.12 镜头 #5',
+        sidesContent: '（无台词。演员在田间浇水、拔草。目光偶尔抬起，落在远山。）',
+        partnerCharacter: undefined,
+      },
+      {
+        id: 'aud-1c',
+        title: '试镜 1C：告别',
+        fromAct: 6,
+        description: '与燕无忧的最后一次对话',
+        emotionalContext: '明知即将永别，但拒绝告别',
+        directionNotes: '演员必须同时表现"克制"和"深情"——中国式父爱的精髓。',
+        pageReference: '剧本 P.115 镜头 #68',
+        sidesContent: '『丫头，你往东走。我往西去。咱们……不顺路。』',
+        partnerCharacter: '燕无忧',
+      },
+    ],
+    workshopNotes: '演员需提前 3 个月接受农活训练、书法训练、古琴入门。配合 2 周体能训练以应对 VFX 战斗戏份。武术指导为"袁家班"成员。',
+    castingDifficulty: 'extreme',
+    castingReason: '本片核心角色。需要在 60-75 岁年龄段找到兼具体力、神性、悲悯三位一体的演员。中国一线男演员中可选范围有限，需要慎重考虑海外华裔演员（如尊龙、巩俐同档）。',
+    color: '#d4af37',
+  },
+  {
+    id: 'cast-2',
+    characterId: 'char-2',
+    characterName: '燕无忧',
+    alias: '风之女',
+    physicalRequirements: {
+      ageRange: '24-32',
+      height: '165-172 cm',
+      build: '精干、有肌肉线条',
+      distinctiveFeatures: '锐利眼神、束发造型、左眉断眉（旧伤）',
+    },
+    performanceKeywords: ['锋利', '急切', '执着', '亦正亦邪', '执念的化身', '从冷到热的转变'],
+    emotionalRange: ['复仇的冷峻', '质问的愤怒', '觉醒的迷茫', '信任的脆弱', '决战的悲怆'],
+    specialSkills: ['武术（剑术）', '马术基础', '高强度打戏', '面部危险表情控制'],
+    languageRequirements: ['普通话（带北方腔）', '古汉语斥责语'],
+    referenceActors: [
+      {
+        name: '章子怡',
+        nationality: '中国',
+        knownFor: '《一代宗师》《卧虎藏龙》',
+        reasonForReference: '东方女性的"狠"——凌厉、决绝、一往无前',
+        signature: '宫二在火车站的雪夜',
+      },
+      {
+        name: '汤唯',
+        nationality: '中国',
+        knownFor: '《晚秋》《刺客聂隐娘》',
+        reasonForReference: '冷调下深藏情感——燕无忧的"克制"',
+        signature: '聂隐娘在树上的凝视',
+      },
+      {
+        name: '全度妍',
+        nationality: '韩国',
+        knownFor: '《密阳》《下女》',
+        reasonForReference: '情绪的层次感——表面冷、内里热',
+        signature: '密阳中教堂崩溃',
+      },
+    ],
+    auditionScenes: [
+      {
+        id: 'aud-2a',
+        title: '试镜 2A：质问陈守田',
+        fromAct: 2,
+        description: '燕无忧第一次逼问陈守田真实身份',
+        emotionalContext: '数代人的仇恨突然涌上心头',
+        directionNotes: '演员需在 90 秒内从克制到爆发再到克制。声音控制是关键。',
+        pageReference: '剧本 P.45 镜头 #21',
+        sidesContent: '『你守了三千年的田……可曾守过一个人？我太奶奶死的时候，你在哪里？』',
+        partnerCharacter: '陈守田',
+      },
+      {
+        id: 'aud-2b',
+        title: '试镜 2B：拔剑瞬间',
+        fromAct: 4,
+        description: '准备与渊决战的内心戏',
+        emotionalContext: '明知必死，但必须前进',
+        directionNotes: '考验肢体表现力——拔剑、转身、眼神，三个动作讲完整段故事。',
+        pageReference: '剧本 P.92 镜头 #49',
+        sidesContent: '（无台词。拔剑、转身。镜头捕捉她下决心的瞬间。）',
+        partnerCharacter: undefined,
+      },
+    ],
+    workshopNotes: '演员需提前 4 个月接受剑术、骑术训练。配合咏春拳师父学习贴身短打。导演希望演员在开拍前完成至少 2000 次拔剑动作以达到肌肉记忆。',
+    castingDifficulty: 'high',
+    castingReason: '动作戏密集且需要细腻情感戏的过渡。中国 25-32 岁女演员中需要兼具"打女"和"文戏"能力者。建议考虑有武术功底的"打女"转型演员。',
+    color: '#ff6b35',
+  },
+  {
+    id: 'cast-3',
+    characterId: 'char-3',
+    characterName: '李清禾',
+    alias: '雾中子',
+    physicalRequirements: {
+      ageRange: '22-28',
+      height: '162-170 cm',
+      build: '纤细、古典',
+      distinctiveFeatures: '淡漠眼神、长直发、苍白皮肤、似笑非笑',
+    },
+    performanceKeywords: ['空灵', '超然', '轮回感', '半人半神', '温柔的距离感', '千年执念的冷静'],
+    emotionalRange: ['雾中现身的疏离', '对陈守田的复杂情感', '见证历史的悲悯', '觉醒时刻的决绝', '完成使命的超脱'],
+    specialSkills: ['武术（舞剑基础）', '气功/呼吸控制', '舞蹈基础（可选）'],
+    languageRequirements: ['普通话（无明显口音）', '古汉语诵经'],
+    referenceActors: [
+      {
+        name: '刘亦菲',
+        nationality: '中国',
+        knownFor: '《仙剑奇侠传》《花木兰》',
+        reasonForReference: '古典美的现代演绎——仙气与侠气的融合',
+        signature: '小龙女在绳上的睡姿',
+      },
+      {
+        name: '长泽雅美',
+        nationality: '日本',
+        knownFor: '《海街日记》《唐人街探案3》',
+        reasonForReference: '"空"的气质——日本物哀美学的具象化',
+        signature: '海街四姐妹在樱花下散步',
+      },
+      {
+        name: '凯瑞·穆丽根',
+        nationality: '英国',
+        knownFor: '《了不起的盖茨比》《西部世界》',
+        reasonForReference: '古典与现代的混合气质',
+        signature: '黛西在雨中凝望绿灯',
+      },
+    ],
+    auditionScenes: [
+      {
+        id: 'aud-3a',
+        title: '试镜 3A：雾中现身',
+        fromAct: 1,
+        description: '李清禾第一次出现在陈守田面前',
+        emotionalContext: '跨越千年的相遇——熟悉又陌生',
+        directionNotes: '考验"在场感"和"气场"。演员需让观众相信她就是"雾中子"。',
+        pageReference: '剧本 P.18 镜头 #7',
+        sidesContent: '『守田翁……你老了很多。』（轻笑）『我等了你三千年，你却连我的脸都不记得了。』',
+        partnerCharacter: '陈守田',
+      },
+      {
+        id: 'aud-3b',
+        title: '试镜 3B：诵经',
+        fromAct: 5,
+        description: '协助陈守田封印渊时的诵经',
+        emotionalContext: '明知自己将随之消散，但义无反顾',
+        directionNotes: '演员需在 5 分钟内保持面部平静但眼眶含泪。',
+        pageReference: '剧本 P.108 镜头 #62',
+        sidesContent: '（无台词。演员闭目诵经。面部逐渐消散。）',
+        partnerCharacter: '陈守田',
+      },
+    ],
+    workshopNotes: '演员需提前 2 个月接受冥想、呼吸训练。配合戏剧老师学习"间离表演"——既能沉浸又能超然。导演强调"无表演的表演"是该角色的核心。',
+    castingDifficulty: 'high',
+    castingReason: '需要兼具古典美和现代感的年轻女演员。气质是首要考量，演技其次。建议考虑有舞蹈或戏曲功底的演员。',
+    color: '#a29bfe',
+  },
+  {
+    id: 'cast-4',
+    characterId: 'char-4',
+    characterName: '魏镇',
+    alias: '守陵人',
+    physicalRequirements: {
+      ageRange: '70-90',
+      height: '165-175 cm',
+      build: '清瘦、佝偻',
+      distinctiveFeatures: '浑浊眼神、稀疏白须、满布皱纹、瘦骨嶙峋',
+    },
+    performanceKeywords: ['苍老', '神秘', '悲悯', '时间的化身', '近乎透明的存在感', '三千年的重'],
+    emotionalRange: ['古井般的平静', '对后辈的慈爱', '见证历史的疏离', '退场时的超脱'],
+    specialSkills: ['老年步态', '古乐器演奏（埙/箫）', '低声台词控制'],
+    languageRequirements: ['普通话（古朴）', '古汉语'],
+    referenceActors: [
+      {
+        name: '游本昌',
+        nationality: '中国',
+        knownFor: '《济公》《繁花》',
+        reasonForReference: '中国式"老神仙"——看似疯癫实则通透',
+        signature: '济公在破庙里喝酒',
+      },
+      {
+        name: '克里斯托弗·李',
+        nationality: '英国',
+        knownFor: '《指环王》《星球大战》',
+        reasonForReference: '老年角色的"重量感"——声音、目光、举手投足都带 2000 年的历史',
+        signature: '萨鲁曼被刺前的最后独白',
+      },
+    ],
+    auditionScenes: [
+      {
+        id: 'aud-4a',
+        title: '试镜 4A：初遇燕无忧',
+        fromAct: 1,
+        description: '魏镇与燕无忧在天庭寺山门初遇',
+        emotionalContext: '明知命运却选择隐忍',
+        directionNotes: '考验"老"和"慢"——每一个动作都要像 3000 年那么重。',
+        pageReference: '剧本 P.16 镜头 #6',
+        sidesContent: '『姑娘，你来找那个种地的？他在东边。走路慢点，三千年了，他不急。』（笑）『我急过，后来就不急了。』',
+        partnerCharacter: '燕无忧',
+      },
+    ],
+    workshopNotes: '演员需配合特型化妆团队（4 小时/天）。提前 1 个月接受埙/箫的演奏训练。声音指导为著名配音演员。',
+    castingDifficulty: 'medium',
+    castingReason: '中国 70-90 岁年龄段的老戏骨储备充足。建议优先考虑话剧舞台经验丰富、声音条件好的演员。',
+    color: '#74b9ff',
+  },
+];
+
+export const rehearsalPlan: RehearsalPlan[] = [
+  {
+    id: 'reh-1',
+    phase: 'PRE-PRODUCTION WORKSHOP',
+    duration: '4 周',
+    participants: ['陈守田演员', '燕无忧演员', '李清禾演员', '魏镇演员', '导演', '武术指导', '表演指导'],
+    activities: ['剧本围读（全员）', '人物小传讨论', '试装与造型定稿', '表演风格统一', '基础武术训练'],
+    goals: ['演员之间建立化学反应', '确认角色动机与情感线索', '确定表演风格基线'],
+    notes: '围读 2 周。每天 4 小时。所有演员必须到场。导演亲自带读。',
+  },
+  {
+    id: 'reh-2',
+    phase: 'MOVEMENT WORKSHOP',
+    duration: '6 周',
+    participants: ['陈守田演员', '燕无忧演员', '李清禾演员', '武术指导团队'],
+    activities: ['古琴/埙/剑术基础', '农活姿态训练', '打戏套招设计', 'VFX 空打训练', '体能训练'],
+    goals: ['演员在 VFX 镜头中能完成"无形战斗"', '动作戏流畅且不重复', '基础体能保证拍摄周期'],
+    notes: '重点是 VFX 配合训练——演员需要在"无实物"情况下表现出刀光、能量等。需要动作捕捉标记。',
+  },
+  {
+    id: 'reh-3',
+    phase: 'LOCATION REHEARSAL',
+    duration: '3 周',
+    participants: ['全员主演', '武术指导', '摄影指导', '制片主任'],
+    activities: ['主要外景地踏勘', '天庭寺布景区排练', '声场测试', '光照测试', '应急演练'],
+    goals: ['演员熟悉拍摄环境', '确立主要镜头的走位', '测试特殊环境（雾、雨、风）的拍摄方案'],
+    notes: '与摄影指导密切配合。每场戏至少走位 2 次。',
+  },
+  {
+    id: 'reh-4',
+    phase: 'INTIMATE SCENES REHEARSAL',
+    duration: '2 周',
+    participants: ['陈守田演员', '燕无忧演员', '李清禾演员', '导演'],
+    activities: ['重点情感戏对戏', '独白与旁白录制', '无声表演镜头', '情绪记忆调用'],
+    goals: ['情感戏达到"无表演"状态', '演员之间的化学反应达到最佳', '建立信任以便导演随时调整'],
+    notes: '导演与演员一对一工作。每场戏 2-3 天反复打磨。',
+  },
+  {
+    id: 'reh-5',
+    phase: 'FINAL ENSEMBLE',
+    duration: '1 周',
+    participants: ['全员主演', '全体剧组'],
+    activities: ['全片连贯彩排', '重点转场确认', '总表与计划最终确认'],
+    goals: ['所有演员准备就绪', '团队状态调整到最佳'],
+    notes: '开机前最后一次全员集合。',
+  },
+];
