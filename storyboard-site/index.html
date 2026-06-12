@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>对决 · IMAX 分镜脚本 — 影视 PV 巨像开端</title>
+  <meta name="description" content="对决 — 影视 PV · 16:9 IMAX 满画幅分镜脚本，共 16 镜 · 六幕 · 约 90s。" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Film grain overlay -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- Top bar (film slate) -->
+  <header class="topbar">
+    <div class="topbar__left">
+      <span class="topbar__mark">I M A X</span>
+      <span class="topbar__divider"></span>
+      <span class="topbar__mark">3 渲 2</span>
+    </div>
+    <div class="topbar__center">
+      <span class="topbar__reel">REEL 01 · TAKE 01</span>
+    </div>
+    <div class="topbar__right">
+      <span class="topbar__time" id="liveClock">--:--:--</span>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section id="hero" class="hero">
+    <div class="hero__beam"></div>
+    <div class="hero__particles" id="particles"></div>
+    <div class="hero__vignette"></div>
+
+    <div class="hero__inner">
+      <div class="hero__meta-row">
+        <span class="caption">PV · 大荧幕开端</span>
+        <span class="meta-dot">·</span>
+        <span class="caption">16:9 IMAX 满画幅</span>
+        <span class="meta-dot">·</span>
+        <span class="caption">≈ 90s</span>
+      </div>
+
+      <h1 class="hero__title">
+        <span class="hero__title-cn">对决</span>
+        <span class="hero__title-en" lang="en"><em>Duél</em></span>
+      </h1>
+
+      <p class="hero__sub">
+        一个中国老头（农夫装扮）与大刀客的<span class="accent">宇宙级</span>对峙 ——<br />
+        巨像崛起 · 水墨神力 · 冲击波几何扩散。
+      </p>
+
+      <ul class="hero__pills">
+        <li>3 渲 2 + IMAX 渲染</li>
+        <li>IMS 粒子模糊</li>
+        <li>《沙丘》低饱和</li>
+        <li>水墨国风</li>
+      </ul>
+
+      <a href="#rhythm" class="hero__scroll" aria-label="向下滚动至分镜">
+        <span class="caption">向下滚动</span>
+        <span class="hero__scroll-line"></span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Production Slate Strip -->
+  <section class="slate" aria-label="项目元数据">
+    <div class="slate__cell">
+      <span class="caption">画幅</span>
+      <span class="slate__value">16 : 9</span>
+    </div>
+    <div class="slate__cell">
+      <span class="caption">时长</span>
+      <span class="slate__value">≈ 90″</span>
+    </div>
+    <div class="slate__cell">
+      <span class="caption">分镜</span>
+      <span class="slate__value">16</span>
+    </div>
+    <div class="slate__cell">
+      <span class="caption">幕数</span>
+      <span class="slate__value">6</span>
+    </div>
+    <div class="slate__cell">
+      <span class="caption">基线</span>
+      <span class="slate__value">IMAX / IMS</span>
+    </div>
+    <div class="slate__cell">
+      <span class="caption">色调</span>
+      <span class="slate__value">沙丘 · 低饱和</span>
+    </div>
+  </section>
+
+  <!-- Six Acts Rhythm -->
+  <section id="rhythm" class="section">
+    <div class="section__head">
+      <span class="section__num">02</span>
+      <h2 class="section__title">六幕 · 节奏概览</h2>
+      <p class="section__sub">
+        从沉 → 升 → 急 → 静 → 压 → 爆 —— 镜头语言随情绪逐幕递进。
+      </p>
+    </div>
+
+    <div class="acts" id="acts">
+      <!-- populated by app.js -->
+    </div>
+  </section>
+
+  <!-- Storyboard 16 shots -->
+  <section id="shots" class="section section--shots">
+    <div class="section__head">
+      <span class="section__num">03</span>
+      <h2 class="section__title">分镜 · 16 镜</h2>
+      <p class="section__sub">
+        镜号 / 景别 / 运镜 / 画面 / 特效 / 音效 —— 六列同屏，导演、视效、声音一图对齐。
+      </p>
+    </div>
+
+    <div class="shots" id="shotsGrid">
+      <!-- populated by app.js -->
+    </div>
+  </section>
+
+  <!-- Global Technical Constraints -->
+  <section id="constraints" class="section">
+    <div class="section__head">
+      <span class="section__num">04</span>
+      <h2 class="section__title">全局 · 技术约束</h2>
+      <p class="section__sub">六条铁律 —— 镜头直接服务于「力」的呈现。</p>
+    </div>
+
+    <div class="constraints" id="constraintsGrid">
+      <!-- populated by app.js -->
+    </div>
+  </section>
+
+  <!-- Key Effects Assets -->
+  <section id="assets" class="section">
+    <div class="section__head">
+      <span class="section__num">05</span>
+      <h2 class="section__title">关键 · 特效资产</h2>
+      <p class="section__sub">六项 3D / 2D 核心资产 —— IMAX × 水墨 × 神话美学。</p>
+    </div>
+
+    <div class="assets" id="assetsGrid">
+      <!-- populated by app.js -->
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer__line"></div>
+    <p class="footer__quote">
+      “<em>此界有如此人。</em>”
+    </p>
+    <p class="footer__sign">— 编钟收束 · 龙吟后 · 余韵</p>
+    <div class="footer__meta">
+      <span>© 2026 DUÉL · STORYBOARD DOSSIER</span>
+      <span>IMAX · IMS · 3 渲 2 · 水墨</span>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
