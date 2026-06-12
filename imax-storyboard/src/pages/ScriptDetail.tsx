@@ -278,6 +278,18 @@ export default function ScriptDetail() {
                   <ChevronRight size={14} className="act-card-arrow" />
                 </div>
               </Link>
+
+              <Link to="/script/sound" className="act-card" style={{ '--accent': '#1dd1a1' } as React.CSSProperties}>
+                <div className="act-card-glyph">音</div>
+                <div className="act-card-num">SOUND</div>
+                <h3 className="act-card-title">音乐与声音</h3>
+                <div className="act-card-subtitle">Score & Sound Design</div>
+                <p className="act-card-theme">12 乐谱提示 / 5 主导动机 / 70+ 音效 / 6 幕混音</p>
+                <div className="act-card-footer">
+                  <span>LISTEN</span>
+                  <ChevronRight size={14} className="act-card-arrow" />
+                </div>
+              </Link>
             </div>
           </section>
 

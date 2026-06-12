@@ -12,6 +12,7 @@ import ScriptPage from './pages/ScriptPage';
 import StoryboardSketch from './pages/StoryboardSketch';
 import ProductionSchedule from './pages/ProductionSchedule';
 import Resources from './pages/Resources';
+import SoundDesign from './pages/SoundDesign';
 import './styles/variables.css';
 import './styles/base.css';
 import './styles/animations.css';
@@ -19,6 +20,7 @@ import './styles/components.css';
 import './styles/creator.css';
 import './styles/expanded.css';
 import './styles/production.css';
+import './styles/sound.css';
 
 export default function App() {
   return (
@@ -33,6 +35,7 @@ export default function App() {
         <Route path="/script/sketch" element={<StoryboardSketch />} />
         <Route path="/script/schedule" element={<ProductionSchedule />} />
         <Route path="/script/resources" element={<Resources />} />
+        <Route path="/script/sound" element={<SoundDesign />} />
         <Route path="/timeline" element={<Timeline />} />
         <Route path="/relationships" element={<RelationshipMap />} />
         <Route path="/moodboard" element={<Moodboard />} />

@@ -1414,3 +1414,390 @@ export const getShotById = (id: number): StoryboardShot | undefined => {
 export const getActById = (id: number): Act | undefined => {
   return script.acts.find((a) => a.id === id);
 };
+
+// ============= 音乐与声音设计 =============
+
+export interface MusicCue {
+  id: string;
+  actId: number;
+  shotId: number;
+  theme: string;             // 主题，如"低沉吟唱"、"战鼓激昂"
+  intensity: number;         // 1-10
+  tempo: string;             // "Largo 60 BPM"
+  musicalKey: string;        // "C minor"
+  instruments: string[];     // 主奏乐器
+  reference: string;         // 参考作曲家/影片
+  description: string;       // 描述
+}
+
+export interface Leitmotif {
+  id: string;
+  characterName: string;
+  alias: string;
+  melody: string;            // 文字描述旋律轮廓
+  musicalKey: string;
+  tempo: string;
+  primaryInstrument: string; // 主奏乐器
+  emotion: string;
+  description: string;
+  color: string;             // 角色色
+  waveform: number[];        // 波形数据 (0-1 数组, 32 个点)
+  appearsIn: number[];       // 出现镜头
+}
+
+export interface SFXCategory {
+  id: string;
+  category: 'ambient' | 'foley' | 'hard';
+  label: string;             // 中文标签
+  color: string;
+  icon: string;              // emoji
+  description: string;
+  examples: { name: string; count: number }[]; // 具体音效及使用次数
+}
+
+export interface MixBalance {
+  actId: number;
+  actTitle: string;
+  dialogue: number;          // 0-100
+  music: number;
+  effects: number;
+  description: string;       // 混音说明
+}
+
+export const musicCues: MusicCue[] = [
+  // 第一幕：觉醒（安静起始）
+  {
+    id: 'cue-1',
+    actId: 1,
+    shotId: 1,
+    theme: '远古低吟',
+    intensity: 2,
+    tempo: 'Largo 50 BPM',
+    musicalKey: 'A minor',
+    instruments: ['古琴', '埙', '环境低频'],
+    reference: '谭盾《卧虎藏龙》',
+    description: '空旷的晨雾，开场只有古琴泛音与埙的呜咽。3000年沉睡的开始。',
+  },
+  {
+    id: 'cue-2',
+    actId: 1,
+    shotId: 6,
+    theme: '命运擦肩',
+    intensity: 4,
+    tempo: 'Adagio 70 BPM',
+    musicalKey: 'E phrygian',
+    instruments: ['古琴', '箫', '弦乐拨奏'],
+    reference: '久石让《幽灵公主》',
+    description: '魏镇与陈守田擦肩而过，弦乐轻轻一拨，命运开始编织。',
+  },
+
+  // 第二幕：战场召唤
+  {
+    id: 'cue-3',
+    actId: 2,
+    shotId: 17,
+    theme: '醒田铃响',
+    intensity: 7,
+    tempo: 'Andante 90 BPM',
+    musicalKey: 'D dorian',
+    instruments: ['铜铃', '定音鼓', '人声低吟'],
+    reference: '汉斯·季默《蝙蝠侠：黑暗骑士崛起》',
+    description: '铜铃声破开千年沉寂，鼓点像心跳逐渐加速。醒来的不只是守田，还有整个故事。',
+  },
+  {
+    id: 'cue-4',
+    actId: 2,
+    shotId: 21,
+    theme: '身份质问',
+    intensity: 5,
+    tempo: 'Moderato 85 BPM',
+    musicalKey: 'B minor',
+    instruments: ['箫', '二胡', '弦乐颤音'],
+    reference: '陈其钢《归来》',
+    description: '燕无忧逼问陈守田真实身份，弦乐带不安的颤音，二胡拉出疑问的旋律。',
+  },
+
+  // 第三幕：天坠
+  {
+    id: 'cue-5',
+    actId: 3,
+    shotId: 28,
+    theme: '天空撕裂',
+    intensity: 9,
+    tempo: 'Allegro 140 BPM',
+    musicalKey: 'C minor',
+    instruments: ['全乐队', '定音鼓', '铜管', '合唱团'],
+    reference: '约翰·威廉姆斯《星球大战》',
+    description: '巨兽的影子笼罩大地，铜管怒吼，合唱团齐唱出深渊的悲鸣。',
+  },
+  {
+    id: 'cue-6',
+    actId: 3,
+    shotId: 36,
+    theme: '万民俯首',
+    intensity: 8,
+    tempo: 'Maestoso 120 BPM',
+    musicalKey: 'F minor',
+    instruments: ['管风琴', '合唱团', '定音鼓'],
+    reference: '霍尔斯特《行星组曲》',
+    description: '巨兽降临天庭寺，所有人跪伏。管风琴的低频让大地都在震动。',
+  },
+
+  // 第四幕：神力爆发
+  {
+    id: 'cue-7',
+    actId: 4,
+    shotId: 43,
+    theme: '破土而出',
+    intensity: 10,
+    tempo: 'Presto 160 BPM',
+    musicalKey: 'D minor',
+    instruments: ['全乐队', '中国打击乐', '电吉他'],
+    reference: '汉斯·季默《盗梦空间》',
+    description: '陈守田破土而出，三千年积蓄的神力瞬间爆发。东西方乐器激烈碰撞。',
+  },
+  {
+    id: 'cue-8',
+    actId: 4,
+    shotId: 50,
+    theme: '刀光剑影',
+    intensity: 10,
+    tempo: 'Vivace 170 BPM',
+    musicalKey: 'G minor',
+    instruments: ['弦乐群', '定音鼓', '镲片'],
+    reference: '久石让《影武者》',
+    description: '断潮刀出鞘，刀光如银河倾泻。弦乐急速拉奏，金属打击乐如星火迸射。',
+  },
+
+  // 第五幕：神战
+  {
+    id: 'cue-9',
+    actId: 5,
+    shotId: 55,
+    theme: '天地之决',
+    intensity: 10,
+    tempo: 'Allegro feroce 180 BPM',
+    musicalKey: 'C# minor',
+    instruments: ['全乐队', '合唱团', '电子合成器'],
+    reference: '霍华德·肖《指环王》',
+    description: '陈守田与渊的决战，作曲家用了三段式——慢板的回忆、快板的交锋、静止的爆发。',
+  },
+  {
+    id: 'cue-10',
+    actId: 5,
+    shotId: 62,
+    theme: '封印咏叹',
+    intensity: 9,
+    tempo: 'Larghetto 75 BPM',
+    musicalKey: 'A minor',
+    instruments: ['无伴奏合唱', '古琴', '箫'],
+    reference: '莫里康内《教会》',
+    description: '陈守田咏唱封印咒语，无伴奏合唱用东方五声音阶，悲壮而神圣。',
+  },
+
+  // 第六幕：余韵
+  {
+    id: 'cue-11',
+    actId: 6,
+    shotId: 66,
+    theme: '废墟晨光',
+    intensity: 3,
+    tempo: 'Adagio 65 BPM',
+    musicalKey: 'G major',
+    instruments: ['古琴', '箫', '长笛'],
+    reference: '久石让《天空之城》',
+    description: '战斗结束，晨光照在废墟上。音乐回到开头的主题，但加入了长笛——希望。',
+  },
+  {
+    id: 'cue-12',
+    actId: 6,
+    shotId: 70,
+    theme: '守望永恒',
+    intensity: 5,
+    tempo: 'Andante 80 BPM',
+    musicalKey: 'C major',
+    instruments: ['古琴', '弦乐', '合唱团'],
+    reference: '谭盾《英雄》',
+    description: '陈守田站在田野上回望的镜头。弦乐缓缓上行，合唱唱出主题的完结。',
+  },
+];
+
+// 主导动机 - 用波形数据代表旋律轮廓
+const chenWave = [0.3, 0.5, 0.7, 0.4, 0.2, 0.6, 0.8, 0.6, 0.3, 0.5, 0.7, 0.9, 0.7, 0.5, 0.3, 0.4, 0.6, 0.8, 0.6, 0.4, 0.3, 0.5, 0.7, 0.5, 0.3, 0.4, 0.6, 0.4, 0.2, 0.3, 0.5, 0.3];
+const yanWave = [0.2, 0.4, 0.6, 0.8, 0.9, 0.7, 0.5, 0.8, 0.9, 0.6, 0.4, 0.7, 0.8, 0.5, 0.3, 0.6, 0.8, 0.7, 0.5, 0.4, 0.6, 0.8, 0.7, 0.5, 0.4, 0.6, 0.5, 0.3, 0.4, 0.6, 0.4, 0.2];
+const qingWave = [0.4, 0.3, 0.5, 0.4, 0.6, 0.5, 0.7, 0.6, 0.8, 0.7, 0.6, 0.7, 0.8, 0.7, 0.6, 0.5, 0.7, 0.6, 0.5, 0.4, 0.6, 0.5, 0.4, 0.3, 0.5, 0.4, 0.3, 0.2, 0.4, 0.3, 0.2, 0.1];
+const weiWave = [0.5, 0.5, 0.5, 0.5, 0.6, 0.7, 0.5, 0.4, 0.6, 0.7, 0.5, 0.4, 0.6, 0.7, 0.5, 0.4, 0.6, 0.7, 0.5, 0.4, 0.6, 0.7, 0.5, 0.4, 0.6, 0.7, 0.5, 0.4, 0.5, 0.5, 0.5, 0.5];
+const yuanWave = [0.9, 0.85, 0.95, 0.8, 0.9, 0.7, 0.95, 0.85, 0.9, 0.75, 0.95, 0.85, 0.9, 0.8, 0.7, 0.85, 0.95, 0.8, 0.9, 0.75, 0.95, 0.85, 0.9, 0.8, 0.7, 0.85, 0.95, 0.8, 0.9, 0.75, 0.85, 0.9];
+
+export const leitmotifs: Leitmotif[] = [
+  {
+    id: 'motive-1',
+    characterName: '陈守田',
+    alias: '守田翁',
+    melody: '下行五度跳跃，渐强收尾——沉稳如大地',
+    musicalKey: 'D minor',
+    tempo: 'Andante 80 BPM',
+    primaryInstrument: '古琴',
+    emotion: '守望、苍凉、坚定',
+    description: '五声音阶起，结尾落在低音 sol。三千年的孤独凝结成这五个音。每次出现都让观众心头一紧。',
+    color: '#d4af37',
+    waveform: chenWave,
+    appearsIn: [1, 6, 9, 12, 17, 20, 25, 43, 50, 62, 64, 67, 70],
+  },
+  {
+    id: 'motive-2',
+    characterName: '燕无忧',
+    alias: '风之女',
+    melody: '八度跳跃加颤音，向上冲击——锋利如剑',
+    musicalKey: 'A minor',
+    tempo: 'Allegro 130 BPM',
+    primaryInstrument: '二胡',
+    emotion: '锋利、急切、执着',
+    description: '开头的八度跳跃如剑出鞘，连续颤音带出急切。越接近目标越快越尖——如同她的执念。',
+    color: '#ff6b35',
+    waveform: yanWave,
+    appearsIn: [21, 26, 35, 40, 45, 55, 60],
+  },
+  {
+    id: 'motive-3',
+    characterName: '李清禾',
+    alias: '雾中子',
+    melody: '半音级进加回旋——迷惘中寻路',
+    musicalKey: 'E phrygian',
+    tempo: 'Moderato 85 BPM',
+    primaryInstrument: '箫',
+    emotion: '迷惘、温柔、觉醒',
+    description: '三连音的半音级进像在迷雾中摸索。回旋结构暗示轮回——她的使命在千年间循环。',
+    color: '#a29bfe',
+    waveform: qingWave,
+    appearsIn: [7, 22, 30, 38, 47, 56, 65],
+  },
+  {
+    id: 'motive-4',
+    characterName: '魏镇',
+    alias: '守陵人',
+    melody: '重复的同音反复——如同呼吸与心跳',
+    musicalKey: 'B minor',
+    tempo: 'Adagio 70 BPM',
+    primaryInstrument: '埙',
+    emotion: '苍老、神秘、悲悯',
+    description: '单一音符的反复，如同三千年的呼吸。埙的音色苍老如大地，让观众感受到时间的重量。',
+    color: '#74b9ff',
+    waveform: weiWave,
+    appearsIn: [3, 7, 13, 17, 29, 58, 71],
+  },
+  {
+    id: 'motive-5',
+    characterName: '渊',
+    alias: '宇宙巨兽',
+    melody: '全音阶不协和音团——非人类、不可名状',
+    musicalKey: '无调性',
+    tempo: 'Rubato 自由',
+    primaryInstrument: '电子合成器 + 低音合唱',
+    emotion: '恐惧、原始、不可名状',
+    description: '不协和音团渐强渐弱，如同深渊的呼吸。配以低于人耳的次声波，物理上让观众感到不安。',
+    color: '#9d0208',
+    waveform: yuanWave,
+    appearsIn: [28, 32, 36, 41, 48, 55, 61],
+  },
+];
+
+export const sfxLibrary: SFXCategory[] = [
+  {
+    id: 'sfx-1',
+    category: 'ambient',
+    label: '环境氛围',
+    color: '#74b9ff',
+    icon: '🌫',
+    description: '营造空间感的持续性背景声场',
+    examples: [
+      { name: '晨雾山林风', count: 8 },
+      { name: '寺庙钟声回荡', count: 5 },
+      { name: '巨兽低频震动', count: 7 },
+      { name: '雷暴电弧', count: 4 },
+      { name: '空谷回响', count: 3 },
+    ],
+  },
+  {
+    id: 'sfx-2',
+    category: 'foley',
+    label: 'Foley 拟音',
+    color: '#d4af37',
+    icon: '👣',
+    description: '脚步、衣物、道具的真实接触声',
+    examples: [
+      { name: '赤脚踩泥', count: 12 },
+      { name: '布衣摩擦', count: 15 },
+      { name: '锄头挖地', count: 6 },
+      { name: '草帽沙沙', count: 3 },
+      { name: '翻书页', count: 2 },
+    ],
+  },
+  {
+    id: 'sfx-3',
+    category: 'hard',
+    label: '硬音效',
+    color: '#ff3838',
+    icon: '⚡',
+    description: '瞬间爆发的强冲击声',
+    examples: [
+      { name: '刀剑交锋', count: 18 },
+      { name: '天崩地裂', count: 5 },
+      { name: '巨兽咆哮', count: 9 },
+      { name: '火焰喷射', count: 7 },
+      { name: '金石碎裂', count: 11 },
+      { name: '地震轰鸣', count: 6 },
+    ],
+  },
+];
+
+export const mixBalances: MixBalance[] = [
+  {
+    actId: 1,
+    actTitle: '觉醒',
+    dialogue: 35,
+    music: 50,
+    effects: 15,
+    description: '对白主导开场人物，音乐以古琴低吟铺垫环境感。',
+  },
+  {
+    actId: 2,
+    actTitle: '战场召唤',
+    dialogue: 45,
+    music: 40,
+    effects: 15,
+    description: '大量对话揭示身份谜题，铜铃主题首次出现，音效轻量。',
+  },
+  {
+    actId: 3,
+    actTitle: '天坠',
+    dialogue: 20,
+    music: 30,
+    effects: 50,
+    description: '天崩地裂，音效压倒性主导。低频雷鸣贯穿全幕。',
+  },
+  {
+    actId: 4,
+    actTitle: '神力爆发',
+    dialogue: 10,
+    music: 45,
+    effects: 45,
+    description: '配乐与音效各半壁江山，全乐队与中国打击乐激烈碰撞。',
+  },
+  {
+    actId: 5,
+    actTitle: '神战',
+    dialogue: 5,
+    music: 50,
+    effects: 45,
+    description: '决战配乐主导，合唱团与硬音效交织，零对白。',
+  },
+  {
+    actId: 6,
+    actTitle: '余韵',
+    dialogue: 25,
+    music: 65,
+    effects: 10,
+    description: '音乐回归主题，对白收束人物的情感，音效几乎隐退。',
+  },
+];
