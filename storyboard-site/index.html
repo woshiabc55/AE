@@ -84,7 +84,10 @@
       <span class="topbar__mark">3 渲 2</span>
     </div>
     <div class="topbar__center">
-      <span class="topbar__reel">REEL 01 · TAKE 01</span>
+      <div class="tabs" id="tabs" role="tablist">
+        <button class="tab is-active" data-story="duel" role="tab" type="button">对决 <em>Duél</em></button>
+        <button class="tab" data-story="gui" role="tab" type="button">归 <em>Guī</em></button>
+      </div>
     </div>
     <div class="topbar__right">
       <button class="topbar__play" id="topbarPlay" type="button" aria-label="自动播放">
@@ -97,7 +100,7 @@
 
   <!-- HERO -->
   <section id="hero" class="hero">
-    <img class="hero__img" alt="巨像崛起" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=A%20colossal%20ancient%20saint%20statue%20erupting%20from%20cracked%20earth%20in%20epic%20landscape%2C%20golden%20volumetric%20light%20beams%20shooting%20upward%2C%20dust%20and%20golden%20particles%20rising%2C%20low%20angle%20cinematic%20shot%2C%20IMAX%20photorealistic%2C%20dark%20mood%20with%20gold%20accents%2C%20epic%20scale&image_size=landscape_16_9" />
+    <img class="hero__img" id="heroImg" alt="巨像崛起" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=A%20colossal%20ancient%20saint%20statue%20erupting%20from%20cracked%20earth%20in%20epic%20landscape%2C%20golden%20volumetric%20light%20beams%20shooting%20upward%2C%20dust%20and%20golden%20particles%20rising%2C%20low%20angle%20cinematic%20shot%2C%20IMAX%20photorealistic%2C%20dark%20mood%20with%20gold%20accents%2C%20epic%20scale&image_size=landscape_16_9" />
     <div class="hero__beam"></div>
     <div class="hero__particles" id="particles"></div>
     <div class="hero__vignette"></div>
@@ -105,7 +108,7 @@
 
     <div class="hero__inner">
       <div class="hero__meta-row">
-        <span class="caption">PV · 大荧幕开端</span>
+        <span class="caption" id="heroTagline">PV · 大荧幕开端</span>
         <span class="meta-dot">·</span>
         <span class="caption">16:9 IMAX 满画幅</span>
         <span class="meta-dot">·</span>
@@ -113,16 +116,16 @@
       </div>
 
       <h1 class="hero__title">
-        <span class="hero__title-cn">对决</span>
-        <span class="hero__title-en" lang="en"><em>Duél</em></span>
+        <span class="hero__title-cn" id="heroTitleCn">对决</span>
+        <span class="hero__title-en" id="heroTitleEn" lang="en"><em>Duél</em></span>
       </h1>
 
-      <p class="hero__sub">
+      <p class="hero__sub" id="heroSub">
         一个中国老头（农夫装扮）与大刀客的<span class="accent">宇宙级</span>对峙 ——<br />
         巨像崛起 · 水墨神力 · 冲击波几何扩散。
       </p>
 
-      <ul class="hero__pills">
+      <ul class="hero__pills" id="heroPills">
         <li>3 渲 2 + IMAX 渲染</li>
         <li>IMS 粒子模糊</li>
         <li>《沙丘》低饱和</li>
@@ -279,6 +282,7 @@
   </nav>
 
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="scripts/gui.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

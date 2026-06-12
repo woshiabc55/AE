@@ -2,7 +2,16 @@
    对决 · IMAX 分镜脚本 — 数据 + 交互
    ========================================================================== */
 
-const ACTS = [
+const DUEL_META = {
+  titleCn: '对决',
+  titleEn: 'Duél',
+  tagline: 'PV · 大荧幕开端',
+  sub: '一个中国老头（农夫装扮）与大刀客的<span class="accent">宇宙级</span>对峙 ——<br />巨像崛起 · 水墨神力 · 冲击波几何扩散。',
+  pills: ['3 渲 2 + IMAX 渲染', 'IMS 粒子模糊', '《沙丘》低饱和', '水墨国风'],
+  heroPrompt: 'A colossal ancient saint statue erupting from cracked earth in epic landscape, golden volumetric light beams shooting upward, dust and golden particles rising, low angle cinematic shot, IMAX photorealistic, dark mood with gold accents, epic scale, 16:9',
+};
+
+let ACTS = [
   { num: '01', name: '觉醒',   emotion: '沉 → 升', camera: '仰拍 · 拉升 · 变焦',       curve: [10, 25, 45, 60, 70, 85],
     prompt: 'A colossal ancient saint statue erupting from cracked earth at dawn, golden volumetric god rays shooting upward, dust particles, low angle cinematic, IMAX, dark earth tones with gold light, epic scale, 16:9' },
   { num: '02', name: '战场召唤', emotion: '急 → 静', camera: '手持晃动 · 推拉 · 固定',   curve: [60, 70, 50, 30, 45, 70],
@@ -20,7 +29,7 @@ const ACTS = [
 const IMG = (prompt) =>
   `https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=${encodeURIComponent(prompt)}&image_size=landscape_16_9`;
 
-const SHOTS = [
+let SHOTS = [
   { act: '第一幕：觉醒', range: '0″ – 5″',   number: '01', framing: '大全景', camera: '地面仰拍 → 急速拉升', content: '巨像（圣像）从地面拔地而起，尘埃与粒子在阳光斜射下形成体积光柱，地面裂纹呈放射状向外扩散。', fx: 'IMAX 渲染 · IMS 粒子模糊 · 大景深 · 镜头径向拉伸', audio: '低频嗡鸣 + 大地结构性震颤', mood: 1, prompt: 'A colossal ancient saint statue erupting from cracked earth, dust and golden particles rising, low angle looking up, IMAX cinematic, volumetric god rays, photorealistic, dark earth tones with gold light, dark mood, 16:9' },
   { act: '第一幕：觉醒', range: '5″ – 12″',  number: '02', framing: '远景',   camera: '长焦压缩 → 横移',     content: '一个中国老头（农夫装扮、衣衫褴褛）站定回望；周围空气呈现实白色线框高速掠过，老头随手抬升地面一块泥土。', fx: '3 渲 2 角色 + IC 现实环境 · 材质对比 · 运动模糊', audio: '急促脚步 + 古老编钟',         mood: 1, prompt: 'A Chinese old farmer in tattered clothes standing in a desolate battlefield, a warrior with a great curved blade facing him, dust swirling in air, white speed lines streaking past, cinematic IMAX, golden hour, dark earth tones, 16:9' },
   { act: '第一幕：觉醒', range: '12″ – 15″', number: '03', framing: '特写',   camera: '快速变焦（拉近）',   content: '老头抬头：眼神从浑浊瞬间变锐利，瞳孔金光绽放，嘴角露出一丝中式幽默的狡黠笑容。', fx: '面部微表情捕捉 · 瞳孔金光粒子 · 镜片呼吸', audio: '清脆单音「叮」 · 编钟起音',     mood: 1, prompt: 'Extreme close-up of a Chinese old man face, eyes turning from cloudy to sharp gold, a cunning smile forming, IMAX portrait, dramatic rim lighting, weathered skin texture, dark background with gold light, 16:9' },
@@ -44,7 +53,7 @@ const SHOTS = [
   { act: '第六幕：余韵', range: '78″ – 90″', number: '16', framing: '远景',   camera: '缓慢拉升 → 黑屏',     content: '老头平静站立，远处太空舰队缓至；大刀客角色深呼吸；色调严格《沙丘》低饱和。', fx: '低饱和《沙丘》色调 · 苍凉史诗感 · 编钟收束', audio: '风声 + 远处星辰低语 → 编钟收束', mood: 6, prompt: 'Chinese old man standing calmly in vast desert, distant alien space fleet approaching, low saturation Dune color palette, vast empty landscape, IMAX cinematic, 16:9' },
 ];
 
-const CONSTRAINTS = [
+let CONSTRAINTS = [
   { text: '<strong>画面比例</strong>：严格 16:9 IMAX 满画幅，禁止上下黑边。' },
   { text: '<strong>渲染参考</strong>：IMS 粒子 / IMAX 实拍物理光照 / 3 渲 2 角色与现实环境融合。' },
   { text: '<strong>画面割裂感</strong>：毁灭 / 安全 / 现实 / 水墨 四象限必须可被一眼分辨。' },
@@ -53,7 +62,7 @@ const CONSTRAINTS = [
   { text: '<strong>声音与画面耦合</strong>：心跳 / 嗡鸣 / 编钟 / 龙吟必须与镜头切换严格同步。' },
 ];
 
-const ASSETS = [
+let ASSETS = [
   { name: '圣像粒子崛起',  desc: 'IMS 粒子系统 · 体积光柱 · 放射裂纹',     thumb: 'thumb-1', prompt: 'Ancient saint statue rising from earth with golden particles, IMS particle effects, IMAX cinematic concept art, dark mood, 16:9' },
   { name: '水墨巨龙',      desc: '中国神话美学 · 笔触延展 · 墨分五色',     thumb: 'thumb-2', prompt: 'Chinese water-ink giant dragon spiraling in dark void, ink wash painting aesthetic, brush strokes, dark background, 16:9' },
   { name: '行星几何坍缩',  desc: '引力透镜 · 几何碎片 · 空间褶皱',         thumb: 'thumb-3', prompt: 'Planet collapsing inward, gravitational lensing, geometric fragments exploding, IMAX cinematic, dark space, 16:9' },
@@ -297,6 +306,75 @@ function tickClock() {
 }
 
 /* ==========================================================================
+   多剧本注册与切换
+   ========================================================================== */
+
+// 把当前 ACTS / SHOTS / CONSTRAINTS / ASSETS 快照为「对决」
+const DUEL_ACTS = ACTS;
+const DUEL_SHOTS = SHOTS;
+const DUEL_CONSTRAINTS = CONSTRAINTS;
+const DUEL_ASSETS = ASSETS;
+
+const STORYBOARDS = {
+  duel: { meta: DUEL_META, acts: DUEL_ACTS, shots: DUEL_SHOTS, constraints: DUEL_CONSTRAINTS, assets: DUEL_ASSETS },
+  gui:  { meta: GUI_META,  acts: GUI_ACTS,  shots: GUI_SHOTS,  constraints: GUI_CONSTRAINTS,  assets: GUI_ASSETS  },
+};
+
+let activeStoryboard = 'duel';
+
+function applyStoryboard(key) {
+  const sb = STORYBOARDS[key];
+  if (!sb) return;
+  activeStoryboard = key;
+  ACTS = sb.acts;
+  SHOTS = sb.shots;
+  CONSTRAINTS = sb.constraints;
+  ASSETS = sb.assets;
+
+  // 更新 Hero
+  document.getElementById('heroTitleCn').textContent = sb.meta.titleCn;
+  document.querySelector('#heroTitleEn em').textContent = sb.meta.titleEn;
+  document.getElementById('heroTagline').textContent = sb.meta.tagline;
+  document.getElementById('heroSub').innerHTML = sb.meta.sub;
+  document.getElementById('heroPills').innerHTML = sb.meta.pills.map((p) => `<li>${p}</li>`).join('');
+  const heroImg = document.getElementById('heroImg');
+  heroImg.classList.remove('is-loaded');
+  heroImg.src = IMG(sb.meta.heroPrompt);
+
+  // 重新渲染所有数据驱动区
+  renderActs();
+  renderShots();
+  renderConstraints();
+  renderAssets();
+  renderDeck();
+  renderLightboxThumbs();
+  renderTimeline();
+  setupReveal();
+  setupShotAudio();
+
+  // 重置 lightbox / 播放器状态
+  closeLightbox();
+  closePlayer();
+  currentShotIdx = 0;
+
+  // 预热新剧本图片
+  preloadAllImages();
+
+  // 滚回顶部
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function setupTabs() {
+  document.querySelectorAll('#tabs .tab').forEach((tab) => {
+    tab.addEventListener('click', () => {
+      if (tab.classList.contains('is-active')) return;
+      document.querySelectorAll('#tabs .tab').forEach((t) => t.classList.toggle('is-active', t === tab));
+      applyStoryboard(tab.dataset.story);
+    });
+  });
+}
+
+/* ==========================================================================
    启动
    ========================================================================== */
 document.addEventListener('DOMContentLoaded', () => {
@@ -319,6 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupPlayer();
   setupTimelineInteraction();
   preloadAllImages();
+  setupTabs();
 });
 
 /* ==========================================================================

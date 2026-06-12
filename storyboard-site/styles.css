@@ -1112,6 +1112,64 @@ body {
 }
 
 /* ==========================================================================
+   TABS — 剧本切换
+   ========================================================================== */
+.tabs {
+  display: inline-flex;
+  gap: 0;
+  border: 1px solid rgba(201, 169, 97, 0.3);
+  background: rgba(20, 20, 26, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.tab {
+  background: transparent;
+  border: none;
+  color: var(--gold-dim);
+  font-family: var(--serif-cn);
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-out);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.tab + .tab {
+  border-left: 1px solid rgba(201, 169, 97, 0.2);
+}
+
+.tab em {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+}
+
+.tab:hover {
+  color: var(--gold-bright);
+  background: rgba(201, 169, 97, 0.05);
+}
+
+.tab.is-active {
+  color: var(--ink);
+  background: var(--gold);
+  font-weight: 500;
+}
+
+.tab.is-active em {
+  color: var(--ink);
+}
+
+@media (max-width: 768px) {
+  .tab { padding: 0.35rem 0.6rem; font-size: 0.75rem; }
+  .tab em { display: none; }
+}
+
+/* ==========================================================================
    HERO
    ========================================================================== */
 .hero {
