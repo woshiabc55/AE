@@ -305,6 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderConstraints();
   renderAssets();
   renderDeck();
+  renderLightboxThumbs();
   spawnParticles();
   setupReveal();
   setupShotAudio();
@@ -314,6 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupAmbientAudio();
   setupLightbox();
   setupDeckObserver();
+  setupPlayer();
 });
 
 /* ==========================================================================
@@ -428,6 +430,13 @@ function renderLightbox() {
       <div class="lb__row"><span class="lb__label">Prompt</span><span class="lb__value" style="font-family:var(--mono); font-size:0.75rem; color:var(--smoke-dim);">${s.prompt}</span></div>
     </div>
   `;
+  // 同步底部缩略图高亮
+  const num = s.number;
+  document.querySelectorAll('.lb__thumb').forEach((t) => {
+    t.classList.toggle('is-active', t.dataset.shot === num);
+  });
+  const active = document.querySelector('.lb__thumb.is-active');
+  if (active) active.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 }
 
 function setupLightbox() {
@@ -450,6 +459,138 @@ function setupLightbox() {
       const num = canvas.closest('.shot').dataset.shot;
       openLightbox(num);
     });
+  });
+}
+
+/* ==========================================================================
+   Lightbox 底部 16 镜缩略图导航
+   ========================================================================== */
+function renderLightboxThumbs() {
+  const strip = document.getElementById('lightboxThumbs');
+  if (!strip) return;
+  strip.innerHTML = SHOTS.map((s) => `
+    <div class="lb__thumb" data-shot="${s.number}" title="Shot ${s.number} — ${s.framing}">
+      <img alt="Shot ${s.number}" src="${IMG(s.prompt)}" onload="this.classList.add('is-loaded')" onerror="this.classList.add('is-error')" />
+      <span class="lb__thumb-num">${s.number}</span>
+    </div>
+  `).join('');
+  strip.addEventListener('click', (e) => {
+    const t = e.target.closest('.lb__thumb');
+    if (!t) return;
+    openLightbox(t.dataset.shot);
+  });
+}
+
+/* ==========================================================================
+   播放器：一键自动按时间码播放 16 镜
+   ========================================================================== */
+let playerTimer = null;
+let playerStart = 0;
+let playerIdx = 0;
+let playerPaused = false;
+
+function parseRangeToMs(range) {
+  // 解析 "0″ – 5″" → 5000
+  const m = range.match(/(\d+)″\s*[–-]\s*(\d+)″/);
+  if (!m) return 5000;
+  return (parseInt(m[2], 10) - parseInt(m[1], 10)) * 1000;
+}
+
+function openPlayer(startIdx = 0) {
+  playerIdx = startIdx;
+  playerPaused = false;
+  document.getElementById('player').classList.add('is-open');
+  document.body.style.overflow = 'hidden';
+  showPlayerShot(playerIdx);
+  scheduleNext();
+}
+
+function closePlayer() {
+  document.getElementById('player').classList.remove('is-open');
+  document.body.style.overflow = '';
+  if (playerTimer) { clearTimeout(playerTimer); playerTimer = null; }
+  document.getElementById('playerPlayPause').textContent = '⏸';
+}
+
+function showPlayerShot(idx) {
+  const s = SHOTS[idx];
+  const img = document.getElementById('playerImg');
+  img.classList.remove('is-loaded');
+  img.src = IMG(s.prompt);
+  img.alt = `Shot ${s.number}`;
+  // 重新触发 onload（src 变化时新图像会重新加载）
+  img.onload = () => img.classList.add('is-loaded');
+
+  // 提取每镜的标题（前 12 字）
+  const title = s.content.replace(/[，。：；（）「」""'']/g, '').slice(0, 12);
+  document.getElementById('playerTitle').textContent = title;
+  document.getElementById('playerSub').innerHTML = `<em>${s.camera}</em>`;
+  document.getElementById('playerCounter').textContent = `${s.number} / 16`;
+  document.getElementById('playerAct').textContent = s.act;
+
+  // 同步触发音效
+  playShotTone(s.number);
+  // 进度条
+  document.getElementById('playerProgress').style.width = `${(idx / SHOTS.length) * 100}%`;
+}
+
+function scheduleNext() {
+  if (playerPaused) return;
+  if (playerTimer) clearTimeout(playerTimer);
+  const range = SHOTS[playerIdx].range;
+  const duration = parseRangeToMs(range);
+  playerStart = Date.now();
+  playerTimer = setTimeout(() => {
+    playerIdx = (playerIdx + 1) % SHOTS.length;
+    showPlayerShot(playerIdx);
+    scheduleNext();
+  }, duration);
+}
+
+function playShotTone(num) {
+  const ctxCtor = window.AudioContext || window.webkitAudioContext;
+  if (!ctxCtor) return;
+  try {
+    const ctx = new ctxCtor();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.frequency.value = 110 + (parseInt(num, 10) % 8) * 30;
+    osc.type = parseInt(num, 10) % 3 === 0 ? 'sine' : 'triangle';
+    gain.gain.setValueAtTime(0, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.06, ctx.currentTime + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.6);
+  } catch (e) {}
+}
+
+function setupPlayer() {
+  document.getElementById('topbarPlay')?.addEventListener('click', () => openPlayer(0));
+  document.getElementById('playerExit')?.addEventListener('click', closePlayer);
+  document.getElementById('playerPlayPause')?.addEventListener('click', () => {
+    playerPaused = !playerPaused;
+    document.getElementById('playerPlayPause').textContent = playerPaused ? '▶' : '⏸';
+    if (!playerPaused) scheduleNext();
+    else if (playerTimer) clearTimeout(playerTimer);
+  });
+  document.getElementById('playerPrev')?.addEventListener('click', () => {
+    playerIdx = (playerIdx - 1 + SHOTS.length) % SHOTS.length;
+    showPlayerShot(playerIdx);
+    if (!playerPaused) scheduleNext();
+  });
+  document.getElementById('playerNext')?.addEventListener('click', () => {
+    playerIdx = (playerIdx + 1) % SHOTS.length;
+    showPlayerShot(playerIdx);
+    if (!playerPaused) scheduleNext();
+  });
+  document.addEventListener('keydown', (e) => {
+    const p = document.getElementById('player');
+    if (!p?.classList.contains('is-open')) return;
+    if (e.key === 'Escape') closePlayer();
+    if (e.key === ' ') { e.preventDefault(); document.getElementById('playerPlayPause').click(); }
+    if (e.key === 'ArrowLeft') document.getElementById('playerPrev').click();
+    if (e.key === 'ArrowRight') document.getElementById('playerNext').click();
   });
 }
 function setupProgressBar() {

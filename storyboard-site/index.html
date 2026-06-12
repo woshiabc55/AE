@@ -39,6 +39,36 @@
     <div class="lightbox__inner" id="lightboxInner">
       <!-- populated by app.js -->
     </div>
+    <div class="lightbox__thumbs" id="lightboxThumbs">
+      <!-- populated by app.js -->
+    </div>
+  </div>
+
+  <!-- Player (full-screen auto-play) -->
+  <div class="player" id="player" aria-hidden="true">
+    <div class="player__canvas" id="playerCanvas">
+      <img class="player__img" id="playerImg" alt="" src="" />
+      <div class="player__scrim"></div>
+    </div>
+    <div class="player__hud">
+      <div class="player__hud-left">
+        <span class="player__counter" id="playerCounter">01 / 16</span>
+        <span class="player__act" id="playerAct">第一幕 · 觉醒</span>
+      </div>
+      <div class="player__hud-center">
+        <div class="player__title" id="playerTitle">巨像崛起</div>
+        <div class="player__sub" id="playerSub">地面仰拍 → 急速拉升</div>
+      </div>
+      <div class="player__hud-right">
+        <button class="player__btn" id="playerPrev" aria-label="上一镜">‹</button>
+        <button class="player__btn player__btn--main" id="playerPlayPause" aria-label="播放/暂停">⏸</button>
+        <button class="player__btn" id="playerNext" aria-label="下一镜">›</button>
+        <button class="player__btn player__btn--exit" id="playerExit" aria-label="退出">×</button>
+      </div>
+    </div>
+    <div class="player__progress">
+      <div class="player__progress-bar" id="playerProgress"></div>
+    </div>
   </div>
 
   <!-- Top bar (film slate) -->
@@ -52,6 +82,10 @@
       <span class="topbar__reel">REEL 01 · TAKE 01</span>
     </div>
     <div class="topbar__right">
+      <button class="topbar__play" id="topbarPlay" type="button" aria-label="自动播放">
+        <span class="topbar__play-tri"></span>
+        <span>PLAY</span>
+      </button>
       <span class="topbar__time" id="liveClock">--:--:--</span>
     </div>
   </header>
