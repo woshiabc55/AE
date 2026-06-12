@@ -180,6 +180,61 @@ export default function ScriptDetail() {
 
           <div className="section-divider" />
 
+          <section className="script-section anim-fade-in-up" style={{ animationDelay: '0.9s' }}>
+            <div className="section-label">CREATIVE TOOLKIT · 创作工具集</div>
+            <div className="acts-grid">
+              <Link to="/timeline" className="act-card" style={{ '--accent': '#74b9ff' } as React.CSSProperties}>
+                <div className="act-card-glyph">T</div>
+                <div className="act-card-num">TIMELINE</div>
+                <h3 className="act-card-title">时间线节奏</h3>
+                <div className="act-card-subtitle">Pacing & Emotional Curve</div>
+                <p className="act-card-theme">120分钟情绪曲线 / 72镜头时间轴 / 人物出场分布 / 场景密度热图</p>
+                <div className="act-card-footer">
+                  <span>VISUALIZE</span>
+                  <ChevronRight size={14} className="act-card-arrow" />
+                </div>
+              </Link>
+
+              <Link to="/relationships" className="act-card" style={{ '--accent': '#a29bfe' } as React.CSSProperties}>
+                <div className="act-card-glyph">网</div>
+                <div className="act-card-num">CHARACTER WEB</div>
+                <h3 className="act-card-title">人物关系图谱</h3>
+                <div className="act-card-subtitle">Character Relationship Web</div>
+                <p className="act-card-theme">4角色星图 / 8条关系连线 / 强度可视化 / 关系描述</p>
+                <div className="act-card-footer">
+                  <span>EXPLORE</span>
+                  <ChevronRight size={14} className="act-card-arrow" />
+                </div>
+              </Link>
+
+              <Link to="/moodboard" className="act-card" style={{ '--accent': '#d4af37' } as React.CSSProperties}>
+                <div className="act-card-glyph">气</div>
+                <div className="act-card-num">MOODBOARD</div>
+                <h3 className="act-card-title">场景气氛板</h3>
+                <div className="act-card-subtitle">Scene Atmosphere Board</div>
+                <p className="act-card-theme">光线设计 / 天气 / 时段 / 色温 / 声音设计 / 关键道具</p>
+                <div className="act-card-footer">
+                  <span>ATMOSPHERE</span>
+                  <ChevronRight size={14} className="act-card-arrow" />
+                </div>
+              </Link>
+
+              <Link to="/worldlore" className="act-card" style={{ '--accent': '#fd79a8' } as React.CSSProperties}>
+                <div className="act-card-glyph">界</div>
+                <div className="act-card-num">WORLD BIBLE</div>
+                <h3 className="act-card-title">世界观设定集</h3>
+                <div className="act-card-subtitle">World Lore & Bible</div>
+                <p className="act-card-theme">地理 / 历史 / 神话 / 科技 / 文化 · 9个词条</p>
+                <div className="act-card-footer">
+                  <span>BIBLIOGRAPHY</span>
+                  <ChevronRight size={14} className="act-card-arrow" />
+                </div>
+              </Link>
+            </div>
+          </section>
+
+          <div className="section-divider" />
+
           <div className="cta-section anim-fade-in-up">
             <p className="cta-text">剧本已就绪 · 共 120 分钟 · 6 幕 · 72 镜头</p>
             <button

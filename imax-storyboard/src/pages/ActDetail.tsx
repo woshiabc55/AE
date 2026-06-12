@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { script as defaultScript, type Script, type StoryboardShot } from '../data/scriptData';
-import { ChevronLeft, ChevronRight, Clock, MapPin, Users, Music, Camera } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Clock, MapPin, Users, Music, Camera, Lightbulb, Image as ImageIcon, Copy, Check, Film } from 'lucide-react';
 import ParticleBackground from '../components/ParticleBackground';
 
 const moodColors: Record<string, string> = {
@@ -30,6 +30,7 @@ export default function ActDetail() {
   const actId = parseInt(id ?? '1', 10);
   const [script, setScript] = useState<Script>(defaultScript);
   const [selectedShot, setSelectedShot] = useState<StoryboardShot | null>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const custom = sessionStorage.getItem('customScript');
@@ -54,6 +55,19 @@ export default function ActDetail() {
   const prevAct = script.acts.find((a) => a.id === actId - 1);
   const nextAct = script.acts.find((a) => a.id === actId + 1);
 
+  const handleCopyPrompt = (prompt: string) => {
+    navigator.clipboard.writeText(prompt).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  const handleGenerateImage = (shot: StoryboardShot) => {
+    if (!shot.imagePrompt) return;
+    const url = `https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=${encodeURIComponent(shot.imagePrompt)}&image_size=landscape_16_9`;
+    window.open(url, '_blank');
+  };
+
   return (
     <>
       <ParticleBackground />
@@ -66,16 +80,20 @@ export default function ActDetail() {
         <div className="imax-label imax-label-bottom">{act.duration.toUpperCase()} · {act.shots.length} SHOTS</div>
 
         <div style={{ maxWidth: '1500px', margin: '0 auto', padding: 'var(--space-8)' }}>
-          <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
+          <div style={{ display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap' }}>
             <Link to="/script/detail" className="back-button">
               <ChevronLeft size={14} />
               <span>SCRIPT</span>
             </Link>
-            <button
-              className="back-button"
-              onClick={() => navigate('/')}
-              type="button"
-            >
+            <Link to="/timeline" className="back-button">
+              <Clock size={14} />
+              <span>TIMELINE</span>
+            </Link>
+            <Link to="/moodboard" className="back-button">
+              <Lightbulb size={14} />
+              <span>MOODBOARD</span>
+            </Link>
+            <button className="back-button" onClick={() => navigate('/')} type="button">
               <ChevronLeft size={14} />
               <span>HOME</span>
             </button>
@@ -207,11 +225,7 @@ export default function ActDetail() {
               onClick={(e) => e.stopPropagation()}
               style={{ '--accent': act.accentColor } as React.CSSProperties}
             >
-              <button
-                className="modal-close"
-                onClick={() => setSelectedShot(null)}
-                type="button"
-              >
+              <button className="modal-close" onClick={() => setSelectedShot(null)} type="button">
                 ✕
               </button>
 
@@ -232,15 +246,89 @@ export default function ActDetail() {
                 <p className="modal-content">{selectedShot.content}</p>
               </div>
 
+              {selectedShot.dialogue && (
+                <div className="modal-section">
+                  <div className="modal-label">台词 / DIALOGUE</div>
+                  <p className="modal-dialogue">「{selectedShot.dialogue}」</p>
+                </div>
+              )}
+
               <div className="modal-section">
                 <div className="modal-label">特效 / 渲染</div>
                 <p className="modal-effects">{selectedShot.effects}</p>
               </div>
 
+              {selectedShot.lighting && (
+                <div className="modal-section">
+                  <div className="modal-label">
+                    <Lightbulb size={11} style={{ display: 'inline', marginRight: 4 }} />
+                    光线 / LIGHTING
+                  </div>
+                  <p>{selectedShot.lighting}</p>
+                </div>
+              )}
+
+              {selectedShot.colorPalette && (
+                <div className="modal-section">
+                  <div className="modal-label">色调 / PALETTE</div>
+                  <p className="modal-palette">{selectedShot.colorPalette}</p>
+                </div>
+              )}
+
               <div className="modal-section">
                 <div className="modal-label">音效</div>
                 <p className="modal-sound">{selectedShot.sound}</p>
               </div>
+
+              {selectedShot.music && (
+                <div className="modal-section">
+                  <div className="modal-label">
+                    <Music size={11} style={{ display: 'inline', marginRight: 4 }} />
+                    配乐 / SCORE
+                  </div>
+                  <p>{selectedShot.music}</p>
+                </div>
+              )}
+
+              {selectedShot.imagePrompt && (
+                <div className="modal-section">
+                  <div className="modal-label">
+                    <ImageIcon size={11} style={{ display: 'inline', marginRight: 4 }} />
+                    AI 图像提示词 / IMAGE PROMPT
+                  </div>
+                  <div className="prompt-box">
+                    <p className="modal-prompt">{selectedShot.imagePrompt}</p>
+                    <div className="prompt-actions">
+                      <button
+                        className="prompt-btn"
+                        onClick={() => handleCopyPrompt(selectedShot.imagePrompt ?? '')}
+                        type="button"
+                      >
+                        {copied ? <><Check size={12} /> 已复制</> : <><Copy size={12} /> 复制</>}
+                      </button>
+                      <button
+                        className="prompt-btn primary"
+                        onClick={() => handleGenerateImage(selectedShot)}
+                        type="button"
+                      >
+                        <Film size={12} />
+                        AI 生图
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {selectedShot.referenceShots && selectedShot.referenceShots.length > 0 && (
+                <div className="modal-section">
+                  <div className="modal-label">参考镜头 / REFERENCES</div>
+                  <div className="reference-tags">
+                    {selectedShot.referenceShots.map((ref, i) => (
+                      <span key={i} className="ref-tag">{ref}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="modal-meta-grid">
                 <div className="modal-meta-item">

@@ -4,11 +4,16 @@ import ChapterPage from './pages/ChapterPage';
 import ScriptCreator from './pages/ScriptCreator';
 import ScriptDetail from './pages/ScriptDetail';
 import ActDetail from './pages/ActDetail';
+import Timeline from './pages/Timeline';
+import RelationshipMap from './pages/RelationshipMap';
+import Moodboard from './pages/Moodboard';
+import WorldLore from './pages/WorldLore';
 import './styles/variables.css';
 import './styles/base.css';
 import './styles/animations.css';
 import './styles/components.css';
 import './styles/creator.css';
+import './styles/expanded.css';
 
 export default function App() {
   return (
@@ -19,6 +24,10 @@ export default function App() {
         <Route path="/script/new" element={<ScriptCreator />} />
         <Route path="/script/detail" element={<ScriptDetail />} />
         <Route path="/script/act/:id" element={<ActDetail />} />
+        <Route path="/timeline" element={<Timeline />} />
+        <Route path="/relationships" element={<RelationshipMap />} />
+        <Route path="/moodboard" element={<Moodboard />} />
+        <Route path="/worldlore" element={<WorldLore />} />
         <Route path="*" element={<HomePage />} />
       </Routes>
     </HashRouter>

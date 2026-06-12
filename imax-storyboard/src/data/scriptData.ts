@@ -26,7 +26,42 @@ export interface StoryboardShot {
   dialogue?: string;             // 台词
   effects: string;               // 特效/渲染
   sound: string;                 // 音效
+  music?: string;                // 背景音乐
   mood: MoodTone;                // 情绪基调
+  lighting?: string;             // 光线设计
+  colorPalette?: string;         // 色调
+  imagePrompt?: string;          // AI 图像生成提示词
+  referenceShots?: string[];     // 参考镜头
+}
+
+export interface SceneMood {
+  id: string;
+  name: string;                  // 场景名
+  actId: number;
+  atmosphere: string;            // 氛围描述
+  lighting: string;              // 光线
+  weather: string;               // 天气
+  timeOfDay: string;             // 时段
+  soundDesign: string;           // 声音设计
+  colorTemperature: string;      // 色温
+  visualReferences: string[];    // 视觉参考
+  props: string[];               // 关键道具
+}
+
+export interface WorldLore {
+  id: string;
+  category: 'geography' | 'history' | 'mythology' | 'technology' | 'culture';
+  title: string;
+  content: string;
+  era?: string;                  // 时代
+}
+
+export interface RelationshipEdge {
+  from: string;                  // 人物ID
+  to: string;                    // 人物ID
+  type: 'ally' | 'enemy' | 'mentor' | 'family' | 'rival' | 'witness';
+  description: string;
+  intensity: number;             // 1-10
 }
 
 export interface Character {
@@ -132,6 +167,12 @@ interface ShotTemplate {
   effects: (act: Act) => string;
   sound: (act: Act) => string;
   mood: MoodTone;
+  music?: string;
+  dialogue?: string;
+  lighting?: string;
+  colorPalette?: string;
+  imagePrompt?: string;
+  referenceShots?: string[];
 }
 
 const act1Templates: ShotTemplate[] = [
@@ -142,6 +183,11 @@ const act1Templates: ShotTemplate[] = [
     effects: () => 'IMAX 8K渲染 / 大气层物理散射 / 长焦空间站视角',
     sound: () => '宇宙低频 / 大气摩擦',
     mood: 'epic',
+    music: 'Hans Zimmer 风格 · 低频弦乐群 + 太古吟唱',
+    lighting: '自然日光 · 晨曦金 · 影子极长',
+    colorPalette: '琥珀金 + 大地棕 + 太空靛蓝',
+    imagePrompt: 'IMAX cinematic satellite view of Earth, slowly descending to Loess Plateau in China, golden light beam piercing clouds, dust particles in atmosphere, 8K hyperrealistic, color palette amber and indigo',
+    referenceShots: ['《2001太空漫游》开场', '《沙丘》沙虫降临', '《降临》七肢桶降临'],
   },
   {
     scene: '远景',
@@ -812,6 +858,48 @@ const generateTimestamp = (actIndex: number, shotIndex: number, secondsPerShot: 
 
 const SECONDS_PER_SHOT = 100; // 120min / 72shots
 
+// ============= 自动增强细节 =============
+
+const lightingByMood: Record<MoodTone, string> = {
+  epic: '强对比 · 伦勃朗光 · 史诗轮廓',
+  tense: '低角度侧光 · 阴影吞没 · 焦灼',
+  mystic: '体积光 · 神光穿透 · 雾霭',
+  romantic: '暖色柔光 · 黄金时刻 · 漫射',
+  melancholy: '阴天散射 · 偏冷蓝 · 烟雨',
+  triumphant: '金光万道 · 高调 · 圣光',
+  quiet: '自然柔光 · 静谧 · 薄雾',
+};
+
+const colorByMood: Record<MoodTone, string> = {
+  epic: '金 + 棕 + 血红',
+  tense: '冷铁 + 火橙 + 黑',
+  mystic: '靛青 + 紫 + 银',
+  romantic: '蜜糖 + 桃粉 + 暖白',
+  melancholy: '沙土 + 雾蓝 + 苍灰',
+  triumphant: '金 + 朱红 + 圣白',
+  quiet: '暖白 + 麦黄 + 浅金',
+};
+
+const musicByMood: Record<MoodTone, string> = {
+  epic: 'Hans Zimmer 风格 · 低频弦乐群 + 太古吟唱',
+  tense: 'Tension Strings · 金属打击 · 心跳鼓',
+  mystic: '空灵梵唱 + 风铃 + 古琴',
+  romantic: '竖琴泛音 + 弦乐四重奏',
+  melancholy: '古琴独奏 + 大提琴低吟',
+  triumphant: '铜管全奏 + 定音鼓 + 合唱',
+  quiet: '风声 + 麦浪 + 鸟鸣',
+};
+
+const referenceByMood: Record<MoodTone, string[]> = {
+  epic: ['《2001太空漫游》', '《沙丘》', '《指环王》'],
+  tense: ['《一代宗师》', '《老男孩》走廊战', '《杀死比尔》'],
+  mystic: ['《一代宗师》金楼', '《卧虎藏龙》竹林', '《刺客聂隐娘》'],
+  romantic: ['《爱在黎明破晓前》', '《花样年华》'],
+  melancholy: ['《沙丘》', '《银翼杀手2049》', '《大佛普拉斯》'],
+  triumphant: ['《指环王》圣盔谷', '《复仇者联盟》集结'],
+  quiet: ['《小森林》', '《人生果实》', '《一一》'],
+};
+
 const buildActs = (): Act[] => {
   return actMetadata.map((meta, actIdx) => {
     const templates = allTemplates[actIdx] ?? [];
@@ -819,6 +907,25 @@ const buildActs = (): Act[] => {
       const contentFn = tmpl.content as unknown as (act: Act, idx: number) => string;
       const effectsFn = tmpl.effects as unknown as (act: Act) => string;
       const soundFn = tmpl.sound as unknown as (act: Act) => string;
+      const resolveField = (field: unknown): string | undefined => {
+        if (typeof field === 'function') {
+          return (field as () => string | undefined)();
+        }
+        if (typeof field === 'string') {
+          return field;
+        }
+        return undefined;
+      };
+
+      const resolveArray = (field: unknown): string[] | undefined => {
+        if (typeof field === 'function') {
+          return (field as () => string[] | undefined)();
+        }
+        if (Array.isArray(field)) {
+          return field;
+        }
+        return undefined;
+      };
 
       return {
         id: actIdx * 12 + idx + 1,
@@ -833,6 +940,12 @@ const buildActs = (): Act[] => {
         content: contentFn({} as Act, idx),
         effects: effectsFn({} as Act),
         sound: soundFn({} as Act),
+        music: resolveField(tmpl.music) ?? musicByMood[tmpl.mood],
+        dialogue: resolveField(tmpl.dialogue),
+        lighting: resolveField(tmpl.lighting) ?? lightingByMood[tmpl.mood],
+        colorPalette: resolveField(tmpl.colorPalette) ?? colorByMood[tmpl.mood],
+        imagePrompt: resolveField(tmpl.imagePrompt) ?? generateDefaultPrompt(tmpl, actIdx, idx),
+        referenceShots: resolveArray(tmpl.referenceShots) ?? referenceByMood[tmpl.mood],
         mood: tmpl.mood,
       };
     });
@@ -853,6 +966,142 @@ const buildActs = (): Act[] => {
     };
   });
 };
+
+const generateDefaultPrompt = (tmpl: ShotTemplate, actIdx: number, shotIdx: number): string => {
+  return `IMAX cinematic ${tmpl.scene} shot, ${tmpl.camera}, Act ${actIdx + 1} shot ${shotIdx + 1}, ${colorByMood[tmpl.mood]} color palette, ${lightingByMood[tmpl.mood]}, 8K hyperrealistic, ${tmpl.mood} atmosphere, Loess Plateau China mythological epic, Chinese ink painting meets sci-fi`;
+};
+
+// ============= 场景气氛板 =============
+
+export const sceneMoods: SceneMood[] = [
+  {
+    id: 'mood-1',
+    name: '黄土高坡',
+    actId: 1,
+    atmosphere: '太古、宁静、神秘的东方乡土',
+    lighting: '晨曦斜照 · 暖金柔光',
+    weather: '晴朗微风 · 偶有沙尘',
+    timeOfDay: '清晨 06:00',
+    soundDesign: '风声 + 麦浪 + 老牛蹄音 + 远处鸡鸣',
+    colorTemperature: '3200K 暖金',
+    visualReferences: ['《黄土地》', '《一秒钟》', '《人生》'],
+    props: ['破草帽', '老锄头', '水烟袋'],
+  },
+  {
+    id: 'mood-2',
+    name: '古观废墟',
+    actId: 1,
+    atmosphere: '尘封、庄严、藏有千年秘密',
+    lighting: '屋顶透光 · 体积光柱',
+    weather: '阴天 · 微雨',
+    timeOfDay: '正午 12:00',
+    soundDesign: '编钟余韵 + 雨打瓦 + 香灰落地',
+    colorTemperature: '5600K 冷白',
+    visualReferences: ['《刺客聂隐娘》', '《卧虎藏龙》', '《英雄》'],
+    props: ['古观铜钟', '醒田铃', '香案', '铜镜'],
+  },
+  {
+    id: 'mood-3',
+    name: '宇宙裂隙',
+    actId: 3,
+    atmosphere: '虚空、压迫、几何崩解的末世感',
+    lighting: '无主光 · 裂隙冷光 · 粒子辉',
+    weather: '虚空 / 无天气',
+    timeOfDay: '永恒',
+    soundDesign: '次声波 + 玻璃碎裂 + 粒子摩擦',
+    colorTemperature: '冷青 7000K',
+    visualReferences: ['《降临》', '《湮灭》', '《银翼杀手2049》'],
+    props: ['几何碎片', '空间褶皱', '引力气浪'],
+  },
+  {
+    id: 'mood-4',
+    name: '麦田黄昏',
+    actId: 6,
+    atmosphere: '沙丘式的苍凉 + 东方编钟的余韵',
+    lighting: '夕阳低角度 · 影子极长 · 暖橙',
+    weather: '晴 · 微风',
+    timeOfDay: '黄昏 18:30',
+    soundDesign: '编钟 + 风声 + 太空舰队引擎低频',
+    colorTemperature: '2400K 暖橙',
+    visualReferences: ['《沙丘》', '《天地玄黄》', '《一一》'],
+    props: ['铜铃', '相机', '麦穗'],
+  },
+];
+
+// ============= 世界观 =============
+
+export const worldLore: WorldLore[] = [
+  {
+    id: 'lore-1',
+    category: 'geography',
+    title: '黄土高坡',
+    content: '位于中国西北部，海拔 1500-2000 米。千年的风沙将这里雕琢成沟壑纵横的褶皱，被称为"上帝指纹"。这里曾是华夏文明的发源地之一。',
+    era: '永恒',
+  },
+  {
+    id: 'lore-2',
+    category: 'geography',
+    title: '守田翁的田地',
+    content: '位于黄土高坡的一处偏僻山谷。传说中，每一垄田都对应着天上的一颗星辰。当守田翁转身时，所有田垄会跟随他的脚步隆起、生长。',
+  },
+  {
+    id: 'lore-3',
+    category: 'history',
+    title: '千年封印',
+    content: '公元 1026 年。虚空巨兽「渊」自裂隙降临，几乎吞噬整个中原。一位无名农夫以一己之力将其封印于"醒田"之中。从此农夫隐姓埋名，自称守田翁。',
+    era: '北宋 · 1026年',
+  },
+  {
+    id: 'lore-4',
+    category: 'history',
+    title: '虚空苏醒',
+    content: '近三十年来，渊的封印开始出现裂隙。人类将其解释为"空间异常现象"。但古观守钟人魏镇知道：守田翁的封印正在失效。',
+    era: '现代',
+  },
+  {
+    id: 'lore-5',
+    category: 'mythology',
+    title: '虚空巨兽·渊',
+    content: '没有实体的虚空存在，由不断崩解又重组的几何碎片构成。它的"身体"就是空间本身。唯一能封印它的，是更强大的空间之力——言出法随。',
+  },
+  {
+    id: 'lore-6',
+    category: 'mythology',
+    title: '醒田铃',
+    content: '古观传下来的铜铃，铃舌刻"醒田"二字。可唤醒守田翁尘封千年的记忆。铃声在 IMAX 级低频中震荡，能让高原上的每一株麦穗都向铃声方向倾斜。',
+  },
+  {
+    id: 'lore-7',
+    category: 'mythology',
+    title: '炽龙',
+    content: '水墨风格的虚影之龙，仅存于守田翁的言出法随之间。盘旋时如同东方水墨画活过来，释放的威压可让敌方时空扭曲。',
+  },
+  {
+    id: 'lore-8',
+    category: 'technology',
+    title: '多维数据眼',
+    content: '燕无忧的右眼被改造成的机械义眼。可视空间裂隙、维度坐标、引力场。是当今人类科技的巅峰——但也让他陷入了"用刀劈开虚空"的执念。',
+  },
+  {
+    id: 'lore-9',
+    category: 'culture',
+    title: '田有守者',
+    content: '高原上世代流传的一句话。意为"田地有守护之人"。守田翁的传说演变成了对所有"在人间烟火中守望"之人的隐喻——可以是种地的农夫，也可以是按下快门的记者。',
+  },
+];
+
+// ============= 人物关系 =============
+
+export const relationships: RelationshipEdge[] = [
+  { from: 'old-farmer', to: 'yan-wuyou', type: 'mentor', description: '点化其放下执念', intensity: 7 },
+  { from: 'yan-wuyou', to: 'old-farmer', type: 'rival', description: '质问、寻仇、最终臣服', intensity: 8 },
+  { from: 'old-farmer', to: 'wei-zhen', type: 'ally', description: '千年知己，以铃声相系', intensity: 9 },
+  { from: 'wei-zhen', to: 'old-farmer', type: 'mentor', description: '为其守住最后的人间', intensity: 10 },
+  { from: 'li-qinghe', to: 'old-farmer', type: 'witness', description: '记录这一刻的人类', intensity: 6 },
+  { from: 'li-qinghe', to: 'yan-wuyou', type: 'ally', description: '陪伴他走过余波', intensity: 5 },
+  { from: 'wei-zhen', to: 'li-qinghe', type: 'mentor', description: '将真相托付于她', intensity: 8 },
+  { from: 'yan-wuyou', to: 'wei-zhen', type: 'rival', description: '间接被其死亡触动', intensity: 4 },
+];
 
 const locationByAct = (actIdx: number): string => {
   const locs = [
