@@ -60,6 +60,11 @@
         <div class="player__sub" id="playerSub">地面仰拍 → 急速拉升</div>
       </div>
       <div class="player__hud-right">
+        <div class="player__speed" id="playerSpeed">
+          <button class="player__speed-btn" data-speed="0.5">0.5×</button>
+          <button class="player__speed-btn is-active" data-speed="1">1×</button>
+          <button class="player__speed-btn" data-speed="2">2×</button>
+        </div>
         <button class="player__btn" id="playerPrev" aria-label="上一镜">‹</button>
         <button class="player__btn player__btn--main" id="playerPlayPause" aria-label="播放/暂停">⏸</button>
         <button class="player__btn" id="playerNext" aria-label="下一镜">›</button>
@@ -171,6 +176,37 @@
 
     <div class="acts" id="acts">
       <!-- populated by app.js -->
+    </div>
+  </section>
+
+  <!-- Timeline strip -->
+  <section class="section section--timeline" aria-label="分镜时间轴">
+    <div class="section__head">
+      <span class="section__num">03</span>
+      <h2 class="section__title">分镜 · 时间轴</h2>
+      <p class="section__sub">
+        16 镜在 90″ 标尺上的时间分布 —— 颜色按幕区分，节点宽度映射本镜时长。
+      </p>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline__head">
+        <span class="caption">16 shots · 90″ · 0.5x / 1x / 2x</span>
+        <span class="timeline__time" id="timelineTime">00″00</span>
+      </div>
+      <div class="timeline__bar" id="timelineBar">
+        <div class="timeline__playhead" id="timelinePlayhead"></div>
+        <!-- nodes populated by app.js -->
+      </div>
+      <div class="timeline__ticks" id="timelineTicks"></div>
+      <div class="timeline__legend">
+        <span class="timeline__legend-item"><i class="tl-dot" data-act="1"></i>觉醒</span>
+        <span class="timeline__legend-item"><i class="tl-dot" data-act="2"></i>战场</span>
+        <span class="timeline__legend-item"><i class="tl-dot" data-act="3"></i>天坠</span>
+        <span class="timeline__legend-item"><i class="tl-dot" data-act="4"></i>爆发</span>
+        <span class="timeline__legend-item"><i class="tl-dot" data-act="5"></i>神战</span>
+        <span class="timeline__legend-item"><i class="tl-dot" data-act="6"></i>余韵</span>
+      </div>
     </div>
   </section>
 

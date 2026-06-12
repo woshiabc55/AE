@@ -306,6 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderAssets();
   renderDeck();
   renderLightboxThumbs();
+  renderTimeline();
   spawnParticles();
   setupReveal();
   setupShotAudio();
@@ -316,6 +317,8 @@ document.addEventListener('DOMContentLoaded', () => {
   setupLightbox();
   setupDeckObserver();
   setupPlayer();
+  setupTimelineInteraction();
+  preloadAllImages();
 });
 
 /* ==========================================================================
@@ -584,6 +587,14 @@ function setupPlayer() {
     showPlayerShot(playerIdx);
     if (!playerPaused) scheduleNext();
   });
+  // 倍速切换
+  document.querySelectorAll('.player__speed-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      playerSpeed = parseFloat(btn.dataset.speed);
+      document.querySelectorAll('.player__speed-btn').forEach((b) => b.classList.toggle('is-active', b === btn));
+      if (!playerPaused) scheduleNext();
+    });
+  });
   document.addEventListener('keydown', (e) => {
     const p = document.getElementById('player');
     if (!p?.classList.contains('is-open')) return;
@@ -592,6 +603,131 @@ function setupPlayer() {
     if (e.key === 'ArrowLeft') document.getElementById('playerPrev').click();
     if (e.key === 'ArrowRight') document.getElementById('playerNext').click();
   });
+}
+
+/* ==========================================================================
+   播放器进度回调 → 同步时间轴 playhead
+   ========================================================================== */
+let playerSpeed = 1;
+let playerShotStart = 0;
+const _origShow = showPlayerShot;
+showPlayerShot = function (idx) {
+  playerShotStart = Date.now();
+  _origShow(idx);
+  // 高亮时间轴节点
+  const num = SHOTS[idx].number;
+  document.querySelectorAll('.timeline__node').forEach((n) => {
+    n.classList.toggle('is-active', n.dataset.shot === num);
+  });
+  // 滚动时间轴到可见
+  const active = document.querySelector('.timeline__node.is-active');
+  if (active) active.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  // 显示 playhead
+  const ph = document.getElementById('timelinePlayhead');
+  if (ph) {
+    ph.style.display = 'block';
+    const pct = (parseTimeMs(SHOTS[idx].range.split(/[–-]/)[0]) / 90000) * 100;
+    ph.style.left = `${pct}%`;
+  }
+};
+
+function parseTimeMs(s) {
+  return parseInt(s.replace(/[″"]/g, '').trim(), 10) * 1000;
+}
+
+// 播放期间每帧更新 playhead 位置
+setInterval(() => {
+  if (playerTimer && !playerPaused) {
+    const s = SHOTS[playerIdx];
+    const startMs = parseTimeMs(s.range.split(/[–-]/)[0]);
+    const dur = (parseTimeMs(s.range.split(/[–-]/)[1]) - startMs) / playerSpeed;
+    const elapsed = (Date.now() - playerShotStart) * (playerSpeed);
+    const pct = ((startMs + Math.min(elapsed, dur)) / 90000) * 100;
+    const ph = document.getElementById('timelinePlayhead');
+    if (ph) ph.style.left = `${pct}%`;
+    const timeEl = document.getElementById('timelineTime');
+    if (timeEl) {
+      const total = Math.min(startMs + elapsed, 90000);
+      const ss = Math.floor(total / 1000);
+      const ff = Math.floor((total % 1000) / 10);
+      timeEl.textContent = `${String(ss).padStart(2, '0')}″${String(ff).padStart(2, '0')}`;
+    }
+  }
+}, 50);
+
+/* ==========================================================================
+   渲染：分镜时间轴
+   ========================================================================== */
+function renderTimeline() {
+  const bar = document.getElementById('timelineBar');
+  const ticks = document.getElementById('timelineTicks');
+  if (!bar || !ticks) return;
+
+  // 16 镜节点
+  bar.insertAdjacentHTML('beforeend', SHOTS.map((s) => {
+    const startMs = parseTimeMs(s.range.split(/[–-]/)[0]);
+    const endMs = parseTimeMs(s.range.split(/[–-]/)[1]);
+    const left = (startMs / 90000) * 100;
+    const width = ((endMs - startMs) / 90000) * 100;
+    const actNum = parseInt(s.act.match(/第(\d+)幕/)?.[1] || '0', 10);
+    return `<div class="timeline__node act-color-${actNum}" data-shot="${s.number}" style="left:${left}%; width:${width}%;" title="Shot ${s.number} — ${s.framing} (${s.range})">
+      <span class="timeline__node-num">${s.number}</span>
+      <span class="timeline__node-act">A${actNum}</span>
+    </div>`;
+  }).join(''));
+
+  // 标尺：每 15s 一格
+  ticks.innerHTML = [0, 15, 30, 45, 60, 75, 90].map((s) => `
+    <div class="timeline__tick" style="left:${(s / 90) * 100}%;">
+      <span class="timeline__tick-label">${String(s).padStart(2, '0')}″</span>
+    </div>
+  `).join('');
+}
+
+function setupTimelineInteraction() {
+  const bar = document.getElementById('timelineBar');
+  if (!bar) return;
+  bar.addEventListener('click', (e) => {
+    const node = e.target.closest('.timeline__node');
+    if (!node) return;
+    const num = node.dataset.shot;
+    // 打开 lightbox 或在播放器中跳转
+    const playerOpen = document.getElementById('player')?.classList.contains('is-open');
+    if (playerOpen) {
+      const idx = SHOTS.findIndex((s) => s.number === num);
+      if (idx >= 0) {
+        playerIdx = idx;
+        showPlayerShot(idx);
+        if (!playerPaused) scheduleNext();
+      }
+    } else {
+      // 滚动到对应分镜
+      const target = document.querySelector(`.shot[data-shot="${num}"]`);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  });
+}
+
+/* ==========================================================================
+   预热所有图片（消除播放时加载卡顿）
+   ========================================================================== */
+function preloadAllImages() {
+  const urls = new Set();
+  // Hero
+  urls.add(document.querySelector('.hero__img')?.src);
+  // 6 幕
+  ACTS.forEach((a) => urls.add(IMG(a.prompt)));
+  // 16 镜
+  SHOTS.forEach((s) => urls.add(IMG(s.prompt)));
+  // 6 资产
+  ASSETS.forEach((a) => urls.add(IMG(a.prompt)));
+  // 通过 Image() 静默预加载
+  urls.forEach((u) => {
+    if (!u) return;
+    const im = new Image();
+    im.src = u;
+  });
+  console.log(`[preload] queued ${urls.size} images`);
 }
 function setupProgressBar() {
   const bar = document.getElementById('progressBar');
