@@ -128,44 +128,44 @@ function renderActs() {
 }
 
 /* ==========================================================================
-   渲染：对照表（对决 vs 归）
+   渲染：对照表（对决 vs 归 vs 雨夜）
    ========================================================================== */
+const COMPARE_STORIES = [
+  { key: 'duel',  cls: 'compare__cell--duel',  en: 'DUÉL' },
+  { key: 'gui',   cls: 'compare__cell--gui',   en: 'GUĪ' },
+  { key: 'yuye',  cls: 'compare__cell--yuye',  en: 'YǓ YÈ' },
+];
+
 function renderCompare() {
   const root = document.getElementById('compareGrid');
   if (!root) return;
-  const duel = STORYBOARDS.duel;
-  const gui = STORYBOARDS.gui;
+  const stories = COMPARE_STORIES.map((s) => STORYBOARDS[s.key]);
   root.innerHTML = Array.from({ length: 6 }).map((_, i) => {
-    const d = duel.acts[i];
-    const g = gui.acts[i];
+    const acts = stories.map((sb) => sb.acts[i]);
+    const cells = stories.map((sb, idx) => {
+      const a = acts[idx];
+      const meta = COMPARE_STORIES[idx];
+      return `
+        <div class="compare__cell ${meta.cls}">
+          <div class="compare__cell-num">${a.num}<small>${a.name} / ${meta.en}</small></div>
+          <div class="compare__cell-content">
+            <h4>${a.name}</h4>
+            <p>${a.camera}</p>
+            <span class="emotion">${a.emotion}</span>
+          </div>
+          <div class="compare__cell-thumb">
+            <img alt="${a.name}" src="${IMG(a.prompt)}" onload="this.classList.add('is-loaded')" onerror="this.classList.add('is-error')" />
+          </div>
+        </div>
+      `;
+    }).join('');
     return `
       <div class="compare__row">
         <div class="compare__label">
           <span class="compare__label-num">ACT ${String(i + 1).padStart(2, '0')}</span>
           <span class="compare__label-vs">vs</span>
         </div>
-        <div class="compare__cell compare__cell--duel">
-          <div class="compare__cell-num">${d.num}<small>对决 / DUÉL</small></div>
-          <div class="compare__cell-content">
-            <h4>${d.name}</h4>
-            <p>${d.camera}</p>
-            <span class="emotion">${d.emotion}</span>
-          </div>
-          <div class="compare__cell-thumb">
-            <img alt="${d.name}" src="${IMG(d.prompt)}" onload="this.classList.add('is-loaded')" onerror="this.classList.add('is-error')" />
-          </div>
-        </div>
-        <div class="compare__cell compare__cell--gui">
-          <div class="compare__cell-num">${g.num}<small>归 / GUĪ</small></div>
-          <div class="compare__cell-content">
-            <h4>${g.name}</h4>
-            <p>${g.camera}</p>
-            <span class="emotion">${g.emotion}</span>
-          </div>
-          <div class="compare__cell-thumb">
-            <img alt="${g.name}" src="${IMG(g.prompt)}" onload="this.classList.add('is-loaded')" onerror="this.classList.add('is-error')" />
-          </div>
-        </div>
+        ${cells}
       </div>
     `;
   }).join('');
@@ -362,6 +362,7 @@ const DUEL_ASSETS = ASSETS;
 const STORYBOARDS = {
   duel: { meta: DUEL_META, acts: DUEL_ACTS, shots: DUEL_SHOTS, constraints: DUEL_CONSTRAINTS, assets: DUEL_ASSETS },
   gui:  { meta: GUI_META,  acts: GUI_ACTS,  shots: GUI_SHOTS,  constraints: GUI_CONSTRAINTS,  assets: GUI_ASSETS  },
+  yuye: { meta: YUYE_META, acts: YUYE_ACTS, shots: YUYE_SHOTS, constraints: YUYE_CONSTRAINTS, assets: YUYE_ASSETS },
 };
 
 let activeStoryboard = 'duel';
