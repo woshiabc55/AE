@@ -114,6 +114,8 @@
         <button class="tab is-active" data-story="duel" role="tab" type="button">对决 <em>Duél</em></button>
         <button class="tab" data-story="gui" role="tab" type="button">归 <em>Guī</em></button>
         <button class="tab" data-story="yuye" role="tab" type="button">雨夜 <em>Yǔ Yè</em></button>
+        <button class="tab" data-story="wu" role="tab" type="button">雾 <em>Wù</em></button>
+        <button class="tab" data-story="shanhai" role="tab" type="button">山海 <em>Shān Hǎi</em></button>
       </div>
     </div>
     <div class="topbar__right">
@@ -125,6 +127,8 @@
         <button class="topbar__theme-btn is-active" data-theme="duel" title="对决 · 沙金"></button>
         <button class="topbar__theme-btn" data-theme="gui" title="归 · 雾蓝"></button>
         <button class="topbar__theme-btn" data-theme="yuye" title="雨夜 · 霓虹"></button>
+        <button class="topbar__theme-btn" data-theme="wu" title="雾 · 烟白"></button>
+        <button class="topbar__theme-btn" data-theme="shanhai" title="山海 · 玄青"></button>
       </div>
       <button class="topbar__inspect" id="topbarInspect" type="button" aria-label="检视 / 显示元素偏差" title="显示元素偏差（对照设计系统）">
         <span class="topbar__inspect-dot"></span>
@@ -394,6 +398,76 @@
     </div>
   </section>
 
+  <!-- 09 · Production Pipeline -->
+  <section id="pipeline" class="section section--pipeline">
+    <div class="section__head">
+      <span class="section__num">09</span>
+      <h2 class="section__title">制作 · 流水线</h2>
+      <p class="section__sub">从概念到母版 —— 6 阶段、18 个关键节点、可视化的时间投入与产物。</p>
+    </div>
+    <div class="pipeline" id="pipelineGrid">
+      <!-- populated by app.js -->
+    </div>
+  </section>
+
+  <!-- 10 · Color Script -->
+  <section id="colorscript" class="section section--colorscript">
+    <div class="section__head">
+      <span class="section__num">10</span>
+      <h2 class="section__title">色本 · 16 镜</h2>
+      <p class="section__sub">一镜一色 —— 把整部短片的色彩情绪铺成一条色带。横轴时间，纵轴色相。</p>
+    </div>
+    <div class="cs-strip" id="csStrip">
+      <!-- populated by app.js -->
+    </div>
+    <div class="cs-legend" id="csLegend">
+      <!-- populated by app.js -->
+    </div>
+  </section>
+
+  <!-- 11 · Sound Map -->
+  <section id="soundmap" class="section section--soundmap">
+    <div class="section__head">
+      <span class="section__num">11</span>
+      <h2 class="section__title">声音 · 音轨</h2>
+      <p class="section__sub">5 类音轨 × 16 镜 —— 静音、低频、对话、音效、音乐的密度热图。</p>
+    </div>
+    <div class="sound" id="soundGrid">
+      <!-- populated by app.js -->
+    </div>
+    <div class="sound-legend">
+      <span><i class="sound-dot sound-dot--dialog"></i>对话</span>
+      <span><i class="sound-dot sound-dot--sfx"></i>音效</span>
+      <span><i class="sound-dot sound-dot--music"></i>音乐</span>
+      <span><i class="sound-dot sound-dot--bass"></i>低频</span>
+      <span><i class="sound-dot sound-dot--silence"></i>静音</span>
+    </div>
+  </section>
+
+  <!-- 12 · Stats Dashboard -->
+  <section id="stats" class="section section--stats">
+    <div class="section__head">
+      <span class="section__num">12</span>
+      <h2 class="section__title">数据 · 看板</h2>
+      <p class="section__sub">整站档案的实时汇总 —— 数字即态度。</p>
+    </div>
+    <div class="stats" id="statsGrid">
+      <!-- populated by app.js -->
+    </div>
+  </section>
+
+  <!-- 13 · Archive / 2 new storyboards -->
+  <section id="archive" class="section section--archive">
+    <div class="section__head">
+      <span class="section__num">13</span>
+      <h2 class="section__title">档案 · 扩写</h2>
+      <p class="section__sub">两部未列入主菜单的扩写剧本 —— 雾 / 山海 —— 短篇、概念片、影视 PV 任选。</p>
+    </div>
+    <div class="archive" id="archiveGrid">
+      <!-- populated by app.js -->
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="footer">
     <div class="footer__line"></div>
@@ -418,6 +492,11 @@
       <li><a href="#characters" data-label="CHARS"><span></span></a></li>
       <li><a href="#system" data-label="SYSTEM"><span></span></a></li>
       <li><a href="#notes" data-label="NOTES"><span></span></a></li>
+      <li><a href="#pipeline" data-label="PIPELINE"><span></span></a></li>
+      <li><a href="#colorscript" data-label="COLOR"><span></span></a></li>
+      <li><a href="#soundmap" data-label="SOUND"><span></span></a></li>
+      <li><a href="#stats" data-label="STATS"><span></span></a></li>
+      <li><a href="#archive" data-label="ARCHIVE"><span></span></a></li>
     </ul>
     <button class="chapters__audio" id="audioToggle" aria-label="切换环境音" type="button">
       <span class="chapters__audio-icon">♪</span>
@@ -427,6 +506,8 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <script src="scripts/gui.js"></script>
   <script src="scripts/yuye.js"></script>
+  <script src="scripts/wu.js"></script>
+  <script src="scripts/shanhai.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

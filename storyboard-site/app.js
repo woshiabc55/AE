@@ -168,9 +168,11 @@ const YUYE_CHARS = [
 ];
 
 const CHARACTERS = [
-  { story: 'duel',  storyName: '对决',  chars: DUEL_CHARS },
-  { story: 'gui',   storyName: '归',   chars: GUI_CHARS },
-  { story: 'yuye',  storyName: '雨夜',  chars: YUYE_CHARS },
+  { story: 'duel',     storyName: '对决',  chars: DUEL_CHARS },
+  { story: 'gui',      storyName: '归',   chars: GUI_CHARS },
+  { story: 'yuye',     storyName: '雨夜',  chars: YUYE_CHARS },
+  { story: 'wu',       storyName: '雾',   chars: WU_CHARS },
+  { story: 'shanhai',  storyName: '山海',  chars: SHANHAI_CHARS },
 ];
 
 /* ==========================================================================
@@ -612,6 +614,215 @@ function renderNotes() {
 }
 
 /* ==========================================================================
+   渲染：09 PIPELINE — 6 阶段制作流水线
+   ========================================================================== */
+const PIPELINE_STAGES = [
+  { num: '01', time: '0–2 周',     name: '概念 / Concept',     en: 'CONCEPT',
+    desc: '主题、情绪、视觉关键词；剧本雏形；参考影像；视觉测试（mood frame × 4）。',
+    tasks: ['概念图 × 8', '参考影像 50+ 张', '视觉关键词卡', '1 页一句话总纲'],
+    bar: 18 },
+  { num: '02', time: '2–4 周',     name: '分镜 / Storyboard',  en: 'BOARD',
+    desc: '16 镜 × 6 列：镜号 / 景别 / 运镜 / 画面 / 特效 / 音效；颜色按幕区分。',
+    tasks: ['16 镜分镜', '6 幕情绪曲线', '关键资产清单', '1 页时间轴'],
+    bar: 28 },
+  { num: '03', time: '4–6 周',     name: '动态预览 / Previs',  en: 'PREVIS',
+    desc: '低模 3D 预演 / 2D 关键帧 / 镜头长度最终化；这是改主意成本最低的阶段。',
+    tasks: ['6 幕低模预演', '16 镜关键帧', '镜头时长定型', '动效草稿'],
+    bar: 18 },
+  { num: '04', time: '6–10 周',    name: '建模 / Modeling',     en: 'MODEL',
+    desc: '角色高模 3 渲 2 / 场景关键资产 / 流体模拟 / 粒子骨架。',
+    tasks: ['角色 × 9 全身', '场景 × 12 关键', '流体模拟库', '粒子骨架 30+'],
+    bar: 32 },
+  { num: '05', time: '10–13 周',   name: '光影 / Lighting',    en: 'LIGHT',
+    desc: 'IMAX 物理光照 / IMS 粒子 / IBL 环境 / 三渲二质感 / 色彩脚本落地。',
+    tasks: ['物理光照 × 16 镜', '粒子合成', 'IBL 环境', '3 渲 2 调色'],
+    bar: 24 },
+  { num: '06', time: '13–16 周',   name: '合成 / Master',      en: 'MASTER',
+    tasks: ['Nuke 合成 × 16', '声音终混', 'DCP 母版', 'IMAX 拷贝', '4K 流媒体'],
+    desc: 'Nuke 合成 / 调色终审 / 声音终混 / DCP 母版 / IMAX 拷贝 / 4K 流媒体输出。',
+    bar: 18 },
+];
+
+function renderPipeline() {
+  const root = document.getElementById('pipelineGrid');
+  if (!root) return;
+  root.innerHTML = PIPELINE_STAGES.map((s) => `
+    <article class="pipe">
+      <div class="pipe__head">
+        <span class="pipe__num">STAGE ${s.num}</span>
+        <span class="pipe__time">${s.time}</span>
+      </div>
+      <h3 class="pipe__name">${s.name} <em>${s.en}</em></h3>
+      <p class="pipe__desc">${s.desc}</p>
+      <ul class="pipe__tasks">
+        ${s.tasks.map((t) => `<li>${t}</li>`).join('')}
+      </ul>
+      <div class="pipe__bar"><div class="pipe__bar-fill" style="width:${s.bar}%"></div></div>
+    </article>
+  `).join('');
+}
+
+/* ==========================================================================
+   渲染：10 COLOR SCRIPT — 16 镜色本
+   ========================================================================== */
+const COLOR_SCRIPT = [
+  { hex: '#0F1A2A', mood: '觉醒',     n: 1 },
+  { hex: '#2C2520', mood: '觉醒',     n: 2 },
+  { hex: '#C9A961', mood: '觉醒',     n: 3 },
+  { hex: '#4A3520', mood: '战场',     n: 4 },
+  { hex: '#7A5A30', mood: '战场',     n: 5 },
+  { hex: '#3A2A20', mood: '战场',     n: 6 },
+  { hex: '#8B1A1A', mood: '天坠',     n: 7 },
+  { hex: '#B22626', mood: '天坠',     n: 8 },
+  { hex: '#6A1010', mood: '天坠',     n: 9 },
+  { hex: '#1A0A1A', mood: '爆发',     n: 10 },
+  { hex: '#E8C77A', mood: '爆发',     n: 11 },
+  { hex: '#2A1A0A', mood: '爆发',     n: 12 },
+  { hex: '#FFD700', mood: '神战',     n: 13 },
+  { hex: '#0A0A1A', mood: '神战',     n: 14 },
+  { hex: '#C9A961', mood: '神战',     n: 15 },
+  { hex: '#4A4A4A', mood: '余韵',     n: 16 },
+];
+
+const ACT_COLOR = {
+  '觉醒': '#C9A961',
+  '战场': '#7A5A30',
+  '天坠': '#8B1A1A',
+  '爆发': '#E8C77A',
+  '神战': '#FFD700',
+  '余韵': '#4A4A4A',
+};
+
+function renderColorScript() {
+  const strip = document.getElementById('csStrip');
+  const legend = document.getElementById('csLegend');
+  if (!strip || !legend) return;
+  strip.innerHTML = COLOR_SCRIPT.map((c) => `
+    <div class="cs-cell" style="background:${c.hex}" title="Shot ${String(c.n).padStart(2, '0')} · ${c.mood} · ${c.hex}">
+      <span class="cs-cell__num">${String(c.n).padStart(2, '0')}</span>
+      <span class="cs-cell__hex">${c.hex}</span>
+    </div>
+  `).join('');
+
+  legend.innerHTML = Object.entries(ACT_COLOR).map(([act, color]) => `
+    <span class="cs-legend__act" style="--act-color:${color}">
+      <i style="background:${color}; width:10px; height:10px; display:inline-block;"></i>
+      ${act} · ${color}
+    </span>
+  `).join('');
+}
+
+/* ==========================================================================
+   渲染：11 SOUND MAP — 5 类音轨 × 16 镜
+   ========================================================================== */
+const SOUND_TRACKS = [
+  { key: 'dialog',  label: 'DIALOG 对话', cells: [0,0,1,0,1,1,0,0,0,0,0,1,0,0,0,1] },
+  { key: 'sfx',     label: 'SFX 音效',   cells: [1,1,1,2,1,2,3,2,1,3,3,2,2,3,3,2] },
+  { key: 'music',   label: 'MUSIC 音乐', cells: [0,0,0,1,1,0,2,2,1,2,3,2,3,3,2,1] },
+  { key: 'bass',    label: 'BASS 低频',  cells: [2,1,1,1,0,0,3,2,2,3,3,3,2,3,2,1] },
+  { key: 'silence', label: '静默 SILENCE', cells: [3,2,1,0,0,1,0,0,0,0,0,0,0,0,0,1] },
+];
+
+function renderSoundMap() {
+  const root = document.getElementById('soundGrid');
+  if (!root) return;
+  root.innerHTML = SOUND_TRACKS.map((track) => `
+    <span class="sound__row-label">${track.label}</span>
+    <div class="sound__row">
+      ${track.cells.map((intensity, i) => `
+        <span class="sound__cell sound__cell--${track.key}" style="opacity:${0.15 + intensity * 0.25}; transform:scaleY(${0.4 + intensity * 0.6})" title="Shot ${String(i + 1).padStart(2, '0')} · ${track.label} · L${intensity}"></span>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+/* ==========================================================================
+   渲染：12 STATS — 数据看板
+   ========================================================================== */
+const STATS_DATA = [
+  { label: 'STORYBOARDS', num: '5',     unit: '部剧本',     sub: '对决 · 归 · 雨夜 · 雾 · 山海', bar: 100 },
+  { label: 'SHOTS',       num: '68',    unit: '镜分镜',     sub: '16 + 16 + 18 + 10 + 12',      bar: 100 },
+  { label: 'ACTS',        num: '30',    unit: '幕数',       sub: '6 + 6 + 6 + 4 + 5 幕',       bar: 100 },
+  { label: 'CHARS',       num: '15',    unit: '主创角色',   sub: '9 + 6（雾 3 + 山海 3）',     bar: 78  },
+  { label: 'ASSETS',      num: '30',    unit: '核心资产',   sub: 'IMAX + 3 渲 2 + 水墨',        bar: 100 },
+  { label: 'CONSTRAINTS', num: '30',    unit: '技术约束',   sub: '每部 6 条铁律',               bar: 100 },
+  { label: 'DURATION',    num: '450',   unit: '秒（合计）', sub: '90 + 90 + 120 + 60 + 90',     bar: 100 },
+  { label: 'ASPECT',      num: '1.78',  unit: '宽高比',     sub: '16 : 9 IMAX 满画幅',          bar: 100 },
+];
+
+function renderStats() {
+  const root = document.getElementById('statsGrid');
+  if (!root) return;
+  root.innerHTML = STATS_DATA.map((s) => `
+    <div class="stat">
+      <div class="stat__label">${s.label}</div>
+      <div class="stat__num">${s.num}</div>
+      <div class="stat__unit">${s.unit}</div>
+      <div class="stat__bar"><div class="stat__bar-fill" style="width:${s.bar}%"></div></div>
+      <div class="stat__sub">${s.sub}</div>
+    </div>
+  `).join('');
+}
+
+/* ==========================================================================
+   渲染：13 ARCHIVE — 扩写剧本（雾 / 山海）
+   ========================================================================== */
+const ARCHIVE_STORIES = [
+  {
+    key: 'wu',
+    titleCn: '雾',
+    titleEn: 'Wù',
+    num: 'STORY · 04',
+    sub: '乾隆年间一座坍塌的山神庙 —— 雾里进来一个人，雾里走出去一个人。他们是不是同一个人？',
+    meta: { acts: 4, shots: 10, chars: 3, dur: '60s' },
+    pills: ['3 渲 2 + 实拍融合', '烟白 + 朱砂 + 玄青', '雾中残影 / 半透明', '中国 18 世纪'],
+    chars: WU_CHARS,
+    quote: '若你是你，请自问。',
+    color: '#E0E8EE',
+  },
+  {
+    key: 'shanhai',
+    titleCn: '山海',
+    titleEn: 'Shān Hǎi',
+    num: 'STORY · 05',
+    sub: '北冥之鱼，其名为鲲 —— 鲲化为鹏，鹏之背，不知其几千里。这是它的最后一次迁徙。',
+    meta: { acts: 5, shots: 12, chars: 3, dur: '90s' },
+    pills: ['3 渲 2 + 水墨', '玄青 + 朱砂 + 赭黄', '神话美学', '庄子 · 山海经'],
+    chars: SHANHAI_CHARS,
+    quote: '鹏之背，不知其几千里。',
+    color: '#1A3A4A',
+  },
+];
+
+function renderArchive() {
+  const root = document.getElementById('archiveGrid');
+  if (!root) return;
+  root.innerHTML = ARCHIVE_STORIES.map((s) => `
+    <article class="archive__card archive__card--${s.key}">
+      <div class="archive__head">
+        <h3 class="archive__title">${s.titleCn}<em>${s.titleEn}</em></h3>
+        <span class="archive__num">${s.num}</span>
+      </div>
+      <p class="archive__sub">${s.sub}</p>
+      <div class="archive__meta">
+        <div class="archive__meta-cell"><div class="archive__meta-num">${s.meta.acts}</div><div class="archive__meta-label">ACTS</div></div>
+        <div class="archive__meta-cell"><div class="archive__meta-num">${s.meta.shots}</div><div class="archive__meta-label">SHOTS</div></div>
+        <div class="archive__meta-cell"><div class="archive__meta-num">${s.meta.chars}</div><div class="archive__meta-label">CHARS</div></div>
+        <div class="archive__meta-cell"><div class="archive__meta-num">${s.meta.dur}</div><div class="archive__meta-label">DURATION</div></div>
+      </div>
+      <div class="archive__pills">
+        ${s.pills.map((p) => `<span class="archive__pill">${p}</span>`).join('')}
+      </div>
+      <div class="archive__chars">
+        ${s.chars.map((c) => `<span class="archive__char" style="--char-color:${c.color}">${c.name} <em style="color:var(--smoke-dim); font-size:0.7em; font-style:italic;">${c.role}</em></span>`).join('')}
+      </div>
+      <blockquote class="archive__quote">${s.quote}</blockquote>
+      <button class="archive__cta" data-archive="${s.key}">进入档案 →</button>
+    </article>
+  `).join('');
+}
+
+/* ==========================================================================
    交互：3 主题切换（顶栏色板按钮）
    ========================================================================== */
 function setupThemeSwitcher() {
@@ -678,6 +889,11 @@ function annotateSections() {
     characters:  'CHARS · 9',
     system:      'SYSTEM · TOKENS',
     notes:       'NOTES · 3 CARDS',
+    pipeline:    'PIPELINE · 6 STAGES',
+    colorscript: 'COLOR · 16 STRIP',
+    soundmap:    'SOUND · 5 TRACKS',
+    stats:       'STATS · 8 METRICS',
+    archive:     'ARCHIVE · 2 STORIES',
   };
   document.querySelectorAll('main section.section, body > section.section').forEach((s) => {
     if (!s.id) return;
@@ -765,7 +981,7 @@ function hideBubble() {
 function countDeviations() {
   // 扫描所有 .section / 卡片，统计 padding / margin 不在 token 上的数量
   let total = 0;
-  const targets = document.querySelectorAll('.section, .act, .constraint, .asset, .shot, .char, .notes__card, .swatch, .system__group');
+  const targets = document.querySelectorAll('.section, .act, .constraint, .asset, .shot, .char, .notes__card, .swatch, .system__group, .pipe, .stat, .archive__card');
   targets.forEach((el) => {
     const cs = getComputedStyle(el);
     const pad = parseFloat(cs.paddingTop);
@@ -834,7 +1050,7 @@ function setupInspector() {
 
     if (t === lastTarget) {
       // 仍然显示气泡 + 跟随鼠标
-      const target = t.closest('.section, .act, .constraint, .asset, .shot, .char, .notes__card, .swatch, .system__group, .slate__cell, .compare__cell, .topbar__play, .topbar__theme-btn, .topbar__inspect, .tab');
+      const target = t.closest('.section, .act, .constraint, .asset, .shot, .char, .notes__card, .swatch, .system__group, .slate__cell, .compare__cell, .topbar__play, .topbar__theme-btn, .topbar__inspect, .tab, .pipe, .stat, .archive__card, .cs-cell');
       if (target) showBubble(target, e);
       return;
     }
@@ -842,7 +1058,7 @@ function setupInspector() {
 
     // 取消上一个 .is-picked
     document.querySelectorAll('.is-picked').forEach((el) => el.classList.remove('is-picked'));
-    const target = t.closest('.section, .act, .constraint, .asset, .shot, .char, .notes__card, .swatch, .system__group, .slate__cell, .compare__cell, .topbar__play, .topbar__theme-btn, .topbar__inspect, .tab');
+    const target = t.closest('.section, .act, .constraint, .asset, .shot, .char, .notes__card, .swatch, .system__group, .slate__cell, .compare__cell, .topbar__play, .topbar__theme-btn, .topbar__inspect, .tab, .pipe, .stat, .archive__card, .cs-cell');
     if (target) {
       target.classList.add('is-picked');
       showBubble(target, e);
@@ -955,9 +1171,11 @@ const DUEL_CONSTRAINTS = CONSTRAINTS;
 const DUEL_ASSETS = ASSETS;
 
 const STORYBOARDS = {
-  duel: { meta: DUEL_META, acts: DUEL_ACTS, shots: DUEL_SHOTS, constraints: DUEL_CONSTRAINTS, assets: DUEL_ASSETS },
-  gui:  { meta: GUI_META,  acts: GUI_ACTS,  shots: GUI_SHOTS,  constraints: GUI_CONSTRAINTS,  assets: GUI_ASSETS  },
-  yuye: { meta: YUYE_META, acts: YUYE_ACTS, shots: YUYE_SHOTS, constraints: YUYE_CONSTRAINTS, assets: YUYE_ASSETS },
+  duel:    { meta: DUEL_META,    acts: DUEL_ACTS,    shots: DUEL_SHOTS,    constraints: DUEL_CONSTRAINTS,    assets: DUEL_ASSETS },
+  gui:     { meta: GUI_META,     acts: GUI_ACTS,     shots: GUI_SHOTS,     constraints: GUI_CONSTRAINTS,     assets: GUI_ASSETS  },
+  yuye:    { meta: YUYE_META,    acts: YUYE_ACTS,    shots: YUYE_SHOTS,    constraints: YUYE_CONSTRAINTS,    assets: YUYE_ASSETS },
+  wu:      { meta: WU_META,      acts: WU_ACTS,      shots: WU_SHOTS,      constraints: WU_CONSTRAINTS,      assets: WU_ASSETS   },
+  shanhai: { meta: SHANHAI_META, acts: SHANHAI_ACTS, shots: SHANHAI_SHOTS, constraints: SHANHAI_CONSTRAINTS, assets: SHANHAI_ASSETS },
 };
 
 let activeStoryboard = 'duel';
@@ -1120,6 +1338,11 @@ document.addEventListener('DOMContentLoaded', () => {
   renderChars();
   renderSystem();
   renderNotes();
+  renderPipeline();
+  renderColorScript();
+  renderSoundMap();
+  renderStats();
+  renderArchive();
   renderDeck();
   renderLightboxThumbs();
   renderTimeline();
@@ -1567,7 +1790,7 @@ function setupProgressBar() {
    章节 scroll-spy
    ========================================================================== */
 function setupScrollSpy() {
-  const sections = ['hero', 'rhythm', 'shots', 'constraints', 'assets', 'characters', 'system', 'notes'];
+  const sections = ['hero', 'rhythm', 'shots', 'constraints', 'assets', 'characters', 'system', 'notes', 'pipeline', 'colorscript', 'soundmap', 'stats', 'archive'];
   const links = document.querySelectorAll('.chapters a');
   const observer = new IntersectionObserver(
     (entries) => {
