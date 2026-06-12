@@ -18,6 +18,32 @@
   <!-- Film grain overlay -->
   <div class="grain" aria-hidden="true"></div>
 
+  <!-- Inspector overlay (dev mode) -->
+  <div class="inspector" id="inspector" aria-hidden="true">
+    <div class="inspector__baseline" id="inspectorBaseline" aria-hidden="true"></div>
+    <div class="inspector__hud" id="inspectorHud" aria-hidden="true">
+      <div class="inspector__hud-row">
+        <span class="inspector__hud-label">INSPECT</span>
+        <span class="inspector__hud-state is-on">ON</span>
+      </div>
+      <div class="inspector__hud-row">
+        <span class="inspector__hud-label">SECTIONS</span>
+        <span class="inspector__hud-val" id="inspectorSectionCount">—</span>
+      </div>
+      <div class="inspector__hud-row">
+        <span class="inspector__hud-label">Δ TOKENS</span>
+        <span class="inspector__hud-val" id="inspectorDeviation">—</span>
+      </div>
+      <div class="inspector__hud-row">
+        <span class="inspector__hud-label">CURSOR</span>
+        <span class="inspector__hud-val" id="inspectorCursor">— · —</span>
+      </div>
+      <div class="inspector__hud-row inspector__hud-row--footer">
+        <span class="inspector__hud-sub">点击元素 → 显示 token 偏差</span>
+      </div>
+    </div>
+  </div>
+
   <!-- Film progress strip -->
   <div class="progress" aria-hidden="true">
     <div class="progress__bar" id="progressBar"></div>
@@ -100,6 +126,10 @@
         <button class="topbar__theme-btn" data-theme="gui" title="归 · 雾蓝"></button>
         <button class="topbar__theme-btn" data-theme="yuye" title="雨夜 · 霓虹"></button>
       </div>
+      <button class="topbar__inspect" id="topbarInspect" type="button" aria-label="检视 / 显示元素偏差" title="显示元素偏差（对照设计系统）">
+        <span class="topbar__inspect-dot"></span>
+        <span>INSPECT</span>
+      </button>
       <div class="topbar__export" id="topbarExport">
         <button class="topbar__export-btn" id="exportToggle" type="button" aria-label="导出">↓</button>
         <div class="topbar__export-menu" id="exportMenu">

@@ -637,6 +637,230 @@ function setupThemeSwitcher() {
 }
 
 /* ==========================================================================
+   交互：INSPECT 模式 — 显示元素偏差
+   - body.is-inspecting 打开后：
+     · 8px 基准网格铺底
+     · 每个 .section 左上角标 #id+token、右下角标实测尺寸
+     · 选中元素：弹出气泡显示其 token 偏差
+   ========================================================================== */
+const SPACING_TOKENS_PX = [4, 8, 16, 24, 40, 64, 96, 144];
+const FONT_TOKENS = {
+  '4.5rem': 'DISPLAY · 4.5rem',
+  '2.6rem': 'H1 · 2.6rem',
+  '1.8rem': 'H2 · 1.8rem',
+  '1.6rem': 'H2 · 1.6rem',
+  '1.5rem': 'H2 · 1.5rem',
+  '1.3rem': 'H3 · 1.3rem',
+  '0.75rem': 'CAPTION · 0.75rem',
+  '0.7rem':  'MONO · 0.7rem',
+  '0.65rem': 'MONO · 0.65rem',
+};
+
+function nearestSpacing(px) {
+  let best = SPACING_TOKENS_PX[0];
+  let bestDelta = Math.abs(px - best);
+  for (const t of SPACING_TOKENS_PX) {
+    const d = Math.abs(px - t);
+    if (d < bestDelta) { best = t; bestDelta = d; }
+  }
+  return { value: best, delta: Math.round(px - best) };
+}
+
+function annotateSections() {
+  // 给主要 section 标 data-token（来自 CSS 变量读取 + token 映射）
+  const tokenMap = {
+    hero:        'HERO · DISPLAY/72',
+    rhythm:      'RHYTHM · 6 ACTS',
+    compare:     'COMPARE · 3×6',
+    shots:       'SHOTS · 16',
+    constraints: 'RULES · 6',
+    assets:      'ASSETS · 6',
+    characters:  'CHARS · 9',
+    system:      'SYSTEM · TOKENS',
+    notes:       'NOTES · 3 CARDS',
+  };
+  document.querySelectorAll('main section.section, body > section.section').forEach((s) => {
+    if (!s.id) return;
+    s.setAttribute('data-token', tokenMap[s.id] || s.id.toUpperCase());
+  });
+
+  // 给主要标题标 data-token-font
+  document.querySelectorAll('.section__title, .hero__title-cn, .hero__title-en, .footer__quote').forEach((el) => {
+    const sz = getComputedStyle(el).fontSize;
+    const tok = FONT_TOKENS[sz] || `${sz}`;
+    el.setAttribute('data-token-font', tok);
+  });
+}
+
+function updateSectionSizes() {
+  // 实时计算每个 section 的尺寸，标到 data-size
+  document.querySelectorAll('section.section, body > section').forEach((s) => {
+    if (!s.id) return;
+    const r = s.getBoundingClientRect();
+    const w = Math.round(r.width);
+    const h = Math.round(r.height);
+    s.setAttribute('data-size', `${w}×${h}px`);
+  });
+}
+
+function ensureBubble() {
+  let b = document.getElementById('inspectorBubble');
+  if (b) return b;
+  b = document.createElement('div');
+  b.id = 'inspectorBubble';
+  b.className = 'inspector__bubble';
+  document.body.appendChild(b);
+  return b;
+}
+
+function showBubble(target, evt) {
+  const b = ensureBubble();
+  const cs = getComputedStyle(target);
+  const r = target.getBoundingClientRect();
+  const px = parseFloat(cs.fontSize);
+  const padTop = parseFloat(cs.paddingTop);
+  const padLeft = parseFloat(cs.paddingLeft);
+  const padRight = parseFloat(cs.paddingRight);
+  const padBot = parseFloat(cs.paddingBottom);
+  const marginTop = parseFloat(cs.marginTop);
+  const gap = parseFloat(cs.gap) || 0;
+
+  const fontTok = FONT_TOKENS[cs.fontSize] || `自定义 ${cs.fontSize}`;
+  const padTok = nearestSpacing(padTop);
+  const marTok = nearestSpacing(marginTop);
+  const gapTok = nearestSpacing(gap);
+
+  // 偏差状态
+  const padDeltaCls = Math.abs(padTok.delta) <= 1 ? 'is-ok' : 'is-deviation';
+  const marDeltaCls = Math.abs(marTok.delta) <= 1 ? 'is-ok' : 'is-deviation';
+
+  const tagName = target.tagName.toLowerCase();
+  const id = target.id ? `#${target.id}` : '';
+  const cls = (target.className || '').toString().split(/\s+/).filter((c) => c && !c.startsWith('is-')).slice(0, 2).join('.');
+
+  b.innerHTML = `
+    <div class="inspector__bubble-title">${tagName}${id} ${cls ? '· ' + cls : ''}</div>
+    <div class="inspector__bubble-row"><span>font-size</span><span>${cs.fontSize} → ${fontTok}</span></div>
+    <div class="inspector__bubble-row ${padDeltaCls}"><span>padding-top</span><span>${padTop}px → ${padTok.value}px (Δ ${padTok.delta >= 0 ? '+' : ''}${padTok.delta})</span></div>
+    <div class="inspector__bubble-row"><span>padding-x</span><span>${padLeft}/${padRight}px</span></div>
+    <div class="inspector__bubble-row ${marDeltaCls}"><span>margin-top</span><span>${marginTop}px → ${marTok.value}px (Δ ${marTok.delta >= 0 ? '+' : ''}${marTok.delta})</span></div>
+    <div class="inspector__bubble-row"><span>gap</span><span>${gap}px → ${gapTok.value}px</span></div>
+    <div class="inspector__bubble-row"><span>size</span><span>${Math.round(r.width)}×${Math.round(r.height)}px</span></div>
+    <div class="inspector__bubble-row"><span>color</span><span>${cs.color}</span></div>
+  `;
+
+  // 定位在元素右上角
+  const bx = Math.min(window.innerWidth - 280, r.right + 8);
+  const by = Math.max(8, r.top);
+  b.style.left = `${bx}px`;
+  b.style.top = `${by}px`;
+  b.classList.add('is-on');
+}
+
+function hideBubble() {
+  const b = document.getElementById('inspectorBubble');
+  if (b) b.classList.remove('is-on');
+}
+
+function countDeviations() {
+  // 扫描所有 .section / 卡片，统计 padding / margin 不在 token 上的数量
+  let total = 0;
+  const targets = document.querySelectorAll('.section, .act, .constraint, .asset, .shot, .char, .notes__card, .swatch, .system__group');
+  targets.forEach((el) => {
+    const cs = getComputedStyle(el);
+    const pad = parseFloat(cs.paddingTop);
+    const mar = parseFloat(cs.marginTop);
+    if (Math.abs(nearestSpacing(pad).delta) > 1) total++;
+    if (Math.abs(nearestSpacing(mar).delta) > 1) total++;
+  });
+  return total;
+}
+
+function setupInspector() {
+  const btn = document.getElementById('topbarInspect');
+  const inspector = document.getElementById('inspector');
+  if (!btn || !inspector) return;
+
+  // 准备一次（首次开启时）
+  let prepared = false;
+
+  const enter = () => {
+    if (!prepared) {
+      annotateSections();
+      prepared = true;
+    }
+    document.body.classList.add('is-inspecting');
+    inspector.setAttribute('aria-hidden', 'false');
+    document.getElementById('inspectorSectionCount').textContent = document.querySelectorAll('section.section, body > section').length;
+    document.getElementById('inspectorDeviation').textContent = `${countDeviations()} 处`;
+    updateSectionSizes();
+  };
+
+  const exit = () => {
+    document.body.classList.remove('is-inspecting');
+    inspector.setAttribute('aria-hidden', 'true');
+    hideBubble();
+  };
+
+  btn.addEventListener('click', () => {
+    if (document.body.classList.contains('is-inspecting')) exit();
+    else enter();
+  });
+
+  // ESC 退出
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.body.classList.contains('is-inspecting')) exit();
+  });
+
+  // 鼠标移动 → 选中 + 显示气泡
+  let lastTarget = null;
+  document.addEventListener('mousemove', (e) => {
+    if (!document.body.classList.contains('is-inspecting')) return;
+    const t = e.target;
+    // 跳过 inspector 自己
+    if (t.closest('.inspector, .topbar')) {
+      hideBubble();
+      return;
+    }
+    // 跳过光标覆盖层
+    if (t.closest('.inspector__baseline, .inspector__hud, .inspector__bubble')) {
+      hideBubble();
+      return;
+    }
+
+    // 显示坐标
+    const cur = document.getElementById('inspectorCursor');
+    if (cur) cur.textContent = `${Math.round(e.clientX)} · ${Math.round(e.clientY)}`;
+
+    if (t === lastTarget) {
+      // 仍然显示气泡 + 跟随鼠标
+      const target = t.closest('.section, .act, .constraint, .asset, .shot, .char, .notes__card, .swatch, .system__group, .slate__cell, .compare__cell, .topbar__play, .topbar__theme-btn, .topbar__inspect, .tab');
+      if (target) showBubble(target, e);
+      return;
+    }
+    lastTarget = t;
+
+    // 取消上一个 .is-picked
+    document.querySelectorAll('.is-picked').forEach((el) => el.classList.remove('is-picked'));
+    const target = t.closest('.section, .act, .constraint, .asset, .shot, .char, .notes__card, .swatch, .system__group, .slate__cell, .compare__cell, .topbar__play, .topbar__theme-btn, .topbar__inspect, .tab');
+    if (target) {
+      target.classList.add('is-picked');
+      showBubble(target, e);
+    } else {
+      hideBubble();
+    }
+  });
+
+  // 滚动/缩放时刷新尺寸
+  window.addEventListener('scroll', () => {
+    if (document.body.classList.contains('is-inspecting')) updateSectionSizes();
+  }, { passive: true });
+  window.addEventListener('resize', () => {
+    if (document.body.classList.contains('is-inspecting')) updateSectionSizes();
+  });
+}
+
+/* ==========================================================================
    交互：Hero 粒子
    ========================================================================== */
 function spawnParticles() {
@@ -914,6 +1138,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupTabs();
   setupExport();
   setupThemeSwitcher();
+  setupInspector();
 });
 
 /* ==========================================================================
