@@ -94,6 +94,14 @@
         <span class="topbar__play-tri"></span>
         <span>PLAY</span>
       </button>
+      <div class="topbar__export" id="topbarExport">
+        <button class="topbar__export-btn" id="exportToggle" type="button" aria-label="导出">↓</button>
+        <div class="topbar__export-menu" id="exportMenu">
+          <button data-fmt="json">下载 JSON 数据</button>
+          <button data-fmt="md">下载 Markdown 脚本</button>
+          <button data-fmt="pdf">打印 / 导出 PDF</button>
+        </div>
+      </div>
       <span class="topbar__time" id="liveClock">--:--:--</span>
     </div>
   </header>
@@ -178,6 +186,21 @@
     </div>
 
     <div class="acts" id="acts">
+      <!-- populated by app.js -->
+    </div>
+  </section>
+
+  <!-- 对照表 (Comparison) -->
+  <section id="compare" class="section section--compare">
+    <div class="section__head">
+      <span class="section__num">02.5</span>
+      <h2 class="section__title">对决 <em>vs</em> 归</h2>
+      <p class="section__sub">
+        同一制作规格下的两部对位作品 —— 一部是"力"，一部是"时间"。
+      </p>
+    </div>
+
+    <div class="compare" id="compareGrid">
       <!-- populated by app.js -->
     </div>
   </section>

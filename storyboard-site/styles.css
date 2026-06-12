@@ -550,6 +550,155 @@ body {
 }
 
 /* ==========================================================================
+   COMPARE — 对决 vs 归
+   ========================================================================== */
+.section--compare {
+  padding-top: 4rem;
+}
+
+.compare {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: rgba(201, 169, 97, 0.15);
+  border: 1px solid rgba(201, 169, 97, 0.15);
+}
+
+.compare__row {
+  display: grid;
+  grid-template-columns: 120px 1fr 1fr;
+  gap: 0;
+  background: var(--ink);
+}
+
+.compare__label {
+  background: rgba(20, 20, 26, 0.6);
+  padding: 2rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  justify-content: center;
+  border-right: 1px solid rgba(201, 169, 97, 0.15);
+}
+
+.compare__label-num {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  color: var(--gold-dim);
+}
+
+.compare__label-vs {
+  font-family: var(--serif-en);
+  font-size: 1.75rem;
+  font-style: italic;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.compare__cell {
+  position: relative;
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: 80px 1fr 80px;
+  gap: 1.25rem;
+  align-items: center;
+  min-height: 140px;
+  transition: background 0.3s var(--ease-out);
+}
+
+.compare__cell--duel {
+  background: linear-gradient(90deg, rgba(139, 26, 26, 0.04) 0%, rgba(201, 169, 97, 0.05) 100%);
+  border-right: 1px solid rgba(201, 169, 97, 0.08);
+}
+
+.compare__cell--gui {
+  background: linear-gradient(90deg, rgba(70, 80, 110, 0.05) 0%, rgba(60, 100, 80, 0.05) 100%);
+}
+
+.compare__cell:hover {
+  background: var(--ink-2);
+}
+
+.compare__cell-num {
+  font-family: var(--serif-en);
+  font-size: 2.25rem;
+  font-style: italic;
+  color: var(--gold);
+  line-height: 1;
+  text-align: center;
+}
+
+.compare__cell-num small {
+  display: block;
+  font-size: 0.6rem;
+  font-style: normal;
+  letter-spacing: 0.2em;
+  color: var(--gold-dim);
+  margin-top: 0.5rem;
+}
+
+.compare__cell-content h4 {
+  font-family: var(--serif-cn);
+  font-size: 1.125rem;
+  color: var(--gold);
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.05em;
+}
+
+.compare__cell-content p {
+  font-size: 0.85rem;
+  color: var(--smoke);
+  line-height: 1.5;
+  margin-bottom: 0.4rem;
+}
+
+.compare__cell-content .emotion {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: 0.8rem;
+  color: var(--gold-dim);
+}
+
+.compare__cell-thumb {
+  aspect-ratio: 16 / 9;
+  background: var(--ink-2);
+  border: 1px solid rgba(201, 169, 97, 0.15);
+  overflow: hidden;
+  position: relative;
+}
+
+.compare__cell-thumb img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  filter: saturate(0.85);
+  transition: opacity 0.6s var(--ease-out);
+}
+
+.compare__cell-thumb img.is-loaded { opacity: 0.85; }
+.compare__cell-thumb img.is-error { display: none; }
+
+/* 章节锚点列表中插入 compare */
+#chapters a[href="#compare"] { display: none; }
+
+@media (max-width: 1024px) {
+  .compare__row { grid-template-columns: 80px 1fr; }
+  .compare__cell--duel { border-bottom: 1px solid rgba(201, 169, 97, 0.08); }
+}
+
+@media (max-width: 768px) {
+  .compare__row { grid-template-columns: 1fr; }
+  .compare__label { padding: 1rem; flex-direction: row; align-items: center; gap: 1rem; border-right: none; border-bottom: 1px solid rgba(201, 169, 97, 0.15); }
+  .compare__label-vs { font-size: 1.25rem; }
+  .compare__cell { grid-template-columns: 60px 1fr; padding: 1rem; }
+  .compare__cell-thumb { display: none; }
+}
+
+/* ==========================================================================
    TIMELINE — 90s 横轴
    ========================================================================== */
 .section--timeline {
@@ -1167,6 +1316,93 @@ body {
 @media (max-width: 768px) {
   .tab { padding: 0.35rem 0.6rem; font-size: 0.75rem; }
   .tab em { display: none; }
+}
+
+/* ==========================================================================
+   EXPORT MENU
+   ========================================================================== */
+.topbar__export {
+  position: relative;
+  pointer-events: auto;
+}
+
+.topbar__export-btn {
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: 1px solid rgba(201, 169, 97, 0.3);
+  color: var(--gold);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s var(--ease-out);
+  font-family: var(--serif-en);
+}
+
+.topbar__export-btn:hover,
+.topbar__export-btn.is-open {
+  background: var(--gold);
+  color: var(--ink);
+  box-shadow: 0 0 12px rgba(232, 199, 122, 0.4);
+}
+
+.topbar__export-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: rgba(20, 20, 26, 0.98);
+  border: 1px solid rgba(201, 169, 97, 0.3);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  min-width: 200px;
+  display: none;
+  flex-direction: column;
+  z-index: 200;
+}
+
+.topbar__export-menu.is-open {
+  display: flex;
+}
+
+.topbar__export-menu button {
+  background: transparent;
+  border: none;
+  color: var(--sand);
+  font-family: var(--serif-cn);
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s var(--ease-out);
+}
+
+.topbar__export-menu button:hover {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+.topbar__export-menu button + button {
+  border-top: 1px solid rgba(201, 169, 97, 0.1);
+}
+
+/* ==========================================================================
+   PRINT — 打印 / PDF 导出样式
+   ========================================================================== */
+@media print {
+  .topbar, .progress, .chapters, .deck, .player, .lightbox,
+  .topbar__export, .hero__particles, .hero__scroll, .timeline__playhead,
+  .grain, .act__bg, .shot__motion-arrow { display: none !important; }
+  body { background: white; color: black; }
+  .hero, .section, .footer { padding: 1rem 0 !important; max-width: 100% !important; }
+  .hero__title-cn { color: #8B1A1A !important; -webkit-text-fill-color: #8B1A1A !important; }
+  .section__title, .shot__data-act, .act__name, .asset__name, .constraint__text { color: black !important; }
+  .shot__canvas, .asset__thumb { break-inside: avoid; }
+  .shot__img { opacity: 1 !important; }
+  .shot__canvas { border: 1px solid #999 !important; page-break-inside: avoid; }
+  a { color: inherit; text-decoration: none; }
 }
 
 /* ==========================================================================

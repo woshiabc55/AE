@@ -97,7 +97,7 @@ function renderActs() {
         <div class="act__curve">
           <svg viewBox="0 0 100 56" preserveAspectRatio="none">
             <defs>
-              <linearGradient id="g-${a.num}" x1="0" y1="0" x2="1" y2="0">
+              <linearGradient id="g-${a.num}-${activeStoryboard}" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0%" stop-color="#C9A961" stop-opacity="0.2"/>
                 <stop offset="50%" stop-color="#E8C77A" stop-opacity="0.8"/>
                 <stop offset="100%" stop-color="#8B1A1A" stop-opacity="0.6"/>
@@ -106,7 +106,7 @@ function renderActs() {
             <polyline
               points="${points}"
               fill="none"
-              stroke="url(#g-${a.num})"
+              stroke="url(#g-${a.num}-${activeStoryboard})"
               stroke-width="1.5"
               vector-effect="non-scaling-stroke"
             />
@@ -122,6 +122,50 @@ function renderActs() {
           </svg>
         </div>
         <p class="act__camera">${a.camera}<br/><em style="font-family:var(--serif-en); font-style:italic; color:var(--gold-dim); font-size:0.8rem;">${a.emotion}</em></p>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ==========================================================================
+   渲染：对照表（对决 vs 归）
+   ========================================================================== */
+function renderCompare() {
+  const root = document.getElementById('compareGrid');
+  if (!root) return;
+  const duel = STORYBOARDS.duel;
+  const gui = STORYBOARDS.gui;
+  root.innerHTML = Array.from({ length: 6 }).map((_, i) => {
+    const d = duel.acts[i];
+    const g = gui.acts[i];
+    return `
+      <div class="compare__row">
+        <div class="compare__label">
+          <span class="compare__label-num">ACT ${String(i + 1).padStart(2, '0')}</span>
+          <span class="compare__label-vs">vs</span>
+        </div>
+        <div class="compare__cell compare__cell--duel">
+          <div class="compare__cell-num">${d.num}<small>对决 / DUÉL</small></div>
+          <div class="compare__cell-content">
+            <h4>${d.name}</h4>
+            <p>${d.camera}</p>
+            <span class="emotion">${d.emotion}</span>
+          </div>
+          <div class="compare__cell-thumb">
+            <img alt="${d.name}" src="${IMG(d.prompt)}" onload="this.classList.add('is-loaded')" onerror="this.classList.add('is-error')" />
+          </div>
+        </div>
+        <div class="compare__cell compare__cell--gui">
+          <div class="compare__cell-num">${g.num}<small>归 / GUĪ</small></div>
+          <div class="compare__cell-content">
+            <h4>${g.name}</h4>
+            <p>${g.camera}</p>
+            <span class="emotion">${g.emotion}</span>
+          </div>
+          <div class="compare__cell-thumb">
+            <img alt="${g.name}" src="${IMG(g.prompt)}" onload="this.classList.add('is-loaded')" onerror="this.classList.add('is-error')" />
+          </div>
+        </div>
       </div>
     `;
   }).join('');
@@ -375,11 +419,106 @@ function setupTabs() {
 }
 
 /* ==========================================================================
+   导出：JSON / Markdown / 打印
+   ========================================================================== */
+function setupExport() {
+  const toggle = document.getElementById('exportToggle');
+  const menu = document.getElementById('exportMenu');
+  if (!toggle || !menu) return;
+
+  toggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    menu.classList.toggle('is-open');
+    toggle.classList.toggle('is-open');
+  });
+  document.addEventListener('click', (e) => {
+    if (!menu.contains(e.target) && e.target !== toggle) {
+      menu.classList.remove('is-open');
+      toggle.classList.remove('is-open');
+    }
+  });
+
+  menu.querySelectorAll('button').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const fmt = btn.dataset.fmt;
+      if (fmt === 'json') downloadJSON();
+      else if (fmt === 'md') downloadMarkdown();
+      else if (fmt === 'pdf') window.print();
+      menu.classList.remove('is-open');
+      toggle.classList.remove('is-open');
+    });
+  });
+}
+
+function downloadFile(content, filename, mime) {
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function downloadJSON() {
+  const sb = STORYBOARDS[activeStoryboard];
+  const data = {
+    meta: sb.meta,
+    acts: sb.acts,
+    shots: sb.shots,
+    constraints: sb.constraints,
+    assets: sb.assets,
+    exported: new Date().toISOString(),
+  };
+  downloadFile(
+    JSON.stringify(data, null, 2),
+    `storyboard-${activeStoryboard}-${Date.now()}.json`,
+    'application/json'
+  );
+}
+
+function downloadMarkdown() {
+  const sb = STORYBOARDS[activeStoryboard];
+  const m = sb.meta;
+  let md = `# 《${m.titleCn}》— 影视 PV 分镜脚本\n\n`;
+  md += `> 画幅：16:9 IMAX 满画幅\n`;
+  md += `> 时长：≈ 90s（六幕 × 15s）\n`;
+  md += `> 导出时间：${new Date().toLocaleString()}\n\n`;
+  md += `## 六幕节奏\n\n`;
+  md += `| 幕 | 标题 | 情绪 | 镜头语言 |\n| --- | --- | --- | --- |\n`;
+  sb.acts.forEach((a) => {
+    md += `| ${a.num} | ${a.name} | ${a.emotion} | ${a.camera} |\n`;
+  });
+  md += `\n## 16 镜分镜\n\n`;
+  let currentAct = '';
+  sb.shots.forEach((s) => {
+    if (s.act !== currentAct) {
+      currentAct = s.act;
+      md += `\n### 【${currentAct}】\n\n`;
+      md += `| 镜号 | 景别 | 运镜 | 画面 | 特效 | 音效 |\n| --- | --- | --- | --- | --- | --- |\n`;
+    }
+    md += `| ${s.number} | ${s.framing} | ${s.camera} | ${s.content} | ${s.fx} | ${s.audio} |\n`;
+  });
+  md += `\n## 全局技术约束\n\n`;
+  sb.constraints.forEach((c, i) => {
+    md += `${i + 1}. ${c.text.replace(/<[^>]+>/g, '')}\n`;
+  });
+  md += `\n## 关键特效资产\n\n`;
+  sb.assets.forEach((a) => {
+    md += `- **${a.name}**：${a.desc}\n`;
+  });
+  downloadFile(md, `storyboard-${activeStoryboard}-${Date.now()}.md`, 'text/markdown');
+}
+
+/* ==========================================================================
    启动
    ========================================================================== */
 document.addEventListener('DOMContentLoaded', () => {
   renderActs();
   renderShots();
+  renderCompare();
   renderConstraints();
   renderAssets();
   renderDeck();
@@ -398,6 +537,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupTimelineInteraction();
   preloadAllImages();
   setupTabs();
+  setupExport();
 });
 
 /* ==========================================================================
