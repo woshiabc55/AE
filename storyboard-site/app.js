@@ -29,6 +29,9 @@ let ACTS = [
 const IMG = (prompt) =>
   `https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=${encodeURIComponent(prompt)}&image_size=landscape_16_9`;
 
+const IMG_P = (prompt) =>
+  `https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=${encodeURIComponent(prompt)}&image_size=portrait_4_3`;
+
 let SHOTS = [
   { act: '第一幕：觉醒', range: '0″ – 5″',   number: '01', framing: '大全景', camera: '地面仰拍 → 急速拉升', content: '巨像（圣像）从地面拔地而起，尘埃与粒子在阳光斜射下形成体积光柱，地面裂纹呈放射状向外扩散。', fx: 'IMAX 渲染 · IMS 粒子模糊 · 大景深 · 镜头径向拉伸', audio: '低频嗡鸣 + 大地结构性震颤', mood: 1, prompt: 'A colossal ancient saint statue erupting from cracked earth, dust and golden particles rising, low angle looking up, IMAX cinematic, volumetric god rays, photorealistic, dark earth tones with gold light, dark mood, 16:9' },
   { act: '第一幕：觉醒', range: '5″ – 12″',  number: '02', framing: '远景',   camera: '长焦压缩 → 横移',     content: '一个中国老头（农夫装扮、衣衫褴褛）站定回望；周围空气呈现实白色线框高速掠过，老头随手抬升地面一块泥土。', fx: '3 渲 2 角色 + IC 现实环境 · 材质对比 · 运动模糊', audio: '急促脚步 + 古老编钟',         mood: 1, prompt: 'A Chinese old farmer in tattered clothes standing in a desolate battlefield, a warrior with a great curved blade facing him, dust swirling in air, white speed lines streaking past, cinematic IMAX, golden hour, dark earth tones, 16:9' },
@@ -69,6 +72,105 @@ let ASSETS = [
   { name: '冲击波扩散',    desc: '几何倍扩散 · 空间割裂 · 边界清晰',       thumb: 'thumb-4', prompt: 'Concentric shockwave rings expanding across desolate landscape, geometric multiple expansion, IMAX cinematic, low saturation, 16:9' },
   { name: '水墨金龙',      desc: '全身化龙 · 贯穿巨兽 · 神话美学爆发',     thumb: 'thumb-5', prompt: 'Giant golden Chinese ink dragon coiling in cosmos, mythological aesthetic, dark space with stars, 16:9' },
   { name: '太空舰队',      desc: '《沙丘》低饱和 · 苍凉史诗 · 远景剪影',   thumb: 'thumb-6', prompt: 'Vast alien space fleet approaching in distance over desert, low saturation Dune color palette, IMAX cinematic, 16:9' },
+];
+
+/* ==========================================================================
+   角色档案 — 三部剧本的 9 位主创
+   ========================================================================== */
+const DUEL_CHARS = [
+  {
+    name: '老头', pinyin: 'Lǎo Tóu', role: '主角 · 农夫',
+    portraitPrompt: 'A powerful Chinese old farmer in tattered clothes, weathered face with a cunning smile, standing in a field with golden dust, IMAX cinematic portrait, warm gold rim light, 3D to 2D stylized, character concept art, portrait 4:3',
+    expressionPrompt: 'Extreme close-up of a Chinese old farmer face, eyes turning from cloudy to sharp gold, a cunning smile forming, dramatic rim lighting, weathered skin texture, IMAX portrait, character expression sheet, 4:3',
+    desc: '衣衫褴褛的中国老农。看似躬耕陇亩，掌中却藏着能毁星的力量。中式幽默的狡黠笑容是他唯一的注解。',
+    signature: '瞳孔金光 · 推掌如推犁 · 耳内波动',
+    line: '「一个种地的。」',
+    color: '#C9A961',
+  },
+  {
+    name: '大刀客', pinyin: 'Dà Dāo Kè', role: '对手 · 刀客',
+    portraitPrompt: 'A Chinese warrior with a massive curved blade sword, black and red traditional clothes, wind-blown hair, intense eyes, IMAX cinematic portrait, dark mood with red accents, character concept art, 4:3',
+    expressionPrompt: 'Close-up of a Chinese warrior face, intense eyes, sweat and rain on skin, blade reflected in pupil, IMAX portrait, character expression sheet, 4:3',
+    desc: '持巨刃的流浪刀客。不懂神话，只懂刀。被老头打飞数百米后喃喃道：「此界有如此人。」',
+    signature: '黑红衣 · 巨刃 · 头发被风吹起',
+    line: '「此界有如此人。」',
+    color: '#8B1A1A',
+  },
+  {
+    name: '太空巨兽', pinyin: 'Tài Kōng Jù Shòu', role: '终敌 · 神级',
+    portraitPrompt: 'A colossal cosmic beast emerging from a dimensional rift in deep space, scale dwarfing planets, void-black body with glowing cosmic veins, IMAX cinematic, character concept art, 4:3',
+    expressionPrompt: 'Close-up of a cosmic beast face, void-black skin with glowing energy lines, a single massive eye, IMAX portrait, character expression sheet, dark, 4:3',
+    desc: '从宇宙裂隙中探出的虚空巨兽。身体由黑洞物质组成，眼如恒星。最终被水墨金龙贯穿。',
+    signature: '虚空之体 · 宇宙级尺度 · 单眼',
+    line: '（无台词 · 龙吟）',
+    color: '#6B5BA8',
+  },
+];
+
+const GUI_CHARS = [
+  {
+    name: '宇航员', pinyin: 'Yǔ Háng Yuán', role: '主角 · 归来者',
+    portraitPrompt: 'An old astronaut in a worn vintage 1980s spacesuit, weathered face with old scar, holding a helmet, standing on black sand beach, IMAX cinematic portrait, blue-grey tone with warm gold, character concept art, 4:3',
+    expressionPrompt: 'Extreme close-up of an old astronaut face, eyes half-closed, old scar visible, breath misting in visor, IMAX portrait, character expression sheet, intimate, 4:3',
+    desc: '三十年前出发执行深空任务的宇航员。醒来时，地球已经过去 30 年，妻子已逝，儿子老了。随身带一台 1980 年代的磁带录音机，里面有儿子小时候的录音。',
+    signature: '旧疤 · 半透明面罩 · 1980s 太空服',
+    line: '（无台词 · 全部以呼吸与沉默）',
+    color: '#6B7A8E',
+  },
+  {
+    name: '儿子', pinyin: 'Ér Zi', role: '客体 · 等待者',
+    portraitPrompt: 'An old white-haired Chinese man, 60s, gentle face, looking out a warm-lit window, IMAX cinematic portrait, warm gold interior light, character concept art, 4:3',
+    expressionPrompt: 'Close-up of an old man face turning slowly, eyes wet, glass reflection overlapping with his father outside, IMAX portrait, warm gold, 4:3',
+    desc: '老人的儿子。三十年前还是孩子，现在已是白发苍苍。在亮着暖黄灯光的窗口等待。',
+    signature: '白发 · 暖黄窗光 · 玻璃反射',
+    line: '「爸。」',
+    color: '#E8C77A',
+  },
+  {
+    name: '妻子', pinyin: 'Qī Zi', role: '客体 · 已逝',
+    portraitPrompt: 'A translucent ghostly silhouette of a Chinese woman, 30s, gentle smile, surrounded by white particles, IMAX cinematic, ethereal, blue-grey tone, character concept art, 4:3',
+    expressionPrompt: 'A faded memory photograph of a Chinese woman with gentle smile, sepia tones, water-damaged, IMAX portrait, intimate, 4:3',
+    desc: '未真正出现。只在录音里、在路牌背后、在老人停顿的呼吸里。30 年前种的树还在开花。',
+    signature: '半透明 · 树 · 录音',
+    line: '「回来的时候，到家门口那棵树下等我。」',
+    color: '#A8B5C4',
+  },
+];
+
+const YUYE_CHARS = [
+  {
+    name: '快递员', pinyin: 'Kuài Dì Yuán', role: '主角 · 雨夜行者',
+    portraitPrompt: 'A young Asian male courier in a transparent raincoat, riding a scooter in rainy Hong Kong neon street, face wet with rain, IMAX cinematic portrait, magenta and cyan neon, character concept art, 4:3',
+    expressionPrompt: 'Close-up of a young courier face, rain dripping, phone screen reflection, concerned eyes, IMAX portrait, neon reflections, 4:3',
+    desc: '雨夜快递员。7 天前一个地址消失，他仍在送那个包裹。透明雨衣是他的盔甲。',
+    signature: '透明雨衣 · 电瓶车 · 雨水流痕',
+    line: '「地址没了？再查查。」',
+    color: '#E91E63',
+  },
+  {
+    name: '茶餐厅老板', pinyin: 'Chá Cān Tīng Lǎo Bǎn', role: '客串 · 指点者',
+    portraitPrompt: 'An old Hong Kong tea restaurant boss, gray hair, apron, behind counter with warm tungsten light, rainy window behind, IMAX cinematic portrait, warm yellow interior, character concept art, 4:3',
+    expressionPrompt: 'Close-up of an old Hong Kong man pointing through a rain-streaked window, weathered face, IMAX portrait, warm tungsten, 4:3',
+    desc: '深水区茶餐厅的老板。认识这一带的每一户人。他用手指向窗外，说那个地址，拆了。',
+    signature: '围裙 · 钨丝灯 · 雨窗',
+    line: '「那个地址，拆了。」',
+    color: '#FFB74D',
+  },
+  {
+    name: '收件人', pinyin: 'Shōu Jiàn Rén', role: '客体 · 缺席者',
+    portraitPrompt: 'A faded old photograph of a Chinese person holding a cassette player, sepia tones, water-damaged, lying on a Hong Kong tenement floor, IMAX cinematic, character concept art, 4:3',
+    expressionPrompt: 'A blank door with a faded red Chinese character, wooden planks nailed across, hints of a person who once lived there, IMAX portrait, melancholic, 4:3',
+    desc: '从未真正出现。只在录音里、在「吉」字贴背后、在「谢谢」手写字里。已经离开了，但还在等他来。',
+    signature: '「吉」字贴 · 木板钉门 · 谢谢手写',
+    line: '「谢谢。」',
+    color: '#00BCD4',
+  },
+];
+
+const CHARACTERS = [
+  { story: 'duel',  storyName: '对决',  chars: DUEL_CHARS },
+  { story: 'gui',   storyName: '归',   chars: GUI_CHARS },
+  { story: 'yuye',  storyName: '雨夜',  chars: YUYE_CHARS },
 ];
 
 /* ==========================================================================
@@ -260,6 +362,46 @@ function renderAssets() {
       <div class="asset__info">
         <h3 class="asset__name">${a.name}</h3>
         <p class="asset__desc">${a.desc}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ==========================================================================
+   渲染：角色档案（9 位主创）
+   ========================================================================== */
+function renderChars() {
+  const root = document.getElementById('charsGrid');
+  if (!root) return;
+  root.innerHTML = CHARACTERS.map((block) => `
+    <div class="chars__block chars__block--${block.story}">
+      <div class="chars__block-head">
+        <span class="caption">${block.storyName} · 角色档案</span>
+        <h3 class="chars__block-title">${block.storyName} <em>${block.story === 'duel' ? 'Duél' : block.story === 'gui' ? 'Guī' : 'Yǔ Yè'}</em></h3>
+      </div>
+      <div class="chars__grid">
+        ${block.chars.map((c) => `
+          <div class="char" style="--char-color: ${c.color}">
+            <div class="char__portrait">
+              <img class="char__img" alt="${c.name} 全身像" src="${IMG_P(c.portraitPrompt)}" onload="this.classList.add('is-loaded')" onerror="this.classList.add('is-error')" />
+              <div class="char__portrait-fallback"></div>
+            </div>
+            <div class="char__head">
+              <h4 class="char__name">${c.name}</h4>
+              <span class="char__pinyin">${c.pinyin}</span>
+            </div>
+            <div class="char__role">${c.role}</div>
+            <p class="char__desc">${c.desc}</p>
+            <div class="char__signature">
+              <span class="caption">视觉签名</span>
+              <p>${c.signature}</p>
+            </div>
+            <div class="char__line">${c.line}</div>
+            <div class="char__expression">
+              <img alt="${c.name} 表情" src="${IMG_P(c.expressionPrompt)}" onload="this.classList.add('is-loaded')" onerror="this.classList.add('is-error')" />
+            </div>
+          </div>
+        `).join('')}
       </div>
     </div>
   `).join('');
@@ -522,6 +664,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCompare();
   renderConstraints();
   renderAssets();
+  renderChars();
   renderDeck();
   renderLightboxThumbs();
   renderTimeline();
