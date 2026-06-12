@@ -1801,3 +1801,453 @@ export const mixBalances: MixBalance[] = [
     description: '音乐回归主题，对白收束人物的情感，音效几乎隐退。',
   },
 ];
+
+// ============= 色彩脚本 =============
+
+export interface ColorCue {
+  id: string;
+  actId: number;
+  shotId: number;
+  paletteName: string;            // 调色名称
+  primaryColor: string;           // 主色
+  secondaryColor: string;         // 辅色
+  accentColor: string;            // 点缀色
+  temperature: 'warm' | 'cool' | 'neutral' | 'mixed';
+  saturation: number;             // 0-100
+  brightness: number;             // 0-100
+  contrast: number;               // 0-100
+  lutStyle: string;               // LUT 风格名
+  description: string;            // 调色说明
+  reference: string;              // 参考影片/摄影师
+}
+
+export interface ActPalette {
+  actId: number;
+  actTitle: string;
+  primaryColor: string;
+  secondaryColor: string;
+  accentColor: string;
+  temperature: 'warm' | 'cool' | 'neutral' | 'mixed';
+  evolution: string;              // 色彩演化方向
+  keywords: string[];             // 调色关键词
+  description: string;
+}
+
+export interface ColorTemperaturePoint {
+  actId: number;
+  actTitle: string;
+  temperature: number;            // -100 冷蓝 ~ +100 暖橙
+  saturation: number;             // 0-100
+  contrast: number;               // 0-100
+}
+
+export interface CharacterPalette {
+  characterName: string;
+  alias: string;
+  primaryColor: string;           // 主色
+  secondaryColor: string;         // 辅色
+  meaning: string;                // 色彩象征
+  evolution: string;              // 角色色彩演化
+  sceneUsage: { actId: number; color: string; note: string }[];
+}
+
+export interface LUTStyle {
+  id: string;
+  name: string;
+  description: string;
+  primaryHue: string;             // 主色相 hex
+  shadowTint: string;             // 阴影色
+  highlightTint: string;          // 高光色
+  contrast: 'low' | 'medium' | 'high' | 'extreme';
+  saturation: 'low' | 'medium' | 'high';
+  useCases: string[];             // 适用场景
+  reference: string;              // 参考影片
+}
+
+// 12 个关键镜头的色彩设计
+export const colorCues: ColorCue[] = [
+  {
+    id: 'color-1',
+    actId: 1,
+    shotId: 1,
+    paletteName: '破晓金辉',
+    primaryColor: '#d4af37',
+    secondaryColor: '#2a1f10',
+    accentColor: '#f4d03f',
+    temperature: 'warm',
+    saturation: 35,
+    brightness: 65,
+    contrast: 45,
+    lutStyle: '晨雾金调',
+    description: '初升的太阳穿过晨雾，田野被染成淡金色。远景使用单色调，暗示守田的三千年孤独。',
+    reference: '罗杰·迪金斯《大地惊雷》',
+  },
+  {
+    id: 'color-2',
+    actId: 1,
+    shotId: 6,
+    paletteName: '青灰人间',
+    primaryColor: '#5a6470',
+    secondaryColor: '#8a8a8a',
+    accentColor: '#a29bfe',
+    temperature: 'cool',
+    saturation: 25,
+    brightness: 50,
+    contrast: 55,
+    lutStyle: '去饱和青调',
+    description: '魏镇与守田相遇的瞬间，画面去饱和至灰青色。暗示现实与超自然世界的边界。',
+    reference: '罗伯特·理查森《血色将至》',
+  },
+  {
+    id: 'color-3',
+    actId: 2,
+    shotId: 17,
+    paletteName: '铜铃赤金',
+    primaryColor: '#c45a1a',
+    secondaryColor: '#3d1a0a',
+    accentColor: '#f4d03f',
+    temperature: 'warm',
+    saturation: 70,
+    brightness: 50,
+    contrast: 75,
+    lutStyle: '黄昏金调',
+    description: '铜铃摇响的瞬间，画面从冷灰瞬间切换为赤金。色彩跳跃——千年封印被打破的视觉呈现。',
+    reference: '沃伊切赫·谢尔宾斯基《荒野猎人》',
+  },
+  {
+    id: 'color-4',
+    actId: 2,
+    shotId: 21,
+    paletteName: '质问紫雾',
+    primaryColor: '#7a4a8a',
+    secondaryColor: '#3a2a4a',
+    accentColor: '#a29bfe',
+    temperature: 'cool',
+    saturation: 50,
+    brightness: 45,
+    contrast: 65,
+    lutStyle: '紫色戏剧调',
+    description: '燕无忧逼问守田身份。紫色是不安与神秘的混合——既非敌意也非善意。',
+    reference: '艾曼努尔·卢贝兹金《入侵脑细胞》',
+  },
+  {
+    id: 'color-5',
+    actId: 3,
+    shotId: 28,
+    paletteName: '血红天坠',
+    primaryColor: '#9d0208',
+    secondaryColor: '#1a0000',
+    accentColor: '#ff3838',
+    temperature: 'warm',
+    saturation: 85,
+    brightness: 35,
+    contrast: 95,
+    lutStyle: '血红暴力调',
+    description: '天空撕裂的瞬间，整个画面染成血色。红色浓度达到全片最高——灾难降临。',
+    reference: '罗杰·迪金斯《银翼杀手2049》',
+  },
+  {
+    id: 'color-6',
+    actId: 3,
+    shotId: 36,
+    paletteName: '深渊灰黑',
+    primaryColor: '#0a0a0a',
+    secondaryColor: '#1a1a1a',
+    accentColor: '#9d0208',
+    temperature: 'cool',
+    saturation: 10,
+    brightness: 20,
+    contrast: 90,
+    lutStyle: '极简高对比',
+    description: '巨兽降临天庭寺。几乎单色的黑灰——只有渊的瞳孔是血红色。',
+    reference: '罗伯特·理查森《血色将至》',
+  },
+  {
+    id: 'color-7',
+    actId: 4,
+    shotId: 43,
+    paletteName: '破土金光',
+    primaryColor: '#f4d03f',
+    secondaryColor: '#8b7500',
+    accentColor: '#ff6b35',
+    temperature: 'warm',
+    saturation: 90,
+    brightness: 85,
+    contrast: 80,
+    lutStyle: '破晓圣光调',
+    description: '陈守田破土而出的瞬间。金光从地下爆发，整个画面过曝至 105%——神力溢出。',
+    reference: '艾曼努尔·卢贝兹金《生命之树》',
+  },
+  {
+    id: 'color-8',
+    actId: 4,
+    shotId: 50,
+    paletteName: '刀光银河',
+    primaryColor: '#e8e8f0',
+    secondaryColor: '#74b9ff',
+    accentColor: '#ff3838',
+    temperature: 'cool',
+    saturation: 60,
+    brightness: 75,
+    contrast: 85,
+    lutStyle: '金属冷光调',
+    description: '断潮刀出鞘。冷光银白为主，唯一暖色是渊的鲜血红。冷暖对撞的极致张力。',
+    reference: '丁正勋《老男孩》',
+  },
+  {
+    id: 'color-9',
+    actId: 5,
+    shotId: 55,
+    paletteName: '神战金红',
+    primaryColor: '#d4af37',
+    secondaryColor: '#9d0208',
+    accentColor: '#f4d03f',
+    temperature: 'warm',
+    saturation: 95,
+    brightness: 60,
+    contrast: 100,
+    lutStyle: '史诗金红调',
+    description: '陈守田与渊的决战。金色（守田）与红色（渊）的对撞——神性与人性的最终对抗。',
+    reference: '拉迪斯拉夫·多恩《光影对决》',
+  },
+  {
+    id: 'color-10',
+    actId: 5,
+    shotId: 62,
+    paletteName: '封印纯金',
+    primaryColor: '#f4d03f',
+    secondaryColor: '#1a1a0a',
+    accentColor: '#ffffff',
+    temperature: 'warm',
+    saturation: 80,
+    brightness: 90,
+    contrast: 85,
+    lutStyle: '神圣金色调',
+    description: '封印咒语咏唱。画面几近单色金色——超越物质世界的瞬间。',
+    reference: '丹尼·科恩《权力的游戏》',
+  },
+  {
+    id: 'color-11',
+    actId: 6,
+    shotId: 66,
+    paletteName: '废墟晨曦',
+    primaryColor: '#8aaab5',
+    secondaryColor: '#3a4a55',
+    accentColor: '#f4d03f',
+    temperature: 'cool',
+    saturation: 40,
+    brightness: 70,
+    contrast: 50,
+    lutStyle: '冷暖中性调',
+    description: '战斗结束后的废墟。冷蓝灰为主，唯一点缀是远处田野的金色——希望的回归。',
+    reference: '罗杰·迪金斯《1917》',
+  },
+  {
+    id: 'color-12',
+    actId: 6,
+    shotId: 70,
+    paletteName: '守望永恒',
+    primaryColor: '#d4af37',
+    secondaryColor: '#2a1f10',
+    accentColor: '#f4d03f',
+    temperature: 'warm',
+    saturation: 60,
+    brightness: 75,
+    contrast: 60,
+    lutStyle: '守望金调',
+    description: '陈守田站在田野上回望。色调与开场第一镜呼应——三千年的循环，首尾相连。',
+    reference: '马利克·本森纽尔《与神同行》',
+  },
+];
+
+export const actPalettes: ActPalette[] = [
+  {
+    actId: 1,
+    actTitle: '觉醒',
+    primaryColor: '#d4af37',
+    secondaryColor: '#3a2a10',
+    accentColor: '#f4d03f',
+    temperature: 'warm',
+    evolution: '冷蓝晨雾 → 暖金破晓',
+    keywords: ['晨雾', '破晓', '金辉', '孤独'],
+    description: '全片最柔和的色彩。开场用低饱和的金色调，暗示守田如同初升的太阳——沉睡了三千年的神祇。',
+  },
+  {
+    actId: 2,
+    actTitle: '战场召唤',
+    primaryColor: '#c45a1a',
+    secondaryColor: '#3d1a0a',
+    accentColor: '#a29bfe',
+    temperature: 'warm',
+    evolution: '青灰人间 → 铜铃赤金',
+    keywords: ['铜铃', '紫雾', '质问', '觉醒'],
+    description: '从冷灰向暖金跳跃。铜铃响起时，色彩骤然升温——封印被打破的瞬间也是色彩革命的瞬间。',
+  },
+  {
+    actId: 3,
+    actTitle: '天坠',
+    primaryColor: '#9d0208',
+    secondaryColor: '#0a0a0a',
+    accentColor: '#ff3838',
+    temperature: 'mixed',
+    evolution: '血红天坠 → 深渊灰黑',
+    keywords: ['血红', '深渊', '灾难', '极简'],
+    description: '全片最黑暗的一幕。色彩被剥离至黑灰红三色。红色作为巨兽的"标记色"出现。',
+  },
+  {
+    actId: 4,
+    actTitle: '神力爆发',
+    primaryColor: '#f4d03f',
+    secondaryColor: '#74b9ff',
+    accentColor: '#ff3838',
+    temperature: 'warm',
+    evolution: '破土金光 → 刀光银河',
+    keywords: ['金光', '破土', '刀光', '冷暖对撞'],
+    description: '色彩最爆炸的一幕。守田的金色与渊的红色对撞，每个镜头都使用强烈对比。',
+  },
+  {
+    actId: 5,
+    actTitle: '神战',
+    primaryColor: '#d4af37',
+    secondaryColor: '#9d0208',
+    accentColor: '#ffffff',
+    temperature: 'warm',
+    evolution: '神战金红 → 封印纯金',
+    keywords: ['金红', '对撞', '封印', '神圣'],
+    description: '决战双色调——金色对红色。封印完成时归一为纯金，神性战胜兽性。',
+  },
+  {
+    actId: 6,
+    actTitle: '余韵',
+    primaryColor: '#8aaab5',
+    secondaryColor: '#d4af37',
+    accentColor: '#f4d03f',
+    temperature: 'mixed',
+    evolution: '废墟晨曦 → 守望永恒',
+    keywords: ['晨曦', '废墟', '守望', '循环'],
+    description: '回到开场的色调。冷蓝废墟中守田独自站立，色调与第一镜呼应——首尾构成完整循环。',
+  },
+];
+
+export const colorTemperatureCurve: ColorTemperaturePoint[] = [
+  { actId: 1, actTitle: '觉醒', temperature: 30, saturation: 35, contrast: 50 },
+  { actId: 2, actTitle: '战场召唤', temperature: 10, saturation: 55, contrast: 65 },
+  { actId: 3, actTitle: '天坠', temperature: -20, saturation: 75, contrast: 90 },
+  { actId: 4, actTitle: '神力爆发', temperature: 50, saturation: 85, contrast: 85 },
+  { actId: 5, actTitle: '神战', temperature: 40, saturation: 95, contrast: 95 },
+  { actId: 6, actTitle: '余韵', temperature: 20, saturation: 50, contrast: 55 },
+];
+
+export const characterPalettes: CharacterPalette[] = [
+  {
+    characterName: '陈守田',
+    alias: '守田翁',
+    primaryColor: '#d4af37',
+    secondaryColor: '#8b7500',
+    meaning: '古金、丰收、神性、永恒',
+    evolution: '从蒙尘的灰金（沉睡时）到耀眼的纯金（觉醒时），最后回到沉稳的守望金',
+    sceneUsage: [
+      { actId: 1, color: '#5a4a20', note: '沉睡中' },
+      { actId: 2, color: '#c45a1a', note: '铜铃唤醒' },
+      { actId: 4, color: '#f4d03f', note: '神力爆发' },
+      { actId: 5, color: '#f4d03f', note: '封印咏唱' },
+      { actId: 6, color: '#d4af37', note: '回归守望' },
+    ],
+  },
+  {
+    characterName: '燕无忧',
+    alias: '风之女',
+    primaryColor: '#ff6b35',
+    secondaryColor: '#9d0208',
+    meaning: '火红、急切、执着、悲剧',
+    evolution: '从炽烈的橙红到战斗的深红，最后在余韵中淡化为暖橙',
+    sceneUsage: [
+      { actId: 1, color: '#ff6b35', note: '初登场' },
+      { actId: 2, color: '#7a4a8a', note: '质问时偏紫' },
+      { actId: 4, color: '#ff3838', note: '战斗炽烈' },
+      { actId: 5, color: '#9d0208', note: '神战血色' },
+      { actId: 6, color: '#ff9f43', note: '归于平静' },
+    ],
+  },
+  {
+    characterName: '李清禾',
+    alias: '雾中子',
+    primaryColor: '#a29bfe',
+    secondaryColor: '#5a4a8a',
+    meaning: '紫雾、迷惘、超凡、轮回',
+    evolution: '冷紫到暖紫再到淡紫——穿越迷雾的过程',
+    sceneUsage: [
+      { actId: 1, color: '#5a4a8a', note: '雾中现身' },
+      { actId: 2, color: '#7a4a8a', note: '介入战斗' },
+      { actId: 3, color: '#a29bfe', note: '见证天坠' },
+      { actId: 5, color: '#c0a8ff', note: '觉醒时刻' },
+      { actId: 6, color: '#a29bfe', note: '完成使命' },
+    ],
+  },
+  {
+    characterName: '魏镇',
+    alias: '守陵人',
+    primaryColor: '#74b9ff',
+    secondaryColor: '#3a4a55',
+    meaning: '冷蓝、苍老、时间、悲悯',
+    evolution: '从冷蓝到雾灰——守陵人逐渐隐入历史',
+    sceneUsage: [
+      { actId: 1, color: '#74b9ff', note: '初遇' },
+      { actId: 2, color: '#5a6470', note: '揭示身份' },
+      { actId: 3, color: '#3a4a55', note: '远观天坠' },
+      { actId: 5, color: '#5a6470', note: '见证决战' },
+      { actId: 6, color: '#8aaab5', note: '归于晨雾' },
+    ],
+  },
+];
+
+export const lutStyles: LUTStyle[] = [
+  {
+    id: 'lut-1',
+    name: '晨雾金调',
+    description: '高光偏暖、阴影偏青、低对比。营造东方水墨的清雅感',
+    primaryHue: '#d4af37',
+    shadowTint: '#3a4a55',
+    highlightTint: '#f4d03f',
+    contrast: 'low',
+    saturation: 'low',
+    useCases: ['第一幕开场', '第六幕余韵', '守田的独处'],
+    reference: '罗杰·迪金斯《大地惊雷》',
+  },
+  {
+    id: 'lut-2',
+    name: '黄昏金调',
+    description: '高饱和、中等对比。史诗般的暖意',
+    primaryHue: '#c45a1a',
+    shadowTint: '#3d1a0a',
+    highlightTint: '#f4d03f',
+    contrast: 'high',
+    saturation: 'high',
+    useCases: ['第二幕铜铃响', '陈守田觉醒', '战争戏'],
+    reference: '沃伊切赫·谢尔宾斯基《荒野猎人》',
+  },
+  {
+    id: 'lut-3',
+    name: '深渊灰黑',
+    description: '极低饱和、极高对比。黑灰红三色',
+    primaryHue: '#1a1a1a',
+    shadowTint: '#000000',
+    highlightTint: '#9d0208',
+    contrast: 'extreme',
+    saturation: 'low',
+    useCases: ['第三幕天坠', '巨兽降临', '深渊场景'],
+    reference: '罗杰·迪金斯《银翼杀手2049》',
+  },
+  {
+    id: 'lut-4',
+    name: '神圣金调',
+    description: '纯金主调、近乎单色、过曝。超物质感',
+    primaryHue: '#f4d03f',
+    shadowTint: '#1a1a0a',
+    highlightTint: '#ffffff',
+    contrast: 'high',
+    saturation: 'medium',
+    useCases: ['第五幕封印咏唱', '陈守田神力全开', '希望时刻'],
+    reference: '艾曼努尔·卢贝兹金《生命之树》',
+  },
+];

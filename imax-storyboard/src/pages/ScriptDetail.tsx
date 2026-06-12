@@ -290,6 +290,18 @@ export default function ScriptDetail() {
                   <ChevronRight size={14} className="act-card-arrow" />
                 </div>
               </Link>
+
+              <Link to="/script/color" className="act-card" style={{ '--accent': '#f368e0' } as React.CSSProperties}>
+                <div className="act-card-glyph">色</div>
+                <div className="act-card-num">COLOR</div>
+                <h3 className="act-card-title">色彩脚本</h3>
+                <div className="act-card-subtitle">Color Script</div>
+                <p className="act-card-theme">12 调色提示 / 6 幕主调 / 4 角色色 / 4 套 LUT / 色温曲线</p>
+                <div className="act-card-footer">
+                  <span>GRADE</span>
+                  <ChevronRight size={14} className="act-card-arrow" />
+                </div>
+              </Link>
             </div>
           </section>
 
