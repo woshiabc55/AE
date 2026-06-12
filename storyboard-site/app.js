@@ -290,4 +290,113 @@ document.addEventListener('DOMContentLoaded', () => {
   setupReveal();
   setupShotAudio();
   tickClock();
+  setupProgressBar();
+  setupScrollSpy();
+  setupAmbientAudio();
 });
+
+/* ==========================================================================
+   进度条
+   ========================================================================== */
+function setupProgressBar() {
+  const bar = document.getElementById('progressBar');
+  if (!bar) return;
+  const update = () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    bar.style.width = `${pct}%`;
+  };
+  update();
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+}
+
+/* ==========================================================================
+   章节 scroll-spy
+   ========================================================================== */
+function setupScrollSpy() {
+  const sections = ['hero', 'rhythm', 'shots', 'constraints', 'assets'];
+  const links = document.querySelectorAll('.chapters a');
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          links.forEach((a) => a.classList.toggle('is-active', a.getAttribute('href') === `#${entry.target.id}`));
+        }
+      });
+    },
+    { threshold: 0.3, rootMargin: '-10% 0px -50% 0px' }
+  );
+  sections.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el);
+  });
+}
+
+/* ==========================================================================
+   环境音（低频嗡鸣 + 偶尔编钟）
+   ========================================================================== */
+function setupAmbientAudio() {
+  const btn = document.getElementById('audioToggle');
+  if (!btn) return;
+  const ctxCtor = window.AudioContext || window.webkitAudioContext;
+  if (!ctxCtor) return;
+
+  let ctx = null;
+  let osc = null;
+  let gain = null;
+  let bellTimer = null;
+  let isPlaying = false;
+
+  const start = () => {
+    ctx = new ctxCtor();
+    // 低频嗡鸣
+    osc = ctx.createOscillator();
+    gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = 55; // A1
+    gain.gain.value = 0;
+    osc.connect(gain).connect(ctx.destination);
+    osc.start();
+    gain.gain.linearRampToValueAtTime(0.04, ctx.currentTime + 1.2);
+
+    // 偶尔编钟敲击
+    bellTimer = setInterval(() => {
+      if (!ctx || Math.random() > 0.5) return;
+      const t = ctx.currentTime;
+      const freqs = [220, 277, 330, 415, 466]; // 编钟五度叠加
+      freqs.forEach((f) => {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = 'sine';
+        o.frequency.value = f;
+        g.gain.setValueAtTime(0, t);
+        g.gain.linearRampToValueAtTime(0.025, t + 0.005);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 2.5);
+        o.connect(g).connect(ctx.destination);
+        o.start(t);
+        o.stop(t + 2.5);
+      });
+    }, 6000);
+  };
+
+  const stop = () => {
+    if (!ctx) return;
+    gain.gain.cancelScheduledValues(ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.4);
+    setTimeout(() => {
+      try { osc.stop(); } catch (e) {}
+      ctx.close();
+    }, 500);
+    clearInterval(bellTimer);
+    ctx = null;
+  };
+
+  btn.addEventListener('click', () => {
+    isPlaying = !isPlaying;
+    btn.classList.toggle('is-playing', isPlaying);
+    if (isPlaying) start();
+    else stop();
+  });
+}

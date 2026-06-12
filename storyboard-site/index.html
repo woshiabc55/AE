@@ -18,6 +18,12 @@
   <!-- Film grain overlay -->
   <div class="grain" aria-hidden="true"></div>
 
+  <!-- Film progress strip -->
+  <div class="progress" aria-hidden="true">
+    <div class="progress__bar" id="progressBar"></div>
+    <div class="progress__sprocket"></div>
+  </div>
+
   <!-- Top bar (film slate) -->
   <header class="topbar">
     <div class="topbar__left">
@@ -168,6 +174,20 @@
       <span>IMAX · IMS · 3 渲 2 · 水墨</span>
     </div>
   </footer>
+
+  <!-- Side chapter navigation -->
+  <nav class="chapters" id="chapters" aria-label="章节导航">
+    <ul>
+      <li><a href="#hero" data-label="HERO"><span></span></a></li>
+      <li><a href="#rhythm" data-label="RHYTHM"><span></span></a></li>
+      <li><a href="#shots" data-label="SHOTS"><span></span></a></li>
+      <li><a href="#constraints" data-label="RULES"><span></span></a></li>
+      <li><a href="#assets" data-label="ASSETS"><span></span></a></li>
+    </ul>
+    <button class="chapters__audio" id="audioToggle" aria-label="切换环境音" type="button">
+      <span class="chapters__audio-icon">♪</span>
+    </button>
+  </nav>
 
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <script src="app.js"></script>
