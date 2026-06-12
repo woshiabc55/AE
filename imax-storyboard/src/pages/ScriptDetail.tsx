@@ -326,6 +326,18 @@ export default function ScriptDetail() {
                   <ChevronRight size={14} className="act-card-arrow" />
                 </div>
               </Link>
+
+              <Link to="/script/marketing" className="act-card" style={{ '--accent': '#5f27cd' } as React.CSSProperties}>
+                <div className="act-card-glyph">宣</div>
+                <div className="act-card-num">MARKETING</div>
+                <h3 className="act-card-title">营销与发行</h3>
+                <div className="act-card-subtitle">Marketing & Distribution</div>
+                <p className="act-card-theme">6 一句线 / 3 海报 / 4 受众 / 5 阶段 6 月 / 5 电影节</p>
+                <div className="act-card-footer">
+                  <span>RELEASE</span>
+                  <ChevronRight size={14} className="act-card-arrow" />
+                </div>
+              </Link>
             </div>
           </section>
 

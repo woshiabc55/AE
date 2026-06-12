@@ -16,6 +16,7 @@ import SoundDesign from './pages/SoundDesign';
 import ColorScript from './pages/ColorScript';
 import VFXBreakdown from './pages/VFXBreakdown';
 import Cast from './pages/Cast';
+import Marketing from './pages/Marketing';
 import './styles/variables.css';
 import './styles/base.css';
 import './styles/animations.css';
@@ -27,6 +28,7 @@ import './styles/sound.css';
 import './styles/color.css';
 import './styles/vfx.css';
 import './styles/cast.css';
+import './styles/marketing.css';
 
 export default function App() {
   return (
@@ -45,6 +47,7 @@ export default function App() {
         <Route path="/script/color" element={<ColorScript />} />
         <Route path="/script/vfx" element={<VFXBreakdown />} />
         <Route path="/script/cast" element={<Cast />} />
+        <Route path="/script/marketing" element={<Marketing />} />
         <Route path="/timeline" element={<Timeline />} />
         <Route path="/relationships" element={<RelationshipMap />} />
         <Route path="/moodboard" element={<Moodboard />} />

@@ -3056,3 +3056,331 @@ export const rehearsalPlan: RehearsalPlan[] = [
     notes: '开机前最后一次全员集合。',
   },
 ];
+
+// ============= 营销与发行 =============
+
+export interface Tagline {
+  id: string;
+  version: string;             // 主版/国际版/中国版
+  language: string;            // 语种
+  text: string;                // 一句线
+  englishText?: string;        // 英文版（如有）
+  target: string;              // 目标受众
+  tone: string;                // 调性
+  description: string;         // 创作思路
+}
+
+export interface PosterConcept {
+  id: string;
+  name: string;                // 海报名
+  visual: string;              // 视觉描述
+  colorScheme: { primary: string; secondary: string; accent: string };
+  typography: string;          // 字体设计
+  composition: string;         // 构图思路
+  keyElements: string[];       // 关键元素
+  emotion: string;             // 情绪
+  targetAudience: string;      // 目标受众
+  releaseStage: 'teaser' | 'main' | 'character' | 'final';  // 释出阶段
+}
+
+export interface TargetAudience {
+  id: string;
+  segment: string;             // 受众分层
+  ageRange: string;
+  gender: string;
+  interests: string[];
+  motivations: string[];       // 观看动机
+  channels: string[];          // 触达渠道
+  expectedShare: number;       // 预期占比
+  ticketPrice: string;         // 票价敏感度
+  hookLine: string;            // 一句话钩子
+  color: string;
+}
+
+export interface MarketingPhase {
+  id: string;
+  month: string;               // 月份（如 "M-6" 开机前 6 月）
+  phaseName: string;           // 阶段名
+  focus: string;               // 重点
+  activities: string[];        // 活动
+  channels: string[];          // 渠道
+  budgetShare: number;         // 预算占比 0-100
+  kpis: string[];              // KPI
+  milestones: string[];        // 关键节点
+}
+
+export interface FestivalStrategy {
+  id: string;
+  festival: string;            // 电影节
+  type: 'A-list' | 'B-list' | 'Specialty' | 'Asian';
+  timing: string;              // 时间
+  strategy: 'premiere' | 'competition' | 'special-screening' | 'market';
+  expectedOutcome: string;
+  historical: string;          // 历年参赛情况
+  relevance: 'high' | 'medium' | 'low';
+}
+
+export const taglines: Tagline[] = [
+  {
+    id: 'tag-1',
+    version: '主版',
+    language: '中文',
+    text: '守三千年田，等一个人。',
+    englishText: 'Three thousand years of waiting. One final battle.',
+    target: '中国 30-60 岁男性核心观众',
+    tone: '史诗、悲壮、内敛',
+    description: '直击陈守田的核心动机——三千年守望的重量。简短对仗，句式有力，符合中国式文人的表达。',
+  },
+  {
+    id: 'tag-2',
+    version: '国际版',
+    language: 'English',
+    text: 'When the heavens fall, who stands for the earth?',
+    target: '北美/欧洲 IMAX 核心观众',
+    tone: '史诗、宏大、普世',
+    description: '国际化表达——"天地"作为普世意象。疑问句式激发观众好奇心。',
+  },
+  {
+    id: 'tag-3',
+    version: '中国版',
+    language: '中文',
+    text: '种田的人，成了神。',
+    target: '中国年轻观众（20-35）',
+    tone: '反英雄、个性、网感',
+    description: '反差对比激发传播——"种田"和"神"的强烈对比，暗示"逆袭"叙事。',
+  },
+  {
+    id: 'tag-4',
+    version: '情感版',
+    language: '中文',
+    text: '她的恨，他的守，三千年的了断。',
+    target: '中国女性观众',
+    tone: '情感、纠葛、人性',
+    description: '三人关系驱动——燕无忧的恨、 陈守田的守、李清禾的轮回。',
+  },
+  {
+    id: 'tag-5',
+    version: '日本版',
+    language: '日本語',
+    text: '三千年の孤独が、今始まる。',
+    englishText: 'Three thousand years of solitude. Begins now.',
+    target: '日本文化爱好者、动漫迷',
+    tone: '物哀、内省、诗意',
+    description: '借鉴日本"物哀"美学——孤独、宿命、诗意。',
+  },
+  {
+    id: 'tag-6',
+    version: 'IMAX 版',
+    language: '中文 + English',
+    text: 'IMAX 银幕，容得下三千年的守望。',
+    englishText: 'Only IMAX can hold three thousand years.',
+    target: 'IMAX 巨幕厅观众',
+    tone: '沉浸、技术、专属',
+    description: '突出 IMAX 银幕的不可替代性——只有 IMAX 才能呈现这规模。',
+  },
+];
+
+export const posterConcepts: PosterConcept[] = [
+  {
+    id: 'poster-1',
+    name: '守望者',
+    visual: '陈守田背影剪影站在金色麦田中央，远方天空撕裂露出渊的瞳孔',
+    colorScheme: { primary: '#d4af37', secondary: '#3a1a0a', accent: '#9d0208' },
+    typography: '黑色无衬线主标题，下方金色手写体"对决"',
+    composition: '三分构图——下方田野 2/3，上方天空 1/3，人物剪影居中',
+    keyElements: ['陈守田背影', '金色麦田', '撕裂天空', '渊的瞳孔', '断潮刀轮廓'],
+    emotion: '史诗、悲壮、孤独',
+    targetAudience: '核心观众、奖项评委',
+    releaseStage: 'main',
+  },
+  {
+    id: 'poster-2',
+    name: '神战',
+    visual: '陈守田（金色神力）与渊（血红兽性）的对撞瞬间，画面分割为冷暖两半',
+    colorScheme: { primary: '#9d0208', secondary: '#d4af37', accent: '#0a0a0a' },
+    typography: '主标题居中，分割线穿过字体',
+    composition: '对角线构图——左下角陈守田挥刀，右上角渊的爪子落下',
+    keyElements: ['陈守田金色光效', '渊血红色光效', '冷暖对撞', '碎裂岩石'],
+    emotion: '紧张、动作、高潮',
+    targetAudience: '动作片爱好者、年轻男性观众',
+    releaseStage: 'main',
+  },
+  {
+    id: 'poster-3',
+    name: '三千年',
+    visual: '极简——金色手写"三千年"三字，背景为陈守田的皱纹特写',
+    colorScheme: { primary: '#d4af37', secondary: '#1a0a00', accent: '#f4d03f' },
+    typography: '超大手写毛笔字"三千年"——书法家题写',
+    composition: '极简——三字占 80%，下方小字"对决"',
+    keyElements: ['书法字体', '陈守田皱纹特写', '无 CG 元素'],
+    emotion: '人文、诗意、奖项指向',
+    targetAudience: '电影节评委、艺术片爱好者',
+    releaseStage: 'final',
+  },
+];
+
+export const targetAudiences: TargetAudience[] = [
+  {
+    id: 'aud-1',
+    segment: 'IMAX 核心观众',
+    ageRange: '25-55',
+    gender: '男性 60% / 女性 40%',
+    interests: ['IMAX 影迷', '特效大片爱好者', '科幻/奇幻/史诗'],
+    motivations: ['极致视听体验', '社交话题', '导演/明星阵容'],
+    channels: ['IMAX 官方 APP', '豆瓣', '微博电影', '知乎', 'B 站影视区'],
+    expectedShare: 35,
+    ticketPrice: '高 (60-150元)',
+    hookLine: '只有在 IMAX 银幕上才能看到这规模',
+    color: '#ff6b35',
+  },
+  {
+    id: 'aud-2',
+    segment: '中国神话/玄幻爱好者',
+    ageRange: '18-40',
+    gender: '男性 70% / 女性 30%',
+    interests: ['《山海经》', '修仙/玄幻小说', '中国神话研究', '国风文化'],
+    motivations: ['中国神话的世界观', '史诗感', '文化认同'],
+    channels: ['抖音', 'B 站', '小红书', '起点/番茄小说', '知乎中国神话话题'],
+    expectedShare: 30,
+    ticketPrice: '中 (40-80元)',
+    hookLine: '《山海经》里的怪物在 IMAX 银幕活过来',
+    color: '#d4af37',
+  },
+  {
+    id: 'aud-3',
+    segment: '文艺片观众',
+    ageRange: '28-50',
+    gender: '男性 45% / 女性 55%',
+    interests: ['《卧虎藏龙》', '《一代宗师》', '东方美学', '慢电影', '戛纳/威尼斯'],
+    motivations: ['东方美学的银幕化', '演员的表演', '导演的作者性'],
+    channels: ['豆瓣', '虹膜', '深焦', '电影旬报', '法国《电影手册》'],
+    expectedShare: 15,
+    ticketPrice: '高 (50-100元)',
+    hookLine: '它可能是十年来最中国化的 IMAX 巨制',
+    color: '#a29bfe',
+  },
+  {
+    id: 'aud-4',
+    segment: '家庭/合家欢',
+    ageRange: '8-65',
+    gender: '无差别',
+    interests: ['合家欢娱乐', '中国故事', 'CG 视觉', '老人/小孩都能看'],
+    motivations: ['带孩子体验', '家庭活动', '文化传承'],
+    channels: ['微信朋友圈', '亲子 KOL', '春节档宣传', '央视电影频道'],
+    expectedShare: 20,
+    ticketPrice: '中 (40-80元)',
+    hookLine: '三代人一起看的中国神话',
+    color: '#1dd1a1',
+  },
+];
+
+export const marketingTimeline: MarketingPhase[] = [
+  {
+    id: 'mkt-1',
+    month: 'M-6 (拍摄期)',
+    phaseName: '概念预热',
+    focus: '建立认知、制造悬念',
+    activities: ['官方微博/微信注册', '导演首支 vlog 释出', '概念海报 (3 张) 静默发布', 'IMAX 战略合作签约新闻', '业内看片会 (制片圈)'],
+    channels: ['官方社媒', '娱乐媒体', '行业自媒体'],
+    budgetShare: 10,
+    kpis: ['微博粉丝 100 万', '豆瓣想看 50 万', 'B 站影视区口碑'],
+    milestones: ['官宣', '首张概念海报'],
+  },
+  {
+    id: 'mkt-2',
+    month: 'M-4 (后期开始)',
+    phaseName: '内容释出',
+    focus: '第一波物料——角色、剧情、世界观',
+    activities: ['4 角色海报', '第一支预告片 (90s)', '4 角色短视频花絮', '导演访谈', '选角纪录片《三千年的寻找》'],
+    channels: ['抖音', 'B 站', '微博', '豆瓣', '知乎', 'YouTube'],
+    budgetShare: 15,
+    kpis: ['预告片播放量 5000 万', '抖音挑战赛 1 亿', '4 角色话题 10 个热搜'],
+    milestones: ['首支预告', '角色海报', '媒体看片'],
+  },
+  {
+    id: 'mkt-3',
+    month: 'M-2 (上映前 2 月)',
+    phaseName: '口碑建立',
+    focus: '行业内看片、口碑发酵、KOL 推荐',
+    activities: ['IMAX 专场看片 50 场', 'KOL/影评人提前看片', '豆瓣开分', 'B 站/小红书种草', '路演 (10 个城市)'],
+    channels: ['豆瓣', '小红书', 'B 站', '抖音', '路演'],
+    budgetShare: 25,
+    kpis: ['豆瓣开分 8.0+', '猫眼想看 100 万', 'B 站 1 万+ 长评'],
+    milestones: ['豆瓣开分', '路演启动'],
+  },
+  {
+    id: 'mkt-4',
+    month: 'M-1 (上映前 1 月)',
+    phaseName: '话题冲刺',
+    focus: '大众普及、社交话题、联名合作',
+    activities: ['第二支预告片 (动作版)', '主题曲 MV (3 首)', '联名 (麦当劳/瑞幸/故宫)', '艺人/网红短视频二创', '微博热搜购买 (4 个话题)'],
+    channels: ['所有社交媒体', '联名品牌', 'KOL 二创', '抖音挑战赛'],
+    budgetShare: 30,
+    kpis: ['第二支预告 1 亿播放', '联名销售 5 亿', '微博热搜 4 个'],
+    milestones: ['动作预告', '联名发布', '倒计时海报'],
+  },
+  {
+    id: 'mkt-5',
+    month: 'M-0 (上映月)',
+    phaseName: '上映爆发',
+    focus: '首周票房、口碑营销、长线运营',
+    activities: ['首映礼 (北京/上海/纽约)', '媒体铺天盖地', 'CGV/万达 IMAX 主题展', '二创激励 (10 万奖金)', '实时票房直播'],
+    channels: ['全部媒体', '院线合作', '短视频平台', '直播平台'],
+    budgetShare: 20,
+    kpis: ['首周票房 8 亿', '猫眼 9.5+', '微博话题 100 亿阅读'],
+    milestones: ['首映礼', '首日票房破亿', '首周破 8 亿'],
+  },
+];
+
+export const festivalStrategy: FestivalStrategy[] = [
+  {
+    id: 'fest-1',
+    festival: '威尼斯电影节 (Venice)',
+    type: 'A-list',
+    timing: '8-9 月 (上映前 1-2 月)',
+    strategy: 'premiere',
+    expectedOutcome: '金狮奖提名、最佳技术贡献、场刊高分',
+    historical: '2023《可怜的东西》金狮奖；2022《伊尼舍林的报丧女妖》获奖',
+    relevance: 'high',
+  },
+  {
+    id: 'fest-2',
+    festival: '戛纳电影节 (Cannes)',
+    type: 'A-list',
+    timing: '5 月 (次年)',
+    strategy: 'special-screening',
+    expectedOutcome: '一种关注单元、技术奖项',
+    historical: '2023《利益区域》评审团大奖；2024《香巴拉》一种关注',
+    relevance: 'high',
+  },
+  {
+    id: 'fest-3',
+    festival: '多伦多电影节 (TIFF)',
+    type: 'A-list',
+    timing: '9 月 (北美首映)',
+    strategy: 'premiere',
+    expectedOutcome: '观众选择奖、北美口碑',
+    historical: '2023《美国小说》观众选择奖；2022《女人们的谈话》',
+    relevance: 'high',
+  },
+  {
+    id: 'fest-4',
+    festival: '东京国际电影节 (TIFF)',
+    type: 'Asian',
+    timing: '10-11 月 (亚洲首映)',
+    strategy: 'premiere',
+    expectedOutcome: '亚洲口碑、亚洲市场铺垫',
+    historical: '2023《怪物》是枝裕和获开幕影片；2022《某个男人》',
+    relevance: 'high',
+  },
+  {
+    id: 'fest-5',
+    festival: '奥斯卡 (Academy Awards)',
+    type: 'A-list',
+    timing: '次年 2-3 月',
+    strategy: 'competition',
+    expectedOutcome: '最佳国际影片、最佳摄影、最佳视觉效果提名',
+    historical: '《瞬息全宇宙》2023 七项奥斯卡；《银翼杀手2049》最佳摄影/视效',
+    relevance: 'high',
+  },
+];
