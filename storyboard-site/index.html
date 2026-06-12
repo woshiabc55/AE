@@ -95,6 +95,11 @@
         <span class="topbar__play-tri"></span>
         <span>PLAY</span>
       </button>
+      <div class="topbar__themes" id="topbarThemes">
+        <button class="topbar__theme-btn is-active" data-theme="duel" title="对决 · 沙金"></button>
+        <button class="topbar__theme-btn" data-theme="gui" title="归 · 雾蓝"></button>
+        <button class="topbar__theme-btn" data-theme="yuye" title="雨夜 · 霓虹"></button>
+      </div>
       <div class="topbar__export" id="topbarExport">
         <button class="topbar__export-btn" id="exportToggle" type="button" aria-label="导出">↓</button>
         <div class="topbar__export-menu" id="exportMenu">
@@ -291,6 +296,74 @@
     </div>
   </section>
 
+  <!-- Design System -->
+  <section id="system" class="section section--system">
+    <div class="section__head">
+      <span class="section__num">07</span>
+      <h2 class="section__title">设计 · 系统</h2>
+      <p class="section__sub">站点全部色板 / 字号 / 间距 / 动效 tokens —— 一图对齐设计语言。</p>
+    </div>
+
+    <div class="system">
+      <!-- Color tokens -->
+      <div class="system__group">
+        <div class="system__group-head">
+          <span class="caption">01 · COLOR TOKENS</span>
+          <h3 class="system__group-title">色板</h3>
+        </div>
+        <div class="system__swatches" id="swatches">
+          <!-- populated by app.js -->
+        </div>
+      </div>
+
+      <!-- Typography -->
+      <div class="system__group">
+        <div class="system__group-head">
+          <span class="caption">02 · TYPOGRAPHY</span>
+          <h3 class="system__group-title">字号阶</h3>
+        </div>
+        <div class="system__type" id="typeScale">
+          <!-- populated by app.js -->
+        </div>
+      </div>
+
+      <!-- Spacing -->
+      <div class="system__group">
+        <div class="system__group-head">
+          <span class="caption">03 · SPACING</span>
+          <h3 class="system__group-title">间距阶</h3>
+        </div>
+        <div class="system__space" id="spaceScale">
+          <!-- populated by app.js -->
+        </div>
+      </div>
+
+      <!-- Motion -->
+      <div class="system__group">
+        <div class="system__group-head">
+          <span class="caption">04 · MOTION</span>
+          <h3 class="system__group-title">动效时长</h3>
+        </div>
+        <div class="system__motion" id="motionScale">
+          <!-- populated by app.js -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Director's Notes -->
+  <section id="notes" class="section section--notes">
+    <div class="section__head">
+      <span class="section__num">08</span>
+      <h2 class="section__title">幕后 · 手记</h2>
+      <p class="section__sub">导演手记 / 参考影像 / 设计原稿 —— 这三部剧本是怎么长出来的。</p>
+    </div>
+
+    <div class="notes" id="notesGrid">
+      <!-- populated by app.js -->
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="footer">
     <div class="footer__line"></div>
@@ -313,6 +386,8 @@
       <li><a href="#constraints" data-label="RULES"><span></span></a></li>
       <li><a href="#assets" data-label="ASSETS"><span></span></a></li>
       <li><a href="#characters" data-label="CHARS"><span></span></a></li>
+      <li><a href="#system" data-label="SYSTEM"><span></span></a></li>
+      <li><a href="#notes" data-label="NOTES"><span></span></a></li>
     </ul>
     <button class="chapters__audio" id="audioToggle" aria-label="切换环境音" type="button">
       <span class="chapters__audio-icon">♪</span>

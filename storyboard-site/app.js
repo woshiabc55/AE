@@ -408,6 +408,235 @@ function renderChars() {
 }
 
 /* ==========================================================================
+   渲染：设计系统（色板 / 字号 / 间距 / 动效）
+   ========================================================================== */
+const COLOR_TOKENS = [
+  { name: 'GOLD',         var: '--gold',         note: '主金 · 高光 / CTA' },
+  { name: 'GOLD-BRIGHT',  var: '--gold-bright',  note: '亮金 · 焦点 / 强调' },
+  { name: 'GOLD-DIM',     var: '--gold-dim',     note: '暗金 · 边线 / 描边' },
+  { name: 'ACCENT',       var: '--accent',       note: '主调 · 主题色' },
+  { name: 'SAND',         var: '--sand',         note: '沙色 · 正文 / 反白' },
+  { name: 'INK',          var: '--ink',          note: '墨黑 · 背景 / 底' },
+  { name: 'INK-2',        var: '--ink-2',        note: '深墨 · 卡片底' },
+  { name: 'INK-3',        var: '--ink-3',        note: '亮墨 · 描边 / 分割' },
+  { name: 'SMOKE',        var: '--smoke',        note: '烟雾 · 60% 正文' },
+  { name: 'SMOKE-DIM',    var: '--smoke-dim',    note: '薄雾 · 35% 注释' },
+  { name: 'RED',          var: '--red',          note: '警示 · 剧情高潮' },
+  { name: 'RED-BRIGHT',   var: '--red-bright',   note: '鲜血 · 危险信号' },
+];
+
+const TYPE_TOKENS = [
+  { name: 'DISPLAY',  sample: '对决 Duél',       size: '4.5rem',  weight: 700, family: 'serif-cn' },
+  { name: 'H1',       sample: '六幕 · 节奏',     size: '2.6rem',  weight: 500, family: 'serif-cn' },
+  { name: 'H2',       sample: '第一幕 · 觉醒',   size: '1.8rem',  weight: 500, family: 'serif-cn' },
+  { name: 'H3',       sample: 'STORYBOARD 16 镜',size: '1.3rem',  weight: 500, family: 'serif-cn' },
+  { name: 'BODY',     sample: '老头眼神从浑浊瞬间变锐利，瞳孔金光绽放。', size: '1rem',  weight: 400, family: 'serif-cn' },
+  { name: 'CAPTION',  sample: 'A cinematic storyboard dossier', size: '0.75rem', weight: 500, family: 'mono' },
+  { name: 'MONO',     sample: 'SHOT_01 / 0″–5″ / 1.78:1',     size: '0.7rem',  weight: 400, family: 'mono' },
+];
+
+const SPACE_TOKENS = [
+  { name: 'XS',    value: 4,   px: '4px'  },
+  { name: 'SM',    value: 8,   px: '8px'  },
+  { name: 'MD',    value: 16,  px: '16px' },
+  { name: 'LG',    value: 24,  px: '24px' },
+  { name: 'XL',    value: 40,  px: '40px' },
+  { name: '2XL',   value: 64,  px: '64px' },
+  { name: '3XL',   value: 96,  px: '96px' },
+  { name: '4XL',   value: 144, px: '144px' },
+];
+
+const MOTION_TOKENS = [
+  { name: 'INSTANT', duration: 0.1,  easing: 'ease-out',     use: '微交互 · 状态切换' },
+  { name: 'FAST',    duration: 0.3,  easing: 'ease-out',     use: 'Hover / Tap' },
+  { name: 'NORMAL',  duration: 0.6,  easing: 'ease-out',     use: '进场 / 弹入' },
+  { name: 'SLOW',    duration: 1.2,  easing: 'ease-in-out',  use: '幕与幕 · 段间转场' },
+  { name: 'EPIC',    duration: 2.4,  easing: 'ease-in-out',  use: 'Hero · 大开大合' },
+  { name: 'CINEMA',  duration: 3.6,  easing: 'ease-in-out',  use: '整段情绪递进' },
+];
+
+function cssVar(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+function renderSystem() {
+  const swatchRoot = document.getElementById('swatches');
+  const typeRoot = document.getElementById('typeScale');
+  const spaceRoot = document.getElementById('spaceScale');
+  const motionRoot = document.getElementById('motionScale');
+  if (!swatchRoot || !typeRoot || !spaceRoot || !motionRoot) return;
+
+  // 1) 色板
+  swatchRoot.innerHTML = COLOR_TOKENS.map((t) => {
+    const v = cssVar(t.var) || '#—';
+    return `
+      <div class="swatch">
+        <div class="swatch__chip" style="background:${v}"></div>
+        <div class="swatch__info">
+          <span class="swatch__name">${t.name}</span>
+          <span class="swatch__hex">${v}</span>
+          <span class="swatch__note">${t.note}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // 2) 字号阶
+  typeRoot.innerHTML = TYPE_TOKENS.map((t) => `
+    <div class="type-row">
+      <span class="type-row__token">${t.name}</span>
+      <span class="type-row__sample" style="font-size:${t.size}; font-weight:${t.weight}; font-family:var(--${t.family});">${t.sample}</span>
+      <span class="type-row__size">${t.size} · ${t.weight}</span>
+    </div>
+  `).join('');
+
+  // 3) 间距阶
+  const maxSpace = Math.max(...SPACE_TOKENS.map((s) => s.value));
+  spaceRoot.innerHTML = SPACE_TOKENS.map((s) => `
+    <div class="space-row">
+      <span class="space-row__token">${s.name}</span>
+      <div class="space-row__bar" style="width:${(s.value / maxSpace) * 100}%"></div>
+      <span class="space-row__value">${s.px}</span>
+    </div>
+  `).join('');
+
+  // 4) 动效时长
+  const maxDur = Math.max(...MOTION_TOKENS.map((m) => m.duration));
+  motionRoot.innerHTML = MOTION_TOKENS.map((m) => `
+    <div class="motion-row" style="--motion-dur:${m.duration}s;">
+      <span class="motion-row__token">${m.name}</span>
+      <div class="motion-row__visual">
+        <div class="motion-row__pulse" style="animation-duration:${m.duration * 1.5}s;"></div>
+      </div>
+      <span class="motion-row__meta">
+        ${m.duration.toFixed(m.duration < 1 ? 2 : 1)}s
+        <small>${m.easing} · ${m.use}</small>
+      </span>
+    </div>
+  `).join('');
+}
+
+/* ==========================================================================
+   渲染：导演手记（三部剧本各一张卡片）
+   ========================================================================== */
+const DIRECTOR_NOTES = [
+  {
+    key: 'duel',
+    titleCn: '对决',
+    titleEn: 'Duél',
+    palette: '沙金 · 墨黑 · 血红',
+    quote: '一个老头在田里刨了一辈子，忽然被迫拔刀——把农事的节奏变成宇宙的节奏。',
+    refs: [
+      '《Dune: Part Two》— 沙丘低饱和、宏大空镜',
+      '《卧虎藏龙》— 竹梢打斗的克制与留白',
+      'Yoshitaka Amano — 神祇与人之间的尺度差',
+      '张大千泼墨 — 水的势能化作龙的势能',
+    ],
+    sources: [
+      'IMAX 摄影机光学规格 · 65mm 15-perf',
+      'Houdini · 体积粒子冲击波',
+      'Nuke · 16:9 满画幅后期合成',
+    ],
+    span: '90s · 6 ACTS · 16 SHOTS',
+  },
+  {
+    key: 'gui',
+    titleCn: '归',
+    titleEn: 'Guī',
+    palette: '雾蓝 · 冷灰 · 暖金',
+    quote: '三十年没回家。行李箱里装的不是东西，是时间。开门那一秒是这辈子最重的一秒。',
+    refs: [
+      '《花样年华》— 廊灯下的背影时间感',
+      '《降临》(Arrival) — 重复意象的累积压力',
+      'Edward Hopper — 一个人与一栋楼的对位',
+      '杨德昌《一一》— 家庭餐桌的沉默重于台词',
+    ],
+    sources: [
+      '35mm 胶片扫描 · Kodak Vision3 200T',
+      '声音设计：环境白噪 + 门锁金属回弹',
+      '调色：青橙对位 / 暖金仅在家庭场景出现',
+    ],
+    span: '180s · 5 ACTS · 22 SHOTS',
+  },
+  {
+    key: 'yuye',
+    titleCn: '雨夜',
+    titleEn: 'Yǔ Yè',
+    palette: '霓虹品红 · 青蓝 · 雨灰',
+    quote: '这座城市不下雨它就死了。每一滴都是一个没送到的人。',
+    refs: [
+      '《银翼杀手》— 雨幕中的霓虹体积感',
+      '王家卫《重庆森林》— 手持晃动的情绪节拍',
+      '《出租车司机》— 出租车内的孤独与街道的喧嚣',
+      'Photographer 陈漫 — 港式霓虹人像冷暖对撞',
+    ],
+    sources: [
+      'Sony Venice 2 · 6K 高感低噪',
+      'Wet-down 路牌实景拍摄 + CG 雨滴',
+      'ACES 调色 · ACEScct → Rec.2020',
+    ],
+    span: '120s · 4 ACTS · 18 SHOTS',
+  },
+];
+
+function renderNotes() {
+  const root = document.getElementById('notesGrid');
+  if (!root) return;
+  root.innerHTML = DIRECTOR_NOTES.map((n) => `
+    <article class="notes__card notes__card--${n.key}">
+      <div class="notes__card-head">
+        <span class="caption">DIRECTOR'S NOTE · ${n.key.toUpperCase()}</span>
+        <h3 class="notes__card-title">${n.titleCn}<em>${n.titleEn}</em></h3>
+      </div>
+      <div class="notes__card-body">
+        <p class="notes__quote">${n.quote}</p>
+        <div>
+          <p class="notes__list-label">参考影像 / References</p>
+          <ul class="notes__list">
+            ${n.refs.map((r) => `<li>${r}</li>`).join('')}
+          </ul>
+        </div>
+        <div>
+          <p class="notes__list-label">设计原稿 / Sources</p>
+          <ul class="notes__list">
+            ${n.sources.map((s) => `<li>${s}</li>`).join('')}
+          </ul>
+        </div>
+      </div>
+      <div class="notes__card-footer">
+        <span><span class="swatch-dot"></span>${n.palette}</span>
+        <span>${n.span}</span>
+      </div>
+    </article>
+  `).join('');
+}
+
+/* ==========================================================================
+   交互：3 主题切换（顶栏色板按钮）
+   ========================================================================== */
+function setupThemeSwitcher() {
+  const root = document.documentElement;
+  const buttons = document.querySelectorAll('#topbarThemes .topbar__theme-btn');
+  if (!buttons.length) return;
+
+  // 默认以当前激活剧本为默认主题
+  const initial = activeStoryboard || 'duel';
+  root.setAttribute('data-theme', initial);
+  buttons.forEach((b) => b.classList.toggle('is-active', b.dataset.theme === initial));
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.theme;
+      if (!key) return;
+      root.setAttribute('data-theme', key);
+      buttons.forEach((b) => b.classList.toggle('is-active', b === btn));
+      // 重新读取 CSS 变量并刷新色板（让色板卡显示新主题下的色值）
+      renderSystem();
+    });
+  });
+}
+
+/* ==========================================================================
    交互：Hero 粒子
    ========================================================================== */
 function spawnParticles() {
@@ -665,6 +894,8 @@ document.addEventListener('DOMContentLoaded', () => {
   renderConstraints();
   renderAssets();
   renderChars();
+  renderSystem();
+  renderNotes();
   renderDeck();
   renderLightboxThumbs();
   renderTimeline();
@@ -682,6 +913,7 @@ document.addEventListener('DOMContentLoaded', () => {
   preloadAllImages();
   setupTabs();
   setupExport();
+  setupThemeSwitcher();
 });
 
 /* ==========================================================================
@@ -1110,7 +1342,7 @@ function setupProgressBar() {
    章节 scroll-spy
    ========================================================================== */
 function setupScrollSpy() {
-  const sections = ['hero', 'rhythm', 'shots', 'constraints', 'assets'];
+  const sections = ['hero', 'rhythm', 'shots', 'constraints', 'assets', 'characters', 'system', 'notes'];
   const links = document.querySelectorAll('.chapters a');
   const observer = new IntersectionObserver(
     (entries) => {
