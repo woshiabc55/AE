@@ -2251,3 +2251,441 @@ export const lutStyles: LUTStyle[] = [
     reference: '艾曼努尔·卢贝兹金《生命之树》',
   },
 ];
+
+// ============= VFX 特效镜头分解 =============
+
+export type VFXComplexity = 'simple' | 'medium' | 'complex' | 'extreme';
+
+export interface VFXShot {
+  id: string;
+  actId: number;
+  shotId: number;
+  complexity: VFXComplexity;
+  elements: string[];            // ['creature', 'environment', 'particle', 'simulation']
+  tools: string[];               // ['Houdini', 'Maya', 'Nuke']
+  reference: string;
+  description: string;
+  estimatedRenderHours: number;
+  layers: number;                // 渲染图层数
+  artist: string;                // 负责艺术家
+  breakdown: {
+    modeling: number;            // 0-100 占比
+    texturing: number;
+    rigging: number;
+    animation: number;
+    lookdev: number;
+    lighting: number;
+    render: number;
+    comp: number;
+  };
+}
+
+export interface VFXAsset {
+  id: string;
+  name: string;
+  category: 'creature' | 'environment' | 'prop' | 'fx';
+  description: string;
+  scale: string;
+  polyCount: string;
+  textureRes: string;
+  riggingNotes: string;
+  references: string[];
+  buildTime: string;             // 制作周期
+}
+
+export interface VFXDiscipline {
+  id: string;
+  name: string;
+  chineseName: string;
+  icon: string;
+  description: string;
+  shotCount: number;
+  toolChain: string[];
+  color: string;
+  headcount: number;             // 团队人数
+}
+
+export interface RenderPipelineStage {
+  id: string;
+  stage: string;
+  chineseName: string;
+  description: string;
+  hoursPerShot: number;
+  icon: string;
+  color: string;
+  deliverables: string[];
+}
+
+export const vfxShots: VFXShot[] = [
+  {
+    id: 'vfx-1',
+    actId: 3,
+    shotId: 28,
+    complexity: 'extreme',
+    elements: ['creature', 'environment', 'particle', 'simulation', 'atmosphere'],
+    tools: ['Houdini', 'Maya', 'Mari', 'Nuke', 'Karma XPU'],
+    reference: 'WETA Digital《指环王：王者归来》',
+    description: '天空撕裂瞬间——渊的影子笼罩大地。需 280 个 CG 元素层、1400 万粒子、480 核 CPU 渲染农场 36 小时。',
+    estimatedRenderHours: 2400,
+    layers: 280,
+    artist: '吴·丹尼尔',
+    breakdown: { modeling: 15, texturing: 10, rigging: 8, animation: 12, lookdev: 10, lighting: 8, render: 27, comp: 10 },
+  },
+  {
+    id: 'vfx-2',
+    actId: 3,
+    shotId: 36,
+    complexity: 'extreme',
+    elements: ['creature', 'environment', 'digital-double', 'simulation'],
+    tools: ['Houdini', 'Maya', 'ZBrush', 'Nuke', 'Redshift'],
+    reference: 'ILM《复仇者联盟：终局之战》',
+    description: '渊降临天庭寺的全身镜头。需要完整的角色绑定（4 万个骨骼）、布料解算、肌肉模拟、毛发系统。',
+    estimatedRenderHours: 3200,
+    layers: 420,
+    artist: '陈·玛丽',
+    breakdown: { modeling: 12, texturing: 8, rigging: 18, animation: 14, lookdev: 8, lighting: 6, render: 24, comp: 10 },
+  },
+  {
+    id: 'vfx-3',
+    actId: 4,
+    shotId: 43,
+    complexity: 'extreme',
+    elements: ['creature', 'particle', 'simulation', 'atmosphere'],
+    tools: ['Houdini', 'Maya', 'Nuke', 'Karma XPU'],
+    reference: 'DNEG《沙丘》',
+    description: '陈守田破土而出的瞬间——金色粒子爆发、土块解算、能量冲击波。三维空间内 500 万个金色粒子。',
+    estimatedRenderHours: 1800,
+    layers: 180,
+    artist: '李·维克托',
+    breakdown: { modeling: 8, texturing: 6, rigging: 4, animation: 15, lookdev: 12, lighting: 10, render: 30, comp: 15 },
+  },
+  {
+    id: 'vfx-4',
+    actId: 4,
+    shotId: 50,
+    complexity: 'complex',
+    elements: ['particle', 'simulation', 'atmosphere'],
+    tools: ['Houdini', 'Nuke'],
+    reference: 'Method Studios《银翼杀手2049》',
+    description: '断潮刀出鞘——刀光如银河倾泻。纯光效镜头，主要挑战在体积光 + 镜面反射。',
+    estimatedRenderHours: 800,
+    layers: 90,
+    artist: '王·索菲亚',
+    breakdown: { modeling: 5, texturing: 5, rigging: 0, animation: 20, lookdev: 18, lighting: 15, render: 25, comp: 12 },
+  },
+  {
+    id: 'vfx-5',
+    actId: 5,
+    shotId: 55,
+    complexity: 'extreme',
+    elements: ['creature', 'environment', 'particle', 'simulation', 'atmosphere'],
+    tools: ['Houdini', 'Maya', 'Mari', 'Nuke', 'Karma XPU'],
+    reference: 'Framestore《奇幻森林》',
+    description: '神战决战镜头。守田（金色神力）+ 渊（血红兽性）的光效对撞，64 个渲染图层，5000 万粒子。',
+    estimatedRenderHours: 4500,
+    layers: 640,
+    artist: '吴·丹尼尔',
+    breakdown: { modeling: 10, texturing: 8, rigging: 12, animation: 14, lookdev: 10, lighting: 8, render: 28, comp: 10 },
+  },
+  {
+    id: 'vfx-6',
+    actId: 5,
+    shotId: 62,
+    complexity: 'complex',
+    elements: ['environment', 'particle', 'atmosphere'],
+    tools: ['Houdini', 'Nuke'],
+    reference: 'SPIR《银翼杀手2049》',
+    description: '封印咏唱——金色咒文光环。粒子 + 体积光 + 后期合成。',
+    estimatedRenderHours: 1200,
+    layers: 120,
+    artist: '陈·玛丽',
+    breakdown: { modeling: 5, texturing: 5, rigging: 0, animation: 18, lookdev: 20, lighting: 12, render: 25, comp: 15 },
+  },
+  {
+    id: 'vfx-7',
+    actId: 2,
+    shotId: 17,
+    complexity: 'medium',
+    elements: ['environment', 'particle', 'atmosphere'],
+    tools: ['Houdini', 'Nuke'],
+    reference: 'Rising Sun Pictures《X 战警：逆转未来》',
+    description: '铜铃响起的瞬间——空气震动、尘埃飘散、远处微光。简单的 CG 增强，主要靠后期粒子。',
+    estimatedRenderHours: 360,
+    layers: 45,
+    artist: '张·艾玛',
+    breakdown: { modeling: 8, texturing: 6, rigging: 0, animation: 12, lookdev: 14, lighting: 18, render: 22, comp: 20 },
+  },
+  {
+    id: 'vfx-8',
+    actId: 2,
+    shotId: 21,
+    complexity: 'medium',
+    elements: ['environment', 'atmosphere'],
+    tools: ['Nuke'],
+    reference: 'Method Studios《1917》',
+    description: '质问场景的环境增强——雾气浓度调整、光线方向改变。主要是合成工作。',
+    estimatedRenderHours: 200,
+    layers: 25,
+    artist: '李·维克托',
+    breakdown: { modeling: 5, texturing: 5, rigging: 0, animation: 10, lookdev: 15, lighting: 20, render: 15, comp: 30 },
+  },
+  {
+    id: 'vfx-9',
+    actId: 3,
+    shotId: 30,
+    complexity: 'complex',
+    elements: ['environment', 'simulation', 'atmosphere'],
+    tools: ['Houdini', 'Maya', 'Nuke'],
+    reference: 'ILM《碟中谍 6》',
+    description: '天庭寺屋顶崩塌——瓦砾解算、烟雾、碎片轨迹。需要 RBD（刚体动力学）解算。',
+    estimatedRenderHours: 1100,
+    layers: 130,
+    artist: '王·索菲亚',
+    breakdown: { modeling: 12, texturing: 8, rigging: 4, animation: 18, lookdev: 10, lighting: 12, render: 24, comp: 12 },
+  },
+  {
+    id: 'vfx-10',
+    actId: 4,
+    shotId: 47,
+    complexity: 'complex',
+    elements: ['creature', 'environment'],
+    tools: ['Maya', 'Nuke', 'ZBrush'],
+    reference: 'Framestore《银翼杀手2049》',
+    description: '渊的近景特写——瞳孔细节、皮肤纹理、血液流动。需要极高精度的角色模型。',
+    estimatedRenderHours: 1400,
+    layers: 80,
+    artist: '吴·丹尼尔',
+    breakdown: { modeling: 18, texturing: 14, rigging: 8, animation: 10, lookdev: 12, lighting: 10, render: 18, comp: 10 },
+  },
+  {
+    id: 'vfx-11',
+    actId: 6,
+    shotId: 66,
+    complexity: 'medium',
+    elements: ['environment', 'atmosphere'],
+    tools: ['Nuke'],
+    reference: 'Method Studios《1917》',
+    description: '废墟晨曦——冷蓝调色 + 远景雾化 + 天空置换。',
+    estimatedRenderHours: 240,
+    layers: 30,
+    artist: '张·艾玛',
+    breakdown: { modeling: 3, texturing: 3, rigging: 0, animation: 8, lookdev: 15, lighting: 20, render: 21, comp: 30 },
+  },
+  {
+    id: 'vfx-12',
+    actId: 6,
+    shotId: 70,
+    complexity: 'simple',
+    elements: ['environment', 'atmosphere'],
+    tools: ['Nuke'],
+    reference: 'DNEG《1917》',
+    description: '守望永恒的最后一镜——天空增强 + 远景合成。简单但情绪关键。',
+    estimatedRenderHours: 120,
+    layers: 18,
+    artist: '李·维克托',
+    breakdown: { modeling: 3, texturing: 3, rigging: 0, animation: 8, lookdev: 15, lighting: 20, render: 21, comp: 30 },
+  },
+];
+
+export const vfxAssets: VFXAsset[] = [
+  {
+    id: 'asset-1',
+    name: '渊 / 宇宙巨兽',
+    category: 'creature',
+    description: '全片最重要的 CG 资产。300 米高的非人形态，需要从概念到最终渲染完整开发。',
+    scale: '高度 300m · 体长 600m',
+    polyCount: '4 个 LOD：180M / 45M / 12M / 3M 多边形',
+    textureRes: '8K PBR · 4K 张贴法线 · 16K 流场贴图',
+    riggingNotes: '4 万根骨骼 · 28 层肌肉系统 · 2 万根动态毛发 · 1 万 2 千根羽毛',
+    references: ['H.R. Giger 异形原稿', 'Zdzisław Beksiński 油画', 'WETA 哥斯拉解剖图'],
+    buildTime: '14 个月',
+  },
+  {
+    id: 'asset-2',
+    name: '天庭寺',
+    category: 'environment',
+    description: '古庙被巨兽摧毁的 CG 环境。完整 360 度可环视。',
+    scale: '占地 250m × 180m · 高度 80m',
+    polyCount: '60M 多边形（含破损）',
+    textureRes: '4K 漫反射 + 2K 法线 + 1K 粗糙度',
+    riggingNotes: '使用 Houdini 制作程序化破损，瓦砾、碎柱、断梁可单独刚体解算',
+    references: ['山西佛光寺', '日本姬路城', '敦煌莫高窟 220 窟'],
+    buildTime: '8 个月',
+  },
+  {
+    id: 'asset-3',
+    name: '晨雾山林',
+    category: 'environment',
+    description: '开场第一幕的山林环境——全 CG 的中国南方丘陵。',
+    scale: '12 平方公里',
+    polyCount: '120M 植被 + 80M 地形',
+    textureRes: '程序化生成 + 8K 贴图',
+    riggingNotes: 'SpeedTree 制作 5 万棵树，每棵都有独立的 wind 动画',
+    references: ['黄山云海', '张家界国家森林公园', '巨蟒与圣杯实拍'],
+    buildTime: '6 个月',
+  },
+  {
+    id: 'asset-4',
+    name: '断潮刀',
+    category: 'prop',
+    description: '陈守田的兵器——3000 年前的神器，被神力激活。',
+    scale: '长度 1.2m',
+    polyCount: '高模 80K · 低模 8K',
+    textureRes: '4K 反射 + 2K 磨损贴图',
+    riggingNotes: '需要单独的能量场绑定，光效与持刀者动作同步',
+    references: ['越王勾践剑', '汉代环首刀', '《浪客剑心》逆刃刀'],
+    buildTime: '3 个月',
+  },
+];
+
+export const vfxDisciplines: VFXDiscipline[] = [
+  {
+    id: 'disc-1',
+    name: 'Creature Design',
+    chineseName: '生物设计',
+    icon: '◇',
+    description: '全片 CG 角色设计——渊、神兽、守护灵',
+    shotCount: 18,
+    toolChain: ['ZBrush', 'Maya', 'Mari', 'Houdini'],
+    color: '#9d0208',
+    headcount: 12,
+  },
+  {
+    id: 'disc-2',
+    name: 'Environment',
+    chineseName: '环境延伸',
+    icon: '◰',
+    description: '实拍场景的 CG 扩展、远景置换、天空生成',
+    shotCount: 42,
+    toolChain: ['Maya', 'Houdini', 'Nuke', 'World Machine'],
+    color: '#74b9ff',
+    headcount: 18,
+  },
+  {
+    id: 'disc-3',
+    name: 'FX Simulation',
+    chineseName: '特效模拟',
+    icon: '✦',
+    description: '粒子、流体、布料、刚体、毛发、解算',
+    shotCount: 35,
+    toolChain: ['Houdini', 'RealFlow', 'Thinking Particles'],
+    color: '#ff6b35',
+    headcount: 14,
+  },
+  {
+    id: 'disc-4',
+    name: 'Lookdev & Lighting',
+    chineseName: '材质与灯光',
+    icon: '☀',
+    description: 'PBR 材质、HDRI 光照、色彩管线',
+    shotCount: 52,
+    toolChain: ['Mari', 'Substance', 'Katana', 'Karma'],
+    color: '#d4af37',
+    headcount: 16,
+  },
+  {
+    id: 'disc-5',
+    name: 'Compositing',
+    chineseName: '后期合成',
+    icon: '◐',
+    description: '多层合成、抠像、色彩校正、最终输出',
+    shotCount: 72,
+    toolChain: ['Nuke', 'Fusion', 'After Effects'],
+    color: '#a29bfe',
+    headcount: 22,
+  },
+  {
+    id: 'disc-6',
+    name: 'Digital Double',
+    chineseName: '数字替身',
+    icon: '◑',
+    description: '演员全身扫描、超高精度模型、表情捕捉',
+    shotCount: 8,
+    toolChain: ['Maya', 'ZBrush', 'Metahuman', 'Faceware'],
+    color: '#1dd1a1',
+    headcount: 6,
+  },
+];
+
+export const renderPipeline: RenderPipelineStage[] = [
+  {
+    id: 'pipe-1',
+    stage: 'Modeling',
+    chineseName: '建模',
+    description: '从概念图到 3D 模型。低模 / 中模 / 高模 / LOD 完整制作',
+    hoursPerShot: 80,
+    icon: '◇',
+    color: '#74b9ff',
+    deliverables: ['高模 ZTL', '低模 OBJ', 'UV 展开'],
+  },
+  {
+    id: 'pipe-2',
+    stage: 'Texturing',
+    chineseName: '材质绘制',
+    description: 'PBR 材质——漫反射、法线、粗糙度、金属度、置换',
+    hoursPerShot: 60,
+    icon: '◐',
+    color: '#a29bfe',
+    deliverables: ['4K/8K 贴图集', 'Substance 源文件'],
+  },
+  {
+    id: 'pipe-3',
+    stage: 'Rigging',
+    chineseName: '绑定',
+    description: '骨骼系统、肌肉模拟、面部绑定、动力学控制',
+    hoursPerShot: 120,
+    icon: '⊞',
+    color: '#1dd1a1',
+    deliverables: ['骨骼资产', '控制器', '表情库'],
+  },
+  {
+    id: 'pipe-4',
+    stage: 'Animation',
+    chineseName: '动画',
+    description: '关键帧动画、动捕清理、布料 / 毛发 / 肌肉解算',
+    hoursPerShot: 200,
+    icon: '▶',
+    color: '#d4af37',
+    deliverables: ['动画缓存', '解算 ABC'],
+  },
+  {
+    id: 'pipe-5',
+    stage: 'Lookdev',
+    chineseName: '材质预览',
+    description: '材质在不同光照下的预览，匹配导演意图',
+    hoursPerShot: 80,
+    icon: '◉',
+    color: '#f368e0',
+    deliverables: ['Lookdev 球', '参考帧'],
+  },
+  {
+    id: 'pipe-6',
+    stage: 'Lighting',
+    chineseName: '灯光',
+    description: 'HDRI 光照、3 点布光、戏剧化氛围',
+    hoursPerShot: 100,
+    icon: '☀',
+    color: '#f4d03f',
+    deliverables: ['灯光文件', 'AOV 通道'],
+  },
+  {
+    id: 'pipe-7',
+    stage: 'Render',
+    chineseName: '渲染',
+    description: '分布式渲染农场——单镜头可 100-300 核并行',
+    hoursPerShot: 600,
+    icon: '⚡',
+    color: '#ff6b35',
+    deliverables: ['EXR 序列', '深度图', 'AOV 合成层'],
+  },
+  {
+    id: 'pipe-8',
+    stage: 'Comp',
+    chineseName: '合成',
+    description: '多层合成、抠像、调色、最终输出',
+    hoursPerShot: 80,
+    icon: '⊕',
+    color: '#ff3838',
+    deliverables: ['Nuke 脚本', '最终 EXR', 'DPX 序列'],
+  },
+];

@@ -302,6 +302,18 @@ export default function ScriptDetail() {
                   <ChevronRight size={14} className="act-card-arrow" />
                 </div>
               </Link>
+
+              <Link to="/script/vfx" className="act-card" style={{ '--accent': '#ff3838' } as React.CSSProperties}>
+                <div className="act-card-glyph">特</div>
+                <div className="act-card-num">VFX</div>
+                <h3 className="act-card-title">特效镜头分解</h3>
+                <div className="act-card-subtitle">VFX Breakdown</div>
+                <p className="act-card-theme">12 镜头 / 4 主资产 / 6 学科 / 8 阶段管线 / 复杂度分布</p>
+                <div className="act-card-footer">
+                  <span>CG PIPELINE</span>
+                  <ChevronRight size={14} className="act-card-arrow" />
+                </div>
+              </Link>
             </div>
           </section>
 
