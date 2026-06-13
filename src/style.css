@@ -1,6 +1,6 @@
 /* ============================================================
    工业仙境 · 道 (DAOL) 设计
-   主体：3D 立体"工业仙境" 文字 + 圆环
+   主体：3D 立体"工业 / 仙境" 文字（中央，匀速旋转）
    极简、留白、平衡
    ============================================================ */
 :root{
@@ -19,10 +19,10 @@
   /* 鼠标 */
   --mx:.5; --my:.5;
   /* 3D 立体 */
-  --depth: 14;     /* 堆叠层数 */
-  --step: 2px;     /* 每一层 z 偏移 */
-  /* 入场 */
-  --tilt: 0deg;
+  --layers: 16;        /* 堆叠层数 */
+  --step: 2.2px;       /* 每一层 z 偏移 */
+  /* 匀速旋转周期（秒） */
+  --rotate-period: 28s;
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -46,7 +46,6 @@ body{cursor:crosshair}
   overflow:hidden;
 }
 
-/* 大圆光晕（柔和背光） */
 .halo{
   position:absolute;left:50%;top:50%;
   width:min(120vmin,1200px);height:min(120vmin,1200px);
@@ -57,12 +56,11 @@ body{cursor:crosshair}
     rgba(255,91,31,.05) 30%,
     transparent 65%);
   filter:blur(40px);
-  pointer-events:none;
-  z-index:0;
+  pointer-events:none;z-index:0;
 }
 
 /* ============================================================
-   圆环系统（3 圈 + 核心）
+   圆环系统
    ============================================================ */
 .ring-system{
   position:relative;
@@ -74,18 +72,9 @@ body{cursor:crosshair}
     rotateY(calc((var(--mx) - .5) * 8deg * var(--intensity)));
   transition:transform .3s ease-out;
   z-index:2;
-  animation:float 8s ease-in-out infinite;
-}
-@keyframes float{
-  0%,100%{ transform:translateZ(0) rotateX(calc((var(--my)-.5)*-6deg*var(--intensity))) rotateY(calc((var(--mx)-.5)*8deg*var(--intensity))) translateY(0) }
-  50%{     transform:translateZ(0) rotateX(calc((var(--my)-.5)*-6deg*var(--intensity))) rotateY(calc((var(--mx)-.5)*8deg*var(--intensity))) translateY(-8px) }
 }
 
-.r{
-  position:absolute;inset:0;border-radius:50%;
-  mix-blend-mode:normal;
-}
-/* 外环：黑 75% / 纸白 25% conic 反色 */
+.r{position:absolute;inset:0;border-radius:50%}
 .r-1{
   background:conic-gradient(from 0deg, var(--ink) 0 75%, var(--paper) 75% 100%);
   padding:var(--ring-thickness);
@@ -93,7 +82,6 @@ body{cursor:crosshair}
   -webkit-mask-composite:xor;mask-composite:exclude;
   animation:spin calc(40s / var(--ring-speed)) linear infinite;
 }
-/* 中环：纸白 60% / 工业橙 40% */
 .r-2{
   inset:60px;
   background:conic-gradient(from 90deg, var(--paper) 0 60%, var(--rust) 60% 100%);
@@ -102,7 +90,6 @@ body{cursor:crosshair}
   -webkit-mask-composite:xor;mask-composite:exclude;
   animation:spin calc(28s / var(--ring-speed)) linear infinite reverse;
 }
-/* 内环：电气蓝 50% / 黑 50% */
 .r-3{
   inset:120px;
   background:conic-gradient(from 180deg, var(--volt) 0 50%, var(--ink) 50% 100%);
@@ -113,13 +100,13 @@ body{cursor:crosshair}
 }
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* 核心：黑底圆盘 + 立体字 */
+/* 核心：黑底圆盘 */
 .r-core{
   position:absolute;left:50%;top:50%;
   transform:translate(-50%,-50%);
-  width:50%;height:50%;border-radius:50%;
+  width:62%;height:62%;border-radius:50%;
   background:var(--ink);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  display:flex;align-items:center;justify-content:center;
   box-shadow:
     inset 0 0 0 2px var(--paper),
     inset 0 0 60px rgba(255,91,31,.18),
@@ -138,107 +125,80 @@ body{cursor:crosshair}
 
 /* ============================================================
    3D 立体文字 ——
-   多层 .t3d-layer 沿 z 轴堆叠，制造挤出感
-   前层 = 纸白主色；后层依次加深 + 偏移，制造阴影
+   · 两行独立堆叠（工业 / 仙境），每行内 17 层共享同一 2D 位置
+   · 整体绕 Y 轴匀速旋转（linear）
+   · 字体大小由 --title-size 调节
    ============================================================ */
 .t3d{
   position:relative;
   transform-style:preserve-3d;
-  text-align:center;
-  line-height:1;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:.18em;
+  /* 匀速 Y 轴旋转 */
+  animation:rotY var(--rotate-period) linear infinite;
+  transform-origin:center center;
+}
+@keyframes rotY{
+  from{transform:rotateY(0deg)}
+  to  {transform:rotateY(360deg)}
+}
+
+.t3d-row{
+  position:relative;
+  transform-style:preserve-3d;
+}
+
+.t3d-stack{
+  position:relative;
+  display:inline-block;
+  transform-style:preserve-3d;
   font-family:"Noto Sans SC",sans-serif;
   font-weight:900;
-  font-size:calc(clamp(46px, 7.2vmin, 96px) * var(--title-size));
+  font-size:calc(clamp(60px, 9.5vmin, 130px) * var(--title-size));
+  line-height:1;
   letter-spacing:.04em;
-  margin:8px 0;
   white-space:nowrap;
 }
 
+/* 每一层：absolute 共享 2D 位置，仅 z 不同 */
 .t3d-layer{
-  display:block;
-  position:relative;
-  transform:translateZ(var(--z, 0));
-  /* 每层用 color-mix 制造从纸白到黑的渐变 */
+  position:absolute;
+  top:0;left:50%;
+  transform:translate(-50%, 0) translateZ(var(--z, 0));
+  /* 颜色：前层纸白；后层用 color-mix 渐深 */
   color:color-mix(in srgb, var(--paper) calc((1 - var(--t, 0)) * 100%), var(--ink));
   text-shadow:
-    calc((1 - var(--t, 0)) * 1px) calc((1 - var(--t, 0)) * 1px) 0 color-mix(in srgb, var(--rust) 60%, var(--ink)),
-    calc((1 - var(--t, 0)) * 2px) calc((1 - var(--t, 0)) * 2px) 0 color-mix(in srgb, var(--rust) 40%, var(--ink));
-  /* 性能：只对前几层做 blur 模拟 */
-  filter:blur(calc((1 - var(--t, 0)) * 0.4px));
+    calc((1 - var(--t, 0)) * .6px) calc((1 - var(--t, 0)) * .6px) 0 color-mix(in srgb, var(--rust) 50%, var(--ink));
 }
+
+/* 前层：主色 + 多重 text-shadow 立体阴影 */
 .t3d-front{
   color:var(--paper);
   text-shadow:
-    0 1px 0 color-mix(in srgb, var(--rust) 70%, var(--ink)),
-    0 2px 0 color-mix(in srgb, var(--rust) 60%, var(--ink)),
-    0 3px 0 color-mix(in srgb, var(--rust) 50%, var(--ink)),
-    0 4px 0 color-mix(in srgb, var(--rust) 40%, var(--ink)),
+    0 1px 0 color-mix(in srgb, var(--rust) 75%, var(--ink)),
+    0 2px 0 color-mix(in srgb, var(--rust) 65%, var(--ink)),
+    0 3px 0 color-mix(in srgb, var(--rust) 55%, var(--ink)),
+    0 4px 0 color-mix(in srgb, var(--rust) 45%, var(--ink)),
     0 6px 14px rgba(255,91,31,.45),
     0 0 30px rgba(255,91,31,.25);
 }
 
-/* 入场：从底部上升 + 错位 */
-.t3d-layer{opacity:0;transform:translateZ(var(--z)) translateY(40px);animation:rise 1.2s cubic-bezier(.2,.7,.2,1) forwards}
-.t3d-front{animation-delay:.20s}
-.t3d-i-1{animation-delay:.18s}
-.t3d-i-2{animation-delay:.16s}
-.t3d-i-3{animation-delay:.14s}
-.t3d-i-4{animation-delay:.12s}
-.t3d-i-5{animation-delay:.10s}
-.t3d-i-6{animation-delay:.08s}
-.t3d-i-7{animation-delay:.06s}
-.t3d-i-8{animation-delay:.04s}
-.t3d-i-9{animation-delay:.02s}
-.t3d-i-10,.t3d-i-11,.t3d-i-12,.t3d-i-13,.t3d-i-14{animation-delay:0s}
+/* 入场：所有层统一从底部上升（匀速 linear） */
+.t3d-layer{
+  opacity:0;
+  animation:rise 1.2s linear forwards;
+}
 @keyframes rise{
-  to{opacity:1;transform:translateZ(var(--z)) translateY(0)}
+  0%  {opacity:0;transform:translate(-50%,0) translateZ(calc(var(--z, 0) - 40px)) translateY(60px)}
+  100%{opacity:1;transform:translate(-50%,0) translateZ(var(--z, 0))             translateY(0)}
 }
 
-/* 副标 */
-.sub-en{
-  margin-top:12px;
-  font-family:"JetBrains Mono",monospace;
-  font-size:clamp(8px, 1.1vmin, 12px);
-  letter-spacing:.45em;
-  color:rgba(243,241,234,.55);
-  opacity:0;animation:fadeIn 1s ease 1.4s forwards;
-}
+/* 入场延迟：两行错开 0.2s */
+.t3d-row:nth-child(1) .t3d-layer{animation-delay:0.15s}
+.t3d-row:nth-child(2) .t3d-layer{animation-delay:0.35s}
 
 /* ============================================================
-   道 (DAOL) 印章：极小角标
-   ============================================================ */
-.dao-mark{
-  position:absolute;top:18px;left:18px;
-  display:flex;flex-direction:column;align-items:flex-start;gap:2px;
-  padding:6px 10px;
-  border:1.5px solid var(--rust);
-  border-radius:2px;
-  background:rgba(255,91,31,.08);
-  color:var(--rust);
-  font-family:"Noto Sans SC",serif;
-  z-index:4;
-  opacity:0;animation:fadeIn .8s ease 1.6s forwards;
-}
-.dao-ch{font-size:18px;font-weight:900;line-height:1}
-.dao-en{
-  font-family:"JetBrains Mono",monospace;
-  font-size:8px;letter-spacing:.35em;opacity:.85;line-height:1;
-}
-
-/* ============================================================
-   四角极简道符
-   ============================================================ */
-.corner-dot{
-  position:absolute;width:6px;height:6px;border-radius:50%;
-  background:var(--paper);opacity:.4;z-index:3;
-}
-.corner-dot.tl{top:5%;left:5%}
-.corner-dot.tr{top:5%;right:5%}
-.corner-dot.bl{bottom:5%;left:5%}
-.corner-dot.br{bottom:5%;right:5%}
-
-/* ============================================================
-   鼠标随行（保持原样）
+   鼠标随行
    ============================================================ */
 .cursor-block{position:fixed;left:0;top:0;width:64px;height:64px;background:var(--lime);
   transform:translate(-50%,-50%) rotate(45deg);pointer-events:none;z-index:20;
@@ -255,7 +215,7 @@ body{cursor:crosshair}
 .wheel-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* ============================================================
-   悬浮控件（保持）
+   悬浮控件
    ============================================================ */
 .controls{
   position:fixed;right:24px;top:50%;transform:translateY(-50%);
@@ -322,13 +282,11 @@ body{cursor:crosshair}
 /* 响应式 */
 @media (max-width: 900px){
   .ring-system{width:min(90vmin,520px);height:min(90vmin,520px)}
-  .t3d{font-size:clamp(36px, 8vmin, 64px)}
+  .t3d-stack{font-size:clamp(48px, 11vmin, 84px)}
   .controls{right:12px;top:auto;bottom:80px;transform:none;flex-direction:column-reverse}
   .controls.open .controls-body{width:260px}
-  .dao-mark{top:10px;left:10px;padding:4px 8px}
-  .dao-ch{font-size:14px}
 }
 @media (prefers-reduced-motion: reduce){
   .r-1,.r-2,.r-3{animation:none}
-  .ring-system{animation:none}
+  .t3d{animation:none}
 }

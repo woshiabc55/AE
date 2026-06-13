@@ -1,7 +1,7 @@
 /**
  * 工业仙境 · 主入口
- * 主体：3D 立体 "工业仙境" 文字，居于圆环之内
- * 道 (DAOL) 设计：极简、平衡、留白
+ * 主体：3D 立体"工业 / 仙境" 文字（中央，匀速旋转）
+ * 道 (DAOL) 设计：极简、留白、平衡
  */
 import './style.css';
 import { api } from './api';
@@ -11,16 +11,16 @@ import { bindWheel, setIntensity } from './wheel';
 const root = document.documentElement;
 
 /**
- * 生成 3D 立体文字：在 z 轴上堆叠多层，制造"挤出"感
- * @param text - 文字
- * @param layers - 堆叠层数（影响厚度）
- * @param step - 每一层的 z 偏移
+ * 生成单个文字的 3D 堆叠层（每层 position:absolute 共享同一 2D 位置，仅 z 不同）
+ * @param text  - 单个文字
+ * @param layers - 堆叠层数
+ * @param step  - 每一层 z 偏移
  */
-function textLayers(text: string, layers: number, step: number): string {
+function stack(text: string, layers: number, step: number): string {
   let html = '';
   for (let i = layers; i >= 0; i--) {
     const z = -i * step;
-    const t = i / layers; // 0 ~ 1
+    const t = i / layers;
     const cls = i === 0 ? 't3d-front' : `t3d-back t3d-i-${i}`;
     html += `<span class="t3d-layer ${cls}" style="--z:${z}px;--t:${t.toFixed(3)}">${text}</span>`;
   }
@@ -33,43 +33,29 @@ function render() {
     <div class="cursor-block" id="cursor"></div>
     <div class="pointer-text" id="ptr">X · 0    Y · 0</div>
 
-    <!-- 道 · DAOL：纯黑底 + 单一聚焦 -->
     <main class="stage">
-      <!-- 背景：大圆（柔和光晕） -->
+      <!-- 背景：柔和大圆光晕 -->
       <div class="halo"></div>
 
       <!-- 圆环系统 -->
       <div class="ring-system" id="ringSystem">
-        <!-- 外环：conic 反色（黑 75% / 纸白 25%） -->
         <div class="r r-1"></div>
-        <!-- 中环：纸白 60% / 工业橙 40% -->
         <div class="r r-2"></div>
-        <!-- 内环：电气蓝 50% / 黑 50% -->
         <div class="r r-3"></div>
-        <!-- 核心：黑底 + 工业仙境立体字 -->
+
+        <!-- 核心：黑底圆盘 + 3D 立体字 -->
         <div class="r-core">
-          <!-- 道 印章：极小角标 -->
-          <div class="dao-mark">
-            <span class="dao-ch">道</span>
-            <span class="dao-en">DAOL</span>
+          <!-- 3D 立体文字：工业 / 仙境 两行独立堆叠 -->
+          <div class="t3d" id="t3d" aria-label="工业仙境">
+            <div class="t3d-row">
+              <div class="t3d-stack">${stack('工业', 16, 2.2)}</div>
+            </div>
+            <div class="t3d-row">
+              <div class="t3d-stack">${stack('仙境', 16, 2.2)}</div>
+            </div>
           </div>
-
-          <!-- 3D 立体文字 -->
-          <h1 class="t3d" id="t3d" aria-label="工业仙境">
-            ${textLayers('工业', 14, 2)}
-            ${textLayers('仙境', 14, 2)}
-          </h1>
-
-          <!-- 副标：极小英文 -->
-          <div class="sub-en">INDUSTRIAL · FANTASY</div>
         </div>
       </div>
-
-      <!-- 四角极简道符 -->
-      <span class="corner-dot tl"></span>
-      <span class="corner-dot tr"></span>
-      <span class="corner-dot bl"></span>
-      <span class="corner-dot br"></span>
     </main>
   `;
 }
