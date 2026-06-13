@@ -4,19 +4,24 @@ import {
   ListMusic,
   Pause,
   Play,
+  Plus,
   Repeat,
   Shuffle,
   SkipBack,
   SkipForward,
+  Trash2,
+  Upload,
   Volume2,
   VolumeX,
+  X,
 } from "lucide-react";
 import { usePlayerStore, formatTime } from "@/store/playerStore";
 import GridMatrix from "./GridMatrix";
+import { useFileUpload } from "@/hooks/useFileUpload";
 
 /**
  * 底部单排播放器：
- * [封面] [标题/艺人] [可视化] [进度] [上/播停/下/模式] [音量] [列表]
+ * [封面] [标题/艺人] [可视化] [进度] [上/播停/下/模式] [音量] [上传] [列表]
  */
 export default function PlayerBar() {
   const {
@@ -31,11 +36,14 @@ export default function PlayerBar() {
     prev,
     seek,
     setOpen,
+    uploadError,
   } = usePlayerStore();
+  const { inputRef, open: openUpload, handleFiles } = useFileUpload();
 
   const current = playlist.find((t) => t.id === currentId) ?? playlist[0];
+  const isUploaded = currentId.startsWith("up-");
 
-  // 心跳：更新 currentTime
+  // 心跳：仅在没有真实音频时（demo 曲目）使用
   useEffect(() => {
     let raf = 0;
     let last = performance.now();
@@ -43,21 +51,22 @@ export default function PlayerBar() {
       const dt = (now - last) / 1000;
       last = now;
       const s = usePlayerStore.getState();
-      if (s.playing) {
+      const hasRealAudio = !!s.audioEl?.src;
+      if (!hasRealAudio && s.playing) {
         const nt = s.currentTime + dt / s.duration;
         if (nt >= 1) {
-          next();
+          usePlayerStore.getState().next();
         } else {
           usePlayerStore.setState({ currentTime: nt, tick: s.tick + 1 });
         }
       } else {
+        // 仅推进 tick，用于驱动可视化重绘
         usePlayerStore.setState({ tick: s.tick + 1 });
       }
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // 拖动进度
@@ -89,10 +98,24 @@ export default function PlayerBar() {
 
   return (
     <>
+      {/* 隐藏的文件 input */}
+      <input
+        ref={inputRef}
+        type="file"
+        accept="audio/*"
+        multiple
+        className="hidden"
+        onChange={(e) => {
+          handleFiles(e.target.files);
+          e.target.value = "";
+        }}
+      />
+
       <div
         className="fixed inset-x-0 bottom-0 z-30 border-t border-white/10 bg-black/70 backdrop-blur-xl"
         style={{
-          boxShadow: "0 -10px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)",
+          boxShadow:
+            "0 -10px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)",
         }}
       >
         <div className="mx-auto flex h-14 sm:h-[60px] max-w-[1600px] items-center gap-3 px-3 sm:px-5">
@@ -105,6 +128,11 @@ export default function PlayerBar() {
             <div className="absolute inset-0 grid place-items-center font-display text-base sm:text-lg text-white/90 mix-blend-difference">
               ◢
             </div>
+            {isUploaded && (
+              <div className="absolute right-0 top-0 bg-danger px-1 font-mono text-[7px] font-bold tracking-widest text-white">
+                UP
+              </div>
+            )}
             {playing && (
               <div
                 className="absolute inset-x-0 bottom-0 h-1 bg-danger"
@@ -123,7 +151,8 @@ export default function PlayerBar() {
               {current.title}
             </div>
             <div className="truncate font-mono text-[10px] tracking-[0.3em] text-white/45">
-              {current.artist} · BPM {current.bpm}
+              {current.artist}
+              {current.bpm > 0 ? ` · BPM ${current.bpm}` : ""}
             </div>
           </div>
 
@@ -194,11 +223,38 @@ export default function PlayerBar() {
           {/* 音量 */}
           <Volume />
 
+          {/* 上传按钮 */}
+          <IconBtn label="UPLOAD" onClick={openUpload}>
+            <Upload className="h-4 w-4" />
+          </IconBtn>
+
           {/* 列表 */}
-          <IconBtn label="QUEUE" onClick={() => setOpen(!open)} active={open}>
+          <IconBtn
+            label="QUEUE"
+            onClick={() => setOpen(!open)}
+            active={open}
+          >
             <ListMusic className="h-4 w-4" />
           </IconBtn>
         </div>
+
+        {/* 错误提示 */}
+        {uploadError && (
+          <div
+            className="absolute -top-7 right-3 flex items-center gap-2 border border-danger/40 bg-black/80 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.2em] text-danger backdrop-blur"
+            role="alert"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-danger animate-pulse2" />
+            {uploadError}
+            <button
+              onClick={() => usePlayerStore.getState().setUploadError(null)}
+              className="text-danger/80 hover:text-white"
+              aria-label="dismiss"
+            >
+              <X className="h-3 w-3" />
+            </button>
+          </div>
+        )}
       </div>
 
       {/* 抽屉：播放列表 */}
@@ -283,7 +339,11 @@ function Volume() {
 }
 
 function PlaylistDrawer() {
-  const { open, setOpen, playlist, currentId, play, playing } = usePlayerStore();
+  const { open, setOpen, playlist, currentId, play, playing, removeTrack } =
+    usePlayerStore();
+  const { handleFiles } = useFileUpload();
+  const drawerInputRef = useRef<HTMLInputElement>(null);
+
   return (
     <div
       className={`fixed inset-x-0 bottom-14 sm:bottom-[60px] z-30 origin-bottom transform border-t border-white/10 bg-black/85 backdrop-blur-xl transition-transform duration-300 ${
@@ -294,21 +354,43 @@ function PlaylistDrawer() {
         boxShadow: "0 -10px 30px rgba(0,0,0,0.55)",
       }}
     >
+      <input
+        ref={drawerInputRef}
+        type="file"
+        accept="audio/*"
+        multiple
+        className="hidden"
+        onChange={(e) => {
+          handleFiles(e.target.files);
+          e.target.value = "";
+        }}
+      />
       <div className="flex items-center justify-between border-b border-white/10 px-4 py-3 sm:px-6">
         <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em] text-white/55">
           <span className="h-1.5 w-1.5 rounded-full bg-danger animate-pulse2" />
           QUEUE · {playlist.length} TRACKS
         </div>
-        <button
-          onClick={() => setOpen(false)}
-          className="text-white/55 hover:text-white"
-        >
-          <ChevronUp className="h-4 w-4" />
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => drawerInputRef.current?.click()}
+            className="flex items-center gap-1.5 border border-white/12 bg-white/[0.03] px-2 py-1 font-mono text-[10px] uppercase tracking-[0.25em] text-white/75 transition hover:border-neon/60 hover:text-neon"
+          >
+            <Plus className="h-3 w-3" />
+            ADD TRACK
+          </button>
+          <button
+            onClick={() => setOpen(false)}
+            className="text-white/55 hover:text-white"
+            aria-label="close"
+          >
+            <ChevronUp className="h-4 w-4" />
+          </button>
+        </div>
       </div>
       <ul className="scrollbar-thin max-h-[40vh] overflow-y-auto">
         {playlist.map((t, i) => {
           const isCur = t.id === currentId;
+          const isUp = t.id.startsWith("up-");
           return (
             <li
               key={t.id}
@@ -327,23 +409,43 @@ function PlaylistDrawer() {
                 style={{ background: t.cover }}
               />
               <div className="min-w-0 flex-1">
-                <div
-                  className={`truncate font-display text-sm tracking-[0.16em] ${
-                    isCur ? "text-danger" : ""
-                  }`}
-                >
-                  {t.title}
+                <div className="flex items-center gap-2">
+                  <div
+                    className={`truncate font-display text-sm tracking-[0.16em] ${
+                      isCur ? "text-danger" : ""
+                    }`}
+                  >
+                    {t.title}
+                  </div>
+                  {isUp && (
+                    <span className="shrink-0 border border-neon/40 bg-neon/10 px-1 font-mono text-[8px] uppercase tracking-[0.2em] text-neon">
+                      UPLOADED
+                    </span>
+                  )}
                 </div>
                 <div className="truncate font-mono text-[10px] tracking-[0.25em] text-white/40">
                   {t.artist}
                 </div>
               </div>
               <div className="hidden font-mono text-[10px] tabular-nums text-white/45 sm:block">
-                BPM {t.bpm}
+                {t.bpm > 0 ? `BPM ${t.bpm}` : "—"}
               </div>
               <div className="font-mono text-[10px] tabular-nums text-white/55">
                 {t.dur}
               </div>
+              {isUp && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeTrack(t.id);
+                  }}
+                  className="grid h-7 w-7 place-items-center border border-white/10 text-white/45 transition hover:border-danger hover:bg-danger/10 hover:text-danger"
+                  aria-label="REMOVE"
+                  title="删除此上传曲目"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
+              )}
               <div className="grid h-7 w-7 place-items-center text-white/40 group-hover:text-white">
                 {isCur && playing ? (
                   <Equalizer />
@@ -354,6 +456,11 @@ function PlaylistDrawer() {
             </li>
           );
         })}
+        {playlist.length === 0 && (
+          <li className="px-6 py-12 text-center font-mono text-[11px] uppercase tracking-[0.3em] text-white/40">
+            QUEUE EMPTY
+          </li>
+        )}
       </ul>
     </div>
   );
@@ -362,7 +469,10 @@ function PlaylistDrawer() {
 function Equalizer() {
   return (
     <div className="flex h-3 items-end gap-[2px]">
-      <span className="block w-[2px] animate-pulse2 bg-danger" style={{ height: "60%" }} />
+      <span
+        className="block w-[2px] animate-pulse2 bg-danger"
+        style={{ height: "60%" }}
+      />
       <span
         className="block w-[2px] animate-pulse2 bg-danger"
         style={{ height: "100%", animationDelay: "0.15s" }}

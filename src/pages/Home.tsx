@@ -5,6 +5,8 @@ import PlayerBar from "@/components/PlayerBar";
 import CursorGlow from "@/components/CursorGlow";
 import LineArt from "@/components/LineArt";
 import GridMatrix from "@/components/GridMatrix";
+import TextureLayer from "@/components/TextureLayer";
+import AudioController from "@/components/AudioController";
 
 export default function Home() {
   return (
@@ -12,6 +14,7 @@ export default function Home() {
       className="relative h-screen w-screen overflow-hidden bg-ink-950 text-white"
       data-hover
     >
+      <TextureLayer />
       <Backdrop />
       <LineArt />
       <TextStage />
@@ -45,6 +48,8 @@ export default function Home() {
       </div>
       <PlayerBar />
       <CursorGlow />
+      {/* 真实音频驱动（隐藏） */}
+      <AudioController />
     </div>
   );
 }
