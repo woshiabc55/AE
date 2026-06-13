@@ -40,6 +40,7 @@ function render() {
         <span class="daolu-en">DAOLU</span>
         <span class="daolu-dot"></span>
         <span class="daolu-status" id="dpStatus">READY</span>
+        <span class="daolu-index" id="dpIndex">01 / 03</span>
       </div>
       <div class="daolu-track" id="dpTrack">AMBIENT 001 · 仙</div>
       <div class="daolu-row">
@@ -60,6 +61,10 @@ function render() {
           <svg viewBox="0 0 24 24" class="vol-icon"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z" fill="currentColor"/></svg>
           <input type="range" min="0" max="100" value="35" id="dpVolume" class="daolu-range" />
         </div>
+        <button class="daolu-btn daolu-load" id="dpLoad" aria-label="load audio" title="加载本地音频">
+          <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z" fill="currentColor"/></svg>
+        </button>
+        <input type="file" id="dpFile" accept="audio/*" multiple hidden />
       </div>
     </aside>
   `;
@@ -233,14 +238,23 @@ function bindDaolu() {
   const btnPlay = document.getElementById('dpPlay')!;
   const btnPrev = document.getElementById('dpPrev')!;
   const btnNext = document.getElementById('dpNext')!;
+  const btnLoad = document.getElementById('dpLoad')!;
+  const fileInput = document.getElementById('dpFile') as HTMLInputElement;
   const trackEl = document.getElementById('dpTrack')!;
   const statusEl = document.getElementById('dpStatus')!;
+  const indexEl = document.getElementById('dpIndex')!;
   const volEl = document.getElementById('dpVolume') as HTMLInputElement;
   const barsEl = document.getElementById('dpBars')!;
 
+  const pad2 = (n: number) => String(n + 1).padStart(2, '0');
   const refreshUI = () => {
-    trackEl.textContent = daolu.track.name;
-    statusEl.textContent = daolu.isPlaying ? 'PLAYING' : 'READY';
+    const list = daolu.trackList;
+    const cur = daolu.track;
+    const idx = daolu.trackIndex;
+    trackEl.textContent = cur.name;
+    trackEl.classList.toggle('is-file', cur.type === 'file');
+    statusEl.textContent = daolu.isPlaying ? 'PLAYING' : (cur.type === 'file' ? 'LOADED' : 'READY');
+    indexEl.textContent = `${pad2(idx)} / ${String(list.length).padStart(2, '0')}`;
     btnPlay.classList.toggle('on', daolu.isPlaying);
     barsEl.classList.toggle('on', daolu.isPlaying);
   };
@@ -252,6 +266,37 @@ function bindDaolu() {
   btnPrev.addEventListener('click', () => { daolu.prev(); refreshUI(); });
   btnNext.addEventListener('click', () => { daolu.next(); refreshUI(); });
   volEl.addEventListener('input', () => daolu.setVolume(Number(volEl.value) / 100));
+
+  // LOAD 按钮 → 触发隐藏文件选择
+  btnLoad.addEventListener('click', () => fileInput.click());
+
+  // 文件选择完成 → 加载并切换到第一个新轨道
+  fileInput.addEventListener('change', async () => {
+    if (!fileInput.files || fileInput.files.length === 0) return;
+    const beforeCount = daolu.trackList.length;
+    const added = await daolu.loadFiles(fileInput.files);
+    if (added.length > 0) {
+      // 切到第一个新加载的轨道
+      const newIdx = beforeCount; // 追加到末尾
+      daolu.select(newIdx);
+    }
+    fileInput.value = ''; // 允许重复选择同一文件
+    refreshUI();
+  });
+
+  // 全局拖拽加载
+  window.addEventListener('dragover', (e) => { e.preventDefault(); });
+  window.addEventListener('drop', async (e) => {
+    e.preventDefault();
+    const files = e.dataTransfer?.files;
+    if (!files || files.length === 0) return;
+    const beforeCount = daolu.trackList.length;
+    const added = await daolu.loadFiles(files);
+    if (added.length > 0) {
+      daolu.select(beforeCount);
+    }
+    refreshUI();
+  });
 
   daolu.setVolume(Number(volEl.value) / 100);
   refreshUI();

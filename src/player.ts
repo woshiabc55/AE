@@ -1,33 +1,39 @@
 /**
  * 道录 · DAOLU 音乐播放器
- * 使用 Web Audio API 生成 ambient drone（无需音频文件）
- * 轨道：多振荡器 + LFO 调制 + 低通滤波 + 反馈延迟
+ * 模式：
+ *   - ambient：Web Audio API 多振荡器 + LFO + 低通 + 反馈延迟（无需音频文件）
+ *   - file   ：用户从本机选择的音频文件（HTMLAudioElement）
+ * 通过 prev / next 在同一列表内循环切换
  */
 export type DaoluTrack = {
   id: string;
   name: string;
-  baseFreq: number[];   // 振荡器基频（Hz）
-  filterFreq: number;   // 低通截止
-  lfoRate: number;      // LFO 速率
+  type: 'ambient' | 'file';
+  /** ambient */
+  baseFreq?: number[];
+  filterFreq?: number;
+  lfoRate?: number;
+  /** file */
+  url?: string;
+  audio?: HTMLAudioElement;
+  duration?: number;
+  fileSize?: number;
 };
 
-const TRACKS: DaoluTrack[] = [
+const AMBIENT_DEFS: Omit<DaoluTrack, 'id' | 'type'>[] = [
   {
-    id: 't1',
     name: 'AMBIENT 001 · 仙',
     baseFreq: [55, 82.5, 110, 165],
     filterFreq: 480,
     lfoRate: 0.12,
   },
   {
-    id: 't2',
     name: 'AMBIENT 002 · 境',
     baseFreq: [58.27, 87.5, 116.5, 174.6],
     filterFreq: 620,
     lfoRate: 0.18,
   },
   {
-    id: 't3',
     name: 'AMBIENT 003 · 道',
     baseFreq: [49, 73.5, 98, 147],
     filterFreq: 360,
@@ -48,9 +54,17 @@ export class DaoluPlayer {
   private currentTrackIdx = 0;
   private volume = 0.35;
 
-  get tracks() { return TRACKS; }
+  /** 全部轨道（ambient + 用户加载的 file） */
+  private tracks: DaoluTrack[] = AMBIENT_DEFS.map((d, i) => ({
+    id: `a${i}`,
+    type: 'ambient' as const,
+    ...d,
+  }));
+
+  get trackList() { return this.tracks; }
   get isPlaying() { return this.playing; }
-  get track() { return TRACKS[this.currentTrackIdx]; }
+  get track(): DaoluTrack { return this.tracks[this.currentTrackIdx]; }
+  get trackIndex() { return this.currentTrackIdx; }
 
   /** 懒初始化 AudioContext（需用户交互后才能 resume） */
   private ensureCtx(): AudioContext {
@@ -61,28 +75,109 @@ export class DaoluPlayer {
     return this.ctx;
   }
 
+  /** 加载一个或多个本地音频文件，返回加入的轨道 */
+  async loadFiles(files: FileList | File[]): Promise<DaoluTrack[]> {
+    const list = Array.from(files).filter((f) =>
+      f.type.startsWith('audio/') || /\.(mp3|wav|ogg|m4a|aac|flac|webm)$/i.test(f.name)
+    );
+    if (list.length === 0) return [];
+
+    const ctx = this.ensureCtx();
+    if (ctx.state === 'suspended') await ctx.resume();
+
+    const added: DaoluTrack[] = [];
+    for (const file of list) {
+      const url = URL.createObjectURL(file);
+      const audio = new Audio();
+      audio.src = url;
+      audio.preload = 'metadata';
+      audio.crossOrigin = 'anonymous';
+      audio.loop = true;
+      audio.volume = this.volume;
+
+      // 等待 metadata
+      await new Promise<void>((resolve) => {
+        const onReady = () => { cleanup(); resolve(); };
+        const onError = () => { cleanup(); resolve(); };
+        const cleanup = () => {
+          audio.removeEventListener('loadedmetadata', onReady);
+          audio.removeEventListener('error', onError);
+        };
+        audio.addEventListener('loadedmetadata', onReady, { once: true });
+        audio.addEventListener('error', onError, { once: true });
+        // 触发加载
+        audio.load();
+      });
+
+      const track: DaoluTrack = {
+        id: `f${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+        name: file.name.replace(/\.[^.]+$/, ''),
+        type: 'file',
+        url,
+        audio,
+        duration: isFinite(audio.duration) ? audio.duration : 0,
+        fileSize: file.size,
+      };
+      this.tracks.push(track);
+      added.push(track);
+    }
+    return added;
+  }
+
+  /** 移除一个已加载的文件轨道 */
+  removeFile(trackId: string) {
+    const idx = this.tracks.findIndex((t) => t.id === trackId);
+    if (idx < 0 || this.tracks[idx].type !== 'file') return;
+    const t = this.tracks[idx];
+    if (t.audio) { try { t.audio.pause(); } catch {} t.audio.src = ''; }
+    if (t.url) URL.revokeObjectURL(t.url);
+    this.tracks.splice(idx, 1);
+    if (this.currentTrackIdx >= this.tracks.length) {
+      this.currentTrackIdx = Math.max(0, this.tracks.length - 1);
+    }
+  }
+
+  /** 切换到指定索引（可被外部 UI 调用） */
+  select(idx: number) {
+    if (idx < 0 || idx >= this.tracks.length) return;
+    const wasPlaying = this.playing;
+    if (wasPlaying) this.stop();
+    this.currentTrackIdx = idx;
+    if (wasPlaying) this.play();
+  }
+
   async play() {
     const ctx = this.ensureCtx();
-    if (ctx.state === 'suspended') {
-      await ctx.resume();
-    }
+    if (ctx.state === 'suspended') await ctx.resume();
     if (this.playing) return;
 
-    const track = TRACKS[this.currentTrackIdx];
+    const track = this.tracks[this.currentTrackIdx];
 
-    // 主增益
+    // 统一主链：masterGain → destination
     this.masterGain = ctx.createGain();
     this.masterGain.gain.value = this.volume;
     this.masterGain.connect(ctx.destination);
 
+    if (track.type === 'ambient') {
+      this.playAmbient(ctx, track);
+    } else if (track.type === 'file' && track.audio) {
+      this.playFile(ctx, track);
+    }
+
+    this.playing = true;
+  }
+
+  private playAmbient(ctx: AudioContext, track: DaoluTrack) {
+    if (!this.masterGain) return;
+
     // 低通滤波
     this.filter = ctx.createBiquadFilter();
     this.filter.type = 'lowpass';
-    this.filter.frequency.value = track.filterFreq;
+    this.filter.frequency.value = track.filterFreq ?? 480;
     this.filter.Q.value = 1.2;
     this.filter.connect(this.masterGain);
 
-    // 反馈延迟（混响感）
+    // 反馈延迟
     this.delay = ctx.createDelay(1.0);
     this.delay.delayTime.value = 0.42;
     this.feedback = ctx.createGain();
@@ -92,7 +187,7 @@ export class DaoluPlayer {
     this.filter.connect(this.delay);
 
     // 4 个振荡器 + LFO
-    track.baseFreq.forEach((freq, i) => {
+    (track.baseFreq ?? [55, 82.5, 110, 165]).forEach((freq, i) => {
       const osc = ctx.createOscillator();
       osc.type = i % 2 === 0 ? 'sine' : 'triangle';
       osc.frequency.value = freq;
@@ -100,9 +195,8 @@ export class DaoluPlayer {
       const gain = ctx.createGain();
       gain.gain.value = 0.18 / (i + 1);
 
-      // LFO 调制 gain
       const lfo = ctx.createOscillator();
-      lfo.frequency.value = track.lfoRate * (1 + i * 0.3);
+      lfo.frequency.value = (track.lfoRate ?? 0.12) * (1 + i * 0.3);
       const lfoGain = ctx.createGain();
       lfoGain.gain.value = 0.06 / (i + 1);
       lfo.connect(lfoGain).connect(gain.gain);
@@ -115,13 +209,24 @@ export class DaoluPlayer {
       this.lfos.push(lfo);
       this.oscGains.push(gain);
     });
+  }
 
-    this.playing = true;
+  private playFile(_ctx: AudioContext, track: DaoluTrack) {
+    if (!track.audio) return;
+    track.audio.currentTime = 0;
+    track.audio.volume = this.volume;
+    track.audio.loop = true;
+    track.audio.play().catch(() => { /* 用户未交互时会失败，UI 会重试 */ });
   }
 
   pause() {
-    if (!this.ctx || !this.playing) return;
-    this.ctx.suspend();
+    if (!this.playing) return;
+    const t = this.tracks[this.currentTrackIdx];
+    if (t.type === 'file' && t.audio) {
+      t.audio.pause();
+    } else if (this.ctx) {
+      this.ctx.suspend();
+    }
     this.playing = false;
   }
 
@@ -132,16 +237,18 @@ export class DaoluPlayer {
   }
 
   next() {
+    if (this.tracks.length === 0) return;
     const wasPlaying = this.playing;
     this.stop();
-    this.currentTrackIdx = (this.currentTrackIdx + 1) % TRACKS.length;
+    this.currentTrackIdx = (this.currentTrackIdx + 1) % this.tracks.length;
     if (wasPlaying) this.play();
   }
 
   prev() {
+    if (this.tracks.length === 0) return;
     const wasPlaying = this.playing;
     this.stop();
-    this.currentTrackIdx = (this.currentTrackIdx - 1 + TRACKS.length) % TRACKS.length;
+    this.currentTrackIdx = (this.currentTrackIdx - 1 + this.tracks.length) % this.tracks.length;
     if (wasPlaying) this.play();
   }
 
@@ -150,6 +257,10 @@ export class DaoluPlayer {
     if (this.masterGain && this.ctx) {
       this.masterGain.gain.linearRampToValueAtTime(this.volume, this.ctx.currentTime + 0.05);
     }
+    // 文件轨道独立音量
+    this.tracks.forEach((t) => {
+      if (t.type === 'file' && t.audio) t.audio.volume = this.volume;
+    });
   }
 
   getVolume() { return this.volume; }
@@ -168,6 +279,14 @@ export class DaoluPlayer {
     this.filter = null;
     this.delay = null;
     this.feedback = null;
+
+    // 暂停所有文件轨道
+    this.tracks.forEach((t) => {
+      if (t.type === 'file' && t.audio && !t.audio.paused) {
+        t.audio.pause();
+      }
+    });
+
     this.playing = false;
   }
 }
