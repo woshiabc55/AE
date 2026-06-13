@@ -284,6 +284,26 @@ body {
   }
 }
 
+/* ===== 迷幻色相循环（应用于包裹层时极轻微；直接用于元素时较强烈） ===== */
+.hue-drift {
+  animation: hueDrift 18s linear infinite;
+}
+@keyframes hueDrift {
+  to {
+    filter: hue-rotate(360deg);
+  }
+}
+
+/* ===== 中心标题整体微抖动 ===== */
+.title-warp {
+  animation: titleWarp 9s ease-in-out infinite;
+}
+@keyframes titleWarp {
+  0%, 100% { transform: perspective(1200px) rotateX(0deg) rotateY(0deg); }
+  35%      { transform: perspective(1200px) rotateX(0.3deg) rotateY(0.6deg); }
+  65%      { transform: perspective(1200px) rotateX(-0.2deg) rotateY(-0.4deg); }
+}
+
 /* ===== 减少动画（无障碍） ===== */
 @media (prefers-reduced-motion: reduce) {
   *,

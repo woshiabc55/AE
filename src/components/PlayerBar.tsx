@@ -12,7 +12,7 @@ import {
   VolumeX,
 } from "lucide-react";
 import { usePlayerStore, formatTime } from "@/store/playerStore";
-import Visualizer from "./Visualizer";
+import GridMatrix from "./GridMatrix";
 
 /**
  * 底部单排播放器：
@@ -127,9 +127,9 @@ export default function PlayerBar() {
             </div>
           </div>
 
-          {/* 可视化 */}
-          <div className="hidden h-9 w-[140px] md:block">
-            <Visualizer />
+          {/* 可视化（音乐网格点阵） */}
+          <div className="hidden h-9 w-[160px] md:block">
+            <GridMatrix cols={20} rows={6} />
           </div>
 
           {/* 进度条 */}
