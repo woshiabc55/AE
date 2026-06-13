@@ -8,6 +8,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@500;700;900&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <style>
+  /* ============================================================
+     数学常量（CSS 变量）
+     φ = 1.6180339887
+     锚点位置由 φ 派生：8% / 38% / 62% / 72% / 22% / 78% 等
+     ============================================================ */
   :root{
     --bg-0:#06070a;
     --bg-1:#0b0d12;
@@ -17,21 +22,34 @@
     --volt:#3aa9ff;
     --lime:#a8ff5b;
     --amber:#ffb547;
-    --mx:.5;
-    --my:.5;
-    --hue: 18;
+
+    --mx:.5;        /* 归一化鼠标 x */
+    --my:.5;        /* 归一化鼠标 y */
+    --hue: 18;      /* 鼠标驱动色相 */
+    --phi: 1.618;   /* 黄金比 */
+
+    /* 关键锚点（由黄金比推导） */
+    --p-1: 9.0%;   /* 1/φ²≈0.382  =>  0.5-0.382/2 */
+    --p-2: 38.2%;
+    --p-3: 61.8%;
+    --p-4: 72.0%;
+    --p-5: 22.0%;
+    --p-6: 78.0%;
+    --p-7: 50.0%;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%;background:var(--bg-0);color:var(--ink);overflow:hidden;font-family:"Noto Sans SC","Space Grotesk",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  html,body{height:100%;background:var(--bg-0);color:var(--ink);overflow:hidden;
+    font-family:"Noto Sans SC","Space Grotesk",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased}
   body{
     cursor:crosshair;
     background:
-      radial-gradient(ellipse at calc(var(--mx)*100%) calc(var(--my)*100%), rgba(255,91,31,.18), transparent 55%),
-      radial-gradient(ellipse at calc((1-var(--mx))*100%) calc((1-var(--my))*100%), rgba(58,169,255,.14), transparent 55%),
+      radial-gradient(ellipse at calc(var(--mx)*100%) calc(var(--my)*100%), rgba(255,91,31,.20), transparent 55%),
+      radial-gradient(ellipse at calc((1-var(--mx))*100%) calc((1-var(--my))*100%), rgba(58,169,255,.16), transparent 55%),
       linear-gradient(180deg,#06070a 0%,#0a0c10 60%,#050608 100%);
   }
 
-  /* ---------- 工业背景：网格 + 扫描线 + 噪声 ---------- */
+  /* ---------- 工业背景 ---------- */
   .grid{
     position:fixed;inset:-10%;pointer-events:none;z-index:0;
     background-image:
@@ -45,8 +63,7 @@
   .scan{
     position:fixed;inset:0;pointer-events:none;z-index:1;
     background:repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 1px, transparent 1px 3px);
-    mix-blend-mode:overlay;
-    animation:scan 6s linear infinite;
+    mix-blend-mode:overlay;animation:scan 6s linear infinite;
   }
   @keyframes scan{ from{background-position:0 0} to{background-position:0 600px} }
   .noise{
@@ -57,17 +74,20 @@
     position:fixed;inset:0;pointer-events:none;z-index:3;
     background:radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,.85) 100%);
   }
+
+  /* ---------- 散开的泡沫（Canvas） ---------- */
+  #foam{position:fixed;inset:0;z-index:4;pointer-events:none;mix-blend-mode:screen}
+
   /* 鼠标光晕 */
   .cursor-glow{
-    position:fixed;left:0;top:0;width:520px;height:520px;border-radius:50%;pointer-events:none;z-index:4;
+    position:fixed;left:0;top:0;width:520px;height:520px;border-radius:50%;
+    pointer-events:none;z-index:5;
     background:radial-gradient(circle, hsla(var(--hue),100%,60%,.45), hsla(var(--hue),100%,60%,0) 60%);
-    transform:translate(-50%,-50%);
-    mix-blend-mode:screen;
-    filter:blur(6px);
+    transform:translate(-50%,-50%);mix-blend-mode:screen;filter:blur(6px);
   }
 
-  /* ---------- HUD 装饰 ---------- */
-  .hud{position:fixed;inset:0;pointer-events:none;z-index:6;color:#d8d6cf;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;mix-blend-mode:difference}
+  /* ---------- HUD ---------- */
+  .hud{position:fixed;inset:0;pointer-events:none;z-index:8;color:#d8d6cf;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;mix-blend-mode:difference}
   .hud .corner{position:absolute;width:120px;height:120px;border:1px solid rgba(255,255,255,.35)}
   .hud .tl{top:24px;left:24px;border-right:none;border-bottom:none}
   .hud .tr{top:24px;right:24px;border-left:none;border-bottom:none}
@@ -78,166 +98,194 @@
   .hud .l-tr{top:34px;right:34px}
   .hud .l-bl{bottom:34px;left:34px}
   .hud .l-br{bottom:34px;right:34px}
-  .hud .bar{
-    position:absolute;left:24px;right:24px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);
-  }
-  .hud .bar.top{top:48%;}
-  .hud .side{
-    position:absolute;top:50%;transform:translateY(-50%) rotate(90deg);
-    font-size:10px;letter-spacing:.3em;color:rgba(255,255,255,.55)
-  }
+  .hud .side{position:absolute;top:50%;transform:translateY(-50%) rotate(90deg);font-size:10px;letter-spacing:.3em;color:rgba(255,255,255,.55)}
   .hud .side.l{left:-30px}
   .hud .side.r{right:-50px}
 
-  /* ---------- 舞台（广角镜头） ---------- */
+  /* ============================================================
+     舞台：广角镜头 + 3D 倾斜
+     ============================================================ */
   .stage{
-    position:fixed;inset:0;display:grid;place-items:center;z-index:5;
-    perspective:1400px;
+    position:fixed;inset:0;z-index:6;overflow:hidden;
+    perspective:1600px;
     perspective-origin: calc(var(--mx)*100%) calc(var(--my)*100%);
   }
   .tilt{
+    position:absolute;inset:0;
     transform-style:preserve-3d;
     transform:
-      rotateX(calc((var(--my) - .5) * -10deg))
-      rotateY(calc((var(--mx) - .5) * 14deg));
-    transition:transform .2s ease-out;
+      rotateX(calc((var(--my) - .5) * -8deg))
+      rotateY(calc((var(--mx) - .5) * 12deg));
+    transition:transform .25s ease-out;
   }
 
-  /* ---------- 标题（伪 3D 分层） ---------- */
-  .hero{
-    position:relative;transform-style:preserve-3d;text-align:center;user-select:none;
+  /* ============================================================
+     文字块（多组 · 分散定位 · 多 z 轴深度）
+     锚点由 φ 推导（不堆叠居中）
+     ============================================================ */
+  .block{
+    position:absolute;
+    transform-style:preserve-3d;
+    will-change:transform, opacity, filter;
+    opacity:0;
+    filter:blur(10px);
   }
-  .title{
-    font-family:"Noto Sans SC","Space Grotesk",sans-serif;
-    font-weight:900;
-    font-size:clamp(64px, 13.5vw, 200px);
-    line-height:.9;
-    letter-spacing:-.02em;
-    color:transparent;
-    -webkit-text-stroke:1.5px rgba(255,255,255,.85);
-    text-shadow:
-      0 0 0 transparent,
-      0 1px 0 hsla(var(--hue),100%,60%,.0);
-    position:relative;
+  .block.in{animation:flyIn 1.4s cubic-bezier(.2,.75,.2,1) forwards}
+  @keyframes flyIn{
+    0%   {opacity:0;filter:blur(14px)}
+    40%  {opacity:1;filter:blur(0)}
+    100% {opacity:1;filter:blur(0)}
   }
-  .title .fill{
-    position:absolute;inset:0;color:var(--ink);
+
+  /* 文字图层（fill / glow / stroke-back / stroke-far） */
+  .layer{position:absolute;inset:0;color:transparent;pointer-events:none;white-space:nowrap}
+  .layer.fill{
     -webkit-text-stroke:0;
     background:linear-gradient(180deg,#f8f6ef 0%,#bdb9ad 60%,#7c7a72 100%);
     -webkit-background-clip:text;background-clip:text;
-    opacity:.92;
+    opacity:.95;
   }
-  .title .glow{
-    position:absolute;inset:0;color:transparent;
+  .layer.glow{
     -webkit-text-stroke:0;
     background:linear-gradient(180deg, hsla(var(--hue),100%,65%,1), hsla(calc(var(--hue)+40),100%,55%,.6) 60%, transparent 100%);
     -webkit-background-clip:text;background-clip:text;
-    mix-blend-mode:screen;
-    filter:blur(8px);
-    opacity:.7;
+    mix-blend-mode:screen;filter:blur(8px);opacity:.7;
   }
-  .title .stroke-back{
-    position:absolute;inset:0;color:transparent;
-    -webkit-text-stroke:2px hsla(var(--hue),100%,55%,.6);
-    transform:translateZ(-80px) translate(6px,6px);
+  .layer.stroke-back{
+    -webkit-text-stroke:2px hsla(var(--hue),100%,55%,.65);
+    transform:translateZ(-60px) translate(4px,4px);
     filter:blur(.4px);
   }
-  .title .stroke-far{
-    position:absolute;inset:0;color:transparent;
+  .layer.stroke-far{
     -webkit-text-stroke:1px rgba(255,91,31,.45);
-    transform:translateZ(-160px) translate(14px,14px);
+    transform:translateZ(-140px) translate(12px,12px);
     filter:blur(1.2px);
   }
 
-  .row{display:block}
-  .row + .row{margin-top:.05em}
-  .word{
+  /* 共享文本基样式（由 .block 内的 .text 决定） */
+  .text{
+    font-family:"Noto Sans SC","Space Grotesk",sans-serif;
+    font-weight:900;line-height:.9;letter-spacing:-.02em;
+    color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.85);
+    position:relative;display:inline-block;
+    transform-style:preserve-3d;
+  }
+  .text.cn{font-family:"Noto Sans SC",sans-serif}
+  .text.mono{font-family:"JetBrains Mono",monospace;letter-spacing:.3em;text-transform:uppercase;font-weight:500}
+
+  /* ---------- 6 个主文字块的位置 / 字号 / z / 旋转 / 入场延迟 ---------- */
+  /* 锚点：左上 / 中上 / 右上 / 中 / 左下 / 右下
+     比例遵循 0 : 1/φ² : 1-1/φ² : 1 → 8% / 38% / 62% / 92% */
+  .b1{ left: var(--p-5); top:  var(--p-5); --z:  -60px; --rot: -6deg; }
+  .b2{ left: var(--p-3); top:  var(--p-5); --z:  -20px; --rot:  4deg; }
+  .b3{ left: var(--p-7); top:  var(--p-7); --z:  120px; --rot:  0deg; }  /* 中心 · 主体 */
+  .b4{ left: var(--p-1); top:  var(--p-3); --z:  -100px; --rot: -3deg; }
+  .b5{ left: var(--p-2); top:  var(--p-4); --z:   60px; --rot:  5deg; }
+  .b6{ left: var(--p-6); top:  var(--p-2); --z:  -40px; --rot:  2deg; }
+
+  .b1 .text{font-size:clamp(48px, 8.6vw, 130px); transform:translateZ(var(--z)) rotate(var(--rot))}
+  .b2 .text{font-size:clamp(42px, 7.8vw, 120px); transform:translateZ(var(--z)) rotate(var(--rot))}
+  .b3 .text{font-size:clamp(72px,13.0vw,200px); transform:translateZ(var(--z)) rotate(var(--rot))}
+  .b4 .text{font-size:clamp(28px, 4.0vw,  60px); transform:translateZ(var(--z)) rotate(var(--rot))}
+  .b5 .text{font-size:clamp(34px, 5.4vw,  84px); transform:translateZ(var(--z)) rotate(var(--rot))}
+  .b6 .text{font-size:clamp(22px, 2.6vw,  40px); transform:translateZ(var(--z)) rotate(var(--rot))}
+
+  /* 入场延迟序列：从中心 → 螺旋外扩 */
+  .b3.in{animation-delay:.10s}     /* 中心：第一个出现 */
+  .b2.in{animation-delay:.40s}
+  .b5.in{animation-delay:.65s}
+  .b1.in{animation-delay:.90s}
+  .b6.in{animation-delay:1.15s}
+  .b4.in{animation-delay:1.40s}   /* 最远：最后出现 */
+
+  /* 字符随机入场（逐字） */
+  .char{
     display:inline-block;
-    transform:translateZ(0) translateY(.6em);
-    opacity:0;
-    filter:blur(8px);
-    animation:rise 1.1s cubic-bezier(.2,.7,.2,1) forwards;
+    opacity:0;filter:blur(8px);
+    transform:translateY(.5em) rotateX(15deg);
+    animation:charIn .9s cubic-bezier(.2,.7,.2,1) forwards;
   }
-  @keyframes rise{
-    0%{transform:translateZ(0) translateY(.6em) rotateX(20deg);opacity:0;filter:blur(10px)}
-    60%{filter:blur(0)}
-    100%{transform:translateZ(0) translateY(0) rotateX(0);opacity:1;filter:blur(0)}
+  @keyframes charIn{
+    to{opacity:1;filter:blur(0);transform:translateY(0) rotateX(0)}
   }
 
-  /* 副标题 */
-  .sub{
-    margin-top:36px;
-    display:flex;align-items:center;justify-content:center;gap:18px;
-    font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.4em;
-    color:#cfcdc4;text-transform:uppercase;
-    opacity:0;animation:fadeIn 1.2s ease 1.6s forwards;
+  /* ---------- 装饰小元素（数学点） ---------- */
+  .dot{
+    position:absolute;width:6px;height:6px;border-radius:50%;
+    background:hsla(var(--hue),100%,60%,.85);
+    box-shadow:0 0 12px hsla(var(--hue),100%,60%,.7);
+    opacity:0;animation:dotIn .8s ease forwards;
   }
-  .sub .dot{width:6px;height:6px;background:var(--rust);box-shadow:0 0 14px var(--rust);border-radius:50%;animation:blink 1.4s infinite}
-  @keyframes blink{50%{opacity:.25}}
-  @keyframes fadeIn{to{opacity:1}}
+  @keyframes dotIn{to{opacity:1}}
+  /* 装饰：竖排小标 */
+  .meta-v{
+    position:absolute;
+    font-family:"JetBrains Mono",monospace;
+    font-size:10px;letter-spacing:.4em;
+    color:rgba(255,255,255,.5);
+    writing-mode:vertical-rl;
+    opacity:0;animation:charIn 1s ease forwards;
+  }
 
-  /* 底部品牌条 */
+  /* ---------- 副标题（环绕 b3） ---------- */
+  .ring{
+    position:absolute;left:50%;top:50%;
+    width:min(72vmin,900px);height:min(72vmin,900px);
+    transform:translate(-50%,-50%) translateZ(80px);
+    border:1px dashed rgba(255,255,255,.12);
+    border-radius:50%;
+    opacity:0;animation:charIn 1.2s ease 1.4s forwards;
+  }
+  .ring::before,.ring::after{
+    content:"";position:absolute;inset:0;border-radius:50%;border:1px solid rgba(255,255,255,.06);
+  }
+  .ring::before{transform:scale(.7)}
+  .ring::after{transform:scale(.4);border-style:dashed}
+
+  /* 底部状态条 */
   .ticker{
-    position:fixed;left:0;right:0;bottom:0;z-index:7;
+    position:fixed;left:0;right:0;bottom:0;z-index:9;
     display:flex;justify-content:space-between;align-items:center;
-    padding:14px 28px;
-    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.3em;
+    padding:14px 28px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.3em;
     color:#a8a69c;border-top:1px solid rgba(255,255,255,.12);
-    background:linear-gradient(180deg,transparent,rgba(0,0,0,.55));
-    text-transform:uppercase;
+    background:linear-gradient(180deg,transparent,rgba(0,0,0,.55));text-transform:uppercase;
   }
   .ticker .left, .ticker .right{display:flex;gap:24px;align-items:center}
   .ticker .pill{padding:4px 10px;border:1px solid rgba(255,255,255,.2);border-radius:2px}
   .ticker .live{color:var(--lime)}
 
-  /* 左侧大号竖排装饰 */
-  .vert{
-    position:fixed;left:28px;top:50%;transform:translateY(-50%) rotate(180deg);
-    writing-mode:vertical-rl;
-    font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.5em;
-    color:rgba(255,255,255,.45);
-    z-index:6;
-  }
-  .vert-r{
-    position:fixed;right:28px;top:50%;transform:translateY(-50%);
-    writing-mode:vertical-rl;
-    font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.5em;
-    color:rgba(255,255,255,.45);
-    z-index:6;
-  }
-
-  /* 鼠标随行文字（隐藏指针） */
+  /* 鼠标随行 */
   .pointer-text{
     position:fixed;left:0;top:0;transform:translate(-50%,-50%);
     font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.3em;
-    color:hsla(var(--hue),100%,70%,.95);
-    pointer-events:none;z-index:9;
+    color:hsla(var(--hue),100%,70%,.95);pointer-events:none;z-index:11;
     text-shadow:0 0 8px hsla(var(--hue),100%,60%,.7);
-    mix-blend-mode:screen;
-    white-space:nowrap;
+    mix-blend-mode:screen;white-space:nowrap;
   }
 
   @media (max-width: 768px){
     .hud .corner{width:64px;height:64px}
     .hud .side{display:none}
-    .vert,.vert-r{display:none}
-    .title{-webkit-text-stroke:1px rgba(255,255,255,.85)}
+    .ring{display:none}
+    .b1 .text,.b2 .text,.b4 .text,.b5 .text,.b6 .text{font-size:clamp(28px,7vw,72px)}
+    .b3 .text{font-size:clamp(56px,16vw,140px)}
   }
   @media (prefers-reduced-motion: reduce){
     .scan, .cursor-glow{animation:none}
-    .word{animation-duration:.4s}
+    .char{animation-duration:.3s}
   }
 </style>
 </head>
 <body>
-  <!-- 工业背景层 -->
+  <!-- 背景层 -->
   <div class="grid"></div>
   <div class="scan"></div>
   <div class="noise"></div>
   <div class="vignette"></div>
+  <canvas id="foam"></canvas>
   <div class="cursor-glow" id="glow"></div>
 
-  <!-- HUD 装饰 -->
+  <!-- HUD -->
   <div class="hud" aria-hidden="true">
     <div class="corner tl"></div>
     <div class="corner tr"></div>
@@ -245,69 +293,84 @@
     <div class="corner br"></div>
     <div class="label l-tl">SECTOR · 03 / N · 39.9° E · 116.4°</div>
     <div class="label l-tr">CAM · 35MM · F1.4 · ISO 800</div>
-    <div class="label l-bl">INDUSTRIAL FANTASY · 0.1.0</div>
-    <div class="label l-br">RENDER · 78 FPS · 12.4MS</div>
-    <div class="bar top"></div>
+    <div class="label l-bl">INDUSTRIAL FANTASY · 0.2.0</div>
+    <div class="label l-br">PHI · 1.618 · LAYERS · 6 · FOAM · 60</div>
     <div class="side l">WIDE · ANGLE · LENS</div>
     <div class="side r">PSEUDO · 3D · DEPTH</div>
   </div>
 
-  <div class="vert">工业化 × 仙境 × 文字动画 × 视觉剧场</div>
-  <div class="vert-r">INDUSTRIAL · FANTASY · MOTION · TYPE</div>
-
-  <!-- 舞台：广角镜头 -->
+  <!-- 主舞台 -->
   <main class="stage" id="stage">
     <div class="tilt" id="tilt">
-      <h1 class="hero" aria-label="工业仙境 逐步完善 现代 黑体">
-        <!-- 行 1：英文大字 -->
-        <span class="row">
-          <span class="title" data-z="0">
-            <span class="stroke-far" aria-hidden="true">INDUSTRIAL</span>
-            <span class="stroke-back" aria-hidden="true">INDUSTRIAL</span>
-            <span class="fill" aria-hidden="true">INDUSTRIAL</span>
-            <span class="glow" aria-hidden="true">INDUSTRIAL</span>
-          </span>
-        </span>
-        <!-- 行 2：英文大字 + 强调色 -->
-        <span class="row">
-          <span class="title" data-z="40" style="--hue:55">
-            <span class="stroke-far" aria-hidden="true">FANTASY</span>
-            <span class="stroke-back" aria-hidden="true">FANTASY</span>
-            <span class="fill" aria-hidden="true">FANTASY</span>
-            <span class="glow" aria-hidden="true">FANTASY</span>
-          </span>
-        </span>
-        <!-- 行 3：中文 -->
-        <span class="row">
-          <span class="title cn" data-z="-30" style="font-size:clamp(54px,11vw,170px)">
-            <span class="stroke-far" aria-hidden="true">工业仙境</span>
-            <span class="stroke-back" aria-hidden="true">工业仙境</span>
-            <span class="fill" aria-hidden="true">工业仙境</span>
-            <span class="glow" aria-hidden="true">工业仙境</span>
-          </span>
-        </span>
+      <!-- 中心光环（数学分割） -->
+      <div class="ring"></div>
 
-        <div class="sub">
-          <span class="dot"></span>
-          <span>STEP BY STEP</span>
-          <span>·</span>
-          <span>MODERN</span>
-          <span>·</span>
-          <span>HEITI</span>
-          <span>·</span>
-          <span>EDGE LIGHT</span>
-          <span>·</span>
-          <span>MOUSE TRACK</span>
-          <span>·</span>
-          <span>PSEUDO 3D</span>
-          <span>·</span>
-          <span>WIDE ANGLE</span>
-        </div>
-      </h1>
+      <!-- 6 个文字块：分散定位 + 多 z 深度 -->
+      <div class="block b3" data-seq="3">
+        <span class="text cn">工业仙境</span>
+        <span class="layer fill cn">工业仙境</span>
+        <span class="layer glow cn">工业仙境</span>
+        <span class="layer stroke-back cn">工业仙境</span>
+        <span class="layer stroke-far cn">工业仙境</span>
+      </div>
+
+      <div class="block b1" data-seq="1">
+        <span class="text">INDUSTRIAL</span>
+        <span class="layer fill">INDUSTRIAL</span>
+        <span class="layer glow">INDUSTRIAL</span>
+        <span class="layer stroke-back">INDUSTRIAL</span>
+        <span class="layer stroke-far">INDUSTRIAL</span>
+      </div>
+
+      <div class="block b5" data-seq="5">
+        <span class="text">FANTASY</span>
+        <span class="layer fill">FANTASY</span>
+        <span class="layer glow">FANTASY</span>
+        <span class="layer stroke-back">FANTASY</span>
+        <span class="layer stroke-far">FANTASY</span>
+      </div>
+
+      <div class="block b2" data-seq="2">
+        <span class="text mono">STEP · BY · STEP</span>
+        <span class="layer fill mono">STEP · BY · STEP</span>
+        <span class="layer glow mono">STEP · BY · STEP</span>
+        <span class="layer stroke-back mono">STEP · BY · STEP</span>
+        <span class="layer stroke-far mono">STEP · BY · STEP</span>
+      </div>
+
+      <div class="block b4" data-seq="4">
+        <span class="text cn">黑体字</span>
+        <span class="layer fill cn">黑体字</span>
+        <span class="layer glow cn">黑体字</span>
+        <span class="layer stroke-back cn">黑体字</span>
+        <span class="layer stroke-far cn">黑体字</span>
+      </div>
+
+      <div class="block b6" data-seq="6">
+        <span class="text mono">WIDE · ANGLE · 35°</span>
+        <span class="layer fill mono">WIDE · ANGLE · 35°</span>
+        <span class="layer glow mono">WIDE · ANGLE · 35°</span>
+        <span class="layer stroke-back mono">WIDE · ANGLE · 35°</span>
+        <span class="layer stroke-far mono">WIDE · ANGLE · 35°</span>
+      </div>
+
+      <!-- 数学锚点：φ 派生小点 -->
+      <span class="dot" style="left:9%;top:9%;animation-delay:.6s"></span>
+      <span class="dot" style="left:91%;top:9%;animation-delay:.8s"></span>
+      <span class="dot" style="left:9%;top:91%;animation-delay:1.0s"></span>
+      <span class="dot" style="left:91%;top:91%;animation-delay:1.2s"></span>
+      <span class="dot" style="left:38.2%;top:38.2%;animation-delay:.5s;width:4px;height:4px"></span>
+      <span class="dot" style="left:61.8%;top:61.8%;animation-delay:.7s;width:4px;height:4px"></span>
+      <span class="dot" style="left:61.8%;top:38.2%;animation-delay:.9s;width:4px;height:4px"></span>
+      <span class="dot" style="left:38.2%;top:61.8%;animation-delay:1.1s;width:4px;height:4px"></span>
+
+      <!-- 装饰小字 -->
+      <span class="meta-v" style="left:2%;top:46%;animation-delay:1.4s">工业化 × 仙境 × 文字动画 × 视觉剧场</span>
+      <span class="meta-v" style="right:2%;top:54%;animation-delay:1.6s">INDUSTRIAL · FANTASY · MOTION · TYPE · 2026</span>
     </div>
   </main>
 
-  <!-- 底部品牌条 -->
+  <!-- 底部状态条 -->
   <div class="ticker">
     <div class="left">
       <span class="pill">SYSTEM · ONLINE</span>
@@ -315,57 +378,70 @@
     </div>
     <div class="right">
       <span>2026 / 06 / 13</span>
-      <span>BEIJING · 33.9°N</span>
-      <span>FRAME · 000128</span>
+      <span>BEIJING · 39.9°N</span>
+      <span>FRAME · 000256</span>
     </div>
   </div>
 
-  <!-- 鼠标随行文字 -->
-  <div class="pointer-text" id="ptr">X · 0.00   Y · 0.00   Z · 0</div>
+  <div class="pointer-text" id="ptr">X · 0.00   Y · 0.00</div>
 
 <script>
 (() => {
-  const stage   = document.getElementById('stage');
-  const tilt    = document.getElementById('tilt');
-  const glow    = document.getElementById('glow');
-  const ptr     = document.getElementById('ptr');
-  const root    = document.documentElement;
+  const root  = document.documentElement;
+  const glow  = document.getElementById('glow');
+  const ptr   = document.getElementById('ptr');
+  const stage = document.getElementById('stage');
 
-  // 将每个字符拆为 <span class="word">，实现逐步完善入场
-  const titles = document.querySelectorAll('.hero .title');
-  titles.forEach((t, idx) => {
-    const text = t.textContent.replace(/\s+/g,'').trim();
-    t.innerHTML = ''; // 清空
-    const layers = ['stroke-far','stroke-back','fill','glow'];
-    const layerNodes = {};
-    layers.forEach(l => {
-      const el = document.createElement('span');
-      el.className = l;
-      el.setAttribute('aria-hidden','true');
-      layerNodes[l] = el;
-      t.appendChild(el);
-    });
+  // ============================================================
+  // 1. 拆字 · 字符级入场（序列：字符位置 = 延迟）
+  //    顺序：从左到右（保持文字可读）
+  // ============================================================
+  document.querySelectorAll('.block .text').forEach(t => {
+    const text = t.textContent;
+    t.textContent = '';
     [...text].forEach((ch, i) => {
-      layers.forEach(l => {
-        const w = document.createElement('span');
-        w.className = 'word';
-        w.textContent = ch === ' ' ? '\u00A0' : ch;
-        w.style.animationDelay = (idx * 0.18 + i * 0.05) + 's';
-        layerNodes[l].appendChild(w);
-      });
+      const span = document.createElement('span');
+      span.className = 'char';
+      span.textContent = ch === ' ' ? '\u00A0' : ch;
+      span.style.animationDelay = (i * 0.035) + 's';
+      t.appendChild(span);
     });
   });
+  // 4 个图层（fill/glow/stroke-back/stroke-far）拆同样的字符延迟
+  document.querySelectorAll('.block').forEach(b => {
+    const seq = parseInt(b.dataset.seq || '0', 10);
+    const baseDelay = b.classList.contains('b3') ? 0.10
+                    : b.classList.contains('b2') ? 0.40
+                    : b.classList.contains('b5') ? 0.65
+                    : b.classList.contains('b1') ? 0.90
+                    : b.classList.contains('b6') ? 1.15
+                    : 1.40;
+    b.style.animationDelay = baseDelay + 's';
+    b.querySelectorAll('.layer').forEach(layer => {
+      const text = layer.textContent;
+      layer.textContent = '';
+      [...text].forEach((ch, i) => {
+        const span = document.createElement('span');
+        span.className = 'char';
+        span.textContent = ch === ' ' ? '\u00A0' : ch;
+        span.style.animationDelay = (i * 0.035) + 's';
+        layer.appendChild(span);
+      });
+    });
+    // 触发入场
+    requestAnimationFrame(() => b.classList.add('in'));
+  });
 
-  // 鼠标交互：CSS 变量驱动透视/光晕/颜色
+  // ============================================================
+  // 2. 鼠标交互 → CSS 变量（透视 / 光晕 / 色相）
+  // ============================================================
   let raf = 0, tx = .5, ty = .5, x = .5, y = .5;
   const onMove = (e) => {
     const w = window.innerWidth, h = window.innerHeight;
     tx = e.clientX / w; ty = e.clientY / h;
-    // 指针文字
     ptr.style.left = e.clientX + 'px';
     ptr.style.top  = (e.clientY + 22) + 'px';
-    ptr.textContent = `X · ${(e.clientX).toFixed(2).padStart(6,' ')}   Y · ${(e.clientY).toFixed(2).padStart(6,' ')}   Z · ${(e.touches?1:0)}`;
-    // 鼠标光晕
+    ptr.textContent = `X · ${(e.clientX).toFixed(2).padStart(6,' ')}   Y · ${(e.clientY).toFixed(2).padStart(6,' ')}`;
     glow.style.left = e.clientX + 'px';
     glow.style.top  = e.clientY + 'px';
     if (!raf) raf = requestAnimationFrame(tick);
@@ -375,24 +451,124 @@
     y += (ty - y) * 0.12;
     root.style.setProperty('--mx', x.toFixed(4));
     root.style.setProperty('--my', y.toFixed(4));
-    // 颜色 hue 根据 X 位置在 0~120 间漂移（橙→绿），控制边光与发光
     const hue = Math.round((x * 120 + y * 30) % 360);
     root.style.setProperty('--hue', hue);
     if (Math.abs(tx - x) > 0.001 || Math.abs(ty - y) > 0.001) {
       raf = requestAnimationFrame(tick);
-    } else {
-      raf = 0;
-    }
+    } else { raf = 0; }
   };
   window.addEventListener('mousemove', onMove, { passive: true });
   window.addEventListener('touchmove', (e) => {
     if (e.touches[0]) onMove(e.touches[0]);
   }, { passive: true });
 
-  // 进入视口时加 hover 提示
-  window.addEventListener('load', () => {
-    document.body.style.opacity = 1;
-  });
+  // ============================================================
+  // 3. 散开的泡沫（Canvas · 60 个粒子）
+  //    位置由黄金角（137.5°）+ sin/cos 推导 → 视觉均匀扩散
+  //    大小由 fibonacci-like 序列
+  //    鼠标驱动排斥力（半径 220px）
+  // ============================================================
+  const PHI = (1 + Math.sqrt(5)) / 2;
+  const GA  = PHI * 2 * Math.PI - 2 * Math.PI;          // 黄金角 ≈ 2.39996 rad
+  const FOAM_COUNT = 60;
+  const cv  = document.getElementById('foam');
+  const ctx = cv.getContext('2d');
+  let DPR = Math.min(window.devicePixelRatio || 1, 2);
+  let W = 0, H = 0, mouseFx = 0, mouseFy = 0;
+
+  // 粒子数据结构
+  const bubbles = [];
+  for (let i = 0; i < FOAM_COUNT; i++) {
+    // 黄金角分布：r 用 i/N 映射，角度用 i*GA
+    const r = Math.sqrt((i + 0.5) / FOAM_COUNT);          // 平方根映射到 0~1
+    const a = i * GA;
+    // 基础位置（加扰动形成散开感）
+    const baseX = 0.5 + r * Math.cos(a) * 0.95;
+    const baseY = 0.5 + r * Math.sin(a) * 0.85;
+    // 大小（fibonacci-like 缩放）
+    const fib = [4, 6, 10, 16, 26, 42, 68][i % 7];
+    bubbles.push({
+      bx: baseX, by: baseY,            // 基础归一化位置
+      x: 0, y: 0,                      // 实际位置（屏幕）
+      r: fib,
+      vx: (Math.random() - .5) * 0.0004,
+      vy: (Math.random() - .5) * 0.0004,
+      ph: Math.random() * Math.PI * 2, // 漂移相位
+      sp: 0.3 + Math.random() * 0.6,   // 漂移速度
+      hue: (i * 137) % 360,            // 颜色相位
+      a: 0.18 + Math.random() * 0.18,  // 透明度
+    });
+  }
+
+  const resize = () => {
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = cv.clientWidth = window.innerWidth;
+    H = cv.clientHeight = window.innerHeight;
+    cv.width = W * DPR; cv.height = H * DPR;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  };
+  window.addEventListener('resize', resize);
+  resize();
+
+  // 鼠标位置（屏幕坐标）
+  let mouseX = W/2, mouseY = H/2;
+  window.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX; mouseY = e.clientY;
+    mouseFx = mouseX; mouseFy = mouseY;
+  }, { passive: true });
+
+  const t0 = performance.now();
+  const draw = () => {
+    const t = (performance.now() - t0) / 1000;
+    ctx.clearRect(0, 0, W, H);
+
+    for (let i = 0; i < bubbles.length; i++) {
+      const b = bubbles[i];
+      // 漂移：基础位置 + sin/cos 摆动
+      const dx = Math.sin(t * b.sp + b.ph) * 0.012;
+      const dy = Math.cos(t * b.sp * 0.8 + b.ph) * 0.012;
+      b.x = (b.bx + dx) * W;
+      b.y = (b.by + dy) * H;
+
+      // 鼠标排斥
+      const mx = b.x - mouseFx;
+      const my = b.y - mouseFy;
+      const dist = Math.hypot(mx, my);
+      if (dist < 220) {
+        const f = (1 - dist / 220);
+        b.x += (mx / (dist || 1)) * f * 26;
+        b.y += (my / (dist || 1)) * f * 26;
+      }
+
+      // 绘制：双层圆（外圈光晕 + 内核高光）
+      const h = b.hue;
+      const grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
+      grad.addColorStop(0,   `hsla(${h},90%,75%,${b.a * 0.9})`);
+      grad.addColorStop(0.4, `hsla(${h},90%,60%,${b.a * 0.45})`);
+      grad.addColorStop(1,   `hsla(${h},90%,55%,0)`);
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 描边
+      ctx.strokeStyle = `hsla(${h},90%,75%,${b.a * 0.6})`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // 顶部高光
+      ctx.fillStyle = `hsla(${h},100%,92%,${b.a * 0.55})`;
+      ctx.beginPath();
+      ctx.arc(b.x - b.r * 0.25, b.y - b.r * 0.3, b.r * 0.18, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    requestAnimationFrame(draw);
+  };
+  requestAnimationFrame(draw);
+
 })();
 </script>
 </body>
