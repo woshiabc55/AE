@@ -1,28 +1,22 @@
 /* ============================================================
-   工业仙境 · 道 (DAOL) 设计
-   主体：3D 立体"工业 / 仙境" 文字（中央，匀速旋转）
-   极简、留白、平衡
+   工业仙境 · 道 (DAOL) 设计 · v1.1
+   主体：单排 3D 立体"工业仙境" 文字（静止不旋转）
+   背景：条纹 + 跳动粒子网格
+   道录 DAOLU 音乐播放器
    ============================================================ */
 :root{
-  /* 色板（由 API 注入） */
   --ink:#0a0a0c;
   --paper:#f3f1ea;
   --rust:#ff5b1f;
   --volt:#3aa9ff;
   --lime:#a8ff5b;
-  /* 主题参数 */
   --title-size: 1.0;
   --ring-speed: 1.0;
   --ring-thickness: 18px;
-  /* 滚轮调节 */
   --intensity: 0.5;
-  /* 鼠标 */
   --mx:.5; --my:.5;
-  /* 3D 立体 */
-  --layers: 16;        /* 堆叠层数 */
-  --step: 2.2px;       /* 每一层 z 偏移 */
-  /* 匀速旋转周期（秒） */
-  --rotate-period: 28s;
+  --layers: 18;
+  --step: 2.4px;
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -32,18 +26,22 @@ html,body{height:100%;background:var(--ink);color:var(--paper);overflow:hidden;
 body{cursor:crosshair}
 
 /* ============================================================
-   舞台：单一深色全屏 + 主体圆环
+   背景层
    ============================================================ */
-.stage{
-  position:fixed;inset:0;z-index:0;
-  display:grid;place-items:center;
-  perspective:1800px;
-  perspective-origin: calc(var(--mx)*100%) calc(var(--my)*100%);
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(255,91,31,.08), transparent 70%),
-    radial-gradient(ellipse 60% 50% at 50% 50%, rgba(58,169,255,.06), transparent 70%),
-    var(--ink);
-  overflow:hidden;
+.bg-stripes{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    repeating-linear-gradient(45deg,
+      transparent 0 38px,
+      rgba(243,241,234,.025) 38px 39px),
+    repeating-linear-gradient(-45deg,
+      transparent 0 38px,
+      rgba(255,91,31,.02) 38px 39px);
+  mix-blend-mode:screen;
+}
+.bg-particles{
+  position:fixed;inset:0;z-index:1;pointer-events:none;
+  mix-blend-mode:screen;opacity:.85;
 }
 
 .halo{
@@ -56,7 +54,18 @@ body{cursor:crosshair}
     rgba(255,91,31,.05) 30%,
     transparent 65%);
   filter:blur(40px);
-  pointer-events:none;z-index:0;
+  pointer-events:none;z-index:2;
+}
+
+/* ============================================================
+   舞台
+   ============================================================ */
+.stage{
+  position:fixed;inset:0;z-index:3;
+  display:grid;place-items:center;
+  perspective:1800px;
+  perspective-origin: calc(var(--mx)*100%) calc(var(--my)*100%);
+  overflow:hidden;
 }
 
 /* ============================================================
@@ -71,9 +80,8 @@ body{cursor:crosshair}
     rotateX(calc((var(--my) - .5) * -6deg * var(--intensity)))
     rotateY(calc((var(--mx) - .5) * 8deg * var(--intensity)));
   transition:transform .3s ease-out;
-  z-index:2;
+  z-index:4;
 }
-
 .r{position:absolute;inset:0;border-radius:50%}
 .r-1{
   background:conic-gradient(from 0deg, var(--ink) 0 75%, var(--paper) 75% 100%);
@@ -100,18 +108,17 @@ body{cursor:crosshair}
 }
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* 核心：黑底圆盘 */
 .r-core{
   position:absolute;left:50%;top:50%;
   transform:translate(-50%,-50%);
-  width:62%;height:62%;border-radius:50%;
+  width:80%;height:60%;border-radius:50%;
   background:var(--ink);
   display:flex;align-items:center;justify-content:center;
   box-shadow:
     inset 0 0 0 2px var(--paper),
     inset 0 0 60px rgba(255,91,31,.18),
     0 0 80px rgba(255,91,31,.15);
-  z-index:3;
+  z-index:5;
   padding:24px;
 }
 .r-core::before{
@@ -125,53 +132,36 @@ body{cursor:crosshair}
 
 /* ============================================================
    3D 立体文字 ——
-   · 两行独立堆叠（工业 / 仙境），每行内 17 层共享同一 2D 位置
-   · 整体绕 Y 轴匀速旋转（linear）
-   · 字体大小由 --title-size 调节
+   · 单排 "工业仙境" 4 字
+   · 19 层（0 ~ -43.2px）共享同一 2D 位置
+   · 静止不旋转（鼠标倾斜由父级 .ring-system 控制）
    ============================================================ */
 .t3d{
   position:relative;
   transform-style:preserve-3d;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:.18em;
-  /* 匀速 Y 轴旋转 */
-  animation:rotY var(--rotate-period) linear infinite;
-  transform-origin:center center;
+  text-align:center;
+  margin:0;
 }
-@keyframes rotY{
-  from{transform:rotateY(0deg)}
-  to  {transform:rotateY(360deg)}
-}
-
-.t3d-row{
-  position:relative;
-  transform-style:preserve-3d;
-}
-
 .t3d-stack{
   position:relative;
   display:inline-block;
   transform-style:preserve-3d;
   font-family:"Noto Sans SC",sans-serif;
   font-weight:900;
-  font-size:calc(clamp(60px, 9.5vmin, 130px) * var(--title-size));
+  font-size:calc(clamp(54px, 8.5vmin, 116px) * var(--title-size));
   line-height:1;
   letter-spacing:.04em;
   white-space:nowrap;
 }
 
-/* 每一层：absolute 共享 2D 位置，仅 z 不同 */
 .t3d-layer{
   position:absolute;
   top:0;left:50%;
   transform:translate(-50%, 0) translateZ(var(--z, 0));
-  /* 颜色：前层纸白；后层用 color-mix 渐深 */
   color:color-mix(in srgb, var(--paper) calc((1 - var(--t, 0)) * 100%), var(--ink));
   text-shadow:
     calc((1 - var(--t, 0)) * .6px) calc((1 - var(--t, 0)) * .6px) 0 color-mix(in srgb, var(--rust) 50%, var(--ink));
 }
-
-/* 前层：主色 + 多重 text-shadow 立体阴影 */
 .t3d-front{
   color:var(--paper);
   text-shadow:
@@ -183,39 +173,131 @@ body{cursor:crosshair}
     0 0 30px rgba(255,91,31,.25);
 }
 
-/* 入场：所有层统一从底部上升（匀速 linear） */
+/* 入场：单次 rise，无后续旋转 */
 .t3d-layer{
   opacity:0;
-  animation:rise 1.2s linear forwards;
+  animation:rise 1.4s linear forwards;
 }
 @keyframes rise{
   0%  {opacity:0;transform:translate(-50%,0) translateZ(calc(var(--z, 0) - 40px)) translateY(60px)}
   100%{opacity:1;transform:translate(-50%,0) translateZ(var(--z, 0))             translateY(0)}
 }
-
-/* 入场延迟：两行错开 0.2s */
-.t3d-row:nth-child(1) .t3d-layer{animation-delay:0.15s}
-.t3d-row:nth-child(2) .t3d-layer{animation-delay:0.35s}
+.t3d-layer{animation-delay:.1s}
 
 /* ============================================================
    鼠标随行
    ============================================================ */
 .cursor-block{position:fixed;left:0;top:0;width:64px;height:64px;background:var(--lime);
-  transform:translate(-50%,-50%) rotate(45deg);pointer-events:none;z-index:20;
+  transform:translate(-50%,-50%) rotate(45deg);pointer-events:none;z-index:30;
   mix-blend-mode:difference;transition:transform .05s linear}
 .pointer-text{position:fixed;left:0;top:0;transform:translate(-50%,-50%);
   font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.3em;
-  color:var(--ink);background:var(--paper);padding:4px 8px;pointer-events:none;z-index:21;white-space:nowrap}
+  color:var(--ink);background:var(--paper);padding:4px 8px;pointer-events:none;z-index:31;white-space:nowrap}
 
-/* 滚轮 toast */
 .wheel-toast{position:fixed;left:50%;top:24px;transform:translateX(-50%) translateY(-12px);
   font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.35em;
   color:var(--paper);background:var(--ink);padding:10px 18px;border:1.5px solid var(--paper);
-  pointer-events:none;z-index:30;opacity:0;transition:opacity .25s, transform .25s}
+  pointer-events:none;z-index:32;opacity:0;transition:opacity .25s, transform .25s}
 .wheel-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* ============================================================
-   悬浮控件
+   道录 DAOLU 播放器（左下角）
+   ============================================================ */
+.daolu{
+  position:fixed;left:24px;bottom:24px;z-index:25;
+  width:340px;
+  background:rgba(10,10,12,.72);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border:1px solid var(--paper);
+  color:var(--paper);
+  font-family:"JetBrains Mono",monospace;
+  padding:14px 16px;
+  display:flex;flex-direction:column;gap:10px;
+  box-shadow:0 8px 30px rgba(0,0,0,.5);
+  opacity:0;animation:fadeIn 1s ease .5s forwards;
+}
+
+.daolu-head{
+  display:flex;align-items:center;gap:10px;
+  font-size:11px;letter-spacing:.3em;
+}
+.daolu-brand{
+  font-family:"Noto Sans SC",serif;font-weight:900;
+  font-size:18px;letter-spacing:.1em;color:var(--rust);
+  padding-right:10px;border-right:1px solid rgba(243,241,234,.25);
+}
+.daolu-en{font-size:11px;letter-spacing:.4em;opacity:.85}
+.daolu-dot{
+  margin-left:auto;width:8px;height:8px;border-radius:50%;
+  background:var(--lime);box-shadow:0 0 8px var(--lime);
+  animation:blink 1.4s infinite;
+}
+.daolu-status{font-size:10px;letter-spacing:.3em;color:var(--lime)}
+@keyframes blink{50%{opacity:.3}}
+
+.daolu-track{
+  font-size:11px;letter-spacing:.3em;
+  color:rgba(243,241,234,.7);
+  border-top:1px solid rgba(243,241,234,.1);
+  border-bottom:1px solid rgba(243,241,234,.1);
+  padding:6px 0;
+}
+
+.daolu-row{display:flex;align-items:center;gap:10px}
+
+.daolu-btn{
+  width:34px;height:34px;
+  background:transparent;border:1.5px solid var(--paper);
+  color:var(--paper);cursor:pointer;
+  display:grid;place-items:center;
+  transition:background .2s, color .2s;
+}
+.daolu-btn:hover{background:var(--paper);color:var(--ink)}
+.daolu-btn svg{width:14px;height:14px;display:block}
+.daolu-play{width:40px;height:40px;border-color:var(--rust);color:var(--rust)}
+.daolu-play:hover{background:var(--rust);color:var(--ink)}
+.daolu-play .icon-pause{display:none}
+.daolu-play.on .icon-play{display:none}
+.daolu-play.on .icon-pause{display:block}
+.daolu-play.on{background:var(--rust);color:var(--ink);animation:pulse 1.4s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 6px rgba(255,91,31,.25)}}
+
+.daolu-bars{
+  display:flex;align-items:flex-end;gap:3px;height:24px;flex:1;
+  padding:0 8px;
+}
+.daolu-bars span{
+  display:block;flex:1;height:4px;background:var(--paper);opacity:.35;
+  transition:height .15s, opacity .15s;
+}
+.daolu-bars.on span{animation:bars .9s ease-in-out infinite;background:var(--lime);opacity:.9}
+.daolu-bars.on span:nth-child(1){animation-delay:0s}
+.daolu-bars.on span:nth-child(2){animation-delay:.15s}
+.daolu-bars.on span:nth-child(3){animation-delay:.3s}
+.daolu-bars.on span:nth-child(4){animation-delay:.15s}
+.daolu-bars.on span:nth-child(5){animation-delay:0s}
+@keyframes bars{
+  0%,100%{height:4px}
+  50%{height:20px}
+}
+
+.daolu-vol{display:flex;align-items:center;gap:6px}
+.daolu-vol .vol-icon{width:14px;height:14px;color:var(--paper);opacity:.7}
+.daolu-range{
+  -webkit-appearance:none;appearance:none;width:80px;height:2px;
+  background:rgba(243,241,234,.3);outline:none;
+}
+.daolu-range::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;width:10px;height:10px;border-radius:50%;
+  background:var(--paper);cursor:pointer;
+}
+.daolu-range::-moz-range-thumb{
+  width:10px;height:10px;border-radius:50%;background:var(--paper);cursor:pointer;border:0;
+}
+
+/* ============================================================
+   悬浮控件（保持 · 移到右下，避让播放器）
    ============================================================ */
 .controls{
   position:fixed;right:24px;top:50%;transform:translateY(-50%);
@@ -276,17 +358,18 @@ body{cursor:crosshair}
 @keyframes fadeIn{to{opacity:1}}
 @keyframes sceneIn{to{opacity:1}}
 .stage{opacity:0;animation:sceneIn .8s ease .1s forwards}
-.halo{opacity:0;animation:fadeIn 1.2s ease .2s forwards}
-.ring-system{opacity:0;animation:fadeIn 1s ease .3s forwards}
 
 /* 响应式 */
 @media (max-width: 900px){
   .ring-system{width:min(90vmin,520px);height:min(90vmin,520px)}
-  .t3d-stack{font-size:clamp(48px, 11vmin, 84px)}
-  .controls{right:12px;top:auto;bottom:80px;transform:none;flex-direction:column-reverse}
+  .t3d-stack{font-size:clamp(40px, 9.5vmin, 72px)}
+  .controls{right:12px;top:auto;bottom:200px;transform:none;flex-direction:column-reverse}
   .controls.open .controls-body{width:260px}
+  .daolu{width:calc(100vw - 24px);left:12px;bottom:12px}
 }
 @media (prefers-reduced-motion: reduce){
   .r-1,.r-2,.r-3{animation:none}
-  .t3d{animation:none}
+  .daolu-bars.on span{animation:none}
+  .daolu-dot{animation:none}
+  .daolu-play.on{animation:none}
 }
