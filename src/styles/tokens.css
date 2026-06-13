@@ -1,0 +1,45 @@
+/* 设计令牌 */
+:root {
+  /* 主色 — 宣纸 / 绢本 */
+  --paper: #EFE4CC;
+  --paper-deep: #D9C28A;
+  --paper-shadow: #C7AC73;
+  --mildew: #6B4A2B;
+  --ink: #1B1612;
+  --ink-soft: #3A2E22;
+
+  /* 辅色 */
+  --vermilion: #A8341E;
+  --vermilion-bright: #C8442A;
+  --gold: #B58A3C;
+
+  /* 数字虫蛀三原色 */
+  --cyber-cyan: #5BE7C4;
+  --cyber-magenta: #E84B82;
+  --cyber-lime: #D7F26B;
+
+  /* 字体 */
+  --font-brush: "Ma Shan Zheng", "ZCOOL XiaoWei", "Noto Serif SC", serif;
+  --font-serif: "ZCOOL XiaoWei", "Noto Serif SC", serif;
+  --font-mono: "VT323", "Courier New", monospace;
+  --font-pixel: "Press Start 2P", "VT323", monospace;
+
+  /* 缓动 */
+  --ease-ink: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-snap: cubic-bezier(0.68, -0.55, 0.27, 1.55);
+
+  /* 像素 */
+  --pix: 8px;
+
+  /* 尺寸 */
+  --term-width: 360px;
+}
+
+[data-mode="silk"] {
+  --paper: #E8D2A6;
+  --paper-deep: #C8A55E;
+  --paper-shadow: #8B6A2E;
+  --ink: #2A1A0C;
+  --ink-soft: #4A2E14;
+  --mildew: #5B3A1F;
+}

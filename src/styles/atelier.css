@@ -1,0 +1,521 @@
+/* ============== 全局布局 ============== */
+.atelier {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  overflow: hidden;
+  isolation: isolate;
+  font-family: var(--font-serif);
+  /* 宣纸基础纹理：用多层 radial-gradient 模拟纤维 */
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(107, 74, 43, 0.10) 0%, transparent 28%),
+    radial-gradient(circle at 78% 64%, rgba(107, 74, 43, 0.08) 0%, transparent 32%),
+    radial-gradient(circle at 44% 92%, rgba(107, 74, 43, 0.06) 0%, transparent 26%),
+    repeating-linear-gradient(
+      45deg,
+      rgba(107, 74, 43, 0.04) 0 1px,
+      transparent 1px 4px
+    );
+  transition: background 600ms var(--ease-ink);
+}
+
+/* 宣纸边缘阴影 / 卷曲 */
+.atelier::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  box-shadow:
+    inset 0 0 80px rgba(27, 22, 18, 0.35),
+    inset 0 0 200px rgba(107, 74, 43, 0.25);
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(27, 22, 18, 0.18), transparent 40%),
+    radial-gradient(ellipse at 100% 100%, rgba(27, 22, 18, 0.20), transparent 45%);
+}
+
+.atelier[data-mode="silk"]::before {
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(42, 26, 12, 0.25), transparent 40%),
+    radial-gradient(ellipse at 100% 100%, rgba(42, 26, 12, 0.30), transparent 45%);
+}
+
+/* ============== 主舞台（左侧 70%）============== */
+.stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 70%;
+  height: calc(100% - 96px);
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* 题字 */
+.title-block {
+  position: absolute;
+  top: 28px;
+  left: 36px;
+  z-index: 8;
+  display: flex;
+  align-items: flex-end;
+  gap: 18px;
+  animation: title-fade 1.6s var(--ease-ink) 0.4s both;
+}
+.title-block .title {
+  font-family: var(--font-brush);
+  font-size: 56px;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+  line-height: 1;
+}
+.title-block .sub {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  letter-spacing: 0.4em;
+  color: var(--ink-soft);
+  border-left: 1px solid var(--mildew);
+  padding-left: 12px;
+  writing-mode: vertical-rl;
+  height: 56px;
+}
+@keyframes title-fade {
+  from { opacity: 0; transform: translateY(-12px); filter: blur(6px); }
+  to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
+}
+
+/* 远山 — 三层山体用 div 渐变 */
+.mountain {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.mountain .layer {
+  position: absolute;
+  bottom: 0;
+  left: -5%;
+  width: 110%;
+  filter: url(#ink-rough);
+  animation: ink-rise 1.8s var(--ease-ink) both;
+}
+.mountain .layer.far  { height: 48%; animation-delay: 0.0s; }
+.mountain .layer.mid  { height: 60%; animation-delay: 0.18s; }
+.mountain .layer.near { height: 70%; animation-delay: 0.36s; }
+
+@keyframes ink-rise {
+  from { transform: translateY(105%); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+
+/* 江面 Canvas */
+.river {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  z-index: 4;
+  pointer-events: none;
+  animation: ink-rise 2.0s var(--ease-ink) 0.5s both;
+}
+
+/* 古松 */
+.pine {
+  position: absolute;
+  left: 7%;
+  bottom: 22%;
+  width: 88px;
+  height: 168px;
+  z-index: 6;
+  image-rendering: pixelated;
+  animation: pine-in 1.4s var(--ease-ink) 0.8s both;
+}
+@keyframes pine-in {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 远帆 */
+.sail {
+  position: absolute;
+  bottom: 30%;
+  right: 22%;
+  width: 32px;
+  height: 38px;
+  z-index: 5;
+  animation: sail-float 8s ease-in-out infinite, pine-in 1.4s var(--ease-ink) 1.0s both;
+}
+@keyframes sail-float {
+  0%, 100% { transform: translateX(0) translateY(0); }
+  50%      { transform: translateX(-18px) translateY(-3px); }
+}
+
+/* 虫蛀孔 */
+.borer {
+  position: absolute;
+  z-index: 9;
+  pointer-events: auto;
+  cursor: pointer;
+  transform-origin: center;
+  animation: borer-breath 6s ease-in-out infinite;
+  transition: transform 220ms var(--ease-snap);
+}
+.borer:hover { transform: scale(0); }
+.borer.sealed { transform: scale(0); }
+@keyframes borer-breath {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.06); }
+}
+
+/* 像素生灵 */
+.beasts {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  pointer-events: none;
+}
+
+/* 像素雨 */
+.pixel-rain {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  overflow: hidden;
+}
+.pixel-rain .drop {
+  position: absolute;
+  width: var(--pix);
+  height: var(--pix);
+  background: var(--cyber-magenta);
+  box-shadow: 0 0 8px var(--cyber-magenta);
+  animation: drop-fly 320ms var(--ease-ink) forwards;
+}
+@keyframes drop-fly {
+  0%   { transform: translate(0, 0) scale(1); opacity: 1; }
+  80%  { transform: translate(var(--dx, 0), var(--dy, 0)) scale(0.6); opacity: 1; }
+  100% { transform: translate(var(--dx, 0), var(--dy, 0)) scale(0); opacity: 0; }
+}
+
+/* 整体闪白 */
+.flash {
+  position: absolute;
+  inset: 0;
+  z-index: 200;
+  background: var(--paper);
+  pointer-events: none;
+  animation: flash 480ms ease-out;
+}
+@keyframes flash {
+  0%   { opacity: 0; }
+  20%  { opacity: 0.85; }
+  100% { opacity: 0; }
+}
+
+/* ============== 节点终端（右侧 30%）============== */
+.terminal {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: var(--term-width);
+  height: calc(100% - 96px);
+  border-left: 1px dashed var(--mildew);
+  background: linear-gradient(180deg, rgba(27, 22, 18, 0.04), rgba(27, 22, 18, 0.10));
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  padding: 28px 24px 18px;
+  animation: term-in 1.2s var(--ease-ink) 0.4s both;
+}
+@keyframes term-in {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.terminal-head {
+  font-family: var(--font-brush);
+  font-size: 24px;
+  color: var(--ink);
+  letter-spacing: 0.16em;
+  margin-bottom: 4px;
+}
+.terminal-sub {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  color: var(--ink-soft);
+  letter-spacing: 0.18em;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--mildew);
+  padding-bottom: 12px;
+}
+
+.terminal-canvas {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.node {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-serif);
+  font-size: 14px;
+  color: var(--ink);
+  transform: translateY(-50%);
+  transition: transform 200ms var(--ease-snap), color 200ms;
+}
+.node .dot {
+  width: 14px;
+  height: 14px;
+  background: var(--vermilion);
+  border: 1px solid var(--ink);
+  display: grid;
+  place-items: center;
+  position: relative;
+  box-shadow: 0 0 0 0 var(--vermilion);
+  transition: box-shadow 200ms;
+}
+.node .dot::after {
+  content: "";
+  width: 4px;
+  height: 4px;
+  background: var(--ink);
+}
+.node .label {
+  font-family: var(--font-brush);
+  font-size: 18px;
+  letter-spacing: 0.12em;
+  color: var(--ink);
+}
+.node .meta {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-soft);
+  letter-spacing: 0.1em;
+}
+.node.pulse {
+  transform: translateY(-50%) scale(1.15);
+  color: var(--vermilion);
+}
+.node.pulse .dot {
+  box-shadow: 0 0 0 6px rgba(168, 52, 30, 0.25), 0 0 16px 2px var(--vermilion);
+}
+
+.node .tail {
+  position: absolute;
+  left: 7px;
+  top: 100%;
+  width: 1px;
+  height: 12px;
+  background: linear-gradient(to bottom, var(--mildew), transparent);
+}
+.node:last-child .tail { display: none; }
+
+.terminal-svg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.terminal-svg path {
+  fill: none;
+  stroke: var(--ink-soft);
+  stroke-width: 1.5;
+  transition: stroke-width 240ms var(--ease-ink), stroke 240ms;
+  stroke-dasharray: 4 4;
+  animation: ink-drip 1.6s ease-out both;
+}
+.terminal-svg path.active {
+  stroke: var(--vermilion);
+  stroke-width: 3;
+  stroke-dasharray: none;
+}
+@keyframes ink-drip {
+  from { stroke-dashoffset: 200; opacity: 0; }
+  to   { stroke-dashoffset: 0;   opacity: 1; }
+}
+
+.terminal-input {
+  margin-top: 14px;
+  border: 1px solid var(--mildew);
+  background: rgba(27, 22, 18, 0.04);
+  position: relative;
+}
+.terminal-input::before {
+  content: "▸";
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: var(--vermilion);
+  font-family: var(--font-mono);
+  font-size: 18px;
+  animation: caret 0.9s steps(1) infinite;
+}
+@keyframes caret { 50% { opacity: 0; } }
+.terminal-input textarea {
+  width: 100%;
+  min-height: 90px;
+  background: transparent;
+  border: 0;
+  padding: 10px 12px 10px 30px;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  resize: none;
+  outline: none;
+  line-height: 1.4;
+}
+.terminal-input textarea::placeholder { color: var(--ink-soft); opacity: 0.55; }
+
+.terminal-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-soft);
+  letter-spacing: 0.18em;
+}
+.terminal-foot .key {
+  display: inline-block;
+  border: 1px solid var(--mildew);
+  padding: 1px 6px;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* ============== 残字字幕 ============== */
+.caption {
+  position: absolute;
+  top: 26%;
+  left: 4%;
+  right: calc(var(--term-width) + 4%);
+  height: 60px;
+  z-index: 8;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+/* ============== 底栏朱印 ============== */
+.seal-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 96px;
+  z-index: 11;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 36px;
+  border-top: 1px dashed var(--mildew);
+  background: linear-gradient(0deg, rgba(107, 74, 43, 0.10), transparent);
+}
+
+.seal-group { display: flex; gap: 18px; align-items: center; }
+.seal {
+  width: 58px;
+  height: 58px;
+  background: var(--vermilion);
+  color: var(--paper);
+  font-family: var(--font-brush);
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--ink);
+  position: relative;
+  box-shadow: 0 0 0 2px var(--vermilion) inset, 2px 2px 0 var(--ink);
+  transition: transform 240ms var(--ease-snap);
+  user-select: none;
+}
+.seal::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid var(--paper);
+  pointer-events: none;
+}
+.seal .glyph {
+  font-size: 22px;
+  letter-spacing: 0;
+  z-index: 1;
+}
+.seal:hover { transform: rotate(-6deg) scale(1.05); }
+.seal:active { transform: scale(0.92) rotate(0); }
+.seal.spin { animation: seal-stamp 0.6s var(--ease-snap); }
+@keyframes seal-stamp {
+  0%   { transform: rotate(-30deg) scale(1.4); }
+  60%  { transform: rotate(8deg) scale(0.9); }
+  100% { transform: rotate(0) scale(1); }
+}
+
+.seal-vertical {
+  writing-mode: vertical-rl;
+  font-family: var(--font-brush);
+  font-size: 16px;
+  letter-spacing: 0.4em;
+  color: var(--ink-soft);
+  border-left: 1px solid var(--mildew);
+  padding-left: 12px;
+  height: 60px;
+}
+
+.brand {
+  font-family: var(--font-brush);
+  font-size: 18px;
+  letter-spacing: 0.24em;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.brand .seal-mini {
+  width: 28px;
+  height: 28px;
+  background: var(--vermilion);
+  color: var(--paper);
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  border: 1px solid var(--ink);
+}
+
+/* ============== 响应式 ============== */
+@media (max-width: 1280px) {
+  .stage { width: 60%; }
+  .terminal { width: 40%; }
+  :root { --term-width: 40vw; }
+  .title-block .title { font-size: 44px; }
+}
+@media (max-width: 768px) {
+  .stage {
+    position: absolute;
+    width: 100%;
+    height: 50vh;
+    top: 0;
+  }
+  .terminal {
+    position: absolute;
+    width: 100%;
+    height: calc(50vh - 96px);
+    top: 50vh;
+    border-left: 0;
+    border-top: 1px dashed var(--mildew);
+    padding: 16px;
+  }
+  .terminal-canvas { display: none; }
+  .title-block { top: 16px; left: 16px; }
+  .title-block .title { font-size: 32px; }
+  .title-block .sub { display: none; }
+  .seal-bar { padding: 0 16px; height: 80px; }
+  .seal { width: 48px; height: 48px; }
+  .seal-vertical { display: none; }
+  :root { --term-width: 100vw; --pix: 6px; }
+}
