@@ -6,639 +6,468 @@
 <title>工业仙境 · INDUSTRIAL FANTASY</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@500;700;900&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@500;700;900&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&family=Archivo+Black&family=Bebas+Neue&display=swap" rel="stylesheet" />
 <style>
+  /* ============================================================
+     色板 · 4 色高对比
+     ============================================================ */
   :root{
-    --bg-0:#07090d;
-    --bg-1:#0c0f15;
-    --ink:#f3f1ea;
-    --ink-dim:#8a8a86;
-    --rust:#ff5b1f;
-    --volt:#3aa9ff;
-    --lime:#a8ff5b;
-    --amber:#ffb547;
-    --mx:.5; --my:.5; --hue:18; --phi:1.618;
-    --p-1:9%; --p-2:38.2%; --p-3:61.8%; --p-4:72%;
-    --p-5:22%; --p-6:78%; --p-7:50%;
+    --ink:#0a0a0c;       /* 黑 */
+    --paper:#f3f1ea;     /* 纸白 */
+    --rust:#ff5b1f;      /* 工业橙 */
+    --volt:#3aa9ff;      /* 电气蓝 */
+    --lime:#a8ff5b;      /* 霓虹绿（点缀） */
+    --mx:.5; --my:.5;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%;background:var(--bg-0);color:var(--ink);overflow:hidden;
+  html,body{height:100%;background:var(--ink);color:var(--paper);overflow:hidden;
     font-family:"Noto Sans SC","Space Grotesk",system-ui,sans-serif;
     -webkit-font-smoothing:antialiased}
-  body{
-    cursor:crosshair;
-    background:
-      radial-gradient(ellipse at calc(var(--mx)*100%) calc(var(--my)*100%), rgba(255,91,31,.22), transparent 55%),
-      radial-gradient(ellipse at calc((1-var(--mx))*100%) calc((1-var(--my))*100%), rgba(58,169,255,.18), transparent 55%),
-      linear-gradient(180deg,#07090d 0%,#0c0f15 60%,#050608 100%);
+  body{cursor:crosshair}
+
+  /* ============================================================
+     场景：4 个实体色块（瑞士平面风）
+     顶满纸张 / 底为黑 / 中部圆环
+     ============================================================ */
+  .scene{
+    position:fixed;inset:0;
+    display:grid;
+    grid-template-columns: 1.4fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap:0;
+  }
+  /* 大色块 A：左上 · 工业橙 */
+  .panel-a{background:var(--rust);grid-column:1;grid-row:1;position:relative;overflow:hidden}
+  /* 大色块 B：右上 · 电气蓝 */
+  .panel-b{background:var(--volt);grid-column:2;grid-row:1;position:relative;overflow:hidden}
+  /* 大色块 C：右下 · 纸白 */
+  .panel-c{background:var(--paper);color:var(--ink);grid-column:2;grid-row:2;position:relative;overflow:hidden}
+  /* 大色块 D：左下 · 黑（中心圆环） */
+  .panel-d{background:var(--ink);color:var(--paper);grid-column:1;grid-row:2;position:relative;overflow:hidden}
+
+  /* 圆环位于 D 面板中央（横跨中部） */
+  .ring-stage{
+    position:absolute;
+    left:50%;top:50%;
+    transform:translate(-50%,-50%);
+    width:min(78vmin,720px);
+    height:min(78vmin,720px);
+    z-index:10;
+    pointer-events:none;
   }
 
   /* ============================================================
-     数字绘画底色：色块 + 笔触
+     圆环反色：4 圈同心环，相邻两环颜色互为反色
+     偶数环 = 纸白 / 奇数环 = 黑（或橙蓝）
      ============================================================ */
-  .paint{
-    position:fixed;inset:0;z-index:0;pointer-events:none;
-    background:
-      /* 大色块：远景冷调 */
-      radial-gradient(ellipse 70% 40% at 18% 30%, rgba(58,169,255,.10), transparent 60%),
-      /* 中景橙调 */
-      radial-gradient(ellipse 50% 35% at 82% 65%, rgba(255,91,31,.12), transparent 60%),
-      /* 暖色高光 */
-      radial-gradient(ellipse 30% 25% at 50% 50%, rgba(255,181,71,.06), transparent 60%);
-    mix-blend-mode:screen;
+  .ring{
+    position:absolute;inset:0;border-radius:50%;
+    mix-blend-mode:normal;
   }
-  .brush{
-    position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.22;mix-blend-mode:overlay;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'><filter id='b'><feTurbulence type='fractalNoise' baseFrequency='.012' numOctaves='3' seed='5'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 0.9 0 0 0 0 0.8 0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23b)'/></svg>");
+  /* 第 1 圈（最外）：黑厚环 */
+  .ring-1{
+    background:conic-gradient(from 0deg, var(--ink) 0 75%, var(--paper) 75% 100%);
+    padding:18px;
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;
+    animation:spin 22s linear infinite;
   }
+  /* 第 2 圈：纸白厚环 */
+  .ring-2{
+    inset:48px;
+    background:conic-gradient(from 90deg, var(--paper) 0 60%, var(--rust) 60% 100%);
+    padding:14px;
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;
+    animation:spin 18s linear infinite reverse;
+  }
+  /* 第 3 圈：电气蓝厚环 */
+  .ring-3{
+    inset:96px;
+    background:conic-gradient(from 180deg, var(--volt) 0 50%, var(--ink) 50% 100%);
+    padding:10px;
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;
+    animation:spin 14s linear infinite;
+  }
+  /* 第 4 圈（最内）：橙环 */
+  .ring-4{
+    inset:138px;
+    background:conic-gradient(from 270deg, var(--rust) 0 70%, var(--paper) 70% 100%);
+    padding:8px;
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;
+    animation:spin 10s linear infinite reverse;
+  }
+  @keyframes spin{ to{transform:rotate(360deg)} }
+
+  /* 中心圆盘（黑底 + 主体白字） */
+  .ring-core{
+    position:absolute;left:50%;top:50%;
+    transform:translate(-50%,-50%);
+    width:42%;height:42%;border-radius:50%;
+    background:var(--ink);color:var(--paper);
+    display:grid;place-items:center;
+    box-shadow:inset 0 0 0 4px var(--paper);
+    z-index:2;
+  }
+  .ring-core::before{
+    content:"";position:absolute;inset:6px;border-radius:50%;
+    border:1px dashed rgba(243,241,234,.35);
+  }
+
+  /* 圆环上的刻度数字（旋转，固定朝向） */
+  .ring-tick{
+    position:absolute;left:50%;top:50%;
+    font-family:"JetBrains Mono",monospace;
+    font-size:11px;letter-spacing:.2em;
+    color:var(--paper);
+    text-shadow:0 0 8px rgba(0,0,0,.6);
+    transform-origin:0 0;
+    white-space:nowrap;
+  }
+  .ring-tick.inv{color:var(--ink);text-shadow:none}
+  .ring-tick.t-a{ /* 放第 1 圈外 */ }
+  .ring-tick.t-b{ /* 放第 2 圈 */ }
+  .ring-tick.t-c{ /* 放第 3 圈 */ }
+  .ring-tick.t-d{ /* 放第 4 圈 */ }
 
   /* ============================================================
-     工业背景层
+     圆环内主体文字（工业仙境 · INDUSTRIAL FANTASY）
      ============================================================ */
-  .grid{
-    position:fixed;inset:-10%;pointer-events:none;z-index:1;
-    background-image:
-      linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),
-      linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
-    background-size:80px 80px, 80px 80px;
-    transform:perspective(900px) rotateX(62deg) translateY(18%) scale(1.4);
-    transform-origin:center bottom;
-    mask-image:linear-gradient(180deg,transparent 0%,#000 35%,#000 70%,transparent 100%);
-  }
-  .scan{
-    position:fixed;inset:0;pointer-events:none;z-index:2;
-    background:repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 1px, transparent 1px 3px);
-    mix-blend-mode:overlay;animation:scan 6s linear infinite;
-  }
-  @keyframes scan{ from{background-position:0 0} to{background-position:0 600px} }
-  .noise{
-    position:fixed;inset:0;pointer-events:none;z-index:2;opacity:.18;mix-blend-mode:overlay;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.55'/></svg>");
-  }
-  .vignette{
-    position:fixed;inset:0;pointer-events:none;z-index:3;
-    background:radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,.85) 100%);
-  }
-
-  /* ============================================================
-     线条纹路（横向等高线 / 数字绘画的"线描层"）
-     ============================================================ */
-  .linework{
-    position:fixed;left:0;right:0;height:200px;z-index:4;pointer-events:none;
-    background-repeat:repeat-x;background-size:1200px 200px;
-    mix-blend-mode:screen;opacity:.55;
-  }
-  .linework.top{top:8%;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 200'><g fill='none' stroke='%23a8a69c' stroke-width='.6' opacity='.7'><path d='M0,30 Q150,10 300,30 T600,28 T900,32 T1200,30'/><path d='M0,50 Q150,32 300,52 T600,48 T900,55 T1200,50'/><path d='M0,75 Q150,55 300,78 T600,72 T900,80 T1200,75'/><path d='M0,100 Q150,82 300,103 T600,98 T900,108 T1200,100'/><path d='M0,128 Q150,108 300,132 T600,125 T900,138 T1200,128'/><path d='M0,155 Q150,135 300,160 T600,152 T900,168 T1200,155'/><path d='M0,180 Q150,158 300,185 T600,175 T900,195 T1200,180'/></g></svg>");animation:drift 40s linear infinite}
-  .linework.bot{bottom:14%;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 200'><g fill='none' stroke='%23ff8a4a' stroke-width='.55' opacity='.6'><path d='M0,40 Q200,20 400,42 T800,38 T1200,44'/><path d='M0,68 Q200,50 400,72 T800,66 T1200,72'/><path d='M0,98 Q200,80 400,105 T800,96 T1200,102'/><path d='M0,128 Q200,108 400,138 T800,128 T1200,134'/><path d='M0,158 Q200,138 400,170 T800,158 T1200,165'/><path d='M0,188 Q200,168 400,200 T800,188 T1200,194'/></g></svg>");animation:drift 55s linear infinite reverse}
-  @keyframes drift{ from{background-position:0 0} to{background-position:1200px 0} }
-
-  /* 垂直细线（数字绘画辅助） */
-  .vlines{
-    position:fixed;inset:0;z-index:4;pointer-events:none;
-    background-image:linear-gradient(90deg, transparent 0, transparent calc(100% - 1px), rgba(255,255,255,.025) 100%);
-    background-size:120px 100%;
-    mix-blend-mode:overlay;opacity:.7;
-  }
-
-  /* ============================================================
-     传统云纹 SVG（横向流动）
-     ============================================================ */
-  .cloud-band{
-    position:fixed;left:-5%;right:-5%;height:120px;z-index:5;pointer-events:none;
-    opacity:.85;
-  }
-  .cloud-band.top{top:14%}
-  .cloud-band.mid{top:48%;opacity:.5;transform:scaleY(-1);filter:blur(2px)}
-  .cloud-band.bot{bottom:18%;opacity:.7}
-  .cloud-svg{width:100%;height:100%;display:block}
-  .cloud-svg path{stroke:rgba(243,241,234,.55);fill:none;stroke-width:1.1}
-  .cloud-svg .fill{fill:rgba(243,241,234,.04);stroke:rgba(243,241,234,.7)}
-  .cloud-svg .accent{stroke:rgba(255,181,71,.7)}
-  .cloud-band.mid .cloud-svg path{stroke:rgba(58,169,255,.45)}
-  .cloud-band.mid .cloud-svg .fill{stroke:rgba(58,169,255,.55)}
-
-  /* 单个云纹装饰点 */
-  .cloud-mark{
-    position:absolute;width:64px;height:64px;z-index:5;pointer-events:none;opacity:.65;
-  }
-  .cloud-mark svg{width:100%;height:100%}
-  .cloud-mark path{stroke:rgba(255,181,71,.7);fill:none;stroke-width:1}
-
-  /* ============================================================
-     散开的泡沫（Canvas 60 粒子）
-     ============================================================ */
-  #foam{position:fixed;inset:0;z-index:6;pointer-events:none;mix-blend-mode:screen}
-
-  /* 鼠标光晕 */
-  .cursor-glow{
-    position:fixed;left:0;top:0;width:520px;height:520px;border-radius:50%;
-    pointer-events:none;z-index:7;
-    background:radial-gradient(circle, hsla(var(--hue),100%,60%,.45), hsla(var(--hue),100%,60%,0) 60%);
-    transform:translate(-50%,-50%);mix-blend-mode:screen;filter:blur(6px);
-  }
-
-  /* ============================================================
-     HUD
-     ============================================================ */
-  .hud{position:fixed;inset:0;pointer-events:none;z-index:9;color:#d8d6cf;
-    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.12em;
-    text-transform:uppercase;mix-blend-mode:difference}
-  .hud .corner{position:absolute;width:120px;height:120px;border:1px solid rgba(255,255,255,.35)}
-  .hud .tl{top:24px;left:24px;border-right:none;border-bottom:none}
-  .hud .tr{top:24px;right:24px;border-left:none;border-bottom:none}
-  .hud .bl{bottom:24px;left:24px;border-right:none;border-top:none}
-  .hud .br{bottom:24px;right:24px;border-left:none;border-top:none}
-  .hud .label{position:absolute;padding:6px 10px;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.25)}
-  .hud .l-tl{top:34px;left:34px}
-  .hud .l-tr{top:34px;right:34px}
-  .hud .l-bl{bottom:34px;left:34px}
-  .hud .l-br{bottom:34px;right:34px}
-  .hud .side{position:absolute;top:50%;transform:translateY(-50%) rotate(90deg);font-size:10px;letter-spacing:.3em;color:rgba(255,255,255,.55)}
-  .hud .side.l{left:-30px}
-  .hud .side.r{right:-50px}
-
-  /* ============================================================
-     舞台：广角镜头 + 3D
-     ============================================================ */
-  .stage{
-    position:fixed;inset:0;z-index:8;overflow:hidden;
-    perspective:1600px;
-    perspective-origin: calc(var(--mx)*100%) calc(var(--my)*100%);
-  }
-  .tilt{
-    position:absolute;inset:0;
-    transform-style:preserve-3d;
-    transform:
-      rotateX(calc((var(--my) - .5) * -8deg))
-      rotateY(calc((var(--mx) - .5) * 12deg));
-    transition:transform .25s ease-out;
-  }
-
-  /* ============================================================
-     横向行式排版（H-ROW）
-     每行：横向条带 + 行内文字
-     ============================================================ */
-  .hrow{
-    position:absolute;left:0;right:0;
-    display:flex;align-items:center;justify-content:flex-start;
-    padding:0 5vw;gap:3vw;
-    transform-style:preserve-3d;will-change:transform, opacity, filter;
-    opacity:0;filter:blur(10px);
-  }
-  .hrow.in{animation:flyIn 1.4s cubic-bezier(.2,.75,.2,1) forwards}
-  @keyframes flyIn{
-    0%   {opacity:0;filter:blur(14px);transform:translateX(-40px)}
-    40%  {opacity:1;filter:blur(0)}
-    100% {opacity:1;filter:blur(0);transform:translateX(0)}
-  }
-
-  /* 4 行 · 自上而下分布 */
-  .hrow.r1{top:6%;  height:18%}
-  .hrow.r2{top:30%; height:18%}
-  .hrow.r3{top:54%; height:18%}
-  .hrow.r4{top:78%; height:18%}
-
-  /* 行内文字块 */
-  .seg{
-    position:relative;display:inline-block;flex-shrink:0;
+  .core-text{
+    text-align:center;line-height:.95;
     transform-style:preserve-3d;
   }
-  .seg .text{
-    font-family:"Noto Sans SC","Space Grotesk",sans-serif;
-    font-weight:900;line-height:.95;letter-spacing:-.02em;
-    color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.85);
-    position:relative;display:inline-block;
-    transform-style:preserve-3d;
+  .core-text .cn{
+    display:block;
+    font-family:"Noto Sans SC",sans-serif;
+    font-weight:900;
+    font-size:clamp(34px, 5.6vmin, 76px);
+    letter-spacing:-.01em;
   }
-  .seg .text.cn{font-family:"Noto Sans SC",sans-serif}
-  .seg .text.brush{font-family:"Ma Shan Zheng","Noto Sans SC",serif;font-weight:500;letter-spacing:.04em}
-  .seg .text.mono{font-family:"JetBrains Mono",monospace;letter-spacing:.3em;text-transform:uppercase;font-weight:500}
-
-  /* 文字图层 */
-  .layer{position:absolute;inset:0;color:transparent;pointer-events:none;white-space:nowrap}
-  .layer.fill{
-    -webkit-text-stroke:0;
-    background:linear-gradient(180deg,#f8f6ef 0%,#bdb9ad 60%,#7c7a72 100%);
-    -webkit-background-clip:text;background-clip:text;opacity:.95;
+  .core-text .en{
+    display:block;margin-top:8px;
+    font-family:"Archivo Black","Bebas Neue",sans-serif;
+    font-size:clamp(11px, 1.6vmin, 18px);
+    letter-spacing:.18em;
+    color:rgba(243,241,234,.7);
   }
-  .layer.glow{
-    -webkit-text-stroke:0;
-    background:linear-gradient(180deg, hsla(var(--hue),100%,65%,1), hsla(calc(var(--hue)+40),100%,55%,.6) 60%, transparent 100%);
-    -webkit-background-clip:text;background-clip:text;
-    mix-blend-mode:screen;filter:blur(8px);opacity:.7;
-  }
-  .layer.stroke-back{
-    -webkit-text-stroke:2px hsla(var(--hue),100%,55%,.65);
-    transform:translateZ(-60px) translate(4px,4px);filter:blur(.4px);
-  }
-  .layer.stroke-far{
-    -webkit-text-stroke:1px rgba(255,91,31,.45);
-    transform:translateZ(-140px) translate(12px,12px);filter:blur(1.2px);
+  .core-text .meta{
+    display:block;margin-top:14px;
+    font-family:"JetBrains Mono",monospace;
+    font-size:clamp(9px, 1.2vmin, 13px);
+    letter-spacing:.35em;
+    color:var(--rust);
   }
 
-  /* 各段字号 / 旋转 / 深度（横向分布） */
-  .seg.s1 .text{font-size:clamp(54px, 7.4vw, 130px); transform:translateZ(-40px) rotate(-4deg)}
-  .seg.s2 .text{font-size:clamp(36px, 4.8vw,  78px); transform:translateZ( 60px) rotate( 2deg)}
-  .seg.s3 .text{font-size:clamp(80px,12.0vw, 200px); transform:translateZ(120px) rotate( 0deg)} /* 主体 */
-  .seg.s4 .text{font-size:clamp(28px, 3.4vw,  56px); transform:translateZ(-80px) rotate(-3deg)}
-  .seg.s5 .text{font-size:clamp(48px, 6.4vw, 100px); transform:translateZ( 20px) rotate( 3deg)}
-  .seg.s6 .text{font-size:clamp(22px, 2.4vw,  38px); transform:translateZ(-100px) rotate( 2deg)}
-  .seg.s7 .text{font-size:clamp(20px, 2.0vw,  32px); transform:translateZ(-140px) rotate( 1deg)}
-  .seg.s8 .text{font-size:clamp(20px, 2.0vw,  32px); transform:translateZ(-140px) rotate(-1deg)}
-
-  /* 入场延迟（按行 → 按段） */
-  .hrow.r1.in{animation-delay:.10s}
-  .hrow.r3.in{animation-delay:.35s}   /* 主体行最先完成入场 */
-  .hrow.r2.in{animation-delay:.60s}
-  .hrow.r4.in{animation-delay:.90s}
-
-  /* 字符随机入场 */
-  .char{
-    display:inline-block;
-    opacity:0;filter:blur(8px);
-    transform:translateY(.5em) rotateX(15deg);
-    animation:charIn .9s cubic-bezier(.2,.7,.2,1) forwards;
+  /* ============================================================
+     色块内文字（直接、实体填充、无描边）
+     ============================================================ */
+  .panel-title{
+    position:absolute;font-weight:900;line-height:.9;letter-spacing:-.02em;
+    color:var(--ink);
   }
-  @keyframes charIn{
-    to{opacity:1;filter:blur(0);transform:translateY(0) rotateX(0)}
-  }
+  .panel-title.light{color:var(--paper)}
+  .panel-title .accent{color:var(--paper)}
+  .panel-title .accent-rust{color:var(--rust)}
+  .panel-title .accent-volt{color:var(--volt)}
 
-  /* 行内连接装饰（数学短线） */
-  .rowline{
-    flex:1;height:1px;align-self:center;
-    background:linear-gradient(90deg, transparent, rgba(255,255,255,.4) 30%, rgba(255,255,255,.4) 70%, transparent);
-    position:relative;
+  /* A 面板（橙底黑字）—— 横向顶部 */
+  .panel-a .panel-title{
+    left:5%;top:7%;
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:clamp(56px, 9.2vw, 168px);
   }
-  .rowline::before, .rowline::after{
-    content:"";position:absolute;top:-3px;width:7px;height:7px;border-radius:50%;
-    background:hsla(var(--hue),100%,60%,.9);box-shadow:0 0 8px hsla(var(--hue),100%,60%,.7);
+  .panel-a .meta{
+    position:absolute;left:5%;top:46%;
+    font-family:"JetBrains Mono",monospace;
+    font-size:clamp(11px, 1.1vw, 16px);
+    letter-spacing:.4em;color:var(--ink);
   }
-  .rowline::before{left:30%;animation:dotIn 1s ease 1.6s both}
-  .rowline::after{right:30%;animation:dotIn 1s ease 1.8s both}
-  @keyframes dotIn{to{opacity:1}}
+  .panel-a .num{
+    position:absolute;right:5%;bottom:7%;
+    font-family:"Archivo Black","Bebas Neue",sans-serif;
+    font-size:clamp(40px, 6vw, 110px);
+    color:var(--paper);line-height:1;
+    text-align:right;
+  }
+  .panel-a .num small{display:block;font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.3em;color:var(--ink);margin-top:6px}
 
-  /* 行侧刻度（HUD 风格） */
-  .ticker{
-    position:absolute;left:5vw;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;
-    font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.3em;color:rgba(255,255,255,.45);
-    writing-mode:vertical-rl;transform:rotate(180deg);
+  /* B 面板（蓝底黑字）—— 横向顶部 */
+  .panel-b .panel-title{
+    right:5%;top:8%;
+    text-align:right;
+    font-family:"Space Grotesk",sans-serif;
+    font-size:clamp(36px, 5.4vw, 100px);
   }
-  .ticker.right{left:auto;right:5vw;transform:rotate(0)}
-
-  /* 数字绘画小印章 */
-  .seal{
-    position:absolute;width:48px;height:48px;border:1px solid rgba(255,91,31,.7);
-    color:#ff5b1f;font-family:"Ma Shan Zheng",serif;font-size:22px;line-height:46px;text-align:center;
-    border-radius:4px;box-shadow:inset 0 0 12px rgba(255,91,31,.25);
-    opacity:0;animation:charIn 1s ease 1.8s forwards;
+  .panel-b .meta{
+    position:absolute;left:5%;bottom:8%;
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:clamp(14px, 1.4vw, 22px);
+    font-weight:700;letter-spacing:.2em;color:var(--ink);
+  }
+  .panel-b .stamp{
+    position:absolute;right:5%;top:50%;
+    transform:translateY(-50%) rotate(-4deg);
+    width:96px;height:96px;border:3px solid var(--ink);border-radius:50%;
+    color:var(--ink);
+    font-family:"Noto Sans SC",serif;font-weight:900;font-size:14px;
+    display:grid;place-items:center;text-align:center;line-height:1.2;letter-spacing:.15em;
   }
 
-  /* 底部状态条 */
-  .bar-bottom{
-    position:fixed;left:0;right:0;bottom:0;z-index:10;
-    display:flex;justify-content:space-between;align-items:center;
-    padding:14px 28px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.3em;
-    color:#a8a69c;border-top:1px solid rgba(255,255,255,.12);
-    background:linear-gradient(180deg,transparent,rgba(0,0,0,.55));text-transform:uppercase;
+  /* C 面板（纸白底黑字）—— 右下主体文字 */
+  .panel-c .panel-title{
+    left:5%;bottom:7%;
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:clamp(64px, 10.4vw, 188px);
+    color:var(--ink);
   }
-  .bar-bottom .left, .bar-bottom .right{display:flex;gap:24px;align-items:center}
-  .bar-bottom .pill{padding:4px 10px;border:1px solid rgba(255,255,255,.2);border-radius:2px}
-  .bar-bottom .live{color:var(--lime)}
+  .panel-c .meta{
+    position:absolute;left:5%;top:8%;
+    font-family:"JetBrains Mono",monospace;
+    font-size:clamp(11px, 1.1vw, 16px);
+    letter-spacing:.4em;color:var(--ink);
+  }
+  .panel-c .tag{
+    position:absolute;right:5%;top:8%;
+    display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;
+  }
+  .panel-c .tag span{
+    padding:6px 12px;border:1.5px solid var(--ink);border-radius:99px;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;
+    color:var(--ink);
+  }
 
-  /* 鼠标随行 */
+  /* D 面板（黑底白字）—— 左下 / 圆环舞台 */
+  .panel-d .corner-label{
+    position:absolute;left:5%;top:7%;
+    font-family:"JetBrains Mono",monospace;
+    font-size:clamp(11px, 1.1vw, 16px);
+    letter-spacing:.4em;color:var(--paper);
+  }
+  .panel-d .corner-r{
+    position:absolute;right:5%;bottom:7%;
+    font-family:"JetBrains Mono",monospace;
+    font-size:clamp(11px, 1.1vw, 16px);
+    letter-spacing:.4em;color:var(--paper);text-align:right;
+  }
+
+  /* ============================================================
+     装饰小元素
+     ============================================================ */
+  /* 横向数据条 */
+  .bar-row{
+    position:absolute;left:5%;right:5%;height:6px;display:flex;gap:3px;
+  }
+  .bar-row span{flex:1;background:var(--ink);opacity:.9}
+  .bar-row.b-inv span{background:var(--paper)}
+  .bar-row.b-rust span{background:var(--rust)}
+  .bar-row.b-volt span{background:var(--volt)}
+  .bar-row.b-mix span:nth-child(odd){background:var(--paper);opacity:.9}
+  .bar-row.b-mix span:nth-child(even){background:var(--ink);opacity:.9}
+
+  /* 角标 */
+  .tag-block{
+    position:absolute;display:inline-flex;align-items:center;gap:8px;
+    padding:8px 12px;background:var(--paper);color:var(--ink);
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;
+  }
+  .tag-block.dark{background:var(--ink);color:var(--paper)}
+  .tag-block .dot{width:8px;height:8px;border-radius:50%;background:var(--rust)}
+
+  /* 圆点阵 */
+  .dotgrid{
+    position:absolute;display:grid;grid-template-columns:repeat(8,8px);
+    gap:14px;opacity:.55;
+  }
+  .dotgrid i{display:block;width:8px;height:8px;border-radius:50%;background:var(--ink)}
+  .dotgrid.light i{background:var(--paper)}
+
+  /* ============================================================
+     鼠标随行（彩色色块）
+     ============================================================ */
+  .cursor-block{
+    position:fixed;left:0;top:0;width:64px;height:64px;
+    background:var(--lime);
+    transform:translate(-50%,-50%) rotate(45deg);
+    pointer-events:none;z-index:20;
+    mix-blend-mode:difference;
+    transition:transform .05s linear;
+  }
   .pointer-text{
     position:fixed;left:0;top:0;transform:translate(-50%,-50%);
     font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.3em;
-    color:hsla(var(--hue),100%,70%,.95);pointer-events:none;z-index:12;
-    text-shadow:0 0 8px hsla(var(--hue),100%,60%,.7);
-    mix-blend-mode:screen;white-space:nowrap;
+    color:var(--ink);background:var(--paper);padding:4px 8px;
+    pointer-events:none;z-index:21;
+    white-space:nowrap;
   }
 
-  @media (max-width: 768px){
-    .hud .corner{width:64px;height:64px}
-    .hud .side{display:none}
-    .linework{height:120px;background-size:800px 120px}
-    .seg.s1 .text,.seg.s2 .text,.seg.s4 .text,.seg.s5 .text,.seg.s6 .text{font-size:clamp(28px,7vw,72px)}
-    .seg.s3 .text{font-size:clamp(56px,16vw,140px)}
+  /* ============================================================
+     入场动画
+     ============================================================ */
+  .scene{opacity:0;animation:sceneIn .8s ease forwards}
+  @keyframes sceneIn{to{opacity:1}}
+  .panel-title, .meta, .num, .stamp, .tag span, .corner-label, .corner-r{
+    opacity:0;transform:translateY(20px);
+    animation:up .9s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  .panel-a .panel-title{animation-delay:.35s}
+  .panel-a .meta{animation-delay:.55s}
+  .panel-a .num{animation-delay:.7s}
+  .panel-b .panel-title{animation-delay:.45s}
+  .panel-b .meta{animation-delay:.65s}
+  .panel-b .stamp{animation-delay:.85s}
+  .panel-c .panel-title{animation-delay:.55s}
+  .panel-c .meta{animation-delay:.75s}
+  .panel-c .tag span{animation-delay:.9s}
+  .panel-d .corner-label{animation-delay:.95s}
+  .panel-d .corner-r{animation-delay:1.05s}
+  .core-text{opacity:0;animation:fadeIn 1s ease 1.1s forwards}
+  .ring-stage{opacity:0;animation:fadeIn .8s ease 1.0s forwards}
+  @keyframes up{to{opacity:1;transform:translateY(0)}}
+  @keyframes fadeIn{to{opacity:1}}
+
+  /* 圆环 tick 文本反色（确保在对应色块上可读） */
+  .ring-tick{opacity:0;animation:fadeIn .8s ease 1.3s forwards}
+
+  /* ============================================================
+     响应式
+     ============================================================ */
+  @media (max-width: 900px){
+    .scene{grid-template-columns:1fr;grid-template-rows:auto auto auto auto}
+    .panel-a,.panel-b,.panel-c,.panel-d{grid-column:1;grid-row:auto;min-height:35vh}
+    .ring-stage{position:relative;left:auto;top:auto;transform:translate(-50%,0);margin:0 auto}
   }
   @media (prefers-reduced-motion: reduce){
-    .scan, .cursor-glow, .linework{animation:none}
-    .char{animation-duration:.3s}
+    .ring-1,.ring-2,.ring-3,.ring-4{animation:none}
   }
 </style>
 </head>
 <body>
-  <!-- 数字绘画底色 -->
-  <div class="paint"></div>
-  <div class="brush"></div>
 
-  <!-- 工业背景 -->
-  <div class="grid"></div>
-  <div class="scan"></div>
-  <div class="noise"></div>
-  <div class="vignette"></div>
+<!-- 鼠标随行 -->
+<div class="cursor-block" id="cursor"></div>
+<div class="pointer-text" id="ptr">X · 0.00   Y · 0.00</div>
 
-  <!-- 线条纹路：上中下三组（横向等高线） -->
-  <div class="linework top"></div>
-  <div class="linework bot"></div>
-  <div class="vlines"></div>
+<!-- 场景：4 色块 -->
+<div class="scene">
 
-  <!-- 传统云纹（横向流动） -->
-  <div class="cloud-band top">
-    <svg class="cloud-svg" viewBox="0 0 1600 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <defs></defs>
-      <!-- 云纹核心：卷云纹（多个如意头 + 螺旋） -->
-      <g>
-        <!-- 第一组卷云（左侧） -->
-        <path class="fill" d="M 60,60 C 60,40 80,30 95,30 C 100,15 130,15 140,30 C 160,28 175,45 165,60 C 180,62 185,80 170,90 C 165,105 140,108 130,95 C 115,108 90,105 80,90 C 60,95 50,75 60,60 Z"/>
-        <path d="M 70,55 Q 85,42 100,55"/>
-        <path d="M 110,40 Q 120,30 135,42"/>
-        <path d="M 140,60 Q 150,52 158,65"/>
-        <path d="M 120,82 Q 130,90 145,82"/>
-
-        <!-- 第二组卷云（中左） -->
-        <path class="fill" d="M 260,65 C 258,42 285,32 305,38 C 320,22 355,28 360,48 C 385,48 395,72 378,86 C 380,108 350,118 335,102 C 315,118 285,108 280,90 C 255,90 250,72 260,65 Z"/>
-        <path d="M 280,55 Q 300,42 320,55"/>
-        <path d="M 305,80 Q 325,90 345,80"/>
-        <path class="accent" d="M 280,75 Q 320,55 360,75"/>
-
-        <!-- 第三组（中右） -->
-        <path class="fill" d="M 480,55 C 478,38 505,28 525,32 C 538,18 575,22 580,40 C 605,40 612,65 598,80 C 600,100 568,112 552,98 C 530,110 502,102 498,82 C 475,82 470,65 480,55 Z"/>
-        <path d="M 500,48 Q 525,35 550,48"/>
-        <path d="M 530,72 Q 555,82 580,72"/>
-        <path class="accent" d="M 500,68 Q 540,50 580,68"/>
-
-        <!-- 第四组（右中） -->
-        <path class="fill" d="M 720,60 C 720,42 748,30 770,40 C 782,22 818,28 822,50 C 848,50 858,72 842,86 C 845,108 815,118 800,102 C 780,118 750,108 745,88 C 718,88 712,72 720,60 Z"/>
-        <path d="M 740,52 Q 770,40 800,55"/>
-        <path d="M 765,80 Q 790,90 815,80"/>
-        <path class="accent" d="M 740,75 Q 780,58 820,75"/>
-
-        <!-- 第五组（右侧） -->
-        <path class="fill" d="M 960,55 C 958,38 985,28 1005,32 C 1018,18 1055,22 1060,40 C 1085,40 1092,65 1078,80 C 1080,100 1048,112 1032,98 C 1010,110 982,102 978,82 C 955,82 950,65 960,55 Z"/>
-        <path d="M 980,48 Q 1005,35 1030,48"/>
-        <path d="M 1010,72 Q 1035,82 1060,72"/>
-        <path class="accent" d="M 980,68 Q 1020,50 1060,68"/>
-
-        <!-- 第六组（最右） -->
-        <path class="fill" d="M 1200,62 C 1198,42 1228,32 1248,40 C 1262,22 1300,28 1302,48 C 1328,48 1338,72 1322,86 C 1325,108 1292,118 1278,102 C 1258,118 1228,108 1224,90 C 1198,90 1192,72 1200,62 Z"/>
-        <path d="M 1220,55 Q 1248,42 1278,55"/>
-        <path d="M 1245,80 Q 1270,90 1295,80"/>
-        <path class="accent" d="M 1220,75 Q 1260,58 1300,75"/>
-
-        <!-- 第七组（末端） -->
-        <path class="fill" d="M 1440,58 C 1438,40 1465,30 1485,35 C 1498,20 1535,24 1538,42 C 1562,42 1570,66 1555,80 C 1557,100 1528,112 1512,98 C 1490,110 1462,102 1458,84 C 1435,84 1430,66 1440,58 Z"/>
-        <path d="M 1458,50 Q 1485,38 1512,50"/>
-        <path d="M 1485,74 Q 1510,84 1535,74"/>
-        <path class="accent" d="M 1458,70 Q 1500,52 1540,70"/>
-      </g>
-    </svg>
-  </div>
-
-  <div class="cloud-band mid">
-    <svg class="cloud-svg" viewBox="0 0 1600 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <g>
-        <path class="fill" d="M 80,60 C 80,40 105,28 125,38 C 138,20 175,25 180,45 C 205,45 212,68 198,82 C 200,102 170,112 155,98 C 135,110 105,100 100,82 C 75,82 70,68 80,60 Z"/>
-        <path d="M 100,50 Q 130,38 160,52"/>
-        <path d="M 125,75 Q 155,85 180,75"/>
-
-        <path class="fill" d="M 340,55 C 338,38 365,28 385,32 C 398,18 435,22 440,40 C 465,40 472,65 458,80 C 460,100 428,112 412,98 C 390,110 362,102 358,82 C 335,82 330,65 340,55 Z"/>
-        <path d="M 360,48 Q 385,35 410,48"/>
-        <path d="M 390,72 Q 415,82 440,72"/>
-
-        <path class="fill" d="M 620,62 C 618,42 648,32 668,40 C 682,22 720,28 722,48 C 748,48 758,72 742,86 C 745,108 712,118 698,102 C 678,118 648,108 644,90 C 618,90 612,72 620,62 Z"/>
-        <path d="M 640,55 Q 670,42 700,55"/>
-        <path d="M 665,80 Q 690,90 715,80"/>
-
-        <path class="fill" d="M 900,55 C 898,38 925,28 945,32 C 958,18 995,22 1000,40 C 1025,40 1032,65 1018,80 C 1020,100 988,112 972,98 C 950,110 922,102 918,82 C 895,82 890,65 900,55 Z"/>
-        <path d="M 920,48 Q 945,35 970,48"/>
-        <path d="M 950,72 Q 975,82 1000,72"/>
-
-        <path class="fill" d="M 1180,60 C 1180,42 1208,30 1230,40 C 1242,22 1278,28 1282,50 C 1308,50 1318,72 1302,86 C 1305,108 1275,118 1260,102 C 1240,118 1210,108 1205,88 C 1178,88 1172,72 1180,60 Z"/>
-        <path d="M 1200,52 Q 1230,40 1260,55"/>
-        <path d="M 1225,80 Q 1250,90 1275,80"/>
-
-        <path class="fill" d="M 1460,58 C 1458,40 1485,30 1505,35 C 1518,20 1555,24 1558,42 C 1582,42 1590,66 1575,80 C 1577,100 1548,112 1532,98 C 1510,110 1482,102 1478,84 C 1455,84 1450,66 1460,58 Z"/>
-        <path d="M 1478,50 Q 1505,38 1532,50"/>
-        <path d="M 1505,74 Q 1530,84 1555,74"/>
-      </g>
-    </svg>
-  </div>
-
-  <div class="cloud-band bot">
-    <svg class="cloud-svg" viewBox="0 0 1600 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <g>
-        <path class="fill" d="M 100,60 C 98,40 128,28 148,38 C 162,20 200,25 205,45 C 230,45 238,68 222,82 C 225,102 195,112 180,98 C 158,110 128,100 122,82 C 95,82 90,68 100,60 Z"/>
-        <path d="M 120,50 Q 150,38 180,52"/>
-        <path d="M 145,75 Q 175,85 200,75"/>
-        <path class="accent" d="M 120,68 Q 160,52 205,68"/>
-
-        <path class="fill" d="M 380,58 C 378,40 408,28 428,38 C 442,20 480,25 485,45 C 510,45 518,68 502,82 C 505,102 475,112 460,98 C 438,110 408,100 402,82 C 375,82 370,68 380,58 Z"/>
-        <path d="M 400,50 Q 430,38 460,52"/>
-        <path d="M 425,75 Q 455,85 480,75"/>
-        <path class="accent" d="M 400,68 Q 440,52 485,68"/>
-
-        <path class="fill" d="M 700,62 C 698,42 728,32 748,40 C 762,22 800,28 802,48 C 828,48 838,72 822,86 C 825,108 792,118 778,102 C 758,118 728,108 724,90 C 698,90 692,72 700,62 Z"/>
-        <path d="M 720,55 Q 750,42 780,55"/>
-        <path d="M 745,80 Q 770,90 795,80"/>
-        <path class="accent" d="M 720,75 Q 760,58 800,75"/>
-
-        <path class="fill" d="M 1020,55 C 1018,38 1045,28 1065,32 C 1078,18 1115,22 1120,40 C 1145,40 1152,65 1138,80 C 1140,100 1108,112 1092,98 C 1070,110 1042,102 1038,82 C 1015,82 1010,65 1020,55 Z"/>
-        <path d="M 1040,48 Q 1065,35 1090,48"/>
-        <path d="M 1070,72 Q 1095,82 1120,72"/>
-        <path class="accent" d="M 1040,68 Q 1080,50 1120,68"/>
-
-        <path class="fill" d="M 1320,60 C 1320,42 1348,30 1370,40 C 1382,22 1418,28 1422,50 C 1448,50 1458,72 1442,86 C 1445,108 1415,118 1400,102 C 1380,118 1350,108 1345,88 C 1318,88 1312,72 1320,60 Z"/>
-        <path d="M 1340,52 Q 1370,40 1400,55"/>
-        <path d="M 1365,80 Q 1390,90 1415,80"/>
-        <path class="accent" d="M 1340,75 Q 1380,58 1420,75"/>
-      </g>
-    </svg>
-  </div>
-
-  <!-- 单个云纹小印章 -->
-  <span class="cloud-mark" style="left:8%;top:62%">
-    <svg viewBox="0 0 64 64"><path d="M 8,32 C 8,20 20,12 30,18 C 36,8 50,12 52,22 C 60,24 60,38 50,42 C 48,52 34,54 28,46 C 16,50 6,42 8,32 Z"/><path d="M 18,28 Q 28,22 38,30"/><path d="M 26,38 Q 36,44 46,36"/></svg>
-  </span>
-  <span class="cloud-mark" style="right:12%;top:30%;transform:scale(0.8) rotate(15deg)">
-    <svg viewBox="0 0 64 64"><path d="M 8,32 C 8,20 20,12 30,18 C 36,8 50,12 52,22 C 60,24 60,38 50,42 C 48,52 34,54 28,46 C 16,50 6,42 8,32 Z"/><path d="M 18,28 Q 28,22 38,30"/><path d="M 26,38 Q 36,44 46,36"/></svg>
-  </span>
-
-  <canvas id="foam"></canvas>
-  <div class="cursor-glow" id="glow"></div>
-
-  <!-- HUD -->
-  <div class="hud" aria-hidden="true">
-    <div class="corner tl"></div>
-    <div class="corner tr"></div>
-    <div class="corner bl"></div>
-    <div class="corner br"></div>
-    <div class="label l-tl">SECTOR · 03 / N · 39.9° E · 116.4°</div>
-    <div class="label l-tr">CAM · 35MM · F1.4 · ISO 800</div>
-    <div class="label l-bl">INDUSTRIAL FANTASY · 0.3.0</div>
-    <div class="label l-br">CLOUD · LINES · ROWS · 4</div>
-    <div class="side l">WIDE · ANGLE · LENS</div>
-    <div class="side r">PSEUDO · 3D · DEPTH</div>
-  </div>
-
-  <!-- 主舞台：横向 4 行 -->
-  <main class="stage" id="stage">
-    <div class="tilt" id="tilt">
-
-      <!-- 行 1：英文 + 数字 -->
-      <div class="hrow r1" data-seq="1">
-        <span class="ticker">R · 01 · TOP · BAND</span>
-        <span class="seg s1">
-          <span class="text">INDUSTRIAL</span>
-          <span class="layer fill">INDUSTRIAL</span>
-          <span class="layer glow">INDUSTRIAL</span>
-          <span class="layer stroke-back">INDUSTRIAL</span>
-          <span class="layer stroke-far">INDUSTRIAL</span>
-        </span>
-        <span class="rowline"></span>
-        <span class="seg s2 mono">
-          <span class="text mono">2026 / 06 / 13</span>
-          <span class="layer fill mono">2026 / 06 / 13</span>
-          <span class="layer glow mono">2026 / 06 / 13</span>
-        </span>
-      </div>
-
-      <!-- 行 3：主体（中文中心） -->
-      <div class="hrow r3" data-seq="3">
-        <span class="ticker">R · 03 · CENTER · MAIN</span>
-        <span class="seg s4 mono">
-          <span class="text mono">PSEUDO · 3D</span>
-          <span class="layer fill mono">PSEUDO · 3D</span>
-          <span class="layer glow mono">PSEUDO · 3D</span>
-        </span>
-        <span class="rowline"></span>
-        <span class="seg s3">
-          <span class="text cn">工业仙境</span>
-          <span class="layer fill cn">工业仙境</span>
-          <span class="layer glow cn">工业仙境</span>
-          <span class="layer stroke-back cn">工业仙境</span>
-          <span class="layer stroke-far cn">工业仙境</span>
-        </span>
-        <span class="rowline"></span>
-        <span class="seg s5">
-          <span class="text">FANTASY</span>
-          <span class="layer fill">FANTASY</span>
-          <span class="layer glow">FANTASY</span>
-          <span class="layer stroke-back">FANTASY</span>
-          <span class="layer stroke-far">FANTASY</span>
-        </span>
-        <span class="ticker right">R · 03 · CENTER · MAIN</span>
-      </div>
-
-      <!-- 行 2：云纹 + 副标 -->
-      <div class="hrow r2" data-seq="2">
-        <span class="ticker">R · 02 · SUB · BAND</span>
-        <span class="seg s6 mono">
-          <span class="text mono">WIDE · ANGLE · 35°</span>
-          <span class="layer fill mono">WIDE · ANGLE · 35°</span>
-          <span class="layer glow mono">WIDE · ANGLE · 35°</span>
-        </span>
-        <span class="rowline"></span>
-        <span class="seg s7 brush cn">
-          <span class="text brush cn">黑体字</span>
-          <span class="layer fill brush cn">黑体字</span>
-          <span class="layer glow brush cn">黑体字</span>
-        </span>
-      </div>
-
-      <!-- 行 4：底部装饰 -->
-      <div class="hrow r4" data-seq="4">
-        <span class="ticker">R · 04 · BOTTOM · BAND</span>
-        <span class="seg s7 brush cn">
-          <span class="text brush cn">逐步完善</span>
-          <span class="layer fill brush cn">逐步完善</span>
-          <span class="layer glow brush cn">逐步完善</span>
-        </span>
-        <span class="rowline"></span>
-        <span class="seg s8 mono">
-          <span class="text mono">MOUSE · TRACK</span>
-          <span class="layer fill mono">MOUSE · TRACK</span>
-          <span class="layer glow mono">MOUSE · TRACK</span>
-        </span>
-        <span class="rowline"></span>
-        <span class="seg s6 mono">
-          <span class="text mono">EDGE · LIGHT</span>
-          <span class="layer fill mono">EDGE · LIGHT</span>
-          <span class="layer glow mono">EDGE · LIGHT</span>
-        </span>
-        <span class="ticker right">R · 04 · BOTTOM · BAND</span>
-      </div>
-
-      <!-- 数字绘画小印章 -->
-      <span class="seal" style="right:6%;top:10%">仙</span>
-      <span class="seal" style="right:6%;top:84%;background:rgba(58,169,255,.06);border-color:rgba(58,169,255,.7);color:#3aa9ff">境</span>
+  <!-- A 面板：橙 + 黑字（中文大标） -->
+  <section class="panel-a">
+    <div class="panel-title">工业仙境</div>
+    <div class="meta">PHI · 1.618 · ROWS · 04 · RINGS · 04</div>
+    <div class="num">01<small>INDUSTRIAL · FANTASY</small></div>
+    <div class="bar-row b-inv" style="top:42%">
+      <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
     </div>
-  </main>
-
-  <!-- 底部状态条 -->
-  <div class="bar-bottom">
-    <div class="left">
-      <span class="pill">SYSTEM · ONLINE</span>
-      <span class="live">● LIVE</span>
+    <div class="dotgrid" style="left:5%;bottom:7%">
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
     </div>
-    <div class="right">
-      <span>2026 / 06 / 13</span>
-      <span>BEIJING · 39.9°N</span>
-      <span>FRAME · 000384</span>
-    </div>
-  </div>
+  </section>
 
-  <div class="pointer-text" id="ptr">X · 0.00   Y · 0.00</div>
+  <!-- B 面板：蓝 + 黑字（英文） -->
+  <section class="panel-b">
+    <div class="panel-title">MODERN<br/>SOLID</div>
+    <div class="meta">黑体字 · 实体 · 色块 · 直接</div>
+    <div class="stamp">现代<br/>色块</div>
+    <div class="bar-row b-rust" style="top:18%">
+      <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+  </section>
+
+  <!-- C 面板：纸白 + 黑字（中文主体） -->
+  <section class="panel-c">
+    <div class="meta">SECTOR · 03 / N · 39.9° E · 116.4°</div>
+    <div class="tag">
+      <span>HEITI</span>
+      <span>EDGE</span>
+      <span>MOUSE</span>
+      <span>3D</span>
+      <span>WIDE</span>
+    </div>
+    <div class="panel-title">黑体</div>
+    <div class="bar-row b-volt" style="bottom:30%">
+      <span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <span class="tag-block dark" style="left:5%;bottom:7%">
+      <span class="dot"></span>STEP BY STEP · v0.4
+    </span>
+  </section>
+
+  <!-- D 面板：黑 + 圆环舞台 -->
+  <section class="panel-d">
+    <div class="corner-label">PSEUDO 3D · WIDE ANGLE · 35°</div>
+    <div class="corner-r">CAM · 35MM · F1.4 · ISO 800</div>
+
+    <div class="ring-stage" id="ringStage">
+      <div class="ring ring-1">
+        <span class="ring-tick t-a" style="transform:rotate(0deg)   translate(290px) rotate(0deg)">FANTASY</span>
+        <span class="ring-tick t-a inv" style="transform:rotate(60deg)  translate(290px) rotate(-60deg)">F·A·N·T·A·S·Y</span>
+        <span class="ring-tick t-a" style="transform:rotate(120deg) translate(290px) rotate(-120deg)">DEPTH</span>
+        <span class="ring-tick t-a inv" style="transform:rotate(180deg) translate(290px) rotate(-180deg)">3D · WIDE · 35°</span>
+        <span class="ring-tick t-a" style="transform:rotate(240deg) translate(290px) rotate(-240deg)">MOUSE</span>
+        <span class="ring-tick t-a inv" style="transform:rotate(300deg) translate(290px) rotate(-300deg)">EDGE · LIGHT</span>
+      </div>
+      <div class="ring ring-2">
+        <span class="ring-tick t-b inv" style="transform:rotate(30deg)  translate(225px) rotate(-30deg)">黑体</span>
+        <span class="ring-tick t-b"     style="transform:rotate(150deg) translate(225px) rotate(-150deg)">INDUSTRIAL</span>
+        <span class="ring-tick t-b inv" style="transform:rotate(270deg) translate(225px) rotate(-270deg)">HEITI</span>
+      </div>
+      <div class="ring ring-3">
+        <span class="ring-tick t-c"     style="transform:rotate(45deg)  translate(170px) rotate(-45deg)">·  06  ·</span>
+        <span class="ring-tick t-c inv" style="transform:rotate(225deg) translate(170px) rotate(-225deg)">·  39.9°  ·</span>
+      </div>
+      <div class="ring ring-4">
+        <span class="ring-tick t-d inv" style="transform:rotate(0deg)   translate(120px) rotate(0deg)">2026</span>
+        <span class="ring-tick t-d"     style="transform:rotate(180deg) translate(120px) rotate(-180deg)">仙</span>
+      </div>
+
+      <div class="ring-core">
+        <div class="core-text">
+          <span class="cn">工业<br/>仙境</span>
+          <span class="en">INDUSTRIAL · FANTASY</span>
+          <span class="meta">PHI · 1.618 · 0.4.0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bar-row b-mix" style="top:7%">
+      <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="bar-row b-mix" style="bottom:7%">
+      <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+  </section>
+
+</div>
 
 <script>
 (() => {
-  const root = document.documentElement;
-  const glow = document.getElementById('glow');
-  const ptr  = document.getElementById('ptr');
+  const cursor = document.getElementById('cursor');
+  const ptr    = document.getElementById('ptr');
+  const stage  = document.getElementById('ringStage');
+  const root   = document.documentElement;
 
-  // 1. 拆字 · 字符级入场
-  document.querySelectorAll('.seg .text').forEach(t => {
-    const text = t.textContent;
-    t.textContent = '';
-    [...text].forEach((ch, i) => {
-      const span = document.createElement('span');
-      span.className = 'char';
-      span.textContent = ch === ' ' ? '\u00A0' : ch;
-      span.style.animationDelay = (i * 0.035) + 's';
-      t.appendChild(span);
-    });
-  });
-  document.querySelectorAll('.hrow').forEach(row => {
-    const seq = parseInt(row.dataset.seq || '0', 10);
-    const baseDelay = seq === 3 ? 0.10
-                    : seq === 1 ? 0.35
-                    : seq === 2 ? 0.60
-                    : 0.90;
-    row.style.animationDelay = baseDelay + 's';
-    row.querySelectorAll('.layer').forEach(layer => {
-      const text = layer.textContent;
-      layer.textContent = '';
-      [...text].forEach((ch, i) => {
-        const span = document.createElement('span');
-        span.className = 'char';
-        span.textContent = ch === ' ' ? '\u00A0' : ch;
-        span.style.animationDelay = (i * 0.035) + 's';
-        layer.appendChild(span);
-      });
-    });
-    requestAnimationFrame(() => row.classList.add('in'));
-  });
+  // 鼠标随行：彩色色块 + 文字
+  let raf = 0, tx = .5, ty = .5, x = .5, y = .5, mx = 0, my = 0;
+  const colors = ['#a8ff5b','#3aa9ff','#ff5b1f','#f3f1ea','#ffb547'];
+  let colorIdx = 0, lastMove = 0;
 
-  // 2. 鼠标交互
-  let raf = 0, tx = .5, ty = .5, x = .5, y = .5;
   const onMove = (e) => {
     const w = window.innerWidth, h = window.innerHeight;
-    tx = e.clientX / w; ty = e.clientY / h;
-    ptr.style.left = e.clientX + 'px';
-    ptr.style.top  = (e.clientY + 22) + 'px';
-    ptr.textContent = `X · ${(e.clientX).toFixed(2).padStart(6,' ')}   Y · ${(e.clientY).toFixed(2).padStart(6,' ')}`;
-    glow.style.left = e.clientX + 'px';
-    glow.style.top  = e.clientY + 'px';
+    mx = e.clientX; my = e.clientY;
+    tx = mx / w; ty = my / h;
+    cursor.style.left = mx + 'px';
+    cursor.style.top  = my + 'px';
+    ptr.style.left = (mx + 40) + 'px';
+    ptr.style.top  = (my + 40) + 'px';
+    ptr.textContent = `X · ${mx.toFixed(0).padStart(4,' ')}   Y · ${my.toFixed(0).padStart(4,' ')}`;
+
+    // 鼠标移动距离累积 → 切换色块颜色
+    lastMove += Math.hypot(e.movementX || 0, e.movementY || 0);
+    if (lastMove > 200) { lastMove = 0; colorIdx = (colorIdx + 1) % colors.length; cursor.style.background = colors[colorIdx]; }
     if (!raf) raf = requestAnimationFrame(tick);
   };
   const tick = () => {
@@ -646,83 +475,18 @@
     y += (ty - y) * 0.12;
     root.style.setProperty('--mx', x.toFixed(4));
     root.style.setProperty('--my', y.toFixed(4));
-    const hue = Math.round((x * 120 + y * 30) % 360);
-    root.style.setProperty('--hue', hue);
+    // 圆环舞台跟随鼠标做极轻 3D 旋转
+    if (stage) {
+      const rx = (y - .5) * -6;
+      const ry = (x - .5) *  8;
+      stage.style.transform = `translate(-50%,-50%) rotateX(${rx}deg) rotateY(${ry}deg)`;
+    }
     if (Math.abs(tx - x) > 0.001 || Math.abs(ty - y) > 0.001) {
       raf = requestAnimationFrame(tick);
     } else { raf = 0; }
   };
   window.addEventListener('mousemove', onMove, { passive: true });
   window.addEventListener('touchmove', (e) => { if (e.touches[0]) onMove(e.touches[0]); }, { passive: true });
-
-  // 3. 散开的泡沫（Canvas 60 粒子）
-  const PHI = (1 + Math.sqrt(5)) / 2;
-  const GA  = PHI * 2 * Math.PI - 2 * Math.PI;
-  const FOAM_COUNT = 60;
-  const cv  = document.getElementById('foam');
-  const ctx = cv.getContext('2d');
-  let DPR = Math.min(window.devicePixelRatio || 1, 2);
-  let W = 0, H = 0, mouseFx = 0, mouseFy = 0;
-  const bubbles = [];
-  for (let i = 0; i < FOAM_COUNT; i++) {
-    const r = Math.sqrt((i + 0.5) / FOAM_COUNT);
-    const a = i * GA;
-    const baseX = 0.5 + r * Math.cos(a) * 0.95;
-    const baseY = 0.5 + r * Math.sin(a) * 0.85;
-    const fib = [4, 6, 10, 16, 26, 42, 68][i % 7];
-    bubbles.push({
-      bx: baseX, by: baseY, x: 0, y: 0, r: fib,
-      ph: Math.random() * Math.PI * 2,
-      sp: 0.3 + Math.random() * 0.6,
-      hue: (i * 137) % 360,
-      a: 0.18 + Math.random() * 0.18,
-    });
-  }
-  const resize = () => {
-    DPR = Math.min(window.devicePixelRatio || 1, 2);
-    W = cv.clientWidth = window.innerWidth;
-    H = cv.clientHeight = window.innerHeight;
-    cv.width = W * DPR; cv.height = H * DPR;
-    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  };
-  window.addEventListener('resize', resize);
-  resize();
-  let mouseX = W/2, mouseY = H/2;
-  window.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; mouseFx = mouseX; mouseFy = mouseY; }, { passive: true });
-
-  const t0 = performance.now();
-  const draw = () => {
-    const t = (performance.now() - t0) / 1000;
-    ctx.clearRect(0, 0, W, H);
-    for (let i = 0; i < bubbles.length; i++) {
-      const b = bubbles[i];
-      const dx = Math.sin(t * b.sp + b.ph) * 0.012;
-      const dy = Math.cos(t * b.sp * 0.8 + b.ph) * 0.012;
-      b.x = (b.bx + dx) * W;
-      b.y = (b.by + dy) * H;
-      const mx = b.x - mouseFx, my = b.y - mouseFy;
-      const dist = Math.hypot(mx, my);
-      if (dist < 220) {
-        const f = (1 - dist / 220);
-        b.x += (mx / (dist || 1)) * f * 26;
-        b.y += (my / (dist || 1)) * f * 26;
-      }
-      const h = b.hue;
-      const grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
-      grad.addColorStop(0,   `hsla(${h},90%,75%,${b.a * 0.9})`);
-      grad.addColorStop(0.4, `hsla(${h},90%,60%,${b.a * 0.45})`);
-      grad.addColorStop(1,   `hsla(${h},90%,55%,0)`);
-      ctx.fillStyle = grad;
-      ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = `hsla(${h},90%,75%,${b.a * 0.6})`;
-      ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.stroke();
-      ctx.fillStyle = `hsla(${h},100%,92%,${b.a * 0.55})`;
-      ctx.beginPath(); ctx.arc(b.x - b.r * 0.25, b.y - b.r * 0.3, b.r * 0.18, 0, Math.PI * 2); ctx.fill();
-    }
-    requestAnimationFrame(draw);
-  };
-  requestAnimationFrame(draw);
 })();
 </script>
 </body>
