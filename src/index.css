@@ -1,0 +1,130 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #0A0A0A;
+  --fg: #F2EFE9;
+  --muted: #8A8780;
+  --accent: #D7FF3A;
+  --alert: #FF4D2E;
+  --line: #1F1F1F;
+
+  --font-display: 'Fraunces', 'Times New Roman', serif;
+  --font-mono: 'IBM Plex Mono', 'Menlo', monospace;
+
+  color-scheme: dark;
+}
+
+html, body, #root {
+  background: var(--bg);
+  color: var(--fg);
+  min-height: 100%;
+  font-family: var(--font-mono);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-feature-settings: 'ss01', 'ss02', 'cv11';
+  overflow-x: hidden;
+}
+
+/* 选区颜色 */
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* 滚动条 */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--line); border: 2px solid var(--bg); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* 焦点环 */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Reveal 渐入初态 */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 900ms cubic-bezier(0.2, 0.7, 0.1, 1),
+              transform 900ms cubic-bezier(0.2, 0.7, 0.1, 1);
+  will-change: transform, opacity;
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hero 字符逐位揭示 */
+.char-reveal > span {
+  display: inline-block;
+  transform: translateY(110%);
+  opacity: 0;
+  animation: char-in 900ms cubic-bezier(0.2, 0.7, 0.1, 1) forwards;
+}
+@keyframes char-in {
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* 装饰网格 */
+.grid-paper {
+  background-image:
+    linear-gradient(to right, rgba(242,239,233,0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(242,239,233,0.05) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+
+/* 噪点叠加 */
+.noise::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.45 0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.5'/></svg>");
+  opacity: 0.18;
+  mix-blend-mode: overlay;
+}
+
+/* 文本渐变 */
+.text-gradient-accent {
+  background: linear-gradient(120deg, var(--fg) 0%, var(--accent) 50%, var(--alert) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Marquee 蒙版 */
+.marquee-mask {
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+/* 链接下划线绘制 */
+.link-draw {
+  background-image: linear-gradient(to right, currentColor, currentColor);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
+  transition: background-size 350ms cubic-bezier(0.2, 0.7, 0.1, 1);
+}
+.link-draw:hover {
+  background-size: 100% 1px;
+}
+
+/* 减少动效 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+  .char-reveal > span { transform: none; opacity: 1; }
+}
