@@ -1,0 +1,47 @@
+{
+  "name": "flowforge",
+  "version": "0.1.0",
+  "private": true,
+  "description": "FlowForge — 大模型选取 × 工作流画布(双画布)桌面工具",
+  "main": "dist-electron/main.js",
+  "type": "module",
+  "scripts": {
+    "dev:vite": "vite",
+    "dev:electron": "tsc -p electron/tsconfig.json && electron .",
+    "dev:backend": "tsx watch backend/server.ts",
+    "dev:web": "concurrently -k -n vite,backend -c cyan,magenta \"npm:dev:vite\" \"npm:dev:backend\"",
+    "dev": "concurrently -k -n vite,electron,backend -c cyan,magenta,yellow \"npm:dev:vite\" \"npm:dev:electron\" \"npm:dev:backend\"",
+    "build:vite": "vite build",
+    "build:electron": "tsc -p electron/tsconfig.json",
+    "build:backend": "tsc -p backend/tsconfig.json",
+    "build": "npm run build:backend && npm run build:electron && npm run build:vite",
+    "preview": "vite preview",
+    "start": "electron ."
+  },
+  "dependencies": {
+    "@xyflow/react": "^12.3.5",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "lucide-react": "^0.460.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.27.0",
+    "zustand": "^4.5.5"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.16.10",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.2",
+    "autoprefixer": "^10.4.20",
+    "concurrently": "^9.0.1",
+    "electron": "^31.7.7",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13",
+    "tsx": "^4.22.4",
+    "typescript": "^5.6.2",
+    "vite": "^5.4.8"
+  }
+}

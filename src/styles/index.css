@@ -1,0 +1,159 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    font-family: 'Manrope', system-ui, sans-serif;
+    background: radial-gradient(1200px 800px at 20% -10%, rgba(125, 249, 255, 0.05), transparent 60%),
+      radial-gradient(1000px 700px at 100% 100%, rgba(255, 122, 198, 0.04), transparent 60%),
+      #0b0f14;
+  }
+  ::selection {
+    background: rgba(125, 249, 255, 0.25);
+    color: #fff;
+  }
+}
+
+@layer components {
+  .panel {
+    @apply bg-ink-800/70 border border-edge backdrop-blur-md rounded-md;
+  }
+  .panel-strong {
+    @apply bg-ink-800/90 border border-edge;
+  }
+  .hairline {
+    @apply border-edge;
+  }
+  .btn {
+    @apply inline-flex items-center gap-1.5 px-2.5 h-7 rounded-[6px] text-[12px] font-medium
+      border border-edge bg-ink-700/40 text-text-primary
+      hover:bg-ink-600/60 hover:border-ink-500 transition-colors;
+  }
+  .btn-primary {
+    @apply btn !bg-signal-cyan/10 !text-signal-cyan !border-signal-cyan/40
+      hover:!bg-signal-cyan/20;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center gap-1.5 px-2 h-7 rounded-[6px] text-[12px] text-text-secondary
+      hover:text-text-primary hover:bg-ink-700/50 transition-colors;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 px-1.5 h-5 rounded text-[10px] font-mono
+      bg-ink-700/60 text-text-secondary border border-edge;
+  }
+  .label {
+    @apply text-[10px] font-mono uppercase tracking-[0.14em] text-text-dim;
+  }
+  .ff-input {
+    @apply w-full bg-ink-900/80 border border-edge rounded-[5px] px-2 py-1.5 text-[12px]
+      font-sans text-text-primary placeholder-text-dim
+      focus:outline-none focus:border-signal-cyan/50 focus:bg-ink-900
+      transition-colors;
+  }
+  .grid-bg {
+    background-image: radial-gradient(rgba(125, 249, 255, 0.06) 1px, transparent 1px),
+      radial-gradient(rgba(125, 249, 255, 0.04) 1px, transparent 1px);
+    background-size: 24px 24px, 24px 24px;
+    background-position: 0 0, 12px 12px;
+  }
+  .scanline::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(125, 249, 255, 0.04), transparent);
+    animation: scan 3.4s linear infinite;
+    pointer-events: none;
+  }
+  .node-card {
+    @apply relative rounded-md border bg-ink-800/90 text-text-primary
+      border-edge shadow-panel transition-colors;
+    min-width: 220px;
+  }
+  .port {
+    @apply w-2.5 h-2.5 rounded-full bg-ink-600 border border-edge;
+  }
+  .port-target {
+    @apply bg-signal-cyan/80 shadow-glow-cyan;
+  }
+  .port-source {
+    @apply bg-signal-magenta/80 shadow-glow-magenta;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .scroll-fade::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .scroll-fade::-webkit-scrollbar-thumb {
+    background: rgba(125, 249, 255, 0.15);
+    border-radius: 4px;
+  }
+  .scroll-fade::-webkit-scrollbar-thumb:hover {
+    background: rgba(125, 249, 255, 0.3);
+  }
+  .scroll-fade::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+/* React Flow 自定义覆盖 */
+.react-flow__edge-path {
+  stroke: #2c3848;
+  stroke-width: 1.4;
+}
+.react-flow__edge.selected .react-flow__edge-path,
+.react-flow__edge:hover .react-flow__edge-path {
+  stroke: #7df9ff;
+}
+.react-flow__handle {
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  border: 1px solid #1e2a39;
+  background: #2c3848;
+}
+.react-flow__handle.connectionindicator {
+  cursor: crosshair;
+}
+.react-flow__attribution {
+  display: none;
+}
+.react-flow__controls {
+  background: rgba(15, 20, 27, 0.85);
+  border: 1px solid #1e2a39;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: none;
+}
+.react-flow__controls-button {
+  background: transparent;
+  border-bottom: 1px solid #1e2a39;
+  color: #9aaab8;
+  width: 28px;
+  height: 28px;
+}
+.react-flow__controls-button:hover {
+  background: rgba(125, 249, 255, 0.08);
+  color: #7df9ff;
+}
+.react-flow__controls-button svg {
+  fill: currentColor;
+}
+.react-flow__minimap {
+  background: rgba(15, 20, 27, 0.85) !important;
+  border: 1px solid #1e2a39;
+  border-radius: 6px;
+}
+.react-flow__background {
+  background-color: transparent;
+}
