@@ -49,6 +49,8 @@ export function HeroDetail({ hero }: HeroDetailProps) {
           <img
             src={cover}
             alt={hero.name}
+            loading="eager"
+            decoding="async"
             className="relative h-full min-h-[480px] w-full object-cover"
             onError={(e) => {
               (e.currentTarget as HTMLImageElement).style.display = "none";
@@ -172,23 +174,44 @@ export function HeroDetail({ hero }: HeroDetailProps) {
                 key={sk.id}
                 onClick={() => setActiveSkin(i)}
                 className={cn(
-                  "group relative overflow-hidden rounded-2xl border p-3 text-left transition-all",
+                  "group relative overflow-hidden rounded-2xl border p-0 text-left transition-all",
                   i === activeSkin
-                    ? "border-neon-cyan/60 bg-neon-cyan/10"
-                    : "border-white/10 bg-white/5 hover:border-white/30",
+                    ? "border-neon-cyan/60 ring-2 ring-neon-cyan/40"
+                    : "border-white/10 hover:border-white/30",
                 )}
               >
-                <div
-                  className="mb-2 h-24 rounded-xl"
-                  style={{
-                    background: `linear-gradient(135deg, ${hero.paletteFrom}, ${hero.paletteTo})`,
-                  }}
-                />
-                <div className="text-sm font-semibold text-white">{sk.name}</div>
-                <div className="text-[11px] text-white/40">{sk.rarity}</div>
-                {i === activeSkin && (
-                  <div className="absolute right-2 top-2 h-2 w-2 rounded-full bg-neon-cyan shadow-[0_0_8px_currentColor]" />
-                )}
+                <div className="relative h-32 w-full overflow-hidden">
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background: `linear-gradient(135deg, ${hero.paletteFrom}, ${hero.paletteTo})`,
+                    }}
+                  />
+                  <img
+                    src={textToImageUrl(
+                      `${hero.motif} ${sk.motif} skin concept art, ultra detailed, 4k`,
+                      "landscape_4_3",
+                    )}
+                    alt={sk.name}
+                    loading="eager"
+                    decoding="async"
+                    className="relative h-full w-full object-cover opacity-0 transition-opacity duration-700"
+                    onLoad={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.opacity = "1";
+                    }}
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = "none";
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-ink-950/95 via-ink-950/30 to-transparent" />
+                  {i === activeSkin && (
+                    <div className="absolute right-2 top-2 h-2 w-2 rounded-full bg-neon-cyan shadow-[0_0_8px_currentColor]" />
+                  )}
+                </div>
+                <div className="p-3">
+                  <div className="text-sm font-semibold text-white">{sk.name}</div>
+                  <div className="text-[11px] text-white/40">{sk.rarity}</div>
+                </div>
               </button>
             ))}
           </div>

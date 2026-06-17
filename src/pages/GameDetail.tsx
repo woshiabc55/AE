@@ -4,7 +4,7 @@ import { ArrowLeft, Filter, Grid3X3 } from "lucide-react";
 import { GAMES, CATEGORIES } from "@/data/games";
 import { HEROES } from "@/data/heroes";
 import { HeroCard } from "@/components/HeroCard";
-import { cn } from "@/lib/utils";
+import { cn, textToImageUrl } from "@/lib/utils";
 import type { CategoryId } from "@/data/types";
 
 export default function GameDetail() {
@@ -48,8 +48,24 @@ export default function GameDetail() {
       {/* Banner */}
       <div className="relative overflow-hidden rounded-3xl border border-white/10">
         <div className="absolute inset-0" style={{ background: game.cover }} />
+        <img
+          src={textToImageUrl(
+            `${game.name} ${game.nameEn} panoramic game key art, ${game.tagline}, ultra detailed, 4k`,
+            "landscape_4_3",
+          )}
+          alt={game.name}
+          loading="eager"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-1000"
+          onLoad={(e) => {
+            (e.currentTarget as HTMLImageElement).style.opacity = "0.7";
+          }}
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).style.display = "none";
+          }}
+        />
         <div className="starfield absolute inset-0" />
-        <div className="absolute inset-0 bg-gradient-to-r from-ink-950/80 via-ink-950/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-ink-950/85 via-ink-950/50 to-transparent" />
         <div className="relative grid gap-6 p-8 sm:p-12 md:grid-cols-[1fr_auto] md:items-end">
           <div>
             <div className="mb-3 font-display text-xs uppercase tracking-[0.4em] text-white/50">

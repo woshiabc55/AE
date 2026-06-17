@@ -1,17 +1,23 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Swords, Wand2, Crown, Sparkles } from "lucide-react";
+import { ArrowRight, Swords, Wand2, Crown, Sparkles, Image as ImageIcon } from "lucide-react";
 import { GAMES, CATEGORIES } from "@/data/games";
 import { HEROES } from "@/data/heroes";
 import type { GameId } from "@/data/types";
+import { CONCEPT_IMAGES } from "@/data/conceptImages";
 import { HeroGallery } from "@/components/HeroGallery";
 import { GameCard } from "@/components/GameCard";
 import { HeroCard } from "@/components/HeroCard";
+import { ImageCard } from "@/components/ImageCard";
 import { useReveal } from "@/hooks/useReveal";
 
 export default function Home() {
   const sectionRef = useReveal<HTMLDivElement>();
   const gameRef = useReveal<HTMLDivElement>();
   const catRef = useReveal<HTMLDivElement>();
+  const wallRef = useReveal<HTMLDivElement>();
+
+  // 设定图墙：精选若干张作为首屏可见的视觉锚点
+  const wallImages = CONCEPT_IMAGES.slice(0, 16);
 
   return (
     <div className="space-y-24">
@@ -101,6 +107,42 @@ export default function Home() {
                 {HEROES.filter((h) => h.category === c.id).length} 位角色
               </div>
             </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Concept image wall */}
+      <section ref={wallRef} className="reveal space-y-6">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <div className="mb-2 flex items-center gap-2 text-sm text-white/50">
+              <ImageIcon className="h-4 w-4 text-neon-pink" />
+              CONCEPT WALL · 设定图墙
+            </div>
+            <h2 className="font-serif text-3xl font-black text-white sm:text-4xl">
+              <span className="text-gradient-neon">海量</span>设定图速览
+            </h2>
+            <p className="mt-2 text-sm text-white/50">
+              精选 {wallImages.length}+ 张来自流行游戏的设定图，支持右键下载 / 新窗口打开。
+            </p>
+          </div>
+          <Link to="/gallery" className="btn-ghost">
+            探索全部 {CONCEPT_IMAGES.length}+ 张
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+        <div className="columns-2 gap-3 sm:columns-3 lg:columns-4 [&>*]:mb-3">
+          {wallImages.map((c) => (
+            <ImageCard
+              key={c.id}
+              prompt={c.prompt}
+              title={c.title}
+              subtitle={c.subtitle}
+              paletteFrom={c.paletteFrom}
+              paletteTo={c.paletteTo}
+              size="portrait_4_3"
+              badge={c.game}
+            />
           ))}
         </div>
       </section>

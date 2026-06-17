@@ -34,8 +34,9 @@ export function HeroCard({ hero, activeSkinIndex = 0 }: HeroCardProps) {
           <img
             src={textToImageUrl(coverPrompt, "landscape_4_3")}
             alt={hero.name}
-            loading="lazy"
-            className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-700 group-hover:opacity-90"
+            loading="eager"
+            decoding="async"
+            className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-700 group-hover:scale-110 group-hover:opacity-90"
             onLoad={(e) => {
               (e.currentTarget as HTMLImageElement).style.opacity = "0.9";
             }}

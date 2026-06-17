@@ -3,7 +3,7 @@ import { ArrowUpRight, Users } from "lucide-react";
 import type { Game } from "@/data/types";
 import { HEROES } from "@/data/heroes";
 import { CATEGORIES } from "@/data/games";
-import { cn } from "@/lib/utils";
+import { cn, textToImageUrl } from "@/lib/utils";
 
 interface GameCardProps {
   game: Game;
@@ -23,10 +23,28 @@ export function GameCard({ game, variant = "default" }: GameCardProps) {
         variant === "wide" ? "md:col-span-2" : "",
       )}
     >
-      <div
-        className="relative h-56 overflow-hidden"
-        style={{ background: game.cover }}
-      >
+      <div className="relative h-56 overflow-hidden">
+        <div
+          className="absolute inset-0"
+          style={{ background: game.cover }}
+        />
+        {/* AI generated cover */}
+        <img
+          src={textToImageUrl(
+            `${game.name} ${game.nameEn} game key art, ${game.tagline}, cinematic, ultra detailed, 4k`,
+            "landscape_4_3",
+          )}
+          alt={game.name}
+          loading="eager"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover opacity-0 transition-all duration-700 group-hover:scale-110"
+          onLoad={(e) => {
+            (e.currentTarget as HTMLImageElement).style.opacity = "0.7";
+          }}
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).style.display = "none";
+          }}
+        />
         <div
           className="absolute inset-0 opacity-40"
           style={{
@@ -35,6 +53,7 @@ export function GameCard({ game, variant = "default" }: GameCardProps) {
           }}
         />
         <div className="absolute inset-0 bg-grid bg-grid opacity-30 mix-blend-overlay" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink-900/95 via-ink-900/30 to-transparent" />
 
         {/* Huge sigil character */}
         <div className="absolute right-2 top-1/2 -translate-y-1/2 font-serif text-[10rem] font-black text-white/15 transition-transform duration-500 group-hover:scale-110 group-hover:text-white/25">

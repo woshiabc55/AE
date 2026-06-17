@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Sparkles, Zap } from "lucide-react";
 import { FEATURED_HEROES } from "@/data/heroes";
 import { GAMES } from "@/data/games";
-import { cn } from "@/lib/utils";
+import { cn, textToImageUrl } from "@/lib/utils";
 import { useReveal } from "@/hooks/useReveal";
 
 export function HeroGallery() {
@@ -21,6 +21,11 @@ export function HeroGallery() {
     }, 5000);
     return () => clearInterval(t);
   }, [auto, heroes.length]);
+
+  const cover = textToImageUrl(
+    `${hero.motif} full body game character concept art, dramatic lighting, ultra detailed, 4k, masterpiece`,
+    "portrait_4_3",
+  );
 
   return (
     <section
@@ -93,18 +98,25 @@ export function HeroGallery() {
             style={{ perspective: "1200px" }}
           >
             <div
-              className="relative h-full w-full rounded-[2rem] border border-white/20 shadow-2xl transition-transform duration-700"
+              className="relative h-full w-full overflow-hidden rounded-[2rem] border border-white/20 shadow-2xl transition-transform duration-700"
               style={{
                 transform: "rotateY(-12deg) rotateX(8deg)",
                 background: `linear-gradient(135deg, ${hero.paletteFrom}, ${hero.paletteTo})`,
                 boxShadow: `0 30px 80px -20px ${hero.paletteFrom}80`,
               }}
             >
-              <div
-                className="absolute inset-0 rounded-[2rem] opacity-40"
-                style={{
-                  background:
-                    "radial-gradient(circle at 30% 25%, rgba(255,255,255,0.6) 0%, transparent 40%), radial-gradient(circle at 80% 80%, rgba(0,0,0,0.4) 0%, transparent 50%)",
+              {/* AI generated art overlay */}
+              <img
+                src={cover}
+                alt={hero.name}
+                loading="eager"
+                decoding="async"
+                className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-700"
+                onLoad={(e) => {
+                  (e.currentTarget as HTMLImageElement).style.opacity = "0.95";
+                }}
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).style.display = "none";
                 }}
               />
               <div
@@ -114,17 +126,19 @@ export function HeroGallery() {
                     "repeating-linear-gradient(45deg, transparent 0 12px, rgba(255,255,255,0.1) 12px 13px)",
                 }}
               />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="font-serif text-[12rem] font-black text-white/95 drop-shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
-                  {hero.name[0]}
-                </div>
+              {/* Big character initial behind/over */}
+              <div
+                className="pointer-events-none absolute inset-0 flex items-center justify-center font-serif text-[12rem] font-black text-white/95 drop-shadow-[0_8px_30px_rgba(0,0,0,0.5)]"
+                style={{ mixBlendMode: "overlay" }}
+              >
+                {hero.name[0]}
               </div>
               <div className="absolute right-3 top-3 rounded-full border border-white/30 bg-black/30 px-3 py-1 text-xs text-white backdrop-blur">
                 {hero.rarity}
               </div>
               <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">
                 <div>
-                  <div className="font-serif text-2xl font-black text-white">
+                  <div className="font-serif text-2xl font-black text-white drop-shadow">
                     {hero.name}
                   </div>
                   <div className="text-xs text-white/70">{hero.title}</div>

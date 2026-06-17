@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Gamepad2, Heart, Search, Sparkles, Menu, X } from "lucide-react";
+import { Gamepad2, Heart, Sparkles, Menu, X, Image as ImageIcon } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { GAMES } from "@/data/games";
@@ -13,6 +13,7 @@ export function Navbar() {
 
   const navItems = [
     { to: "/", label: "首页" },
+    { to: "/gallery", label: "图库", icon: ImageIcon },
     ...GAMES.slice(0, 4).map((g) => ({ to: `/game/${g.id}`, label: g.name })),
   ];
 
@@ -128,7 +129,7 @@ export function Navbar() {
 export function Footer() {
   return (
     <footer className="mt-24 border-t border-white/5 bg-ink-950/40 backdrop-blur">
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-3 lg:px-8">
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-4 lg:px-8">
         <div>
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-neon-cyan to-neon-violet">
@@ -143,6 +144,20 @@ export function Footer() {
             <br />
             为二次创作提供灵感与素材索引。
           </p>
+        </div>
+        <div>
+          <div className="text-sm font-semibold text-white/80">浏览</div>
+          <ul className="mt-3 space-y-1.5 text-sm text-white/50">
+            <li>
+              <Link to="/" className="hover:text-neon-cyan">首页</Link>
+            </li>
+            <li>
+              <Link to="/gallery" className="hover:text-neon-cyan">设定图库</Link>
+            </li>
+            <li>
+              <Link to="/favorites" className="hover:text-neon-cyan">我的收藏</Link>
+            </li>
+          </ul>
         </div>
         <div>
           <div className="text-sm font-semibold text-white/80">游戏</div>

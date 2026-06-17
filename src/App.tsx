@@ -6,7 +6,10 @@ import HeroPage from "@/pages/HeroPage";
 import Category from "@/pages/Category";
 import Favorites from "@/pages/Favorites";
 import SearchPage from "@/pages/SearchPage";
+import Gallery from "@/pages/Gallery";
 import { Navbar, Footer } from "@/components/Layout";
+import { preloadImages } from "@/hooks/useImagePreload";
+import { allConceptImageUrls } from "@/data/conceptImages";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -16,15 +19,25 @@ function ScrollToTop() {
   return null;
 }
 
+function GlobalPreload() {
+  useEffect(() => {
+    // 应用启动时预热所有设定图 URL，确保首页 / 图库能立即命中浏览器缓存
+    preloadImages(allConceptImageUrls());
+  }, []);
+  return null;
+}
+
 export default function App() {
   return (
     <Router>
       <ScrollToTop />
+      <GlobalPreload />
       <div className="flex min-h-screen flex-col">
         <Navbar />
         <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/gallery" element={<Gallery />} />
             <Route path="/game/:gameId" element={<GameDetail />} />
             <Route path="/hero/:heroId" element={<HeroPage />} />
             <Route path="/category/:cat" element={<Category />} />
