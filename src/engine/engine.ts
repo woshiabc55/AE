@@ -1,14 +1,25 @@
 import { Analyser } from '@/audio/analyser';
+import { StarField } from './sky';
+import { Sun } from './sun';
+import { GridPlane } from './gridPlane';
+import { Orb } from './orb';
 import { ParticleField } from './particles';
-import { Spectrum } from './spectrum';
-import { Waveform } from './waveform';
-import { CenterGlow } from './glow';
-import { Grid } from './grid';
+import { WaveRibbon } from './waveRibbon';
+import { SpectrumColumns } from './spectrumColumns';
+import { Shockwave } from './shockwave';
+import { PostFx } from './postFx';
 import type { Theme } from '@/themes/themes';
 import { themes } from '@/themes/themes';
 
 export interface EngineCallbacks {
-  onHud: (hud: { fps: number; rms: number; bpm: number; beat: number; mode: string; resolution: string }) => void;
+  onHud: (hud: {
+    fps: number;
+    rms: number;
+    bpm: number;
+    beat: number;
+    mode: string;
+    resolution: string;
+  }) => void;
   getSettings: () => {
     sensitivity: number;
     density: number;
@@ -24,11 +35,15 @@ export class Engine {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
   private analyser: Analyser;
+  private stars = new StarField();
+  private sun = new Sun();
+  private grid = new GridPlane();
+  private orb = new Orb();
   private particles = new ParticleField();
-  private spectrum = new Spectrum();
-  private waveform = new Waveform();
-  private glowC = new CenterGlow();
-  private grid = new Grid();
+  private wave = new WaveRibbon();
+  private spectrum = new SpectrumColumns();
+  private shock = new Shockwave();
+  private post = new PostFx();
   private raf = 0;
   private last = performance.now();
   private fpsAcc = 0;
@@ -40,6 +55,12 @@ export class Engine {
   private width = 0;
   private height = 0;
   private dpr = 1;
+  // 地平线高度（屏幕高度的 0.55）
+  private horizonY = 0;
+  // 拖尾衰减层
+  private trailCanvas: HTMLCanvasElement | null = null;
+  private trailCtx: CanvasRenderingContext2D | null = null;
+
   private pointerHandler = (e: PointerEvent) => {
     const rect = this.canvas.getBoundingClientRect();
     this.particles.setPointer(e.clientX - rect.left, e.clientY - rect.top);
@@ -64,7 +85,16 @@ export class Engine {
     this.canvas.width = Math.floor(rect.width * dpr);
     this.canvas.height = Math.floor(rect.height * dpr);
     this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    this.particles.setSize(rect.width, rect.height, dpr);
+    this.horizonY = rect.height * 0.58;
+    this.stars.setSize(rect.width, rect.height);
+    this.particles.setSize(rect.width, rect.height);
+    if (!this.trailCanvas) {
+      this.trailCanvas = document.createElement('canvas');
+    }
+    this.trailCanvas.width = Math.floor(rect.width * dpr);
+    this.trailCanvas.height = Math.floor(rect.height * dpr);
+    this.trailCtx = this.trailCanvas.getContext('2d');
+    if (this.trailCtx) this.trailCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
   start() {
@@ -92,8 +122,8 @@ export class Engine {
   }
 
   applyDensity(value: number) {
-    // 0..1 -> 200..1000
-    const n = Math.floor(200 + value * 800);
+    // 0..1 -> 300..1100
+    const n = Math.floor(300 + value * 800);
     this.particles.setCount(n);
   }
 
@@ -114,7 +144,16 @@ export class Engine {
     const rms = this.analyser.getRMS();
 
     if (!settings.paused) {
-      this.particles.update(bands, beat, dt, settings.sensitivity, settings.speed);
+      this.particles.update(
+        bands,
+        beat,
+        dt,
+        settings.sensitivity,
+        settings.speed,
+        this.horizonY,
+      );
+      this.shock.update(dt);
+      this.shock.trigger(this.width / 2, this.horizonY, beat);
     }
 
     // 计算帧率
@@ -132,43 +171,49 @@ export class Engine {
         rms,
         bpm: Math.round(bpm),
         beat,
-        mode: beat > 0.4 ? 'BEAT' : rms > 0.08 ? 'LIVE' : 'IDLE',
+        mode: beat > 0.45 ? 'PEAK' : rms > 0.08 ? 'LIVE' : 'IDLE',
         resolution: `${Math.round(this.width)} x ${Math.round(this.height)}`,
       });
     }
 
-    // 绘制
     const ctx = this.ctx;
-    // 背景（带轻微拖尾衰减，形成波纹轨迹）
-    const trail = 0.18;
-    const bg = theme.background;
-    // 由背景色派生一个带 alpha 的 rgba
-    ctx.fillStyle = `rgba(${hexToRgb(bg)}, ${trail})`;
-    ctx.fillRect(0, 0, this.width, this.height);
-    // 第一次绘制时直接全填充以建立底色
-    if (this.t < 0.05) {
-      ctx.fillStyle = bg;
-      ctx.fillRect(0, 0, this.width, this.height);
-    }
-    // 网格
-    this.grid.draw(ctx, theme, this.width, this.height, this.t);
-    // 中心辉光（在波形下、粒子上）
-    this.glowC.draw(ctx, theme, this.width, this.height, beat, rms, this.t, settings.glow);
-    // 波形
-    this.waveform.draw(ctx, timeData, theme, this.width, this.height, beat, rms);
-    // 频谱柱
-    this.spectrum.draw(ctx, freqData, theme, this.width, this.height, beat, settings.sensitivity);
-    // 粒子
-    this.particles.draw(ctx, theme, beat, settings.glow, settings.ripple);
-  }
-}
+    const w = this.width;
+    const h = this.height;
+    const hy = this.horizonY;
 
-function hexToRgb(hex: string): string {
-  // 支持 #RRGGBB / #RGB
-  let h = hex.replace('#', '');
-  if (h.length === 3) h = h.split('').map((c) => c + c).join('');
-  const r = parseInt(h.slice(0, 2), 16);
-  const g = parseInt(h.slice(2, 4), 16);
-  const b = parseInt(h.slice(4, 6), 16);
-  return `${r}, ${g}, ${b}`;
+    // ========== 1. 天空层（每帧不重绘背景渐变，先用 trail 画布做"轻拖尾"）==========
+    // 直接绘制底色（不做 trail，避免叠色）
+    const skyGrad = ctx.createLinearGradient(0, 0, 0, hy);
+    skyGrad.addColorStop(0, theme.skyTop);
+    skyGrad.addColorStop(1, theme.skyBottom);
+    ctx.fillStyle = skyGrad;
+    ctx.fillRect(0, 0, w, hy);
+
+    // 远星
+    this.stars.draw(ctx, theme, w, h, this.t, beat);
+
+    // ========== 2. 日盘 ==========
+    this.sun.draw(ctx, theme, w, h, this.t, beat, hy);
+
+    // ========== 3. 地平面（远山 + 网格 + 反射）==========
+    this.grid.draw(ctx, theme, w, h, this.t, bands.low, beat, hy);
+
+    // ========== 4. 频谱柱（从地平线拔起）==========
+    this.spectrum.draw(ctx, freqData, theme, w, h, beat, settings.sensitivity, hy);
+
+    // ========== 5. 波形带（悬浮在日盘上方）==========
+    this.wave.draw(ctx, freqData, timeData, theme, w, h, this.t, beat, settings.sensitivity, hy);
+
+    // ========== 6. 中央球 ==========
+    this.orb.draw(ctx, theme, w, h, this.t, beat, rms, bands, hy);
+
+    // ========== 7. 粒子 ==========
+    this.particles.draw(ctx, theme, beat, settings.glow, settings.ripple);
+
+    // ========== 8. 冲击波 ==========
+    this.shock.draw(ctx, theme, w, h, Math.max(w, h) * 0.8);
+
+    // ========== 9. 后期：扫描线 + 暗角 + 颗粒 + 色差 ==========
+    this.post.draw(ctx, theme, w, h, this.t, beat);
+  }
 }

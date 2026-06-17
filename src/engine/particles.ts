@@ -1,236 +1,208 @@
 import type { Theme } from '@/themes/themes';
 import { NoiseField } from './noise';
 
-type Band = 0 | 1 | 2; // 0 low / 1 mid / 2 high
+type Band = 0 | 1 | 2;
 
 interface Particle {
+  // 极坐标参数
+  angle: number; // 弧度
+  radius: number; // 距中心的"基础"距离（会随低频呼吸）
+  radiusBase: number;
+  radialOsc: number; // 径向摆动相位
+  band: Band;
+  size: number;
+  alpha: number;
+  spin: number; // 角速度
+  // 屏幕位置缓存
   x: number;
   y: number;
-  baseX: number;
-  baseY: number;
-  vx: number;
-  vy: number;
-  size: number;
-  band: Band;
-  seed: number;
-  hueOffset: number;
-  alpha: number;
+  prevX: number;
+  prevY: number;
 }
 
-const COLOR_KEY: Record<Band, keyof Pick<Theme, 'particleLow' | 'particleMid' | 'particleHigh'>> = {
-  0: 'particleLow',
-  1: 'particleMid',
-  2: 'particleHigh',
-};
-
+// 粒子环绕中央能量球做轨道运动 + 噪声扰动 + 节拍爆发
 export class ParticleField {
-  private particles: Particle[] = [];
+  private list: Particle[] = [];
   private count = 0;
-  private noise = new NoiseField();
+  private noise = new NoiseField(42);
   private t = 0;
-  // 鼠标位置 (归一化 -1..1)
-  private mx = 0;
-  private my = 0;
   private width = 0;
   private height = 0;
-  private dpr = 1;
+  private cx = 0;
+  private cy = 0;
+  private maxR = 0;
+  // 鼠标（归一化 -1..1）
+  private mx = 0;
+  private my = 0;
 
-  setSize(w: number, h: number, dpr: number) {
+  setSize(w: number, h: number) {
     this.width = w;
     this.height = h;
-    this.dpr = dpr;
-    // 根据 density 重建
-    const target = Math.floor(900 * 0.6); // 800
-    if (this.particles.length !== target) {
-      this.resize(target);
-    }
+    this.cx = w / 2;
+    this.cy = h / 2;
+    this.maxR = Math.hypot(w, h) * 0.6;
+    if (this.list.length !== this.count) this.resize(this.count || 700);
   }
 
   setPointer(x: number, y: number) {
-    // 输入为 canvas 像素坐标
-    this.mx = (x / this.width) * 2 - 1;
-    this.my = (y / this.height) * 2 - 1;
+    const dx = x - this.cx;
+    const dy = y - this.cy;
+    this.mx = dx / this.maxR;
+    this.my = dy / this.maxR;
   }
 
   setCount(n: number) {
-    n = Math.max(80, Math.min(1200, Math.floor(n)));
+    n = Math.max(100, Math.min(1400, Math.floor(n)));
     if (n !== this.count) this.resize(n);
   }
 
   private resize(n: number) {
     this.count = n;
-    this.particles = new Array(n);
+    this.list = new Array(n);
     for (let i = 0; i < n; i++) {
-      const x = Math.random() * this.width;
-      const y = Math.random() * this.height;
       const band = (i % 3) as Band;
-      this.particles[i] = {
-        x,
-        y,
-        baseX: x,
-        baseY: y,
-        vx: 0,
-        vy: 0,
-        size: 0.6 + Math.random() * 1.6 + (band === 0 ? 0.4 : band === 2 ? -0.2 : 0),
+      const radiusBase =
+        0.08 + Math.pow(Math.random(), 0.7) * 0.85; // 0.08..0.93
+      const angle = Math.random() * Math.PI * 2;
+      this.list[i] = {
+        angle,
+        radius: radiusBase,
+        radiusBase,
+        radialOsc: Math.random() * Math.PI * 2,
         band,
-        seed: Math.random() * 1000,
-        hueOffset: Math.random() * 30 - 15,
-        alpha: 0.55 + Math.random() * 0.4,
+        size:
+          0.5 +
+          Math.random() * 1.4 +
+          (band === 0 ? 0.5 : band === 2 ? -0.1 : 0.1),
+        alpha: 0.45 + Math.random() * 0.5,
+        spin: (Math.random() - 0.5) * 0.4 + (band === 0 ? 0.05 : band === 2 ? -0.08 : 0),
+        x: 0,
+        y: 0,
+        prevX: 0,
+        prevY: 0,
       };
     }
   }
 
-  /**
-   * 更新粒子位置
-   * @param bands low/mid/high 0..1
-   * @param beat 0..1 节拍脉冲
-   * @param dt 秒
-   * @param sensitivity 用户灵敏度
-   * @param speed 速度倍率
-   */
   update(
     bands: { low: number; mid: number; high: number },
     beat: number,
     dt: number,
     sensitivity: number,
     speed: number,
+    horizonY: number,
   ) {
     this.t += dt * speed;
-    const w = this.width;
-    const h = this.height;
-    const cx = w / 2;
-    const cy = h / 2;
-    const bandAmp = [
-      40 + bands.low * 320 * sensitivity,
-      30 + bands.mid * 220 * sensitivity,
-      20 + bands.high * 180 * sensitivity,
-    ];
-    const beatPush = beat * 60 * sensitivity;
-    const mx = this.mx;
-    const my = this.my;
+    const cx = this.cx;
+    const cy = horizonY; // 粒子围绕地平线中央聚集
+    const maxR = this.maxR;
 
-    for (let i = 0; i < this.particles.length; i++) {
-      const p = this.particles[i];
-      const n1 = this.noise.noise2D(p.baseX * 0.4, p.baseY * 0.4, this.t * 0.6);
-      const n2 = this.noise.noise2D(p.baseX * 0.9, p.baseY * 0.9, this.t * 1.2);
-      const amp = bandAmp[p.band];
-      const dx = n1 * amp;
-      const dy = n2 * amp;
+    for (let i = 0; i < this.list.length; i++) {
+      const p = this.list[i];
+      p.prevX = p.x;
+      p.prevY = p.y;
 
-      // 节拍时向中心推
-      const toCx = cx - p.baseX;
-      const toCy = cy - p.baseY;
-      const dist = Math.hypot(toCx, toCy) + 0.001;
-      const beatX = (toCx / dist) * beatPush;
-      const beatY = (toCy / dist) * beatPush;
+      // 角速度：低频顺时针，中频反向，高频摆动
+      const baseSpin = p.spin * (0.7 + 0.3 * speed);
+      p.angle +=
+        (baseSpin +
+          (p.band === 0 ? bands.low * 0.6 : p.band === 1 ? -bands.mid * 0.4 : Math.sin(this.t * 3 + p.radialOsc) * bands.high * 0.5)) *
+        dt *
+        (0.6 + speed * 0.4);
 
-      // 鼠标吸引
-      const pmx = (cx + mx * w * 0.4) - p.baseX;
-      const pmy = (cy + my * h * 0.4) - p.baseY;
-      const pmd = Math.hypot(pmx, pmy) + 0.001;
-      const mouseForce = 22 * sensitivity;
-      const mfx = (pmx / pmd) * mouseForce;
-      const mfy = (pmy / pmd) * mouseForce;
+      // 径向呼吸：低频拉伸 + 噪声扰动
+      const noise =
+        this.noise.noise2D(p.angle * 60, p.radiusBase * 30, this.t * 0.8) * 0.06;
+      const beatBurst = beat > 0.2 ? (beat - 0.2) * 0.55 * p.radiusBase : 0;
+      const bandRad = (p.band === 0 ? bands.low : p.band === 1 ? bands.mid : bands.high) * 0.18;
+      p.radius =
+        p.radiusBase +
+        Math.sin(this.t * 1.4 + p.radialOsc) * 0.025 +
+        noise +
+        bandRad * sensitivity +
+        beatBurst * sensitivity;
 
-      const targetX = p.baseX + dx + beatX + mfx;
-      const targetY = p.baseY + dy + beatY + mfy;
-      // 弹性插值
-      p.vx += (targetX - p.x) * 0.12;
-      p.vy += (targetY - p.y) * 0.12;
-      p.vx *= 0.82;
-      p.vy *= 0.82;
-      p.x += p.vx * (dt * 60);
-      p.y += p.vy * (dt * 60);
+      const r = Math.max(0.05, p.radius) * maxR;
 
-      // 漂移基点（让粒子持续缓慢漂移）
-      p.baseX += Math.sin(this.t * 0.3 + p.seed) * 0.12 * speed;
-      p.baseY += Math.cos(this.t * 0.27 + p.seed * 1.3) * 0.12 * speed;
-      // 边界回绕
-      if (p.baseX < -50) p.baseX = w + 50;
-      if (p.baseX > w + 50) p.baseX = -50;
-      if (p.baseY < -50) p.baseY = h + 50;
-      if (p.baseY > h + 50) p.baseY = -50;
-    }
-  }
+      // 位置
+      const cos = Math.cos(p.angle);
+      const sin = Math.sin(p.angle);
+      p.x = cx + cos * r;
+      // 椭圆形分布：垂直方向压缩（模拟地平线视角）
+      p.y = cy + sin * r * 0.55;
 
-  draw(
-    ctx: CanvasRenderingContext2D,
-    theme: Theme,
-    beat: number,
-    glow: number,
-    ripple: boolean,
-  ) {
-    const low = COLOR_KEY[0];
-    const mid = COLOR_KEY[1];
-    const high = COLOR_KEY[2];
-    const colors = [theme[low], theme[mid], theme[high]];
-
-    ctx.save();
-    ctx.globalCompositeOperation = 'lighter';
-    const beatSize = 1 + beat * 0.6;
-
-    // 连线层（仅绘制部分以控制性能）
-    if (this.count <= 600) {
-      ctx.lineWidth = 0.6;
-      for (let i = 0; i < this.particles.length; i++) {
-        const a = this.particles[i];
-        if (a.band !== 0) continue;
-        for (let j = i + 1; j < this.particles.length; j++) {
-          const b = this.particles[j];
-          if (b.band - a.band !== 1) continue;
-          const dx = a.x - b.x;
-          const dy = a.y - b.y;
-          const d2 = dx * dx + dy * dy;
-          if (d2 > 110 * 110) continue;
-          const t = 1 - Math.sqrt(d2) / 110;
-          ctx.strokeStyle = `${colors[b.band]}${Math.floor(t * 38).toString(16).padStart(2, '0')}`;
-          ctx.beginPath();
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
-          ctx.stroke();
+      // 鼠标扰动（局部排斥）
+      if (this.mx !== 0 || this.my !== 0) {
+        const pmx = cx + this.mx * maxR;
+        const pmy = cy + this.my * maxR * 0.55;
+        const dx = p.x - pmx;
+        const dy = p.y - pmy;
+        const d2 = dx * dx + dy * dy;
+        if (d2 < 140 * 140) {
+          const d = Math.sqrt(d2) + 0.001;
+          const push = (1 - d / 140) * 22;
+          p.x += (dx / d) * push;
+          p.y += (dy / d) * push;
         }
       }
     }
+  }
 
-    // 粒子点层
-    for (let i = 0; i < this.particles.length; i++) {
-      const p = this.particles[i];
+  draw(ctx: CanvasRenderingContext2D, theme: Theme, beat: number, glow: number, ripple: boolean) {
+    const colors = [theme.particleLow, theme.particleMid, theme.particleHigh];
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+
+    // 1. 拖尾层 - 画从 prev 到 curr 的细线
+    ctx.lineCap = 'round';
+    for (let i = 0; i < this.list.length; i++) {
+      const p = this.list[i];
       const base = colors[p.band];
-      const r = p.size * beatSize * (p.band === 0 ? 1.4 : p.band === 2 ? 0.7 : 1.0);
-      const a = p.alpha * (0.7 + 0.3 * (p.band === 0 ? beat : 1));
-      // 内核
+      const dx = p.x - p.prevX;
+      const dy = p.y - p.prevY;
+      const move = Math.hypot(dx, dy);
+      if (move < 0.3) continue;
+      ctx.strokeStyle = base + '55';
+      ctx.lineWidth = p.size * 0.9;
+      ctx.beginPath();
+      ctx.moveTo(p.prevX, p.prevY);
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+    }
+
+    // 2. 节点 + 外晕
+    for (let i = 0; i < this.list.length; i++) {
+      const p = this.list[i];
+      const base = colors[p.band];
+      const r = p.size * (1 + beat * 0.5);
+      const a = p.alpha * (0.65 + 0.35 * (p.band === 0 ? beat : 1));
       ctx.fillStyle = base;
       ctx.globalAlpha = a;
       ctx.beginPath();
       ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
       ctx.fill();
-      // 外晕
-      if (glow > 0.1) {
-        ctx.globalAlpha = a * 0.35 * glow;
+      if (glow > 0.05) {
+        ctx.globalAlpha = a * 0.32 * glow;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, r * (3.5 + glow * 1.5), 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, r * (3.5 + glow * 1.8), 0, Math.PI * 2);
         ctx.fill();
       }
     }
+
+    // 3. 轨道辅助线（仅低频段，且节拍时显著）
+    if (ripple) {
+      ctx.globalAlpha = 0.05 + beat * 0.18;
+      ctx.lineWidth = 0.5;
+      for (let i = 0; i < 4; i++) {
+        const r = (0.2 + i * 0.18) * this.maxR;
+        ctx.strokeStyle = colors[i % 3] + '44';
+        ctx.beginPath();
+        ctx.arc(this.cx, this.cy, r, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+
     ctx.globalAlpha = 1;
     ctx.restore();
-
-    // 涟漪圈
-    if (ripple && beat > 0.15) {
-      ctx.save();
-      ctx.globalCompositeOperation = 'lighter';
-      const r = 40 + beat * 360;
-      ctx.strokeStyle = `${theme.particleHigh}55`;
-      ctx.lineWidth = 1.2;
-      ctx.beginPath();
-      ctx.arc(this.width / 2, this.height / 2, r, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.strokeStyle = `${theme.particleLow}33`;
-      ctx.lineWidth = 0.8;
-      ctx.beginPath();
-      ctx.arc(this.width / 2, this.height / 2, r * 1.4, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.restore();
-    }
   }
 }
