@@ -8,11 +8,11 @@ const GAMES_META = [
   { id: 'lolm',      name: '英雄联盟手游',     en_name: 'LoL: Wild Rift',         publisher: '腾讯/Riot',   category: 'moba',     tags: ['MOBA','手游','5v5'], has_data: true,  data_file: 'lolm_data.js',       official: 'https://lolm.qq.com/' },
   { id: 'dota2',     name: 'Dota 2',           en_name: 'Dota 2',                 publisher: 'Valve',       category: 'moba',     tags: ['MOBA','5v5','端游'], has_data: true,  data_file: 'dota2_data.js',      official: 'https://www.dota2.com/' },
   { id: 'naraka',    name: '永劫无间',         en_name: 'Naraka: Bladepoint',     publisher: '24 Entertainment', category: 'action', tags: ['冷兵器','吃鸡','武侠'], has_data: false, data_file: '', official: 'https://www.narakathegame.com/' },
-  { id: 'valorant',  name: '无畏契约',         en_name: 'Valorant',               publisher: 'Riot Games',  category: 'fps',      tags: ['FPS','5v5','战术'],  has_data: false, data_file: '', official: 'https://val.qq.com/' },
+  { id: 'valorant',  name: '无畏契约',         en_name: 'Valorant',               publisher: 'Riot Games',  category: 'fps',      tags: ['FPS','5v5','战术'],  has_data: true,  data_file: 'valorant_data.js',    official: 'https://val.qq.com/' },
   { id: 'hots',      name: '风暴英雄',         en_name: 'Heroes of the Storm',    publisher: 'Blizzard',    category: 'moba',     tags: ['MOBA','团队'],       has_data: false, data_file: '', official: 'https://heroesofthestorm.com/' },
 
   // ========== RPG / 二次元 ==========
-  { id: 'genshin',   name: '原神',             en_name: 'Genshin Impact',         publisher: 'miHoYo',      category: 'rpg',      tags: ['开放世界','RPG','元素'], has_data: false, data_file: '', official: 'https://ys.mihoyo.com/' },
+  { id: 'genshin',   name: '原神',             en_name: 'Genshin Impact',         publisher: 'miHoYo',      category: 'rpg',      tags: ['开放世界','RPG','元素'], has_data: true,  data_file: 'genshin_data.js',    official: 'https://ys.mihoyo.com/' },
   { id: 'starrail',  name: '崩坏：星穹铁道',   en_name: 'Honkai: Star Rail',      publisher: 'miHoYo',      category: 'rpg',      tags: ['回合制','RPG','科幻'], has_data: true,  data_file: 'starrail_data.js',  official: 'https://sr.mihoyo.com/' },
   { id: 'zzz',       name: '绝区零',           en_name: 'Zenless Zone Zero',      publisher: 'miHoYo',      category: 'rpg',      tags: ['ARPG','都市','动作'], has_data: false, data_file: '', official: 'https://zzz.mihoyo.com/' },
   { id: 'hi3',       name: '崩坏3',            en_name: 'Honkai Impact 3rd',      publisher: 'miHoYo',      category: 'rpg',      tags: ['ARPG','动作','二次元'], has_data: false, data_file: '', official: 'https://bh3.mihoyo.com/' },

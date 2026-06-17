@@ -548,14 +548,16 @@
   </div>
 
   <script src="games_meta.js"></script>
-  <script src="services.js"></script>
   <script src="hero_data.js"></script>
   <script src="lolpc_data.js"></script>
   <script src="lolm_data.js"></script>
   <script src="starrail_data.js"></script>
   <script src="dota2_data.js"></script>
   <script src="arknights_data.js"></script>
+  <script src="valorant_data.js"></script>
+  <script src="genshin_data.js"></script>
   <script>
+    // 先定义 DATA_MAP, 再加载依赖它的 services.js
     const DATA_MAP = {
       hok:       HERO_DATA,
       lolpc:     LOLPC_DATA,
@@ -563,7 +565,11 @@
       starrail:  STARRAIL_DATA,
       dota2:     DOTA2_DATA,
       arknights: ARKNIGHTS_DATA,
+      valorant:  VALORANT_DATA,
+      genshin:   GENSHIN_DATA,
     };
+  </script>
+  <script src="services.js"></script>
 
     // ========== 顶部统计 ==========
     const libCount = GAMES_META.length;
