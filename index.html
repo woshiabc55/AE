@@ -580,13 +580,17 @@
   <script src="lolpc_data.js"></script>
   <script src="lolm_data.js"></script>
   <script src="starrail_data.js"></script>
+  <script src="dota2_data.js"></script>
+  <script src="arknights_data.js"></script>
   <script>
     // 加载数据映射
     const DATA_MAP = {
-      hok:      HERO_DATA,
-      lolpc:    LOLPC_DATA,
-      lolm:     LOLM_DATA,
-      starrail: STARRAIL_DATA,
+      hok:       HERO_DATA,
+      lolpc:     LOLPC_DATA,
+      lolm:      LOLM_DATA,
+      starrail:  STARRAIL_DATA,
+      dota2:     DOTA2_DATA,
+      arknights: ARKNIGHTS_DATA,
     };
 
     // 库统计
@@ -627,31 +631,31 @@
       }
     }
 
-    // 筛选
+    // 筛选 - 根据当前游戏动态生成
     const filtersEl = document.getElementById('filters');
-    const TYPE_FILTERS = [
-      { key: 'all',     name: '全部' },
-      { key: '战士', name: '战士' },
-      { key: '法师', name: '法师' },
-      { key: '坦克', name: '坦克' },
-      { key: '刺客', name: '刺客' },
-      { key: '射手', name: '射手' },
-      { key: '辅助', name: '辅助' },
-    ];
     function buildFilters() {
       const data = DATA_MAP[currentGame] || [];
+      // 从数据中提取所有类型
+      const types = new Set();
+      data.forEach(h => {
+        if (h.type) types.add(h.type);
+        if (h.type2) types.add(h.type2);
+      });
+      const typeList = ['all', ...Array.from(types)];
       filtersEl.innerHTML = '';
-      TYPE_FILTERS.forEach(t => {
-        const count = t.key === 'all'
+      typeList.forEach(t => {
+        const count = t === 'all'
           ? data.length
-          : data.filter(h => h.type === t.key || h.type2 === t.key).length;
+          : data.filter(h => h.type === t || h.type2 === t).length;
+        if (count === 0 && t !== 'all') return;
         const btn = document.createElement('button');
-        btn.className = 'filter-btn' + (t.key === 'all' ? ' active' : '');
-        btn.innerHTML = `${t.name}<span class="badge">${count}</span>`;
+        btn.className = 'filter-btn' + (t === 'all' ? ' active' : '');
+        const label = t === 'all' ? '全部' : t;
+        btn.innerHTML = `${label}<span class="badge">${count}</span>`;
         btn.addEventListener('click', () => {
           document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
-          currentType = t.key;
+          currentType = t;
           render();
         });
         filtersEl.appendChild(btn);
@@ -853,12 +857,14 @@
         const c = document.createElement('div');
         c.className = 'game-card' + (m.has_data ? ' has-data' : '');
         const cat = CATEGORIES[m.category] || { name: '' };
-        // 缩略图：取前两个字的 Unicode 编码作为纹理 / 或者用游戏首字
         const initial = m.name.slice(0, 1);
+        // 优先用 SVG 封面, 失败回退到首字
+        const coverUrl = `covers/cover_${m.id}.svg`;
         c.innerHTML = `
           ${m.has_data ? '<div class="data-badge">✓ 已上线</div>' : '<div class="data-badge none">采集中</div>'}
           <div class="cover">
-            <span class="cover-text">${initial}</span>
+            <img src="${coverUrl}" alt="${m.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+            <span class="cover-text" style="display:none">${initial}</span>
           </div>
           <div class="info">
             <div class="gname">${m.name}</div>

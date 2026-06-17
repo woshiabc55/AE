@@ -1,0 +1,4679 @@
+{
+ "阿": {
+  "name": "阿",
+  "star": 5,
+  "profession": "特种",
+  "faction": "炎-龙门",
+  "char_id": "char_225_haak",
+  "skins": [
+   "百面郎中",
+   "妙手玄心"
+  ],
+  "portrait": "https://media.prts.wiki/3/31/%E5%A4%B4%E5%83%8F_%E9%98%BF.png"
+ },
+ "阿兰娜": {
+  "name": "阿兰娜",
+  "star": 4,
+  "profession": "辅助",
+  "faction": "雷姆必拓",
+  "char_id": "char_4178_alanna",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/b/b6/%E5%A4%B4%E5%83%8F_%E9%98%BF%E5%85%B0%E5%A8%9C.png"
+ },
+ "阿罗玛": {
+  "name": "阿罗玛",
+  "star": 4,
+  "profession": "术师",
+  "faction": "叙拉古",
+  "char_id": "char_446_aroma",
+  "skins": [
+   "舒心野趣"
+  ],
+  "portrait": "https://media.prts.wiki/f/f6/%E5%A4%B4%E5%83%8F_%E9%98%BF%E7%BD%97%E7%8E%9B.png"
+ },
+ "阿米娅": {
+  "name": "阿米娅",
+  "star": 4,
+  "profession": "术师",
+  "faction": "罗德岛",
+  "char_id": "char_002_amiya",
+  "skins": [
+   "报童",
+   "见习联结者",
+   "播种者"
+  ],
+  "portrait": "https://media.prts.wiki/3/36/%E5%A4%B4%E5%83%8F_%E9%98%BF%E7%B1%B3%E5%A8%85.png"
+ },
+ "阿斯卡纶": {
+  "name": "阿斯卡纶",
+  "star": 5,
+  "profession": "特种",
+  "faction": "罗德岛",
+  "char_id": "char_4132_ascln",
+  "skins": [
+   "趋光之暗"
+  ],
+  "portrait": "https://media.prts.wiki/7/76/%E5%A4%B4%E5%83%8F_%E9%98%BF%E6%96%AF%E5%8D%A1%E7%BA%B6.png"
+ },
+ "阿消": {
+  "name": "阿消",
+  "star": 3,
+  "profession": "特种",
+  "faction": "炎-龙门",
+  "char_id": "char_277_sqrrel",
+  "skins": [
+   "古堡清洁专家"
+  ],
+  "portrait": "https://media.prts.wiki/2/2f/%E5%A4%B4%E5%83%8F_%E9%98%BF%E6%B6%88.png"
+ },
+ "艾拉": {
+  "name": "艾拉",
+  "star": 5,
+  "profession": "特种",
+  "char_id": "char_4123_ela",
+  "skins": [
+   "密室"
+  ],
+  "portrait": "https://media.prts.wiki/2/26/%E5%A4%B4%E5%83%8F_%E8%89%BE%E6%8B%89.png"
+ },
+ "埃拉托": {
+  "name": "埃拉托",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "米诺斯",
+  "char_id": "char_4043_erato",
+  "skins": [
+   "未讲述的故事"
+  ],
+  "portrait": "https://media.prts.wiki/3/34/%E5%A4%B4%E5%83%8F_%E5%9F%83%E6%8B%89%E6%89%98.png"
+ },
+ "艾丽妮": {
+  "name": "艾丽妮",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "伊比利亚",
+  "char_id": "char_4009_irene",
+  "skins": [
+   "飞羽",
+   "至高判决"
+  ],
+  "portrait": "https://media.prts.wiki/5/57/%E5%A4%B4%E5%83%8F_%E8%89%BE%E4%B8%BD%E5%A6%AE.png"
+ },
+ "爱丽丝": {
+  "name": "爱丽丝",
+  "star": 4,
+  "profession": "术师",
+  "faction": "维多利亚",
+  "char_id": "char_338_iris",
+  "skins": [
+   "镜中来访"
+  ],
+  "portrait": "https://media.prts.wiki/9/9a/%E5%A4%B4%E5%83%8F_%E7%88%B1%E4%B8%BD%E4%B8%9D.png"
+ },
+ "艾丝黛尔": {
+  "name": "艾丝黛尔",
+  "star": 3,
+  "profession": "近卫",
+  "faction": "萨尔贡",
+  "char_id": "char_127_estell",
+  "skins": [
+   "花冕圆舞曲"
+  ],
+  "portrait": "https://media.prts.wiki/5/57/%E5%A4%B4%E5%83%8F_%E8%89%BE%E4%B8%9D%E9%BB%9B%E5%B0%94.png"
+ },
+ "艾雅法拉": {
+  "name": "艾雅法拉",
+  "star": 5,
+  "profession": "术师",
+  "faction": "莱塔尼亚",
+  "char_id": "char_180_amgoat",
+  "skins": [
+   "夏卉 FA018",
+   "绵绒小魔女"
+  ],
+  "portrait": "https://media.prts.wiki/c/cc/%E5%A4%B4%E5%83%8F_%E8%89%BE%E9%9B%85%E6%B3%95%E6%8B%89.png"
+ },
+ "安比尔": {
+  "name": "安比尔",
+  "star": 3,
+  "profession": "狙击",
+  "faction": "拉特兰",
+  "char_id": "char_302_glaze",
+  "skins": [
+   "悠然假日 HD29"
+  ],
+  "portrait": "https://media.prts.wiki/f/ff/%E5%A4%B4%E5%83%8F_%E5%AE%89%E6%AF%94%E5%B0%94.png"
+ },
+ "安德切尔": {
+  "name": "安德切尔",
+  "star": 2,
+  "profession": "狙击",
+  "faction": "罗德岛",
+  "char_id": "char_211_adnach",
+  "skins": [
+   "无痕行者"
+  ],
+  "portrait": "https://media.prts.wiki/f/f6/%E5%A4%B4%E5%83%8F_%E5%AE%89%E5%BE%B7%E5%88%87%E5%B0%94.png"
+ },
+ "安洁莉娜": {
+  "name": "安洁莉娜",
+  "star": 5,
+  "profession": "辅助",
+  "faction": "叙拉古",
+  "char_id": "char_291_aglina",
+  "skins": [
+   "质素访客",
+   "夏卉 FA017"
+  ],
+  "portrait": "https://media.prts.wiki/c/ca/%E5%A4%B4%E5%83%8F_%E5%AE%89%E6%B4%81%E8%8E%89%E5%A8%9C.png"
+ },
+ "安赛尔": {
+  "name": "安赛尔",
+  "star": 2,
+  "profession": "医疗",
+  "faction": "罗德岛",
+  "char_id": "char_212_ansel",
+  "skins": [
+   "悠然假日 HDm06",
+   "晚间咖啡店"
+  ],
+  "portrait": "https://media.prts.wiki/9/94/%E5%A4%B4%E5%83%8F_%E5%AE%89%E8%B5%9B%E5%B0%94.png"
+ },
+ "暗索": {
+  "name": "暗索",
+  "star": 3,
+  "profession": "特种",
+  "faction": "炎-龙门",
+  "char_id": "char_236_rope",
+  "skins": [
+   "小鬼当家",
+   "夏卉 FA008"
+  ],
+  "portrait": "https://media.prts.wiki/d/dd/%E5%A4%B4%E5%83%8F_%E6%9A%97%E7%B4%A2.png"
+ },
+ "安哲拉": {
+  "name": "安哲拉",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "阿戈尔",
+  "char_id": "char_218_cuttle",
+  "skins": [
+   "暗矢"
+  ],
+  "portrait": "https://media.prts.wiki/3/36/%E5%A4%B4%E5%83%8F_%E5%AE%89%E5%93%B2%E6%8B%89.png"
+ },
+ "奥达": {
+  "name": "奥达",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "罗德岛",
+  "char_id": "char_4131_odda",
+  "skins": [
+   "糖果暴击"
+  ],
+  "portrait": "https://media.prts.wiki/2/29/%E5%A4%B4%E5%83%8F_%E5%A5%A5%E8%BE%BE.png"
+ },
+ "奥斯塔": {
+  "name": "奥斯塔",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "叙拉古",
+  "char_id": "char_346_aosta",
+  "skins": [
+   "光铳调试员"
+  ],
+  "portrait": "https://media.prts.wiki/4/49/%E5%A4%B4%E5%83%8F_%E5%A5%A5%E6%96%AF%E5%A1%94.png"
+ },
+ "八幡海铃": {
+  "name": "八幡海铃",
+  "star": 4,
+  "profession": "特种",
+  "char_id": "char_4186_tmoris",
+  "skins": [
+   "月下执行者"
+  ],
+  "portrait": "https://media.prts.wiki/f/f2/%E5%A4%B4%E5%83%8F_%E5%85%AB%E5%B9%A1%E6%B5%B7%E9%93%83.png"
+ },
+ "摆渡人": {
+  "name": "摆渡人",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "米诺斯",
+  "char_id": "char_4166_varkis",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/e/e4/%E5%A4%B4%E5%83%8F_%E6%91%86%E6%B8%A1%E4%BA%BA.png"
+ },
+ "柏喙": {
+  "name": "柏喙",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "萨米",
+  "char_id": "char_252_bibeak",
+  "skins": [
+   "软绒"
+  ],
+  "portrait": "https://media.prts.wiki/2/2f/%E5%A4%B4%E5%83%8F_%E6%9F%8F%E5%96%99.png"
+ },
+ "白金": {
+  "name": "白金",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "卡西米尔",
+  "char_id": "char_204_platnm",
+  "skins": [
+   "灿阳朝露 SD05"
+  ],
+  "portrait": "https://media.prts.wiki/3/3b/%E5%A4%B4%E5%83%8F_%E7%99%BD%E9%87%91.png"
+ },
+ "百炼嘉维尔": {
+  "name": "百炼嘉维尔",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "罗德岛",
+  "char_id": "char_1026_gvial2",
+  "skins": [
+   "悠然假日 HD26"
+  ],
+  "portrait": "https://media.prts.wiki/1/1b/%E5%A4%B4%E5%83%8F_%E7%99%BE%E7%82%BC%E5%98%89%E7%BB%B4%E5%B0%94.png"
+ },
+ "白面鸮": {
+  "name": "白面鸮",
+  "star": 4,
+  "profession": "医疗",
+  "faction": "哥伦比亚",
+  "char_id": "char_128_plosis",
+  "skins": [
+   "幽静",
+   "抚云间"
+  ],
+  "portrait": "https://media.prts.wiki/8/83/%E5%A4%B4%E5%83%8F_%E7%99%BD%E9%9D%A2%E9%B8%AE.png"
+ },
+ "拜松": {
+  "name": "拜松",
+  "star": 4,
+  "profession": "重装",
+  "faction": "炎-龙门",
+  "char_id": "char_325_bison",
+  "skins": [
+   "凌云意"
+  ],
+  "portrait": "https://media.prts.wiki/b/b2/%E5%A4%B4%E5%83%8F_%E6%8B%9C%E6%9D%BE.png"
+ },
+ "白铁": {
+  "name": "白铁",
+  "star": 5,
+  "profession": "辅助",
+  "faction": "维多利亚",
+  "char_id": "char_4072_ironmn",
+  "skins": [
+   "沙滩护卫 GT003",
+   "空心王冠"
+  ],
+  "portrait": "https://media.prts.wiki/2/2e/%E5%A4%B4%E5%83%8F_%E7%99%BD%E9%93%81.png"
+ },
+ "白雪": {
+  "name": "白雪",
+  "star": 3,
+  "profession": "狙击",
+  "faction": "东",
+  "char_id": "char_118_yuki",
+  "skins": [
+   "曲刃晴风"
+  ],
+  "portrait": "https://media.prts.wiki/b/b4/%E5%A4%B4%E5%83%8F_%E7%99%BD%E9%9B%AA.png"
+ },
+ "斑点": {
+  "name": "斑点",
+  "star": 2,
+  "profession": "重装",
+  "faction": "罗德岛",
+  "char_id": "char_284_spot",
+  "skins": [
+   "专业人士"
+  ],
+  "portrait": "https://media.prts.wiki/3/30/%E5%A4%B4%E5%83%8F_%E6%96%91%E7%82%B9.png"
+ },
+ "薄绿": {
+  "name": "薄绿",
+  "star": 4,
+  "profession": "术师",
+  "faction": "维多利亚",
+  "char_id": "char_388_mint",
+  "skins": [
+   "月宵",
+   "私人书房"
+  ],
+  "portrait": "https://media.prts.wiki/3/30/%E5%A4%B4%E5%83%8F_%E8%96%84%E7%BB%BF.png"
+ },
+ "暴行": {
+  "name": "暴行",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "雷姆必拓",
+  "char_id": "char_230_savage",
+  "skins": [
+   "地底三百米",
+   "家传秘方",
+   "又一年秋季"
+  ],
+  "portrait": "https://media.prts.wiki/3/36/%E5%A4%B4%E5%83%8F_%E6%9A%B4%E8%A1%8C.png"
+ },
+ "暴雨": {
+  "name": "暴雨",
+  "star": 4,
+  "profession": "重装",
+  "faction": "罗德岛",
+  "char_id": "char_304_zebra",
+  "skins": [
+   "幽苔"
+  ],
+  "portrait": "https://media.prts.wiki/f/f8/%E5%A4%B4%E5%83%8F_%E6%9A%B4%E9%9B%A8.png"
+ },
+ "贝洛内": {
+  "name": "贝洛内",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "叙拉古",
+  "char_id": "char_4037_demetr",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/8/83/%E5%A4%B4%E5%83%8F_%E8%B4%9D%E6%B4%9B%E5%86%85.png"
+ },
+ "贝娜": {
+  "name": "贝娜",
+  "star": 4,
+  "profession": "特种",
+  "faction": "维多利亚",
+  "char_id": "char_369_bena",
+  "skins": [
+   "草原小帮手"
+  ],
+  "portrait": "https://media.prts.wiki/9/95/%E5%A4%B4%E5%83%8F_%E8%B4%9D%E5%A8%9C.png"
+ },
+ "鞭刃": {
+  "name": "鞭刃",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "卡西米尔",
+  "char_id": "char_265_sophia",
+  "skins": [
+   "荣耀之紫"
+  ],
+  "portrait": "https://media.prts.wiki/f/f8/%E5%A4%B4%E5%83%8F_%E9%9E%AD%E5%88%83.png"
+ },
+ "冰酿": {
+  "name": "冰酿",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "哥伦比亚",
+  "char_id": "char_4104_coldst",
+  "skins": [
+   "破晓"
+  ],
+  "portrait": "https://media.prts.wiki/c/cf/%E5%A4%B4%E5%83%8F_%E5%86%B0%E9%85%BF.png"
+ },
+ "波卜": {
+  "name": "波卜",
+  "star": 4,
+  "profession": "辅助",
+  "faction": "哥伦比亚",
+  "char_id": "char_487_bobb",
+  "skins": [
+   "温情烘焙"
+  ],
+  "portrait": "https://media.prts.wiki/d/d5/%E5%A4%B4%E5%83%8F_%E6%B3%A2%E5%8D%9C.png"
+ },
+ "波登可": {
+  "name": "波登可",
+  "star": 3,
+  "profession": "辅助",
+  "faction": "罗德岛",
+  "char_id": "char_258_podego",
+  "skins": [
+   "小憩初醒"
+  ],
+  "portrait": "https://media.prts.wiki/4/43/%E5%A4%B4%E5%83%8F_%E6%B3%A2%E7%99%BB%E5%8F%AF.png"
+ },
+ "伯塔尼": {
+  "name": "伯塔尼",
+  "star": 4,
+  "profession": "辅助",
+  "faction": "乌萨斯",
+  "char_id": "char_4223_botany",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/4/4d/%E5%A4%B4%E5%83%8F_%E4%BC%AF%E5%A1%94%E5%B0%BC.png"
+ },
+ "布丁": {
+  "name": "布丁",
+  "star": 3,
+  "profession": "术师",
+  "faction": "哥伦比亚",
+  "char_id": "char_4004_pudd",
+  "skins": [
+   "火树灵"
+  ],
+  "portrait": "https://media.prts.wiki/b/b0/%E5%A4%B4%E5%83%8F_%E5%B8%83%E4%B8%81.png"
+ },
+ "布洛卡": {
+  "name": "布洛卡",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "叙拉古",
+  "char_id": "char_356_broca",
+  "skins": [
+   "组间休息"
+  ],
+  "portrait": "https://media.prts.wiki/0/04/%E5%A4%B4%E5%83%8F_%E5%B8%83%E6%B4%9B%E5%8D%A1.png"
+ },
+ "CONFESS-47": {
+  "name": "CONFESS-47",
+  "star": 0,
+  "profession": "先锋",
+  "faction": "拉特兰",
+  "char_id": "char_4188_confes",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/c/c4/%E5%A4%B4%E5%83%8F_CONFESS-47.png"
+ },
+ "裁度": {
+  "name": "裁度",
+  "star": 4,
+  "profession": "特种",
+  "faction": "叙拉古",
+  "char_id": "char_4155_talr",
+  "skins": [
+   "桂影窗"
+  ],
+  "portrait": "https://media.prts.wiki/4/4a/%E5%A4%B4%E5%83%8F_%E8%A3%81%E5%BA%A6.png"
+ },
+ "苍苔": {
+  "name": "苍苔",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "哥伦比亚",
+  "char_id": "char_4106_bryota",
+  "skins": [
+   "动感"
+  ],
+  "portrait": "https://media.prts.wiki/9/95/%E5%A4%B4%E5%83%8F_%E8%8B%8D%E8%8B%94.png"
+ },
+ "Castle-3": {
+  "name": "Castle-3",
+  "star": 0,
+  "profession": "近卫",
+  "faction": "罗德岛",
+  "char_id": "char_286_cast3",
+  "skins": [
+   "SUM019.ver"
+  ],
+  "portrait": "https://media.prts.wiki/8/82/%E5%A4%B4%E5%83%8F_Castle-3.png"
+ },
+ "缠丸": {
+  "name": "缠丸",
+  "star": 3,
+  "profession": "近卫",
+  "faction": "东",
+  "char_id": "char_289_gyuki",
+  "skins": [
+   "繁霜满阶"
+  ],
+  "portrait": "https://media.prts.wiki/1/13/%E5%A4%B4%E5%83%8F_%E7%BC%A0%E4%B8%B8.png"
+ },
+ "车尔尼": {
+  "name": "车尔尼",
+  "star": 4,
+  "profession": "重装",
+  "faction": "莱塔尼亚",
+  "char_id": "char_4047_pianst",
+  "skins": [
+   "荒野寻音"
+  ],
+  "portrait": "https://media.prts.wiki/1/1c/%E5%A4%B4%E5%83%8F_%E8%BD%A6%E5%B0%94%E5%B0%BC.png"
+ },
+ "陈": {
+  "name": "陈",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "炎-龙门",
+  "char_id": "char_010_chen",
+  "skins": [
+   "岁红霞",
+   "初晴"
+  ],
+  "portrait": "https://media.prts.wiki/c/cf/%E5%A4%B4%E5%83%8F_%E9%99%88.png"
+ },
+ "骋风": {
+  "name": "骋风",
+  "star": 3,
+  "profession": "近卫",
+  "faction": "炎",
+  "char_id": "char_445_wscoot",
+  "skins": [
+   "异乡的云"
+  ],
+  "portrait": "https://media.prts.wiki/f/fe/%E5%A4%B4%E5%83%8F_%E9%AA%8B%E9%A3%8E.png"
+ },
+ "澄闪": {
+  "name": "澄闪",
+  "star": 5,
+  "profession": "术师",
+  "faction": "维多利亚",
+  "char_id": "char_377_gdglow",
+  "skins": [
+   "喜夜侍者",
+   "夏卉 FA394",
+   "花房茶话会"
+  ],
+  "portrait": "https://media.prts.wiki/a/ab/%E5%A4%B4%E5%83%8F_%E6%BE%84%E9%97%AA.png"
+ },
+ "承曦格雷伊": {
+  "name": "承曦格雷伊",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "罗德岛",
+  "char_id": "char_1027_greyy2",
+  "skins": [
+   "演出后的王子",
+   "生化沉溺"
+  ],
+  "portrait": "https://media.prts.wiki/e/e2/%E5%A4%B4%E5%83%8F_%E6%89%BF%E6%9B%A6%E6%A0%BC%E9%9B%B7%E4%BC%8A.png"
+ },
+ "赤冬": {
+  "name": "赤冬",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "东",
+  "char_id": "char_475_akafyu",
+  "skins": [
+   "心性"
+  ],
+  "portrait": "https://media.prts.wiki/f/fe/%E5%A4%B4%E5%83%8F_%E8%B5%A4%E5%86%AC.png"
+ },
+ "赤刃明霄陈": {
+  "name": "赤刃明霄陈",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "炎",
+  "char_id": "char_1050_chen3",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/d/d0/%E5%A4%B4%E5%83%8F_%E8%B5%A4%E5%88%83%E6%98%8E%E9%9C%84%E9%99%88.png"
+ },
+ "斥罪": {
+  "name": "斥罪",
+  "star": 5,
+  "profession": "重装",
+  "faction": "叙拉古",
+  "char_id": "char_4065_judge",
+  "skins": [
+   "偶尔醉陶",
+   "记叙"
+  ],
+  "portrait": "https://media.prts.wiki/1/1c/%E5%A4%B4%E5%83%8F_%E6%96%A5%E7%BD%AA.png"
+ },
+ "重岳": {
+  "name": "重岳",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "炎",
+  "char_id": "char_2024_chyue",
+  "skins": [
+   "何处栖",
+   "全能演员"
+  ],
+  "portrait": "https://media.prts.wiki/0/09/%E5%A4%B4%E5%83%8F_%E9%87%8D%E5%B2%B3.png"
+ },
+ "初雪": {
+  "name": "初雪",
+  "star": 4,
+  "profession": "辅助",
+  "faction": "谢拉格",
+  "char_id": "char_174_slbell",
+  "skins": [
+   "开斯特之霜"
+  ],
+  "portrait": "https://media.prts.wiki/d/d7/%E5%A4%B4%E5%83%8F_%E5%88%9D%E9%9B%AA.png"
+ },
+ "纯烬艾雅法拉": {
+  "name": "纯烬艾雅法拉",
+  "star": 5,
+  "profession": "医疗",
+  "faction": "莱塔尼亚",
+  "char_id": "char_1016_agoat2",
+  "skins": [
+   "远行前的野餐"
+  ],
+  "portrait": "https://media.prts.wiki/f/f0/%E5%A4%B4%E5%83%8F_%E7%BA%AF%E7%83%AC%E8%89%BE%E9%9B%85%E6%B3%95%E6%8B%89.png"
+ },
+ "刺玫": {
+  "name": "刺玫",
+  "star": 4,
+  "profession": "医疗",
+  "faction": "维多利亚",
+  "char_id": "char_494_vendla",
+  "skins": [
+   "蔷薇之谜"
+  ],
+  "portrait": "https://media.prts.wiki/c/c6/%E5%A4%B4%E5%83%8F_%E5%88%BA%E7%8E%AB.png"
+ },
+ "伺夜": {
+  "name": "伺夜",
+  "star": 5,
+  "profession": "先锋",
+  "faction": "叙拉古",
+  "char_id": "char_427_vigil",
+  "skins": [
+   "叙拉古的彼面"
+  ],
+  "portrait": "https://media.prts.wiki/d/df/%E5%A4%B4%E5%83%8F_%E4%BC%BA%E5%A4%9C.png"
+ },
+ "淬羽赫默": {
+  "name": "淬羽赫默",
+  "star": 5,
+  "profession": "辅助",
+  "faction": "哥伦比亚",
+  "char_id": "char_1031_slent2",
+  "skins": [
+   "栖息"
+  ],
+  "portrait": "https://media.prts.wiki/0/0d/%E5%A4%B4%E5%83%8F_%E6%B7%AC%E7%BE%BD%E8%B5%AB%E9%BB%98.png"
+ },
+ "嵯峨": {
+  "name": "嵯峨",
+  "star": 5,
+  "profession": "先锋",
+  "faction": "东",
+  "char_id": "char_362_saga",
+  "skins": [
+   "彼有"
+  ],
+  "portrait": "https://media.prts.wiki/6/6d/%E5%A4%B4%E5%83%8F_%E5%B5%AF%E5%B3%A8.png"
+ },
+ "达格达": {
+  "name": "达格达",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "维多利亚",
+  "char_id": "char_157_dagda",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/d/dd/%E5%A4%B4%E5%83%8F_%E8%BE%BE%E6%A0%BC%E8%BE%BE.png"
+ },
+ "戴菲恩": {
+  "name": "戴菲恩",
+  "star": 4,
+  "profession": "术师",
+  "faction": "维多利亚",
+  "char_id": "char_4110_delphn",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/2/28/%E5%A4%B4%E5%83%8F_%E6%88%B4%E8%8F%B2%E6%81%A9.png"
+ },
+ "但书": {
+  "name": "但书",
+  "star": 4,
+  "profession": "辅助",
+  "faction": "卡西米尔",
+  "char_id": "char_4032_provs",
+  "skins": [
+   "秋高气爽",
+   "悠然假日 HD78"
+  ],
+  "portrait": "https://media.prts.wiki/b/b0/%E5%A4%B4%E5%83%8F_%E4%BD%86%E4%B9%A6.png"
+ },
+ "导火索": {
+  "name": "导火索",
+  "star": 4,
+  "profession": "近卫",
+  "char_id": "char_4126_fuze",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/7/70/%E5%A4%B4%E5%83%8F_%E5%AF%BC%E7%81%AB%E7%B4%A2.png"
+ },
+ "德克萨斯": {
+  "name": "德克萨斯",
+  "star": 4,
+  "profession": "先锋",
+  "faction": "炎-龙门",
+  "char_id": "char_102_texas",
+  "skins": [
+   "寒冬信使",
+   "意志"
+  ],
+  "portrait": "https://media.prts.wiki/5/57/%E5%A4%B4%E5%83%8F_%E5%BE%B7%E5%85%8B%E8%90%A8%E6%96%AF.png"
+ },
+ "地灵": {
+  "name": "地灵",
+  "star": 3,
+  "profession": "辅助",
+  "faction": "莱塔尼亚",
+  "char_id": "char_183_skgoat",
+  "skins": [
+   "主修领域"
+  ],
+  "portrait": "https://media.prts.wiki/5/57/%E5%A4%B4%E5%83%8F_%E5%9C%B0%E7%81%B5.png"
+ },
+ "蒂比": {
+  "name": "蒂比",
+  "star": 4,
+  "profession": "特种",
+  "faction": "哥伦比亚",
+  "char_id": "char_4191_tippi",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/0/09/%E5%A4%B4%E5%83%8F_%E8%92%82%E6%AF%94.png"
+ },
+ "涤火杰西卡": {
+  "name": "涤火杰西卡",
+  "star": 5,
+  "profession": "重装",
+  "faction": "哥伦比亚",
+  "char_id": "char_1034_jesca2",
+  "skins": [
+   "《上任达维镇》"
+  ],
+  "portrait": "https://media.prts.wiki/1/14/%E5%A4%B4%E5%83%8F_%E6%B6%A4%E7%81%AB%E6%9D%B0%E8%A5%BF%E5%8D%A1.png"
+ },
+ "电弧": {
+  "name": "电弧",
+  "star": 5,
+  "profession": "辅助",
+  "faction": "罗德岛",
+  "char_id": "char_4195_radian",
+  "skins": [
+   "乱数法则"
+  ],
+  "portrait": "https://media.prts.wiki/5/56/%E5%A4%B4%E5%83%8F_%E7%94%B5%E5%BC%A7.png"
+ },
+ "冬时": {
+  "name": "冬时",
+  "star": 3,
+  "profession": "先锋",
+  "faction": "乌萨斯",
+  "char_id": "char_4208_wintim",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/2/27/%E5%A4%B4%E5%83%8F_%E5%86%AC%E6%97%B6.png"
+ },
+ "豆苗": {
+  "name": "豆苗",
+  "star": 3,
+  "profession": "先锋",
+  "faction": "哥伦比亚",
+  "char_id": "char_452_bstalk",
+  "skins": [
+   "未完成的礼物",
+   "红丝带之约"
+  ],
+  "portrait": "https://media.prts.wiki/c/cb/%E5%A4%B4%E5%83%8F_%E8%B1%86%E8%8B%97.png"
+ },
+ "杜宾": {
+  "name": "杜宾",
+  "star": 3,
+  "profession": "近卫",
+  "faction": "罗德岛",
+  "char_id": "char_130_doberm",
+  "skins": [
+   "少尉"
+  ],
+  "portrait": "https://media.prts.wiki/a/a1/%E5%A4%B4%E5%83%8F_%E6%9D%9C%E5%AE%BE.png"
+ },
+ "杜林": {
+  "name": "杜林",
+  "star": 1,
+  "profession": "术师",
+  "faction": "罗德岛",
+  "char_id": "char_501_durin",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/2/24/%E5%A4%B4%E5%83%8F_%E6%9D%9C%E6%9E%97.png"
+ },
+ "渡桥": {
+  "name": "渡桥",
+  "star": 4,
+  "profession": "先锋",
+  "faction": "罗德岛",
+  "char_id": "char_4147_mitm",
+  "skins": [
+   "无影灯下"
+  ],
+  "portrait": "https://media.prts.wiki/f/fd/%E5%A4%B4%E5%83%8F_%E6%B8%A1%E6%A1%A5.png"
+ },
+ "断崖": {
+  "name": "断崖",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "雷姆必拓",
+  "char_id": "char_294_ayer",
+  "skins": [
+   "受验者"
+  ],
+  "portrait": "https://media.prts.wiki/e/ea/%E5%A4%B4%E5%83%8F_%E6%96%AD%E5%B4%96.png"
+ },
+ "断罪者": {
+  "name": "断罪者",
+  "star": 3,
+  "profession": "近卫",
+  "faction": "米诺斯",
+  "char_id": "char_159_peacok",
+  "skins": [
+   "超级断罪朋友"
+  ],
+  "portrait": "https://media.prts.wiki/f/f2/%E5%A4%B4%E5%83%8F_%E6%96%AD%E7%BD%AA%E8%80%85.png"
+ },
+ "铎铃": {
+  "name": "铎铃",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "炎",
+  "char_id": "char_4083_chimes",
+  "skins": [
+   "松间月"
+  ],
+  "portrait": "https://media.prts.wiki/4/4a/%E5%A4%B4%E5%83%8F_%E9%93%8E%E9%93%83.png"
+ },
+ "多萝西": {
+  "name": "多萝西",
+  "star": 5,
+  "profession": "特种",
+  "faction": "哥伦比亚",
+  "char_id": "char_4048_doroth",
+  "skins": [
+   "命运主宰"
+  ],
+  "portrait": "https://media.prts.wiki/4/4f/%E5%A4%B4%E5%83%8F_%E5%A4%9A%E8%90%9D%E8%A5%BF.png"
+ },
+ "芳汀": {
+  "name": "芳汀",
+  "star": 3,
+  "profession": "近卫",
+  "faction": "拉特兰",
+  "char_id": "char_271_spikes",
+  "skins": [
+   "随性",
+   "危险邀约"
+  ],
+  "portrait": "https://media.prts.wiki/6/6a/%E5%A4%B4%E5%83%8F_%E8%8A%B3%E6%B1%80.png"
+ },
+ "菲莱": {
+  "name": "菲莱",
+  "star": 4,
+  "profession": "重装",
+  "faction": "萨尔贡",
+  "char_id": "char_4148_philae",
+  "skins": [
+   "花绸曲"
+  ],
+  "portrait": "https://media.prts.wiki/0/00/%E5%A4%B4%E5%83%8F_%E8%8F%B2%E8%8E%B1.png"
+ },
+ "菲亚梅塔": {
+  "name": "菲亚梅塔",
+  "star": 5,
+  "profession": "狙击",
+  "faction": "拉特兰",
+  "char_id": "char_300_phenxi",
+  "skins": [
+   "至圣誓言",
+   "审判日"
+  ],
+  "portrait": "https://media.prts.wiki/b/b8/%E5%A4%B4%E5%83%8F_%E8%8F%B2%E4%BA%9A%E6%A2%85%E5%A1%94.png"
+ },
+ "芬": {
+  "name": "芬",
+  "star": 2,
+  "profession": "先锋",
+  "faction": "罗德岛",
+  "char_id": "char_123_fang",
+  "skins": [
+   "十字郡"
+  ],
+  "portrait": "https://media.prts.wiki/4/41/%E5%A4%B4%E5%83%8F_%E8%8A%AC.png"
+ },
+ "丰川祥子": {
+  "name": "丰川祥子",
+  "star": 5,
+  "profession": "近卫",
+  "char_id": "char_4182_oblvns",
+  "skins": [
+   "旋律的主人"
+  ],
+  "portrait": "https://media.prts.wiki/c/cb/%E5%A4%B4%E5%83%8F_%E4%B8%B0%E5%B7%9D%E7%A5%A5%E5%AD%90.png"
+ },
+ "风笛": {
+  "name": "风笛",
+  "star": 5,
+  "profession": "先锋",
+  "faction": "维多利亚",
+  "char_id": "char_222_bpipe",
+  "skins": [
+   "皇后一号",
+   "皇家近卫",
+   "风笛声声"
+  ],
+  "portrait": "https://media.prts.wiki/d/de/%E5%A4%B4%E5%83%8F_%E9%A3%8E%E7%AC%9B.png"
+ },
+ "风丸": {
+  "name": "风丸",
+  "star": 4,
+  "profession": "特种",
+  "faction": "东",
+  "char_id": "char_4016_kazema",
+  "skins": [
+   "幻影轻悄"
+  ],
+  "portrait": "https://media.prts.wiki/1/12/%E5%A4%B4%E5%83%8F_%E9%A3%8E%E4%B8%B8.png"
+ },
+ "风絮": {
+  "name": "风絮",
+  "star": 4,
+  "profession": "医疗",
+  "faction": "炎",
+  "char_id": "char_4222_taraxa",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/1/1c/%E5%A4%B4%E5%83%8F_%E9%A3%8E%E7%B5%AE.png"
+ },
+ "Friston-3": {
+  "name": "Friston-3",
+  "star": 0,
+  "profession": "重装",
+  "faction": "罗德岛",
+  "char_id": "char_4093_frston",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/c/cf/%E5%A4%B4%E5%83%8F_Friston-3.png"
+ },
+ "芙兰卡": {
+  "name": "芙兰卡",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "哥伦比亚",
+  "char_id": "char_106_franka",
+  "skins": [
+   "林虹之间"
+  ],
+  "portrait": "https://media.prts.wiki/2/2b/%E5%A4%B4%E5%83%8F_%E8%8A%99%E5%85%B0%E5%8D%A1.png"
+ },
+ "芙蓉": {
+  "name": "芙蓉",
+  "star": 2,
+  "profession": "医疗",
+  "faction": "罗德岛",
+  "char_id": "char_120_hibisc",
+  "skins": [
+   "守岁人"
+  ],
+  "portrait": "https://media.prts.wiki/d/d3/%E5%A4%B4%E5%83%8F_%E8%8A%99%E8%93%89.png"
+ },
+ "复奏": {
+  "name": "复奏",
+  "star": 4,
+  "profession": "术师",
+  "faction": "叙拉古",
+  "char_id": "char_4031_liesel",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/6/61/%E5%A4%B4%E5%83%8F_%E5%A4%8D%E5%A5%8F.png"
+ },
+ "GALLUS²": {
+  "name": "GALLUS²",
+  "star": 0,
+  "profession": "术师",
+  "faction": "罗德岛",
+  "char_id": "char_4227_gallus",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/d/d7/%E5%A4%B4%E5%83%8F_GALLUS%C2%B2.png"
+ },
+ "格拉尼": {
+  "name": "格拉尼",
+  "star": 4,
+  "profession": "先锋",
+  "faction": "维多利亚",
+  "char_id": "char_220_grani",
+  "skins": [
+   "美妙时光"
+  ],
+  "portrait": "https://media.prts.wiki/2/29/%E5%A4%B4%E5%83%8F_%E6%A0%BC%E6%8B%89%E5%B0%BC.png"
+ },
+ "格劳克斯": {
+  "name": "格劳克斯",
+  "star": 4,
+  "profession": "辅助",
+  "faction": "伊比利亚",
+  "char_id": "char_326_glacus",
+  "skins": [
+   "广场扫荡客"
+  ],
+  "portrait": "https://media.prts.wiki/5/53/%E5%A4%B4%E5%83%8F_%E6%A0%BC%E5%8A%B3%E5%85%8B%E6%96%AF.png"
+ },
+ "歌蕾蒂娅": {
+  "name": "歌蕾蒂娅",
+  "star": 5,
+  "profession": "特种",
+  "faction": "阿戈尔",
+  "char_id": "char_474_glady",
+  "skins": [
+   "返航",
+   "我即潮汐"
+  ],
+  "portrait": "https://media.prts.wiki/0/0d/%E5%A4%B4%E5%83%8F_%E6%AD%8C%E8%95%BE%E8%92%82%E5%A8%85.png"
+ },
+ "格雷伊": {
+  "name": "格雷伊",
+  "star": 3,
+  "profession": "术师",
+  "faction": "玻利瓦尔",
+  "char_id": "char_253_greyy",
+  "skins": [
+   "八音蛋匠人",
+   "都会送报员"
+  ],
+  "portrait": "https://media.prts.wiki/f/fe/%E5%A4%B4%E5%83%8F_%E6%A0%BC%E9%9B%B7%E4%BC%8A.png"
+ },
+ "古米": {
+  "name": "古米",
+  "star": 3,
+  "profession": "重装",
+  "faction": "乌萨斯",
+  "char_id": "char_196_sunbr",
+  "skins": [
+   "夏卉 FA011"
+  ],
+  "portrait": "https://media.prts.wiki/0/07/%E5%A4%B4%E5%83%8F_%E5%8F%A4%E7%B1%B3.png"
+ },
+ "归溟幽灵鲨": {
+  "name": "归溟幽灵鲨",
+  "star": 5,
+  "profession": "特种",
+  "faction": "阿戈尔",
+  "char_id": "char_1023_ghost2",
+  "skins": [
+   "生而为一"
+  ],
+  "portrait": "https://media.prts.wiki/b/be/%E5%A4%B4%E5%83%8F_%E5%BD%92%E6%BA%9F%E5%B9%BD%E7%81%B5%E9%B2%A8.png"
+ },
+ "瑰盐": {
+  "name": "瑰盐",
+  "star": 4,
+  "profession": "医疗",
+  "faction": "伊比利亚",
+  "char_id": "char_4163_rosesa",
+  "skins": [
+   "冒险启程"
+  ],
+  "portrait": "https://media.prts.wiki/8/8a/%E5%A4%B4%E5%83%8F_%E7%91%B0%E7%9B%90.png"
+ },
+ "哈蒂娅": {
+  "name": "哈蒂娅",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "萨尔贡",
+  "char_id": "char_394_hadiya",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/3/3c/%E5%A4%B4%E5%83%8F_%E5%93%88%E8%92%82%E5%A8%85.png"
+ },
+ "哈洛德": {
+  "name": "哈洛德",
+  "star": 4,
+  "profession": "医疗",
+  "faction": "维多利亚",
+  "char_id": "char_4114_harold",
+  "skins": [
+   "邀雪"
+  ],
+  "portrait": "https://media.prts.wiki/2/22/%E5%A4%B4%E5%83%8F_%E5%93%88%E6%B4%9B%E5%BE%B7.png"
+ },
+ "海蒂": {
+  "name": "海蒂",
+  "star": 4,
+  "profession": "辅助",
+  "faction": "维多利亚",
+  "char_id": "char_4045_heidi",
+  "skins": [
+   "书信零落"
+  ],
+  "portrait": "https://media.prts.wiki/d/d9/%E5%A4%B4%E5%83%8F_%E6%B5%B7%E8%92%82.png"
+ },
+ "海沫": {
+  "name": "海沫",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "伊比利亚",
+  "char_id": "char_4066_highmo",
+  "skins": [
+   "及山海",
+   "搁浅"
+  ],
+  "portrait": "https://media.prts.wiki/6/6c/%E5%A4%B4%E5%83%8F_%E6%B5%B7%E6%B2%AB.png"
+ },
+ "海霓": {
+  "name": "海霓",
+  "star": 4,
+  "profession": "辅助",
+  "faction": "阿戈尔",
+  "char_id": "char_4079_haini",
+  "skins": [
+   "翻涌"
+  ],
+  "portrait": "https://media.prts.wiki/7/72/%E5%A4%B4%E5%83%8F_%E6%B5%B7%E9%9C%93.png"
+ },
+ "寒芒克洛丝": {
+  "name": "寒芒克洛丝",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "罗德岛",
+  "char_id": "char_1021_kroos2",
+  "skins": [
+   "廊下游",
+   "新手光环"
+  ],
+  "portrait": "https://media.prts.wiki/3/39/%E5%A4%B4%E5%83%8F_%E5%AF%92%E8%8A%92%E5%85%8B%E6%B4%9B%E4%B8%9D.png"
+ },
+ "寒檀": {
+  "name": "寒檀",
+  "star": 4,
+  "profession": "术师",
+  "faction": "萨米",
+  "char_id": "char_341_sntlla",
+  "skins": [
+   "悠然假日 HD71"
+  ],
+  "portrait": "https://media.prts.wiki/c/cd/%E5%A4%B4%E5%83%8F_%E5%AF%92%E6%AA%80.png"
+ },
+ "号角": {
+  "name": "号角",
+  "star": 5,
+  "profession": "重装",
+  "faction": "维多利亚",
+  "char_id": "char_4039_horn",
+  "skins": [
+   "化花"
+  ],
+  "portrait": "https://media.prts.wiki/3/3f/%E5%A4%B4%E5%83%8F_%E5%8F%B7%E8%A7%92.png"
+ },
+ "赫德雷": {
+  "name": "赫德雷",
+  "star": 5,
+  "profession": "近卫",
+  "char_id": "char_4088_hodrer",
+  "skins": [
+   "沉思之庭"
+  ],
+  "portrait": "https://media.prts.wiki/f/f8/%E5%A4%B4%E5%83%8F_%E8%B5%AB%E5%BE%B7%E9%9B%B7.png"
+ },
+ "褐果": {
+  "name": "褐果",
+  "star": 3,
+  "profession": "医疗",
+  "faction": "罗德岛",
+  "char_id": "char_4041_chnut",
+  "skins": [
+   "悠然假日 HDm57"
+  ],
+  "portrait": "https://media.prts.wiki/5/58/%E5%A4%B4%E5%83%8F_%E8%A4%90%E6%9E%9C.png"
+ },
+ "赫拉格": {
+  "name": "赫拉格",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "乌萨斯",
+  "char_id": "char_188_helage",
+  "skins": [
+   "歧路幻影"
+  ],
+  "portrait": "https://media.prts.wiki/c/cd/%E5%A4%B4%E5%83%8F_%E8%B5%AB%E6%8B%89%E6%A0%BC.png"
+ },
+ "赫默": {
+  "name": "赫默",
+  "star": 4,
+  "profession": "医疗",
+  "faction": "哥伦比亚",
+  "char_id": "char_108_silent",
+  "skins": [
+   "漆匠",
+   "霜息"
+  ],
+  "portrait": "https://media.prts.wiki/3/39/%E5%A4%B4%E5%83%8F_%E8%B5%AB%E9%BB%98.png"
+ },
+ "和弦": {
+  "name": "和弦",
+  "star": 4,
+  "profession": "术师",
+  "faction": "维多利亚",
+  "char_id": "char_297_hamoni",
+  "skins": [
+   "邀约",
+   "装点"
+  ],
+  "portrait": "https://media.prts.wiki/e/ed/%E5%A4%B4%E5%83%8F_%E5%92%8C%E5%BC%A6.png"
+ },
+ "黑": {
+  "name": "黑",
+  "star": 5,
+  "profession": "狙击",
+  "faction": "哥伦比亚",
+  "char_id": "char_340_shwaz",
+  "skins": [
+   "厚礼",
+   "天际线"
+  ],
+  "portrait": "https://media.prts.wiki/d/d4/%E5%A4%B4%E5%83%8F_%E9%BB%91.png"
+ },
+ "黑键": {
+  "name": "黑键",
+  "star": 5,
+  "profession": "术师",
+  "faction": "莱塔尼亚",
+  "char_id": "char_4046_ebnhlz",
+  "skins": [
+   "变奏"
+  ],
+  "portrait": "https://media.prts.wiki/1/1e/%E5%A4%B4%E5%83%8F_%E9%BB%91%E9%94%AE.png"
+ },
+ "黑角": {
+  "name": "黑角",
+  "star": 1,
+  "profession": "重装",
+  "faction": "罗德岛",
+  "char_id": "char_500_noirc",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/f/f1/%E5%A4%B4%E5%83%8F_%E9%BB%91%E8%A7%92.png"
+ },
+ "衡沙": {
+  "name": "衡沙",
+  "star": 4,
+  "profession": "辅助",
+  "faction": "萨尔贡",
+  "char_id": "char_4140_lasher",
+  "skins": [
+   "憩羽"
+  ],
+  "portrait": "https://media.prts.wiki/f/f8/%E5%A4%B4%E5%83%8F_%E8%A1%A1%E6%B2%99.png"
+ },
+ "吽": {
+  "name": "吽",
+  "star": 4,
+  "profession": "重装",
+  "faction": "炎-龙门",
+  "char_id": "char_226_hmau",
+  "skins": [
+   "一介车夫"
+  ],
+  "portrait": "https://media.prts.wiki/4/41/%E5%A4%B4%E5%83%8F_%E5%90%BD.png"
+ },
+ "红": {
+  "name": "红",
+  "star": 4,
+  "profession": "特种",
+  "faction": "罗德岛",
+  "char_id": "char_144_red",
+  "skins": [
+   "轻风 LB01"
+  ],
+  "portrait": "https://media.prts.wiki/a/ac/%E5%A4%B4%E5%83%8F_%E7%BA%A2.png"
+ },
+ "红豆": {
+  "name": "红豆",
+  "star": 3,
+  "profession": "先锋",
+  "faction": "哥伦比亚",
+  "char_id": "char_290_vigna",
+  "skins": [
+   "悠然假日 HD01",
+   "漆黑热浪"
+  ],
+  "portrait": "https://media.prts.wiki/b/bb/%E5%A4%B4%E5%83%8F_%E7%BA%A2%E8%B1%86.png"
+ },
+ "红隼": {
+  "name": "红隼",
+  "star": 4,
+  "profession": "先锋",
+  "faction": "萨尔贡",
+  "char_id": "char_4023_rfalcn",
+  "skins": [
+   "三元风情"
+  ],
+  "portrait": "https://media.prts.wiki/4/45/%E5%A4%B4%E5%83%8F_%E7%BA%A2%E9%9A%BC.png"
+ },
+ "鸿雪": {
+  "name": "鸿雪",
+  "star": 5,
+  "profession": "狙击",
+  "faction": "罗德岛",
+  "char_id": "char_4055_bgsnow",
+  "skins": [
+   "字句中的雪原",
+   "行梦侧畔"
+  ],
+  "portrait": "https://media.prts.wiki/1/1b/%E5%A4%B4%E5%83%8F_%E9%B8%BF%E9%9B%AA.png"
+ },
+ "红云": {
+  "name": "红云",
+  "star": 3,
+  "profession": "狙击",
+  "faction": "叙拉古",
+  "char_id": "char_190_clour",
+  "skins": [
+   "玩伴"
+  ],
+  "portrait": "https://media.prts.wiki/a/af/%E5%A4%B4%E5%83%8F_%E7%BA%A2%E4%BA%91.png"
+ },
+ "华法琳": {
+  "name": "华法琳",
+  "star": 4,
+  "profession": "医疗",
+  "faction": "罗德岛",
+  "char_id": "char_171_bldsk",
+  "skins": [
+   "盛宴",
+   "悠然假日 HD31"
+  ],
+  "portrait": "https://media.prts.wiki/3/30/%E5%A4%B4%E5%83%8F_%E5%8D%8E%E6%B3%95%E7%90%B3.png"
+ },
+ "槐琥": {
+  "name": "槐琥",
+  "star": 4,
+  "profession": "特种",
+  "faction": "炎-龙门",
+  "char_id": "char_243_waaifu",
+  "skins": [
+   "街道狂花"
+  ],
+  "portrait": "https://media.prts.wiki/e/ed/%E5%A4%B4%E5%83%8F_%E6%A7%90%E7%90%A5.png"
+ },
+ "煌": {
+  "name": "煌",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "罗德岛",
+  "char_id": "char_017_huang",
+  "skins": [
+   "爆裂菲林",
+   "易爆蓝焰"
+  ],
+  "portrait": "https://media.prts.wiki/3/30/%E5%A4%B4%E5%83%8F_%E7%85%8C.png"
+ },
+ "荒芜拉普兰德": {
+  "name": "荒芜拉普兰德",
+  "star": 5,
+  "profession": "术师",
+  "faction": "叙拉古",
+  "char_id": "char_1038_whitw2",
+  "skins": [
+   "无序的谦卑"
+  ],
+  "portrait": "https://media.prts.wiki/0/04/%E5%A4%B4%E5%83%8F_%E8%8D%92%E8%8A%9C%E6%8B%89%E6%99%AE%E5%85%B0%E5%BE%B7.png"
+ },
+ "灰毫": {
+  "name": "灰毫",
+  "star": 4,
+  "profession": "重装",
+  "faction": "卡西米尔",
+  "char_id": "char_431_ashlok",
+  "skins": [
+   "卡利斯卡群枪"
+  ],
+  "portrait": "https://media.prts.wiki/2/21/%E5%A4%B4%E5%83%8F_%E7%81%B0%E6%AF%AB.png"
+ },
+ "灰喉": {
+  "name": "灰喉",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "罗德岛",
+  "char_id": "char_367_swllow",
+  "skins": [
+   "归巢"
+  ],
+  "portrait": "https://media.prts.wiki/3/3b/%E5%A4%B4%E5%83%8F_%E7%81%B0%E5%96%89.png"
+ },
+ "灰烬": {
+  "name": "灰烬",
+  "star": 5,
+  "profession": "狙击",
+  "char_id": "char_456_ash",
+  "skins": [
+   "游侠"
+  ],
+  "portrait": "https://media.prts.wiki/6/64/%E5%A4%B4%E5%83%8F_%E7%81%B0%E7%83%AC.png"
+ },
+ "霍尔海雅": {
+  "name": "霍尔海雅",
+  "star": 5,
+  "profession": "术师",
+  "faction": "哥伦比亚",
+  "char_id": "char_4027_heyak",
+  "skins": [
+   "历世流风",
+   "恒久祭礼"
+  ],
+  "portrait": "https://media.prts.wiki/9/9e/%E5%A4%B4%E5%83%8F_%E9%9C%8D%E5%B0%94%E6%B5%B7%E9%9B%85.png"
+ },
+ "火龙S黑角": {
+  "name": "火龙S黑角",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "罗德岛",
+  "char_id": "char_1030_noirc2",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/8/81/%E5%A4%B4%E5%83%8F_%E7%81%AB%E9%BE%99S%E9%BB%91%E8%A7%92.png"
+ },
+ "火哨": {
+  "name": "火哨",
+  "star": 4,
+  "profession": "重装",
+  "faction": "雷姆必拓",
+  "char_id": "char_493_firwhl",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/f/fa/%E5%A4%B4%E5%83%8F_%E7%81%AB%E5%93%A8.png"
+ },
+ "火神": {
+  "name": "火神",
+  "star": 4,
+  "profession": "重装",
+  "faction": "米诺斯",
+  "char_id": "char_163_hpsts",
+  "skins": [
+   "火种"
+  ],
+  "portrait": "https://media.prts.wiki/f/f1/%E5%A4%B4%E5%83%8F_%E7%81%AB%E7%A5%9E.png"
+ },
+ "棘刺": {
+  "name": "棘刺",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "伊比利亚",
+  "char_id": "char_293_thorns",
+  "skins": [
+   "惬意",
+   "锋潮"
+  ],
+  "portrait": "https://media.prts.wiki/2/2a/%E5%A4%B4%E5%83%8F_%E6%A3%98%E5%88%BA.png"
+ },
+ "极光": {
+  "name": "极光",
+  "star": 4,
+  "profession": "重装",
+  "faction": "谢拉格",
+  "char_id": "char_422_aurora",
+  "skins": [
+   "极昼捕手"
+  ],
+  "portrait": "https://media.prts.wiki/4/43/%E5%A4%B4%E5%83%8F_%E6%9E%81%E5%85%89.png"
+ },
+ "极境": {
+  "name": "极境",
+  "star": 4,
+  "profession": "先锋",
+  "faction": "罗德岛",
+  "char_id": "char_401_elysm",
+  "skins": [
+   "雪夜回音",
+   "灿阳朝露 SDm11"
+  ],
+  "portrait": "https://media.prts.wiki/9/97/%E5%A4%B4%E5%83%8F_%E6%9E%81%E5%A2%83.png"
+ },
+ "吉星": {
+  "name": "吉星",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "东",
+  "char_id": "char_4203_kichi",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/f/fa/%E5%A4%B4%E5%83%8F_%E5%90%89%E6%98%9F.png"
+ },
+ "假日威龙陈": {
+  "name": "假日威龙陈",
+  "star": 5,
+  "profession": "狙击",
+  "faction": "罗德岛",
+  "char_id": "char_1013_chen2",
+  "skins": [
+   "万重山",
+   "悠然假日 HD79"
+  ],
+  "portrait": "https://media.prts.wiki/d/df/%E5%A4%B4%E5%83%8F_%E5%81%87%E6%97%A5%E5%A8%81%E9%BE%99%E9%99%88.png"
+ },
+ "贾维": {
+  "name": "贾维",
+  "star": 4,
+  "profession": "先锋",
+  "faction": "叙拉古",
+  "char_id": "char_349_chiave",
+  "skins": [
+   "一人车队"
+  ],
+  "portrait": "https://media.prts.wiki/2/2a/%E5%A4%B4%E5%83%8F_%E8%B4%BE%E7%BB%B4.png"
+ },
+ "嘉维尔": {
+  "name": "嘉维尔",
+  "star": 3,
+  "profession": "医疗",
+  "faction": "罗德岛",
+  "char_id": "char_187_ccheal",
+  "skins": [
+   "战医"
+  ],
+  "portrait": "https://media.prts.wiki/c/cc/%E5%A4%B4%E5%83%8F_%E5%98%89%E7%BB%B4%E5%B0%94.png"
+ },
+ "锏": {
+  "name": "锏",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "谢拉格",
+  "char_id": "char_4116_blkkgt",
+  "skins": [
+   "暗月的影子"
+  ],
+  "portrait": "https://media.prts.wiki/0/0f/%E5%A4%B4%E5%83%8F_%E9%94%8F.png"
+ },
+ "坚雷": {
+  "name": "坚雷",
+  "star": 3,
+  "profession": "重装",
+  "faction": "罗德岛",
+  "char_id": "char_260_durnar",
+  "skins": [
+   "绒布蛋糕"
+  ],
+  "portrait": "https://media.prts.wiki/a/ab/%E5%A4%B4%E5%83%8F_%E5%9D%9A%E9%9B%B7.png"
+ },
+ "缄默德克萨斯": {
+  "name": "缄默德克萨斯",
+  "star": 5,
+  "profession": "特种",
+  "faction": "炎-龙门",
+  "char_id": "char_1028_texas2",
+  "skins": [
+   "破翼者",
+   "幽兰秘辛"
+  ],
+  "portrait": "https://media.prts.wiki/b/b8/%E5%A4%B4%E5%83%8F_%E7%BC%84%E9%BB%98%E5%BE%B7%E5%85%8B%E8%90%A8%E6%96%AF.png"
+ },
+ "见行者": {
+  "name": "见行者",
+  "star": 4,
+  "profession": "特种",
+  "faction": "拉特兰",
+  "char_id": "char_4036_forcer",
+  "skins": [
+   "拾翼"
+  ],
+  "portrait": "https://media.prts.wiki/d/d2/%E5%A4%B4%E5%83%8F_%E8%A7%81%E8%A1%8C%E8%80%85.png"
+ },
+ "角峰": {
+  "name": "角峰",
+  "star": 3,
+  "profession": "重装",
+  "faction": "谢拉格",
+  "char_id": "char_199_yak",
+  "skins": [
+   "沙滩护卫 GT.001"
+  ],
+  "portrait": "https://media.prts.wiki/e/e4/%E5%A4%B4%E5%83%8F_%E8%A7%92%E5%B3%B0.png"
+ },
+ "孑": {
+  "name": "孑",
+  "star": 3,
+  "profession": "特种",
+  "faction": "炎-龙门",
+  "char_id": "char_272_strong",
+  "skins": [
+   "沙滩护卫 GT002"
+  ],
+  "portrait": "https://media.prts.wiki/5/54/%E5%A4%B4%E5%83%8F_%E5%AD%91.png"
+ },
+ "杰克": {
+  "name": "杰克",
+  "star": 3,
+  "profession": "近卫",
+  "faction": "哥伦比亚",
+  "char_id": "char_347_jaksel",
+  "skins": [
+   "纵身一跃"
+  ],
+  "portrait": "https://media.prts.wiki/d/d8/%E5%A4%B4%E5%83%8F_%E6%9D%B0%E5%85%8B.png"
+ },
+ "杰西卡": {
+  "name": "杰西卡",
+  "star": 3,
+  "profession": "狙击",
+  "faction": "哥伦比亚",
+  "char_id": "char_235_jesica",
+  "skins": [
+   "铁块",
+   "燃灰",
+   "君子兰"
+  ],
+  "portrait": "https://media.prts.wiki/6/63/%E5%A4%B4%E5%83%8F_%E6%9D%B0%E8%A5%BF%E5%8D%A1.png"
+ },
+ "截云": {
+  "name": "截云",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "炎",
+  "char_id": "char_4078_bdhkgt",
+  "skins": [
+   "伴青莲"
+  ],
+  "portrait": "https://media.prts.wiki/8/81/%E5%A4%B4%E5%83%8F_%E6%88%AA%E4%BA%91.png"
+ },
+ "惊蛰": {
+  "name": "惊蛰",
+  "star": 4,
+  "profession": "术师",
+  "faction": "炎",
+  "char_id": "char_306_leizi",
+  "skins": [
+   "遗迹游学者"
+  ],
+  "portrait": "https://media.prts.wiki/8/81/%E5%A4%B4%E5%83%8F_%E6%83%8A%E8%9B%B0.png"
+ },
+ "九色鹿": {
+  "name": "九色鹿",
+  "star": 4,
+  "profession": "辅助",
+  "faction": "炎",
+  "char_id": "char_4019_ncdeer",
+  "skins": [
+   "古往今来的月"
+  ],
+  "portrait": "https://media.prts.wiki/a/ab/%E5%A4%B4%E5%83%8F_%E4%B9%9D%E8%89%B2%E9%B9%BF.png"
+ },
+ "酒神": {
+  "name": "酒神",
+  "star": 5,
+  "profession": "辅助",
+  "faction": "维多利亚",
+  "char_id": "char_1042_phatm2",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/0/0d/%E5%A4%B4%E5%83%8F_%E9%85%92%E7%A5%9E.png"
+ },
+ "矩": {
+  "name": "矩",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "炎",
+  "char_id": "char_4221_ju",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/a/a8/%E5%A4%B4%E5%83%8F_%E7%9F%A9.png"
+ },
+ "卡达": {
+  "name": "卡达",
+  "star": 3,
+  "profession": "术师",
+  "faction": "罗德岛",
+  "char_id": "char_328_cammou",
+  "skins": [
+   "安息处的怪盗"
+  ],
+  "portrait": "https://media.prts.wiki/4/43/%E5%A4%B4%E5%83%8F_%E5%8D%A1%E8%BE%BE.png"
+ },
+ "卡夫卡": {
+  "name": "卡夫卡",
+  "star": 4,
+  "profession": "特种",
+  "faction": "哥伦比亚",
+  "char_id": "char_214_kafka",
+  "skins": [
+   "纸板仙子"
+  ],
+  "portrait": "https://media.prts.wiki/8/8d/%E5%A4%B4%E5%83%8F_%E5%8D%A1%E5%A4%AB%E5%8D%A1.png"
+ },
+ "卡涅利安": {
+  "name": "卡涅利安",
+  "star": 5,
+  "profession": "术师",
+  "faction": "莱塔尼亚",
+  "char_id": "char_426_billro",
+  "skins": [
+   "霍恩洛厄的寒沙",
+   "灿阳朝露 SD08"
+  ],
+  "portrait": "https://media.prts.wiki/d/dd/%E5%A4%B4%E5%83%8F_%E5%8D%A1%E6%B6%85%E5%88%A9%E5%AE%89.png"
+ },
+ "卡缇": {
+  "name": "卡缇",
+  "star": 2,
+  "profession": "重装",
+  "faction": "罗德岛",
+  "char_id": "char_209_ardign",
+  "skins": [
+   "快乐卫士",
+   "晴日"
+  ],
+  "portrait": "https://media.prts.wiki/8/87/%E5%A4%B4%E5%83%8F_%E5%8D%A1%E7%BC%87.png"
+ },
+ "凯尔希": {
+  "name": "凯尔希",
+  "star": 5,
+  "profession": "医疗",
+  "faction": "罗德岛",
+  "char_id": "char_003_kalts",
+  "skins": [
+   "残余",
+   "时遗"
+  ],
+  "portrait": "https://media.prts.wiki/c/c5/%E5%A4%B4%E5%83%8F_%E5%87%AF%E5%B0%94%E5%B8%8C.png"
+ },
+ "凯尔希·思衡托": {
+  "name": "凯尔希·思衡托",
+  "star": 5,
+  "profession": "医疗",
+  "faction": "罗德岛",
+  "char_id": "char_1052_kalts2",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/5/57/%E5%A4%B4%E5%83%8F_%E5%87%AF%E5%B0%94%E5%B8%8C%C2%B7%E6%80%9D%E8%A1%A1%E6%89%98.png"
+ },
+ "凯瑟琳": {
+  "name": "凯瑟琳",
+  "star": 4,
+  "profession": "辅助",
+  "faction": "维多利亚",
+  "char_id": "char_4162_cathy",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/e/e9/%E5%A4%B4%E5%83%8F_%E5%87%AF%E7%91%9F%E7%90%B3.png"
+ },
+ "刻刀": {
+  "name": "刻刀",
+  "star": 3,
+  "profession": "近卫",
+  "faction": "哥伦比亚",
+  "char_id": "char_301_cutter",
+  "skins": [
+   "拭刀"
+  ],
+  "portrait": "https://media.prts.wiki/2/2c/%E5%A4%B4%E5%83%8F_%E5%88%BB%E5%88%80.png"
+ },
+ "刻俄柏": {
+  "name": "刻俄柏",
+  "star": 5,
+  "profession": "术师",
+  "faction": "罗德岛",
+  "char_id": "char_2013_cerber",
+  "skins": [
+   "夏卉 FA333",
+   "无拘无束"
+  ],
+  "portrait": "https://media.prts.wiki/4/4a/%E5%A4%B4%E5%83%8F_%E5%88%BB%E4%BF%84%E6%9F%8F.png"
+ },
+ "可露希尔": {
+  "name": "可露希尔",
+  "star": 5,
+  "profession": "先锋",
+  "faction": "罗德岛",
+  "char_id": "char_4228_closur",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/a/a5/%E5%A4%B4%E5%83%8F_%E5%8F%AF%E9%9C%B2%E5%B8%8C%E5%B0%94.png"
+ },
+ "克洛丝": {
+  "name": "克洛丝",
+  "star": 2,
+  "profession": "狙击",
+  "faction": "罗德岛",
+  "char_id": "char_124_kroos",
+  "skins": [
+   "魔术师",
+   "星月漂流记"
+  ],
+  "portrait": "https://media.prts.wiki/b/b9/%E5%A4%B4%E5%83%8F_%E5%85%8B%E6%B4%9B%E4%B8%9D.png"
+ },
+ "可颂": {
+  "name": "可颂",
+  "star": 4,
+  "profession": "重装",
+  "faction": "炎-龙门",
+  "char_id": "char_201_moeshd",
+  "skins": [
+   "清晨七点",
+   "探寻者 SK03"
+  ],
+  "portrait": "https://media.prts.wiki/a/ab/%E5%A4%B4%E5%83%8F_%E5%8F%AF%E9%A2%82.png"
+ },
+ "空": {
+  "name": "空",
+  "star": 4,
+  "profession": "辅助",
+  "faction": "炎-龙门",
+  "char_id": "char_101_sora",
+  "skins": [
+   "夏卉 FA361",
+   "如歌"
+  ],
+  "portrait": "https://media.prts.wiki/5/58/%E5%A4%B4%E5%83%8F_%E7%A9%BA.png"
+ },
+ "空爆": {
+  "name": "空爆",
+  "star": 2,
+  "profession": "狙击",
+  "faction": "罗德岛",
+  "char_id": "char_282_catap",
+  "skins": [
+   "悠然假日 HD66"
+  ],
+  "portrait": "https://media.prts.wiki/c/cd/%E5%A4%B4%E5%83%8F_%E7%A9%BA%E7%88%86.png"
+ },
+ "空构": {
+  "name": "空构",
+  "star": 4,
+  "profession": "特种",
+  "faction": "拉特兰",
+  "char_id": "char_4015_spuria",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/d/d1/%E5%A4%B4%E5%83%8F_%E7%A9%BA%E6%9E%84.png"
+ },
+ "空弦": {
+  "name": "空弦",
+  "star": 5,
+  "profession": "狙击",
+  "faction": "拉特兰",
+  "char_id": "char_332_archet",
+  "skins": [
+   "宣传策略",
+   "至虔者荣光"
+  ],
+  "portrait": "https://media.prts.wiki/b/bb/%E5%A4%B4%E5%83%8F_%E7%A9%BA%E5%BC%A6.png"
+ },
+ "苦艾": {
+  "name": "苦艾",
+  "star": 4,
+  "profession": "术师",
+  "faction": "乌萨斯",
+  "char_id": "char_405_absin",
+  "skins": [
+   "正午余光"
+  ],
+  "portrait": "https://media.prts.wiki/e/e9/%E5%A4%B4%E5%83%8F_%E8%8B%A6%E8%89%BE.png"
+ },
+ "傀影": {
+  "name": "傀影",
+  "star": 5,
+  "profession": "特种",
+  "faction": "维多利亚",
+  "char_id": "char_250_phatom",
+  "skins": [
+   "梦魇之梦",
+   "焦点"
+  ],
+  "portrait": "https://media.prts.wiki/8/83/%E5%A4%B4%E5%83%8F_%E5%82%80%E5%BD%B1.png"
+ },
+ "拉普兰德": {
+  "name": "拉普兰德",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "叙拉古",
+  "char_id": "char_140_whitew",
+  "skins": [
+   "典雅噩兆"
+  ],
+  "portrait": "https://media.prts.wiki/b/bf/%E5%A4%B4%E5%83%8F_%E6%8B%89%E6%99%AE%E5%85%B0%E5%BE%B7.png"
+ },
+ "莱恩哈特": {
+  "name": "莱恩哈特",
+  "star": 4,
+  "profession": "术师",
+  "faction": "雷姆必拓",
+  "char_id": "char_373_lionhd",
+  "skins": [
+   "宝藏行家",
+   "希望巡游"
+  ],
+  "portrait": "https://media.prts.wiki/0/03/%E5%A4%B4%E5%83%8F_%E8%8E%B1%E6%81%A9%E5%93%88%E7%89%B9.png"
+ },
+ "莱欧斯": {
+  "name": "莱欧斯",
+  "star": 4,
+  "profession": "近卫",
+  "char_id": "char_4142_laios",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/9/9c/%E5%A4%B4%E5%83%8F_%E8%8E%B1%E6%AC%A7%E6%96%AF.png"
+ },
+ "莱伊": {
+  "name": "莱伊",
+  "star": 5,
+  "profession": "狙击",
+  "faction": "雷姆必拓",
+  "char_id": "char_4117_ray",
+  "skins": [
+   "梦幻高空"
+  ],
+  "portrait": "https://media.prts.wiki/6/6a/%E5%A4%B4%E5%83%8F_%E8%8E%B1%E4%BC%8A.png"
+ },
+ "蓝毒": {
+  "name": "蓝毒",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "伊比利亚",
+  "char_id": "char_129_bluep",
+  "skins": [
+   "浅滩律动",
+   "哀律西昂夜曲"
+  ],
+  "portrait": "https://media.prts.wiki/6/63/%E5%A4%B4%E5%83%8F_%E8%93%9D%E6%AF%92.png"
+ },
+ "Lancet-2": {
+  "name": "Lancet-2",
+  "star": 0,
+  "profession": "医疗",
+  "faction": "罗德岛",
+  "char_id": "char_285_medic2",
+  "skins": [
+   "海岸救援改装"
+  ],
+  "portrait": "https://media.prts.wiki/b/b6/%E5%A4%B4%E5%83%8F_Lancet-2.png"
+ },
+ "老鲤": {
+  "name": "老鲤",
+  "star": 5,
+  "profession": "特种",
+  "faction": "炎-龙门",
+  "char_id": "char_322_lmlee",
+  "skins": [
+   "手到牌来",
+   "坊间凉茶铺",
+   "鉴浮生"
+  ],
+  "portrait": "https://media.prts.wiki/e/e5/%E5%A4%B4%E5%83%8F_%E8%80%81%E9%B2%A4.png"
+ },
+ "雷狼龙S空爆": {
+  "name": "雷狼龙S空爆",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "罗德岛",
+  "char_id": "char_1049_catap2",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/f/fd/%E5%A4%B4%E5%83%8F_%E9%9B%B7%E7%8B%BC%E9%BE%99S%E7%A9%BA%E7%88%86.png"
+ },
+ "蕾缪安": {
+  "name": "蕾缪安",
+  "star": 5,
+  "profession": "狙击",
+  "faction": "拉特兰",
+  "char_id": "char_4193_lemuen",
+  "skins": [
+   "暮星安魂曲"
+  ],
+  "portrait": "https://media.prts.wiki/c/c5/%E5%A4%B4%E5%83%8F_%E8%95%BE%E7%BC%AA%E5%AE%89.png"
+ },
+ "雷蛇": {
+  "name": "雷蛇",
+  "star": 4,
+  "profession": "重装",
+  "faction": "哥伦比亚",
+  "char_id": "char_107_liskam",
+  "skins": [
+   "春竜",
+   "超载"
+  ],
+  "portrait": "https://media.prts.wiki/f/f5/%E5%A4%B4%E5%83%8F_%E9%9B%B7%E8%9B%87.png"
+ },
+ "砾": {
+  "name": "砾",
+  "star": 3,
+  "profession": "特种",
+  "faction": "卡西米尔",
+  "char_id": "char_237_gravel",
+  "skins": [
+   "模特之夜"
+  ],
+  "portrait": "https://media.prts.wiki/c/ce/%E5%A4%B4%E5%83%8F_%E7%A0%BE.png"
+ },
+ "历阵锐枪芬": {
+  "name": "历阵锐枪芬",
+  "star": 4,
+  "profession": "先锋",
+  "faction": "罗德岛",
+  "char_id": "char_1036_fang2",
+  "skins": [
+   "纯净乐段"
+  ],
+  "portrait": "https://media.prts.wiki/5/5a/%E5%A4%B4%E5%83%8F_%E5%8E%86%E9%98%B5%E9%94%90%E6%9E%AA%E8%8A%AC.png"
+ },
+ "猎蜂": {
+  "name": "猎蜂",
+  "star": 3,
+  "profession": "近卫",
+  "faction": "乌萨斯",
+  "char_id": "char_137_brownb",
+  "skins": [
+   "掠蜜能手"
+  ],
+  "portrait": "https://media.prts.wiki/c/c2/%E5%A4%B4%E5%83%8F_%E7%8C%8E%E8%9C%82.png"
+ },
+ "烈夏": {
+  "name": "烈夏",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "乌萨斯",
+  "char_id": "char_194_leto",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/6/65/%E5%A4%B4%E5%83%8F_%E7%83%88%E5%A4%8F.png"
+ },
+ "裂响": {
+  "name": "裂响",
+  "star": 4,
+  "profession": "重装",
+  "faction": "乌萨斯",
+  "char_id": "char_4225_tanya",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/d/d6/%E5%A4%B4%E5%83%8F_%E8%A3%82%E5%93%8D.png"
+ },
+ "林": {
+  "name": "林",
+  "star": 5,
+  "profession": "术师",
+  "faction": "炎-龙门",
+  "char_id": "char_4080_lin",
+  "skins": [
+   "列瑶台",
+   "夏卉 FA137"
+  ],
+  "portrait": "https://media.prts.wiki/a/aa/%E5%A4%B4%E5%83%8F_%E6%9E%97.png"
+ },
+ "凛冬": {
+  "name": "凛冬",
+  "star": 4,
+  "profession": "先锋",
+  "faction": "乌萨斯",
+  "char_id": "char_115_headbr",
+  "skins": [
+   "整装待发",
+   "乌萨斯IO79"
+  ],
+  "portrait": "https://media.prts.wiki/c/cd/%E5%A4%B4%E5%83%8F_%E5%87%9B%E5%86%AC.png"
+ },
+ "临光": {
+  "name": "临光",
+  "star": 4,
+  "profession": "重装",
+  "char_id": "char_148_nearl",
+  "skins": [
+   "灿阳朝露 SD01"
+  ],
+  "portrait": "https://media.prts.wiki/1/1a/%E5%A4%B4%E5%83%8F_%E4%B8%B4%E5%85%89.png"
+ },
+ "琳琅诗怀雅": {
+  "name": "琳琅诗怀雅",
+  "star": 5,
+  "profession": "特种",
+  "faction": "炎-龙门",
+  "char_id": "char_1033_swire2",
+  "skins": [
+   "律动方格"
+  ],
+  "portrait": "https://media.prts.wiki/7/74/%E5%A4%B4%E5%83%8F_%E7%90%B3%E7%90%85%E8%AF%97%E6%80%80%E9%9B%85.png"
+ },
+ "凛视": {
+  "name": "凛视",
+  "star": 4,
+  "profession": "辅助",
+  "faction": "萨米",
+  "char_id": "char_4102_threye",
+  "skins": [
+   "林间暖阳"
+  ],
+  "portrait": "https://media.prts.wiki/e/e3/%E5%A4%B4%E5%83%8F_%E5%87%9B%E8%A7%86.png"
+ },
+ "凛御银灰": {
+  "name": "凛御银灰",
+  "star": 5,
+  "profession": "先锋",
+  "faction": "谢拉格",
+  "char_id": "char_1045_svash2",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/3/3d/%E5%A4%B4%E5%83%8F_%E5%87%9B%E5%BE%A1%E9%93%B6%E7%81%B0.png"
+ },
+ "令": {
+  "name": "令",
+  "star": 5,
+  "profession": "辅助",
+  "faction": "炎",
+  "char_id": "char_2023_ling",
+  "skins": [
+   "濯缨",
+   "崖高梦远",
+   "方遒卷"
+  ],
+  "portrait": "https://media.prts.wiki/2/2c/%E5%A4%B4%E5%83%8F_%E4%BB%A4.png"
+ },
+ "铃兰": {
+  "name": "铃兰",
+  "star": 5,
+  "profession": "辅助",
+  "faction": "叙拉古",
+  "char_id": "char_358_lisa",
+  "skins": [
+   "弃土花开",
+   "春之颂",
+   "雪霁"
+  ],
+  "portrait": "https://media.prts.wiki/5/55/%E5%A4%B4%E5%83%8F_%E9%93%83%E5%85%B0.png"
+ },
+ "聆音": {
+  "name": "聆音",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "玻利瓦尔",
+  "char_id": "char_4187_graceb",
+  "skins": [
+   "追想涤尘"
+  ],
+  "portrait": "https://media.prts.wiki/1/10/%E5%A4%B4%E5%83%8F_%E8%81%86%E9%9F%B3.png"
+ },
+ "翎羽": {
+  "name": "翎羽",
+  "star": 2,
+  "profession": "先锋",
+  "faction": "拉特兰",
+  "char_id": "char_192_falco",
+  "skins": [
+   "从容时刻"
+  ],
+  "portrait": "https://media.prts.wiki/1/1f/%E5%A4%B4%E5%83%8F_%E7%BF%8E%E7%BE%BD.png"
+ },
+ "灵知": {
+  "name": "灵知",
+  "star": 5,
+  "profession": "辅助",
+  "faction": "谢拉格",
+  "char_id": "char_206_gnosis",
+  "skins": [
+   "先驱"
+  ],
+  "portrait": "https://media.prts.wiki/9/9f/%E5%A4%B4%E5%83%8F_%E7%81%B5%E7%9F%A5.png"
+ },
+ "领主·Sharp": {
+  "name": "领主·Sharp",
+  "star": 5,
+  "profession": "近卫",
+  "char_id": "char_617_sharp2",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/5/53/%E5%A4%B4%E5%83%8F_%E9%A2%86%E4%B8%BB%C2%B7Sharp.png"
+ },
+ "流明": {
+  "name": "流明",
+  "star": 5,
+  "profession": "医疗",
+  "faction": "伊比利亚",
+  "char_id": "char_4042_lumen",
+  "skins": [
+   "灿海浮梦",
+   "雨霓行游客"
+  ],
+  "portrait": "https://media.prts.wiki/7/72/%E5%A4%B4%E5%83%8F_%E6%B5%81%E6%98%8E.png"
+ },
+ "流星": {
+  "name": "流星",
+  "star": 3,
+  "profession": "狙击",
+  "faction": "卡西米尔",
+  "char_id": "char_126_shotst",
+  "skins": [
+   "诗人的假日",
+   "星橼林"
+  ],
+  "portrait": "https://media.prts.wiki/1/14/%E5%A4%B4%E5%83%8F_%E6%B5%81%E6%98%9F.png"
+ },
+ "龙舌兰": {
+  "name": "龙舌兰",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "玻利瓦尔",
+  "char_id": "char_486_takila",
+  "skins": [
+   "开牌制胜",
+   "巅峰现场"
+  ],
+  "portrait": "https://media.prts.wiki/4/42/%E5%A4%B4%E5%83%8F_%E9%BE%99%E8%88%8C%E5%85%B0.png"
+ },
+ "露托": {
+  "name": "露托",
+  "star": 3,
+  "profession": "重装",
+  "faction": "玻利瓦尔",
+  "char_id": "char_4130_luton",
+  "skins": [
+   "寄遥思"
+  ],
+  "portrait": "https://media.prts.wiki/7/77/%E5%A4%B4%E5%83%8F_%E9%9C%B2%E6%89%98.png"
+ },
+ "录武官": {
+  "name": "录武官",
+  "star": 4,
+  "profession": "医疗",
+  "faction": "炎",
+  "char_id": "char_4196_reckpr",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/0/09/%E5%A4%B4%E5%83%8F_%E5%BD%95%E6%AD%A6%E5%AE%98.png"
+ },
+ "罗比菈塔": {
+  "name": "罗比菈塔",
+  "star": 3,
+  "profession": "辅助",
+  "faction": "哥伦比亚",
+  "char_id": "char_484_robrta",
+  "skins": [
+   "夏卉 FA374",
+   "待绘的作品"
+  ],
+  "portrait": "https://media.prts.wiki/5/52/%E5%A4%B4%E5%83%8F_%E7%BD%97%E6%AF%94%E8%8F%88%E5%A1%94.png"
+ },
+ "罗宾": {
+  "name": "罗宾",
+  "star": 4,
+  "profession": "特种",
+  "faction": "哥伦比亚",
+  "char_id": "char_451_robin",
+  "skins": [
+   "原野的馈赠"
+  ],
+  "portrait": "https://media.prts.wiki/1/1f/%E5%A4%B4%E5%83%8F_%E7%BD%97%E5%AE%BE.png"
+ },
+ "罗德岛隐秘队": {
+  "name": "罗德岛隐秘队",
+  "star": 0,
+  "profession": "先锋",
+  "faction": "罗德岛",
+  "char_id": "char_4215_buddy",
+  "skins": [
+   "露营时间喵！"
+  ],
+  "portrait": "https://media.prts.wiki/8/84/%E5%A4%B4%E5%83%8F_%E7%BD%97%E5%BE%B7%E5%B2%9B%E9%9A%90%E7%A7%98%E9%98%9F.png"
+ },
+ "逻各斯": {
+  "name": "逻各斯",
+  "star": 5,
+  "profession": "术师",
+  "faction": "罗德岛",
+  "char_id": "char_4133_logos",
+  "skins": [
+   "辉煌的静谧"
+  ],
+  "portrait": "https://media.prts.wiki/4/44/%E5%A4%B4%E5%83%8F_%E9%80%BB%E5%90%84%E6%96%AF.png"
+ },
+ "洛洛": {
+  "name": "洛洛",
+  "star": 4,
+  "profession": "术师",
+  "faction": "维多利亚",
+  "char_id": "char_4040_rockr",
+  "skins": [
+   "欢唱之前"
+  ],
+  "portrait": "https://media.prts.wiki/d/d4/%E5%A4%B4%E5%83%8F_%E6%B4%9B%E6%B4%9B.png"
+ },
+ "罗小黑": {
+  "name": "罗小黑",
+  "star": 3,
+  "profession": "近卫",
+  "faction": "炎",
+  "char_id": "char_4067_lolxh",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/5/50/%E5%A4%B4%E5%83%8F_%E7%BD%97%E5%B0%8F%E9%BB%91.png"
+ },
+ "掠风": {
+  "name": "掠风",
+  "star": 4,
+  "profession": "辅助",
+  "faction": "哥伦比亚",
+  "char_id": "char_433_windft",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/5/5c/%E5%A4%B4%E5%83%8F_%E6%8E%A0%E9%A3%8E.png"
+ },
+ "玛恩纳": {
+  "name": "玛恩纳",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "卡西米尔",
+  "char_id": "char_4064_mlynar",
+  "skins": [
+   "远路",
+   "苍茫怒号"
+  ],
+  "portrait": "https://media.prts.wiki/0/08/%E5%A4%B4%E5%83%8F_%E7%8E%9B%E6%81%A9%E7%BA%B3.png"
+ },
+ "玛露西尔": {
+  "name": "玛露西尔",
+  "star": 5,
+  "profession": "术师",
+  "char_id": "char_4141_marcil",
+  "skins": [
+   "泰拉冒险"
+  ],
+  "portrait": "https://media.prts.wiki/8/84/%E5%A4%B4%E5%83%8F_%E7%8E%9B%E9%9C%B2%E8%A5%BF%E5%B0%94.png"
+ },
+ "麦哲伦": {
+  "name": "麦哲伦",
+  "star": 5,
+  "profession": "辅助",
+  "faction": "哥伦比亚",
+  "char_id": "char_248_mgllan",
+  "skins": [
+   "回味冰霜雪"
+  ],
+  "portrait": "https://media.prts.wiki/4/4d/%E5%A4%B4%E5%83%8F_%E9%BA%A6%E5%93%B2%E4%BC%A6.png"
+ },
+ "梅": {
+  "name": "梅",
+  "star": 3,
+  "profession": "狙击",
+  "faction": "维多利亚",
+  "char_id": "char_133_mm",
+  "skins": [
+   "夏卉 FA054"
+  ],
+  "portrait": "https://media.prts.wiki/a/ac/%E5%A4%B4%E5%83%8F_%E6%A2%85.png"
+ },
+ "梅尔": {
+  "name": "梅尔",
+  "star": 4,
+  "profession": "辅助",
+  "faction": "哥伦比亚",
+  "char_id": "char_242_otter",
+  "skins": [
+   "庭院寻梦尖兵"
+  ],
+  "portrait": "https://media.prts.wiki/0/07/%E5%A4%B4%E5%83%8F_%E6%A2%85%E5%B0%94.png"
+ },
+ "玫拉": {
+  "name": "玫拉",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "哥伦比亚",
+  "char_id": "char_4006_melnte",
+  "skins": [
+   "赴宴"
+  ],
+  "portrait": "https://media.prts.wiki/a/ab/%E5%A4%B4%E5%83%8F_%E7%8E%AB%E6%8B%89.png"
+ },
+ "玫兰莎": {
+  "name": "玫兰莎",
+  "star": 2,
+  "profession": "近卫",
+  "faction": "罗德岛",
+  "char_id": "char_208_melan",
+  "skins": [
+   "威塞克斯的信件"
+  ],
+  "portrait": "https://media.prts.wiki/4/4b/%E5%A4%B4%E5%83%8F_%E7%8E%AB%E5%85%B0%E8%8E%8E.png"
+ },
+ "盟约·辅助干员": {
+  "name": "盟约·辅助干员",
+  "star": 3,
+  "profession": "辅助",
+  "char_id": "char_616_pithst",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/4/45/%E5%A4%B4%E5%83%8F_%E7%9B%9F%E7%BA%A6%C2%B7%E8%BE%85%E5%8A%A9%E5%B9%B2%E5%91%98.png"
+ },
+ "迷迭香": {
+  "name": "迷迭香",
+  "star": 5,
+  "profession": "狙击",
+  "faction": "罗德岛",
+  "char_id": "char_391_rosmon",
+  "skins": [
+   "拥抱新生",
+   "轻盈一梦"
+  ],
+  "portrait": "https://media.prts.wiki/3/3b/%E5%A4%B4%E5%83%8F_%E8%BF%B7%E8%BF%AD%E9%A6%99.png"
+ },
+ "米格鲁": {
+  "name": "米格鲁",
+  "star": 2,
+  "profession": "重装",
+  "faction": "罗德岛",
+  "char_id": "char_122_beagle",
+  "skins": [
+   "无畏"
+  ],
+  "portrait": "https://media.prts.wiki/3/32/%E5%A4%B4%E5%83%8F_%E7%B1%B3%E6%A0%BC%E9%B2%81.png"
+ },
+ "蜜蜡": {
+  "name": "蜜蜡",
+  "star": 4,
+  "profession": "术师",
+  "faction": "萨尔贡",
+  "char_id": "char_344_beewax",
+  "skins": [
+   "白沙",
+   "悠然假日 HD61"
+  ],
+  "portrait": "https://media.prts.wiki/1/1d/%E5%A4%B4%E5%83%8F_%E8%9C%9C%E8%9C%A1.png"
+ },
+ "蜜莓": {
+  "name": "蜜莓",
+  "star": 4,
+  "profession": "医疗",
+  "faction": "雷姆必拓",
+  "char_id": "char_449_glider",
+  "skins": [
+   "荒野之后",
+   "洇灵雨"
+  ],
+  "portrait": "https://media.prts.wiki/2/29/%E5%A4%B4%E5%83%8F_%E8%9C%9C%E8%8E%93.png"
+ },
+ "谜图": {
+  "name": "谜图",
+  "star": 4,
+  "profession": "先锋",
+  "faction": "维多利亚",
+  "char_id": "char_4017_puzzle",
+  "skins": [
+   "碎片之间",
+   "冷色摇滚"
+  ],
+  "portrait": "https://media.prts.wiki/7/79/%E5%A4%B4%E5%83%8F_%E8%B0%9C%E5%9B%BE.png"
+ },
+ "明椒": {
+  "name": "明椒",
+  "star": 4,
+  "profession": "医疗",
+  "faction": "罗德岛",
+  "char_id": "char_4071_peper",
+  "skins": [
+   "来路"
+  ],
+  "portrait": "https://media.prts.wiki/3/3f/%E5%A4%B4%E5%83%8F_%E6%98%8E%E6%A4%92.png"
+ },
+ "Miss.Christine": {
+  "name": "Miss.Christine",
+  "star": 4,
+  "profession": "术师",
+  "faction": "维多利亚",
+  "char_id": "char_4198_christ",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/1/10/%E5%A4%B4%E5%83%8F_Miss.Christine.png"
+ },
+ "摩根": {
+  "name": "摩根",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "维多利亚",
+  "char_id": "char_154_morgan",
+  "skins": [
+   "字里行间"
+  ],
+  "portrait": "https://media.prts.wiki/f/fe/%E5%A4%B4%E5%83%8F_%E6%91%A9%E6%A0%B9.png"
+ },
+ "莫斯提马": {
+  "name": "莫斯提马",
+  "star": 5,
+  "profession": "术师",
+  "faction": "拉特兰",
+  "char_id": "char_213_mostma",
+  "skins": [
+   "除魅",
+   "幻语乐痕"
+  ],
+  "portrait": "https://media.prts.wiki/0/0b/%E5%A4%B4%E5%83%8F_%E8%8E%AB%E6%96%AF%E6%8F%90%E9%A9%AC.png"
+ },
+ "魔王": {
+  "name": "魔王",
+  "star": 5,
+  "profession": "辅助",
+  "faction": "罗德岛",
+  "char_id": "char_4134_cetsyr",
+  "skins": [
+   "追悼"
+  ],
+  "portrait": "https://media.prts.wiki/d/de/%E5%A4%B4%E5%83%8F_%E9%AD%94%E7%8E%8B.png"
+ },
+ "末药": {
+  "name": "末药",
+  "star": 3,
+  "profession": "医疗",
+  "faction": "罗德岛",
+  "char_id": "char_117_myrrh",
+  "skins": [
+   "辛味"
+  ],
+  "portrait": "https://media.prts.wiki/d/d9/%E5%A4%B4%E5%83%8F_%E6%9C%AB%E8%8D%AF.png"
+ },
+ "Mon3tr": {
+  "name": "Mon3tr",
+  "star": 5,
+  "profession": "医疗",
+  "faction": "罗德岛",
+  "char_id": "char_4179_monstr",
+  "skins": [
+   "锋锐"
+  ],
+  "portrait": "https://media.prts.wiki/2/2a/%E5%A4%B4%E5%83%8F_Mon3tr.png"
+ },
+ "缪尔赛思": {
+  "name": "缪尔赛思",
+  "star": 5,
+  "profession": "先锋",
+  "faction": "哥伦比亚",
+  "char_id": "char_249_mlyss",
+  "skins": [
+   "新枝",
+   "漫步于黄金之梦"
+  ],
+  "portrait": "https://media.prts.wiki/3/3a/%E5%A4%B4%E5%83%8F_%E7%BC%AA%E5%B0%94%E8%B5%9B%E6%80%9D.png"
+ },
+ "暮落": {
+  "name": "暮落",
+  "star": 4,
+  "profession": "重装",
+  "faction": "维多利亚",
+  "char_id": "char_4025_aprot2",
+  "skins": [
+   "结果"
+  ],
+  "portrait": "https://media.prts.wiki/f/fb/%E5%A4%B4%E5%83%8F_%E6%9A%AE%E8%90%BD.png"
+ },
+ "钼铅": {
+  "name": "钼铅",
+  "star": 4,
+  "profession": "特种",
+  "faction": "萨尔贡",
+  "char_id": "char_4171_wulfen",
+  "skins": [
+   "跃动节拍"
+  ],
+  "portrait": "https://media.prts.wiki/2/20/%E5%A4%B4%E5%83%8F_%E9%92%BC%E9%93%85.png"
+ },
+ "慕斯": {
+  "name": "慕斯",
+  "star": 3,
+  "profession": "近卫",
+  "faction": "维多利亚",
+  "char_id": "char_185_frncat",
+  "skins": [
+   "营地炊烟",
+   "补水时间"
+  ],
+  "portrait": "https://media.prts.wiki/f/fc/%E5%A4%B4%E5%83%8F_%E6%85%95%E6%96%AF.png"
+ },
+ "娜仁图亚": {
+  "name": "娜仁图亚",
+  "star": 5,
+  "profession": "狙击",
+  "faction": "萨尔贡",
+  "char_id": "char_4138_narant",
+  "skins": [
+   "链锯陪护者"
+  ],
+  "portrait": "https://media.prts.wiki/b/ba/%E5%A4%B4%E5%83%8F_%E5%A8%9C%E4%BB%81%E5%9B%BE%E4%BA%9A.png"
+ },
+ "娜斯提": {
+  "name": "娜斯提",
+  "star": 5,
+  "profession": "辅助",
+  "faction": "哥伦比亚",
+  "char_id": "char_4212_nasti",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/9/97/%E5%A4%B4%E5%83%8F_%E5%A8%9C%E6%96%AF%E6%8F%90.png"
+ },
+ "能天使": {
+  "name": "能天使",
+  "star": 5,
+  "profession": "狙击",
+  "faction": "炎-龙门",
+  "char_id": "char_103_angel",
+  "skins": [
+   "野地秘行",
+   "城市骑手",
+   "午夜邮差"
+  ],
+  "portrait": "https://media.prts.wiki/a/ad/%E5%A4%B4%E5%83%8F_%E8%83%BD%E5%A4%A9%E4%BD%BF.png"
+ },
+ "妮芙": {
+  "name": "妮芙",
+  "star": 5,
+  "profession": "术师",
+  "faction": "罗德岛",
+  "char_id": "char_4146_nymph",
+  "skins": [
+   "甜美配方",
+   "繁花梦幻谈"
+  ],
+  "portrait": "https://media.prts.wiki/1/1a/%E5%A4%B4%E5%83%8F_%E5%A6%AE%E8%8A%99.png"
+ },
+ "泥岩": {
+  "name": "泥岩",
+  "star": 5,
+  "profession": "重装",
+  "faction": "罗德岛",
+  "char_id": "char_311_mudrok",
+  "skins": [
+   "静谧午夜 DN06",
+   "黑曜石",
+   "砾瓦"
+  ],
+  "portrait": "https://media.prts.wiki/0/06/%E5%A4%B4%E5%83%8F_%E6%B3%A5%E5%B2%A9.png"
+ },
+ "年": {
+  "name": "年",
+  "star": 5,
+  "profession": "重装",
+  "faction": "炎",
+  "char_id": "char_2014_nian",
+  "skins": [
+   "乐逍遥",
+   "霹雳导演"
+  ],
+  "portrait": "https://media.prts.wiki/9/9c/%E5%A4%B4%E5%83%8F_%E5%B9%B4.png"
+ },
+ "怒潮凛冬": {
+  "name": "怒潮凛冬",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "乌萨斯",
+  "char_id": "char_1051_headb2",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/8/81/%E5%A4%B4%E5%83%8F_%E6%80%92%E6%BD%AE%E5%87%9B%E5%86%AC.png"
+ },
+ "诺威尔": {
+  "name": "诺威尔",
+  "star": 4,
+  "profession": "医疗",
+  "faction": "维多利亚",
+  "char_id": "char_4173_nowell",
+  "skins": [
+   "幽蓝渡灵师"
+  ],
+  "portrait": "https://media.prts.wiki/6/69/%E5%A4%B4%E5%83%8F_%E8%AF%BA%E5%A8%81%E5%B0%94.png"
+ },
+ "帕拉斯": {
+  "name": "帕拉斯",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "米诺斯",
+  "char_id": "char_485_pallas",
+  "skins": [
+   "传承",
+   "山川的酿造"
+  ],
+  "portrait": "https://media.prts.wiki/a/ad/%E5%A4%B4%E5%83%8F_%E5%B8%95%E6%8B%89%E6%96%AF.png"
+ },
+ "泡泡": {
+  "name": "泡泡",
+  "star": 3,
+  "profession": "重装",
+  "faction": "萨尔贡",
+  "char_id": "char_381_bubble",
+  "skins": [
+   "迎风之轮"
+  ],
+  "portrait": "https://media.prts.wiki/2/28/%E5%A4%B4%E5%83%8F_%E6%B3%A1%E6%B3%A1.png"
+ },
+ "泡普卡": {
+  "name": "泡普卡",
+  "star": 2,
+  "profession": "近卫",
+  "faction": "罗德岛",
+  "char_id": "char_281_popka",
+  "skins": [
+   "魔女的秋千",
+   "幽然灵竹"
+  ],
+  "portrait": "https://media.prts.wiki/1/16/%E5%A4%B4%E5%83%8F_%E6%B3%A1%E6%99%AE%E5%8D%A1.png"
+ },
+ "佩佩": {
+  "name": "佩佩",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "萨尔贡",
+  "char_id": "char_4058_pepe",
+  "skins": [
+   "星移"
+  ],
+  "portrait": "https://media.prts.wiki/8/85/%E5%A4%B4%E5%83%8F_%E4%BD%A9%E4%BD%A9.png"
+ },
+ "PhonoR-0": {
+  "name": "PhonoR-0",
+  "star": 0,
+  "profession": "辅助",
+  "faction": "罗德岛",
+  "char_id": "char_4136_phonor",
+  "skins": [
+   "最初的颂歌"
+  ],
+  "portrait": "https://media.prts.wiki/3/3d/%E5%A4%B4%E5%83%8F_PhonoR-0.png"
+ },
+ "Pith": {
+  "name": "Pith",
+  "star": 4,
+  "profession": "术师",
+  "faction": "罗德岛",
+  "char_id": "char_509_acast",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/5/59/%E5%A4%B4%E5%83%8F_Pith.png"
+ },
+ "普罗旺斯": {
+  "name": "普罗旺斯",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "叙拉古",
+  "char_id": "char_145_prove",
+  "skins": [
+   "悠然假日 HD08",
+   "荒原行者"
+  ],
+  "portrait": "https://media.prts.wiki/7/72/%E5%A4%B4%E5%83%8F_%E6%99%AE%E7%BD%97%E6%97%BA%E6%96%AF.png"
+ },
+ "齐尔查克": {
+  "name": "齐尔查克",
+  "star": 4,
+  "profession": "先锋",
+  "char_id": "char_4144_chilc",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/4/42/%E5%A4%B4%E5%83%8F_%E9%BD%90%E5%B0%94%E6%9F%A5%E5%85%8B.png"
+ },
+ "绮良": {
+  "name": "绮良",
+  "star": 4,
+  "profession": "特种",
+  "faction": "东",
+  "char_id": "char_478_kirara",
+  "skins": [
+   "前沿玩家"
+  ],
+  "portrait": "https://media.prts.wiki/a/a8/%E5%A4%B4%E5%83%8F_%E7%BB%AE%E8%89%AF.png"
+ },
+ "麒麟R夜刀": {
+  "name": "麒麟R夜刀",
+  "star": 5,
+  "profession": "特种",
+  "faction": "罗德岛",
+  "char_id": "char_1029_yato2",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/e/e5/%E5%A4%B4%E5%83%8F_%E9%BA%92%E9%BA%9FR%E5%A4%9C%E5%88%80.png"
+ },
+ "铅踝": {
+  "name": "铅踝",
+  "star": 3,
+  "profession": "狙击",
+  "faction": "萨尔贡",
+  "char_id": "char_4062_totter",
+  "skins": [
+   "灿阳朝露 SDm09"
+  ],
+  "portrait": "https://media.prts.wiki/8/87/%E5%A4%B4%E5%83%8F_%E9%93%85%E8%B8%9D.png"
+ },
+ "琴柳": {
+  "name": "琴柳",
+  "star": 5,
+  "profession": "先锋",
+  "faction": "维多利亚",
+  "char_id": "char_479_sleach",
+  "skins": [
+   "识芳",
+   "夏卉 FA317"
+  ],
+  "portrait": "https://media.prts.wiki/9/96/%E5%A4%B4%E5%83%8F_%E7%90%B4%E6%9F%B3.png"
+ },
+ "清道夫": {
+  "name": "清道夫",
+  "star": 3,
+  "profession": "先锋",
+  "faction": "罗德岛",
+  "char_id": "char_149_scave",
+  "skins": [
+   "生存"
+  ],
+  "portrait": "https://media.prts.wiki/6/63/%E5%A4%B4%E5%83%8F_%E6%B8%85%E9%81%93%E5%A4%AB.png"
+ },
+ "清流": {
+  "name": "清流",
+  "star": 3,
+  "profession": "医疗",
+  "faction": "炎",
+  "char_id": "char_385_finlpp",
+  "skins": [
+   "贺新禧"
+  ],
+  "portrait": "https://media.prts.wiki/1/19/%E5%A4%B4%E5%83%8F_%E6%B8%85%E6%B5%81.png"
+ },
+ "青枳": {
+  "name": "青枳",
+  "star": 4,
+  "profession": "先锋",
+  "faction": "哥伦比亚",
+  "char_id": "char_488_buildr",
+  "skins": [
+   "晚风休憩"
+  ],
+  "portrait": "https://media.prts.wiki/0/0e/%E5%A4%B4%E5%83%8F_%E9%9D%92%E6%9E%B3.png"
+ },
+ "仇白": {
+  "name": "仇白",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "炎",
+  "char_id": "char_4082_qiubai",
+  "skins": [
+   "霜林醉",
+   "礼遇"
+  ],
+  "portrait": "https://media.prts.wiki/8/8a/%E5%A4%B4%E5%83%8F_%E4%BB%87%E7%99%BD.png"
+ },
+ "忍冬": {
+  "name": "忍冬",
+  "star": 5,
+  "profession": "先锋",
+  "faction": "叙拉古",
+  "char_id": "char_4026_vulpis",
+  "skins": [
+   "失焦"
+  ],
+  "portrait": "https://media.prts.wiki/7/79/%E5%A4%B4%E5%83%8F_%E5%BF%8D%E5%86%AC.png"
+ },
+ "熔泉": {
+  "name": "熔泉",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "维多利亚",
+  "char_id": "char_363_toddi",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/3/34/%E5%A4%B4%E5%83%8F_%E7%86%94%E6%B3%89.png"
+ },
+ "若叶睦": {
+  "name": "若叶睦",
+  "star": 4,
+  "profession": "特种",
+  "char_id": "char_4183_mortis",
+  "skins": [
+   "提线的本我"
+  ],
+  "portrait": "https://media.prts.wiki/a/a0/%E5%A4%B4%E5%83%8F_%E8%8B%A5%E5%8F%B6%E7%9D%A6.png"
+ },
+ "塞雷娅": {
+  "name": "塞雷娅",
+  "star": 5,
+  "profession": "重装",
+  "faction": "哥伦比亚",
+  "char_id": "char_202_demkni",
+  "skins": [
+   "坚城",
+   "铁律",
+   "黑白冷峻"
+  ],
+  "portrait": "https://media.prts.wiki/e/ee/%E5%A4%B4%E5%83%8F_%E5%A1%9E%E9%9B%B7%E5%A8%85.png"
+ },
+ "三角初华": {
+  "name": "三角初华",
+  "star": 4,
+  "profession": "辅助",
+  "char_id": "char_4184_dolris",
+  "skins": [
+   "笼中歌者"
+  ],
+  "portrait": "https://media.prts.wiki/b/b4/%E5%A4%B4%E5%83%8F_%E4%B8%89%E8%A7%92%E5%88%9D%E5%8D%8E.png"
+ },
+ "桑葚": {
+  "name": "桑葚",
+  "star": 4,
+  "profession": "医疗",
+  "faction": "炎",
+  "char_id": "char_473_mberry",
+  "skins": [
+   "植药",
+   "照冰轮"
+  ],
+  "portrait": "https://media.prts.wiki/0/0f/%E5%A4%B4%E5%83%8F_%E6%A1%91%E8%91%9A.png"
+ },
+ "森蚺": {
+  "name": "森蚺",
+  "star": 5,
+  "profession": "重装",
+  "faction": "萨尔贡",
+  "char_id": "char_416_zumama",
+  "skins": [
+   "熔锻铸匠"
+  ],
+  "portrait": "https://media.prts.wiki/7/74/%E5%A4%B4%E5%83%8F_%E6%A3%AE%E8%9A%BA.png"
+ },
+ "森西": {
+  "name": "森西",
+  "star": 4,
+  "profession": "重装",
+  "char_id": "char_4143_sensi",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/e/e7/%E5%A4%B4%E5%83%8F_%E6%A3%AE%E8%A5%BF.png"
+ },
+ "莎草": {
+  "name": "莎草",
+  "star": 4,
+  "profession": "医疗",
+  "faction": "萨尔贡",
+  "char_id": "char_4139_papyrs",
+  "skins": [
+   "下一个任务"
+  ],
+  "portrait": "https://media.prts.wiki/3/3d/%E5%A4%B4%E5%83%8F_%E8%8E%8E%E8%8D%89.png"
+ },
+ "山": {
+  "name": "山",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "哥伦比亚",
+  "char_id": "char_264_f12yin",
+  "skins": [
+   "乌云",
+   "读者",
+   "硬派速度"
+  ],
+  "portrait": "https://media.prts.wiki/e/ec/%E5%A4%B4%E5%83%8F_%E5%B1%B1.png"
+ },
+ "闪击": {
+  "name": "闪击",
+  "star": 4,
+  "profession": "重装",
+  "char_id": "char_457_blitz",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/c/c1/%E5%A4%B4%E5%83%8F_%E9%97%AA%E5%87%BB.png"
+ },
+ "闪灵": {
+  "name": "闪灵",
+  "star": 5,
+  "profession": "医疗",
+  "char_id": "char_147_shining",
+  "skins": [
+   "静谧午夜 DN02"
+  ],
+  "portrait": "https://media.prts.wiki/5/54/%E5%A4%B4%E5%83%8F_%E9%97%AA%E7%81%B5.png"
+ },
+ "Sharp": {
+  "name": "Sharp",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "罗德岛",
+  "char_id": "char_508_aguard",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/b/b4/%E5%A4%B4%E5%83%8F_Sharp.png"
+ },
+ "慑砂": {
+  "name": "慑砂",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "萨尔贡",
+  "char_id": "char_379_sesa",
+  "skins": [
+   "万物有灵"
+  ],
+  "portrait": "https://media.prts.wiki/e/e7/%E5%A4%B4%E5%83%8F_%E6%85%91%E7%A0%82.png"
+ },
+ "蛇屠箱": {
+  "name": "蛇屠箱",
+  "star": 3,
+  "profession": "重装",
+  "faction": "哥伦比亚",
+  "char_id": "char_150_snakek",
+  "skins": [
+   "四边形",
+   "与荷"
+  ],
+  "portrait": "https://media.prts.wiki/0/02/%E5%A4%B4%E5%83%8F_%E8%9B%87%E5%B1%A0%E7%AE%B1.png"
+ },
+ "深靛": {
+  "name": "深靛",
+  "star": 3,
+  "profession": "术师",
+  "faction": "伊比利亚",
+  "char_id": "char_469_indigo",
+  "skins": [
+   "待晴日"
+  ],
+  "portrait": "https://media.prts.wiki/9/92/%E5%A4%B4%E5%83%8F_%E6%B7%B1%E9%9D%9B.png"
+ },
+ "深海色": {
+  "name": "深海色",
+  "star": 3,
+  "profession": "辅助",
+  "faction": "阿戈尔",
+  "char_id": "char_110_deepcl",
+  "skins": [
+   "绘声绘影"
+  ],
+  "portrait": "https://media.prts.wiki/d/d1/%E5%A4%B4%E5%83%8F_%E6%B7%B1%E6%B5%B7%E8%89%B2.png"
+ },
+ "深律": {
+  "name": "深律",
+  "star": 4,
+  "profession": "重装",
+  "faction": "莱塔尼亚",
+  "char_id": "char_4109_baslin",
+  "skins": [
+   "夜空星芒"
+  ],
+  "portrait": "https://media.prts.wiki/d/d8/%E5%A4%B4%E5%83%8F_%E6%B7%B1%E5%BE%8B.png"
+ },
+ "深巡": {
+  "name": "深巡",
+  "star": 4,
+  "profession": "重装",
+  "faction": "阿戈尔",
+  "char_id": "char_4137_udflow",
+  "skins": [
+   "层流"
+  ],
+  "portrait": "https://media.prts.wiki/b/bd/%E5%A4%B4%E5%83%8F_%E6%B7%B1%E5%B7%A1.png"
+ },
+ "圣聆初雪": {
+  "name": "圣聆初雪",
+  "star": 5,
+  "profession": "术师",
+  "faction": "谢拉格",
+  "char_id": "char_1046_sbell2",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/a/ab/%E5%A4%B4%E5%83%8F_%E5%9C%A3%E8%81%86%E5%88%9D%E9%9B%AA.png"
+ },
+ "圣约送葬人": {
+  "name": "圣约送葬人",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "拉特兰",
+  "char_id": "char_1032_excu2",
+  "skins": [
+   "众志归一",
+   "蒸汽寻踪者"
+  ],
+  "portrait": "https://media.prts.wiki/7/7e/%E5%A4%B4%E5%83%8F_%E5%9C%A3%E7%BA%A6%E9%80%81%E8%91%AC%E4%BA%BA.png"
+ },
+ "史都华德": {
+  "name": "史都华德",
+  "star": 2,
+  "profession": "术师",
+  "faction": "罗德岛",
+  "char_id": "char_210_stward",
+  "skins": [
+   "风雪邀请"
+  ],
+  "portrait": "https://media.prts.wiki/b/b3/%E5%A4%B4%E5%83%8F_%E5%8F%B2%E9%83%BD%E5%8D%8E%E5%BE%B7.png"
+ },
+ "史尔特尔": {
+  "name": "史尔特尔",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "罗德岛",
+  "char_id": "char_350_surtr",
+  "skins": [
+   "自由//失效",
+   "缤纷奇境 CW03",
+   "超然序曲"
+  ],
+  "portrait": "https://media.prts.wiki/e/e1/%E5%A4%B4%E5%83%8F_%E5%8F%B2%E5%B0%94%E7%89%B9%E5%B0%94.png"
+ },
+ "诗怀雅": {
+  "name": "诗怀雅",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "炎-龙门",
+  "char_id": "char_308_swire",
+  "skins": [
+   "富贵荣华"
+  ],
+  "portrait": "https://media.prts.wiki/5/50/%E5%A4%B4%E5%83%8F_%E8%AF%97%E6%80%80%E9%9B%85.png"
+ },
+ "弑君者": {
+  "name": "弑君者",
+  "star": 5,
+  "profession": "特种",
+  "faction": "罗德岛",
+  "char_id": "char_1502_crosly",
+  "skins": [
+   "夜之终局"
+  ],
+  "portrait": "https://media.prts.wiki/1/12/%E5%A4%B4%E5%83%8F_%E5%BC%91%E5%90%9B%E8%80%85.png"
+ },
+ "石棉": {
+  "name": "石棉",
+  "star": 4,
+  "profession": "重装",
+  "faction": "雷姆必拓",
+  "char_id": "char_378_asbest",
+  "skins": [
+   "幽谷奏鸣"
+  ],
+  "portrait": "https://media.prts.wiki/1/18/%E5%A4%B4%E5%83%8F_%E7%9F%B3%E6%A3%89.png"
+ },
+ "蚀清": {
+  "name": "蚀清",
+  "star": 4,
+  "profession": "术师",
+  "faction": "哥伦比亚",
+  "char_id": "char_489_serum",
+  "skins": [
+   "逸趣"
+  ],
+  "portrait": "https://media.prts.wiki/7/70/%E5%A4%B4%E5%83%8F_%E8%9A%80%E6%B8%85.png"
+ },
+ "食铁兽": {
+  "name": "食铁兽",
+  "star": 4,
+  "profession": "特种",
+  "faction": "炎-龙门",
+  "char_id": "char_241_panda",
+  "skins": [
+   "片场一角",
+   "且试箸"
+  ],
+  "portrait": "https://media.prts.wiki/d/dd/%E5%A4%B4%E5%83%8F_%E9%A3%9F%E9%93%81%E5%85%BD.png"
+ },
+ "狮蝎": {
+  "name": "狮蝎",
+  "star": 4,
+  "profession": "特种",
+  "faction": "萨尔贡",
+  "char_id": "char_215_mantic",
+  "skins": [
+   "无形悼挽",
+   "面纱之下"
+  ],
+  "portrait": "https://media.prts.wiki/c/c5/%E5%A4%B4%E5%83%8F_%E7%8B%AE%E8%9D%8E.png"
+ },
+ "石英": {
+  "name": "石英",
+  "star": 3,
+  "profession": "近卫",
+  "faction": "哥伦比亚",
+  "char_id": "char_4063_quartz",
+  "skins": [
+   "封面佣兵"
+  ],
+  "portrait": "https://media.prts.wiki/b/bc/%E5%A4%B4%E5%83%8F_%E7%9F%B3%E8%8B%B1.png"
+ },
+ "守林人": {
+  "name": "守林人",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "罗德岛",
+  "char_id": "char_158_milu",
+  "skins": [
+   "枯柏",
+   "覆雪"
+  ],
+  "portrait": "https://media.prts.wiki/2/27/%E5%A4%B4%E5%83%8F_%E5%AE%88%E6%9E%97%E4%BA%BA.png"
+ },
+ "黍": {
+  "name": "黍",
+  "star": 5,
+  "profession": "重装",
+  "faction": "炎",
+  "char_id": "char_2025_shu",
+  "skins": [
+   "春日宴"
+  ],
+  "portrait": "https://media.prts.wiki/f/f2/%E5%A4%B4%E5%83%8F_%E9%BB%8D.png"
+ },
+ "霜华": {
+  "name": "霜华",
+  "star": 4,
+  "profession": "特种",
+  "char_id": "char_458_rfrost",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/5/51/%E5%A4%B4%E5%83%8F_%E9%9C%9C%E5%8D%8E.png"
+ },
+ "霜叶": {
+  "name": "霜叶",
+  "star": 3,
+  "profession": "近卫",
+  "faction": "罗德岛",
+  "char_id": "char_193_frostl",
+  "skins": [
+   "破冰"
+  ],
+  "portrait": "https://media.prts.wiki/2/29/%E5%A4%B4%E5%83%8F_%E9%9C%9C%E5%8F%B6.png"
+ },
+ "双月": {
+  "name": "双月",
+  "star": 4,
+  "profession": "特种",
+  "char_id": "char_4124_iana",
+  "skins": [
+   "镜廊"
+  ],
+  "portrait": "https://media.prts.wiki/f/ff/%E5%A4%B4%E5%83%8F_%E5%8F%8C%E6%9C%88.png"
+ },
+ "水灯心": {
+  "name": "水灯心",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "维多利亚",
+  "char_id": "char_4177_brigid",
+  "skins": [
+   "轻语入梦"
+  ],
+  "portrait": "https://media.prts.wiki/3/3b/%E5%A4%B4%E5%83%8F_%E6%B0%B4%E7%81%AF%E5%BF%83.png"
+ },
+ "水月": {
+  "name": "水月",
+  "star": 5,
+  "profession": "特种",
+  "faction": "东",
+  "char_id": "char_437_mizuki",
+  "skins": [
+   "夏日餮宴",
+   "永恒玩家"
+  ],
+  "portrait": "https://media.prts.wiki/0/05/%E5%A4%B4%E5%83%8F_%E6%B0%B4%E6%9C%88.png"
+ },
+ "斯卡蒂": {
+  "name": "斯卡蒂",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "阿戈尔",
+  "char_id": "char_263_skadi",
+  "skins": [
+   "驭浪 WR04",
+   "下一顿午茶"
+  ],
+  "portrait": "https://media.prts.wiki/5/53/%E5%A4%B4%E5%83%8F_%E6%96%AF%E5%8D%A1%E8%92%82.png"
+ },
+ "死芒": {
+  "name": "死芒",
+  "star": 5,
+  "profession": "术师",
+  "faction": "维多利亚",
+  "char_id": "char_450_necras",
+  "skins": [
+   "夏卉 FA161",
+   "晶化信念"
+  ],
+  "portrait": "https://media.prts.wiki/d/d9/%E5%A4%B4%E5%83%8F_%E6%AD%BB%E8%8A%92.png"
+ },
+ "司霆惊蛰": {
+  "name": "司霆惊蛰",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "炎",
+  "char_id": "char_1043_leizi2",
+  "skins": [
+   "血翼蔷薇"
+  ],
+  "portrait": "https://media.prts.wiki/5/5c/%E5%A4%B4%E5%83%8F_%E5%8F%B8%E9%9C%86%E6%83%8A%E8%9B%B0.png"
+ },
+ "四月": {
+  "name": "四月",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "雷姆必拓",
+  "char_id": "char_365_aprl",
+  "skins": [
+   "远望"
+  ],
+  "portrait": "https://media.prts.wiki/d/d3/%E5%A4%B4%E5%83%8F_%E5%9B%9B%E6%9C%88.png"
+ },
+ "松果": {
+  "name": "松果",
+  "star": 3,
+  "profession": "狙击",
+  "faction": "哥伦比亚",
+  "char_id": "char_440_pinecn",
+  "skins": [
+   "倾声歌唱",
+   "远行的季节"
+  ],
+  "portrait": "https://media.prts.wiki/5/5e/%E5%A4%B4%E5%83%8F_%E6%9D%BE%E6%9E%9C.png"
+ },
+ "松桐": {
+  "name": "松桐",
+  "star": 4,
+  "profession": "先锋",
+  "faction": "东",
+  "char_id": "char_4199_makiri",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/5/56/%E5%A4%B4%E5%83%8F_%E6%9D%BE%E6%A1%90.png"
+ },
+ "送葬人": {
+  "name": "送葬人",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "拉特兰",
+  "char_id": "char_279_excu",
+  "skins": [
+   "无题密令"
+  ],
+  "portrait": "https://media.prts.wiki/d/da/%E5%A4%B4%E5%83%8F_%E9%80%81%E8%91%AC%E4%BA%BA.png"
+ },
+ "Stormeye": {
+  "name": "Stormeye",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "罗德岛",
+  "char_id": "char_511_asnipe",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/8/8e/%E5%A4%B4%E5%83%8F_Stormeye.png"
+ },
+ "溯光星源": {
+  "name": "溯光星源",
+  "star": 5,
+  "profession": "辅助",
+  "faction": "哥伦比亚",
+  "char_id": "char_1047_halo2",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/d/d0/%E5%A4%B4%E5%83%8F_%E6%BA%AF%E5%85%89%E6%98%9F%E6%BA%90.png"
+ },
+ "苏苏洛": {
+  "name": "苏苏洛",
+  "star": 3,
+  "profession": "医疗",
+  "faction": "罗德岛",
+  "char_id": "char_298_susuro",
+  "skins": [
+   "夏卉 FA026",
+   "随意而行"
+  ],
+  "portrait": "https://media.prts.wiki/6/63/%E5%A4%B4%E5%83%8F_%E8%8B%8F%E8%8B%8F%E6%B4%9B.png"
+ },
+ "塑心": {
+  "name": "塑心",
+  "star": 5,
+  "profession": "辅助",
+  "faction": "拉特兰",
+  "char_id": "char_245_cello",
+  "skins": [
+   "无我唯识"
+  ],
+  "portrait": "https://media.prts.wiki/0/05/%E5%A4%B4%E5%83%8F_%E5%A1%91%E5%BF%83.png"
+ },
+ "酸糖": {
+  "name": "酸糖",
+  "star": 3,
+  "profession": "狙击",
+  "faction": "哥伦比亚",
+  "char_id": "char_366_acdrop",
+  "skins": [
+   "“下午茶时光”",
+   "悠然假日 HD75"
+  ],
+  "portrait": "https://media.prts.wiki/e/e9/%E5%A4%B4%E5%83%8F_%E9%85%B8%E7%B3%96.png"
+ },
+ "燧石": {
+  "name": "燧石",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "萨尔贡",
+  "char_id": "char_415_flint",
+  "skins": [
+   "绚烂夏花"
+  ],
+  "portrait": "https://media.prts.wiki/a/ac/%E5%A4%B4%E5%83%8F_%E7%87%A7%E7%9F%B3.png"
+ },
+ "THRM-EX": {
+  "name": "THRM-EX",
+  "star": 0,
+  "profession": "特种",
+  "faction": "罗德岛",
+  "char_id": "char_376_therex",
+  "skins": [
+   "双料四分卫"
+  ],
+  "portrait": "https://media.prts.wiki/d/d8/%E5%A4%B4%E5%83%8F_THRM-EX.png"
+ },
+ "泰拉大陆调查团": {
+  "name": "泰拉大陆调查团",
+  "star": 0,
+  "profession": "狙击",
+  "faction": "罗德岛",
+  "char_id": "char_4077_palico",
+  "skins": [
+   "跃上街头"
+  ],
+  "portrait": "https://media.prts.wiki/7/70/%E5%A4%B4%E5%83%8F_%E6%B3%B0%E6%8B%89%E5%A4%A7%E9%99%86%E8%B0%83%E6%9F%A5%E5%9B%A2.png"
+ },
+ "桃金娘": {
+  "name": "桃金娘",
+  "star": 3,
+  "profession": "先锋",
+  "faction": "罗德岛",
+  "char_id": "char_151_myrtle",
+  "skins": [
+   "淡金庆典",
+   "夏卉 FA062",
+   "繁闹祭典"
+  ],
+  "portrait": "https://media.prts.wiki/9/9d/%E5%A4%B4%E5%83%8F_%E6%A1%83%E9%87%91%E5%A8%98.png"
+ },
+ "特克诺": {
+  "name": "特克诺",
+  "star": 4,
+  "profession": "术师",
+  "faction": "玻利瓦尔",
+  "char_id": "char_4164_tecno",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/2/2e/%E5%A4%B4%E5%83%8F_%E7%89%B9%E5%85%8B%E8%AF%BA.png"
+ },
+ "特米米": {
+  "name": "特米米",
+  "star": 4,
+  "profession": "术师",
+  "faction": "萨尔贡",
+  "char_id": "char_411_tomimi",
+  "skins": [
+   "静谧午夜 DN04"
+  ],
+  "portrait": "https://media.prts.wiki/b/b9/%E5%A4%B4%E5%83%8F_%E7%89%B9%E7%B1%B3%E7%B1%B3.png"
+ },
+ "提丰": {
+  "name": "提丰",
+  "star": 5,
+  "profession": "狙击",
+  "faction": "萨米",
+  "char_id": "char_2012_typhon",
+  "skins": [
+   "北地引路人",
+   "温差 RT.RX07"
+  ],
+  "portrait": "https://media.prts.wiki/7/70/%E5%A4%B4%E5%83%8F_%E6%8F%90%E4%B8%B0.png"
+ },
+ "缇缇": {
+  "name": "缇缇",
+  "star": 5,
+  "profession": "医疗",
+  "faction": "萨尔贡",
+  "char_id": "char_4056_titi",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/a/aa/%E5%A4%B4%E5%83%8F_%E7%BC%87%E7%BC%87.png"
+ },
+ "天火": {
+  "name": "天火",
+  "star": 4,
+  "profession": "术师",
+  "faction": "维多利亚",
+  "char_id": "char_166_skfire",
+  "skins": [
+   "温差 RT.RX01"
+  ],
+  "portrait": "https://media.prts.wiki/f/fa/%E5%A4%B4%E5%83%8F_%E5%A4%A9%E7%81%AB.png"
+ },
+ "天空盒": {
+  "name": "天空盒",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "哥伦比亚",
+  "char_id": "char_4213_skybx",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/d/d9/%E5%A4%B4%E5%83%8F_%E5%A4%A9%E7%A9%BA%E7%9B%92.png"
+ },
+ "调香师": {
+  "name": "调香师",
+  "star": 3,
+  "profession": "医疗",
+  "faction": "罗德岛",
+  "char_id": "char_181_flower",
+  "skins": [
+   "植物种志",
+   "闲适午后"
+  ],
+  "portrait": "https://media.prts.wiki/6/6a/%E5%A4%B4%E5%83%8F_%E8%B0%83%E9%A6%99%E5%B8%88.png"
+ },
+ "Touch": {
+  "name": "Touch",
+  "star": 4,
+  "profession": "医疗",
+  "faction": "罗德岛",
+  "char_id": "char_510_amedic",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/3/35/%E5%A4%B4%E5%83%8F_Touch.png"
+ },
+ "图耶": {
+  "name": "图耶",
+  "star": 4,
+  "profession": "医疗",
+  "faction": "萨尔贡",
+  "char_id": "char_402_tuye",
+  "skins": [
+   "培翠"
+  ],
+  "portrait": "https://media.prts.wiki/9/93/%E5%A4%B4%E5%83%8F_%E5%9B%BE%E8%80%B6.png"
+ },
+ "推进之王": {
+  "name": "推进之王",
+  "star": 5,
+  "profession": "先锋",
+  "faction": "维多利亚",
+  "char_id": "char_112_siege",
+  "skins": [
+   "遗石",
+   "摧城"
+  ],
+  "portrait": "https://media.prts.wiki/b/ba/%E5%A4%B4%E5%83%8F_%E6%8E%A8%E8%BF%9B%E4%B9%8B%E7%8E%8B.png"
+ },
+ "U-Official": {
+  "name": "U-Official",
+  "star": 0,
+  "profession": "辅助",
+  "faction": "罗德岛",
+  "char_id": "char_4091_ulika",
+  "skins": [
+   "云上直播间"
+  ],
+  "portrait": "https://media.prts.wiki/4/45/%E5%A4%B4%E5%83%8F_U-Official.png"
+ },
+ "W": {
+  "name": "W",
+  "star": 5,
+  "profession": "狙击",
+  "char_id": "char_113_cqbw",
+  "skins": [
+   "恍惚"
+  ],
+  "portrait": "https://media.prts.wiki/d/d6/%E5%A4%B4%E5%83%8F_W.png"
+ },
+ "万顷": {
+  "name": "万顷",
+  "star": 4,
+  "profession": "先锋",
+  "faction": "炎",
+  "char_id": "char_4119_wanqin",
+  "skins": [
+   "万顷阳光"
+  ],
+  "portrait": "https://media.prts.wiki/a/ad/%E5%A4%B4%E5%83%8F_%E4%B8%87%E9%A1%B7.png"
+ },
+ "望": {
+  "name": "望",
+  "star": 5,
+  "profession": "特种",
+  "faction": "炎",
+  "char_id": "char_2027_wang",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/3/38/%E5%A4%B4%E5%83%8F_%E6%9C%9B.png"
+ },
+ "苇草": {
+  "name": "苇草",
+  "star": 4,
+  "profession": "先锋",
+  "faction": "维多利亚",
+  "char_id": "char_261_sddrag",
+  "skins": [
+   "翡翠假日"
+  ],
+  "portrait": "https://media.prts.wiki/7/7a/%E5%A4%B4%E5%83%8F_%E8%8B%87%E8%8D%89.png"
+ },
+ "维荻": {
+  "name": "维荻",
+  "star": 3,
+  "profession": "特种",
+  "faction": "维多利亚",
+  "char_id": "char_4107_vrdant",
+  "skins": [
+   "玫瑰骑手"
+  ],
+  "portrait": "https://media.prts.wiki/9/97/%E5%A4%B4%E5%83%8F_%E7%BB%B4%E8%8D%BB.png"
+ },
+ "微风": {
+  "name": "微风",
+  "star": 4,
+  "profession": "医疗",
+  "faction": "维多利亚",
+  "char_id": "char_275_breeze",
+  "skins": [
+   "半甜草莓"
+  ],
+  "portrait": "https://media.prts.wiki/a/ad/%E5%A4%B4%E5%83%8F_%E5%BE%AE%E9%A3%8E.png"
+ },
+ "维娜·维多利亚": {
+  "name": "维娜·维多利亚",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "维多利亚",
+  "char_id": "char_1019_siege2",
+  "skins": [
+   "光耀之途"
+  ],
+  "portrait": "https://media.prts.wiki/6/68/%E5%A4%B4%E5%83%8F_%E7%BB%B4%E5%A8%9C%C2%B7%E7%BB%B4%E5%A4%9A%E5%88%A9%E4%BA%9A.png"
+ },
+ "维什戴尔": {
+  "name": "维什戴尔",
+  "star": 5,
+  "profession": "狙击",
+  "char_id": "char_1035_wisdel",
+  "skins": [
+   "超新星",
+   "绝对主角"
+  ],
+  "portrait": "https://media.prts.wiki/6/66/%E5%A4%B4%E5%83%8F_%E7%BB%B4%E4%BB%80%E6%88%B4%E5%B0%94.png"
+ },
+ "薇薇安娜": {
+  "name": "薇薇安娜",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "莱塔尼亚",
+  "char_id": "char_4098_vvana",
+  "skins": [
+   "寄自奥格尼斯科"
+  ],
+  "portrait": "https://media.prts.wiki/4/4a/%E5%A4%B4%E5%83%8F_%E8%96%87%E8%96%87%E5%AE%89%E5%A8%9C.png"
+ },
+ "维伊": {
+  "name": "维伊",
+  "star": 5,
+  "profession": "术师",
+  "faction": "乌萨斯",
+  "char_id": "char_4226_veen",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/5/56/%E5%A4%B4%E5%83%8F_%E7%BB%B4%E4%BC%8A.png"
+ },
+ "温蒂": {
+  "name": "温蒂",
+  "star": 5,
+  "profession": "特种",
+  "faction": "罗德岛",
+  "char_id": "char_400_weedy",
+  "skins": [
+   "糖果仙子",
+   "倾听"
+  ],
+  "portrait": "https://media.prts.wiki/9/93/%E5%A4%B4%E5%83%8F_%E6%B8%A9%E8%92%82.png"
+ },
+ "温米": {
+  "name": "温米",
+  "star": 4,
+  "profession": "术师",
+  "faction": "雷姆必拓",
+  "char_id": "char_4081_warmy",
+  "skins": [
+   "街角暖绒"
+  ],
+  "portrait": "https://media.prts.wiki/3/3f/%E5%A4%B4%E5%83%8F_%E6%B8%A9%E7%B1%B3.png"
+ },
+ "乌尔比安": {
+  "name": "乌尔比安",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "阿戈尔",
+  "char_id": "char_4145_ulpia",
+  "skins": [
+   "注目深渊"
+  ],
+  "portrait": "https://media.prts.wiki/3/33/%E5%A4%B4%E5%83%8F_%E4%B9%8C%E5%B0%94%E6%AF%94%E5%AE%89.png"
+ },
+ "乌啾": {
+  "name": "乌啾",
+  "star": 4,
+  "profession": "医疗",
+  "faction": "乌萨斯",
+  "char_id": "char_4224_turdus",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/5/55/%E5%A4%B4%E5%83%8F_%E4%B9%8C%E5%95%BE.png"
+ },
+ "巫恋": {
+  "name": "巫恋",
+  "star": 4,
+  "profession": "辅助",
+  "faction": "叙拉古",
+  "char_id": "char_254_vodfox",
+  "skins": [
+   "魔城回响",
+   "绣云鹤"
+  ],
+  "portrait": "https://media.prts.wiki/3/36/%E5%A4%B4%E5%83%8F_%E5%B7%AB%E6%81%8B.png"
+ },
+ "乌有": {
+  "name": "乌有",
+  "star": 4,
+  "profession": "特种",
+  "faction": "炎",
+  "char_id": "char_455_nothin",
+  "skins": [
+   "冷山月"
+  ],
+  "portrait": "https://media.prts.wiki/0/04/%E5%A4%B4%E5%83%8F_%E4%B9%8C%E6%9C%89.png"
+ },
+ "夕": {
+  "name": "夕",
+  "star": 5,
+  "profession": "术师",
+  "faction": "炎",
+  "char_id": "char_2015_dusk",
+  "skins": [
+   "染尘烟",
+   "青玉砚"
+  ],
+  "portrait": "https://media.prts.wiki/6/6b/%E5%A4%B4%E5%83%8F_%E5%A4%95.png"
+ },
+ "锡兰": {
+  "name": "锡兰",
+  "star": 4,
+  "profession": "医疗",
+  "faction": "哥伦比亚",
+  "char_id": "char_348_ceylon",
+  "skins": [
+   "悠然假日 HD49"
+  ],
+  "portrait": "https://media.prts.wiki/3/39/%E5%A4%B4%E5%83%8F_%E9%94%A1%E5%85%B0.png"
+ },
+ "锡人": {
+  "name": "锡人",
+  "star": 4,
+  "profession": "特种",
+  "faction": "哥伦比亚",
+  "char_id": "char_4151_tinman",
+  "skins": [
+   "相位面容"
+  ],
+  "portrait": "https://media.prts.wiki/a/a1/%E5%A4%B4%E5%83%8F_%E9%94%A1%E4%BA%BA.png"
+ },
+ "稀音": {
+  "name": "稀音",
+  "star": 4,
+  "profession": "辅助",
+  "faction": "萨尔贡",
+  "char_id": "char_336_folivo",
+  "skins": [
+   "别枝"
+  ],
+  "portrait": "https://media.prts.wiki/c/c6/%E5%A4%B4%E5%83%8F_%E7%A8%80%E9%9F%B3.png"
+ },
+ "瑕光": {
+  "name": "瑕光",
+  "star": 5,
+  "profession": "重装",
+  "faction": "卡西米尔",
+  "char_id": "char_423_blemsh",
+  "skins": [
+   "异月灾裔"
+  ],
+  "portrait": "https://media.prts.wiki/f/f7/%E5%A4%B4%E5%83%8F_%E7%91%95%E5%85%89.png"
+ },
+ "夏栎": {
+  "name": "夏栎",
+  "star": 4,
+  "profession": "辅助",
+  "faction": "罗德岛",
+  "char_id": "char_492_quercu",
+  "skins": [
+   "遥乡之径",
+   "树影吟游"
+  ],
+  "portrait": "https://media.prts.wiki/0/08/%E5%A4%B4%E5%83%8F_%E5%A4%8F%E6%A0%8E.png"
+ },
+ "香草": {
+  "name": "香草",
+  "star": 2,
+  "profession": "先锋",
+  "faction": "哥伦比亚",
+  "char_id": "char_240_wyvern",
+  "skins": [
+   "平原驯虫士"
+  ],
+  "portrait": "https://media.prts.wiki/c/c8/%E5%A4%B4%E5%83%8F_%E9%A6%99%E8%8D%89.png"
+ },
+ "响石": {
+  "name": "响石",
+  "star": 4,
+  "profession": "重装",
+  "faction": "哥伦比亚",
+  "char_id": "char_4214_cairn",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/5/52/%E5%A4%B4%E5%83%8F_%E5%93%8D%E7%9F%B3.png"
+ },
+ "晓歌": {
+  "name": "晓歌",
+  "star": 4,
+  "profession": "先锋",
+  "faction": "罗德岛",
+  "char_id": "char_497_ctable",
+  "skins": [
+   "灯如昼",
+   "湖畔歌者"
+  ],
+  "portrait": "https://media.prts.wiki/1/15/%E5%A4%B4%E5%83%8F_%E6%99%93%E6%AD%8C.png"
+ },
+ "小满": {
+  "name": "小满",
+  "star": 4,
+  "profession": "辅助",
+  "faction": "炎",
+  "char_id": "char_4122_grabds",
+  "skins": [
+   "步芳兰"
+  ],
+  "portrait": "https://media.prts.wiki/1/1d/%E5%A4%B4%E5%83%8F_%E5%B0%8F%E6%BB%A1.png"
+ },
+ "协律": {
+  "name": "协律",
+  "star": 3,
+  "profession": "术师",
+  "faction": "莱塔尼亚",
+  "char_id": "char_4051_akkord",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/8/8e/%E5%A4%B4%E5%83%8F_%E5%8D%8F%E5%BE%8B.png"
+ },
+ "撷英调香师": {
+  "name": "撷英调香师",
+  "star": 4,
+  "profession": "辅助",
+  "faction": "罗德岛",
+  "char_id": "char_1022_flwr2",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/8/8f/%E5%A4%B4%E5%83%8F_%E6%92%B7%E8%8B%B1%E8%B0%83%E9%A6%99%E5%B8%88.png"
+ },
+ "信仰搅拌机": {
+  "name": "信仰搅拌机",
+  "star": 5,
+  "profession": "重装",
+  "faction": "拉特兰",
+  "char_id": "char_4194_rmixer",
+  "skins": [
+   "天穹肇始"
+  ],
+  "portrait": "https://media.prts.wiki/1/13/%E5%A4%B4%E5%83%8F_%E4%BF%A1%E4%BB%B0%E6%90%85%E6%8B%8C%E6%9C%BA.png"
+ },
+ "新约能天使": {
+  "name": "新约能天使",
+  "star": 5,
+  "profession": "特种",
+  "faction": "炎-龙门",
+  "char_id": "char_1041_angel2",
+  "skins": [
+   "寻翼之歌"
+  ],
+  "portrait": "https://media.prts.wiki/3/3a/%E5%A4%B4%E5%83%8F_%E6%96%B0%E7%BA%A6%E8%83%BD%E5%A4%A9%E4%BD%BF.png"
+ },
+ "星极": {
+  "name": "星极",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "哥伦比亚",
+  "char_id": "char_274_astesi",
+  "skins": [
+   "寻耀",
+   "殿堂上的游禽",
+   "奇工妙想"
+  ],
+  "portrait": "https://media.prts.wiki/e/ee/%E5%A4%B4%E5%83%8F_%E6%98%9F%E6%9E%81.png"
+ },
+ "杏仁": {
+  "name": "杏仁",
+  "star": 4,
+  "profession": "特种",
+  "faction": "哥伦比亚",
+  "char_id": "char_4105_almond",
+  "skins": [
+   "“杏仁”拼盘"
+  ],
+  "portrait": "https://media.prts.wiki/2/2e/%E5%A4%B4%E5%83%8F_%E6%9D%8F%E4%BB%81.png"
+ },
+ "星熊": {
+  "name": "星熊",
+  "star": 5,
+  "profession": "重装",
+  "faction": "炎-龙门",
+  "char_id": "char_136_hsguma",
+  "skins": [
+   "狩标浪人",
+   "探寻者 SK97"
+  ],
+  "portrait": "https://media.prts.wiki/0/07/%E5%A4%B4%E5%83%8F_%E6%98%9F%E7%86%8A.png"
+ },
+ "星源": {
+  "name": "星源",
+  "star": 4,
+  "profession": "术师",
+  "faction": "哥伦比亚",
+  "char_id": "char_135_halo",
+  "skins": [
+   "所愿"
+  ],
+  "portrait": "https://media.prts.wiki/4/48/%E5%A4%B4%E5%83%8F_%E6%98%9F%E6%BA%90.png"
+ },
+ "行箸": {
+  "name": "行箸",
+  "star": 4,
+  "profession": "辅助",
+  "faction": "炎",
+  "char_id": "char_4172_xingzh",
+  "skins": [
+   "留影"
+  ],
+  "portrait": "https://media.prts.wiki/4/42/%E5%A4%B4%E5%83%8F_%E8%A1%8C%E7%AE%B8.png"
+ },
+ "休谟斯": {
+  "name": "休谟斯",
+  "star": 3,
+  "profession": "近卫",
+  "faction": "罗德岛",
+  "char_id": "char_491_humus",
+  "skins": [
+   "烈阳街景"
+  ],
+  "portrait": "https://media.prts.wiki/e/e0/%E5%A4%B4%E5%83%8F_%E4%BC%91%E8%B0%9F%E6%96%AF.png"
+ },
+ "絮雨": {
+  "name": "絮雨",
+  "star": 4,
+  "profession": "医疗",
+  "faction": "伊比利亚",
+  "char_id": "char_436_whispr",
+  "skins": [
+   "孤寒峭",
+   "幽邃隐修"
+  ],
+  "portrait": "https://media.prts.wiki/3/34/%E5%A4%B4%E5%83%8F_%E7%B5%AE%E9%9B%A8.png"
+ },
+ "雪猎": {
+  "name": "雪猎",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "谢拉格",
+  "char_id": "char_4211_snhunt",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/c/cc/%E5%A4%B4%E5%83%8F_%E9%9B%AA%E7%8C%8E.png"
+ },
+ "雪绒": {
+  "name": "雪绒",
+  "star": 4,
+  "profession": "术师",
+  "faction": "萨米",
+  "char_id": "char_466_qanik",
+  "skins": [
+   "回礼"
+  ],
+  "portrait": "https://media.prts.wiki/8/82/%E5%A4%B4%E5%83%8F_%E9%9B%AA%E7%BB%92.png"
+ },
+ "雪雉": {
+  "name": "雪雉",
+  "star": 4,
+  "profession": "特种",
+  "faction": "炎-龙门",
+  "char_id": "char_383_snsant",
+  "skins": [
+   "天命勇者"
+  ],
+  "portrait": "https://media.prts.wiki/2/24/%E5%A4%B4%E5%83%8F_%E9%9B%AA%E9%9B%89.png"
+ },
+ "寻澜": {
+  "name": "寻澜",
+  "star": 4,
+  "profession": "先锋",
+  "faction": "哥伦比亚",
+  "char_id": "char_4052_surfer",
+  "skins": [
+   "共凭栏"
+  ],
+  "portrait": "https://media.prts.wiki/6/65/%E5%A4%B4%E5%83%8F_%E5%AF%BB%E6%BE%9C.png"
+ },
+ "巡林者": {
+  "name": "巡林者",
+  "star": 1,
+  "profession": "狙击",
+  "faction": "罗德岛",
+  "char_id": "char_503_rang",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/9/93/%E5%A4%B4%E5%83%8F_%E5%B7%A1%E6%9E%97%E8%80%85.png"
+ },
+ "讯使": {
+  "name": "讯使",
+  "star": 3,
+  "profession": "先锋",
+  "faction": "谢拉格",
+  "char_id": "char_198_blackd",
+  "skins": [
+   "新航线",
+   "无言狂响"
+  ],
+  "portrait": "https://media.prts.wiki/2/27/%E5%A4%B4%E5%83%8F_%E8%AE%AF%E4%BD%BF.png"
+ },
+ "崖心": {
+  "name": "崖心",
+  "star": 4,
+  "profession": "特种",
+  "faction": "谢拉格",
+  "char_id": "char_173_slchan",
+  "skins": [
+   "孤攀客",
+   "高原访客"
+  ],
+  "portrait": "https://media.prts.wiki/7/7d/%E5%A4%B4%E5%83%8F_%E5%B4%96%E5%BF%83.png"
+ },
+ "亚叶": {
+  "name": "亚叶",
+  "star": 4,
+  "profession": "医疗",
+  "faction": "罗德岛",
+  "char_id": "char_345_folnic",
+  "skins": [
+   "残葛"
+  ],
+  "portrait": "https://media.prts.wiki/b/b5/%E5%A4%B4%E5%83%8F_%E4%BA%9A%E5%8F%B6.png"
+ },
+ "宴": {
+  "name": "宴",
+  "star": 3,
+  "profession": "近卫",
+  "faction": "东",
+  "char_id": "char_337_utage",
+  "skins": [
+   "夏卉 FA661",
+   "伪装"
+  ],
+  "portrait": "https://media.prts.wiki/f/f4/%E5%A4%B4%E5%83%8F_%E5%AE%B4.png"
+ },
+ "焰狐龙梓兰": {
+  "name": "焰狐龙梓兰",
+  "star": 5,
+  "profession": "狙击",
+  "faction": "罗德岛",
+  "char_id": "char_1048_orchd2",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/2/20/%E5%A4%B4%E5%83%8F_%E7%84%B0%E7%8B%90%E9%BE%99%E6%A2%93%E5%85%B0.png"
+ },
+ "炎客": {
+  "name": "炎客",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "罗德岛",
+  "char_id": "char_131_flameb",
+  "skins": [
+   "悠然假日 HDm04",
+   "单刀"
+  ],
+  "portrait": "https://media.prts.wiki/d/d6/%E5%A4%B4%E5%83%8F_%E7%82%8E%E5%AE%A2.png"
+ },
+ "炎熔": {
+  "name": "炎熔",
+  "star": 2,
+  "profession": "术师",
+  "faction": "罗德岛",
+  "char_id": "char_121_lava",
+  "skins": [
+   "一束阳光"
+  ],
+  "portrait": "https://media.prts.wiki/f/fb/%E5%A4%B4%E5%83%8F_%E7%82%8E%E7%86%94.png"
+ },
+ "焰尾": {
+  "name": "焰尾",
+  "star": 5,
+  "profession": "先锋",
+  "faction": "卡西米尔",
+  "char_id": "char_420_flamtl",
+  "skins": [
+   "小健将"
+  ],
+  "portrait": "https://media.prts.wiki/c/c8/%E5%A4%B4%E5%83%8F_%E7%84%B0%E5%B0%BE.png"
+ },
+ "焰影苇草": {
+  "name": "焰影苇草",
+  "star": 5,
+  "profession": "医疗",
+  "faction": "维多利亚",
+  "char_id": "char_1020_reed2",
+  "skins": [
+   "博物",
+   "夏卉 FA075",
+   "闪焰之夜"
+  ],
+  "portrait": "https://media.prts.wiki/9/94/%E5%A4%B4%E5%83%8F_%E7%84%B0%E5%BD%B1%E8%8B%87%E8%8D%89.png"
+ },
+ "炎狱炎熔": {
+  "name": "炎狱炎熔",
+  "star": 4,
+  "profession": "术师",
+  "faction": "罗德岛",
+  "char_id": "char_1011_lava2",
+  "skins": [
+   "暮影藤萝",
+   "镇邪焱"
+  ],
+  "portrait": "https://media.prts.wiki/2/20/%E5%A4%B4%E5%83%8F_%E7%82%8E%E7%8B%B1%E7%82%8E%E7%86%94.png"
+ },
+ "洋灰": {
+  "name": "洋灰",
+  "star": 4,
+  "profession": "重装",
+  "faction": "雷姆必拓",
+  "char_id": "char_464_cement",
+  "skins": [
+   "全新业务"
+  ],
+  "portrait": "https://media.prts.wiki/e/e8/%E5%A4%B4%E5%83%8F_%E6%B4%8B%E7%81%B0.png"
+ },
+ "遥": {
+  "name": "遥",
+  "star": 5,
+  "profession": "辅助",
+  "faction": "东",
+  "char_id": "char_4202_haruka",
+  "skins": [
+   "常世之幻"
+  ],
+  "portrait": "https://media.prts.wiki/e/ec/%E5%A4%B4%E5%83%8F_%E9%81%A5.png"
+ },
+ "耀骑士临光": {
+  "name": "耀骑士临光",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "卡西米尔",
+  "char_id": "char_1014_nearl2",
+  "skins": [
+   "复现荣光"
+  ],
+  "portrait": "https://media.prts.wiki/0/03/%E5%A4%B4%E5%83%8F_%E8%80%80%E9%AA%91%E5%A3%AB%E4%B8%B4%E5%85%89.png"
+ },
+ "夜半": {
+  "name": "夜半",
+  "star": 4,
+  "profession": "先锋",
+  "faction": "雷姆必拓",
+  "char_id": "char_476_blkngt",
+  "skins": [
+   "夏卉 FA641",
+   "枝头馥"
+  ],
+  "portrait": "https://media.prts.wiki/a/a1/%E5%A4%B4%E5%83%8F_%E5%A4%9C%E5%8D%8A.png"
+ },
+ "夜刀": {
+  "name": "夜刀",
+  "star": 1,
+  "profession": "先锋",
+  "faction": "罗德岛",
+  "char_id": "char_502_nblade",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/b/b2/%E5%A4%B4%E5%83%8F_%E5%A4%9C%E5%88%80.png"
+ },
+ "耶拉": {
+  "name": "耶拉",
+  "star": 4,
+  "profession": "术师",
+  "faction": "谢拉格",
+  "char_id": "char_4013_kjera",
+  "skins": [
+   "灵巧侍者"
+  ],
+  "portrait": "https://media.prts.wiki/7/71/%E5%A4%B4%E5%83%8F_%E8%80%B6%E6%8B%89.png"
+ },
+ "夜魔": {
+  "name": "夜魔",
+  "star": 4,
+  "profession": "术师",
+  "faction": "维多利亚",
+  "char_id": "char_164_nightm",
+  "skins": [
+   "光影",
+   "湖畔的少女"
+  ],
+  "portrait": "https://media.prts.wiki/a/a7/%E5%A4%B4%E5%83%8F_%E5%A4%9C%E9%AD%94.png"
+ },
+ "夜烟": {
+  "name": "夜烟",
+  "star": 3,
+  "profession": "术师",
+  "faction": "维多利亚",
+  "char_id": "char_141_nights",
+  "skins": [
+   "疗养地怪谈"
+  ],
+  "portrait": "https://media.prts.wiki/5/55/%E5%A4%B4%E5%83%8F_%E5%A4%9C%E7%83%9F.png"
+ },
+ "夜莺": {
+  "name": "夜莺",
+  "star": 5,
+  "profession": "医疗",
+  "char_id": "char_179_cgbird",
+  "skins": [
+   "挽歌",
+   "流辉"
+  ],
+  "portrait": "https://media.prts.wiki/6/64/%E5%A4%B4%E5%83%8F_%E5%A4%9C%E8%8E%BA.png"
+ },
+ "野鬃": {
+  "name": "野鬃",
+  "star": 4,
+  "profession": "先锋",
+  "faction": "卡西米尔",
+  "char_id": "char_496_wildmn",
+  "skins": [
+   "正义缔造者"
+  ],
+  "portrait": "https://media.prts.wiki/9/9f/%E5%A4%B4%E5%83%8F_%E9%87%8E%E9%AC%83.png"
+ },
+ "伊芙利特": {
+  "name": "伊芙利特",
+  "star": 5,
+  "profession": "术师",
+  "faction": "哥伦比亚",
+  "char_id": "char_134_ifrit",
+  "skins": [
+   "日晒 SS.SP",
+   "儿童派对",
+   "轻松旅途"
+  ],
+  "portrait": "https://media.prts.wiki/e/ed/%E5%A4%B4%E5%83%8F_%E4%BC%8A%E8%8A%99%E5%88%A9%E7%89%B9.png"
+ },
+ "异客": {
+  "name": "异客",
+  "star": 5,
+  "profession": "术师",
+  "faction": "萨尔贡",
+  "char_id": "char_472_pasngr",
+  "skins": [
+   "今昔须臾之梦"
+  ],
+  "portrait": "https://media.prts.wiki/d/d2/%E5%A4%B4%E5%83%8F_%E5%BC%82%E5%AE%A2.png"
+ },
+ "伊内丝": {
+  "name": "伊内丝",
+  "star": 5,
+  "profession": "先锋",
+  "char_id": "char_4087_ines",
+  "skins": [
+   "燃烧天穹下",
+   "蝶舞华章"
+  ],
+  "portrait": "https://media.prts.wiki/8/8c/%E5%A4%B4%E5%83%8F_%E4%BC%8A%E5%86%85%E4%B8%9D.png"
+ },
+ "伊桑": {
+  "name": "伊桑",
+  "star": 3,
+  "profession": "特种",
+  "faction": "罗德岛",
+  "char_id": "char_355_ethan",
+  "skins": [
+   "渗透"
+  ],
+  "portrait": "https://media.prts.wiki/c/c1/%E5%A4%B4%E5%83%8F_%E4%BC%8A%E6%A1%91.png"
+ },
+ "医生": {
+  "name": "医生",
+  "star": 4,
+  "profession": "近卫",
+  "char_id": "char_4125_rdoc",
+  "skins": [
+   "展览"
+  ],
+  "portrait": "https://media.prts.wiki/1/11/%E5%A4%B4%E5%83%8F_%E5%8C%BB%E7%94%9F.png"
+ },
+ "隐德来希": {
+  "name": "隐德来希",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "罗德岛",
+  "char_id": "char_4010_etlchi",
+  "skins": [
+   "耀目之蓝"
+  ],
+  "portrait": "https://media.prts.wiki/4/4c/%E5%A4%B4%E5%83%8F_%E9%9A%90%E5%BE%B7%E6%9D%A5%E5%B8%8C.png"
+ },
+ "银灰": {
+  "name": "银灰",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "谢拉格",
+  "char_id": "char_172_svrash",
+  "skins": [
+   "约克的寒风",
+   "探寻者 SKm01",
+   "不融冰"
+  ],
+  "portrait": "https://media.prts.wiki/2/27/%E5%A4%B4%E5%83%8F_%E9%93%B6%E7%81%B0.png"
+ },
+ "因陀罗": {
+  "name": "因陀罗",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "维多利亚",
+  "char_id": "char_155_tiger",
+  "skins": [
+   "悍将"
+  ],
+  "portrait": "https://media.prts.wiki/f/fe/%E5%A4%B4%E5%83%8F_%E5%9B%A0%E9%99%80%E7%BD%97.png"
+ },
+ "隐现": {
+  "name": "隐现",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "拉特兰",
+  "char_id": "char_498_inside",
+  "skins": [
+   "甜品大奖"
+  ],
+  "portrait": "https://media.prts.wiki/8/85/%E5%A4%B4%E5%83%8F_%E9%9A%90%E7%8E%B0.png"
+ },
+ "引星棘刺": {
+  "name": "引星棘刺",
+  "star": 5,
+  "profession": "特种",
+  "faction": "伊比利亚",
+  "char_id": "char_1039_thorn2",
+  "skins": [
+   "无际之帆"
+  ],
+  "portrait": "https://media.prts.wiki/3/3b/%E5%A4%B4%E5%83%8F_%E5%BC%95%E6%98%9F%E6%A3%98%E5%88%BA.png"
+ },
+ "幽灵鲨": {
+  "name": "幽灵鲨",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "阿戈尔",
+  "char_id": "char_143_ghost",
+  "skins": [
+   "暗流"
+  ],
+  "portrait": "https://media.prts.wiki/2/28/%E5%A4%B4%E5%83%8F_%E5%B9%BD%E7%81%B5%E9%B2%A8.png"
+ },
+ "祐天寺若麦": {
+  "name": "祐天寺若麦",
+  "star": 4,
+  "profession": "近卫",
+  "char_id": "char_4185_amoris",
+  "skins": [
+   "情热魔术师"
+  ],
+  "portrait": "https://media.prts.wiki/d/df/%E5%A4%B4%E5%83%8F_%E7%A5%90%E5%A4%A9%E5%AF%BA%E8%8B%A5%E9%BA%A6.png"
+ },
+ "余": {
+  "name": "余",
+  "star": 5,
+  "profession": "重装",
+  "faction": "炎",
+  "char_id": "char_2026_yu",
+  "skins": [
+   "愿清晓"
+  ],
+  "portrait": "https://media.prts.wiki/6/66/%E5%A4%B4%E5%83%8F_%E4%BD%99.png"
+ },
+ "预备干员-后勤": {
+  "name": "预备干员-后勤",
+  "star": 2,
+  "profession": "医疗",
+  "char_id": "char_506_rmedic",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/5/5a/%E5%A4%B4%E5%83%8F_%E9%A2%84%E5%A4%87%E5%B9%B2%E5%91%98-%E5%90%8E%E5%8B%A4.png"
+ },
+ "预备干员-近战": {
+  "name": "预备干员-近战",
+  "star": 2,
+  "profession": "先锋",
+  "char_id": "char_504_rguard",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/f/fa/%E5%A4%B4%E5%83%8F_%E9%A2%84%E5%A4%87%E5%B9%B2%E5%91%98-%E8%BF%91%E6%88%98.png"
+ },
+ "预备干员-狙击": {
+  "name": "预备干员-狙击",
+  "star": 2,
+  "profession": "狙击",
+  "char_id": "char_507_rsnipe",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/5/51/%E5%A4%B4%E5%83%8F_%E9%A2%84%E5%A4%87%E5%B9%B2%E5%91%98-%E7%8B%99%E5%87%BB.png"
+ },
+ "预备干员-术师": {
+  "name": "预备干员-术师",
+  "star": 2,
+  "profession": "术师",
+  "char_id": "char_505_rcast",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/c/cd/%E5%A4%B4%E5%83%8F_%E9%A2%84%E5%A4%87%E5%B9%B2%E5%91%98-%E6%9C%AF%E5%B8%88.png"
+ },
+ "预备干员-重装": {
+  "name": "预备干员-重装",
+  "star": 2,
+  "profession": "重装",
+  "char_id": "char_514_rdfend",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/0/04/%E5%A4%B4%E5%83%8F_%E9%A2%84%E5%A4%87%E5%B9%B2%E5%91%98-%E9%87%8D%E8%A3%85.png"
+ },
+ "郁金香": {
+  "name": "郁金香",
+  "star": 4,
+  "profession": "先锋",
+  "faction": "罗德岛",
+  "char_id": "char_513_apionr",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/f/f3/%E5%A4%B4%E5%83%8F_%E9%83%81%E9%87%91%E9%A6%99.png"
+ },
+ "羽毛笔": {
+  "name": "羽毛笔",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "玻利瓦尔",
+  "char_id": "char_421_crow",
+  "skins": [
+   "夏卉 FA210"
+  ],
+  "portrait": "https://media.prts.wiki/b/b8/%E5%A4%B4%E5%83%8F_%E7%BE%BD%E6%AF%9B%E7%AC%94.png"
+ },
+ "远山": {
+  "name": "远山",
+  "star": 3,
+  "profession": "术师",
+  "faction": "萨米",
+  "char_id": "char_109_fmout",
+  "skins": [
+   "未知的旅行"
+  ],
+  "portrait": "https://media.prts.wiki/6/63/%E5%A4%B4%E5%83%8F_%E8%BF%9C%E5%B1%B1.png"
+ },
+ "远牙": {
+  "name": "远牙",
+  "star": 5,
+  "profession": "狙击",
+  "faction": "卡西米尔",
+  "char_id": "char_430_fartth",
+  "skins": [
+   "捉风"
+  ],
+  "portrait": "https://media.prts.wiki/a/a1/%E5%A4%B4%E5%83%8F_%E8%BF%9C%E7%89%99.png"
+ },
+ "月禾": {
+  "name": "月禾",
+  "star": 4,
+  "profession": "辅助",
+  "faction": "东",
+  "char_id": "char_343_tknogi",
+  "skins": [
+   "伦式巫女",
+   "舞"
+  ],
+  "portrait": "https://media.prts.wiki/b/b6/%E5%A4%B4%E5%83%8F_%E6%9C%88%E7%A6%BE.png"
+ },
+ "月见夜": {
+  "name": "月见夜",
+  "star": 2,
+  "profession": "近卫",
+  "faction": "罗德岛",
+  "char_id": "char_283_midn",
+  "skins": [
+   "第七夜苏醒魔君"
+  ],
+  "portrait": "https://media.prts.wiki/b/b7/%E5%A4%B4%E5%83%8F_%E6%9C%88%E8%A7%81%E5%A4%9C.png"
+ },
+ "跃跃": {
+  "name": "跃跃",
+  "star": 3,
+  "profession": "狙击",
+  "faction": "玻利瓦尔",
+  "char_id": "char_4100_caper",
+  "skins": [
+   "夏卉 FA083"
+  ],
+  "portrait": "https://media.prts.wiki/a/aa/%E5%A4%B4%E5%83%8F_%E8%B7%83%E8%B7%83.png"
+ },
+ "云迹": {
+  "name": "云迹",
+  "star": 3,
+  "profession": "特种",
+  "faction": "哥伦比亚",
+  "char_id": "char_4165_ctrail",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/6/67/%E5%A4%B4%E5%83%8F_%E4%BA%91%E8%BF%B9.png"
+ },
+ "陨星": {
+  "name": "陨星",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "罗德岛",
+  "char_id": "char_219_meteo",
+  "skins": [
+   "石墨"
+  ],
+  "portrait": "https://media.prts.wiki/e/ea/%E5%A4%B4%E5%83%8F_%E9%99%A8%E6%98%9F.png"
+ },
+ "早露": {
+  "name": "早露",
+  "star": 5,
+  "profession": "狙击",
+  "faction": "乌萨斯",
+  "char_id": "char_197_poca",
+  "skins": [
+   "杰作",
+   "常伴我身"
+  ],
+  "portrait": "https://media.prts.wiki/6/63/%E5%A4%B4%E5%83%8F_%E6%97%A9%E9%9C%B2.png"
+ },
+ "战车": {
+  "name": "战车",
+  "star": 4,
+  "profession": "近卫",
+  "char_id": "char_459_tachak",
+  "skins": [
+   "领主"
+  ],
+  "portrait": "https://media.prts.wiki/c/cb/%E5%A4%B4%E5%83%8F_%E6%88%98%E8%BD%A6.png"
+ },
+ "斩业星熊": {
+  "name": "斩业星熊",
+  "star": 5,
+  "profession": "重装",
+  "faction": "炎-龙门",
+  "char_id": "char_1044_hsgma2",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/e/e5/%E5%A4%B4%E5%83%8F_%E6%96%A9%E4%B8%9A%E6%98%9F%E7%86%8A.png"
+ },
+ "折光": {
+  "name": "折光",
+  "star": 4,
+  "profession": "术师",
+  "faction": "莱塔尼亚",
+  "char_id": "char_499_kaitou",
+  "skins": [
+   "斜照"
+  ],
+  "portrait": "https://media.prts.wiki/c/c2/%E5%A4%B4%E5%83%8F_%E6%8A%98%E5%85%89.png"
+ },
+ "折桠": {
+  "name": "折桠",
+  "star": 4,
+  "profession": "重装",
+  "faction": "乌萨斯",
+  "char_id": "char_4207_branch",
+  "skins": [
+   "撷香霭"
+  ],
+  "portrait": "https://media.prts.wiki/a/a0/%E5%A4%B4%E5%83%8F_%E6%8A%98%E6%A1%A0.png"
+ },
+ "真理": {
+  "name": "真理",
+  "star": 4,
+  "profession": "辅助",
+  "faction": "乌萨斯",
+  "char_id": "char_195_glassb",
+  "skins": [
+   "书味"
+  ],
+  "portrait": "https://media.prts.wiki/e/e6/%E5%A4%B4%E5%83%8F_%E7%9C%9F%E7%90%86.png"
+ },
+ "真言": {
+  "name": "真言",
+  "star": 5,
+  "profession": "术师",
+  "faction": "罗德岛",
+  "char_id": "char_4204_mantra",
+  "skins": [],
+  "portrait": "https://media.prts.wiki/6/63/%E5%A4%B4%E5%83%8F_%E7%9C%9F%E8%A8%80.png"
+ },
+ "正义骑士号": {
+  "name": "正义骑士号",
+  "star": 0,
+  "profession": "狙击",
+  "faction": "卡西米尔",
+  "char_id": "char_4000_jnight",
+  "skins": [
+   "竞技之梦改装"
+  ],
+  "portrait": "https://media.prts.wiki/c/c5/%E5%A4%B4%E5%83%8F_%E6%AD%A3%E4%B9%89%E9%AA%91%E5%A3%AB%E5%8F%B7.png"
+ },
+ "至简": {
+  "name": "至简",
+  "star": 4,
+  "profession": "术师",
+  "faction": "萨尔贡",
+  "char_id": "char_4054_malist",
+  "skins": [
+   "悠然假日 HDm74"
+  ],
+  "portrait": "https://media.prts.wiki/9/98/%E5%A4%B4%E5%83%8F_%E8%87%B3%E7%AE%80.png"
+ },
+ "止颂": {
+  "name": "止颂",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "莱塔尼亚",
+  "char_id": "char_4011_lessng",
+  "skins": [
+   "幻火"
+  ],
+  "portrait": "https://media.prts.wiki/7/72/%E5%A4%B4%E5%83%8F_%E6%AD%A2%E9%A2%82.png"
+ },
+ "烛煌": {
+  "name": "烛煌",
+  "star": 5,
+  "profession": "术师",
+  "faction": "罗德岛",
+  "char_id": "char_1040_blaze2",
+  "skins": [
+   "夜归人"
+  ],
+  "portrait": "https://media.prts.wiki/c/c4/%E5%A4%B4%E5%83%8F_%E7%83%9B%E7%85%8C.png"
+ },
+ "铸铁": {
+  "name": "铸铁",
+  "star": 4,
+  "profession": "近卫",
+  "faction": "米诺斯",
+  "char_id": "char_333_sidero",
+  "skins": [
+   "轻风 LB03"
+  ],
+  "portrait": "https://media.prts.wiki/8/84/%E5%A4%B4%E5%83%8F_%E9%93%B8%E9%93%81.png"
+ },
+ "濯尘芙蓉": {
+  "name": "濯尘芙蓉",
+  "star": 4,
+  "profession": "医疗",
+  "faction": "罗德岛",
+  "char_id": "char_1024_hbisc2",
+  "skins": [
+   "浪漫满厢"
+  ],
+  "portrait": "https://media.prts.wiki/8/8d/%E5%A4%B4%E5%83%8F_%E6%BF%AF%E5%B0%98%E8%8A%99%E8%93%89.png"
+ },
+ "浊心斯卡蒂": {
+  "name": "浊心斯卡蒂",
+  "star": 5,
+  "profession": "辅助",
+  "faction": "阿戈尔",
+  "char_id": "char_1012_skadi2",
+  "skins": [
+   "升华",
+   "红女爵"
+  ],
+  "portrait": "https://media.prts.wiki/8/80/%E5%A4%B4%E5%83%8F_%E6%B5%8A%E5%BF%83%E6%96%AF%E5%8D%A1%E8%92%82.png"
+ },
+ "梓兰": {
+  "name": "梓兰",
+  "star": 2,
+  "profession": "辅助",
+  "faction": "罗德岛",
+  "char_id": "char_278_orchid",
+  "skins": [
+   "衣缕往昔"
+  ],
+  "portrait": "https://media.prts.wiki/8/83/%E5%A4%B4%E5%83%8F_%E6%A2%93%E5%85%B0.png"
+ },
+ "子月": {
+  "name": "子月",
+  "star": 4,
+  "profession": "狙击",
+  "faction": "叙拉古",
+  "char_id": "char_4014_lunacu",
+  "skins": [
+   "棠云巧梦"
+  ],
+  "portrait": "https://media.prts.wiki/d/db/%E5%A4%B4%E5%83%8F_%E5%AD%90%E6%9C%88.png"
+ },
+ "左乐": {
+  "name": "左乐",
+  "star": 5,
+  "profession": "近卫",
+  "faction": "炎",
+  "char_id": "char_4121_zuole",
+  "skins": [
+   "少年游",
+   "无息破局"
+  ],
+  "portrait": "https://media.prts.wiki/e/e0/%E5%A4%B4%E5%83%8F_%E5%B7%A6%E4%B9%90.png"
+ }
+}

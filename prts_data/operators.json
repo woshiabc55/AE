@@ -1,0 +1,3456 @@
+{
+ "阿": {
+  "profession": "特种",
+  "star": "",
+  "faction": "炎-龙门,鲤氏侦探事务所",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 16389
+ },
+ "阿兰娜": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "雷姆必拓",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13530
+ },
+ "阿罗玛": {
+  "profession": "术师",
+  "star": "",
+  "faction": "叙拉古",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13312
+ },
+ "阿米娅": {
+  "profession": "术师",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 14125
+ },
+ "阿斯卡纶": {
+  "profession": "特种",
+  "star": "",
+  "faction": "罗德岛,S.W.E.E.P.",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 18742
+ },
+ "阿消": {
+  "profession": "特种",
+  "star": "",
+  "faction": "炎-龙门",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9660
+ },
+ "艾拉": {
+  "profession": "特种",
+  "star": "",
+  "faction": "彩虹小队",
+  "imgs": [
+   "Skin logo 彩虹六号：围攻.png"
+  ],
+  "skin_count_hint": 0,
+  "has_text": 16913
+ },
+ "埃拉托": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "米诺斯",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12045
+ },
+ "艾丽妮": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "伊比利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 19804
+ },
+ "爱丽丝": {
+  "profession": "术师",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12441
+ },
+ "艾丝黛尔": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "萨尔贡",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9184
+ },
+ "艾雅法拉": {
+  "profession": "术师",
+  "star": "",
+  "faction": "莱塔尼亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 16987
+ },
+ "安比尔": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "拉特兰",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10635
+ },
+ "安德切尔": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "罗德岛,行动预备组A4",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 4379
+ },
+ "安洁莉娜": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "叙拉古",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 16264
+ },
+ "安赛尔": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "罗德岛,行动预备组A4",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 4952
+ },
+ "暗索": {
+  "profession": "特种",
+  "star": "",
+  "faction": "炎-龙门",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9741
+ },
+ "安哲拉": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "阿戈尔,深海猎人",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10586
+ },
+ "奥达": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11600
+ },
+ "奥斯塔": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "叙拉古,贾维团伙",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10505
+ },
+ "八幡海铃": {
+  "profession": "特种",
+  "star": "",
+  "faction": "Ave Mujica",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11879
+ },
+ "摆渡人": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "米诺斯",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13381
+ },
+ "柏喙": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "萨米",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11480
+ },
+ "白金": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "卡西米尔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10189
+ },
+ "百炼嘉维尔": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 18617
+ },
+ "白面鸮": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "哥伦比亚,莱茵生命",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9877
+ },
+ "拜松": {
+  "profession": "重装",
+  "star": "",
+  "faction": "炎-龙门",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11280
+ },
+ "白铁": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 18854
+ },
+ "白雪": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "东",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 8951
+ },
+ "斑点": {
+  "profession": "重装",
+  "star": "",
+  "faction": "罗德岛,行动预备组A6",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 4871
+ },
+ "薄绿": {
+  "profession": "术师",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11725
+ },
+ "暴行": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "雷姆必拓",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9623
+ },
+ "暴雨": {
+  "profession": "重装",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12241
+ },
+ "贝洛内": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "叙拉古",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 18253
+ },
+ "贝娜": {
+  "profession": "特种",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12131
+ },
+ "鞭刃": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "卡西米尔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11071
+ },
+ "冰酿": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "哥伦比亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11963
+ },
+ "波卜": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "哥伦比亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13369
+ },
+ "波登可": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9899
+ },
+ "伯塔尼": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "乌萨斯",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 16169
+ },
+ "布丁": {
+  "profession": "术师",
+  "star": "",
+  "faction": "哥伦比亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9965
+ },
+ "布洛卡": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "叙拉古,贾维团伙",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12127
+ },
+ "CONFESS-47": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "拉特兰",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 3761
+ },
+ "裁度": {
+  "profession": "特种",
+  "star": "",
+  "faction": "叙拉古",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11703
+ },
+ "苍苔": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "哥伦比亚,汐斯塔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 14087
+ },
+ "Castle-3": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 2926
+ },
+ "缠丸": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "东",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 8488
+ },
+ "车尔尼": {
+  "profession": "重装",
+  "star": "",
+  "faction": "莱塔尼亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13578
+ },
+ "陈": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "炎-龙门,龙门近卫局",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 16751
+ },
+ "骋风": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "炎",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11549
+ },
+ "澄闪": {
+  "profession": "术师",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 19162
+ },
+ "承曦格雷伊": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12429
+ },
+ "赤冬": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "东",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10432
+ },
+ "赤刃明霄陈": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "炎",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 18434
+ },
+ "斥罪": {
+  "profession": "重装",
+  "star": "",
+  "faction": "叙拉古",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 19726
+ },
+ "重岳": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "炎,炎-岁",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 19043
+ },
+ "初雪": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "谢拉格",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9876
+ },
+ "纯烬艾雅法拉": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "莱塔尼亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 18878
+ },
+ "刺玫": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12659
+ },
+ "伺夜": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "叙拉古",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 17677
+ },
+ "淬羽赫默": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "哥伦比亚,莱茵生命",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 18010
+ },
+ "嵯峨": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "东",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 15745
+ },
+ "达格达": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "维多利亚,格拉斯哥帮",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10306
+ },
+ "戴菲恩": {
+  "profession": "术师",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12142
+ },
+ "但书": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "卡西米尔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12910
+ },
+ "导火索": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "彩虹小队",
+  "imgs": [
+   "Skin logo 彩虹六号：围攻.png"
+  ],
+  "skin_count_hint": 0,
+  "has_text": 12621
+ },
+ "德克萨斯": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "炎-龙门,企鹅物流",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9941
+ },
+ "地灵": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "莱塔尼亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10175
+ },
+ "蒂比": {
+  "profession": "特种",
+  "star": "",
+  "faction": "哥伦比亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11309
+ },
+ "涤火杰西卡": {
+  "profession": "重装",
+  "star": "",
+  "faction": "哥伦比亚,黑钢国际",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 21410
+ },
+ "电弧": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "罗德岛,罗德岛-精英干员",
+  "imgs": [
+   "精英_1_大图.png",
+   "技能 环形鳞地.png",
+   "模组类型 SO-β.png",
+   "技能 手牵手.png",
+   "精英_0_大图.png"
+  ],
+  "skin_count_hint": 0,
+  "has_text": 26652
+ },
+ "冬时": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "乌萨斯",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11777
+ },
+ "豆苗": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "哥伦比亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11048
+ },
+ "杜宾": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 7788
+ },
+ "杜林": {
+  "profession": "术师",
+  "star": "",
+  "faction": "罗德岛,行动组A4",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 2856
+ },
+ "渡桥": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 14645
+ },
+ "断崖": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "雷姆必拓",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12910
+ },
+ "断罪者": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "米诺斯",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11240
+ },
+ "铎铃": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "炎",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12414
+ },
+ "多萝西": {
+  "profession": "特种",
+  "star": "",
+  "faction": "哥伦比亚,莱茵生命",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 18699
+ },
+ "芳汀": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "拉特兰",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10599
+ },
+ "菲莱": {
+  "profession": "重装",
+  "star": "",
+  "faction": "萨尔贡",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 14082
+ },
+ "菲亚梅塔": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "拉特兰",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 16484
+ },
+ "芬": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "罗德岛,行动预备组A1",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 4378
+ },
+ "丰川祥子": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "Ave Mujica",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 20815
+ },
+ "风笛": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 16924
+ },
+ "风丸": {
+  "profession": "特种",
+  "star": "",
+  "faction": "东",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12394
+ },
+ "风絮": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "炎",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11329
+ },
+ "Friston-3": {
+  "profession": "重装",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 5099
+ },
+ "芙兰卡": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "哥伦比亚,黑钢国际",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9930
+ },
+ "芙蓉": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "罗德岛,行动预备组A1",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 4639
+ },
+ "复奏": {
+  "profession": "术师",
+  "star": "",
+  "faction": "叙拉古",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13737
+ },
+ "GALLUS²": {
+  "profession": "术师",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 4554
+ },
+ "格拉尼": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11494
+ },
+ "格劳克斯": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "伊比利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10329
+ },
+ "歌蕾蒂娅": {
+  "profession": "特种",
+  "star": "",
+  "faction": "阿戈尔,深海猎人",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 19280
+ },
+ "格雷伊": {
+  "profession": "术师",
+  "star": "",
+  "faction": "玻利瓦尔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9344
+ },
+ "古米": {
+  "profession": "重装",
+  "star": "",
+  "faction": "乌萨斯,乌萨斯学生自治团",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10504
+ },
+ "归溟幽灵鲨": {
+  "profession": "特种",
+  "star": "",
+  "faction": "阿戈尔,深海猎人",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 19708
+ },
+ "瑰盐": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "伊比利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12509
+ },
+ "哈蒂娅": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "萨尔贡",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12377
+ },
+ "哈洛德": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12750
+ },
+ "海蒂": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13575
+ },
+ "海沫": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "伊比利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10910
+ },
+ "海霓": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "阿戈尔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13286
+ },
+ "寒芒克洛丝": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12846
+ },
+ "寒檀": {
+  "profession": "术师",
+  "star": "",
+  "faction": "萨米",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13776
+ },
+ "号角": {
+  "profession": "重装",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 21390
+ },
+ "赫德雷": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "巴别塔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 19983
+ },
+ "褐果": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12629
+ },
+ "赫拉格": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "乌萨斯",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 14880
+ },
+ "赫默": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "哥伦比亚,莱茵生命",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10521
+ },
+ "和弦": {
+  "profession": "术师",
+  "star": "",
+  "faction": "维多利亚,塔拉",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12450
+ },
+ "黑": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "哥伦比亚,汐斯塔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 15872
+ },
+ "黑键": {
+  "profession": "术师",
+  "star": "",
+  "faction": "莱塔尼亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 21078
+ },
+ "黑角": {
+  "profession": "重装",
+  "star": "",
+  "faction": "罗德岛,行动组A4",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 2939
+ },
+ "衡沙": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "萨尔贡",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12223
+ },
+ "吽": {
+  "profession": "重装",
+  "star": "",
+  "faction": "炎-龙门,鲤氏侦探事务所",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10690
+ },
+ "红": {
+  "profession": "特种",
+  "star": "",
+  "faction": "罗德岛,S.W.E.E.P.",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9622
+ },
+ "红豆": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "哥伦比亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10335
+ },
+ "红隼": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "萨尔贡",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11338
+ },
+ "鸿雪": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 17837
+ },
+ "红云": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "叙拉古",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9241
+ },
+ "华法琳": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10555
+ },
+ "槐琥": {
+  "profession": "特种",
+  "star": "",
+  "faction": "炎-龙门,鲤氏侦探事务所",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11187
+ },
+ "煌": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "罗德岛,罗德岛-精英干员",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 16754
+ },
+ "荒芜拉普兰德": {
+  "profession": "术师",
+  "star": "",
+  "faction": "叙拉古",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 19049
+ },
+ "灰毫": {
+  "profession": "重装",
+  "star": "",
+  "faction": "卡西米尔,红松骑士团",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11724
+ },
+ "灰喉": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10876
+ },
+ "灰烬": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "彩虹小队",
+  "imgs": [
+   "Skin logo 彩虹六号：围攻.png"
+  ],
+  "skin_count_hint": 0,
+  "has_text": 15844
+ },
+ "霍尔海雅": {
+  "profession": "术师",
+  "star": "",
+  "faction": "哥伦比亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 21527
+ },
+ "火龙S黑角": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "罗德岛,行动组A4",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13487
+ },
+ "火哨": {
+  "profession": "重装",
+  "star": "",
+  "faction": "雷姆必拓",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12812
+ },
+ "火神": {
+  "profession": "重装",
+  "star": "",
+  "faction": "米诺斯",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11023
+ },
+ "棘刺": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "伊比利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 17840
+ },
+ "极光": {
+  "profession": "重装",
+  "star": "",
+  "faction": "谢拉格",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 14387
+ },
+ "极境": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11986
+ },
+ "吉星": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "东",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13603
+ },
+ "假日威龙陈": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 21764
+ },
+ "贾维": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "叙拉古,贾维团伙",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10383
+ },
+ "嘉维尔": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11376
+ },
+ "锏": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "谢拉格,喀兰贸易",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 20591
+ },
+ "坚雷": {
+  "profession": "重装",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9379
+ },
+ "缄默德克萨斯": {
+  "profession": "特种",
+  "star": "",
+  "faction": "炎-龙门,企鹅物流",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 18438
+ },
+ "见行者": {
+  "profession": "特种",
+  "star": "",
+  "faction": "拉特兰",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12782
+ },
+ "角峰": {
+  "profession": "重装",
+  "star": "",
+  "faction": "谢拉格,喀兰贸易",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 8836
+ },
+ "孑": {
+  "profession": "特种",
+  "star": "",
+  "faction": "炎-龙门",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10305
+ },
+ "杰克": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "哥伦比亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10249
+ },
+ "杰西卡": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "哥伦比亚,黑钢国际",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 8133
+ },
+ "截云": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "炎",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11342
+ },
+ "惊蛰": {
+  "profession": "术师",
+  "star": "",
+  "faction": "炎",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10590
+ },
+ "九色鹿": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "炎",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11590
+ },
+ "酒神": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 21853
+ },
+ "矩": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "炎",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13867
+ },
+ "卡达": {
+  "profession": "术师",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10493
+ },
+ "卡夫卡": {
+  "profession": "特种",
+  "star": "",
+  "faction": "哥伦比亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11303
+ },
+ "卡涅利安": {
+  "profession": "术师",
+  "star": "",
+  "faction": "莱塔尼亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 19270
+ },
+ "卡缇": {
+  "profession": "重装",
+  "star": "",
+  "faction": "罗德岛,行动预备组A4",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 4697
+ },
+ "凯尔希": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 22903
+ },
+ "凯尔希·思衡托": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 17218
+ },
+ "凯瑟琳": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 14644
+ },
+ "刻刀": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "哥伦比亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9900
+ },
+ "刻俄柏": {
+  "profession": "术师",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 16323
+ },
+ "可露希尔": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 17577
+ },
+ "克洛丝": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "罗德岛,行动预备组A1",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 5348
+ },
+ "可颂": {
+  "profession": "重装",
+  "star": "",
+  "faction": "炎-龙门,企鹅物流",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10266
+ },
+ "空": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "炎-龙门,企鹅物流",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10251
+ },
+ "空爆": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "罗德岛,行动预备组A6",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 4472
+ },
+ "空构": {
+  "profession": "特种",
+  "star": "",
+  "faction": "拉特兰",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13094
+ },
+ "空弦": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "拉特兰",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 17130
+ },
+ "苦艾": {
+  "profession": "术师",
+  "star": "",
+  "faction": "乌萨斯,乌萨斯学生自治团",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11593
+ },
+ "傀影": {
+  "profession": "特种",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 16744
+ },
+ "拉普兰德": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "叙拉古",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10789
+ },
+ "莱恩哈特": {
+  "profession": "术师",
+  "star": "",
+  "faction": "雷姆必拓",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12465
+ },
+ "莱欧斯": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "莱欧斯小队",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11007
+ },
+ "莱伊": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "雷姆必拓",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 19419
+ },
+ "蓝毒": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "伊比利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9980
+ },
+ "Lancet-2": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 2887
+ },
+ "老鲤": {
+  "profession": "特种",
+  "star": "",
+  "faction": "炎-龙门,鲤氏侦探事务所",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 18669
+ },
+ "雷狼龙S空爆": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "罗德岛,行动预备组A6",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 15334
+ },
+ "蕾缪安": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "拉特兰",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 18771
+ },
+ "雷蛇": {
+  "profession": "重装",
+  "star": "",
+  "faction": "哥伦比亚,黑钢国际",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12377
+ },
+ "砾": {
+  "profession": "特种",
+  "star": "",
+  "faction": "卡西米尔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9748
+ },
+ "历阵锐枪芬": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10841
+ },
+ "猎蜂": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "乌萨斯",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 8843
+ },
+ "烈夏": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "乌萨斯,乌萨斯学生自治团",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11674
+ },
+ "裂响": {
+  "profession": "重装",
+  "star": "",
+  "faction": "乌萨斯",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 14560
+ },
+ "林": {
+  "profession": "术师",
+  "star": "",
+  "faction": "炎-龙门",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 18554
+ },
+ "凛冬": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "乌萨斯,乌萨斯学生自治团",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9647
+ },
+ "临光": {
+  "profession": "重装",
+  "star": "",
+  "faction": "使徒",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10260
+ },
+ "琳琅诗怀雅": {
+  "profession": "特种",
+  "star": "",
+  "faction": "炎-龙门",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 20244
+ },
+ "凛视": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "萨米",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12396
+ },
+ "凛御银灰": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "谢拉格",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 19265
+ },
+ "令": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "炎,炎-岁",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 17479
+ },
+ "铃兰": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "叙拉古",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 16559
+ },
+ "聆音": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "玻利瓦尔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10839
+ },
+ "翎羽": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "拉特兰",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 5419
+ },
+ "灵知": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "谢拉格,喀兰贸易",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 21670
+ },
+ "领主·Sharp": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 3608
+ },
+ "流明": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "伊比利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 18373
+ },
+ "流星": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "卡西米尔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9894
+ },
+ "龙舌兰": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "玻利瓦尔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13440
+ },
+ "露托": {
+  "profession": "重装",
+  "star": "",
+  "faction": "玻利瓦尔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13305
+ },
+ "录武官": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "炎",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11427
+ },
+ "罗比菈塔": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "哥伦比亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12124
+ },
+ "罗宾": {
+  "profession": "特种",
+  "star": "",
+  "faction": "哥伦比亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11039
+ },
+ "罗德岛隐秘队": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 3828
+ },
+ "逻各斯": {
+  "profession": "术师",
+  "star": "",
+  "faction": "罗德岛,罗德岛-精英干员",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 22914
+ },
+ "洛洛": {
+  "profession": "术师",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 14189
+ },
+ "罗小黑": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "炎",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10546
+ },
+ "掠风": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "哥伦比亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12487
+ },
+ "玛恩纳": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "卡西米尔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 16800
+ },
+ "玛露西尔": {
+  "profession": "术师",
+  "star": "",
+  "faction": "莱欧斯小队",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 20502
+ },
+ "麦哲伦": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "哥伦比亚,莱茵生命",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 17893
+ },
+ "梅": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11166
+ },
+ "梅尔": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "哥伦比亚,莱茵生命",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10250
+ },
+ "玫拉": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "哥伦比亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13118
+ },
+ "玫兰莎": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "罗德岛,行动预备组A4",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 5169
+ },
+ "盟约·辅助干员": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 3650
+ },
+ "迷迭香": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "罗德岛,罗德岛-精英干员",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 20804
+ },
+ "米格鲁": {
+  "profession": "重装",
+  "star": "",
+  "faction": "罗德岛,行动预备组A1",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 4419
+ },
+ "蜜蜡": {
+  "profession": "术师",
+  "star": "",
+  "faction": "萨尔贡",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11289
+ },
+ "蜜莓": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "雷姆必拓",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12261
+ },
+ "谜图": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12270
+ },
+ "明椒": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11464
+ },
+ "Miss.Christine": {
+  "profession": "术师",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 14423
+ },
+ "摩根": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "维多利亚,格拉斯哥帮",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13902
+ },
+ "莫斯提马": {
+  "profession": "术师",
+  "star": "",
+  "faction": "拉特兰",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 14236
+ },
+ "魔王": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 17352
+ },
+ "末药": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9601
+ },
+ "Mon3tr": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 18678
+ },
+ "缪尔赛思": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "哥伦比亚,莱茵生命",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 20772
+ },
+ "暮落": {
+  "profession": "重装",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12188
+ },
+ "钼铅": {
+  "profession": "特种",
+  "star": "",
+  "faction": "萨尔贡",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 14207
+ },
+ "慕斯": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9553
+ },
+ "娜仁图亚": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "萨尔贡",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 20762
+ },
+ "娜斯提": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "哥伦比亚,莱茵生命",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 17972
+ },
+ "能天使": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "炎-龙门,企鹅物流",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 14448
+ },
+ "妮芙": {
+  "profession": "术师",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 21315
+ },
+ "泥岩": {
+  "profession": "重装",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 18517
+ },
+ "年": {
+  "profession": "重装",
+  "star": "",
+  "faction": "炎,炎-岁",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 16459
+ },
+ "怒潮凛冬": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "乌萨斯,乌萨斯学生自治团",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 17779
+ },
+ "诺威尔": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13336
+ },
+ "帕拉斯": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "米诺斯",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 17660
+ },
+ "泡泡": {
+  "profession": "重装",
+  "star": "",
+  "faction": "萨尔贡",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10265
+ },
+ "泡普卡": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "罗德岛,行动预备组A6",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 4873
+ },
+ "佩佩": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "萨尔贡",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 18800
+ },
+ "PhonoR-0": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 3751
+ },
+ "Pith": {
+  "profession": "术师",
+  "star": "",
+  "faction": "",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 4302
+ },
+ "普罗旺斯": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "叙拉古",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10728
+ },
+ "齐尔查克": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "莱欧斯小队",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10870
+ },
+ "绮良": {
+  "profession": "特种",
+  "star": "",
+  "faction": "东",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10315
+ },
+ "麒麟R夜刀": {
+  "profession": "特种",
+  "star": "",
+  "faction": "罗德岛,行动组A4",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 16851
+ },
+ "铅踝": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "萨尔贡",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12817
+ },
+ "琴柳": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 17944
+ },
+ "清道夫": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "罗德岛,S.W.E.E.P.",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9067
+ },
+ "清流": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "炎",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9735
+ },
+ "青枳": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "哥伦比亚,汐斯塔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12434
+ },
+ "仇白": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "炎",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 17308
+ },
+ "忍冬": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "叙拉古",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 19158
+ },
+ "熔泉": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13578
+ },
+ "若叶睦": {
+  "profession": "特种",
+  "star": "",
+  "faction": "Ave Mujica",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12646
+ },
+ "塞雷娅": {
+  "profession": "重装",
+  "star": "",
+  "faction": "哥伦比亚,莱茵生命",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 14809
+ },
+ "三角初华": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "Ave Mujica",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12146
+ },
+ "桑葚": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "炎",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12311
+ },
+ "森蚺": {
+  "profession": "重装",
+  "star": "",
+  "faction": "萨尔贡",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 17856
+ },
+ "森西": {
+  "profession": "重装",
+  "star": "",
+  "faction": "莱欧斯小队",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11787
+ },
+ "莎草": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "萨尔贡",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13320
+ },
+ "山": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "哥伦比亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 17850
+ },
+ "闪击": {
+  "profession": "重装",
+  "star": "",
+  "faction": "彩虹小队",
+  "imgs": [
+   "Skin logo 彩虹六号：围攻.png"
+  ],
+  "skin_count_hint": 0,
+  "has_text": 12045
+ },
+ "闪灵": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "使徒",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 15764
+ },
+ "Sharp": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 4563
+ },
+ "慑砂": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "萨尔贡",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10645
+ },
+ "蛇屠箱": {
+  "profession": "重装",
+  "star": "",
+  "faction": "哥伦比亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9428
+ },
+ "深靛": {
+  "profession": "术师",
+  "star": "",
+  "faction": "伊比利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12674
+ },
+ "深海色": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "阿戈尔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9542
+ },
+ "深律": {
+  "profession": "重装",
+  "star": "",
+  "faction": "莱塔尼亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13186
+ },
+ "深巡": {
+  "profession": "重装",
+  "star": "",
+  "faction": "阿戈尔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13846
+ },
+ "圣聆初雪": {
+  "profession": "术师",
+  "star": "",
+  "faction": "谢拉格",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 20626
+ },
+ "圣约送葬人": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "拉特兰",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 21066
+ },
+ "史都华德": {
+  "profession": "术师",
+  "star": "",
+  "faction": "罗德岛,行动预备组A4",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 3830
+ },
+ "史尔特尔": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 15100
+ },
+ "诗怀雅": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "炎-龙门,龙门近卫局",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10902
+ },
+ "弑君者": {
+  "profession": "特种",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 18944
+ },
+ "石棉": {
+  "profession": "重装",
+  "star": "",
+  "faction": "雷姆必拓",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11074
+ },
+ "蚀清": {
+  "profession": "术师",
+  "star": "",
+  "faction": "哥伦比亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11628
+ },
+ "食铁兽": {
+  "profession": "特种",
+  "star": "",
+  "faction": "炎-龙门",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10122
+ },
+ "狮蝎": {
+  "profession": "特种",
+  "star": "",
+  "faction": "萨尔贡",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11232
+ },
+ "石英": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "哥伦比亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10664
+ },
+ "守林人": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10516
+ },
+ "黍": {
+  "profession": "重装",
+  "star": "",
+  "faction": "炎,炎-岁",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 18168
+ },
+ "霜华": {
+  "profession": "特种",
+  "star": "",
+  "faction": "彩虹小队",
+  "imgs": [
+   "Skin logo 彩虹六号：围攻.png"
+  ],
+  "skin_count_hint": 0,
+  "has_text": 11572
+ },
+ "霜叶": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10277
+ },
+ "双月": {
+  "profession": "特种",
+  "star": "",
+  "faction": "彩虹小队",
+  "imgs": [
+   "Skin logo 彩虹六号：围攻.png"
+  ],
+  "skin_count_hint": 0,
+  "has_text": 13004
+ },
+ "水灯心": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "维多利亚,塔拉",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12338
+ },
+ "水月": {
+  "profession": "特种",
+  "star": "",
+  "faction": "东",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 17824
+ },
+ "斯卡蒂": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "阿戈尔,深海猎人",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 15552
+ },
+ "死芒": {
+  "profession": "术师",
+  "star": "",
+  "faction": "维多利亚,塔拉",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 17178
+ },
+ "司霆惊蛰": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "炎",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 16912
+ },
+ "四月": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "雷姆必拓",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 8679
+ },
+ "松果": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "哥伦比亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11728
+ },
+ "松桐": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "东",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11555
+ },
+ "送葬人": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "拉特兰",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10849
+ },
+ "Stormeye": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 3895
+ },
+ "溯光星源": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "哥伦比亚,莱茵生命",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 17964
+ },
+ "苏苏洛": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9845
+ },
+ "塑心": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "拉特兰",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 22916
+ },
+ "酸糖": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "哥伦比亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9879
+ },
+ "燧石": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "萨尔贡",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11398
+ },
+ "THRM-EX": {
+  "profession": "特种",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 3649
+ },
+ "泰拉大陆调查团": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 3834
+ },
+ "桃金娘": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9444
+ },
+ "特克诺": {
+  "profession": "术师",
+  "star": "",
+  "faction": "玻利瓦尔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13207
+ },
+ "特米米": {
+  "profession": "术师",
+  "star": "",
+  "faction": "萨尔贡",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12789
+ },
+ "提丰": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "萨米",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 20659
+ },
+ "缇缇": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "萨尔贡",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 20457
+ },
+ "天火": {
+  "profession": "术师",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10618
+ },
+ "天空盒": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "哥伦比亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11716
+ },
+ "调香师": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9285
+ },
+ "Touch": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 3957
+ },
+ "图耶": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "萨尔贡",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12158
+ },
+ "推进之王": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "维多利亚,格拉斯哥帮",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 14970
+ },
+ "U-Official": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 4408
+ },
+ "W": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "巴别塔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 19837
+ },
+ "万顷": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "炎",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12337
+ },
+ "望": {
+  "profession": "特种",
+  "star": "",
+  "faction": "炎,炎-岁",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 18478
+ },
+ "苇草": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10938
+ },
+ "维荻": {
+  "profession": "特种",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11844
+ },
+ "微风": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9718
+ },
+ "维娜·维多利亚": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 20165
+ },
+ "维什戴尔": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "巴别塔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 19337
+ },
+ "薇薇安娜": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "莱塔尼亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 22266
+ },
+ "维伊": {
+  "profession": "术师",
+  "star": "",
+  "faction": "乌萨斯",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 16337
+ },
+ "温蒂": {
+  "profession": "特种",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 16718
+ },
+ "温米": {
+  "profession": "术师",
+  "star": "",
+  "faction": "雷姆必拓",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 15307
+ },
+ "乌尔比安": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "阿戈尔,深海猎人",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 17008
+ },
+ "乌啾": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "乌萨斯",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13932
+ },
+ "巫恋": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "叙拉古",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11762
+ },
+ "乌有": {
+  "profession": "特种",
+  "star": "",
+  "faction": "炎",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13276
+ },
+ "夕": {
+  "profession": "术师",
+  "star": "",
+  "faction": "炎,炎-岁",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 18812
+ },
+ "锡兰": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "哥伦比亚,汐斯塔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11157
+ },
+ "锡人": {
+  "profession": "特种",
+  "star": "",
+  "faction": "哥伦比亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 14322
+ },
+ "稀音": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "萨尔贡",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12689
+ },
+ "瑕光": {
+  "profession": "重装",
+  "star": "",
+  "faction": "卡西米尔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 18497
+ },
+ "夏栎": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11232
+ },
+ "香草": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "哥伦比亚,黑钢国际",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 4343
+ },
+ "响石": {
+  "profession": "重装",
+  "star": "",
+  "faction": "哥伦比亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13936
+ },
+ "晓歌": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12234
+ },
+ "小满": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "炎",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12372
+ },
+ "协律": {
+  "profession": "术师",
+  "star": "",
+  "faction": "莱塔尼亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12020
+ },
+ "撷英调香师": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 14162
+ },
+ "信仰搅拌机": {
+  "profession": "重装",
+  "star": "",
+  "faction": "拉特兰",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 21017
+ },
+ "新约能天使": {
+  "profession": "特种",
+  "star": "",
+  "faction": "炎-龙门,企鹅物流",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 20585
+ },
+ "星极": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "哥伦比亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10924
+ },
+ "杏仁": {
+  "profession": "特种",
+  "star": "",
+  "faction": "哥伦比亚,黑钢国际",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13051
+ },
+ "星熊": {
+  "profession": "重装",
+  "star": "",
+  "faction": "炎-龙门,龙门近卫局",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 14785
+ },
+ "星源": {
+  "profession": "术师",
+  "star": "",
+  "faction": "哥伦比亚,莱茵生命",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13207
+ },
+ "行箸": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "炎",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11864
+ },
+ "休谟斯": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13107
+ },
+ "絮雨": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "伊比利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12491
+ },
+ "雪猎": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "谢拉格",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11333
+ },
+ "雪绒": {
+  "profession": "术师",
+  "star": "",
+  "faction": "萨米",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13547
+ },
+ "雪雉": {
+  "profession": "特种",
+  "star": "",
+  "faction": "炎-龙门",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11846
+ },
+ "寻澜": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "哥伦比亚,黑钢国际",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12179
+ },
+ "巡林者": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "罗德岛,行动组A4",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 2538
+ },
+ "讯使": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "谢拉格,喀兰贸易",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9566
+ },
+ "崖心": {
+  "profession": "特种",
+  "star": "",
+  "faction": "谢拉格",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10766
+ },
+ "亚叶": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11976
+ },
+ "宴": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "东",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10580
+ },
+ "焰狐龙梓兰": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "罗德岛,行动预备组A6",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 19494
+ },
+ "炎客": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10011
+ },
+ "炎熔": {
+  "profession": "术师",
+  "star": "",
+  "faction": "罗德岛,行动预备组A1",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 4841
+ },
+ "焰尾": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "卡西米尔,红松骑士团",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 16911
+ },
+ "焰影苇草": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "维多利亚,塔拉",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 17184
+ },
+ "炎狱炎熔": {
+  "profession": "术师",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 13265
+ },
+ "洋灰": {
+  "profession": "重装",
+  "star": "",
+  "faction": "雷姆必拓",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12213
+ },
+ "遥": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "东",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 16976
+ },
+ "耀骑士临光": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "卡西米尔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 21106
+ },
+ "夜半": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "雷姆必拓",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 14561
+ },
+ "夜刀": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "罗德岛,行动组A4",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 2869
+ },
+ "耶拉": {
+  "profession": "术师",
+  "star": "",
+  "faction": "谢拉格",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12997
+ },
+ "夜魔": {
+  "profession": "术师",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11963
+ },
+ "夜烟": {
+  "profession": "术师",
+  "star": "",
+  "faction": "维多利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 8902
+ },
+ "夜莺": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "使徒",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 15364
+ },
+ "野鬃": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "卡西米尔,红松骑士团",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10919
+ },
+ "伊芙利特": {
+  "profession": "术师",
+  "star": "",
+  "faction": "哥伦比亚,莱茵生命",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 18537
+ },
+ "异客": {
+  "profession": "术师",
+  "star": "",
+  "faction": "萨尔贡",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 19767
+ },
+ "伊内丝": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "巴别塔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 18515
+ },
+ "伊桑": {
+  "profession": "特种",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9701
+ },
+ "医生": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "彩虹小队",
+  "imgs": [
+   "Skin logo 彩虹六号：围攻.png"
+  ],
+  "skin_count_hint": 0,
+  "has_text": 12419
+ },
+ "隐德来希": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 21420
+ },
+ "银灰": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "谢拉格,喀兰贸易",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 15741
+ },
+ "因陀罗": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "维多利亚,格拉斯哥帮",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11376
+ },
+ "隐现": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "拉特兰",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12871
+ },
+ "引星棘刺": {
+  "profession": "特种",
+  "star": "",
+  "faction": "伊比利亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 20367
+ },
+ "幽灵鲨": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "阿戈尔,深海猎人",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10300
+ },
+ "祐天寺若麦": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "Ave Mujica",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11023
+ },
+ "余": {
+  "profession": "重装",
+  "star": "",
+  "faction": "炎,炎-岁",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 20154
+ },
+ "预备干员-后勤": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 1077
+ },
+ "预备干员-近战": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 1072
+ },
+ "预备干员-狙击": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 1069
+ },
+ "预备干员-术师": {
+  "profession": "术师",
+  "star": "",
+  "faction": "",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 1091
+ },
+ "预备干员-重装": {
+  "profession": "重装",
+  "star": "",
+  "faction": "",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 1095
+ },
+ "郁金香": {
+  "profession": "先锋",
+  "star": "",
+  "faction": "",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 4632
+ },
+ "羽毛笔": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "玻利瓦尔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11831
+ },
+ "远山": {
+  "profession": "术师",
+  "star": "",
+  "faction": "萨米",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9643
+ },
+ "远牙": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "卡西米尔,红松骑士团",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 14996
+ },
+ "月禾": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "东",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11631
+ },
+ "月见夜": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "罗德岛,行动预备组A6",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 4818
+ },
+ "跃跃": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "玻利瓦尔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11229
+ },
+ "云迹": {
+  "profession": "特种",
+  "star": "",
+  "faction": "哥伦比亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11334
+ },
+ "陨星": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9326
+ },
+ "早露": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "乌萨斯,乌萨斯学生自治团",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 15758
+ },
+ "战车": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "彩虹小队",
+  "imgs": [
+   "Skin logo 彩虹六号：围攻.png"
+  ],
+  "skin_count_hint": 0,
+  "has_text": 11942
+ },
+ "斩业星熊": {
+  "profession": "重装",
+  "star": "",
+  "faction": "炎-龙门,龙门近卫局",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 18928
+ },
+ "折光": {
+  "profession": "术师",
+  "star": "",
+  "faction": "莱塔尼亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 14302
+ },
+ "折桠": {
+  "profession": "重装",
+  "star": "",
+  "faction": "乌萨斯",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 14149
+ },
+ "真理": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "乌萨斯,乌萨斯学生自治团",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 9339
+ },
+ "真言": {
+  "profession": "术师",
+  "star": "",
+  "faction": "罗德岛,罗德岛-精英干员",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 21321
+ },
+ "正义骑士号": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "卡西米尔,红松骑士团",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 3398
+ },
+ "至简": {
+  "profession": "术师",
+  "star": "",
+  "faction": "萨尔贡",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12082
+ },
+ "止颂": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "莱塔尼亚",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 17353
+ },
+ "烛煌": {
+  "profession": "术师",
+  "star": "",
+  "faction": "罗德岛,罗德岛-精英干员",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 19442
+ },
+ "铸铁": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "米诺斯",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 11158
+ },
+ "濯尘芙蓉": {
+  "profession": "医疗",
+  "star": "",
+  "faction": "罗德岛",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 12185
+ },
+ "浊心斯卡蒂": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "阿戈尔",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 20946
+ },
+ "梓兰": {
+  "profession": "辅助",
+  "star": "",
+  "faction": "罗德岛,行动预备组A6",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 5044
+ },
+ "子月": {
+  "profession": "狙击",
+  "star": "",
+  "faction": "叙拉古",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 10559
+ },
+ "左乐": {
+  "profession": "近卫",
+  "star": "",
+  "faction": "炎",
+  "imgs": [],
+  "skin_count_hint": 0,
+  "has_text": 20348
+ }
+}

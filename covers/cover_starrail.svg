@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 240" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="bg8" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#4a1a3a"/>
+      <stop offset="60%" stop-color="#0a0510"/>
+      <stop offset="100%" stop-color="#050302"/>
+    </radialGradient>
+    <linearGradient id="text8" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f5e1a4"/>
+      <stop offset="100%" stop-color="#8b6a2b"/>
+    </linearGradient>
+  </defs>
+  <rect width="560" height="240" fill="url(#bg8)"/>
+  
+      <line x1="220" y1="100" x2="340" y2="100" stroke="#d04a8a" stroke-width="3" opacity="0.4"/>
+      <line x1="220" y1="120" x2="340" y2="120" stroke="#d04a8a" stroke-width="3" opacity="0.4"/>
+      <line x1="220" y1="140" x2="280" y2="140" stroke="#d04a8a" stroke-width="3" opacity="0.4"/>
+      <line x1="295" y1="140" x2="340" y2="140" stroke="#d04a8a" stroke-width="3" opacity="0.4"/>
+      <line x1="220" y1="160" x2="340" y2="160" stroke="#d04a8a" stroke-width="3" opacity="0.4"/>
+      <line x1="220" y1="180" x2="280" y2="180" stroke="#d04a8a" stroke-width="3" opacity="0.4"/>
+      <line x1="295" y1="180" x2="340" y2="180" stroke="#d04a8a" stroke-width="3" opacity="0.4"/>
+  <rect x="0" y="200" width="560" height="40" fill="rgba(0,0,0,0.5)"/>
+  <text x="20" y="226" font-family="serif" font-size="22" fill="url(#text8)" font-weight="900" letter-spacing="0.1em">崩坏：星穹铁道</text>
+  <text x="540" y="226" font-family="serif" font-size="10" fill="#a78a5a" text-anchor="end" letter-spacing="0.1em">Honkai: Star Rail</text>
+</svg>

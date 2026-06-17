@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 240" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="bg25" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#2a2a3a"/>
+      <stop offset="60%" stop-color="#050510"/>
+      <stop offset="100%" stop-color="#050302"/>
+    </radialGradient>
+    <linearGradient id="text25" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f5e1a4"/>
+      <stop offset="100%" stop-color="#8b6a2b"/>
+    </linearGradient>
+  </defs>
+  <rect width="560" height="240" fill="url(#bg25)"/>
+  
+      <circle cx="280" cy="140" r="80" fill="none" stroke="#7a7a9a" stroke-width="2" opacity="0.3"/>
+      <circle cx="280" cy="140" r="65" fill="none" stroke="#7a7a9a" stroke-width="1" opacity="0.2"/>
+      <text x="280" y="170" font-family="serif" font-size="60" fill="#7a7a9a" text-anchor="middle" font-weight="900" opacity="0.7">和</text>
+  <rect x="0" y="200" width="560" height="40" fill="rgba(0,0,0,0.5)"/>
+  <text x="20" y="226" font-family="serif" font-size="28" fill="url(#text25)" font-weight="900" letter-spacing="0.1em">和平精英</text>
+  <text x="540" y="226" font-family="serif" font-size="12" fill="#a78a5a" text-anchor="end" letter-spacing="0.1em">Game for Peace</text>
+</svg>
