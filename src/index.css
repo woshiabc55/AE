@@ -1,0 +1,146 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: "Noto Sans SC", "Inter", system-ui, sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+  color-scheme: dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background-color: #05060f;
+  color: #e5e7eb;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(168, 85, 247, 0.18), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 80% 30%, rgba(0, 212, 255, 0.14), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 50% 90%, rgba(255, 107, 157, 0.14), transparent 60%);
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(10, 14, 39, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #00d4ff, #a855f7);
+  border-radius: 8px;
+  border: 2px solid #05060f;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #00ffa3, #ff6b9d);
+}
+
+/* Utility classes */
+@layer components {
+  .glass {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10;
+  }
+  .glass-strong {
+    @apply bg-white/[0.08] backdrop-blur-2xl border border-white/15;
+  }
+  .text-gradient-gold {
+    @apply bg-gradient-to-r from-yellow-200 via-amber-300 to-yellow-500 bg-clip-text text-transparent;
+  }
+  .text-gradient-neon {
+    @apply bg-gradient-to-r from-cyan-300 via-sky-400 to-fuchsia-400 bg-clip-text text-transparent;
+  }
+  .ring-neon {
+    box-shadow:
+      0 0 0 1px rgba(0, 212, 255, 0.4),
+      0 0 30px rgba(0, 212, 255, 0.25),
+      inset 0 0 30px rgba(0, 212, 255, 0.08);
+  }
+  .btn-primary {
+    @apply relative inline-flex items-center justify-center gap-2 rounded-full px-6 py-2.5 text-sm font-semibold text-ink-950 transition-all duration-300;
+    background: linear-gradient(135deg, #00d4ff 0%, #00ffa3 100%);
+    box-shadow: 0 8px 24px -8px rgba(0, 212, 255, 0.6);
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 32px -8px rgba(0, 212, 255, 0.8);
+  }
+  .btn-ghost {
+    @apply relative inline-flex items-center justify-center gap-2 rounded-full px-5 py-2 text-sm font-medium text-white/80 border border-white/15 bg-white/5 backdrop-blur-md transition-all duration-300 hover:bg-white/10 hover:border-white/30 hover:text-white;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/70 transition-colors hover:border-neon-cyan/50 hover:text-neon-cyan;
+  }
+  .chip-active {
+    @apply border-neon-cyan/60 bg-neon-cyan/10 text-neon-cyan;
+  }
+}
+
+/* Reveal-on-scroll utility */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.7s ease-out,
+    transform 0.7s ease-out;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Decorative star particles */
+.starfield::before,
+.starfield::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-repeat: repeat;
+  pointer-events: none;
+}
+.starfield::before {
+  background-image:
+    radial-gradient(1px 1px at 25% 30%, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1px 1px at 70% 80%, rgba(255, 255, 255, 0.4), transparent),
+    radial-gradient(1px 1px at 40% 60%, rgba(0, 212, 255, 0.5), transparent),
+    radial-gradient(1px 1px at 85% 15%, rgba(255, 215, 0, 0.5), transparent),
+    radial-gradient(1px 1px at 15% 85%, rgba(255, 107, 157, 0.5), transparent);
+  background-size: 400px 400px;
+  animation: twinkle 6s ease-in-out infinite alternate;
+}
+.starfield::after {
+  background-image:
+    radial-gradient(1px 1px at 60% 20%, rgba(255, 255, 255, 0.3), transparent),
+    radial-gradient(1px 1px at 20% 50%, rgba(168, 85, 247, 0.4), transparent),
+    radial-gradient(1px 1px at 90% 60%, rgba(0, 255, 163, 0.4), transparent);
+  background-size: 600px 600px;
+  animation: twinkle 9s ease-in-out infinite alternate;
+}
+@keyframes twinkle {
+  0% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+/* Smooth focus rings */
+:focus-visible {
+  outline: 2px solid #00d4ff;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Marquee gradient mask */
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
