@@ -1,0 +1,2 @@
+// 萤火突击 - 3 条目 (stub)
+const LOSTLIGHT_DATA = [{"ename":"lostlight_0","cname":"凯恩","title":"突击","id_name":"凯恩","portrait":"covers/cover_lostlight.svg","skins":[],"type":"突击","type_cls":"type-warrior","type2":"突击"},{"ename":"lostlight_1","cname":"雪","title":"特种","id_name":"雪","portrait":"covers/cover_lostlight.svg","skins":[],"type":"特种","type_cls":"type-other","type2":"特种"},{"ename":"lostlight_2","cname":"幻","title":"战术","id_name":"幻","portrait":"covers/cover_lostlight.svg","skins":[],"type":"战术","type_cls":"type-other","type2":"战术"}];

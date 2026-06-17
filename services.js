@@ -1,4 +1,4 @@
-// 全局搜索索引 - 跨 8 款游戏聚合搜索
+// 全局搜索索引 - 跨 43 款游戏聚合搜索
 // 字段: g(游戏id), gid(游戏名), t(类型:char=角色/skin=皮肤), k(关键词), n(名称), s(副标题/称号), u(URL)
 const SEARCH_INDEX = (() => {
   const items = [];
@@ -38,13 +38,14 @@ const MCP_SERVICES = [
   { id: 'prts',    name: '明日方舟 PRTS', source: 'prts.wiki',                     type: 'MediaWiki API', status: 'online', latency: 180, desc: '社区 wiki 干员数据' },
   { id: 'valapi',  name: '无畏契约',      source: 'valorant-api.com',              type: 'REST/JSON', status: 'online',  latency: 145,  desc: '社区聚合 26 名特工' },
   { id: 'enka',    name: '原神 Enka',     source: 'enka.network',                  type: 'CDN/JSON',  status: 'online',  latency: 165,  desc: '80 角色 + 元素/武器分类' },
+  { id: 'atlas',   name: 'FGO Atlas',     source: 'api.atlasacademy.io',           type: 'REST/JSON', status: 'online',  latency: 175,  desc: '456 从者 + 职阶/星级' },
   { id: 'steam',   name: 'Steam 新闻',     source: 'api.steampowered.com',         type: 'REST/XML',  status: 'online',  latency: 320,  desc: 'LoL/Dota2/CFM 等端游动态' },
   { id: 'rss',     name: '资讯聚合',      source: 'rss.biligame.com / gw.gd',      type: 'RSS/Atom',  status: 'online',  latency: 410,  desc: 'B 站 wiki / 公告聚合' },
 ];
 
 // 持续上线 - 动态内容流 (模拟实时数据 + 真实节点)
 const LIVE_FEED = [
-  { ts: 'live',  icon: 'pulse',   title: '实时同步中', desc: '8 个数据源持续拉取英雄/皮肤更新，自动并入图鉴' },
+  { ts: 'live',  icon: 'pulse',   title: '实时同步中', desc: '12 个数据源持续拉取英雄/皮肤更新，自动并入图鉴' },
   { ts: '12:08', icon: 'add',     title: '【新英雄】银灰 · 假日威龙', desc: '明日方舟 PRTS 同步：新增干员 + 时装 2 套', source: 'prts' },
   { ts: '11:42', icon: 'update',  title: '【皮肤更新】星穹铁道 v3.5', desc: '新增 14 款角色立绘, 22 款星魂图', source: 'starrail' },
   { ts: '11:30', icon: 'add',     title: '【数据扩充】Dota 2 7.36c', desc: '新增 2 名英雄, 6 个英雄平衡性调整', source: 'dota2' },
@@ -53,7 +54,8 @@ const LIVE_FEED = [
   { ts: '09:48', icon: 'event',   title: '【活动】LoL 手游 · 星之守护者', desc: '12 款主题皮肤限时上线', source: 'lolm' },
   { ts: '09:30', icon: 'add',     title: '【新角色】无畏契约 26 特工', desc: 'valorant-api.com 同步 26 名特工 (先锋/控场/哨卫/情报)', source: 'valapi' },
   { ts: '09:15', icon: 'add',     title: '【新角色】原神 80 角色', desc: 'Enka Network 同步：7 元素 × 5 武器分类', source: 'enka' },
-  { ts: '09:00', icon: 'sync',    title: '【同步】全量索引重建', desc: '跨 8 款游戏 1159 角色 · 10000+ 皮肤', source: 'system' },
+  { ts: '09:00', icon: 'add',     title: '【新角色】FGO 456 从者', desc: 'Atlas Academy 同步：14 职阶 × 5 星', source: 'atlas' },
+  { ts: '08:30', icon: 'sync',    title: '【全量】43 款游戏图鉴上线', desc: '覆盖 MOBA/RPG/FPS/MMO/卡牌/竞速 11 大类', source: 'system' },
 ];
 
 // 内容分类增强 - 多维度标签
@@ -67,6 +69,8 @@ const TAG_SYSTEM = {
 
 // 全站时间轴 - 显示内容上线记录
 const TIMELINE = [
+  { date: '2026-06-17', event: '全量 43 款游戏图鉴上线 (覆盖 11 大类)', count: '+35 款' },
+  { date: '2026-06-17', event: 'FGO 接入 Atlas Academy (456 从者 × 14 职阶)', count: '+456 角色' },
   { date: '2026-06-17', event: '接入 原神 / 无畏契约 数据 (Enka + valorant-api)', count: '+106 角色' },
   { date: '2026-06-17', event: '上线「MCP 服务面板」+ 全局搜索 + 实时同步流', count: '+4 模块' },
   { date: '2026-06-17', event: '接入 Dota 2 完整图鉴 (OpenDota + Valve CDN)', count: '+127 角色' },

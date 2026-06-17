@@ -1,0 +1,2 @@
+// 光遇 - 3 条目 (stub)
+const SKY_DATA = [{"ename":"sky_0","cname":"光之后裔","title":"玩家","id_name":"光之后裔","portrait":"covers/cover_sky.svg","skins":[],"type":"主控","type_cls":"type-warrior","type2":"玩家"},{"ename":"sky_1","cname":"先祖","title":"NPC","id_name":"先祖","portrait":"covers/cover_sky.svg","skins":[],"type":"NPC","type_cls":"type-support","type2":"NPC"},{"ename":"sky_2","cname":"向导","title":"NPC","id_name":"向导","portrait":"covers/cover_sky.svg","skins":[],"type":"NPC","type_cls":"type-support","type2":"NPC"}];

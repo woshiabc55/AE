@@ -1,0 +1,2 @@
+// 逆水寒 - 3 条目 (stub)
+const NSXJ_DATA = [{"ename":"nsxj_0","cname":"顾惜朝","title":"主角","id_name":"顾惜朝","portrait":"covers/cover_nsxj.svg","skins":[],"type":"素问","type_cls":"type-support","type2":"主角"},{"ename":"nsxj_1","cname":"戚少商","title":"主角","id_name":"戚少商","portrait":"covers/cover_nsxj.svg","skins":[],"type":"神相","type_cls":"type-mage","type2":"主角"},{"ename":"nsxj_2","cname":"息红泪","title":"NPC","id_name":"息红泪","portrait":"covers/cover_nsxj.svg","skins":[],"type":"血河","type_cls":"type-tank","type2":"NPC"}];

@@ -1,0 +1,2 @@
+// QQ飞车 - 3 条目 (stub)
+const QQSPEED_DATA = [{"ename":"qqspeed_0","cname":"小橘子","title":"主角","id_name":"小橘子","portrait":"covers/cover_qqspeed.svg","skins":[],"type":"车手","type_cls":"type-warrior","type2":"主角"},{"ename":"qqspeed_1","cname":"夜影","title":"主控","id_name":"夜影","portrait":"covers/cover_qqspeed.svg","skins":[],"type":"车手","type_cls":"type-warrior","type2":"主控"},{"ename":"qqspeed_2","cname":"雷霆","title":"主控","id_name":"雷霆","portrait":"covers/cover_qqspeed.svg","skins":[],"type":"车手","type_cls":"type-warrior","type2":"主控"}];

@@ -1,0 +1,2 @@
+// 暗区突围 - 3 条目 (stub)
+const ARENABREAKOUT_DATA = [{"ename":"arenabreakout_0","cname":"深潜者","title":"战术","id_name":"深潜者","portrait":"covers/cover_arenabreakout.svg","skins":[],"type":"战术","type_cls":"type-other","type2":"战术"},{"ename":"arenabreakout_1","cname":"黑金","title":"特种","id_name":"黑金","portrait":"covers/cover_arenabreakout.svg","skins":[],"type":"特种","type_cls":"type-other","type2":"特种"},{"ename":"arenabreakout_2","cname":"农夫","title":"工程","id_name":"农夫","portrait":"covers/cover_arenabreakout.svg","skins":[],"type":"工程","type_cls":"type-support","type2":"工程"}];
