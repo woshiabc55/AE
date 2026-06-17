@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import Nav from '@/components/Nav'
 import Hero from '@/components/Hero'
+import Featured from '@/components/Featured'
 import Work from '@/components/Work'
 import Services from '@/components/Services'
 import Manifesto from '@/components/Manifesto'
@@ -10,7 +11,7 @@ import Clients from '@/components/Clients'
 import Contact from '@/components/Contact'
 import { useActiveSection } from '@/hooks/useActiveSection'
 
-const SECTIONS = ['hero', 'work', 'services', 'manifesto', 'studio', 'clients', 'contact']
+const SECTIONS = ['hero', 'featured', 'work', 'services', 'manifesto', 'studio', 'clients', 'contact']
 
 export default function Home() {
   useActiveSection(SECTIONS)
@@ -28,6 +29,7 @@ export default function Home() {
       <Nav />
       <main>
         <Hero />
+        <Featured />
         <Work />
         <Services />
         <Manifesto />
