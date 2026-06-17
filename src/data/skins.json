@@ -1,0 +1,46 @@
+{
+  "summary": {
+    "totalSkins": 528,
+    "tierDistribution": {
+      "common":  168,
+      "epic":    198,
+      "legend":  122,
+      "glory":    40
+    },
+    "yearlyTrend": [
+      { "year": 2015, "count": 38 },
+      { "year": 2016, "count": 52 },
+      { "year": 2017, "count": 64 },
+      { "year": 2018, "count": 78 },
+      { "year": 2019, "count": 70 },
+      { "year": 2020, "count": 62 },
+      { "year": 2021, "count": 58 },
+      { "year": 2022, "count": 48 },
+      { "year": 2023, "count": 30 },
+      { "year": 2024, "count": 18 },
+      { "year": 2025, "count": 8  },
+      { "year": 2026, "count": 2  }
+    ],
+    "topSeries": [
+      { "series": "源·梦",          "count": 22 },
+      { "series": "五虎上将",       "count": 5  },
+      { "series": "五岳",           "count": 5  },
+      { "series": "世冠",           "count": 12 },
+      { "series": "FMVP",           "count": 9  },
+      { "series": "KPL 限定",       "count": 14 },
+      { "series": "荣耀典藏",       "count": 7  },
+      { "series": "猪年限定",       "count": 5  },
+      { "series": "鼠年限定",       "count": 5  },
+      { "series": "牛年限定",       "count": 5  },
+      { "series": "虎年限定",       "count": 5  },
+      { "series": "兔年限定",       "count": 5  },
+      { "series": "龙年限定",       "count": 5  },
+      { "series": "蛇年限定",       "count": 5  },
+      { "series": "马年限定",       "count": 5  },
+      { "series": "联动",           "count": 38 },
+      { "series": "赛季皮肤",       "count": 26 },
+      { "series": "战令限定",       "count": 24 },
+      { "series": "其他",           "count": 297 }
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "workspace",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview",
+    "check": "vue-tsc -b",
+    "lint": "eslint . --ext .ts,.vue",
+    "lint:fix": "eslint . --ext .ts,.vue --fix"
+  },
+  "dependencies": {
+    "echarts": "^5.5.1",
+    "pinia": "^2.2.6",
+    "vue": "^3.4.15",
+    "vue-router": "^4.2.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.30",
+    "@vitejs/plugin-vue": "^5.0.3",
+    "@vue/runtime-dom": "^3.4.15",
+    "@vue/tsconfig": "^0.7.0",
+    "typescript": "~5.3.3",
+    "vite": "^5.0.12",
+    "vue-tsc": "^1.8.27"
+  }
+}
