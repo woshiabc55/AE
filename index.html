@@ -3,13 +3,14 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>王者荣耀 · 全英雄皮肤图鉴</title>
+<title>游戏图鉴 · 卷山河</title>
 <link rel="preconnect" href="https://game.gtimg.cn" />
+<link rel="preconnect" href="https://ddragon.leagueoflegends.com" />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;600;800;900&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet" />
 <style>
-  /* ========== 基础重置 ========== */
   *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
   body {
@@ -22,8 +23,9 @@
   }
   img { display: block; max-width: 100%; }
   button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  a { color: inherit; text-decoration: none; }
 
-  /* ========== 背景层 ========== */
+  /* 背景层 */
   .bg {
     position: fixed; inset: 0; z-index: -2;
     background:
@@ -37,83 +39,92 @@
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.85 0 0 0 0 0.55 0 0 0 0.6 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
     mix-blend-mode: overlay;
   }
-  .bg-seal {
-    position: fixed; right: -120px; top: -120px; width: 480px; height: 480px; z-index: -1;
-    border: 2px solid rgba(200, 60, 40, 0.25);
-    border-radius: 8px;
-    transform: rotate(8deg);
-    background: rgba(140, 30, 20, 0.05);
-    box-shadow: inset 0 0 80px rgba(200, 60, 40, 0.08);
-  }
-  .bg-seal::after {
-    content: '王者';
-    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-    font-family: 'Ma Shan Zheng', serif;
-    font-size: 180px; color: rgba(200, 60, 40, 0.15);
-    letter-spacing: 0.2em;
-  }
 
-  /* ========== 顶部标题 ========== */
-  .masthead {
+  /* 顶部导航 */
+  .navbar {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: blur(12px);
+    background: rgba(11, 8, 5, 0.85);
+    border-bottom: 1px solid rgba(212, 175, 100, 0.2);
+    padding: 12px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 20px;
+  }
+  .brand {
+    font-family: 'Ma Shan Zheng', serif;
+    font-size: 24px;
+    color: #d4af64;
+    letter-spacing: 0.15em;
+    text-shadow: 0 0 12px rgba(212, 175, 100, 0.3);
+    white-space: nowrap;
+  }
+  .navbar-stats {
+    display: flex; gap: 24px;
+    font-size: 13px;
+    color: #8a7456;
+    letter-spacing: 0.1em;
+  }
+  .navbar-stats .val { color: #d4af64; font-weight: 600; }
+
+  /* 当前游戏条 */
+  .current-game {
     text-align: center;
-    padding: 56px 24px 32px;
+    padding: 32px 24px 16px;
     position: relative;
   }
-  .masthead::before, .masthead::after {
+  .current-game::before, .current-game::after {
     content: ''; position: absolute; left: 50%; transform: translateX(-50%);
     width: min(820px, 90vw); height: 1px;
     background: linear-gradient(90deg, transparent, rgba(212, 175, 100, 0.6), transparent);
   }
-  .masthead::before { top: 24px; }
-  .masthead::after { bottom: 12px; }
-
-  .vertical-title {
+  .current-game::before { top: 8px; }
+  .current-game::after { bottom: 0; }
+  .game-tag {
     display: inline-block;
-    font-family: 'Ma Shan Zheng', 'Noto Serif SC', serif;
-    color: #d4af64;
-    writing-mode: vertical-rl;
-    letter-spacing: 0.4em;
-    font-size: 28px;
-    margin: 0 12px;
-    text-shadow: 0 0 12px rgba(212, 175, 100, 0.3);
+    padding: 4px 16px;
+    background: rgba(178, 45, 29, 0.3);
+    border: 1px solid rgba(212, 175, 100, 0.3);
+    color: #f5e1a4;
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    margin-bottom: 8px;
+    border-radius: 2px;
   }
-  .main-title {
+  .game-title {
     font-family: 'Ma Shan Zheng', 'Noto Serif SC', serif;
-    font-size: clamp(40px, 7vw, 88px);
+    font-size: clamp(36px, 6vw, 72px);
     font-weight: 900;
     letter-spacing: 0.1em;
     color: transparent;
     background: linear-gradient(180deg, #f5e1a4 0%, #d4af64 50%, #8b6a2b 100%);
     -webkit-background-clip: text; background-clip: text;
     text-shadow: 0 4px 24px rgba(212, 175, 100, 0.3);
-    margin: 16px 0;
+    margin: 6px 0;
   }
-  .subtitle {
-    font-family: 'ZCOOL XiaoWei', 'Noto Serif SC', serif;
-    font-size: 16px;
-    color: #c9a86b;
-    letter-spacing: 0.6em;
-    padding-left: 0.6em;
-    margin-bottom: 8px;
-  }
-  .meta {
-    font-size: 13px;
+  .game-en {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 14px;
     color: #8a7456;
-    letter-spacing: 0.2em;
-    margin-top: 12px;
+    letter-spacing: 0.4em;
+    padding-left: 0.4em;
   }
-  .meta .count { color: #d4af64; font-weight: 600; }
+  .game-meta {
+    margin-top: 14px;
+    font-size: 13px;
+    color: #c9a86b;
+    letter-spacing: 0.15em;
+  }
+  .game-meta .count { color: #f5e1a4; font-weight: 600; }
 
-  /* ========== 筛选器 ========== */
+  /* 筛选 */
   .filters {
     display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
-    padding: 8px 24px 24px;
+    padding: 16px 24px 8px;
     max-width: 1200px; margin: 0 auto;
   }
   .filter-btn {
-    position: relative;
-    padding: 9px 22px;
-    font-size: 14px;
+    padding: 8px 18px;
+    font-size: 13px;
     color: #c9a86b;
     background: rgba(40, 24, 14, 0.6);
     border: 1px solid rgba(212, 175, 100, 0.3);
@@ -127,18 +138,18 @@
     background: linear-gradient(180deg, #b22d1d, #7a1c10);
     color: #fff5d8;
     border-color: #d4af64;
-    box-shadow: 0 0 16px rgba(178, 45, 29, 0.5), inset 0 0 8px rgba(255, 220, 160, 0.3);
+    box-shadow: 0 0 12px rgba(178, 45, 29, 0.5);
   }
   .filter-btn .badge {
-    display: inline-block; margin-left: 6px; padding: 1px 6px;
-    font-size: 11px; background: rgba(0,0,0,0.3); border-radius: 8px;
+    display: inline-block; margin-left: 4px; padding: 1px 6px;
+    font-size: 10px; background: rgba(0,0,0,0.3); border-radius: 8px;
   }
 
-  /* ========== 搜索 ========== */
-  .search-wrap { display: flex; justify-content: center; padding: 0 24px 24px; }
+  /* 搜索 */
+  .search-wrap { display: flex; justify-content: center; padding: 0 24px 12px; }
   .search {
     width: min(420px, 90vw);
-    padding: 10px 16px 10px 40px;
+    padding: 9px 16px 9px 38px;
     background: rgba(20, 12, 6, 0.7);
     border: 1px solid rgba(212, 175, 100, 0.3);
     color: #f1e6c8;
@@ -151,30 +162,8 @@
   .search:focus { outline: none; border-color: #d4af64; box-shadow: 0 0 12px rgba(212, 175, 100, 0.3); }
   .search::placeholder { color: #6b5a3e; }
 
-  /* ========== 英雄网格 (顶部展示) ========== */
-  .gallery-section {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 24px 24px 64px;
-    position: relative;
-  }
-  .section-label {
-    text-align: center;
-    margin-bottom: 32px;
-    position: relative;
-  }
-  .section-label h2 {
-    font-family: 'Ma Shan Zheng', serif;
-    font-size: 32px;
-    color: #d4af64;
-    letter-spacing: 0.3em;
-    padding-left: 0.3em;
-  }
-  .section-label .deco-line {
-    display: inline-block; width: 60px; height: 1px;
-    background: #d4af64; vertical-align: middle; margin: 0 16px; opacity: 0.6;
-  }
-
+  /* 英雄网格 */
+  .gallery-section { max-width: 1400px; margin: 0 auto; padding: 8px 24px 48px; }
   .hero-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -188,27 +177,17 @@
     overflow: hidden;
     cursor: pointer;
     transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s, border-color 0.4s;
-    animation: cardIn 0.6s ease both;
+    animation: cardIn 0.5s ease both;
   }
-  @keyframes cardIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+  @keyframes cardIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
   .hero-card:hover {
     transform: translateY(-6px) scale(1.03);
     border-color: #d4af64;
     box-shadow: 0 12px 32px rgba(178, 45, 29, 0.4), 0 0 0 1px rgba(212, 175, 100, 0.4);
   }
-  .hero-card .portrait {
-    aspect-ratio: 1 / 1;
-    background: #1a0e08;
-    overflow: hidden;
-    position: relative;
-  }
+  .hero-card .portrait { aspect-ratio: 1 / 1; background: #1a0e08; overflow: hidden; position: relative; }
   .hero-card .portrait img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s ease, filter 0.4s;
+    width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease, filter 0.4s;
     filter: saturate(0.95);
   }
   .hero-card:hover .portrait img { transform: scale(1.08); filter: saturate(1.15) brightness(1.1); }
@@ -217,43 +196,14 @@
     background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.7));
     pointer-events: none;
   }
-  .hero-card .info {
-    padding: 10px 8px 12px;
-    text-align: center;
-  }
-  .hero-card .name {
-    font-family: 'Noto Serif SC', serif;
-    font-size: 17px;
-    font-weight: 800;
-    color: #f5e1a4;
-    letter-spacing: 0.1em;
-    margin-bottom: 2px;
-  }
-  .hero-card .title {
-    font-size: 11px;
-    color: #a78a5a;
-    letter-spacing: 0.15em;
-    margin-bottom: 6px;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .hero-card .skin-count {
-    font-size: 11px;
-    color: #c9a86b;
-    display: inline-flex; align-items: center; gap: 4px;
-    padding: 2px 8px;
-    background: rgba(0,0,0,0.3);
-    border: 1px solid rgba(212, 175, 100, 0.2);
-    border-radius: 10px;
-  }
+  .hero-card .info { padding: 10px 8px 12px; text-align: center; }
+  .hero-card .name { font-family: 'Noto Serif SC', serif; font-size: 17px; font-weight: 800; color: #f5e1a4; letter-spacing: 0.1em; margin-bottom: 2px; }
+  .hero-card .title { font-size: 11px; color: #a78a5a; letter-spacing: 0.15em; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hero-card .skin-count { font-size: 11px; color: #c9a86b; display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; background: rgba(0,0,0,0.3); border: 1px solid rgba(212, 175, 100, 0.2); border-radius: 10px; }
   .type-tag {
-    position: absolute; top: 8px; left: 8px;
-    z-index: 2;
-    padding: 3px 8px;
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    color: #fff;
-    border-radius: 2px;
-    backdrop-filter: blur(4px);
+    position: absolute; top: 8px; left: 8px; z-index: 2;
+    padding: 3px 8px; font-size: 11px; letter-spacing: 0.1em;
+    color: #fff; border-radius: 2px; backdrop-filter: blur(4px);
     text-shadow: 0 1px 2px rgba(0,0,0,0.5);
   }
   .type-warrior { background: rgba(192, 64, 32, 0.85); }
@@ -264,110 +214,220 @@
   .type-support { background: rgba(48, 160, 96, 0.85); }
   .type-other { background: rgba(120, 120, 120, 0.85); }
 
-  /* ========== 模态框 ========== */
+  /* 空状态 (无数据游戏) */
+  .no-data {
+    max-width: 700px; margin: 32px auto;
+    padding: 48px 32px;
+    text-align: center;
+    background: linear-gradient(180deg, rgba(40, 24, 14, 0.6), rgba(15, 8, 4, 0.85));
+    border: 1px solid rgba(212, 175, 100, 0.25);
+    border-radius: 6px;
+  }
+  .no-data h2 {
+    font-family: 'Ma Shan Zheng', serif;
+    font-size: 32px;
+    color: #d4af64;
+    margin-bottom: 12px;
+    letter-spacing: 0.15em;
+  }
+  .no-data p { color: #8a7456; line-height: 1.8; margin-bottom: 8px; }
+  .no-data .publisher { color: #c9a86b; font-size: 14px; margin: 12px 0; }
+  .no-data .tags { margin: 16px 0; }
+  .no-data .tags span {
+    display: inline-block; margin: 0 4px; padding: 3px 12px;
+    background: rgba(212, 175, 100, 0.1);
+    border: 1px solid rgba(212, 175, 100, 0.3);
+    color: #c9a86b; font-size: 12px;
+    border-radius: 2px;
+  }
+  .no-data .official-link {
+    display: inline-block; margin-top: 20px;
+    padding: 10px 24px;
+    background: linear-gradient(180deg, #b22d1d, #7a1c10);
+    color: #fff5d8;
+    border: 1px solid #d4af64;
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .no-data .official-link:hover { box-shadow: 0 0 16px rgba(178, 45, 29, 0.6); }
+
+  /* 全部游戏库 */
+  .library-section {
+    max-width: 1400px; margin: 32px auto 0;
+    padding: 32px 24px 24px;
+    border-top: 1px solid rgba(212, 175, 100, 0.15);
+  }
+  .library-header {
+    text-align: center;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .library-header h2 {
+    font-family: 'Ma Shan Zheng', serif;
+    font-size: 32px;
+    color: #d4af64;
+    letter-spacing: 0.3em;
+    padding-left: 0.3em;
+  }
+  .library-header .deco-line { display: inline-block; width: 60px; height: 1px; background: #d4af64; vertical-align: middle; margin: 0 16px; opacity: 0.6; }
+  .library-header .lib-sub { font-size: 12px; color: #8a7456; letter-spacing: 0.3em; margin-top: 6px; }
+
+  .category-tabs {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+    margin-bottom: 20px;
+  }
+  .cat-tab {
+    padding: 6px 16px;
+    font-size: 12px;
+    color: #c9a86b;
+    background: rgba(40, 24, 14, 0.5);
+    border: 1px solid rgba(212, 175, 100, 0.2);
+    border-radius: 2px;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .cat-tab:hover { color: #f5e1a4; }
+  .cat-tab.active {
+    background: linear-gradient(180deg, #b22d1d, #7a1c10);
+    color: #fff5d8;
+    border-color: #d4af64;
+  }
+
+  .game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .game-card {
+    position: relative;
+    background: linear-gradient(180deg, rgba(40, 24, 14, 0.6), rgba(15, 8, 4, 0.85));
+    border: 1px solid rgba(212, 175, 100, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.4s, box-shadow 0.4s, border-color 0.4s;
+  }
+  .game-card:hover {
+    transform: translateY(-4px);
+    border-color: #d4af64;
+    box-shadow: 0 10px 24px rgba(178, 45, 29, 0.3);
+  }
+  .game-card.has-data {
+    border-color: rgba(212, 175, 100, 0.45);
+  }
+  .game-card .cover {
+    aspect-ratio: 16 / 9;
+    background: linear-gradient(135deg, #2a1810, #0b0805);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .game-card .cover::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, transparent 30%, rgba(212, 175, 100, 0.1) 100%);
+  }
+  .game-card .cover-text {
+    font-family: 'Ma Shan Zheng', serif;
+    font-size: 36px;
+    color: rgba(212, 175, 100, 0.4);
+    letter-spacing: 0.1em;
+    z-index: 1;
+  }
+  .game-card .info { padding: 12px 14px 14px; }
+  .game-card .gname {
+    font-size: 16px;
+    font-weight: 800;
+    color: #f5e1a4;
+    letter-spacing: 0.1em;
+    margin-bottom: 2px;
+  }
+  .game-card .gen { font-size: 11px; color: #8a7456; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .game-card .gpub { font-size: 11px; color: #6b5a3e; margin-bottom: 6px; }
+  .game-card .gtags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .game-card .gtags span {
+    font-size: 10px;
+    padding: 2px 6px;
+    background: rgba(212, 175, 100, 0.08);
+    color: #a78a5a;
+    border-radius: 2px;
+  }
+  .game-card .data-badge {
+    position: absolute; top: 8px; right: 8px;
+    padding: 3px 8px;
+    background: linear-gradient(180deg, #b22d1d, #7a1c10);
+    color: #fff5d8;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    border: 1px solid #d4af64;
+    border-radius: 2px;
+    z-index: 2;
+  }
+  .game-card .data-badge.none {
+    background: rgba(20, 12, 6, 0.8);
+    color: #6b5a3e;
+    border-color: rgba(212, 175, 100, 0.3);
+  }
+
+  /* 模态框 */
   .modal-mask {
     position: fixed; inset: 0; z-index: 100;
     background: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(8px);
-    display: none;
-    align-items: flex-start;
-    justify-content: center;
-    overflow-y: auto;
-    padding: 40px 20px;
+    display: none; align-items: flex-start; justify-content: center;
+    overflow-y: auto; padding: 40px 20px;
     animation: fadeIn 0.3s ease;
   }
   .modal-mask.show { display: flex; }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
   .modal {
     width: min(1100px, 100%);
     background: linear-gradient(180deg, #1a0e08 0%, #0b0805 100%);
     border: 1px solid rgba(212, 175, 100, 0.4);
     border-radius: 6px;
-    box-shadow: 0 30px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(212, 175, 100, 0.1);
-    overflow: hidden;
-    position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.8);
+    overflow: hidden; position: relative;
     animation: modalIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
   @keyframes modalIn { from { opacity: 0; transform: translateY(40px) scale(0.96); } to { opacity: 1; transform: none; } }
-
   .modal-close {
     position: absolute; top: 16px; right: 16px; z-index: 5;
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    background: rgba(0,0,0,0.5);
-    color: #d4af64;
-    font-size: 20px;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(0,0,0,0.5); color: #d4af64; font-size: 20px;
     display: flex; align-items: center; justify-content: center;
     border: 1px solid rgba(212, 175, 100, 0.3);
     transition: all 0.3s;
   }
   .modal-close:hover { background: #b22d1d; color: #fff; transform: rotate(90deg); }
-
-  .modal-hero {
-    display: grid;
-    grid-template-columns: 320px 1fr;
-    gap: 0;
-  }
-  @media (max-width: 760px) {
-    .modal-hero { grid-template-columns: 1fr; }
-  }
-  .modal-portrait {
-    position: relative;
-    aspect-ratio: 1 / 1.1;
-    overflow: hidden;
-  }
-  .modal-portrait img {
-    width: 100%; height: 100%; object-fit: cover;
-  }
+  .modal-hero { display: grid; grid-template-columns: 320px 1fr; }
+  @media (max-width: 760px) { .modal-hero { grid-template-columns: 1fr; } }
+  .modal-portrait { position: relative; aspect-ratio: 1 / 1.1; overflow: hidden; background: #1a0e08; }
+  .modal-portrait img { width: 100%; height: 100%; object-fit: cover; }
   .modal-portrait::after {
     content: ''; position: absolute; inset: 0;
     background: linear-gradient(0deg, rgba(11,8,5,0.9) 0%, transparent 30%, transparent 70%, rgba(11,8,5,0.6) 100%);
   }
-  .modal-portrait .name-plate {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    padding: 24px 24px 20px;
-    z-index: 2;
-  }
+  .modal-portrait .name-plate { position: absolute; bottom: 0; left: 0; right: 0; padding: 24px 24px 20px; z-index: 2; }
   .modal-portrait .name-plate .cname {
-    font-family: 'Ma Shan Zheng', serif;
-    font-size: 48px;
-    color: #f5e1a4;
-    letter-spacing: 0.15em;
-    line-height: 1;
+    font-family: 'Ma Shan Zheng', serif; font-size: 44px;
+    color: #f5e1a4; letter-spacing: 0.15em; line-height: 1;
     text-shadow: 0 4px 16px rgba(0,0,0,0.8);
   }
-  .modal-portrait .name-plate .title {
-    font-size: 14px;
-    color: #c9a86b;
-    letter-spacing: 0.3em;
-    margin-top: 8px;
-  }
-  .modal-portrait .name-plate .types {
-    margin-top: 12px;
-    display: flex; gap: 6px;
-  }
-
-  .modal-body {
-    padding: 28px 28px 32px;
-  }
+  .modal-portrait .name-plate .title { font-size: 14px; color: #c9a86b; letter-spacing: 0.3em; margin-top: 8px; }
+  .modal-portrait .name-plate .types { margin-top: 12px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .modal-body { padding: 28px 28px 32px; }
   .modal-body h3 {
-    font-family: 'Ma Shan Zheng', serif;
-    font-size: 22px;
-    color: #d4af64;
-    letter-spacing: 0.2em;
-    margin-bottom: 6px;
+    font-family: 'Ma Shan Zheng', serif; font-size: 22px;
+    color: #d4af64; letter-spacing: 0.2em; margin-bottom: 6px;
     display: flex; align-items: center; gap: 12px;
   }
   .modal-body h3::before, .modal-body h3::after {
     content: ''; flex: 1; height: 1px;
     background: linear-gradient(90deg, transparent, rgba(212, 175, 100, 0.5), transparent);
   }
-  .modal-body .skin-sub {
-    font-size: 12px; color: #8a7456;
-    letter-spacing: 0.2em; margin-bottom: 20px;
-  }
-
+  .modal-body .skin-sub { font-size: 12px; color: #8a7456; letter-spacing: 0.2em; margin-bottom: 20px; }
   .skin-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -376,100 +436,56 @@
   .skin-card {
     background: rgba(20, 12, 6, 0.6);
     border: 1px solid rgba(212, 175, 100, 0.2);
-    border-radius: 4px;
-    overflow: hidden;
-    transition: all 0.3s;
-    cursor: zoom-in;
+    border-radius: 4px; overflow: hidden;
+    transition: all 0.3s; cursor: zoom-in;
   }
-  .skin-card:hover {
-    transform: translateY(-3px);
-    border-color: #d4af64;
-    box-shadow: 0 8px 24px rgba(178, 45, 29, 0.3);
-  }
-  .skin-card .img {
-    aspect-ratio: 16 / 10;
-    background: #1a0e08;
-    overflow: hidden;
-    position: relative;
-  }
-  .skin-card .img img {
-    width: 100%; height: 100%; object-fit: cover;
-    transition: transform 0.5s;
-  }
+  .skin-card:hover { transform: translateY(-3px); border-color: #d4af64; box-shadow: 0 8px 24px rgba(178, 45, 29, 0.3); }
+  .skin-card .img { aspect-ratio: 16 / 10; background: #1a0e08; overflow: hidden; position: relative; }
+  .skin-card .img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
   .skin-card:hover .img img { transform: scale(1.05); }
-  .skin-card .img::before {
-    content: ''; position: absolute; inset: 0; z-index: 1;
-    background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.6));
-    pointer-events: none;
-  }
   .skin-card .name {
-    padding: 8px 10px;
-    font-size: 13px;
-    color: #f1e6c8;
-    letter-spacing: 0.08em;
-    text-align: center;
+    padding: 8px 10px; font-size: 13px; color: #f1e6c8;
+    letter-spacing: 0.08em; text-align: center;
     border-top: 1px solid rgba(212, 175, 100, 0.1);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
 
-  /* ========== 灯箱 ========== */
+  /* 灯箱 */
   .lightbox {
     position: fixed; inset: 0; z-index: 200;
     background: rgba(0,0,0,0.95);
-    display: none;
-    align-items: center; justify-content: center;
-    padding: 20px;
-    animation: fadeIn 0.3s;
+    display: none; align-items: center; justify-content: center;
+    padding: 20px; animation: fadeIn 0.3s;
   }
   .lightbox.show { display: flex; }
-  .lightbox img {
-    max-width: 100%; max-height: 90vh;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-    border: 1px solid rgba(212, 175, 100, 0.3);
-  }
+  .lightbox img { max-width: 100%; max-height: 90vh; box-shadow: 0 20px 60px rgba(0,0,0,0.8); border: 1px solid rgba(212, 175, 100, 0.3); }
   .lightbox .label {
     position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
-    padding: 8px 24px;
-    background: rgba(11,8,5,0.9);
+    padding: 8px 24px; background: rgba(11,8,5,0.9);
     border: 1px solid rgba(212, 175, 100, 0.3);
-    color: #f5e1a4;
-    font-size: 16px;
-    letter-spacing: 0.2em;
-    border-radius: 2px;
+    color: #f5e1a4; font-size: 16px; letter-spacing: 0.2em; border-radius: 2px;
   }
   .lightbox-close {
     position: absolute; top: 24px; right: 24px;
-    width: 44px; height: 44px;
-    border-radius: 50%;
-    background: rgba(0,0,0,0.6);
-    color: #d4af64;
-    font-size: 24px;
-    border: 1px solid rgba(212, 175, 100, 0.4);
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(0,0,0,0.6); color: #d4af64;
+    font-size: 24px; border: 1px solid rgba(212, 175, 100, 0.4);
     display: flex; align-items: center; justify-content: center;
   }
   .lightbox-close:hover { background: #b22d1d; color: #fff; }
 
-  /* ========== 页脚 ========== */
+  /* 页脚 */
   .footer {
-    text-align: center;
-    padding: 32px 24px 48px;
-    font-size: 12px;
-    color: #5a4a32;
-    letter-spacing: 0.2em;
+    text-align: center; padding: 32px 24px 48px;
+    font-size: 12px; color: #5a4a32; letter-spacing: 0.2em;
     border-top: 1px solid rgba(212, 175, 100, 0.1);
     margin-top: 40px;
   }
-  .footer a { color: #8a7456; text-decoration: none; }
+  .footer a { color: #8a7456; }
   .footer a:hover { color: #d4af64; }
 
-  /* 空状态 */
-  .empty {
-    text-align: center; padding: 60px 20px;
-    color: #6b5a3e;
-    font-size: 14px; letter-spacing: 0.2em;
-  }
+  .empty { text-align: center; padding: 60px 20px; color: #6b5a3e; font-size: 14px; letter-spacing: 0.2em; }
 
-  /* 滚动条 */
   ::-webkit-scrollbar { width: 10px; height: 10px; }
   ::-webkit-scrollbar-track { background: #0b0805; }
   ::-webkit-scrollbar-thumb { background: #3a2818; border-radius: 5px; }
@@ -479,36 +495,66 @@
 <body>
   <div class="bg"></div>
   <div class="bg-grain"></div>
-  <div class="bg-seal"></div>
 
-  <header class="masthead">
-    <div class="subtitle">— 御 · 王 · 卷 · 山 · 河 —</div>
-    <h1 class="main-title">王者荣耀图鉴</h1>
-    <div class="meta">
-      共 <span class="count" id="heroCount">—</span> 位英雄 ·
-      <span class="count" id="skinCount">—</span> 款皮肤 · 数据来源 腾讯游戏官网
+  <nav class="navbar">
+    <div class="brand">游戏图鉴 · 卷山河</div>
+    <div class="navbar-stats">
+      <span>已收录 <span class="val" id="libCount">—</span> 款游戏</span>
+      <span>已上线 <span class="val" id="dataCount">—</span> 款图鉴</span>
+      <span>共 <span class="val" id="charCount">—</span> 位角色</span>
+      <span>共 <span class="val" id="skinTotal">—</span> 款皮肤</span>
+    </div>
+  </nav>
+
+  <header class="current-game">
+    <div class="game-tag" id="gameCategory">—</div>
+    <h1 class="game-title" id="gameTitle">王者荣耀</h1>
+    <div class="game-en" id="gameEn">Honor of Kings</div>
+    <div class="game-meta">
+      发行 <span id="gamePub">—</span> ·
+      <span class="count" id="charNum">—</span> 位角色 ·
+      <span class="count" id="skinNum">—</span> 款皮肤
     </div>
   </header>
 
-  <div class="filters" id="filters"></div>
-  <div class="search-wrap">
-    <input id="search" class="search" type="text" placeholder="搜索英雄 / 皮肤名…" />
+  <!-- 英雄图鉴区 (有数据时显示) -->
+  <div id="galleryWrap">
+    <div class="filters" id="filters"></div>
+    <div class="search-wrap">
+      <input id="search" class="search" type="text" placeholder="搜索角色 / 皮肤名…" />
+    </div>
+    <section class="gallery-section">
+      <div class="hero-grid" id="heroGrid"></div>
+      <div class="empty" id="empty" style="display:none;">未找到匹配的角色</div>
+    </section>
   </div>
 
-  <section class="gallery-section">
-    <div class="section-label">
-      <span class="deco-line"></span>
-      <h2>全 英 雄 列 传</h2>
-      <span class="deco-line"></span>
+  <!-- 无数据状态 -->
+  <div id="noDataWrap" style="display:none;">
+    <div class="no-data">
+      <h2>⏳ 图鉴采集中</h2>
+      <p>该游戏尚无完整公开数据接口，或数据正在整理中</p>
+      <div class="publisher" id="ndPublisher">发行：—</div>
+      <div class="tags" id="ndTags"></div>
+      <a class="official-link" id="ndOfficial" href="#" target="_blank" rel="noopener">前往官网 →</a>
     </div>
-    <div class="hero-grid" id="heroGrid"></div>
-    <div class="empty" id="empty" style="display:none;">未找到匹配的英雄</div>
+  </div>
+
+  <!-- 全部游戏库 -->
+  <section class="library-section">
+    <div class="library-header">
+      <span class="deco-line"></span>
+      <h2>全 部 游 戏 库</h2>
+      <span class="deco-line"></span>
+      <div class="lib-sub">GAME LIBRARY · <span id="libCount2">—</span> TITLES</div>
+    </div>
+    <div class="category-tabs" id="catTabs"></div>
+    <div class="game-grid" id="gameGrid"></div>
   </section>
 
   <footer class="footer">
-    本站仅供学习交流 · 图片资源版权归
-    <a href="https://pvp.qq.com" target="_blank" rel="noopener">腾讯游戏</a>
-    所有 · 数据采集于王者荣耀官方公开接口
+    本图鉴仅供学习交流 · 图像版权归各游戏官方所有 ·
+    数据来源: 腾讯/pvp.qq.com、拳头 ddragon、Mar-7th StarRailRes、各官网公开接口
   </footer>
 
   <!-- 详情模态框 -->
@@ -529,25 +575,62 @@
     <div class="label" id="lightboxLabel"></div>
   </div>
 
+  <script src="games_meta.js"></script>
   <script src="hero_data.js"></script>
+  <script src="lolpc_data.js"></script>
+  <script src="lolm_data.js"></script>
+  <script src="starrail_data.js"></script>
   <script>
-    // 工具：图片 URL
-    const PORTRAIT = id => `https://game.gtimg.cn/images/yxzj/img201606/heroimg/${id}/${id}-smallskin-1.jpg`;
-    const SKIN_IMG = (id, idx) => `https://game.gtimg.cn/images/yxzj/img201606/skin/hero-info/${id}/${id}-bigskin-${idx}.jpg`;
+    // 加载数据映射
+    const DATA_MAP = {
+      hok:      HERO_DATA,
+      lolpc:    LOLPC_DATA,
+      lolm:     LOLM_DATA,
+      starrail: STARRAIL_DATA,
+    };
+
+    // 库统计
+    const libCount = GAMES_META.length;
+    const dataCount = GAMES_META.filter(g => g.has_data).length;
+    const charCount = Object.values(DATA_MAP).reduce((s, arr) => s + arr.length, 0);
+    const skinTotal = Object.values(DATA_MAP).reduce(
+      (s, arr) => s + arr.reduce((x, h) => x + (h.skins ? h.skins.length : 0), 0), 0);
+    document.getElementById('libCount').textContent = libCount;
+    document.getElementById('dataCount').textContent = dataCount;
+    document.getElementById('charCount').textContent = charCount;
+    document.getElementById('skinTotal').textContent = skinTotal;
+    document.getElementById('libCount2').textContent = libCount;
 
     // 状态
+    let currentGame = 'hok';
     let currentType = 'all';
     let currentKeyword = '';
+    let currentCat = 'all';
 
-    // 统计
-    const totalHeroes = HERO_DATA.length;
-    const totalSkins = HERO_DATA.reduce((sum, h) => sum + h.skins.length, 0);
-    document.getElementById('heroCount').textContent = totalHeroes;
-    document.getElementById('skinCount').textContent = totalSkins;
+    // 当前游戏信息
+    function getGameMeta(id) { return GAMES_META.find(g => g.id === id); }
+    function updateHeader() {
+      const m = getGameMeta(currentGame);
+      const data = DATA_MAP[currentGame];
+      const cat = CATEGORIES[m.category] || { name: '其他', icon: '🎮' };
+      document.getElementById('gameCategory').textContent = cat.icon + ' ' + cat.name;
+      document.getElementById('gameTitle').textContent = m.name;
+      document.getElementById('gameEn').textContent = m.en_name;
+      document.getElementById('gamePub').textContent = m.publisher;
+      if (m.has_data) {
+        const totalSkins = data.reduce((s, h) => s + h.skins.length, 0);
+        document.getElementById('charNum').textContent = data.length;
+        document.getElementById('skinNum').textContent = totalSkins;
+      } else {
+        document.getElementById('charNum').textContent = '—';
+        document.getElementById('skinNum').textContent = '—';
+      }
+    }
 
-    // 类型筛选
-    const TYPES = [
-      { key: 'all', name: '全部' },
+    // 筛选
+    const filtersEl = document.getElementById('filters');
+    const TYPE_FILTERS = [
+      { key: 'all',     name: '全部' },
       { key: '战士', name: '战士' },
       { key: '法师', name: '法师' },
       { key: '坦克', name: '坦克' },
@@ -555,64 +638,73 @@
       { key: '射手', name: '射手' },
       { key: '辅助', name: '辅助' },
     ];
-    const typeCount = {};
-    TYPES.forEach(t => {
-      typeCount[t.key] = t.key === 'all' ? totalHeroes : HERO_DATA.filter(h => h.type === t.key || h.type2 === t.key).length;
-    });
-
-    const filtersEl = document.getElementById('filters');
-    TYPES.forEach(t => {
-      const btn = document.createElement('button');
-      btn.className = 'filter-btn' + (t.key === 'all' ? ' active' : '');
-      btn.dataset.type = t.key;
-      btn.innerHTML = `${t.name}<span class="badge">${typeCount[t.key]}</span>`;
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentType = t.key;
-        render();
-      });
-      filtersEl.appendChild(btn);
-    });
-
-    // 渲染网格
-    const grid = document.getElementById('heroGrid');
-    const empty = document.getElementById('empty');
-
-    function filtered() {
-      const kw = currentKeyword.trim().toLowerCase();
-      return HERO_DATA.filter(h => {
-        const matchType = currentType === 'all' || h.type === currentType || h.type2 === currentType;
-        if (!matchType) return false;
-        if (!kw) return true;
-        if (h.cname.toLowerCase().includes(kw)) return true;
-        if (h.title.toLowerCase().includes(kw)) return true;
-        if (h.skins.some(s => s.toLowerCase().includes(kw))) return true;
-        return false;
+    function buildFilters() {
+      const data = DATA_MAP[currentGame] || [];
+      filtersEl.innerHTML = '';
+      TYPE_FILTERS.forEach(t => {
+        const count = t.key === 'all'
+          ? data.length
+          : data.filter(h => h.type === t.key || h.type2 === t.key).length;
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn' + (t.key === 'all' ? ' active' : '');
+        btn.innerHTML = `${t.name}<span class="badge">${count}</span>`;
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentType = t.key;
+          render();
+        });
+        filtersEl.appendChild(btn);
       });
     }
 
+    // 渲染
+    const grid = document.getElementById('heroGrid');
+    const empty = document.getElementById('empty');
+    const galleryWrap = document.getElementById('galleryWrap');
+    const noDataWrap = document.getElementById('noDataWrap');
+
+    function getData() { return DATA_MAP[currentGame] || []; }
+    function filtered() {
+      const d = getData();
+      const kw = currentKeyword.trim().toLowerCase();
+      return d.filter(h => {
+        const matchType = currentType === 'all' || h.type === currentType || h.type2 === currentType;
+        if (!matchType) return false;
+        if (!kw) return true;
+        if ((h.cname || '').toLowerCase().includes(kw)) return true;
+        if ((h.title || '').toLowerCase().includes(kw)) return true;
+        if ((h.skins || []).some(s => s.name.toLowerCase().includes(kw))) return true;
+        return false;
+      });
+    }
     function render() {
       const list = filtered();
       grid.innerHTML = '';
       if (!list.length) { empty.style.display = 'block'; return; }
       empty.style.display = 'none';
-
       const frag = document.createDocumentFragment();
       list.forEach((h, i) => {
         const card = document.createElement('div');
         card.className = 'hero-card';
-        card.style.animationDelay = (Math.min(i, 60) * 0.015) + 's';
+        card.style.animationDelay = (Math.min(i, 60) * 0.012) + 's';
+        const typeCls = h.type_cls || (
+          h.type === '战士' ? 'type-warrior' :
+          h.type === '法师' ? 'type-mage' :
+          h.type === '坦克' ? 'type-tank' :
+          h.type === '刺客' ? 'type-assassin' :
+          h.type === '射手' ? 'type-marksman' :
+          h.type === '辅助' ? 'type-support' : 'type-other');
         card.innerHTML = `
-          <span class="type-tag ${h.type_cls}">${h.type}</span>
+          <span class="type-tag ${typeCls}">${h.type || ''}</span>
           <div class="portrait">
-            <img src="${PORTRAIT(h.ename)}" alt="${h.cname}" loading="lazy"
-                 onerror="this.onerror=null;this.style.opacity=0.15;this.alt='暂无立绘'" />
+            <img src="${h.portrait || ''}" alt="${h.cname}" loading="lazy"
+                 onerror="this.onerror=null;this.style.opacity=0.2" />
           </div>
           <div class="info">
             <div class="name">${h.cname}</div>
-            <div class="title">${h.title}</div>
-            <div class="skin-count">✦ ${h.skins.length} 款皮肤</div>
+            <div class="title">${h.title || ''}</div>
+            <div class="skin-count">✦ ${(h.skins || []).length} 款皮肤</div>
           </div>
         `;
         card.addEventListener('click', () => openModal(h));
@@ -630,37 +722,44 @@
     function openModal(h) {
       const tags = [h.type];
       if (h.type2) tags.push(h.type2);
+      const typeCls = h.type_cls || (
+        h.type === '战士' ? 'type-warrior' :
+        h.type === '法师' ? 'type-mage' :
+        h.type === '坦克' ? 'type-tank' :
+        h.type === '刺客' ? 'type-assassin' :
+        h.type === '射手' ? 'type-marksman' :
+        h.type === '辅助' ? 'type-support' : 'type-other');
       modalPortrait.innerHTML = `
-        <img src="${PORTRAIT(h.ename)}" alt="${h.cname}"
+        <img src="${h.portrait || ''}" alt="${h.cname}"
              onerror="this.onerror=null;this.style.opacity=0.2" />
         <div class="name-plate">
           <div class="cname">${h.cname}</div>
-          <div class="title">${h.title}</div>
+          <div class="title">${h.title || ''}</div>
           <div class="types">
-            ${tags.map((t, i) => {
-              const cls = HERO_DATA.find(x => x.cname === h.cname && x.type === t)?.type_cls || 'type-other';
-              return `<span class="type-tag ${cls}">${t}</span>`;
-            }).join('')}
+            ${tags.map(t => `<span class="type-tag ${typeCls}">${t}</span>`).join('')}
           </div>
         </div>
       `;
-      const skinsHtml = h.skins.map((s, i) => `
-        <div class="skin-card" data-idx="${i + 1}" data-name="${s}">
-          <div class="img">
-            <img src="${SKIN_IMG(h.ename, i + 1)}" alt="${s}" loading="lazy"
-                 onerror="this.onerror=null;this.style.opacity=0.15" />
+      const skins = h.skins || [];
+      const skinsHtml = skins.length
+        ? skins.map(s => `
+          <div class="skin-card" data-img="${s.img}" data-name="${s.name}">
+            <div class="img">
+              <img src="${s.img}" alt="${s.name}" loading="lazy"
+                   onerror="this.onerror=null;this.style.opacity=0.2" />
+            </div>
+            <div class="name">${s.name}</div>
           </div>
-          <div class="name">${s}</div>
-        </div>
-      `).join('');
+        `).join('')
+        : '<div class="empty">暂无皮肤数据</div>';
       modalBody.innerHTML = `
-        <h3>皮 肤 列 表</h3>
-        <div class="skin-sub">共 ${h.skins.length} 款 · 单击查看大图</div>
+        <h3>造 型 列 表</h3>
+        <div class="skin-sub">共 ${skins.length} 款 · 单击查看大图</div>
         <div class="skin-grid">${skinsHtml}</div>
       `;
       modalBody.querySelectorAll('.skin-card').forEach(card => {
         card.addEventListener('click', () => {
-          openLightbox(SKIN_IMG(h.ename, card.dataset.idx), card.dataset.name);
+          openLightbox(card.dataset.img, card.dataset.name);
         });
       });
       modalMask.classList.add('show');
@@ -682,14 +781,11 @@
     const lightboxLabel = document.getElementById('lightboxLabel');
     const lightboxClose = document.getElementById('lightboxClose');
     function openLightbox(src, name) {
-      lightboxImg.src = src;
-      lightboxImg.alt = name || '';
+      lightboxImg.src = src; lightboxImg.alt = name || '';
       lightboxLabel.textContent = name || '';
       lightbox.classList.add('show');
     }
-    function closeLightbox() {
-      lightbox.classList.remove('show');
-    }
+    function closeLightbox() { lightbox.classList.remove('show'); }
     lightboxClose.addEventListener('click', closeLightbox);
     lightbox.addEventListener('click', e => { if (e.target === lightbox || e.target === lightboxLabel) closeLightbox(); });
 
@@ -704,8 +800,83 @@
       }, 120);
     });
 
-    // 首屏
-    render();
+    // 切换游戏
+    function switchGame(id) {
+      currentGame = id;
+      currentType = 'all';
+      currentKeyword = '';
+      searchInput.value = '';
+      const m = getGameMeta(id);
+      updateHeader();
+      if (m.has_data) {
+        galleryWrap.style.display = '';
+        noDataWrap.style.display = 'none';
+        buildFilters();
+        render();
+      } else {
+        galleryWrap.style.display = 'none';
+        noDataWrap.style.display = '';
+        // 填充无数据状态
+        document.getElementById('ndPublisher').textContent = '发行：' + m.publisher;
+        document.getElementById('ndTags').innerHTML = m.tags.map(t => `<span>${t}</span>`).join('');
+        const link = document.getElementById('ndOfficial');
+        link.href = m.official || '#';
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 渲染游戏库
+    const gameGrid = document.getElementById('gameGrid');
+    const catTabs = document.getElementById('catTabs');
+    function buildCatTabs() {
+      const cats = ['all', ...new Set(GAMES_META.map(g => g.category))];
+      catTabs.innerHTML = '';
+      cats.forEach(c => {
+        const t = document.createElement('button');
+        t.className = 'cat-tab' + (c === 'all' ? ' active' : '');
+        const label = c === 'all' ? '全部' : (CATEGORIES[c] ? CATEGORIES[c].name : c);
+        t.textContent = label;
+        t.addEventListener('click', () => {
+          document.querySelectorAll('.cat-tab').forEach(x => x.classList.remove('active'));
+          t.classList.add('active');
+          currentCat = c;
+          renderGames();
+        });
+        catTabs.appendChild(t);
+      });
+    }
+    function renderGames() {
+      const list = currentCat === 'all' ? GAMES_META : GAMES_META.filter(g => g.category === currentCat);
+      gameGrid.innerHTML = '';
+      const frag = document.createDocumentFragment();
+      list.forEach(m => {
+        const c = document.createElement('div');
+        c.className = 'game-card' + (m.has_data ? ' has-data' : '');
+        const cat = CATEGORIES[m.category] || { name: '' };
+        // 缩略图：取前两个字的 Unicode 编码作为纹理 / 或者用游戏首字
+        const initial = m.name.slice(0, 1);
+        c.innerHTML = `
+          ${m.has_data ? '<div class="data-badge">✓ 已上线</div>' : '<div class="data-badge none">采集中</div>'}
+          <div class="cover">
+            <span class="cover-text">${initial}</span>
+          </div>
+          <div class="info">
+            <div class="gname">${m.name}</div>
+            <div class="gen">${m.en_name} · ${cat.name || ''}</div>
+            <div class="gpub">${m.publisher}</div>
+            <div class="gtags">${m.tags.slice(0, 3).map(t => `<span>${t}</span>`).join('')}</div>
+          </div>
+        `;
+        c.addEventListener('click', () => switchGame(m.id));
+        frag.appendChild(c);
+      });
+      gameGrid.appendChild(frag);
+    }
+
+    // 初始化
+    buildCatTabs();
+    renderGames();
+    switchGame('hok');
   </script>
 </body>
 </html>

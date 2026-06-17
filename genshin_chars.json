@@ -1,0 +1,19 @@
+<!DOCTYPE html><!--
+  Copyright (c) 2021 genshin.dev
+  Licensed under the Open Software License version 3.0
+  --><html lang="en"><head>
+    <meta charset="utf-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>genshin.dev - Fan-Made Genshin Impact API</title>
+    <meta name="description" content="A fan-made Genshin Impact API for easy access to game data. ">
+    <meta name="keywords" content="Genshin Impact, Genshin, miHoYo, API, Genshin Impact API, source code, genshindev, GitHub, game data, fan-made, easy access, genshin.dev, NurMarvin, Marvin Witt">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/dist/index.css"></head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <script async type="63bfc99eaf872c5d30a1eb45-module" src="/dist/index.js"></script>
+  
+
+<!-- Cloudflare Pages Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "82c4399553e04402a5bd05c776493f80"}' type="63bfc99eaf872c5d30a1eb45-text/javascript"></script><!-- Cloudflare Pages Analytics --><script src="/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="63bfc99eaf872c5d30a1eb45-|49" defer></script></body></html>
