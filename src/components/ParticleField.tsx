@@ -9,18 +9,16 @@ import { useAudioStore, countFromDensity } from "@/store/useAudioStore"
 import { basePosition, dynamicOffset, type PresetId } from "@/lib/presets"
 import { PALETTES, sampleColor, type Palette } from "@/lib/palettes"
 
-const MAX_PARTICLES = 30000
+const MAX_PARTICLES = 5000
 
-// 顶点着色器 - 计算位置 + 颜色 + 大小
+// 顶点着色器 - 计算位置 + 颜色 + 大小（精简版）
 const vertexShader = /* glsl */ `
   attribute float aIndex;
   attribute float aFreq;
-  attribute vec3 aTarget;
   uniform float uTime;
   uniform float uSize;
   uniform float uBass;
   uniform float uMid;
-  uniform float uTreble;
   uniform float uBeat;
   uniform vec3 uColorA;
   uniform vec3 uColorB;
@@ -28,36 +26,25 @@ const vertexShader = /* glsl */ `
   uniform vec3 uColorD;
   varying float vIntensity;
   varying vec3 vColor;
-  varying float vDist;
-
-  vec3 sampleColor(float t) {
-    float n = 3.0;
-    float idx = t * n;
-    float i0 = floor(idx);
-    float f = fract(idx);
-    if (i0 < 0.5) return mix(uColorA, uColorB, f);
-    if (i0 < 1.5) return mix(uColorB, uColorC, f);
-    if (i0 < 2.5) return mix(uColorC, uColorD, f);
-    return mix(uColorD, uColorA, f);
-  }
 
   void main() {
     vec3 pos = position;
-    float t = aIndex / 30000.0;
+    float t = aIndex / 5000.0;
     float beatBoost = uBeat * 1.5;
-    float dist = length(pos);
-    vDist = dist;
-
-    // 个体大小：基于频段能量
     float freq = aFreq;
-    float sizeBoost = 1.0 + freq * 1.8 + uBass * 0.6 + beatBoost * 0.5;
-    vIntensity = clamp(freq * 1.4 + uBass * 0.5 + beatBoost * 0.3, 0.1, 2.5);
 
-    // 颜色：根据索引 + 时间 + 音频
-    float colorT = fract(t * 1.0 + uTime * 0.04 + uMid * 0.3);
-    vec3 col = sampleColor(colorT);
-    col = mix(col, uColorD, uTreble * 0.4);
-    vColor = col;
+    // 个体大小
+    float sizeBoost = 1.0 + freq * 1.6 + uBass * 0.5 + beatBoost * 0.4;
+    vIntensity = clamp(freq * 1.3 + uBass * 0.4 + beatBoost * 0.25, 0.1, 2.0);
+
+    // 颜色：索引 + 轻微时间偏移
+    float colorT = fract(t + uTime * 0.04 + uMid * 0.25);
+    float idx = colorT * 3.0;
+    float i0 = floor(idx);
+    float f = fract(idx);
+    if (i0 < 0.5) vColor = mix(uColorA, uColorB, f);
+    else if (i0 < 1.5) vColor = mix(uColorB, uColorC, f);
+    else vColor = mix(uColorC, uColorD, f);
 
     vec4 mv = modelViewMatrix * vec4(pos, 1.0);
     gl_PointSize = uSize * sizeBoost * (300.0 / -mv.z);
@@ -65,25 +52,20 @@ const vertexShader = /* glsl */ `
   }
 `
 
-// 片元着色器 - 圆形软粒子
+// 片元着色器 - 圆形软粒子（精简版）
 const fragmentShader = /* glsl */ `
-  uniform float uTime;
   uniform float uGlow;
   varying float vIntensity;
   varying vec3 vColor;
-  varying float vDist;
 
   void main() {
     vec2 uv = gl_PointCoord - 0.5;
     float r = length(uv);
     if (r > 0.5) discard;
-    // 软核 + 外环
     float core = smoothstep(0.5, 0.0, r);
-    float ring = smoothstep(0.5, 0.35, r) * 0.6;
-    float a = core + ring * 0.3;
-    vec3 col = vColor * (1.0 + uGlow * 0.8);
-    col += vColor * vIntensity * (1.0 - r * 1.4);
-    gl_FragColor = vec4(col, a * vIntensity);
+    vec3 col = vColor * (1.0 + uGlow * 0.6);
+    col += vColor * vIntensity * (1.0 - r * 1.2);
+    gl_FragColor = vec4(col, core * vIntensity);
   }
 `
 
@@ -97,19 +79,14 @@ export function ParticleField() {
     const positions = new Float32Array(MAX_PARTICLES * 3)
     const indices = new Float32Array(MAX_PARTICLES)
     const freqs = new Float32Array(MAX_PARTICLES)
-    const targets = new Float32Array(MAX_PARTICLES * 3)
 
     for (let i = 0; i < MAX_PARTICLES; i++) {
       indices[i] = i
       freqs[i] = 0
-      targets[i * 3] = 0
-      targets[i * 3 + 1] = 0
-      targets[i * 3 + 2] = 0
     }
     geom.setAttribute("position", new THREE.BufferAttribute(positions, 3))
     geom.setAttribute("aIndex", new THREE.BufferAttribute(indices, 1))
     geom.setAttribute("aFreq", new THREE.BufferAttribute(freqs, 1))
-    geom.setAttribute("aTarget", new THREE.BufferAttribute(targets, 3))
     geom.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 100)
 
     const mat = new THREE.ShaderMaterial({
@@ -120,10 +97,9 @@ export function ParticleField() {
       blending: THREE.AdditiveBlending,
       uniforms: {
         uTime: { value: 0 },
-        uSize: { value: 18 },
+        uSize: { value: 22 },
         uBass: { value: 0 },
         uMid: { value: 0 },
-        uTreble: { value: 0 },
         uBeat: { value: 0 },
         uGlow: { value: 0.8 },
         uColorA: { value: new THREE.Color() },
@@ -157,7 +133,7 @@ export function ParticleField() {
     // 不重置位置，由动画自然过渡即可
   }, [])
 
-  useFrame((state, delta) => {
+  useFrame((state) => {
     const store = useAudioStore.getState()
     const preset = store.preset
     const density = store.density
@@ -166,7 +142,6 @@ export function ParticleField() {
     const palette: Palette = PALETTES[store.palette]
     const bass = store.bassLevel
     const mid = store.midLevel
-    const treble = store.trebleLevel
     const beat = store.beatPulse
     const freqData = store.frequencyData
     const time = state.clock.elapsedTime
@@ -177,13 +152,11 @@ export function ParticleField() {
 
     const positions = geometry.attributes.position as THREE.BufferAttribute
     const freqs = geometry.attributes.aFreq as THREE.BufferAttribute
-    const targets = geometry.attributes.aTarget as THREE.BufferAttribute
 
     // 更新 uniforms
     material.uniforms.uTime.value = time
     material.uniforms.uBass.value = bass
     material.uniforms.uMid.value = mid
-    material.uniforms.uTreble.value = treble
     material.uniforms.uBeat.value = beat
     material.uniforms.uGlow.value = glow
     ;(material.uniforms.uColorA.value as THREE.Color).copy(palette.colors[0])
@@ -191,40 +164,28 @@ export function ParticleField() {
     ;(material.uniforms.uColorC.value as THREE.Color).copy(palette.colors[2])
     ;(material.uniforms.uColorD.value as THREE.Color).copy(palette.colors[3])
 
+    const posArr = positions.array as Float32Array
+    const freqArr = freqs.array as Float32Array
+    const freqLen = freqData.length
+    const lerp = 0.2
+
     // 更新粒子位置
     for (let i = 0; i < visible; i++) {
       // 计算基础位置
       basePosition(preset, i, visible, basePos)
       // 动态偏移（在 basePos 上叠加）
       targetPos.copy(basePos)
-      const freq = freqData[i % freqData.length] / 255
+      const freq = freqData[i % freqLen] / 255
       dynamicOffset(preset, i, time, freq, bass, beat, speed, targetPos)
 
       // 平滑插值到 target
       const idx = i * 3
-      const cur = positions.array as Float32Array
-      cur[idx] += (targetPos.x - cur[idx]) * 0.18
-      cur[idx + 1] += (targetPos.y - cur[idx + 1]) * 0.18
-      cur[idx + 2] += (targetPos.z - cur[idx + 2]) * 0.18
+      posArr[idx] += (targetPos.x - posArr[idx]) * lerp
+      posArr[idx + 1] += (targetPos.y - posArr[idx + 1]) * lerp
+      posArr[idx + 2] += (targetPos.z - posArr[idx + 2]) * lerp
 
       // 更新频段属性（带衰减）
-      const freqArr = freqs.array as Float32Array
       freqArr[i] += (freq - freqArr[i]) * 0.25
-
-      // target 缓冲备用
-      const tArr = targets.array as Float32Array
-      tArr[idx] = targetPos.x
-      tArr[idx + 1] = targetPos.y
-      tArr[idx + 2] = targetPos.z
-    }
-
-    // 不活跃粒子收到远处
-    for (let i = visible; i < MAX_PARTICLES; i++) {
-      const idx = i * 3
-      const cur = positions.array as Float32Array
-      cur[idx] = 0
-      cur[idx + 1] = 0
-      cur[idx + 2] = 0
     }
 
     positions.needsUpdate = true

@@ -57,7 +57,7 @@ export function ParamConsole() {
           value={density}
           min={0.1}
           max={1.0}
-          format={(v) => Math.floor(5000 + v * 25000).toString()}
+          format={(v) => Math.floor(1200 + v * 3800).toString()}
           onChange={setDensity}
         />
         <Slider

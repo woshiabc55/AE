@@ -1,11 +1,9 @@
-// 后处理效果 - Bloom + Vignette + Noise
+// 后处理效果 - 精简版：仅 Bloom + Vignette
 import {
   EffectComposer,
   Bloom,
   Vignette,
-  Noise,
 } from "@react-three/postprocessing"
-import { BlendFunction } from "postprocessing"
 import { useAudioStore } from "@/store/useAudioStore"
 
 export function Postprocessing() {
@@ -14,13 +12,12 @@ export function Postprocessing() {
   return (
     <EffectComposer multisampling={0} enableNormalPass={false}>
       <Bloom
-        intensity={0.6 + glow * 0.9}
-        luminanceThreshold={0.08}
+        intensity={0.5 + glow * 0.7}
+        luminanceThreshold={0.1}
         luminanceSmoothing={0.5}
         mipmapBlur
       />
-      <Noise opacity={0.04} blendFunction={BlendFunction.OVERLAY} />
-      <Vignette eskil={false} offset={0.15} darkness={0.7} />
+      <Vignette eskil={false} offset={0.2} darkness={0.7} />
     </EffectComposer>
   )
 }

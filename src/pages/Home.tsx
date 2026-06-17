@@ -14,19 +14,18 @@ export default function Home() {
       <BackgroundCanvas />
       <div className="absolute inset-0 z-10">
         <Canvas
-          dpr={[1, 2]}
+          dpr={[1, 1.5]}
           gl={{
             antialias: true,
             alpha: true,
             powerPreference: "high-performance",
             stencil: false,
+            depth: false,
           }}
           camera={{ position: [0, 0.4, 8], fov: 55, near: 0.1, far: 100 }}
         >
           <color attach="background" args={["#06070C"]} />
-          <fog attach="fog" args={["#06070C", 6, 18]} />
           <ambientLight intensity={0.2} />
-          <directionalLight position={[3, 4, 2]} intensity={0.3} color="#ffffff" />
           <Suspense fallback={null}>
             <ParticleField />
           </Suspense>

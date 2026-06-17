@@ -94,7 +94,7 @@ export const useAudioStore = create<AudioStore>((set) => ({
   setHint: (h) => set({ hint: h }),
 }))
 
-// 根据 density 计算实际粒子数
+// 根据 density 计算实际粒子数（精简模式：最多 5000）
 export function countFromDensity(density: number): number {
-  return Math.floor(5000 + density * 25000)
+  return Math.floor(1200 + density * 3800) // 1200 ~ 5000
 }
