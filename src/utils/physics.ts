@@ -6,17 +6,30 @@ import {
   MECHA_HEIGHT,
   GRAVITY,
   FRICTION,
-  MOVE_SPEED,
-  JUMP_FORCE,
   MAX_SPEED,
   KEY_MAP,
   SKILL_CONFIG,
   MAX_COMBO_WINDOW,
+  MECHA_TYPES,
+  ROUNDS_TO_WIN,
+  COLORS,
 } from './constants';
-import { performAttack, spawnHitParticles, spawnFloatingText, getMechaColor } from './skills';
+import {
+  performAttack,
+  spawnProjectile,
+  spawnSlashTrail,
+  spawnHitParticles,
+  spawnExplosionParticles,
+  spawnFloatingText,
+  getMechaTypeColor,
+} from './skills';
 
 export function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
+}
+
+function getStats(mecha: Mecha) {
+  return MECHA_TYPES[mecha.type];
 }
 
 function updateMechaPhysics(mecha: Mecha): void {
@@ -34,21 +47,61 @@ function updateMechaPhysics(mecha: Mecha): void {
   }
 }
 
+function isOnGround(mecha: Mecha): boolean {
+  return mecha.y + MECHA_HEIGHT >= GROUND_Y - 1;
+}
+
 function canAct(mecha: Mecha): boolean {
-  return mecha.state !== 'hurt' && mecha.state !== 'ko' && mecha.hitStun <= 0;
+  return (
+    mecha.state !== 'hurt' &&
+    mecha.state !== 'ko' &&
+    mecha.hitStun <= 0 &&
+    mecha.dashTimer <= 0
+  );
 }
 
 function startAction(
   mecha: Mecha,
   skillId: keyof typeof SKILL_CONFIG,
 ): void {
+  const cfg = SKILL_CONFIG[skillId];
+  if (skillId === 'dash') {
+    mecha.state = 'dash';
+    mecha.dashTimer = cfg.duration;
+    mecha.cooldowns.dash = cfg.cooldown;
+    mecha.vx = mecha.facing * 14;
+    mecha.invincible = cfg.duration;
+    return;
+  }
+  if (skillId === 'throw') {
+    mecha.state = 'throw';
+    mecha.animTimer = cfg.duration;
+    mecha.cooldowns.skill2 = cfg.cooldown;
+    mecha.skillId = skillId;
+    return;
+  }
+  if (skillId === 'counter') {
+    mecha.state = 'counter';
+    mecha.animTimer = cfg.duration;
+    mecha.cooldowns.counter = cfg.cooldown;
+    mecha.counterWindow = 12;
+    mecha.skillId = skillId;
+    return;
+  }
+  if (skillId === 'projectile') {
+    mecha.state = 'skill';
+    mecha.animTimer = cfg.duration;
+    mecha.cooldowns.projectile = cfg.cooldown;
+    mecha.skillId = skillId;
+    return;
+  }
   mecha.state = skillId === 'attack' ? 'attack' : 'skill';
-  mecha.animTimer = SKILL_CONFIG[skillId].duration;
-  mecha.cooldowns[skillId] = SKILL_CONFIG[skillId].cooldown;
+  mecha.animTimer = cfg.duration;
+  mecha.cooldowns[skillId] = cfg.cooldown;
   mecha.skillId = skillId;
 }
 
-function handleInputs(
+function handleSpecialInputs(
   state: GameState,
   keys: KeyState,
   id: MechaId,
@@ -61,49 +114,67 @@ function handleInputs(
 
   if (!canAct(mecha)) return;
 
-  const onGround = mecha.y + MECHA_HEIGHT >= GROUND_Y - 1;
+  const onGround = isOnGround(mecha);
 
-  if (mecha.state === 'attack' || mecha.state === 'skill') {
+  if (mecha.state === 'attack' || mecha.state === 'skill' || mecha.state === 'throw' || mecha.state === 'counter') {
     if (mecha.animTimer > 0) {
       mecha.animTimer--;
+
+      if (mecha.state === 'counter') {
+        if (mecha.counterWindow > 0) mecha.counterWindow--;
+      }
+
+      if (mecha.skillId === 'projectile' && mecha.animTimer === Math.floor(SKILL_CONFIG.projectile.duration / 2)) {
+        state.projectiles.push(spawnProjectile(mecha));
+      }
+
       if (mecha.animTimer === Math.floor((mecha.skillId ? SKILL_CONFIG[mecha.skillId].duration : 12) / 2)) {
         tryHit(state, mecha, opponent);
       }
       if (mecha.animTimer <= 0) {
         mecha.state = onGround ? 'idle' : 'jump';
         mecha.skillId = null;
+        mecha.counterWindow = 0;
       }
+    }
+    return;
+  }
+
+  if (mecha.state === 'dash') {
+    mecha.dashTimer--;
+    if (mecha.dashTimer <= 0) {
+      mecha.state = onGround ? 'idle' : 'jump';
+      mecha.vx *= 0.5;
     }
     return;
   }
 
   if (pressed[map.defend] && onGround) {
     mecha.state = 'defend';
-    mecha.vx = 0;
+    mecha.vx *= 0.8;
     return;
   }
 
-  let moving = false;
+  const stats = getStats(mecha);
+  const isMoving = pressed[map.left] || pressed[map.right];
   if (pressed[map.left]) {
-    mecha.vx -= MOVE_SPEED;
+    mecha.vx -= stats.moveSpeed;
     mecha.facing = -1;
-    moving = true;
   }
   if (pressed[map.right]) {
-    mecha.vx += MOVE_SPEED;
+    mecha.vx += stats.moveSpeed;
     mecha.facing = 1;
-    moving = true;
   }
 
   mecha.vx = clamp(mecha.vx, -MAX_SPEED, MAX_SPEED);
 
   if (pressed[map.jump] && onGround) {
-    mecha.vy = JUMP_FORCE;
+    mecha.vy = stats.jumpForce;
     mecha.state = 'jump';
   }
 
   if (onGround) {
-    mecha.state = moving ? 'run' : 'idle';
+    mecha.state = isMoving ? 'run' : 'idle';
   } else {
     mecha.state = 'jump';
   }
@@ -120,8 +191,25 @@ function handleInputs(
     startAction(mecha, 'skill2');
     return;
   }
+  if (pressed[map.throw] && mecha.cooldowns.skill2 <= 0) {
+    startAction(mecha, 'throw');
+    return;
+  }
+  if (pressed[map.dash] && mecha.cooldowns.dash <= 0) {
+    startAction(mecha, 'dash');
+    return;
+  }
+  if (pressed[map.projectile] && mecha.cooldowns.projectile <= 0) {
+    startAction(mecha, 'projectile');
+    return;
+  }
+  if (pressed[map.counter] && mecha.cooldowns.counter <= 0) {
+    startAction(mecha, 'counter');
+    return;
+  }
   if (pressed[map.ultimate] && mecha.cooldowns.ultimate <= 0) {
     startAction(mecha, 'ultimate');
+    state.ultimateCinematic = 40;
     return;
   }
 }
@@ -135,26 +223,61 @@ function tryHit(
   const result = performAttack(attacker, target, attacker.skillId);
   if (!result.hit) return;
 
+  const skillId = attacker.skillId;
+  const isUltimate = skillId === 'ultimate';
+  const isThrow = skillId === 'throw';
+
+  // 反击成功
+  if (result.countered) {
+    target.hp = Math.max(0, target.hp - result.damage);
+    target.vx += result.knockbackX;
+    target.vy += result.knockbackY;
+    target.state = 'hurt';
+    target.hitStun = 18;
+    target.combo = 0;
+
+    state.texts.push(
+      spawnFloatingText(
+        target.x + MECHA_WIDTH / 2,
+        target.y - 30,
+        'COUNTER!',
+        COLORS.gold,
+        1.4,
+      ),
+    );
+    state.shake = 8;
+    state.hitStop = 8;
+    state.particles.push(
+      ...spawnHitParticles(
+        target.x + MECHA_WIDTH / 2,
+        target.y + MECHA_HEIGHT / 2,
+        COLORS.gold,
+        14,
+      ),
+    );
+    return;
+  }
+
   target.hp = Math.max(0, target.hp - result.damage);
   target.vx += result.knockbackX;
   target.vy += result.knockbackY;
 
   if (target.state !== 'defend') {
     target.state = 'hurt';
-    target.hitStun = attacker.skillId === 'ultimate' ? 25 : 12;
+    target.hitStun = isUltimate ? 25 : isThrow ? 16 : 12;
     target.combo = 0;
 
     attacker.combo++;
     attacker.comboTimer = MAX_COMBO_WINDOW;
 
-    const comboText = attacker.combo > 1 ? `${attacker.combo} HIT!` : '';
-    if (comboText) {
+    if (attacker.combo > 1) {
       state.texts.push(
         spawnFloatingText(
           attacker.x + MECHA_WIDTH / 2,
-          attacker.y - 20,
-          comboText,
-          '#FFD700',
+          attacker.y - 30,
+          `${attacker.combo} HIT!`,
+          COLORS.gold,
+          1 + Math.min(attacker.combo, 5) * 0.1,
         ),
       );
     }
@@ -162,25 +285,105 @@ function tryHit(
     target.defendFlash = 8;
   }
 
-  state.shake = attacker.skillId === 'ultimate' ? 12 : 6;
+  state.shake = isUltimate ? 14 : 6;
+  state.hitStop = isUltimate ? 10 : result.damage >= 20 ? 6 : 3;
+  if (isUltimate) state.flash = 8;
 
-  state.particles.push(
-    ...spawnHitParticles(
-      target.x + MECHA_WIDTH / 2,
-      target.y + MECHA_HEIGHT / 2,
-      target.state === 'defend' ? '#FFFFFF' : getMechaColor(target.id),
-      attacker.skillId === 'ultimate' ? 24 : 10,
-    ),
-  );
+  // 刀光拖尾
+  if (skillId === 'attack' || skillId === 'skill1' || skillId === 'skill2' || skillId === 'ultimate') {
+    state.slashes.push(
+      spawnSlashTrail(
+        attacker,
+        SKILL_CONFIG[skillId].range,
+        getMechaTypeColor(attacker.type),
+      ),
+    );
+  }
+
+  if (isUltimate) {
+    state.particles.push(
+      ...spawnExplosionParticles(
+        target.x + MECHA_WIDTH / 2,
+        target.y + MECHA_HEIGHT / 2,
+        getMechaTypeColor(attacker.type),
+        28,
+      ),
+    );
+  } else {
+    state.particles.push(
+      ...spawnHitParticles(
+        target.x + MECHA_WIDTH / 2,
+        target.y + MECHA_HEIGHT / 2,
+        target.state === 'defend' ? COLORS.white : getMechaTypeColor(target.type),
+        isThrow ? 14 : 10,
+      ),
+    );
+  }
 
   state.texts.push(
     spawnFloatingText(
       target.x + MECHA_WIDTH / 2,
       target.y - 10,
       String(result.damage),
-      result.damage >= 20 ? '#FF5555' : '#FFFFFF',
+      result.damage >= 20 ? '#FF5555' : COLORS.white,
+      result.damage >= 20 ? 1.3 : 1,
     ),
   );
+}
+
+function updateProjectiles(state: GameState): void {
+  state.projectiles = state.projectiles
+    .map((p) => {
+      p.x += p.vx;
+      p.life--;
+      return p;
+    })
+    .filter((p) => {
+      if (p.x < -20 || p.x > CANVAS_WIDTH + 20 || p.life <= 0) return false;
+
+      const target = p.ownerId === 'red' ? state.blue : state.red;
+      if (
+        target.invincible <= 0 &&
+        p.x > target.x &&
+        p.x < target.x + MECHA_WIDTH &&
+        p.y > target.y &&
+        p.y < target.y + MECHA_HEIGHT
+      ) {
+        let damage = p.damage;
+        let knockbackX = p.vx > 0 ? 6 : -6;
+        let knockbackY = -2;
+
+        if (target.state === 'defend') {
+          damage = Math.floor(damage * 0.3 * (1 / MECHA_TYPES[target.type].defenseMod));
+          knockbackX = 0;
+          knockbackY = 0;
+        }
+
+        target.hp = Math.max(0, target.hp - damage);
+        target.vx += knockbackX;
+        target.vy += knockbackY;
+
+        if (target.state !== 'defend') {
+          target.state = 'hurt';
+          target.hitStun = 10;
+          target.combo = 0;
+        } else {
+          target.defendFlash = 6;
+        }
+
+        state.shake = 4;
+        state.hitStop = 3;
+        state.particles.push(
+          ...spawnHitParticles(p.x, p.y, getMechaTypeColor(target.type), 8),
+        );
+        state.texts.push(
+          spawnFloatingText(p.x, p.y - 10, String(damage), COLORS.white),
+        );
+        return false;
+      }
+
+      return true;
+    });
 }
 
 function updateCooldowns(mecha: Mecha): void {
@@ -192,13 +395,14 @@ function updateCooldowns(mecha: Mecha): void {
 }
 
 function updateMechaState(state: GameState, mecha: Mecha, opponent: Mecha): void {
+  if (mecha.invincible > 0) mecha.invincible--;
   updateMechaPhysics(mecha);
   updateCooldowns(mecha);
 
   if (mecha.hitStun > 0) {
     mecha.hitStun--;
     if (mecha.hitStun <= 0 && mecha.hp > 0) {
-      mecha.state = mecha.y + MECHA_HEIGHT >= GROUND_Y - 1 ? 'idle' : 'jump';
+      mecha.state = isOnGround(mecha) ? 'idle' : 'jump';
     }
   }
 
@@ -211,14 +415,15 @@ function updateMechaState(state: GameState, mecha: Mecha, opponent: Mecha): void
 
   if (mecha.defendFlash > 0) mecha.defendFlash--;
 
-  if (mecha.x < opponent.x) {
-    if (mecha.state !== 'attack' && mecha.state !== 'skill' && mecha.state !== 'hurt') {
-      mecha.facing = 1;
-    }
-  } else {
-    if (mecha.state !== 'attack' && mecha.state !== 'skill' && mecha.state !== 'hurt') {
-      mecha.facing = -1;
-    }
+  if (
+    mecha.state !== 'attack' &&
+    mecha.state !== 'skill' &&
+    mecha.state !== 'hurt' &&
+    mecha.state !== 'dash' &&
+    mecha.state !== 'throw' &&
+    mecha.state !== 'counter'
+  ) {
+    mecha.facing = mecha.x < opponent.x ? 1 : -1;
   }
 }
 
@@ -234,6 +439,15 @@ function updateParticles(state: GameState): void {
     .filter((p) => p.life > 0);
 }
 
+function updateSlashes(state: GameState): void {
+  state.slashes = state.slashes
+    .map((s) => {
+      s.life--;
+      return s;
+    })
+    .filter((s) => s.life > 0);
+}
+
 function updateTexts(state: GameState): void {
   state.texts = state.texts
     .map((t) => {
@@ -244,29 +458,84 @@ function updateTexts(state: GameState): void {
     .filter((t) => t.life > 0);
 }
 
+function checkRoundEnd(state: GameState): void {
+  if (state.roundWinner) return;
+
+  const redDead = state.red.hp <= 0;
+  const blueDead = state.blue.hp <= 0;
+
+  if (redDead && blueDead) {
+    state.roundWinner = 'draw';
+  } else if (redDead) {
+    state.roundWinner = 'blue';
+    state.blue.state = 'idle';
+  } else if (blueDead) {
+    state.roundWinner = 'red';
+    state.red.state = 'idle';
+  } else if (state.roundResult.timer <= 0) {
+    if (state.red.hp > state.blue.hp) {
+      state.roundWinner = 'red';
+    } else if (state.blue.hp > state.red.hp) {
+      state.roundWinner = 'blue';
+    } else {
+      state.roundWinner = 'draw';
+    }
+  }
+
+  if (state.roundWinner) {
+    state.roundResult.roundTimerActive = false;
+    if (state.roundWinner === 'red') {
+      state.roundResult.redWins++;
+    } else if (state.roundWinner === 'blue') {
+      state.roundResult.blueWins++;
+    }
+
+    if (state.roundResult.redWins >= ROUNDS_TO_WIN) {
+      state.matchWinner = 'red';
+      state.screen = 'matchEnd';
+    } else if (state.roundResult.blueWins >= ROUNDS_TO_WIN) {
+      state.matchWinner = 'blue';
+      state.screen = 'matchEnd';
+    } else {
+      state.screen = 'roundEnd';
+    }
+  }
+}
+
 export function tickGame(state: GameState, keys: KeyState): GameState {
-  if (state.winner) return state;
+  if (state.hitStop > 0) {
+    state.hitStop--;
+    return state;
+  }
 
-  state.frameCount++;
+  if (state.flash > 0) state.flash--;
   if (state.shake > 0) state.shake--;
+  if (state.ultimateCinematic > 0) state.ultimateCinematic--;
 
-  handleInputs(state, keys, 'red', 'blue');
-  handleInputs(state, keys, 'blue', 'red');
+  if (state.screen === 'fighting') {
+    state.frameCount++;
 
-  updateMechaState(state, state.red, state.blue);
-  updateMechaState(state, state.blue, state.red);
+    handleSpecialInputs(state, keys, 'red', 'blue');
+    handleSpecialInputs(state, keys, 'blue', 'red');
 
-  updateParticles(state);
-  updateTexts(state);
+    updateMechaState(state, state.red, state.blue);
+    updateMechaState(state, state.blue, state.red);
 
-  if (state.red.hp <= 0 && !state.winner) {
-    state.red.state = 'ko';
-    state.winner = 'blue';
-    state.shake = 20;
-  } else if (state.blue.hp <= 0 && !state.winner) {
-    state.blue.state = 'ko';
-    state.winner = 'red';
-    state.shake = 20;
+    updateProjectiles(state);
+    updateParticles(state);
+    updateSlashes(state);
+    updateTexts(state);
+
+    if (state.roundResult.roundTimerActive && state.frameCount % 60 === 0) {
+      state.roundResult.timer--;
+      if (state.roundResult.timer <= 0) {
+        checkRoundEnd(state);
+      }
+    }
+
+    if (!state.roundWinner) {
+      checkRoundEnd(state);
+    }
   }
 
   return state;

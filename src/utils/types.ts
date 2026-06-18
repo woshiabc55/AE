@@ -1,5 +1,7 @@
 export type MechaId = 'red' | 'blue';
 
+export type MechaType = 'striker' | 'tank' | 'speed';
+
 export type MechaState =
   | 'idle'
   | 'run'
@@ -8,17 +10,50 @@ export type MechaState =
   | 'defend'
   | 'skill'
   | 'hurt'
-  | 'ko';
+  | 'ko'
+  | 'dash'
+  | 'counter'
+  | 'throw';
+
+export type GameScreen =
+  | 'menu'
+  | 'modeSelect'
+  | 'difficultySelect'
+  | 'characterSelect'
+  | 'fighting'
+  | 'roundEnd'
+  | 'matchEnd';
+
+export type GameMode = 'pvp' | 'pvc';
+
+export type Difficulty = 'easy' | 'normal' | 'hard';
+
+export interface MechaStats {
+  type: MechaType;
+  name: string;
+  maxHp: number;
+  moveSpeed: number;
+  jumpForce: number;
+  damageMod: number;
+  defenseMod: number;
+  color: string;
+  darkColor: string;
+  accentColor: string;
+}
 
 export interface Cooldowns {
   attack: number;
   skill1: number;
   skill2: number;
   ultimate: number;
+  dash: number;
+  projectile: number;
+  counter: number;
 }
 
 export interface Mecha {
   id: MechaId;
+  type: MechaType;
   x: number;
   y: number;
   vx: number;
@@ -34,6 +69,21 @@ export interface Mecha {
   hitStun: number;
   skillId: keyof typeof import('./constants').SKILL_CONFIG | null;
   defendFlash: number;
+  dashTimer: number;
+  counterWindow: number;
+  invincible: number;
+}
+
+export interface Projectile {
+  id: number;
+  ownerId: MechaId;
+  x: number;
+  y: number;
+  vx: number;
+  radius: number;
+  damage: number;
+  color: string;
+  life: number;
 }
 
 export interface Particle {
@@ -48,6 +98,18 @@ export interface Particle {
   size: number;
 }
 
+export interface SlashTrail {
+  id: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  color: string;
+  life: number;
+  maxLife: number;
+  facing: 1 | -1;
+}
+
 export interface FloatingText {
   id: number;
   x: number;
@@ -57,20 +119,47 @@ export interface FloatingText {
   life: number;
   maxLife: number;
   vy: number;
+  scale: number;
+}
+
+export interface RoundResult {
+  redWins: number;
+  blueWins: number;
+  round: number;
+  timer: number;
+  roundTimerActive: boolean;
 }
 
 export interface GameState {
+  screen: GameScreen;
+  mode: GameMode;
+  difficulty: Difficulty;
+  redType: MechaType;
+  blueType: MechaType;
   red: Mecha;
   blue: Mecha;
+  projectiles: Projectile[];
   particles: Particle[];
+  slashes: SlashTrail[];
   texts: FloatingText[];
-  winner: MechaId | null;
-  round: number;
+  roundResult: RoundResult;
+  roundWinner: MechaId | 'draw' | null;
+  matchWinner: MechaId | null;
   shake: number;
+  flash: number;
+  hitStop: number;
   frameCount: number;
+  ultimateCinematic: number;
 }
 
 export interface KeyState {
   red: Record<string, boolean>;
   blue: Record<string, boolean>;
+}
+
+export interface AIState {
+  actionTimer: number;
+  targetDistance: number;
+  aggression: number;
+  reactionDelay: number;
 }

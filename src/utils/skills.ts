@@ -1,5 +1,18 @@
-import type { Mecha, MechaId, FloatingText, Particle } from './types';
-import { SKILL_CONFIG, MECHA_WIDTH, MECHA_HEIGHT, COLORS } from './constants';
+import type {
+  Mecha,
+  FloatingText,
+  Particle,
+  Projectile,
+  SlashTrail,
+  MechaType,
+} from './types';
+import {
+  SKILL_CONFIG,
+  MECHA_WIDTH,
+  MECHA_HEIGHT,
+  COLORS,
+  MECHA_TYPES,
+} from './constants';
 
 export interface HitResult {
   damage: number;
@@ -7,6 +20,7 @@ export interface HitResult {
   knockbackY: number;
   hit: boolean;
   combo: boolean;
+  countered: boolean;
 }
 
 export function getSkillRange(skillId: keyof typeof SKILL_CONFIG): number {
@@ -15,6 +29,18 @@ export function getSkillRange(skillId: keyof typeof SKILL_CONFIG): number {
 
 export function getSkillDamage(skillId: keyof typeof SKILL_CONFIG): number {
   return SKILL_CONFIG[skillId].damage;
+}
+
+export function getMechaTypeColor(type: MechaType): string {
+  return MECHA_TYPES[type].color;
+}
+
+export function getMechaTypeDarkColor(type: MechaType): string {
+  return MECHA_TYPES[type].darkColor;
+}
+
+export function getMechaTypeAccentColor(type: MechaType): string {
+  return MECHA_TYPES[type].accentColor;
 }
 
 export function performAttack(
@@ -36,24 +62,49 @@ export function performAttack(
   const targetTop = target.y;
   const targetBottom = target.y + MECHA_HEIGHT;
 
-  const hit =
+  const overlap =
     hitBoxX < targetRight &&
     hitBoxX + hitBoxW > targetLeft &&
     hitBoxY < targetBottom &&
     hitBoxY + hitBoxH > targetTop;
 
-  if (!hit) {
-    return { damage: 0, knockbackX: 0, knockbackY: 0, hit: false, combo: false };
+  if (!overlap) {
+    return {
+      damage: 0,
+      knockbackX: 0,
+      knockbackY: 0,
+      hit: false,
+      combo: false,
+      countered: false,
+    };
   }
 
-  let damage = cfg.damage;
+  // 反击判定：目标处于 counter 窗口内
+  if (target.counterWindow > 0 && skillId !== 'throw') {
+    return {
+      damage: 0,
+      knockbackX: -facing * 10,
+      knockbackY: -4,
+      hit: true,
+      combo: false,
+      countered: true,
+    };
+  }
+
+  let damage = Math.floor(cfg.damage * MECHA_TYPES[attacker.type].damageMod);
   let knockbackX = facing * (skillId === 'ultimate' ? 14 : skillId === 'skill2' ? 9 : 5);
   let knockbackY = skillId === 'skill2' ? -5 : skillId === 'ultimate' ? -8 : -2;
 
   if (target.state === 'defend') {
-    damage = Math.floor(damage * 0.3);
+    damage = Math.floor(damage * 0.3 * (1 / MECHA_TYPES[target.type].defenseMod));
     knockbackX = 0;
     knockbackY = 0;
+  }
+
+  if (skillId === 'throw') {
+    damage = Math.floor(damage * MECHA_TYPES[attacker.type].damageMod);
+    knockbackX = facing * 12;
+    knockbackY = -6;
   }
 
   return {
@@ -62,6 +113,40 @@ export function performAttack(
     knockbackY,
     hit: true,
     combo: target.state !== 'defend',
+    countered: false,
+  };
+}
+
+export function spawnProjectile(owner: Mecha): Projectile {
+  const color = getMechaTypeColor(owner.type);
+  return {
+    id: Math.random(),
+    ownerId: owner.id,
+    x: owner.x + (owner.facing === 1 ? MECHA_WIDTH : 0),
+    y: owner.y + MECHA_HEIGHT * 0.45,
+    vx: owner.facing * 11,
+    radius: 7,
+    damage: Math.floor(10 * MECHA_TYPES[owner.type].damageMod),
+    color,
+    life: 90,
+  };
+}
+
+export function spawnSlashTrail(
+  mecha: Mecha,
+  width: number,
+  color: string,
+): SlashTrail {
+  return {
+    id: Math.random(),
+    x: mecha.x + (mecha.facing === 1 ? MECHA_WIDTH : -width),
+    y: mecha.y + MECHA_HEIGHT * 0.25,
+    width,
+    height: MECHA_HEIGHT * 0.55,
+    color,
+    life: 10,
+    maxLife: 10,
+    facing: mecha.facing,
   };
 }
 
@@ -90,11 +175,37 @@ export function spawnHitParticles(
   return particles;
 }
 
+export function spawnExplosionParticles(
+  x: number,
+  y: number,
+  color: string,
+  count = 24,
+): Particle[] {
+  const particles: Particle[] = [];
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 3 + Math.random() * 8;
+    particles.push({
+      id: Math.random(),
+      x,
+      y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 3,
+      life: 30 + Math.random() * 25,
+      maxLife: 55,
+      color: i % 3 === 0 ? COLORS.white : color,
+      size: 3 + Math.random() * 5,
+    });
+  }
+  return particles;
+}
+
 export function spawnFloatingText(
   x: number,
   y: number,
   text: string,
   color: string,
+  scale = 1,
 ): FloatingText {
   return {
     id: Math.random(),
@@ -102,16 +213,9 @@ export function spawnFloatingText(
     y,
     text,
     color,
-    life: 40,
-    maxLife: 40,
-    vy: -2,
+    life: 45,
+    maxLife: 45,
+    vy: -2.2,
+    scale,
   };
-}
-
-export function getMechaColor(id: MechaId): string {
-  return id === 'red' ? COLORS.red : COLORS.blue;
-}
-
-export function getMechaDarkColor(id: MechaId): string {
-  return id === 'red' ? COLORS.redDark : COLORS.blueDark;
 }
