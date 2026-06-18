@@ -10,6 +10,7 @@ import Gallery from "@/pages/Gallery";
 import { Navbar, Footer } from "@/components/Layout";
 import { preloadImages } from "@/hooks/useImagePreload";
 import { allConceptImageUrls } from "@/data/conceptImages";
+import { allRealAssets } from "@/data/realAssets";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -21,8 +22,11 @@ function ScrollToTop() {
 
 function GlobalPreload() {
   useEffect(() => {
-    // 应用启动时预热所有设定图 URL，确保首页 / 图库能立即命中浏览器缓存
-    preloadImages(allConceptImageUrls());
+    // 应用启动时预热所有设定图 URL + 所有真实素材 URL，
+    // 确保首页 / 图库 / 详情页能立即命中浏览器缓存
+    const aiUrls = allConceptImageUrls();
+    const realUrls = allRealAssets().map((a) => a.asset.url);
+    preloadImages([...aiUrls, ...realUrls]);
   }, []);
   return null;
 }

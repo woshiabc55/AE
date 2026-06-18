@@ -11,12 +11,14 @@ import {
   Shuffle,
   Plus,
   Grid3X3,
+  ImageIcon,
 } from "lucide-react";
 import { GAMES } from "@/data/games";
 import { CONCEPT_IMAGES, type ConceptImage } from "@/data/conceptImages";
 import { ImageCard, Lightbox } from "@/components/ImageCard";
 import { usePreloadImages } from "@/hooks/usePreloadImages";
 import { cn, textToImageUrl } from "@/lib/utils";
+import { allRealAssets, realAssetCount } from "@/data/realAssets";
 
 const CATEGORY_TABS: { id: "all" | ConceptImage["category"]; label: string; icon: string }[] = [
   { id: "all", label: "全部", icon: "✦" },
@@ -192,6 +194,81 @@ export default function Gallery() {
         </div>
       )}
 
+      {/* 原画素材区 */}
+      {realAssetCount() > 0 && (
+        <section className="space-y-3">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <div className="mb-1 inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-300">
+                <ImageIcon className="h-3.5 w-3.5" />
+                官方原画素材 · REAL ASSETS
+              </div>
+              <h2 className="font-serif text-3xl font-black text-white sm:text-4xl">
+                原画素材库
+              </h2>
+              <p className="mt-1 text-sm text-white/50">
+                收录自 Fandom 公开 Wiki 的 {realAssetCount()} 张真实图片资源（王者荣耀 / LoL / 原神 / 我的世界），可直接下载用于二创参考。
+              </p>
+            </div>
+          </div>
+          <div className="columns-2 gap-3 sm:columns-3 lg:columns-5 [&>*]:mb-3">
+            {allRealAssets().slice(0, 30).map(({ key, asset }) => {
+              const [, sub] = key.split(":");
+              const name = sub ?? key;
+              // 根据来源选择调色板
+              const sourceColor =
+                asset.source.startsWith("honor-of-kings")
+                  ? ["#ff5e5e", "#7a1b1b"]
+                  : asset.source.startsWith("leagueoflegends")
+                  ? ["#1e90ff", "#0a2540"]
+                  : asset.source.startsWith("genshin-impact")
+                  ? ["#7b61ff", "#1a1340"]
+                  : ["#5fa84d", "#0f3a1a"];
+              return (
+                <a
+                  key={key}
+                  href={asset.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group block break-inside-avoid overflow-hidden rounded-2xl border border-emerald-400/20 bg-ink-900/60 transition-transform hover:-translate-y-0.5 hover:border-emerald-400/50"
+                  title={`来自 ${asset.source} · 原图下载`}
+                >
+                  <div className="relative aspect-square overflow-hidden">
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        background: `linear-gradient(135deg, ${sourceColor[0]}, ${sourceColor[1]})`,
+                      }}
+                    />
+                    <img
+                      src={asset.url}
+                      alt={name}
+                      loading="eager"
+                      decoding="async"
+                      className="relative h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-ink-950/90 via-ink-950/20 to-transparent" />
+                    <div className="absolute left-2 top-2">
+                      <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/50 bg-emerald-500/20 px-2 py-0.5 text-[10px] font-medium text-emerald-200 backdrop-blur">
+                        <ImageIcon className="h-3 w-3" />
+                        原画
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-2.5">
+                    <div className="line-clamp-1 text-sm font-semibold text-white">{name}</div>
+                    <div className="line-clamp-1 text-[10px] text-white/40">{asset.source}</div>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
         <div className="glass rounded-2xl p-4">
@@ -200,9 +277,15 @@ export default function Gallery() {
             {CONCEPT_IMAGES.length}
           </div>
         </div>
+        <div className="rounded-2xl border border-emerald-400/30 bg-emerald-500/5 p-4">
+          <div className="text-xs text-emerald-300/80">原画素材</div>
+          <div className="mt-1 font-serif text-3xl font-black text-emerald-300">
+            {realAssetCount()}
+          </div>
+        </div>
         {Object.entries(stats.cat)
           .sort((a, b) => b[1] - a[1])
-          .slice(0, 5)
+          .slice(0, 4)
           .map(([catId, count]) => {
             const tab = CATEGORY_TABS.find((t) => t.id === catId);
             return (

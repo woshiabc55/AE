@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Download, Maximize2 } from "lucide-react";
 import { cn, textToImageUrl } from "@/lib/utils";
+import { AssetBadge } from "@/components/AssetBadge";
 
 interface ImageCardProps {
   prompt: string;
@@ -12,6 +13,9 @@ interface ImageCardProps {
   badge?: string;
   className?: string;
   onOpen?: () => void;
+  /** 若传入真实素材 URL，则直接展示该图，跳过 AI 生成 */
+  realUrl?: string;
+  realSource?: string;
 }
 
 const SIZE_TO_API: Record<NonNullable<ImageCardProps["size"]>, "square" | "portrait_4_3" | "landscape_4_3"> = {
@@ -40,9 +44,14 @@ export function ImageCard({
   badge,
   className,
   onOpen,
+  realUrl,
+  realSource,
 }: ImageCardProps) {
-  const url = textToImageUrl(prompt, SIZE_TO_API[size]);
-  const downloadUrl = textToImageUrl(prompt + ", high resolution, masterpiece", "portrait_4_3");
+  const url = realUrl ?? textToImageUrl(prompt, SIZE_TO_API[size]);
+  const downloadUrl = realUrl
+    ? realUrl
+    : textToImageUrl(prompt + ", high resolution, masterpiece", "portrait_4_3");
+  const isReal = Boolean(realUrl);
 
   return (
     <div
@@ -57,13 +66,16 @@ export function ImageCard({
         className="absolute inset-0"
         style={{ background: `linear-gradient(135deg, ${paletteFrom}, ${paletteTo})` }}
       />
-      {/* Generated art */}
+      {/* Generated / real art */}
       <img
         src={url}
         alt={title}
         loading="eager"
         decoding="async"
-        className="relative h-full w-full object-cover opacity-0 transition-all duration-700 group-hover:scale-105"
+        className={cn(
+          "relative h-full w-full object-cover transition-all duration-700 group-hover:scale-105",
+          isReal ? "opacity-100" : "opacity-0",
+        )}
         onLoad={(e) => {
           (e.currentTarget as HTMLImageElement).style.opacity = "1";
         }}
@@ -74,10 +86,17 @@ export function ImageCard({
       {/* Bottom darkening */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-950/95 via-ink-950/20 to-transparent opacity-90" />
 
-      {/* Top-left badge */}
+      {/* Top-left badge (game) */}
       {badge && (
         <div className="absolute left-3 top-3 rounded-full border border-white/20 bg-black/40 px-2 py-0.5 text-[10px] font-medium text-white/90 backdrop-blur">
           {badge}
+        </div>
+      )}
+
+      {/* Top-left 2nd row: asset source badge */}
+      {isReal && (
+        <div className="absolute left-3 top-9">
+          <AssetBadge isReal source={realSource} />
         </div>
       )}
 

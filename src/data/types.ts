@@ -41,6 +41,7 @@ export interface Skin {
   name: string;
   rarity: Rarity;
   motif: string; // motif keywords, used for cover generation
+  realAssetKey?: string; // 可选：关联真实素材 key（'hok:李 白' / 'lol:ahri' 等）
 }
 
 export interface Hero {
@@ -58,5 +59,6 @@ export interface Hero {
   bio: string;
   skills: string[];
   featured: boolean;
+  realAssetKey?: string; // 可选：关联真实素材 key
   skins: Skin[];
 }

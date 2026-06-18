@@ -5,7 +5,8 @@ const s = (
   name: string,
   rarity: Hero["skins"][number]["rarity"],
   motif: string,
-) => ({ id: `${heroId}-${name}`, heroId, name, rarity, motif });
+  realAssetKey?: string,
+) => ({ id: `${heroId}-${name}`, heroId, name, rarity, motif, realAssetKey });
 
 export const HEROES: Hero[] = [
   // 王者荣耀 - 30+ 英雄，覆盖各类职业
@@ -67,6 +68,7 @@ export const HEROES: Hero[] = [
     bio: "闭月之姿，回眸一笑百媚生。",
     skills: ["落红", "缘心结", "绽放之舞"],
     featured: true,
+    realAssetKey: "hok:貂蝉",
     skins: [
       s("diao-chan", "遇见神鹿", "限定", "仙鹿 樱花"),
       s("diao-chan", "猫影幻舞", "传说", "猫 暗夜"),
@@ -149,6 +151,7 @@ export const HEROES: Hero[] = [
     bio: "人中吕布，马中赤兔。",
     skills: ["方天画斩", "贪狼之握", "狂战士之血"],
     featured: true,
+    realAssetKey: "hok:吕布",
     skins: [
       s("lu-bu", "天魔缭乱", "限定", "天魔 暗黑"),
       s("lu-bu", "末日机甲", "传说", "机甲 末日"),
@@ -210,6 +213,7 @@ export const HEROES: Hero[] = [
     bio: "老将廉颇，热血依旧。",
     skills: ["爆裂冲撞", "熔岩之柱", "正义豪腕"],
     featured: false,
+    realAssetKey: "hok:廉颇",
     skins: [
       s("lian-po", "寅虎·瑞焰", "限定", "寅虎 国风"),
       s("lian-po", "地狱岩魂", "传说", "岩浆 末日"),
@@ -230,6 +234,7 @@ export const HEROES: Hero[] = [
     bio: "林间小鹿，护你周全。",
     skills: ["若有人兮", "风飒木萧", "独立兮山巅"],
     featured: true,
+    realAssetKey: "hok:瑶",
     skins: [
       s("yao", "遇见神鹿", "限定", "仙鹿 仙气"),
       s("yao", "森", "勇者", "森 童话"),
@@ -290,6 +295,7 @@ export const HEROES: Hero[] = [
     bio: "王者荣耀的圣骑士。",
     skills: ["誓约之盾", "回旋打击", "圣剑裁决"],
     featured: false,
+    realAssetKey: "hok:亚瑟",
     skins: [
       s("arthur", "死亡骑士", "传说", "死亡 暗黑"),
       s("arthur", "狮心王", "勇者", "狮子 黄金"),
@@ -310,6 +316,7 @@ export const HEROES: Hero[] = [
     bio: "射落九日的半神射手。",
     skills: ["炙热之风", "燎原箭雨", "灼日之矢"],
     featured: false,
+    realAssetKey: "hok:后羿",
     skins: [
       s("hou-yi", "黄金射手座", "限定", "黄金 星座"),
       s("hou-yi", "阿尔法小队", "勇者", "特工 装备"),
@@ -331,6 +338,7 @@ export const HEROES: Hero[] = [
     bio: "须弥的草之神，智慧与生命的化身。",
     skills: ["心蕴之象", "净土曼荼罗", "所闻遍计"],
     featured: true,
+    realAssetKey: "gs:nahida",
     skins: [],
   },
   {
@@ -348,6 +356,7 @@ export const HEROES: Hero[] = [
     bio: "稻妻幕府的将军，永恒的追求者。",
     skills: ["神变·恶曜开眼", "奥义·梦想一刀"],
     featured: true,
+    realAssetKey: "gs:raiden",
     skins: [],
   },
   {
@@ -365,6 +374,7 @@ export const HEROES: Hero[] = [
     bio: "往生堂第七十七代堂主。",
     skills: ["蝶引来生", "安神秘法", "往生秘传"],
     featured: true,
+    realAssetKey: "gs:hutao",
     skins: [],
   },
   {
@@ -382,6 +392,7 @@ export const HEROES: Hero[] = [
     bio: "枫丹的水神，歌剧与正义的化身。",
     skills: ["独舞之邀", "万众狂欢"],
     featured: true,
+    realAssetKey: "gs:furina",
     skins: [],
   },
   {
@@ -399,6 +410,7 @@ export const HEROES: Hero[] = [
     bio: "稻妻社奉行神里家的大小姐。",
     skills: ["神里流·冰华", "霜灭"],
     featured: false,
+    realAssetKey: "gs:ayaka",
     skins: [],
   },
   {
@@ -416,6 +428,7 @@ export const HEROES: Hero[] = [
     bio: "璃月的岩之神，契约之君。",
     skills: ["地心·磐岩", "天星·岩砾"],
     featured: false,
+    realAssetKey: "gs:zhongli",
     skins: [],
   },
   // 英雄联盟
@@ -434,6 +447,7 @@ export const HEROES: Hero[] = [
     bio: "九尾妖狐阿狸，吞噬灵魂为生。",
     skills: ["幻惑妖术", "魅惑妖术", "灵魄突袭"],
     featured: true,
+    realAssetKey: "lol:ahri",
     skins: [
       s("ahri", "星之守护者", "限定", "星空 少女"),
       s("ahri", "K/DA 阿狸", "传说", "KDA 女团"),
@@ -455,6 +469,7 @@ export const HEROES: Hero[] = [
     bio: "御风而行的剑客。",
     skills: ["斩钢闪", "风之障壁", "狂风绝息斩"],
     featured: true,
+    realAssetKey: "lol:yasuo",
     skins: [
       s("yasuo", "黑夜使者", "限定", "暗黑 影子"),
       s("yasuo", "西部牛仔", "勇者", "西部 牛仔"),
@@ -475,6 +490,7 @@ export const HEROES: Hero[] = [
     bio: "祖安的疯狂小疯子。",
     skills: ["枪炮交响曲", "电磁脉冲手雷", "超级火箭发射器"],
     featured: true,
+    realAssetKey: "lol:jinx",
     skins: [
       s("jinx", "星之守护者", "限定", "星空 少女"),
       s("jinx", "丧尸杀手", "史诗", "丧尸 末日"),
@@ -495,6 +511,7 @@ export const HEROES: Hero[] = [
     bio: "德玛西亚的光之少女。",
     skills: ["光之束缚", "曲光屏障", "终极闪光"],
     featured: false,
+    realAssetKey: "lol:lux",
     skins: [
       s("lux", "星之守护者", "限定", "星空 少女"),
       s("lux", "暗影之拳", "勇者", "武道家"),
@@ -515,6 +532,7 @@ export const HEROES: Hero[] = [
     bio: "暗影岛的残忍典狱长。",
     skills: ["死亡判决", "魂引之灯", "幽冥监牢"],
     featured: false,
+    realAssetKey: "lol:thresh",
     skins: [
       s("thresh", "地狱行者", "限定", "地狱 暗黑"),
       s("thresh", "深渊恐惧", "史诗", "深海 恐惧"),
@@ -577,6 +595,7 @@ export const HEROES: Hero[] = [
     bio: "四处游荡的绿色自爆者。",
     skills: ["潜行", "嘶嘶声", "爆炸"],
     featured: true,
+    realAssetKey: "mc:creeper",
     skins: [],
   },
   {
@@ -594,6 +613,7 @@ export const HEROES: Hero[] = [
     bio: "末地的终极 Boss。",
     skills: ["吐息", "末影水晶", "飞行"],
     featured: false,
+    realAssetKey: "mc:ender-dragon",
     skins: [],
   },
   // 永劫无间

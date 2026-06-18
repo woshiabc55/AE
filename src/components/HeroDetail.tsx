@@ -3,7 +3,8 @@ import { ArrowLeft, Download, Heart, Share2, Sparkles } from "lucide-react";
 import type { Hero } from "@/data/types";
 import { GAMES, CATEGORIES } from "@/data/games";
 import { useAppStore } from "@/store/useAppStore";
-import { cn, textToImageUrl } from "@/lib/utils";
+import { cn, getHeroCover, getSkinCover, textToImageUrl } from "@/lib/utils";
+import { AssetBadge } from "@/components/AssetBadge";
 import { useState } from "react";
 
 interface HeroDetailProps {
@@ -18,15 +19,14 @@ export function HeroDetail({ hero }: HeroDetailProps) {
   const cat = CATEGORIES.find((c) => c.id === hero.category);
   const skin = hero.skins[activeSkin];
 
-  const coverPrompt = skin
-    ? `${hero.motif} ${skin.motif} game character full body concept art, dramatic lighting, ultra detailed, 4k`
-    : `${hero.motif} game character full body concept art, dramatic lighting, ultra detailed, 4k`;
-
-  const cover = textToImageUrl(coverPrompt, "portrait_4_3");
-  const downloadUrl = textToImageUrl(
-    `${hero.motif} ${skin?.motif ?? ""} full art wallpaper, masterpiece, best quality, 4k, ultra detailed`,
-    "portrait_4_3",
-  );
+  const cover = getHeroCover(hero, "portrait_4_3");
+  // 下载按钮：真实素材直接下载原图，否则用 AI 生成
+  const downloadUrl = cover.isReal
+    ? cover.url
+    : textToImageUrl(
+        `${hero.motif} ${skin?.motif ?? ""} full art wallpaper, masterpiece, best quality, 4k, ultra detailed`,
+        "portrait_4_3",
+      );
 
   return (
     <div className="space-y-8">
@@ -47,7 +47,7 @@ export function HeroDetail({ hero }: HeroDetailProps) {
             }}
           />
           <img
-            src={cover}
+            src={cover.url}
             alt={hero.name}
             loading="eager"
             decoding="async"
@@ -77,6 +77,7 @@ export function HeroDetail({ hero }: HeroDetailProps) {
                 {skin.rarity} · {skin.name}
               </span>
             )}
+            <AssetBadge isReal={cover.isReal} source={cover.source} />
           </div>
 
           <div className="absolute bottom-5 left-5 right-5">
@@ -169,51 +170,53 @@ export function HeroDetail({ hero }: HeroDetailProps) {
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-            {hero.skins.map((sk, i) => (
-              <button
-                key={sk.id}
-                onClick={() => setActiveSkin(i)}
-                className={cn(
-                  "group relative overflow-hidden rounded-2xl border p-0 text-left transition-all",
-                  i === activeSkin
-                    ? "border-neon-cyan/60 ring-2 ring-neon-cyan/40"
-                    : "border-white/10 hover:border-white/30",
-                )}
-              >
-                <div className="relative h-32 w-full overflow-hidden">
-                  <div
-                    className="absolute inset-0"
-                    style={{
-                      background: `linear-gradient(135deg, ${hero.paletteFrom}, ${hero.paletteTo})`,
-                    }}
-                  />
-                  <img
-                    src={textToImageUrl(
-                      `${hero.motif} ${sk.motif} skin concept art, ultra detailed, 4k`,
-                      "landscape_4_3",
-                    )}
-                    alt={sk.name}
-                    loading="eager"
-                    decoding="async"
-                    className="relative h-full w-full object-cover opacity-0 transition-opacity duration-700"
-                    onLoad={(e) => {
-                      (e.currentTarget as HTMLImageElement).style.opacity = "1";
-                    }}
-                    onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).style.display = "none";
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-ink-950/95 via-ink-950/30 to-transparent" />
-                  {i === activeSkin && (
-                    <div className="absolute right-2 top-2 h-2 w-2 rounded-full bg-neon-cyan shadow-[0_0_8px_currentColor]" />
+            {hero.skins.map((sk, i) => {
+              const skCover = getSkinCover(hero, sk, "landscape_4_3");
+              return (
+                <button
+                  key={sk.id}
+                  onClick={() => setActiveSkin(i)}
+                  className={cn(
+                    "group relative overflow-hidden rounded-2xl border p-0 text-left transition-all",
+                    i === activeSkin
+                      ? "border-neon-cyan/60 ring-2 ring-neon-cyan/40"
+                      : "border-white/10 hover:border-white/30",
                   )}
-                </div>
-                <div className="p-3">
-                  <div className="text-sm font-semibold text-white">{sk.name}</div>
-                  <div className="text-[11px] text-white/40">{sk.rarity}</div>
-                </div>
-              </button>
-            ))}
+                >
+                  <div className="relative h-32 w-full overflow-hidden">
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        background: `linear-gradient(135deg, ${hero.paletteFrom}, ${hero.paletteTo})`,
+                      }}
+                    />
+                    <img
+                      src={skCover.url}
+                      alt={sk.name}
+                      loading="eager"
+                      decoding="async"
+                      className="relative h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-ink-950/95 via-ink-950/30 to-transparent" />
+                    {skCover.isReal && (
+                      <div className="absolute left-2 top-2">
+                        <AssetBadge isReal source={skCover.source} />
+                      </div>
+                    )}
+                    {i === activeSkin && (
+                      <div className="absolute right-2 top-2 h-2 w-2 rounded-full bg-neon-cyan shadow-[0_0_8px_currentColor]" />
+                    )}
+                  </div>
+                  <div className="p-3">
+                    <div className="text-sm font-semibold text-white">{sk.name}</div>
+                    <div className="text-[11px] text-white/40">{sk.rarity}</div>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </section>
       )}

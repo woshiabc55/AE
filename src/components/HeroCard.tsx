@@ -3,7 +3,8 @@ import { Heart, Layers, MapPin } from "lucide-react";
 import type { Hero } from "@/data/types";
 import { useAppStore } from "@/store/useAppStore";
 import { CATEGORIES } from "@/data/games";
-import { cn, textToImageUrl } from "@/lib/utils";
+import { cn, getHeroCover } from "@/lib/utils";
+import { AssetBadge } from "@/components/AssetBadge";
 
 interface HeroCardProps {
   hero: Hero;
@@ -15,14 +16,11 @@ export function HeroCard({ hero, activeSkinIndex = 0 }: HeroCardProps) {
   const fav = isFavorite(hero.id);
   const cat = CATEGORIES.find((c) => c.id === hero.category);
   const activeSkin = hero.skins[activeSkinIndex];
-
-  const coverPrompt = activeSkin
-    ? `${hero.motif} ${activeSkin.motif} game character concept art, cinematic lighting, ultra detailed, 4k`
-    : `${hero.motif} game character concept art, cinematic lighting, ultra detailed, 4k`;
+  const cover = getHeroCover(hero, "landscape_4_3");
 
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-ink-900/50 transition-all duration-500 hover:-translate-y-1 hover:border-white/30 hover:shadow-2xl">
-      {/* Cover with art prompt + gradient fallback */}
+      {/* Cover with real asset or AI fallback */}
       <Link to={`/hero/${hero.id}`} className="block">
         <div className="relative h-44 overflow-hidden">
           <div
@@ -32,14 +30,11 @@ export function HeroCard({ hero, activeSkinIndex = 0 }: HeroCardProps) {
             }}
           />
           <img
-            src={textToImageUrl(coverPrompt, "landscape_4_3")}
+            src={cover.url}
             alt={hero.name}
             loading="eager"
             decoding="async"
-            className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-700 group-hover:scale-110 group-hover:opacity-90"
-            onLoad={(e) => {
-              (e.currentTarget as HTMLImageElement).style.opacity = "0.9";
-            }}
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
             onError={(e) => {
               (e.currentTarget as HTMLImageElement).style.display = "none";
             }}
@@ -60,6 +55,7 @@ export function HeroCard({ hero, activeSkinIndex = 0 }: HeroCardProps) {
             <span className="rounded-full border border-white/15 bg-black/30 px-2 py-0.5 text-[10px] font-medium text-white/80 backdrop-blur">
               {hero.rarity}
             </span>
+            <AssetBadge isReal={cover.isReal} source={cover.source} />
           </div>
 
           <div className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-ink-900/70 font-serif text-lg font-black text-white backdrop-blur">

@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Sparkles, Zap } from "lucide-react";
 import { FEATURED_HEROES } from "@/data/heroes";
 import { GAMES } from "@/data/games";
-import { cn, textToImageUrl } from "@/lib/utils";
+import { cn, getHeroCover } from "@/lib/utils";
+import { AssetBadge } from "@/components/AssetBadge";
 import { useReveal } from "@/hooks/useReveal";
 
 export function HeroGallery() {
@@ -13,6 +14,7 @@ export function HeroGallery() {
   const heroes = FEATURED_HEROES.slice(0, 6);
   const hero = heroes[index];
   const game = GAMES.find((g) => g.id === hero.gameId);
+  const cover = getHeroCover(hero, "portrait_4_3");
 
   useEffect(() => {
     if (!auto) return;
@@ -21,11 +23,6 @@ export function HeroGallery() {
     }, 5000);
     return () => clearInterval(t);
   }, [auto, heroes.length]);
-
-  const cover = textToImageUrl(
-    `${hero.motif} full body game character concept art, dramatic lighting, ultra detailed, 4k, masterpiece`,
-    "portrait_4_3",
-  );
 
   return (
     <section
@@ -105,13 +102,17 @@ export function HeroGallery() {
                 boxShadow: `0 30px 80px -20px ${hero.paletteFrom}80`,
               }}
             >
-              {/* AI generated art overlay */}
+              {/* Hero cover (real asset or AI fallback) */}
               <img
-                src={cover}
+                key={hero.id + (cover.isReal ? "-real" : "-ai")}
+                src={cover.url}
                 alt={hero.name}
                 loading="eager"
                 decoding="async"
-                className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-700"
+                className={
+                  "absolute inset-0 h-full w-full object-cover transition-opacity duration-700 " +
+                  (cover.isReal ? "opacity-100" : "opacity-0")
+                }
                 onLoad={(e) => {
                   (e.currentTarget as HTMLImageElement).style.opacity = "0.95";
                 }}
@@ -119,6 +120,11 @@ export function HeroGallery() {
                   (e.currentTarget as HTMLImageElement).style.display = "none";
                 }}
               />
+              <div
+                className="pointer-events-none absolute left-3 top-3 z-10"
+              >
+                <AssetBadge isReal={cover.isReal} source={cover.source} />
+              </div>
               <div
                 className="absolute inset-0 rounded-[2rem] opacity-30"
                 style={{
