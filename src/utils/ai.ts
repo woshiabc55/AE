@@ -2,9 +2,9 @@ import type { GameState, KeyState, MechaId, Difficulty } from './types';
 import { KEY_MAP, MECHA_WIDTH, MECHA_HEIGHT, GROUND_Y, SKILL_CONFIG } from './constants';
 
 const DIFFICULTY_SETTINGS: Record<Difficulty, { reaction: number; aggression: number; errorRate: number }> = {
-  easy: { reaction: 25, aggression: 0.35, errorRate: 0.4 },
-  normal: { reaction: 14, aggression: 0.6, errorRate: 0.2 },
-  hard: { reaction: 6, aggression: 0.85, errorRate: 0.05 },
+  easy: { reaction: 30, aggression: 0.3, errorRate: 0.5 },
+  normal: { reaction: 18, aggression: 0.5, errorRate: 0.25 },
+  hard: { reaction: 10, aggression: 0.75, errorRate: 0.1 },
 };
 
 export class MechaAI {

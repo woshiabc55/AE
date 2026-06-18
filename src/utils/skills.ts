@@ -14,6 +14,13 @@ import {
   MECHA_TYPES,
   ELEMENT_CONFIG,
 } from './constants';
+import {
+  particlePool,
+  textPool,
+  slashPool,
+  projectilePool,
+  getNextId,
+} from './pool';
 
 export interface HitResult {
   damage: number;
@@ -96,7 +103,6 @@ export function performAttack(
     };
   }
 
-  // 反击判定：目标处于 counter 窗口内
   if (target.counterWindow > 0 && skillId !== 'throw') {
     return {
       damage: 0,
@@ -129,34 +135,34 @@ export function performAttack(
 }
 
 export function spawnProjectile(owner: Mecha): Projectile {
-  return {
-    id: Math.random(),
-    ownerId: owner.id,
-    x: owner.x + (owner.facing === 1 ? MECHA_WIDTH : 0),
-    y: owner.y + MECHA_HEIGHT * 0.45,
-    vx: owner.facing * 11,
-    radius: 7,
-    damage: Math.floor(10 * MECHA_TYPES[owner.type].damageMod),
-    color: getElementColor(owner.element),
-    life: 90,
-  };
+  const p = projectilePool.acquire();
+  p.id = getNextId();
+  p.ownerId = owner.id;
+  p.x = owner.x + (owner.facing === 1 ? MECHA_WIDTH : 0);
+  p.y = owner.y + MECHA_HEIGHT * 0.45;
+  p.vx = owner.facing * 11;
+  p.radius = 7;
+  p.damage = Math.floor(10 * MECHA_TYPES[owner.type].damageMod);
+  p.color = getElementColor(owner.element);
+  p.life = 90;
+  return p;
 }
 
 export function spawnSlashTrail(
   mecha: Mecha,
   width: number,
 ): SlashTrail {
-  return {
-    id: Math.random(),
-    x: mecha.x + (mecha.facing === 1 ? MECHA_WIDTH : -width),
-    y: mecha.y + MECHA_HEIGHT * 0.25,
-    width,
-    height: MECHA_HEIGHT * 0.55,
-    color: getElementColor(mecha.element),
-    life: 10,
-    maxLife: 10,
-    facing: mecha.facing,
-  };
+  const s = slashPool.acquire();
+  s.id = getNextId();
+  s.x = mecha.x + (mecha.facing === 1 ? MECHA_WIDTH : -width);
+  s.y = mecha.y + MECHA_HEIGHT * 0.25;
+  s.width = width;
+  s.height = MECHA_HEIGHT * 0.55;
+  s.color = getElementColor(mecha.element);
+  s.life = 10;
+  s.maxLife = 10;
+  s.facing = mecha.facing;
+  return s;
 }
 
 export function spawnElementalParticles(
@@ -170,17 +176,17 @@ export function spawnElementalParticles(
   for (let i = 0; i < count; i++) {
     const angle = Math.random() * Math.PI * 2;
     const speed = 1 + Math.random() * 3;
-    particles.push({
-      id: Math.random(),
-      x,
-      y,
-      vx: Math.cos(angle) * speed,
-      vy: Math.sin(angle) * speed - (element === 'fire' ? 1.5 : 0),
-      life: 15 + Math.random() * 20,
-      maxLife: 35,
-      color: i % 2 === 0 ? cfg.primary : cfg.secondary,
-      size: 2 + Math.random() * 3,
-    });
+    const p = particlePool.acquire();
+    p.id = getNextId();
+    p.x = x;
+    p.y = y;
+    p.vx = Math.cos(angle) * speed;
+    p.vy = Math.sin(angle) * speed - (element === 'fire' ? 1.5 : 0);
+    p.life = 15 + Math.random() * 20;
+    p.maxLife = 35;
+    p.color = i % 2 === 0 ? cfg.primary : cfg.secondary;
+    p.size = 2 + Math.random() * 3;
+    particles.push(p);
   }
   return particles;
 }
@@ -195,17 +201,17 @@ export function spawnHitParticles(
   for (let i = 0; i < count; i++) {
     const angle = Math.random() * Math.PI * 2;
     const speed = 2 + Math.random() * 5;
-    particles.push({
-      id: Math.random(),
-      x,
-      y,
-      vx: Math.cos(angle) * speed,
-      vy: Math.sin(angle) * speed - 2,
-      life: 20 + Math.random() * 15,
-      maxLife: 35,
-      color,
-      size: 2 + Math.random() * 3,
-    });
+    const p = particlePool.acquire();
+    p.id = getNextId();
+    p.x = x;
+    p.y = y;
+    p.vx = Math.cos(angle) * speed;
+    p.vy = Math.sin(angle) * speed - 2;
+    p.life = 20 + Math.random() * 15;
+    p.maxLife = 35;
+    p.color = color;
+    p.size = 2 + Math.random() * 3;
+    particles.push(p);
   }
   return particles;
 }
@@ -221,17 +227,17 @@ export function spawnExplosionParticles(
   for (let i = 0; i < count; i++) {
     const angle = Math.random() * Math.PI * 2;
     const speed = 3 + Math.random() * 8;
-    particles.push({
-      id: Math.random(),
-      x,
-      y,
-      vx: Math.cos(angle) * speed,
-      vy: Math.sin(angle) * speed - 3,
-      life: 30 + Math.random() * 25,
-      maxLife: 55,
-      color: i % 3 === 0 ? cfg.bright : i % 3 === 1 ? cfg.primary : cfg.secondary,
-      size: 3 + Math.random() * 5,
-    });
+    const p = particlePool.acquire();
+    p.id = getNextId();
+    p.x = x;
+    p.y = y;
+    p.vx = Math.cos(angle) * speed;
+    p.vy = Math.sin(angle) * speed - 3;
+    p.life = 30 + Math.random() * 25;
+    p.maxLife = 55;
+    p.color = i % 3 === 0 ? cfg.bright : i % 3 === 1 ? cfg.primary : cfg.secondary;
+    p.size = 3 + Math.random() * 5;
+    particles.push(p);
   }
   return particles;
 }
@@ -243,15 +249,15 @@ export function spawnFloatingText(
   color: string,
   scale = 1,
 ): FloatingText {
-  return {
-    id: Math.random(),
-    x,
-    y,
-    text,
-    color,
-    life: 45,
-    maxLife: 45,
-    vy: -2.2,
-    scale,
-  };
+  const t = textPool.acquire();
+  t.id = getNextId();
+  t.x = x;
+  t.y = y;
+  t.text = text;
+  t.color = color;
+  t.life = 45;
+  t.maxLife = 45;
+  t.vy = -2.2;
+  t.scale = scale;
+  return t;
 }

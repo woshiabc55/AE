@@ -76,6 +76,8 @@ export interface Mecha {
   dashTimer: number;
   counterWindow: number;
   invincible: number;
+  coyoteTime: number;
+  inputBuffer: Partial<Record<keyof typeof import('./constants').SKILL_CONFIG | 'jump', number>>;
 }
 
 export interface Projectile {

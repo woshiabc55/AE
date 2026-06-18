@@ -14,6 +14,7 @@ import {
   MECHA_HEIGHT,
   COLORS,
   ELEMENT_CONFIG,
+  SKILL_CONFIG,
 } from './constants';
 import {
   getMechaTypeColor,
@@ -27,26 +28,31 @@ export function clearCanvas(ctx: CanvasRenderingContext2D): void {
   ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 }
 
-export function drawBackground(ctx: CanvasRenderingContext2D): void {
+export function drawBackground(
+  ctx: CanvasRenderingContext2D,
+  cameraX: number,
+): void {
   ctx.fillStyle = COLORS.bg;
   ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-  // 星空
+  // 星空（最慢）
   ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
   for (let i = 0; i < 60; i++) {
-    const x = (i * 137) % CANVAS_WIDTH;
+    const x = ((i * 137) % CANVAS_WIDTH) - cameraX * 0.05;
+    const wrappedX = ((x % CANVAS_WIDTH) + CANVAS_WIDTH) % CANVAS_WIDTH;
     const y = (i * 73) % (GROUND_Y - 40);
     const size = (i % 3) + 1;
-    ctx.fillRect(x, y, size, size);
+    ctx.fillRect(wrappedX, y, size, size);
   }
 
-  // 远景建筑
+  // 远景建筑（中速）
   ctx.fillStyle = '#12141F';
-  for (let i = 0; i < 12; i++) {
+  for (let i = 0; i < 16; i++) {
     const w = 60 + (i % 4) * 30;
     const h = 80 + (i % 5) * 40;
-    const x = i * 90;
-    ctx.fillRect(x, GROUND_Y - h, w, h);
+    const x = i * 90 - cameraX * 0.15;
+    const wrappedX = ((x % (CANVAS_WIDTH + 200)) + (CANVAS_WIDTH + 200)) % (CANVAS_WIDTH + 200) - 100;
+    ctx.fillRect(wrappedX, GROUND_Y - h, w, h);
   }
 
   // 地面
@@ -376,11 +382,32 @@ export function drawFloatingTexts(
   ctx.globalAlpha = 1;
 }
 
+function drawSkillTelegraph(
+  ctx: CanvasRenderingContext2D,
+  mecha: Mecha,
+): void {
+  if (mecha.state !== 'skill' && mecha.state !== 'throw') return;
+  if (!mecha.skillId) return;
+  const cfg = SKILL_CONFIG[mecha.skillId];
+  if (!cfg || cfg.range <= 0) return;
+
+  const f = mecha.facing;
+  const x = mecha.x + (f === 1 ? MECHA_WIDTH : -cfg.range);
+  const y = mecha.y + MECHA_HEIGHT * 0.25;
+
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+  ctx.fillRect(x, y, cfg.range, MECHA_HEIGHT * 0.5);
+}
+
 export function drawScene(
   ctx: CanvasRenderingContext2D,
   state: GameState,
 ): void {
   ctx.save();
+
+  // 相机跟随两位机甲的中点
+  const midX = (state.red.x + state.blue.x + MECHA_WIDTH) / 2;
+  const cameraX = midX - CANVAS_WIDTH / 2;
 
   // 必杀特写缩放
   if (state.ultimateCinematic > 0) {
@@ -399,11 +426,14 @@ export function drawScene(
   }
 
   clearCanvas(ctx);
-  drawBackground(ctx);
+  drawBackground(ctx, cameraX);
 
   drawProjectiles(ctx, state.projectiles);
   drawParticles(ctx, state.particles);
   drawSlashTrails(ctx, state.slashes);
+
+  drawSkillTelegraph(ctx, state.red);
+  drawSkillTelegraph(ctx, state.blue);
 
   drawMecha(ctx, state.red, state.frameCount);
   drawMecha(ctx, state.blue, state.frameCount);
@@ -415,6 +445,12 @@ export function drawScene(
   // 屏幕闪光
   if (state.flash > 0) {
     ctx.fillStyle = `rgba(255, 255, 255, ${state.flash / 12})`;
+    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  }
+
+  // 命中定格时压暗画面增强冲击感
+  if (state.hitStop > 0) {
+    ctx.fillStyle = `rgba(0, 0, 0, ${state.hitStop / 30})`;
     ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   }
 }

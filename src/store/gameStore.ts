@@ -54,6 +54,8 @@ function createMecha(
     dashTimer: 0,
     counterWindow: 0,
     invincible: 0,
+    coyoteTime: 0,
+    inputBuffer: {},
   };
 }
 

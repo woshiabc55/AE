@@ -7,6 +7,8 @@ export const FRICTION = 0.85;
 export const MOVE_SPEED = 1.2;
 export const JUMP_FORCE = -16;
 export const MAX_SPEED = 8;
+export const COYOTE_TIME = 8;
+export const INPUT_BUFFER_FRAMES = 8;
 
 export const MECHA_WIDTH = 48;
 export const MECHA_HEIGHT = 64;
@@ -122,14 +124,14 @@ export const ELEMENT_CONFIG = {
 };
 
 export const SKILL_CONFIG = {
-  attack: { name: '普攻', damage: 8, cooldown: 18, duration: 12, range: 72 },
-  skill1: { name: '突刺', damage: 14, cooldown: 90, duration: 20, range: 96 },
-  skill2: { name: '重斩', damage: 22, cooldown: 150, duration: 28, range: 80 },
-  ultimate: { name: '必杀', damage: 45, cooldown: 360, duration: 45, range: 120 },
-  dash: { name: '冲刺', damage: 0, cooldown: 80, duration: 18, range: 0 },
-  throw: { name: '投技', damage: 18, cooldown: 120, duration: 22, range: 56 },
-  projectile: { name: '射击', damage: 10, cooldown: 70, duration: 15, range: 0 },
-  counter: { name: '反击', damage: 15, cooldown: 140, duration: 20, range: 64 },
+  attack: { name: '普攻', damage: 8, cooldown: 16, duration: 10, range: 72 },
+  skill1: { name: '突刺', damage: 14, cooldown: 80, duration: 18, range: 96 },
+  skill2: { name: '重斩', damage: 22, cooldown: 130, duration: 26, range: 80 },
+  ultimate: { name: '必杀', damage: 40, cooldown: 400, duration: 45, range: 120 },
+  dash: { name: '冲刺', damage: 0, cooldown: 70, duration: 16, range: 0 },
+  throw: { name: '投技', damage: 16, cooldown: 110, duration: 20, range: 56 },
+  projectile: { name: '射击', damage: 9, cooldown: 60, duration: 14, range: 0 },
+  counter: { name: '反击', damage: 12, cooldown: 130, duration: 18, range: 64 },
 };
 
 export const MAX_COMBO_WINDOW = 80;
