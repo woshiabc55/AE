@@ -10,6 +10,7 @@ function formatKey(code: string): string {
   if (code === 'Semicolon') return ';';
   if (code === 'Quote') return "'";
   if (code === 'BracketRight') return ']';
+  if (code === 'Slash') return '/';
   if (code.startsWith('Key')) return code.replace('Key', '');
   if (code.startsWith('Arrow')) return code.replace('Arrow', '');
   return code;
@@ -130,6 +131,13 @@ const SkillBar = memo(function SkillBar({ id }: { id: Mecha['id'] }) {
         keyLabel={formatKey(keys.projectile)}
         cooldown={mecha.cooldowns.projectile}
         maxCooldown={SKILL_CONFIG.projectile.cooldown}
+        color={color}
+      />
+      <SkillIcon
+        name="旋"
+        keyLabel={formatKey(keys.skill3)}
+        cooldown={mecha.cooldowns.skill3}
+        maxCooldown={SKILL_CONFIG.skill3.cooldown}
         color={color}
       />
       <SkillIcon

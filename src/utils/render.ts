@@ -9,6 +9,7 @@ import type {
 import {
   CANVAS_WIDTH,
   CANVAS_HEIGHT,
+  WORLD_WIDTH,
   GROUND_Y,
   MECHA_WIDTH,
   MECHA_HEIGHT,
@@ -37,9 +38,9 @@ export function drawBackground(
 
   // 星空（最慢）
   ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
-  for (let i = 0; i < 60; i++) {
-    const x = ((i * 137) % CANVAS_WIDTH) - cameraX * 0.05;
-    const wrappedX = ((x % CANVAS_WIDTH) + CANVAS_WIDTH) % CANVAS_WIDTH;
+  for (let i = 0; i < 80; i++) {
+    const x = ((i * 137) % (CANVAS_WIDTH + 200)) - cameraX * 0.03;
+    const wrappedX = ((x % (CANVAS_WIDTH + 200)) + (CANVAS_WIDTH + 200)) % (CANVAS_WIDTH + 200) - 100;
     const y = (i * 73) % (GROUND_Y - 40);
     const size = (i % 3) + 1;
     ctx.fillRect(wrappedX, y, size, size);
@@ -47,29 +48,33 @@ export function drawBackground(
 
   // 远景建筑（中速）
   ctx.fillStyle = '#12141F';
-  for (let i = 0; i < 16; i++) {
+  for (let i = 0; i < 24; i++) {
     const w = 60 + (i % 4) * 30;
     const h = 80 + (i % 5) * 40;
-    const x = i * 90 - cameraX * 0.15;
-    const wrappedX = ((x % (CANVAS_WIDTH + 200)) + (CANVAS_WIDTH + 200)) % (CANVAS_WIDTH + 200) - 100;
+    const x = i * 110 - cameraX * 0.12;
+    const wrappedX = ((x % (CANVAS_WIDTH + 400)) + (CANVAS_WIDTH + 400)) % (CANVAS_WIDTH + 400) - 200;
     ctx.fillRect(wrappedX, GROUND_Y - h, w, h);
   }
+}
 
+export function drawGround(
+  ctx: CanvasRenderingContext2D,
+): void {
   // 地面
   ctx.fillStyle = COLORS.ground;
-  ctx.fillRect(0, GROUND_Y, CANVAS_WIDTH, CANVAS_HEIGHT - GROUND_Y);
+  ctx.fillRect(0, GROUND_Y, WORLD_WIDTH, CANVAS_HEIGHT - GROUND_Y);
 
   ctx.fillStyle = COLORS.groundLine;
-  for (let x = 0; x < CANVAS_WIDTH; x += 40) {
+  for (let x = 0; x < WORLD_WIDTH; x += 40) {
     ctx.fillRect(x, GROUND_Y, 2, CANVAS_HEIGHT - GROUND_Y);
   }
   for (let y = GROUND_Y; y < CANVAS_HEIGHT; y += 40) {
-    ctx.fillRect(0, y, CANVAS_WIDTH, 2);
+    ctx.fillRect(0, y, WORLD_WIDTH, 2);
   }
 
   ctx.fillStyle = COLORS.blue;
   ctx.globalAlpha = 0.4;
-  ctx.fillRect(0, GROUND_Y - 2, CANVAS_WIDTH, 4);
+  ctx.fillRect(0, GROUND_Y - 2, WORLD_WIDTH, 4);
   ctx.globalAlpha = 1;
 }
 
@@ -105,6 +110,17 @@ function drawElementalAura(
       const ox = (Math.sin(frameCount * 0.2 + i * 2) * 14);
       const oy = -Math.abs(Math.cos(frameCount * 0.15 + i)) * 18 - 10;
       ctx.fillRect(centerX + ox, centerY + oy, 3, 4);
+    }
+  } else if (mecha.element === 'ice') {
+    // 冰霜结晶
+    ctx.fillStyle = cfg.bright;
+    for (let i = 0; i < 4; i++) {
+      const angle = frameCount * 0.08 + i * (Math.PI / 2);
+      const r = 22 + Math.sin(frameCount * 0.12 + i) * 4;
+      const ox = Math.cos(angle) * r;
+      const oy = Math.sin(angle) * r - 8;
+      const size = 2 + (i % 2);
+      ctx.fillRect(centerX + ox - size / 2, centerY + oy - size / 2, size, size);
     }
   } else {
     // 电光
@@ -320,6 +336,23 @@ export function drawProjectiles(
   projectiles: Projectile[],
 ): void {
   projectiles.forEach((p) => {
+    // 轨道子弹绘制外圈轨迹
+    if (p.behavior === 'orbit') {
+      ctx.strokeStyle = p.color;
+      ctx.lineWidth = 2;
+      ctx.globalAlpha = 0.35;
+      ctx.beginPath();
+      ctx.arc(
+        Math.floor(p.orbitCenterX ?? p.x),
+        Math.floor(p.orbitCenterY ?? p.y),
+        p.orbitRadius ?? 20,
+        0,
+        Math.PI * 2,
+      );
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+
     ctx.fillStyle = p.color;
     ctx.shadowColor = p.color;
     ctx.shadowBlur = 14;
@@ -337,12 +370,22 @@ export function drawProjectiles(
     // 尾焰
     ctx.fillStyle = p.color;
     ctx.globalAlpha = 0.5;
-    ctx.fillRect(
-      Math.floor(p.x - (p.vx > 0 ? 22 : -22)),
-      Math.floor(p.y - 4),
-      22,
-      8,
-    );
+    if (p.behavior === 'wave') {
+      const tailDir = p.vx > 0 ? -1 : 1;
+      ctx.fillRect(
+        Math.floor(p.x + tailDir * 18),
+        Math.floor(p.y - 3),
+        18,
+        6,
+      );
+    } else if (p.behavior === 'linear') {
+      ctx.fillRect(
+        Math.floor(p.x - (p.vx > 0 ? 22 : -22)),
+        Math.floor(p.y - 4),
+        22,
+        8,
+      );
+    }
     ctx.globalAlpha = 1;
   });
 }
@@ -403,11 +446,12 @@ export function drawScene(
   ctx: CanvasRenderingContext2D,
   state: GameState,
 ): void {
-  ctx.save();
-
-  // 相机跟随两位机甲的中点
+  // 相机跟随两位机甲的中点，限制在世界范围内
   const midX = (state.red.x + state.blue.x + MECHA_WIDTH) / 2;
-  const cameraX = midX - CANVAS_WIDTH / 2;
+  const rawCameraX = midX - CANVAS_WIDTH / 2;
+  const cameraX = Math.max(0, Math.min(rawCameraX, WORLD_WIDTH - CANVAS_WIDTH));
+
+  ctx.save();
 
   // 必杀特写缩放
   if (state.ultimateCinematic > 0) {
@@ -428,6 +472,10 @@ export function drawScene(
   clearCanvas(ctx);
   drawBackground(ctx, cameraX);
 
+  // 进入世界坐标系
+  ctx.translate(-cameraX, 0);
+
+  drawGround(ctx);
   drawProjectiles(ctx, state.projectiles);
   drawParticles(ctx, state.particles);
   drawSlashTrails(ctx, state.slashes);

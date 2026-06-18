@@ -56,10 +56,12 @@ export const projectilePool = new Pool<Projectile>(() => ({
   x: 0,
   y: 0,
   vx: 0,
+  vy: 0,
   radius: 0,
   damage: 0,
   color: '',
   life: 0,
+  behavior: 'linear',
 }));
 
 let nextId = 1;

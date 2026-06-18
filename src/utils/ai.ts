@@ -88,6 +88,8 @@ export class MechaAI {
         keys[this.meId][map.throw] = true;
       } else if (me.cooldowns.projectile <= 0 && this.randomFloat() > settings.errorRate) {
         keys[this.meId][map.projectile] = true;
+      } else if (me.cooldowns.skill3 <= 0 && distance < SKILL_CONFIG.skill3.range + MECHA_WIDTH && this.randomFloat() > settings.errorRate * 1.2) {
+        keys[this.meId][map.skill3] = true;
       }
     }
 

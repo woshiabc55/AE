@@ -9,7 +9,7 @@ import type {
   GameScreen,
 } from '@/utils/types';
 import {
-  CANVAS_WIDTH,
+  WORLD_WIDTH,
   GROUND_Y,
   MECHA_WIDTH,
   MECHA_HEIGHT,
@@ -26,7 +26,7 @@ function createMecha(
   return {
     id,
     type,
-    element: id === 'red' ? 'fire' : 'electric',
+    element: type === 'mage' ? 'ice' : id === 'red' ? 'fire' : 'electric',
     x: startX,
     y: GROUND_Y - MECHA_HEIGHT,
     vx: 0,
@@ -40,6 +40,7 @@ function createMecha(
       attack: 0,
       skill1: 0,
       skill2: 0,
+      skill3: 0,
       throw: 0,
       ultimate: 0,
       dash: 0,
@@ -67,8 +68,8 @@ function buildInitialRoundState(
   blueWins: number,
 ): Partial<GameState> {
   return {
-    red: createMecha('red', redType, CANVAS_WIDTH * 0.25 - MECHA_WIDTH / 2),
-    blue: createMecha('blue', blueType, CANVAS_WIDTH * 0.75 - MECHA_WIDTH / 2),
+    red: createMecha('red', redType, WORLD_WIDTH * 0.25 - MECHA_WIDTH / 2),
+    blue: createMecha('blue', blueType, WORLD_WIDTH * 0.75 - MECHA_WIDTH / 2),
     projectiles: [],
     particles: [],
     slashes: [],
@@ -97,11 +98,11 @@ function buildInitialState(): GameState {
     difficulty: 'normal',
     redType: 'striker',
     blueType: 'striker',
-    red: createMecha('red', 'striker', CANVAS_WIDTH * 0.25 - MECHA_WIDTH / 2),
+    red: createMecha('red', 'striker', WORLD_WIDTH * 0.25 - MECHA_WIDTH / 2),
     blue: createMecha(
       'blue',
       'striker',
-      CANVAS_WIDTH * 0.75 - MECHA_WIDTH / 2,
+      WORLD_WIDTH * 0.75 - MECHA_WIDTH / 2,
     ),
     projectiles: [],
     particles: [],

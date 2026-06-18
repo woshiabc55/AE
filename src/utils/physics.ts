@@ -1,6 +1,7 @@
 import type { GameState, Mecha, MechaId, KeyState } from './types';
 import {
-  CANVAS_WIDTH,
+  CANVAS_HEIGHT,
+  WORLD_WIDTH,
   GROUND_Y,
   MECHA_WIDTH,
   MECHA_HEIGHT,
@@ -19,6 +20,7 @@ import {
 import {
   performAttack,
   spawnProjectile,
+  spawnOrbitProjectiles,
   spawnSlashTrail,
   spawnHitParticles,
   spawnExplosionParticles,
@@ -43,7 +45,7 @@ function updateMechaPhysics(mecha: Mecha): void {
   mecha.x += mecha.vx;
   mecha.y += mecha.vy;
 
-  mecha.x = clamp(mecha.x, 0, CANVAS_WIDTH - MECHA_WIDTH);
+  mecha.x = clamp(mecha.x, 0, WORLD_WIDTH - MECHA_WIDTH);
 
   if (mecha.y + MECHA_HEIGHT >= GROUND_Y) {
     mecha.y = GROUND_Y - MECHA_HEIGHT;
@@ -96,6 +98,13 @@ function startAction(
     mecha.state = 'skill';
     mecha.animTimer = cfg.duration;
     mecha.cooldowns.projectile = cfg.cooldown;
+    mecha.skillId = skillId;
+    return;
+  }
+  if (skillId === 'skill3') {
+    mecha.state = 'skill';
+    mecha.animTimer = cfg.duration;
+    mecha.cooldowns.skill3 = cfg.cooldown;
     mecha.skillId = skillId;
     return;
   }
@@ -173,6 +182,10 @@ function handleSpecialInputs(
         state.projectiles.push(spawnProjectile(mecha));
       }
 
+      if (mecha.skillId === 'skill3' && mecha.animTimer === Math.floor(SKILL_CONFIG.skill3.duration / 2)) {
+        state.projectiles.push(...spawnOrbitProjectiles(mecha, 3));
+      }
+
       if (mecha.animTimer === Math.floor((mecha.skillId ? SKILL_CONFIG[mecha.skillId].duration : 12) / 2)) {
         tryHit(state, mecha, opponent);
       }
@@ -242,6 +255,7 @@ function handleSpecialInputs(
   if (tryStartSkill(state, mecha, 'throw', pressed[map.throw])) return;
   if (tryStartSkill(state, mecha, 'dash', pressed[map.dash])) return;
   if (tryStartSkill(state, mecha, 'projectile', pressed[map.projectile])) return;
+  if (tryStartSkill(state, mecha, 'skill3', pressed[map.skill3])) return;
   if (tryStartSkill(state, mecha, 'counter', pressed[map.counter])) return;
   if (tryStartSkill(state, mecha, 'ultimate', pressed[map.ultimate])) return;
 }
@@ -387,21 +401,41 @@ function tryHit(
 function updateProjectiles(state: GameState): void {
   const alive: typeof state.projectiles = [];
   for (const p of state.projectiles) {
-    p.x += p.vx;
+    // 根据行为更新子弹位置
+    if (p.behavior === 'orbit') {
+      const cx = (p.orbitCenterX ?? p.x) + (p.orbitCenterVX ?? 0);
+      const cy = (p.orbitCenterY ?? p.y) + (p.orbitCenterVY ?? 0);
+      const speed = p.orbitSpeed ?? 0.1;
+      const radius = (p.orbitRadius ?? 20) + (Math.random() - 0.5) * 3;
+      const angle = (p.orbitAngle ?? 0) + speed;
+      p.orbitCenterX = cx;
+      p.orbitCenterY = cy;
+      p.orbitAngle = angle;
+      p.orbitRadius = radius;
+      p.x = cx + Math.cos(angle) * radius;
+      p.y = cy + Math.sin(angle) * radius;
+    } else if (p.behavior === 'wave') {
+      p.x += p.vx;
+      p.wavePhase = (p.wavePhase ?? 0) + (p.waveFrequency ?? 0.2);
+      p.y = (p.waveBaseY ?? p.y) + Math.sin(p.wavePhase) * (p.waveAmplitude ?? 20);
+    } else {
+      p.x += p.vx;
+      p.y += p.vy;
+    }
     p.life--;
 
     const target = p.ownerId === 'red' ? state.blue : state.red;
     const owner = p.ownerId === 'red' ? state.red : state.blue;
+    const targetCX = target.x + MECHA_WIDTH / 2;
+    const targetCY = target.y + MECHA_HEIGHT / 2;
     const hit =
       target.invincible <= 0 &&
-      p.x > target.x &&
-      p.x < target.x + MECHA_WIDTH &&
-      p.y > target.y &&
-      p.y < target.y + MECHA_HEIGHT;
+      Math.abs(p.x - targetCX) < MECHA_WIDTH / 2 + p.radius &&
+      Math.abs(p.y - targetCY) < MECHA_HEIGHT / 2 + p.radius;
 
     if (hit) {
       let damage = p.damage;
-      let knockbackX = p.vx > 0 ? 6 : -6;
+      let knockbackX = p.x > targetCX ? 5 : -5;
       let knockbackY = -2;
 
       if (target.state === 'defend') {
@@ -447,7 +481,7 @@ function updateProjectiles(state: GameState): void {
       continue;
     }
 
-    if (p.x < -20 || p.x > CANVAS_WIDTH + 20 || p.life <= 0) {
+    if (p.x < -40 || p.x > WORLD_WIDTH + 40 || p.y < -40 || p.y > CANVAS_HEIGHT + 40 || p.life <= 0) {
       projectilePool.release(p);
       continue;
     }

@@ -1,8 +1,8 @@
 export type MechaId = 'red' | 'blue';
 
-export type MechaType = 'striker' | 'tank' | 'speed';
+export type MechaType = 'striker' | 'tank' | 'speed' | 'mage';
 
-export type ElementType = 'fire' | 'electric';
+export type ElementType = 'fire' | 'electric' | 'ice';
 
 export type MechaState =
   | 'idle'
@@ -47,6 +47,7 @@ export interface Cooldowns {
   attack: number;
   skill1: number;
   skill2: number;
+  skill3: number;
   throw: number;
   ultimate: number;
   dash: number;
@@ -86,10 +87,25 @@ export interface Projectile {
   x: number;
   y: number;
   vx: number;
+  vy: number;
   radius: number;
   damage: number;
   color: string;
   life: number;
+  behavior: 'linear' | 'orbit' | 'wave';
+  // 轨道参数
+  orbitCenterX?: number;
+  orbitCenterY?: number;
+  orbitRadius?: number;
+  orbitAngle?: number;
+  orbitSpeed?: number;
+  orbitCenterVX?: number;
+  orbitCenterVY?: number;
+  // 波动参数
+  waveBaseY?: number;
+  waveAmplitude?: number;
+  waveFrequency?: number;
+  wavePhase?: number;
 }
 
 export interface Particle {

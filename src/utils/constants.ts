@@ -1,5 +1,6 @@
 export const CANVAS_WIDTH = 960;
 export const CANVAS_HEIGHT = 540;
+export const WORLD_WIDTH = 2400;
 export const GROUND_Y = 460;
 
 export const GRAVITY = 0.8;
@@ -71,6 +72,18 @@ export const MECHA_TYPES = {
     darkColor: '#5E146E',
     accentColor: '#05D9E8',
   },
+  mage: {
+    type: 'mage',
+    name: '异能型',
+    maxHp: 90,
+    moveSpeed: 1.0,
+    jumpForce: -15,
+    damageMod: 1.1,
+    defenseMod: 0.9,
+    color: '#00BFFF',
+    darkColor: '#005f7f',
+    accentColor: '#FFFFFF',
+  },
 };
 
 export const KEY_MAP = {
@@ -87,6 +100,7 @@ export const KEY_MAP = {
     dash: 'KeyQ',
     projectile: 'KeyE',
     counter: 'KeyR',
+    skill3: 'KeyJ',
   },
   blue: {
     left: 'ArrowLeft',
@@ -101,6 +115,7 @@ export const KEY_MAP = {
     dash: 'KeyO',
     projectile: 'KeyP',
     counter: 'BracketRight',
+    skill3: 'Slash',
   },
 };
 
@@ -121,6 +136,14 @@ export const ELEMENT_CONFIG = {
     particle: '#00FFFF',
     auraColor: 'rgba(5, 217, 232, 0.25)',
   },
+  ice: {
+    name: '霜寒',
+    primary: '#00BFFF',
+    secondary: '#7B68EE',
+    bright: '#E0FFFF',
+    particle: '#87CEEB',
+    auraColor: 'rgba(0, 191, 255, 0.25)',
+  },
 };
 
 export const SKILL_CONFIG = {
@@ -132,6 +155,7 @@ export const SKILL_CONFIG = {
   throw: { name: '投技', damage: 16, cooldown: 110, duration: 20, range: 56 },
   projectile: { name: '射击', damage: 9, cooldown: 60, duration: 14, range: 0 },
   counter: { name: '反击', damage: 12, cooldown: 130, duration: 18, range: 64 },
+  skill3: { name: '旋刃', damage: 6, cooldown: 100, duration: 26, range: 160 },
 };
 
 export const MAX_COMBO_WINDOW = 80;

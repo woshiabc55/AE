@@ -141,10 +141,65 @@ export function spawnProjectile(owner: Mecha): Projectile {
   p.x = owner.x + (owner.facing === 1 ? MECHA_WIDTH : 0);
   p.y = owner.y + MECHA_HEIGHT * 0.45;
   p.vx = owner.facing * 11;
+  p.vy = 0;
   p.radius = 7;
   p.damage = Math.floor(10 * MECHA_TYPES[owner.type].damageMod);
   p.color = getElementColor(owner.element);
   p.life = 90;
+  p.behavior = 'linear';
+  return p;
+}
+
+export function spawnOrbitProjectiles(owner: Mecha, count = 3): Projectile[] {
+  const projectiles: Projectile[] = [];
+  const centerX = owner.x + MECHA_WIDTH / 2 + owner.facing * 50;
+  const centerY = owner.y + MECHA_HEIGHT * 0.45;
+  const baseColor = getElementColor(owner.element);
+
+  for (let i = 0; i < count; i++) {
+    const p = projectilePool.acquire();
+    p.id = getNextId();
+    p.ownerId = owner.id;
+    p.radius = 6;
+    p.damage = Math.floor(6 * MECHA_TYPES[owner.type].damageMod);
+    p.color = baseColor;
+    p.life = 110;
+    p.behavior = 'orbit';
+    p.orbitCenterX = centerX;
+    p.orbitCenterY = centerY;
+    p.orbitRadius = 28 + i * 18;
+    p.orbitAngle = (i * Math.PI * 2) / count;
+    p.orbitSpeed = 0.12 * (i % 2 === 0 ? 1 : -1);
+    p.orbitCenterVX = owner.facing * 1.8;
+    p.orbitCenterVY = (Math.random() - 0.5) * 1.2;
+
+    // 初始位置
+    p.x = p.orbitCenterX + Math.cos(p.orbitAngle) * p.orbitRadius;
+    p.y = p.orbitCenterY + Math.sin(p.orbitAngle) * p.orbitRadius;
+    p.vx = 0;
+    p.vy = 0;
+    projectiles.push(p);
+  }
+  return projectiles;
+}
+
+export function spawnWaveProjectile(owner: Mecha): Projectile {
+  const p = projectilePool.acquire();
+  p.id = getNextId();
+  p.ownerId = owner.id;
+  p.x = owner.x + (owner.facing === 1 ? MECHA_WIDTH : 0);
+  p.y = owner.y + MECHA_HEIGHT * 0.45;
+  p.vx = owner.facing * 8;
+  p.vy = 0;
+  p.radius = 7;
+  p.damage = Math.floor(8 * MECHA_TYPES[owner.type].damageMod);
+  p.color = getElementColor(owner.element);
+  p.life = 80;
+  p.behavior = 'wave';
+  p.waveBaseY = p.y;
+  p.waveAmplitude = 22 + Math.random() * 12;
+  p.waveFrequency = 0.18 + Math.random() * 0.08;
+  p.wavePhase = 0;
   return p;
 }
 
