@@ -20,8 +20,9 @@ import {
   spawnSlashTrail,
   spawnHitParticles,
   spawnExplosionParticles,
+  spawnElementalParticles,
   spawnFloatingText,
-  getMechaTypeColor,
+  getElementBrightColor,
 } from './skills';
 
 export function clamp(value: number, min: number, max: number): number {
@@ -76,7 +77,7 @@ function startAction(
   if (skillId === 'throw') {
     mecha.state = 'throw';
     mecha.animTimer = cfg.duration;
-    mecha.cooldowns.skill2 = cfg.cooldown;
+    mecha.cooldowns.throw = cfg.cooldown;
     mecha.skillId = skillId;
     return;
   }
@@ -245,14 +246,15 @@ function tryHit(
         1.4,
       ),
     );
-    state.shake = 8;
-    state.hitStop = 8;
+    state.shake = 10;
+    state.hitStop = 10;
+    state.flash = 6;
     state.particles.push(
       ...spawnHitParticles(
         target.x + MECHA_WIDTH / 2,
         target.y + MECHA_HEIGHT / 2,
         COLORS.gold,
-        14,
+        18,
       ),
     );
     return;
@@ -262,9 +264,11 @@ function tryHit(
   target.vx += result.knockbackX;
   target.vy += result.knockbackY;
 
-  if (target.state !== 'defend') {
+  const isDefended = target.state === 'defend';
+
+  if (!isDefended) {
     target.state = 'hurt';
-    target.hitStun = isUltimate ? 25 : isThrow ? 16 : 12;
+    target.hitStun = isUltimate ? 28 : isThrow ? 18 : 14;
     target.combo = 0;
 
     attacker.combo++;
@@ -277,17 +281,26 @@ function tryHit(
           attacker.y - 30,
           `${attacker.combo} HIT!`,
           COLORS.gold,
-          1 + Math.min(attacker.combo, 5) * 0.1,
+          1 + Math.min(attacker.combo, 5) * 0.12,
         ),
       );
     }
   } else {
-    target.defendFlash = 8;
+    target.defendFlash = 10;
+    state.texts.push(
+      spawnFloatingText(
+        target.x + MECHA_WIDTH / 2,
+        target.y - 35,
+        'GUARD',
+        COLORS.white,
+        0.9,
+      ),
+    );
   }
 
-  state.shake = isUltimate ? 14 : 6;
-  state.hitStop = isUltimate ? 10 : result.damage >= 20 ? 6 : 3;
-  if (isUltimate) state.flash = 8;
+  state.shake = isUltimate ? 16 : isThrow ? 8 : result.damage >= 20 ? 8 : 5;
+  state.hitStop = isUltimate ? 12 : isDefended ? 4 : result.damage >= 20 ? 7 : 4;
+  if (isUltimate) state.flash = 10;
 
   // 刀光拖尾
   if (skillId === 'attack' || skillId === 'skill1' || skillId === 'skill2' || skillId === 'ultimate') {
@@ -295,18 +308,27 @@ function tryHit(
       spawnSlashTrail(
         attacker,
         SKILL_CONFIG[skillId].range,
-        getMechaTypeColor(attacker.type),
       ),
     );
   }
+
+  // 元素粒子
+  state.particles.push(
+    ...spawnElementalParticles(
+      target.x + MECHA_WIDTH / 2,
+      target.y + MECHA_HEIGHT / 2,
+      attacker.element,
+      isUltimate ? 10 : 5,
+    ),
+  );
 
   if (isUltimate) {
     state.particles.push(
       ...spawnExplosionParticles(
         target.x + MECHA_WIDTH / 2,
         target.y + MECHA_HEIGHT / 2,
-        getMechaTypeColor(attacker.type),
-        28,
+        attacker.element,
+        32,
       ),
     );
   } else {
@@ -314,8 +336,8 @@ function tryHit(
       ...spawnHitParticles(
         target.x + MECHA_WIDTH / 2,
         target.y + MECHA_HEIGHT / 2,
-        target.state === 'defend' ? COLORS.white : getMechaTypeColor(target.type),
-        isThrow ? 14 : 10,
+        isDefended ? COLORS.white : getElementBrightColor(attacker.element),
+        isThrow ? 16 : 12,
       ),
     );
   }
@@ -325,7 +347,7 @@ function tryHit(
       target.x + MECHA_WIDTH / 2,
       target.y - 10,
       String(result.damage),
-      result.damage >= 20 ? '#FF5555' : COLORS.white,
+      isDefended ? COLORS.white : result.damage >= 20 ? '#FF5555' : getElementBrightColor(attacker.element),
       result.damage >= 20 ? 1.3 : 1,
     ),
   );
@@ -342,6 +364,7 @@ function updateProjectiles(state: GameState): void {
       if (p.x < -20 || p.x > CANVAS_WIDTH + 20 || p.life <= 0) return false;
 
       const target = p.ownerId === 'red' ? state.blue : state.red;
+      const owner = p.ownerId === 'red' ? state.red : state.blue;
       if (
         target.invincible <= 0 &&
         p.x > target.x &&
@@ -371,13 +394,26 @@ function updateProjectiles(state: GameState): void {
           target.defendFlash = 6;
         }
 
-        state.shake = 4;
-        state.hitStop = 3;
+        state.shake = 5;
+        state.hitStop = 4;
         state.particles.push(
-          ...spawnHitParticles(p.x, p.y, getMechaTypeColor(target.type), 8),
+          ...spawnHitParticles(
+            p.x,
+            p.y,
+            target.state === 'defend' ? COLORS.white : getElementBrightColor(owner.element),
+            10,
+          ),
+        );
+        state.particles.push(
+          ...spawnElementalParticles(p.x, p.y, owner.element, 4),
         );
         state.texts.push(
-          spawnFloatingText(p.x, p.y - 10, String(damage), COLORS.white),
+          spawnFloatingText(
+            p.x,
+            p.y - 10,
+            String(damage),
+            target.state === 'defend' ? COLORS.white : getElementBrightColor(owner.element),
+          ),
         );
         return false;
       }

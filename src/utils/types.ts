@@ -2,6 +2,8 @@ export type MechaId = 'red' | 'blue';
 
 export type MechaType = 'striker' | 'tank' | 'speed';
 
+export type ElementType = 'fire' | 'electric';
+
 export type MechaState =
   | 'idle'
   | 'run'
@@ -45,6 +47,7 @@ export interface Cooldowns {
   attack: number;
   skill1: number;
   skill2: number;
+  throw: number;
   ultimate: number;
   dash: number;
   projectile: number;
@@ -54,6 +57,7 @@ export interface Cooldowns {
 export interface Mecha {
   id: MechaId;
   type: MechaType;
+  element: ElementType;
   x: number;
   y: number;
   vx: number;

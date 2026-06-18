@@ -10,6 +10,7 @@ import {
   SKILL_CONFIG,
   MECHA_TYPES,
   ROUNDS_TO_WIN,
+  ELEMENT_CONFIG,
 } from '@/utils/constants';
 import type { Mecha, MechaId, MechaType, GameMode, Difficulty } from '@/utils/types';
 import {
@@ -32,7 +33,7 @@ function HealthBar({ mecha, align }: { mecha: Mecha; align: 'left' | 'right' }):
   const percent = (mecha.hp / mecha.maxHp) * 100;
   const color = getMechaTypeColor(mecha.type);
   const darkColor = getMechaTypeDarkColor(mecha.type);
-  const label = `${MECHA_TYPES[mecha.type].name} ${mecha.id === 'red' ? 'P1' : mecha.id === 'blue' ? 'P2' : ''}`;
+  const label = `${ELEMENT_CONFIG[mecha.element].name} ${MECHA_TYPES[mecha.type].name} ${mecha.id === 'red' ? 'P1' : 'P2'}`;
 
   return (
     <div
@@ -114,6 +115,13 @@ function SkillBar({ mecha }: { mecha: Mecha }): JSX.Element {
         keyLabel={formatKey(keys.skill2)}
         cooldown={mecha.cooldowns.skill2}
         maxCooldown={SKILL_CONFIG.skill2.cooldown}
+        color={color}
+      />
+      <SkillIcon
+        name="投"
+        keyLabel={formatKey(keys.throw)}
+        cooldown={mecha.cooldowns.throw}
+        maxCooldown={SKILL_CONFIG.throw.cooldown}
         color={color}
       />
       <SkillIcon
@@ -479,19 +487,19 @@ export function BattleGame(): JSX.Element {
       {/* 操作说明 */}
       {screen === 'fighting' && (
         <div className="mt-4 grid grid-cols-1 gap-4 px-2 text-[10px] text-white/70 sm:grid-cols-2">
-          <div>
-            <strong className="block text-xs" style={{ color: COLORS.red }}>
-              P1
-            </strong>
-            移动 A/D 跳跃 W 防御 S 普攻 F 技1 G 技2/投 H 冲刺 Q 射击 E 反击 R 必杀 Space
-          </div>
-          <div className="text-left sm:text-right">
-            <strong className="block text-xs" style={{ color: COLORS.blue }}>
-              P2
-            </strong>
-            移动 ←/→ 跳跃 ↑ 防御 ↓ 普攻 L 技1 ; 技2/投 ' 冲刺 O 射击 P 反击 ] 必杀 Enter
-          </div>
+        <div>
+          <strong className="block text-xs" style={{ color: COLORS.red }}>
+            P1 赤焰
+          </strong>
+          移动 A/D 跳跃 W 防御 S 普攻 F 技1 G 技2 H 投 T 冲刺 Q 射击 E 反击 R 必杀 Space
         </div>
+        <div className="text-left sm:text-right">
+          <strong className="block text-xs" style={{ color: COLORS.blue }}>
+            P2 雷霆
+          </strong>
+          移动 ←/→ 跳跃 ↑ 防御 ↓ 普攻 L 技1 ; 技2 ' 投 K 冲刺 O 射击 P 反击 ] 必杀 Enter
+        </div>
+      </div>
       )}
     </div>
   );

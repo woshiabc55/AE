@@ -1,4 +1,11 @@
-import type { GameState, Mecha, Particle, FloatingText, SlashTrail, Projectile } from './types';
+import type {
+  GameState,
+  Mecha,
+  Particle,
+  FloatingText,
+  SlashTrail,
+  Projectile,
+} from './types';
 import {
   CANVAS_WIDTH,
   CANVAS_HEIGHT,
@@ -6,11 +13,13 @@ import {
   MECHA_WIDTH,
   MECHA_HEIGHT,
   COLORS,
+  ELEMENT_CONFIG,
 } from './constants';
 import {
   getMechaTypeColor,
   getMechaTypeDarkColor,
   getMechaTypeAccentColor,
+  getElementColor,
 } from './skills';
 
 export function clearCanvas(ctx: CanvasRenderingContext2D): void {
@@ -70,6 +79,45 @@ function drawPixelRect(
   ctx.fillRect(Math.floor(x), Math.floor(y), w, h);
 }
 
+function drawElementalAura(
+  ctx: CanvasRenderingContext2D,
+  mecha: Mecha,
+  frameCount: number,
+): void {
+  const cfg = ELEMENT_CONFIG[mecha.element];
+  const centerX = mecha.x + MECHA_WIDTH / 2;
+  const centerY = mecha.y + MECHA_HEIGHT / 2;
+
+  ctx.globalAlpha = 0.15 + Math.sin(frameCount * 0.15) * 0.08;
+  ctx.fillStyle = cfg.auraColor;
+  ctx.fillRect(mecha.x - 6, mecha.y - 6, MECHA_WIDTH + 12, MECHA_HEIGHT + 12);
+
+  if (mecha.element === 'fire') {
+    // 火焰余烬
+    ctx.fillStyle = cfg.secondary;
+    for (let i = 0; i < 3; i++) {
+      const ox = (Math.sin(frameCount * 0.2 + i * 2) * 14);
+      const oy = -Math.abs(Math.cos(frameCount * 0.15 + i)) * 18 - 10;
+      ctx.fillRect(centerX + ox, centerY + oy, 3, 4);
+    }
+  } else {
+    // 电光
+    ctx.strokeStyle = cfg.bright;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let i = 0; i < 2; i++) {
+      const sx = centerX + (i === 0 ? -22 : 22);
+      const sy = centerY - 20 + Math.sin(frameCount * 0.4 + i * 3) * 10;
+      ctx.moveTo(sx, sy);
+      ctx.lineTo(sx + (Math.random() - 0.5) * 10, sy + (Math.random() - 0.5) * 20);
+      ctx.lineTo(sx + (Math.random() - 0.5) * 16, sy + (Math.random() - 0.5) * 30);
+    }
+    ctx.stroke();
+  }
+
+  ctx.globalAlpha = 1;
+}
+
 function drawMechaBody(
   ctx: CanvasRenderingContext2D,
   mecha: Mecha,
@@ -82,47 +130,100 @@ function drawMechaBody(
   const y = Math.floor(mecha.y);
   const f = mecha.facing;
 
-  // 腿部跑动动画
-  const runFrame = Math.floor(frameCount / 5) % 2;
-  const legOffset = mecha.state === 'run' ? (runFrame === 0 ? 0 : 6) : 0;
-  drawPixelRect(ctx, x + 8, y + 48, 12, 16, darkColor);
-  drawPixelRect(ctx, x + 28, y + 48 - legOffset, 12, 16, darkColor);
+  // 待机呼吸 / 受击后仰偏移
+  let bodyOffsetX = 0;
+  let bodyOffsetY = 0;
+  let bodyTilt = 0;
+
+  if (mecha.state === 'idle') {
+    bodyOffsetY = Math.sin(frameCount * 0.12) * 1.5;
+  } else if (mecha.state === 'hurt' || mecha.state === 'ko') {
+    bodyOffsetX = -f * 6;
+    bodyTilt = -f * 0.15;
+  }
+
+  ctx.save();
+  ctx.translate(x + MECHA_WIDTH / 2, y + MECHA_HEIGHT / 2 + bodyOffsetY);
+  ctx.rotate(bodyTilt);
+  ctx.translate(-(x + MECHA_WIDTH / 2), -(y + MECHA_HEIGHT / 2));
+
+  const bx = x + bodyOffsetX;
+  const by = y + bodyOffsetY;
+
+  // 腿部动画
+  let leftLegH = 16;
+  let rightLegH = 16;
+  let leftLegY = by + 48;
+  let rightLegY = by + 48;
+
+  if (mecha.state === 'run') {
+    const runFrame = Math.floor(frameCount / 4) % 2;
+    if (runFrame === 0) {
+      leftLegH = 12;
+      rightLegY = by + 44;
+    } else {
+      rightLegH = 12;
+      leftLegY = by + 44;
+    }
+  } else if (mecha.state === 'jump') {
+    leftLegY = by + 52;
+    rightLegY = by + 52;
+    leftLegH = 10;
+    rightLegH = 10;
+  } else if (mecha.state === 'hurt' || mecha.state === 'ko') {
+    leftLegY = by + 54;
+    rightLegY = by + 50;
+  }
+
+  drawPixelRect(ctx, bx + 8, leftLegY, 12, leftLegH, darkColor);
+  drawPixelRect(ctx, bx + 28, rightLegY, 12, rightLegH, darkColor);
 
   // 躯干
-  drawPixelRect(ctx, x + 4, y + 20, 40, 32, color);
+  drawPixelRect(ctx, bx + 4, by + 20, 40, 32, color);
 
   // 胸甲高光
-  drawPixelRect(ctx, x + 10, y + 26, 28, 8, accentColor);
+  drawPixelRect(ctx, bx + 10, by + 26, 28, 8, accentColor);
 
   // 头部
-  drawPixelRect(ctx, x + 12, y + 4, 24, 20, color);
-  drawPixelRect(ctx, x + 16, y + 10, 16, 6, '#111111');
+  drawPixelRect(ctx, bx + 12, by + 4, 24, 20, color);
+  drawPixelRect(ctx, bx + 16, by + 10, 16, 6, '#111111');
 
   // 眼睛
   const eyeColor = mecha.state === 'ko' ? '#333333' : '#FFFFFF';
-  drawPixelRect(ctx, x + (f === 1 ? 24 : 8), y + 12, 8, 4, eyeColor);
+  drawPixelRect(ctx, bx + (f === 1 ? 24 : 8), by + 12, 8, 4, eyeColor);
 
-  // 手臂 / 武器
-  const armX = f === 1 ? x + 36 : x - 8;
-  drawPixelRect(ctx, armX, y + 28, 16, 8, darkColor);
+  // 手臂动画
+  let armX = f === 1 ? bx + 36 : bx - 8;
+  let armY = by + 28;
 
-  // 冲刺残影
-  if (mecha.state === 'dash') {
-    ctx.fillStyle = color;
-    ctx.globalAlpha = 0.35;
-    for (let i = 1; i <= 3; i++) {
-      const ghostX = x - f * i * 18;
-      ctx.fillRect(ghostX, y, MECHA_WIDTH, MECHA_HEIGHT);
-    }
-    ctx.globalAlpha = 1;
+  if (mecha.state === 'run') {
+    armY = by + 24 + Math.sin(frameCount * 0.3) * 4;
+  } else if (mecha.state === 'jump') {
+    armY = by + 18;
+    armX = f === 1 ? bx + 34 : bx - 6;
+  } else if (mecha.state === 'attack' || mecha.state === 'skill') {
+    armX = f === 1 ? bx + 42 : bx - 14;
+  } else if (mecha.state === 'throw') {
+    armX = f === 1 ? bx + 40 : bx - 12;
+    armY = by + 22;
   }
+
+  drawPixelRect(ctx, armX, armY, 16, 8, darkColor);
 
   // 攻击 / 技能拖尾
   if (mecha.state === 'attack' || mecha.state === 'skill' || mecha.state === 'throw') {
-    ctx.fillStyle = color;
-    ctx.globalAlpha = 0.5;
-    const slashX = f === 1 ? x + MECHA_WIDTH : x - 48;
-    ctx.fillRect(slashX, y + 16, 48, 32);
+    const gradient = ctx.createLinearGradient(
+      f === 1 ? bx + MECHA_WIDTH : bx,
+      by + 16,
+      f === 1 ? bx + MECHA_WIDTH + 48 : bx - 48,
+      by + 48,
+    );
+    gradient.addColorStop(0, getElementColor(mecha.element));
+    gradient.addColorStop(1, 'transparent');
+    ctx.fillStyle = gradient;
+    ctx.globalAlpha = 0.6;
+    const slashX = f === 1 ? bx + MECHA_WIDTH : bx - 48;
+    ctx.fillRect(slashX, by + 16, 48, 32);
     ctx.globalAlpha = 1;
   }
 
@@ -130,8 +231,8 @@ function drawMechaBody(
   if (mecha.state === 'defend') {
     ctx.fillStyle = accentColor;
     ctx.globalAlpha = 0.25 + Math.sin(mecha.defendFlash * 0.8) * 0.1;
-    const shieldX = f === 1 ? x + MECHA_WIDTH - 4 : x - 8;
-    ctx.fillRect(shieldX, y + 8, 12, 48);
+    const shieldX = f === 1 ? bx + MECHA_WIDTH - 4 : bx - 8;
+    ctx.fillRect(shieldX, by + 8, 12, 48);
     ctx.globalAlpha = 1;
   }
 
@@ -140,7 +241,7 @@ function drawMechaBody(
     ctx.strokeStyle = COLORS.gold;
     ctx.lineWidth = 2;
     ctx.globalAlpha = 0.6 + Math.sin(frameCount * 0.5) * 0.3;
-    ctx.strokeRect(x - 6, y - 6, MECHA_WIDTH + 12, MECHA_HEIGHT + 12);
+    ctx.strokeRect(bx - 6, by - 6, MECHA_WIDTH + 12, MECHA_HEIGHT + 12);
     ctx.globalAlpha = 1;
   }
 
@@ -148,9 +249,11 @@ function drawMechaBody(
   if (mecha.state === 'hurt' || mecha.state === 'ko') {
     ctx.globalAlpha = 0.6;
     ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(x, y, MECHA_WIDTH, MECHA_HEIGHT);
+    ctx.fillRect(bx, by, MECHA_WIDTH, MECHA_HEIGHT);
     ctx.globalAlpha = 1;
   }
+
+  ctx.restore();
 }
 
 export function drawMecha(
@@ -166,6 +269,22 @@ export function drawMecha(
   ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
   ctx.fillRect(mecha.x + 4, GROUND_Y - 4, MECHA_WIDTH - 8, 4);
 
+  // 冲刺残影
+  if (mecha.state === 'dash') {
+    ctx.fillStyle = color;
+    ctx.globalAlpha = 0.25;
+    for (let i = 1; i <= 4; i++) {
+      const ghostX = mecha.x - mecha.facing * i * 16;
+      ctx.fillRect(ghostX, mecha.y, MECHA_WIDTH, MECHA_HEIGHT);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // 元素光晕
+  if (mecha.state !== 'ko') {
+    drawElementalAura(ctx, mecha, frameCount);
+  }
+
   drawMechaBody(ctx, mecha, color, darkColor, accentColor, frameCount);
 }
 
@@ -175,7 +294,15 @@ export function drawSlashTrails(
 ): void {
   slashes.forEach((s) => {
     const alpha = s.life / s.maxLife;
-    ctx.fillStyle = s.color;
+    const gradient = ctx.createLinearGradient(
+      s.facing === 1 ? s.x : s.x + s.width,
+      s.y,
+      s.facing === 1 ? s.x + s.width : s.x,
+      s.y,
+    );
+    gradient.addColorStop(0, s.color);
+    gradient.addColorStop(1, 'transparent');
+    ctx.fillStyle = gradient;
     ctx.globalAlpha = alpha;
     ctx.fillRect(Math.floor(s.x), Math.floor(s.y), s.width, s.height);
   });
@@ -189,20 +316,26 @@ export function drawProjectiles(
   projectiles.forEach((p) => {
     ctx.fillStyle = p.color;
     ctx.shadowColor = p.color;
-    ctx.shadowBlur = 10;
+    ctx.shadowBlur = 14;
     ctx.beginPath();
     ctx.arc(Math.floor(p.x), Math.floor(p.y), p.radius, 0, Math.PI * 2);
     ctx.fill();
     ctx.shadowBlur = 0;
 
+    // 核心亮点
+    ctx.fillStyle = '#FFFFFF';
+    ctx.beginPath();
+    ctx.arc(Math.floor(p.x), Math.floor(p.y), p.radius * 0.5, 0, Math.PI * 2);
+    ctx.fill();
+
     // 尾焰
     ctx.fillStyle = p.color;
-    ctx.globalAlpha = 0.4;
+    ctx.globalAlpha = 0.5;
     ctx.fillRect(
-      Math.floor(p.x - (p.vx > 0 ? 18 : -18)),
-      Math.floor(p.y - 3),
-      18,
-      6,
+      Math.floor(p.x - (p.vx > 0 ? 22 : -22)),
+      Math.floor(p.y - 4),
+      22,
+      8,
     );
     ctx.globalAlpha = 1;
   });
@@ -216,7 +349,10 @@ export function drawParticles(
     const alpha = p.life / p.maxLife;
     ctx.fillStyle = p.color;
     ctx.globalAlpha = alpha;
+    ctx.shadowColor = p.color;
+    ctx.shadowBlur = 4;
     ctx.fillRect(Math.floor(p.x), Math.floor(p.y), p.size, p.size);
+    ctx.shadowBlur = 0;
   });
   ctx.globalAlpha = 1;
 }
@@ -249,7 +385,7 @@ export function drawScene(
   // 必杀特写缩放
   if (state.ultimateCinematic > 0) {
     const progress = 1 - state.ultimateCinematic / 40;
-    const scale = 1 + progress * 0.25;
+    const scale = 1 + progress * 0.3;
     ctx.translate(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
     ctx.scale(scale, scale);
     ctx.translate(-CANVAS_WIDTH / 2, -CANVAS_HEIGHT / 2);

@@ -80,7 +80,7 @@ export const KEY_MAP = {
     attack: 'KeyF',
     skill1: 'KeyG',
     skill2: 'KeyH',
-    throw: 'KeyH',
+    throw: 'KeyT',
     ultimate: 'Space',
     dash: 'KeyQ',
     projectile: 'KeyE',
@@ -94,11 +94,30 @@ export const KEY_MAP = {
     attack: 'KeyL',
     skill1: 'Semicolon',
     skill2: 'Quote',
-    throw: 'Quote',
+    throw: 'KeyK',
     ultimate: 'Enter',
     dash: 'KeyO',
     projectile: 'KeyP',
     counter: 'BracketRight',
+  },
+};
+
+export const ELEMENT_CONFIG = {
+  fire: {
+    name: '赤焰',
+    primary: '#FF2A6D',
+    secondary: '#FF8C00',
+    bright: '#FFD700',
+    particle: '#FF4500',
+    auraColor: 'rgba(255, 69, 0, 0.25)',
+  },
+  electric: {
+    name: '雷霆',
+    primary: '#05D9E8',
+    secondary: '#B829DD',
+    bright: '#FFFFFF',
+    particle: '#00FFFF',
+    auraColor: 'rgba(5, 217, 232, 0.25)',
   },
 };
 

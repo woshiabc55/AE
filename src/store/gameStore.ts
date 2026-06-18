@@ -26,6 +26,7 @@ function createMecha(
   return {
     id,
     type,
+    element: id === 'red' ? 'fire' : 'electric',
     x: startX,
     y: GROUND_Y - MECHA_HEIGHT,
     vx: 0,
@@ -39,6 +40,7 @@ function createMecha(
       attack: 0,
       skill1: 0,
       skill2: 0,
+      throw: 0,
       ultimate: 0,
       dash: 0,
       projectile: 0,

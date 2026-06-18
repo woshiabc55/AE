@@ -5,13 +5,14 @@ import type {
   Projectile,
   SlashTrail,
   MechaType,
+  ElementType,
 } from './types';
 import {
   SKILL_CONFIG,
   MECHA_WIDTH,
   MECHA_HEIGHT,
-  COLORS,
   MECHA_TYPES,
+  ELEMENT_CONFIG,
 } from './constants';
 
 export interface HitResult {
@@ -41,6 +42,22 @@ export function getMechaTypeDarkColor(type: MechaType): string {
 
 export function getMechaTypeAccentColor(type: MechaType): string {
   return MECHA_TYPES[type].accentColor;
+}
+
+export function getElementColor(element: ElementType): string {
+  return ELEMENT_CONFIG[element].primary;
+}
+
+export function getElementSecondaryColor(element: ElementType): string {
+  return ELEMENT_CONFIG[element].secondary;
+}
+
+export function getElementBrightColor(element: ElementType): string {
+  return ELEMENT_CONFIG[element].bright;
+}
+
+export function getElementParticleColor(element: ElementType): string {
+  return ELEMENT_CONFIG[element].particle;
 }
 
 export function performAttack(
@@ -92,19 +109,13 @@ export function performAttack(
   }
 
   let damage = Math.floor(cfg.damage * MECHA_TYPES[attacker.type].damageMod);
-  let knockbackX = facing * (skillId === 'ultimate' ? 14 : skillId === 'skill2' ? 9 : 5);
-  let knockbackY = skillId === 'skill2' ? -5 : skillId === 'ultimate' ? -8 : -2;
+  let knockbackX = facing * (skillId === 'ultimate' ? 16 : skillId === 'skill2' ? 11 : skillId === 'throw' ? 12 : 6);
+  let knockbackY = skillId === 'skill2' ? -6 : skillId === 'ultimate' ? -9 : skillId === 'throw' ? -7 : -3;
 
   if (target.state === 'defend') {
     damage = Math.floor(damage * 0.3 * (1 / MECHA_TYPES[target.type].defenseMod));
     knockbackX = 0;
     knockbackY = 0;
-  }
-
-  if (skillId === 'throw') {
-    damage = Math.floor(damage * MECHA_TYPES[attacker.type].damageMod);
-    knockbackX = facing * 12;
-    knockbackY = -6;
   }
 
   return {
@@ -118,7 +129,6 @@ export function performAttack(
 }
 
 export function spawnProjectile(owner: Mecha): Projectile {
-  const color = getMechaTypeColor(owner.type);
   return {
     id: Math.random(),
     ownerId: owner.id,
@@ -127,7 +137,7 @@ export function spawnProjectile(owner: Mecha): Projectile {
     vx: owner.facing * 11,
     radius: 7,
     damage: Math.floor(10 * MECHA_TYPES[owner.type].damageMod),
-    color,
+    color: getElementColor(owner.element),
     life: 90,
   };
 }
@@ -135,7 +145,6 @@ export function spawnProjectile(owner: Mecha): Projectile {
 export function spawnSlashTrail(
   mecha: Mecha,
   width: number,
-  color: string,
 ): SlashTrail {
   return {
     id: Math.random(),
@@ -143,11 +152,37 @@ export function spawnSlashTrail(
     y: mecha.y + MECHA_HEIGHT * 0.25,
     width,
     height: MECHA_HEIGHT * 0.55,
-    color,
+    color: getElementColor(mecha.element),
     life: 10,
     maxLife: 10,
     facing: mecha.facing,
   };
+}
+
+export function spawnElementalParticles(
+  x: number,
+  y: number,
+  element: ElementType,
+  count = 6,
+): Particle[] {
+  const cfg = ELEMENT_CONFIG[element];
+  const particles: Particle[] = [];
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 1 + Math.random() * 3;
+    particles.push({
+      id: Math.random(),
+      x,
+      y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - (element === 'fire' ? 1.5 : 0),
+      life: 15 + Math.random() * 20,
+      maxLife: 35,
+      color: i % 2 === 0 ? cfg.primary : cfg.secondary,
+      size: 2 + Math.random() * 3,
+    });
+  }
+  return particles;
 }
 
 export function spawnHitParticles(
@@ -178,9 +213,10 @@ export function spawnHitParticles(
 export function spawnExplosionParticles(
   x: number,
   y: number,
-  color: string,
+  element: ElementType,
   count = 24,
 ): Particle[] {
+  const cfg = ELEMENT_CONFIG[element];
   const particles: Particle[] = [];
   for (let i = 0; i < count; i++) {
     const angle = Math.random() * Math.PI * 2;
@@ -193,7 +229,7 @@ export function spawnExplosionParticles(
       vy: Math.sin(angle) * speed - 3,
       life: 30 + Math.random() * 25,
       maxLife: 55,
-      color: i % 3 === 0 ? COLORS.white : color,
+      color: i % 3 === 0 ? cfg.bright : i % 3 === 1 ? cfg.primary : cfg.secondary,
       size: 3 + Math.random() * 5,
     });
   }
