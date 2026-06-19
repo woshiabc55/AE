@@ -25,7 +25,7 @@ import {
 } from './skills';
 
 export function clearCanvas(ctx: CanvasRenderingContext2D): void {
-  ctx.fillStyle = COLORS.bg;
+  ctx.fillStyle = '#0A1020';
   ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 }
 
@@ -33,49 +33,82 @@ export function drawBackground(
   ctx: CanvasRenderingContext2D,
   cameraX: number,
 ): void {
-  ctx.fillStyle = COLORS.bg;
+  // 天空渐变
+  const skyGradient = ctx.createLinearGradient(0, 0, 0, GROUND_Y);
+  skyGradient.addColorStop(0, '#0A1020');
+  skyGradient.addColorStop(0.5, '#182540');
+  skyGradient.addColorStop(1, '#2A3A55');
+  ctx.fillStyle = skyGradient;
   ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-  // 星空（最慢）
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
-  for (let i = 0; i < 80; i++) {
-    const x = ((i * 137) % (CANVAS_WIDTH + 200)) - cameraX * 0.03;
-    const wrappedX = ((x % (CANVAS_WIDTH + 200)) + (CANVAS_WIDTH + 200)) % (CANVAS_WIDTH + 200) - 100;
-    const y = (i * 73) % (GROUND_Y - 40);
-    const size = (i % 3) + 1;
-    ctx.fillRect(wrappedX, y, size, size);
+  // 远山（最慢）
+  ctx.fillStyle = '#0D1425';
+  for (let i = 0; i < 8; i++) {
+    const baseW = 300 + (i % 3) * 120;
+    const baseH = 120 + (i % 4) * 40;
+    const x = i * 350 - cameraX * 0.05;
+    const wrappedX = ((x % (CANVAS_WIDTH + baseW)) + (CANVAS_WIDTH + baseW)) % (CANVAS_WIDTH + baseW) - baseW;
+    ctx.beginPath();
+    ctx.moveTo(wrappedX, GROUND_Y);
+    ctx.lineTo(wrappedX + baseW / 2, GROUND_Y - baseH);
+    ctx.lineTo(wrappedX + baseW, GROUND_Y);
+    ctx.fill();
   }
 
-  // 远景建筑（中速）
-  ctx.fillStyle = '#12141F';
-  for (let i = 0; i < 24; i++) {
-    const w = 60 + (i % 4) * 30;
-    const h = 80 + (i % 5) * 40;
-    const x = i * 110 - cameraX * 0.12;
-    const wrappedX = ((x % (CANVAS_WIDTH + 400)) + (CANVAS_WIDTH + 400)) % (CANVAS_WIDTH + 400) - 200;
-    ctx.fillRect(wrappedX, GROUND_Y - h, w, h);
+  // 中景山脉
+  ctx.fillStyle = '#14203A';
+  for (let i = 0; i < 10; i++) {
+    const baseW = 200 + (i % 3) * 60;
+    const baseH = 70 + (i % 4) * 25;
+    const x = i * 280 - cameraX * 0.1;
+    const wrappedX = ((x % (CANVAS_WIDTH + baseW)) + (CANVAS_WIDTH + baseW)) % (CANVAS_WIDTH + baseW) - baseW;
+    ctx.beginPath();
+    ctx.moveTo(wrappedX, GROUND_Y);
+    ctx.lineTo(wrappedX + baseW / 2, GROUND_Y - baseH);
+    ctx.lineTo(wrappedX + baseW, GROUND_Y);
+    ctx.fill();
+  }
+
+  // 星星
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+  for (let i = 0; i < 40; i++) {
+    const x = ((i * 137) % (CANVAS_WIDTH + 100)) - cameraX * 0.02;
+    const wrappedX = ((x % (CANVAS_WIDTH + 100)) + (CANVAS_WIDTH + 100)) % (CANVAS_WIDTH + 100) - 50;
+    const y = (i * 53) % (GROUND_Y / 2);
+    if (i % 7 === 0) ctx.fillRect(wrappedX, y, 2, 2);
   }
 }
 
 export function drawGround(
   ctx: CanvasRenderingContext2D,
 ): void {
-  // 地面
-  ctx.fillStyle = COLORS.ground;
+  // 草地
+  const grassGradient = ctx.createLinearGradient(0, GROUND_Y, 0, CANVAS_HEIGHT);
+  grassGradient.addColorStop(0, '#1A2E20');
+  grassGradient.addColorStop(0.4, '#0F1A14');
+  grassGradient.addColorStop(1, '#0A120D');
+  ctx.fillStyle = grassGradient;
   ctx.fillRect(0, GROUND_Y, WORLD_WIDTH, CANVAS_HEIGHT - GROUND_Y);
 
-  ctx.fillStyle = COLORS.groundLine;
-  for (let x = 0; x < WORLD_WIDTH; x += 40) {
-    ctx.fillRect(x, GROUND_Y, 2, CANVAS_HEIGHT - GROUND_Y);
-  }
-  for (let y = GROUND_Y; y < CANVAS_HEIGHT; y += 40) {
-    ctx.fillRect(0, y, WORLD_WIDTH, 2);
+  // 草地纹理
+  ctx.fillStyle = 'rgba(46, 125, 50, 0.25)';
+  for (let x = 0; x < WORLD_WIDTH; x += 24) {
+    const h = 6 + (x % 3) * 3;
+    ctx.fillRect(x, GROUND_Y, 3, h);
   }
 
-  ctx.fillStyle = COLORS.blue;
-  ctx.globalAlpha = 0.4;
-  ctx.fillRect(0, GROUND_Y - 2, WORLD_WIDTH, 4);
-  ctx.globalAlpha = 1;
+  // 地面装饰石块
+  ctx.fillStyle = 'rgba(100, 100, 110, 0.3)';
+  for (let i = 0; i < 20; i++) {
+    const x = (i * 137) % WORLD_WIDTH;
+    const y = GROUND_Y + 20 + (i * 23) % (CANVAS_HEIGHT - GROUND_Y - 30);
+    const size = 4 + (i % 3) * 2;
+    ctx.fillRect(x, y, size, size);
+  }
+
+  // 地面高光线
+  ctx.fillStyle = 'rgba(80, 160, 90, 0.4)';
+  ctx.fillRect(0, GROUND_Y - 2, WORLD_WIDTH, 3);
 }
 
 function drawPixelRect(
@@ -140,7 +173,7 @@ function drawElementalAura(
   ctx.globalAlpha = 1;
 }
 
-function drawMechaBody(
+function drawCharacterBody(
   ctx: CanvasRenderingContext2D,
   mecha: Mecha,
   color: string,
@@ -151,8 +184,8 @@ function drawMechaBody(
   const x = Math.floor(mecha.x);
   const y = Math.floor(mecha.y);
   const f = mecha.facing;
+  const t = mecha.type;
 
-  // 待机呼吸 / 受击后仰偏移
   let bodyOffsetX = 0;
   let bodyOffsetY = 0;
   let bodyTilt = 0;
@@ -197,24 +230,61 @@ function drawMechaBody(
     rightLegY = by + 50;
   }
 
-  drawPixelRect(ctx, bx + 8, leftLegY, 12, leftLegH, darkColor);
-  drawPixelRect(ctx, bx + 28, rightLegY, 12, rightLegH, darkColor);
+  // 通用腿部
+  const legColor = darkColor;
+  drawPixelRect(ctx, bx + 10, leftLegY, 10, leftLegH, legColor);
+  drawPixelRect(ctx, bx + 28, rightLegY, 10, rightLegH, legColor);
 
-  // 躯干
-  drawPixelRect(ctx, bx + 4, by + 20, 40, 32, color);
-
-  // 胸甲高光
-  drawPixelRect(ctx, bx + 10, by + 26, 28, 8, accentColor);
-
-  // 头部
-  drawPixelRect(ctx, bx + 12, by + 4, 24, 20, color);
-  drawPixelRect(ctx, bx + 16, by + 10, 16, 6, '#111111');
+  // 身体与装备按职业绘制
+  if (t === 'mage') {
+    // 黑魔：长袍 + 法杖
+    drawPixelRect(ctx, bx + 6, by + 18, 36, 34, color);
+    drawPixelRect(ctx, bx + 10, by + 24, 28, 4, accentColor);
+    // 兜帽头部
+    drawPixelRect(ctx, bx + 12, by + 2, 24, 20, color);
+    drawPixelRect(ctx, bx + 14, by + 8, 20, 4, '#111111');
+    // 法杖
+    const staffX = f === 1 ? bx + 40 : bx - 6;
+    drawPixelRect(ctx, staffX, by + 10, 4, 46, '#5A4A3A');
+    drawPixelRect(ctx, staffX - 2, by + 6, 8, 6, accentColor);
+  } else if (t === 'tank') {
+    // 骑士：重甲 + 大盾
+    drawPixelRect(ctx, bx + 4, by + 18, 40, 34, color);
+    drawPixelRect(ctx, bx + 8, by + 22, 32, 6, accentColor);
+    // 头盔
+    drawPixelRect(ctx, bx + 10, by + 4, 28, 18, color);
+    drawPixelRect(ctx, bx + 14, by + 10, 20, 4, '#111111');
+    // 盾牌
+    const shieldX = f === 1 ? bx - 6 : bx + MECHA_WIDTH - 6;
+    drawPixelRect(ctx, shieldX, by + 18, 10, 32, '#7A7A8A');
+    drawPixelRect(ctx, shieldX + 2, by + 28, 6, 10, accentColor);
+  } else if (t === 'speed') {
+    // 盗贼：紧身衣 + 双匕首
+    drawPixelRect(ctx, bx + 8, by + 20, 32, 30, color);
+    drawPixelRect(ctx, bx + 12, by + 26, 24, 4, accentColor);
+    // 头巾
+    drawPixelRect(ctx, bx + 12, by + 4, 24, 18, darkColor);
+    drawPixelRect(ctx, bx + 14, by + 12, 20, 4, '#111111');
+    // 围巾
+    drawPixelRect(ctx, bx + 10, by + 20, 28, 5, accentColor);
+  } else {
+    // 战士：铠甲 + 大剑
+    drawPixelRect(ctx, bx + 6, by + 18, 36, 34, color);
+    drawPixelRect(ctx, bx + 10, by + 24, 28, 6, accentColor);
+    // 头盔
+    drawPixelRect(ctx, bx + 12, by + 4, 24, 18, color);
+    drawPixelRect(ctx, bx + 16, by + 10, 16, 4, '#111111');
+    // 大剑背/持
+    const swordX = f === 1 ? bx - 4 : bx + MECHA_WIDTH - 4;
+    drawPixelRect(ctx, swordX, by + 6, 6, 44, '#8A8A9A');
+    drawPixelRect(ctx, swordX - 2, by + 46, 10, 4, '#5A5A6A');
+  }
 
   // 眼睛
   const eyeColor = mecha.state === 'ko' ? '#333333' : '#FFFFFF';
   drawPixelRect(ctx, bx + (f === 1 ? 24 : 8), by + 12, 8, 4, eyeColor);
 
-  // 手臂动画
+  // 手臂
   let armX = f === 1 ? bx + 36 : bx - 8;
   let armY = by + 28;
 
@@ -249,7 +319,7 @@ function drawMechaBody(
     ctx.globalAlpha = 1;
   }
 
-  // 防御护盾
+  // 防御护盾 / 骑士举盾
   if (mecha.state === 'defend') {
     ctx.fillStyle = accentColor;
     ctx.globalAlpha = 0.25 + Math.sin(mecha.defendFlash * 0.8) * 0.1;
@@ -307,7 +377,7 @@ export function drawMecha(
     drawElementalAura(ctx, mecha, frameCount);
   }
 
-  drawMechaBody(ctx, mecha, color, darkColor, accentColor, frameCount);
+  drawCharacterBody(ctx, mecha, color, darkColor, accentColor, frameCount);
 }
 
 export function drawSlashTrails(
