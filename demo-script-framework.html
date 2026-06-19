@@ -136,6 +136,62 @@
     }
     .summary p { margin: 6px 0; font-size: 14px; }
 
+    .flowchart {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .flow-node {
+      background: linear-gradient(135deg, #232833 0%, #1a1d23 100%);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      min-width: 110px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text);
+      position: relative;
+    }
+    .flow-node strong {
+      display: block;
+      color: var(--accent);
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    .flow-node small {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .flow-arrow {
+      color: var(--accent);
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .flow-stack {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      width: 100%;
+      margin-top: 24px;
+    }
+    .stack-layer {
+      background: rgba(143,168,201,0.08);
+      border: 1px solid rgba(143,168,201,0.2);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      font-size: 13px;
+    }
+    .stack-layer .layer-name { color: var(--accent2); font-weight: 600; margin-bottom: 4px; }
+    .stack-layer .layer-data { color: var(--muted); font-size: 11px; }
+
     @media (max-width: 720px) {
       .structure { grid-template-columns: 1fr; }
       .tension-chart { height: 200px; }
@@ -266,7 +322,47 @@
     </section>
 
     <section>
-      <h2>五、核心设计总结</h2>
+      <h2>五、框架原理图</h2>
+      <div class="flowchart">
+        <div class="flow-node"><strong>创意概念</strong><small>一句话 + 主题</small></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node"><strong>三幕结构</strong><small>幕/比例/转折点</small></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node"><strong>角色设定</strong><small>目标/缺陷/弧线</small></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node"><strong>节拍时间线</strong><small>Hook/中点/高潮</small></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node"><strong>对白/分镜</strong><small>潜台词 + 镜头</small></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node"><strong>HTML 框架图</strong><small>可视化交付物</small></div>
+      </div>
+
+      <div class="flow-stack">
+        <div class="stack-layer">
+          <div class="layer-name">结构层</div>
+          <div class="layer-data">三幕比例 + 关键转折</div>
+        </div>
+        <div class="stack-layer">
+          <div class="layer-name">角色层</div>
+          <div class="layer-data">人物卡片 + 关系网</div>
+        </div>
+        <div class="stack-layer">
+          <div class="layer-name">时间线层</div>
+          <div class="layer-data">节拍事件 + 页码/秒数</div>
+        </div>
+        <div class="stack-layer">
+          <div class="layer-name">情绪层</div>
+          <div class="layer-data">张力曲线 + 情感标签</div>
+        </div>
+        <div class="stack-layer">
+          <div class="layer-name">总结层</div>
+          <div class="layer-data">反转 + 主题 + 平台适配</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>六、核心设计总结</h2>
       <div class="summary">
         <p><strong>反转核心：</strong>观众以为女主是猎物，实际上她是诱饵。</p>
         <p><strong>主题回扣：</strong>真正的保护不是时刻陪伴，而是信任与预案。</p>
