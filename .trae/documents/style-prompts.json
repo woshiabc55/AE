@@ -1,0 +1,212 @@
+{
+  "meta": {
+    "project": "AE.GG · 电竞数据驾驶舱",
+    "version": "1.0.0",
+    "purpose": "统一项目 UI 设计系统的提示词库,用于指导配色、字体、布局、动效、组件风格,确保后续页面/组件画风一致",
+    "lastUpdated": "2026-06-17",
+    "language": "zh-CN"
+  },
+  "direction": {
+    "name": "方向定义",
+    "description": "深色科技感 HUD / Cyberpunk 电竞数据驾驶舱。信息密度高但层级清晰,强调数据可读性与未来感。",
+    "prompt": "dark-tech HUD dashboard, cyberpunk esports data cockpit, high information density with clear hierarchy, neon accents on deep navy-black background, grid texture, military-spec interfaces, futuristic yet readable"
+  },
+  "color": {
+    "name": "色彩系统",
+    "description": "以深夜蓝黑为底,霓虹青为主强调色,辅以品红、琥珀、紫罗兰形成四色霓虹体系。",
+    "mode": "dark-only",
+    "background": [
+      { "token": "--bg-primary",   "hex": "#0A0E1A", "usage": "主背景色" },
+      { "token": "--bg-secondary", "hex": "#111827", "usage": "卡片/面板底色" },
+      { "token": "--bg-tertiary",  "hex": "#1A2238", "usage": "次级容器/表单边框" },
+      { "token": "--bg-elevated",  "hex": "rgba(17,24,39,0.72)", "usage": "毛玻璃浮层面板" }
+    ],
+    "accent": [
+      { "token": "--accent-primary",   "hex": "#00E5FF", "usage": "主强调 / 图表主色 / 激活态 / 科技光晕", "prompt": "neon cyan #00E5FF, electric glow, primary interactive accent" },
+      { "token": "--accent-secondary", "hex": "#FF2E63", "usage": "次强调 / 警告 / 热门 / 女性/中国元素", "prompt": "hot magenta #FF2E63, danger/heat accent, vivid rose neon" },
+      { "token": "--accent-tertiary",  "hex": "#FFD460", "usage": "稀有度/金色品质/数值高亮", "prompt": "amber gold #FFD460, legendary rarity, premium highlight" },
+      { "token": "--accent-quaternary","hex": "#A78BFA", "usage": "第三辅助 / 图表补色 / 阵营", "prompt": "violet #A78BFA, mystical/arcane accent" }
+    ],
+    "text": [
+      { "token": "--text-primary",   "hex": "#E6F1FF", "usage": "标题 / 正文 / 关键数据" },
+      { "token": "--text-secondary", "hex": "#8892B0", "usage": "副标题 / 图例 / 次级说明" },
+      { "token": "--text-muted",     "hex": "#5B6478", "usage": "装饰性编号 / 时间戳 / 禁用态" }
+    ],
+    "border": [
+      { "token": "--border-soft",   "hex": "rgba(0,229,255,0.16)", "usage": "默认边框" },
+      { "token": "--border-mid",    "hex": "rgba(0,229,255,0.32)", "usage": "悬浮态边框" },
+      { "token": "--border-strong", "hex": "rgba(0,229,255,0.6)",  "usage": "激活态/装饰角标" }
+    ],
+    "chartPalette": {
+      "description": "图表默认取色,按顺序使用,超过 10 项循环",
+      "values": ["#00E5FF", "#FF2E63", "#FFD460", "#A78BFA", "#4ADE80", "#60A5FA", "#F472B6", "#FB923C", "#34D399", "#22D3EE"]
+    },
+    "rolePalette": {
+      "description": "王者荣耀六大职业固定色",
+      "values": {
+        "tank":     "#00E5FF",
+        "warrior":  "#FF2E63",
+        "assassin": "#A78BFA",
+        "mage":     "#FFD460",
+        "marksman": "#4ADE80",
+        "support":  "#60A5FA"
+      }
+    },
+    "platformPalette": {
+      "description": "游戏平台固定色",
+      "values": {
+        "mobile":  "#00E5FF",
+        "pc":      "#FFD460",
+        "console": "#FF2E63"
+      }
+    },
+    "glow": [
+      { "token": "--glow-cyan",    "value": "0 0 24px rgba(0,229,255,0.45)",  "usage": "青色光晕" },
+      { "token": "--glow-magenta", "value": "0 0 24px rgba(255,46,99,0.4)",   "usage": "品红光晕" },
+      { "token": "--glow-amber",   "value": "0 0 24px rgba(255,212,96,0.4)",  "usage": "琥珀光晕" }
+    ]
+  },
+  "typography": {
+    "name": "字体系统",
+    "description": "Display 字体营造科技感,中文正文使用 Noto Sans SC,等宽 JetBrains Mono 用于数据与编号。",
+    "families": [
+      { "role": "display / title / KPI number", "font": "Orbitron", "fallback": "Rajdhani, Noto Sans SC, system-ui", "weights": [500, 600, 700, 900], "usage": "页面标题、卡片标题、数字指标" },
+      { "role": "body / UI text", "font": "Noto Sans SC", "fallback": "Inter, system-ui, -apple-system", "weights": [400, 500, 700], "usage": "正文、按钮、标签" },
+      { "role": "mono / data / index", "font": "JetBrains Mono", "fallback": "ui-monospace, monospace", "weights": [500, 700], "usage": "编号、时间戳、数值、筛选标签" }
+    ],
+    "prompt": "Display font Orbitron for headings and KPI numbers, Noto Sans SC for body, JetBrains Mono for data/monospace labels, generous letter-spacing, uppercase tech labels"
+  },
+  "layout": {
+    "name": "布局与空间",
+    "description": "左侧固定导航 + 右侧主内容区,Desktop-first;网格系统以 4px 为基数,面板带 L 角装饰。",
+    "tokens": [
+      { "token": "sidebar-width", "value": "240px", "usage": "左侧导航栏宽度" },
+      { "token": "panel-radius",  "value": "4px",   "usage": "卡片/面板圆角" },
+      { "token": "panel-padding", "value": "22px",  "usage": "面板内边距" },
+      { "token": "grid-gap",      "value": "18px",  "usage": "面板/网格间距" },
+      { "token": "base-unit",     "value": "4px",   "usage": "间距基数" }
+    ],
+    "patterns": [
+      "左侧 sticky 导航,右侧 max-width 1600px 内容区",
+      "KPI 卡片使用 4 列网格,次级图表使用 2 列或 3 列网格",
+      "所有面板统一 corner-mark(L 形角标)装饰",
+      "标题左侧带 3px 渐变竖条(page-title::before)"
+    ],
+    "prompt": "left fixed sidebar, right content area max-width 1600px, 4-column KPI grid, 2/3-column chart grid, L-shaped corner markers on panels, tight 18px grid gap"
+  },
+  "background": {
+    "name": "背景与氛围",
+    "description": "深蓝黑底色 + 顶部青色 radial-gradient 光晕 + 极细网格底纹,营造驾驶舱氛围。",
+    "layers": [
+      { "layer": 1, "type": "solid", "value": "#0A0E1A", "note": "最底层纯色" },
+      { "layer": 2, "type": "radial-gradient", "value": "ellipse 80% 50% at 50% -10%, rgba(0,229,255,0.12), transparent 70%", "note": "顶部青色光晕" },
+      { "layer": 3, "type": "radial-gradient", "value": "ellipse 60% 40% at 90% 100%, rgba(167,139,250,0.08), transparent 70%", "note": "右下角紫色光晕" },
+      { "layer": 4, "type": "grid", "value": "24px × 24px, rgba(0,229,255,0.04)", "note": "细网格,固定(fixed)" }
+    ],
+    "prompt": "deep navy-black background #0A0E1A, top cyan radial glow, bottom-right violet glow, subtle 24px cyan grid overlay, fixed background-attachment, dark HUD atmosphere"
+  },
+  "components": {
+    "name": "组件风格",
+    "items": [
+      {
+        "component": "KPI Card",
+        "style": "深色半透明背景,顶部 1px 霓虹渐变线,大字号 Orbitron 数字,底部 trend 小字,悬浮上移 2px",
+        "prompt": "frosted dark KPI card, top neon gradient line, large Orbitron number, small mono trend text, hover lift 2px"
+      },
+      {
+        "component": "Panel / Chart Card",
+        "style": "1px 半透明青边框,4px 圆角,L 形角标装饰,标题前带发光圆点,悬浮边框变亮",
+        "prompt": "dark glass panel with 1px cyan border, 4px radius, L-shaped neon corner markers, glowing dot before title, hover border brightens"
+      },
+      {
+        "component": "Filter Chip",
+        "style": "等宽小写字母,1px 边框,激活态青色边框 + 内发光背景",
+        "prompt": "mono uppercase filter chips, 1px border, active state cyan border with inner glow"
+      },
+      {
+        "component": "Game Card",
+        "style": "顶部 2px 类型色条,标签带边框分类色,底部分隔虚线,悬浮上移 3px",
+        "prompt": "game card with top 2px category color strip, colored bordered tags, dashed bottom separator, hover lift 3px"
+      },
+      {
+        "component": "Navigation Item",
+        "style": "左侧 2px 透明边框,激活态青色左边框 + 渐变背景,编号用等宽字",
+        "prompt": "nav item with left 2px transparent border, active cyan left border and gradient background, mono index number"
+      }
+    ]
+  },
+  "motion": {
+    "name": "动效系统",
+    "description": "克制而精准,以 CSS 为主;强调数字入场、图表 stagger、悬浮光晕与脉冲指示器。",
+    "tokens": [
+      { "name": "fast",    "duration": "160ms", "easing": "ease", "usage": "悬浮态、边框/颜色过渡" },
+      { "name": "normal",  "duration": "200ms", "easing": "ease", "usage": "面板悬浮、卡片抬升" },
+      { "name": "slow",    "duration": "1.6s",  "easing": "ease-in-out", "usage": "脉冲指示器 pulse" }
+    ],
+    "effects": [
+      "KPI 数字计数动画(从 0 递增)",
+      "图表进入时使用 ECharts animationDuration + animationEasing",
+      "卡片/面板悬浮:边框变亮 + 轻微 translateY(-2px ~ -3px)",
+      "激活态左侧导航:青色左边框 + 渐变背景",
+      "角落 status pulse:青色呼吸点"
+    ],
+    "prompt": "subtle precision motion, CSS-only micro-interactions, counter animations on KPI numbers, hover lift with border glow, status pulse dot, chart stagger entrance"
+  },
+  "dataVisualization": {
+    "name": "图表视觉规范",
+    "description": "所有图表均使用深色主题,axis 使用 muted 色,grid 线低对比,数据系列优先使用 chartPalette。",
+    "rules": [
+      "tooltip: 深黑半透明背景 + 青色边框 + 白字",
+      "axis labels: JetBrains Mono 或 Noto Sans SC, #5B6478 / #8892B0",
+      "splitLine: rgba(0,229,255,0.06)",
+      "bar: 渐变色从左到右,item 圆角 2px",
+      "pie/donut: 扇区间隔 2-3px 深色边框,环中心可放总数/标签",
+      "scatter: 透明度 0.78,根据数值大小映射 symbolSize",
+      "treemap: 深色间隔线,label 使用 Orbitron"
+    ],
+    "prompt": "dark-themed ECharts, semi-transparent black tooltip with cyan border, muted axis labels, low-contrast cyan grid lines, gradient bars, neon pie segments, area charts with fading gradients"
+  },
+  "language": {
+    "name": "文案与语气",
+    "description": "中英混合,标题大写/等宽,次级说明中文。科技感、数据驱动、电竞行业语境。",
+    "rules": [
+      "页面/面板标题:英文全大写 + 中文补充,如 'CORE METRICS · 核心分布'",
+      "标签:全大写英文,如 RATING、PEAK CCU、RELEASE",
+      "KPI 单位放在数字后,英文全大写,如 110 HEROES / 528 SKINS",
+      "避免 emoji,避免口语化,保持克制专业"
+    ],
+    "prompt": "bilingual tech dashboard copy, uppercase English labels with Chinese subtitles, no emojis, precise esports data terminology"
+  },
+  "doNot": {
+    "name": "画风禁忌",
+    "items": [
+      "不要使用浅色/白色背景",
+      "不要使用 Tailwind 默认配色或通用 purple-gradient-on-white",
+      "不要使用圆角过大(border-radius > 8px)的组件",
+      "不要使用拟物阴影;统一使用扁平 + 光晕",
+      "不要直接使用游戏官方 logo/原画/截图,以几何/文字/色块代替",
+      "不要使用 emoji 或卡通化图标"
+    ]
+  },
+  "examplePrompts": {
+    "name": "可直接使用的组合提示词",
+    "items": [
+      {
+        "scene": "生成 Dashboard 背景氛围图",
+        "prompt": "Dark cyberpunk esports data cockpit background, deep navy-black #0A0E1A, subtle cyan grid lines, top cyan radial glow, bottom-right violet glow, HUD interface elements, no text, no logo, abstract futuristic tech mood, 4K, high detail"
+      },
+      {
+        "scene": "生成 KPI 卡片组件设计稿",
+        "prompt": "HUD-style KPI card UI, frosted dark glass, 1px cyan border #00E5FF, L-shaped neon corner markers, large Orbitron number, small mono trend label, hover glow, no text content, esports dashboard component"
+      },
+      {
+        "scene": "生成左侧导航栏设计稿",
+        "prompt": "Dark tech sidebar UI, fixed width 240px, cyan active indicator, gradient background on active item, mono index numbers, no real game logos, minimal cyberpunk HUD navigation"
+      },
+      {
+        "scene": "生成图表配色方案",
+        "prompt": "Dark theme ECharts color palette: neon cyan #00E5FF, hot magenta #FF2E63, amber gold #FFD460, violet #A78BFA, green #4ADE80, blue #60A5FA, pink #F472B6, orange #FB923C, teal #34D399, sky #22D3EE"
+      }
+    ]
+  }
+}
