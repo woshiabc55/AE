@@ -13,12 +13,21 @@ from PIL import Image, ImageDraw, ImageFont
 ROOT = Path(__file__).resolve().parent
 ASSETS_DIR = ROOT / "assets"
 DATA_JSON = ASSETS_DIR / "data.json"
+GAMES_JSON = ROOT / "games.json"
 
-GAMES = [
-    {"id": "honor-of-kings", "name": "王者荣耀", "category": "MOBA", "keywords": ["李白", "貂蝉", "孙尚香"]},
-    {"id": "genshin-impact", "name": "原神", "category": "开放世界/RPG", "keywords": ["胡桃", "雷电将军", "芙宁娜"]},
-    {"id": "arknights", "name": "明日方舟", "category": "开放世界/RPG", "keywords": ["阿米娅", "能天使", "凯尔希"]},
-]
+def load_games_from_config():
+    config = load_json(GAMES_JSON)
+    games = []
+    for g in config.get("games", []):
+        keywords = g.get("fanartKeywords", [g["name"]])
+        # 取前 3 个关键词作为示例角色
+        games.append({
+            "id": g["id"],
+            "name": g["name"],
+            "category": g["category"],
+            "keywords": keywords[:3],
+        })
+    return games
 
 PLATFORMS = ["pixiv", "twitter", "bilibili", "lofter"]
 AUTH_STATUSES = ["unknown", "personal_only", "authorized", "no_repost"]
@@ -26,10 +35,9 @@ AUTH_STATUSES = ["unknown", "personal_only", "authorized", "no_repost"]
 
 def load_json(path: Path):
     if not path.exists():
-        return []
+        return {}
     with path.open("r", encoding="utf-8") as f:
-        data = json.load(f)
-        return data if isinstance(data, list) else []
+        return json.load(f)
 
 
 def save_json(data, path: Path):
@@ -92,7 +100,8 @@ def main(count_per_game: int = 12):
     existing_ids = {item["id"] for item in data}
     random.seed(42)
 
-    for game in GAMES:
+    games = load_games_from_config()
+    for game in games:
         game_id = game["id"]
         game_name = game["name"]
         category = game["category"]
