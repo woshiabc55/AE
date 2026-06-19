@@ -18,6 +18,9 @@ game-assets-gallery/
 │   └── <game-id>/          # 按游戏分目录
 ├── games.json              # 游戏分类与抓取配置
 ├── scraper.py              # 通用抓取脚本
+├── fanart_gallerydl.py     # gallery-dl 二创抓取适配器
+├── build_data_index.py     # 扫描 assets/ 重建 data.json
+├── generate_demo_fanart.py # 生成示例二创占位图
 ├── index.html              # 可视化画廊
 └── README.md               # 本文件
 ```
@@ -73,6 +76,46 @@ python scraper.py --fanart -g honor-of-kings
 ```
 
 画廊界面会根据该字段显示授权标签、颜色标识，并支持按授权状态筛选。
+
+### 使用 gallery-dl 抓取真实二创
+
+项目额外提供 `fanart_gallerydl.py`，可直接调用 [gallery-dl](https://github.com/mikf/gallery-dl) 抓取 Pixiv、Twitter/X、Bilibili、LOFTER 等平台的真实二创图片，并自动转换为本项目索引格式。
+
+```bash
+# 安装 gallery-dl
+pip install gallery-dl
+
+# 在 games.json 中启用二创平台与游戏后执行
+python fanart_gallerydl.py
+```
+
+各平台配置说明：
+
+- **Pixiv**：需要在 `gallery-dl.conf` 中配置 `refresh-token`，或执行 `gallery-dl oauth:pixiv` 获取。
+- **Twitter/X**：需要配置 cookies 或登录态。
+- **Bilibili**：gallery-dl 不支持关键词搜索，仅支持具体专栏/动态 URL（`https://www.bilibili.com/opus/{id}`）。
+- **LOFTER**：gallery-dl 不支持标签搜索，仅支持具体博客文章 URL（`https://{blog}.lofter.com/post/{post_id}`）。
+
+> 由于当前环境无法提供平台登录凭证，且部分站点存在 SSL/反爬限制，真实二创抓取需要你本地配置好凭证后运行。
+
+### 示例二创占位图
+
+若只是想先预览二创展示效果，可运行：
+
+```bash
+pip install Pillow
+python generate_demo_fanart.py
+```
+
+该命令会生成 36 张带有 "FANART DEMO" 水印的占位图，并写入 `assets/data.json`，用于验证授权筛选、画师展示、灯箱等功能。
+
+### 重建索引
+
+如果 `scraper.py` 运行中断或你手动往 `assets/` 放了图片，可以用以下命令重新扫描并生成 `data.json`：
+
+```bash
+python build_data_index.py
+```
 
 ## 快速开始
 
