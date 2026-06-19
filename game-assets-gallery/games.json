@@ -12,220 +12,398 @@
       "name": "王者荣耀",
       "category": "MOBA",
       "brandColor": "#f4c430",
-      "sources": ["https://pvp.qq.com/"],
+      "sources": [
+        "https://pvp.qq.com/"
+      ],
       "enabled": true,
       "parser": "honor_of_kings",
-      "note": "内置示例解析器，可抓取英雄与皮肤立绘"
+      "note": "内置示例解析器，可抓取英雄与皮肤立绘",
+      "fanartKeywords": [
+        "王者荣耀",
+        "王者荣耀 李白",
+        "王者荣耀 貂蝉",
+        "王者荣耀 孙尚香"
+      ],
+      "fanartEnabled": false
     },
     {
       "id": "league-of-legends",
       "name": "英雄联盟",
       "category": "MOBA",
       "brandColor": "#c79a3b",
-      "sources": ["https://lol.qq.com/"],
+      "sources": [
+        "https://lol.qq.com/"
+      ],
       "enabled": false,
       "parser": "placeholder",
-      "note": "需自行实现解析器"
+      "note": "需自行实现解析器",
+      "fanartKeywords": [
+        "英雄联盟",
+        "LOL 同人"
+      ],
+      "fanartEnabled": false
     },
     {
       "id": "dota2",
       "name": "DOTA2",
       "category": "MOBA",
       "brandColor": "#9b1c20",
-      "sources": ["https://www.dota2.com/"],
+      "sources": [
+        "https://www.dota2.com/"
+      ],
       "enabled": false,
       "parser": "placeholder",
-      "note": "需自行实现解析器"
+      "note": "需自行实现解析器",
+      "fanartKeywords": [
+        "DOTA2",
+        "Dota2 fanart"
+      ],
+      "fanartEnabled": false
     },
     {
       "id": "wild-rift",
       "name": "英雄联盟手游",
       "category": "MOBA",
       "brandColor": "#0ac8b9",
-      "sources": ["https://lolm.qq.com/"],
+      "sources": [
+        "https://lolm.qq.com/"
+      ],
       "enabled": false,
       "parser": "placeholder",
-      "note": "需自行实现解析器"
+      "note": "需自行实现解析器",
+      "fanartKeywords": [
+        "英雄联盟手游",
+        "Wild Rift"
+      ],
+      "fanartEnabled": false
     },
     {
       "id": "onmyoji-arena",
       "name": "决战！平安京",
       "category": "MOBA",
       "brandColor": "#d35400",
-      "sources": ["https://moba.163.com/"],
+      "sources": [
+        "https://moba.163.com/"
+      ],
       "enabled": false,
       "parser": "placeholder",
-      "note": "需自行实现解析器"
+      "note": "需自行实现解析器",
+      "fanartKeywords": [
+        "决战平安京",
+        "Onmyoji Arena"
+      ],
+      "fanartEnabled": false
     },
     {
       "id": "genshin-impact",
       "name": "原神",
       "category": "开放世界/RPG",
       "brandColor": "#4a90e2",
-      "sources": ["https://ys.mihoyo.com/"],
+      "sources": [
+        "https://ys.mihoyo.com/"
+      ],
       "enabled": false,
       "parser": "placeholder",
-      "note": "需自行实现解析器"
+      "note": "需自行实现解析器",
+      "fanartKeywords": [
+        "原神",
+        "Genshin Impact",
+        "原神 胡桃",
+        "原神 雷电将军"
+      ],
+      "fanartEnabled": false
     },
     {
       "id": "honkai-star-rail",
       "name": "崩坏：星穹铁道",
       "category": "开放世界/RPG",
       "brandColor": "#7e6eff",
-      "sources": ["https://sr.mihoyo.com/"],
+      "sources": [
+        "https://sr.mihoyo.com/"
+      ],
       "enabled": false,
       "parser": "placeholder",
-      "note": "需自行实现解析器"
+      "note": "需自行实现解析器",
+      "fanartKeywords": [
+        "崩坏星穹铁道",
+        "Honkai Star Rail"
+      ],
+      "fanartEnabled": false
     },
     {
       "id": "honkai-impact-3",
       "name": "崩坏3",
       "category": "开放世界/RPG",
       "brandColor": "#ff6b9d",
-      "sources": ["https://bh3.mihoyo.com/"],
+      "sources": [
+        "https://bh3.mihoyo.com/"
+      ],
       "enabled": false,
       "parser": "placeholder",
-      "note": "需自行实现解析器"
+      "note": "需自行实现解析器",
+      "fanartKeywords": [
+        "崩坏3",
+        "Honkai Impact 3"
+      ],
+      "fanartEnabled": false
     },
     {
       "id": "arknights",
       "name": "明日方舟",
       "category": "开放世界/RPG",
       "brandColor": "#2c3e50",
-      "sources": ["https://ak.hypergryph.com/"],
+      "sources": [
+        "https://ak.hypergryph.com/"
+      ],
       "enabled": false,
       "parser": "placeholder",
-      "note": "需自行实现解析器"
+      "note": "需自行实现解析器",
+      "fanartKeywords": [
+        "明日方舟",
+        "Arknights"
+      ],
+      "fanartEnabled": false
     },
     {
       "id": "tower-of-fantasy",
       "name": "幻塔",
       "category": "开放世界/RPG",
       "brandColor": "#00d2ff",
-      "sources": ["https://ht.wanmei.com/"],
+      "sources": [
+        "https://ht.wanmei.com/"
+      ],
       "enabled": false,
       "parser": "placeholder",
-      "note": "需自行实现解析器"
+      "note": "需自行实现解析器",
+      "fanartKeywords": [
+        "幻塔",
+        "Tower of Fantasy"
+      ],
+      "fanartEnabled": false
     },
     {
       "id": "justice",
       "name": "逆水寒",
       "category": "开放世界/RPG",
       "brandColor": "#e74c3c",
-      "sources": ["https://h.163.com/"],
+      "sources": [
+        "https://h.163.com/"
+      ],
       "enabled": false,
       "parser": "placeholder",
-      "note": "需自行实现解析器"
+      "note": "需自行实现解析器",
+      "fanartKeywords": [
+        "逆水寒"
+      ],
+      "fanartEnabled": false
     },
     {
       "id": "game-for-peace",
       "name": "和平精英",
       "category": "射击/FPS",
       "brandColor": "#f39c12",
-      "sources": ["https://gp.qq.com/"],
+      "sources": [
+        "https://gp.qq.com/"
+      ],
       "enabled": false,
       "parser": "placeholder",
-      "note": "需自行实现解析器"
+      "note": "需自行实现解析器",
+      "fanartKeywords": [
+        "和平精英"
+      ],
+      "fanartEnabled": false
     },
     {
       "id": "crossfire",
       "name": "穿越火线",
       "category": "射击/FPS",
       "brandColor": "#c0392b",
-      "sources": ["https://cf.qq.com/"],
+      "sources": [
+        "https://cf.qq.com/"
+      ],
       "enabled": false,
       "parser": "placeholder",
-      "note": "需自行实现解析器"
+      "note": "需自行实现解析器",
+      "fanartKeywords": [
+        "穿越火线"
+      ],
+      "fanartEnabled": false
     },
     {
       "id": "cod-mobile",
       "name": "使命召唤手游",
       "category": "射击/FPS",
       "brandColor": "#f1c40f",
-      "sources": ["https://codm.qq.com/"],
+      "sources": [
+        "https://codm.qq.com/"
+      ],
       "enabled": false,
       "parser": "placeholder",
-      "note": "需自行实现解析器"
+      "note": "需自行实现解析器",
+      "fanartKeywords": [
+        "使命召唤手游"
+      ],
+      "fanartEnabled": false
     },
     {
       "id": "valorant",
       "name": "无畏契约",
       "category": "射击/FPS",
       "brandColor": "#ff4655",
-      "sources": ["https://val.qq.com/"],
+      "sources": [
+        "https://val.qq.com/"
+      ],
       "enabled": false,
       "parser": "placeholder",
-      "note": "需自行实现解析器"
+      "note": "需自行实现解析器",
+      "fanartKeywords": [
+        "无畏契约",
+        "Valorant"
+      ],
+      "fanartEnabled": false
     },
     {
       "id": "apex-legends",
       "name": "APEX英雄",
       "category": "射击/FPS",
       "brandColor": "#e67e22",
-      "sources": ["https://www.ea.com/games/apex-legends"],
+      "sources": [
+        "https://www.ea.com/games/apex-legends"
+      ],
       "enabled": false,
       "parser": "placeholder",
-      "note": "需自行实现解析器"
+      "note": "需自行实现解析器",
+      "fanartKeywords": [
+        "APEX英雄",
+        "Apex Legends"
+      ],
+      "fanartEnabled": false
     },
     {
       "id": "hearthstone",
       "name": "炉石传说",
       "category": "策略/卡牌",
       "brandColor": "#e67e22",
-      "sources": ["https://hs.blizzard.cn/"],
+      "sources": [
+        "https://hs.blizzard.cn/"
+      ],
       "enabled": false,
       "parser": "placeholder",
-      "note": "需自行实现解析器"
+      "note": "需自行实现解析器",
+      "fanartKeywords": [
+        "炉石传说",
+        "Hearthstone"
+      ],
+      "fanartEnabled": false
     },
     {
       "id": "onmyoji",
       "name": "阴阳师",
       "category": "策略/卡牌",
       "brandColor": "#d35400",
-      "sources": ["https://yys.163.com/"],
+      "sources": [
+        "https://yys.163.com/"
+      ],
       "enabled": false,
       "parser": "placeholder",
-      "note": "需自行实现解析器"
+      "note": "需自行实现解析器",
+      "fanartKeywords": [
+        "阴阳师",
+        "Onmyoji"
+      ],
+      "fanartEnabled": false
     },
     {
       "id": "tft-mobile",
       "name": "金铲铲之战",
       "category": "策略/卡牌",
       "brandColor": "#f1c40f",
-      "sources": ["https://jcc.qq.com/"],
+      "sources": [
+        "https://jcc.qq.com/"
+      ],
       "enabled": false,
       "parser": "placeholder",
-      "note": "需自行实现解析器"
+      "note": "需自行实现解析器",
+      "fanartKeywords": [
+        "金铲铲之战"
+      ],
+      "fanartEnabled": false
     },
     {
       "id": "naruto-mobile",
       "name": "火影忍者手游",
       "category": "动作/格斗",
       "brandColor": "#e67e22",
-      "sources": ["https://hyrz.qq.com/"],
+      "sources": [
+        "https://hyrz.qq.com/"
+      ],
       "enabled": false,
       "parser": "placeholder",
-      "note": "需自行实现解析器"
+      "note": "需自行实现解析器",
+      "fanartKeywords": [
+        "火影忍者手游"
+      ],
+      "fanartEnabled": false
     },
     {
       "id": "dnf",
       "name": "地下城与勇士",
       "category": "动作/格斗",
       "brandColor": "#9b59b6",
-      "sources": ["https://dnf.qq.com/"],
+      "sources": [
+        "https://dnf.qq.com/"
+      ],
       "enabled": false,
       "parser": "placeholder",
-      "note": "需自行实现解析器"
+      "note": "需自行实现解析器",
+      "fanartKeywords": [
+        "地下城与勇士",
+        "DNF"
+      ],
+      "fanartEnabled": false
     },
     {
       "id": "naraka-bladepoint",
       "name": "永劫无间",
       "category": "动作/格斗",
       "brandColor": "#c0392b",
-      "sources": ["https://www.narakabladepoint.com/"],
+      "sources": [
+        "https://www.narakabladepoint.com/"
+      ],
       "enabled": false,
       "parser": "placeholder",
-      "note": "需自行实现解析器"
+      "note": "需自行实现解析器",
+      "fanartKeywords": [
+        "永劫无间",
+        "Naraka"
+      ],
+      "fanartEnabled": false
     }
-  ]
+  ],
+  "fanartSources": {
+    "pixiv": {
+      "enabled": false,
+      "baseUrl": "https://www.pixiv.net",
+      "searchUrlTemplate": "https://www.pixiv.net/tags/{keyword}/artworks",
+      "note": "Pixiv 有反爬，建议使用 pixivpy 或官方 API，需登录"
+    },
+    "twitter": {
+      "enabled": false,
+      "baseUrl": "https://twitter.com",
+      "searchUrlTemplate": "https://twitter.com/search?q={keyword}&f=image",
+      "note": "Twitter 反爬强，建议使用 Nitter 实例或官方 API"
+    },
+    "bilibili": {
+      "enabled": false,
+      "baseUrl": "https://www.bilibili.com",
+      "searchUrlTemplate": "https://api.bilibili.com/x/web-interface/search/type?keyword={keyword}&search_type=photo",
+      "note": "B站相簿搜索接口，需处理分页与 Cookie"
+    },
+    "lofter": {
+      "enabled": false,
+      "baseUrl": "https://www.lofter.com",
+      "searchUrlTemplate": "https://www.lofter.com/tag/{keyword}",
+      "note": "LOFTER 标签页，结构变化频繁，需按实际 DOM 调整"
+    }
+  }
 }

@@ -360,7 +360,7 @@
        ========================================================== */
     .control-bar {
       position: sticky;
-      top: calc(var(--header-height) + var(--filter-height) + 10px);
+      top: calc(var(--header-height) + var(--filter-height) * 2 + 10px);
       z-index: 80;
       max-width: var(--max-width);
       margin: 0 auto 24px;
@@ -996,6 +996,23 @@
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
+    .card[data-type="fanart"] {
+      border-left: 3px solid var(--accent-2);
+    }
+
+    .card-source {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .card-source:hover {
+      text-decoration: underline;
+    }
+
     .card-info {
       padding: 16px;
       position: relative;
@@ -1613,6 +1630,18 @@
     </div>
   </div>
 
+  <div class="filter-bar" style="top: calc(var(--header-height) + var(--filter-height)); border-bottom: none; padding: 0 0 10px;">
+    <div class="filter-inner" id="auth-filter-bar">
+      <span class="filter-label">授权</span>
+      <button class="filter-btn active" data-auth="all">全部</button>
+      <button class="filter-btn" data-auth="official">官方</button>
+      <button class="filter-btn" data-auth="unknown">未知</button>
+      <button class="filter-btn" data-auth="personal_only">个人参考</button>
+      <button class="filter-btn" data-auth="authorized">已授权</button>
+      <button class="filter-btn" data-auth="no_repost">禁转载</button>
+    </div>
+  </div>
+
   <!-- Control Bar -->
   <div class="control-bar">
     <div class="control-inner">
@@ -1861,6 +1890,7 @@
       const gallery = document.getElementById('gallery');
       const searchInput = document.getElementById('search');
       const filterBar = document.getElementById('filter-bar');
+      const authFilterBar = document.getElementById('auth-filter-bar');
       const statCount = document.getElementById('stat-count');
       const showingCount = document.getElementById('showing-count');
       const totalCount = document.getElementById('total-count');
@@ -1884,6 +1914,7 @@
       let allItems = [];
       let filteredItems = [];
       let currentCategory = 'all';
+      let currentAuthStatus = 'all';
       let currentView = 'grid';
       let currentSort = 'default';
       let selectMode = false;
@@ -1935,7 +1966,29 @@
       }
 
       function getTypeLabel(type) {
-        return type === 'hero' ? '英雄' : type === 'skin' ? '皮肤' : type;
+        return type === 'hero' ? '英雄' : type === 'skin' ? '皮肤' : type === 'fanart' ? '二创' : type;
+      }
+
+      function getAuthLabel(status) {
+        const map = {
+          'official': '官方',
+          'unknown': '未知',
+          'personal_only': '个人参考',
+          'authorized': '已授权',
+          'no_repost': '禁转载'
+        };
+        return map[status] || status;
+      }
+
+      function getAuthColor(status) {
+        const map = {
+          'official': '#4ecdc4',
+          'unknown': '#f4c430',
+          'personal_only': '#4a90e2',
+          'authorized': '#22c55e',
+          'no_repost': '#ef4444'
+        };
+        return map[status] || '#a1a1aa';
       }
 
       function sortItems(items) {
@@ -1979,12 +2032,17 @@
         gallery.innerHTML = items.map((item, idx) => {
           const color = getItemColor(item);
           const typeLabel = getTypeLabel(item.type);
+          const authLabel = getAuthLabel(item.authorizationStatus || 'unknown');
+          const authColor = getAuthColor(item.authorizationStatus || 'unknown');
           const tags = (item.tags || []).slice(0, 3);
           const isSelected = selectedIds.has(item.id);
+          const isFanart = item.type === 'fanart';
+          const artistText = isFanart && item.artist ? `画师: ${item.artist}` : '';
+          const sourceLink = item.sourceUrl ? `<a class="card-source" href="${item.sourceUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">来源</a>` : '';
           // masonry row span based on name length for variety
           const rowSpan = currentView === 'masonry' ? (Math.max(10, (item.name.length + (item.subName?.length || 0)) % 6 + 10)) : 12;
           return `
-            <article class="card ${isSelected ? 'selected' : ''}" data-index="${idx}" data-id="${item.id}" style="animation-delay: ${Math.min(idx * 0.02, 0.5)}s; --row-span: ${rowSpan}">
+            <article class="card ${isSelected ? 'selected' : ''}" data-type="${item.type || ''}" data-index="${idx}" data-id="${item.id}" style="animation-delay: ${Math.min(idx * 0.02, 0.5)}s; --row-span: ${rowSpan}">
               <div class="select-indicator">✓</div>
               <div class="card-image">
                 <div class="skeleton"></div>
@@ -1996,13 +2054,16 @@
                   onerror="this.style.display='none'"
                 >
                 <span class="card-badge" style="color: ${color}; border-color: ${color}40">${typeLabel}</span>
+                <span class="card-badge" style="left: 12px; right: auto; color: ${authColor}; border-color: ${authColor}40;">${authLabel}</span>
               </div>
               <div class="card-info">
                 <div class="card-game">${item.gameName}</div>
                 <h2 class="card-name">${item.name}</h2>
                 <p class="card-sub">${item.subName || ''}</p>
+                ${artistText ? `<p class="card-sub" style="font-size: 0.75rem; color: var(--text-muted);">${artistText}</p>` : ''}
                 <div class="card-tags">
                   ${tags.map(t => `<span>${t}</span>`).join('')}
+                  ${sourceLink ? `<span style="background: color-mix(in srgb, var(--accent) 15%, transparent);">${sourceLink}</span>` : ''}
                 </div>
               </div>
             </article>
@@ -2047,13 +2108,15 @@
       function applyFilters() {
         const query = searchInput.value.trim().toLowerCase();
         const items = allItems.filter(item => {
+          const status = item.authorizationStatus || 'unknown';
           const matchCategory = currentCategory === 'all' || item.category === currentCategory;
-          const text = `${item.gameName} ${item.name} ${item.subName || ''} ${(item.tags || []).join(' ')}`.toLowerCase();
+          const matchAuth = currentAuthStatus === 'all' || status === currentAuthStatus;
+          const text = `${item.gameName} ${item.name} ${item.subName || ''} ${item.artist || ''} ${(item.tags || []).join(' ')}`.toLowerCase();
           const matchSearch = !query || text.includes(query);
           const matchGame = activeAdvancedFilters.games.size === 0 || activeAdvancedFilters.games.has(item.gameId);
           const matchType = activeAdvancedFilters.types.size === 0 || activeAdvancedFilters.types.has(item.type);
           const matchTags = activeAdvancedFilters.tags.size === 0 || (item.tags || []).some(t => activeAdvancedFilters.tags.has(t));
-          return matchCategory && matchSearch && matchGame && matchType && matchTags;
+          return matchCategory && matchAuth && matchSearch && matchGame && matchType && matchTags;
         });
         renderGallery(items);
         updateStats(items);
@@ -2062,6 +2125,7 @@
       function updateActiveFiltersText() {
         const parts = [];
         if (currentCategory !== 'all') parts.push(`分类:${currentCategory}`);
+        if (currentAuthStatus !== 'all') parts.push(`授权:${getAuthLabel(currentAuthStatus)}`);
         if (activeAdvancedFilters.games.size) parts.push(`游戏:${activeAdvancedFilters.games.size}`);
         if (activeAdvancedFilters.types.size) parts.push(`类型:${activeAdvancedFilters.types.size}`);
         if (activeAdvancedFilters.tags.size) parts.push(`标签:${activeAdvancedFilters.tags.size}`);
@@ -2113,12 +2177,23 @@
         const total = items.length;
         const byGame = {};
         const byType = {};
+        const byAuth = {};
         items.forEach(item => {
           byGame[item.gameName] = (byGame[item.gameName] || 0) + 1;
           byType[item.type] = (byType[item.type] || 0) + 1;
+          const status = item.authorizationStatus || 'unknown';
+          byAuth[status] = (byAuth[status] || 0) + 1;
         });
 
         const topGames = Object.entries(byGame).sort((a, b) => b[1] - a[1]).slice(0, 4);
+        const authCards = Object.entries(byAuth).map(([status, count]) => `
+          <div class="stat-card">
+            <div class="stat-value" style="color: ${getAuthColor(status)}">${count}</div>
+            <div class="stat-label">${getAuthLabel(status)}</div>
+            <div class="stat-bar"><div class="stat-bar-fill" style="width: ${total ? count / total * 100 : 0}%; background: ${getAuthColor(status)}"></div></div>
+          </div>
+        `).join('');
+
         const grid = document.getElementById('stats-grid');
         grid.innerHTML = `
           <div class="stat-card">
@@ -2141,6 +2216,12 @@
             <div class="stat-label">皮肤数量</div>
             <div class="stat-bar"><div class="stat-bar-fill" style="width: ${total ? (byType.skin || 0) / total * 100 : 0}%"></div></div>
           </div>
+          <div class="stat-card">
+            <div class="stat-value">${byType.fanart || 0}</div>
+            <div class="stat-label">二创数量</div>
+            <div class="stat-bar"><div class="stat-bar-fill" style="width: ${total ? (byType.fanart || 0) / total * 100 : 0}%"></div></div>
+          </div>
+          ${authCards}
           ${topGames.map(([name, count]) => `
             <div class="stat-card">
               <div class="stat-value">${count}</div>
@@ -2171,7 +2252,15 @@
         if (!item) return;
         lightboxImg.src = item.localPath;
         lightboxTitle.textContent = `${item.gameName} · ${item.name}`;
-        lightboxSub.textContent = item.subName || '';
+        const authText = getAuthLabel(item.authorizationStatus || 'unknown');
+        const artistText = item.artist ? `画师: ${item.artist}` : '';
+        const sourceLink = item.sourceUrl ? `<a class="card-source" href="${item.sourceUrl}" target="_blank" rel="noopener">查看来源</a>` : '';
+        lightboxSub.innerHTML = [
+          item.subName || '',
+          artistText,
+          `授权状态: ${authText}`,
+          sourceLink
+        ].filter(Boolean).join(' · ');
       }
 
       function prevImage() {
@@ -2231,6 +2320,9 @@
             <img src="${item.localPath}" alt="${item.name}">
             <h3>${item.gameName} · ${item.name}</h3>
             <p>${item.subName || ''}</p>
+            <p style="color: var(--text-muted);">${getTypeLabel(item.type)} · 授权: ${getAuthLabel(item.authorizationStatus || 'unknown')}</p>
+            ${item.artist ? `<p style="color: var(--text-muted);">画师: ${item.artist}</p>` : ''}
+            ${item.sourceUrl ? `<p><a class="card-source" href="${item.sourceUrl}" target="_blank" rel="noopener">查看来源</a></p>` : ''}
             <p style="color: var(--text-muted);">${(item.tags || []).join(' · ')}</p>
           </div>
         `).join('');
@@ -2316,6 +2408,14 @@
         applyFilters();
       });
 
+      authFilterBar.addEventListener('click', (e) => {
+        if (!e.target.classList.contains('filter-btn')) return;
+        authFilterBar.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        currentAuthStatus = e.target.dataset.auth;
+        applyFilters();
+      });
+
       searchInput.addEventListener('input', applyFilters);
 
       sortSelect.addEventListener('change', (e) => {
@@ -2357,12 +2457,15 @@
 
       document.getElementById('btn-reset').addEventListener('click', () => {
         currentCategory = 'all';
+        currentAuthStatus = 'all';
         searchInput.value = '';
         activeAdvancedFilters = { games: new Set(), types: new Set(), tags: new Set() };
         currentSort = 'default';
         sortSelect.value = 'default';
         filterBar.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         filterBar.querySelector('[data-category="all"]').classList.add('active');
+        authFilterBar.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        authFilterBar.querySelector('[data-auth="all"]').classList.add('active');
         document.querySelectorAll('#panel-filter .chip').forEach(c => c.classList.remove('active'));
         applyFilters();
         closeAllPanels();
