@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>画风提示词库 · 120 组提示词融合工具</title>
+  <title>画风提示词库 · 120 组中英双语提示词融合工具</title>
   <style>
     :root {
       --bg-primary: #0a0a0f;
@@ -69,7 +69,6 @@
       z-index: 0;
     }
 
-    /* Header */
     header {
       position: sticky;
       top: 0;
@@ -117,7 +116,18 @@
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.5rem;
+    }
+
+    .lang-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      font-family: "SF Mono", "Fira Code", monospace;
+      padding: 0.2rem 0.45rem;
+      border-radius: 6px;
+      background: linear-gradient(135deg, rgba(246, 195, 68, 0.15), rgba(168, 85, 247, 0.15));
+      color: var(--accent-gold);
+      border: 1px solid var(--border);
     }
 
     .icon-btn {
@@ -131,6 +141,7 @@
       display: grid;
       place-items: center;
       transition: all var(--transition);
+      font-size: 1rem;
     }
 
     .icon-btn:hover {
@@ -140,19 +151,24 @@
       box-shadow: 0 8px 24px var(--shadow);
     }
 
-    /* Main layout */
+    .icon-btn.active {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(236, 72, 153, 0.25));
+      border-color: var(--accent-purple);
+      color: var(--text-primary);
+      box-shadow: 0 0 16px rgba(168, 85, 247, 0.25);
+    }
+
     .app {
       max-width: 1600px;
       margin: 0 auto;
       padding: 1.5rem;
       display: grid;
-      grid-template-columns: 1fr 380px;
+      grid-template-columns: 1fr 400px;
       gap: 1.5rem;
       position: relative;
       z-index: 1;
     }
 
-    /* Control bar */
     .control-bar {
       background: var(--bg-secondary);
       border: 1px solid var(--border);
@@ -284,6 +300,7 @@
       border-top: 1px solid var(--border);
       font-size: 0.85rem;
       color: var(--text-secondary);
+      flex-wrap: wrap;
     }
 
     .stat-value {
@@ -292,7 +309,6 @@
       font-family: "SF Mono", "Fira Code", monospace;
     }
 
-    /* Prompt grid */
     .theme-section {
       margin-bottom: 2.5rem;
       animation: fadeInUp 0.6s ease both;
@@ -322,12 +338,12 @@
 
     .prompts-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
       gap: 1rem;
     }
 
     .prompts-grid.compact {
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 0.75rem;
     }
 
@@ -377,22 +393,38 @@
       font-size: 0.7rem;
       color: var(--text-muted);
       margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .card-content {
-      font-size: 0.92rem;
-      color: var(--text-secondary);
+      font-size: 0.95rem;
+      color: var(--text-primary);
       line-height: 1.7;
-      display: -webkit-box;
-      -webkit-line-clamp: 5;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      transition: color var(--transition);
+      margin-bottom: 0.6rem;
     }
 
-    .prompt-card:hover .card-content,
-    .prompt-card.selected .card-content {
+    .card-en {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      font-style: italic;
+      border-top: 1px dashed var(--border);
+      padding-top: 0.6rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      transition: all var(--transition);
+    }
+
+    .prompt-card:hover .card-en {
       color: var(--text-primary);
+    }
+
+    .card-en.hidden {
+      display: none;
     }
 
     .card-theme {
@@ -403,7 +435,6 @@
       opacity: 0.8;
     }
 
-    /* Fusion panel */
     .fusion-panel {
       position: sticky;
       top: 92px;
@@ -444,7 +475,7 @@
     }
 
     .selected-list:empty::before {
-      content: "未选择提示词";
+      content: "未选择提示词 / No prompts selected";
       display: block;
       color: var(--text-muted);
       font-size: 0.85rem;
@@ -485,15 +516,38 @@
       color: var(--accent-red);
     }
 
+    .fusion-tabs {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .fusion-tab {
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .fusion-tab.active {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.2));
+      border-color: var(--accent-purple);
+      color: var(--text-primary);
+    }
+
     .fusion-output {
       width: 100%;
-      min-height: 220px;
+      min-height: 200px;
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 1rem;
       color: var(--text-primary);
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       line-height: 1.7;
       resize: vertical;
       outline: none;
@@ -526,7 +580,6 @@
       padding: 0.7rem;
     }
 
-    /* Toast */
     .toast {
       position: fixed;
       bottom: 2rem;
@@ -550,7 +603,6 @@
       opacity: 1;
     }
 
-    /* Empty state */
     .empty-state {
       text-align: center;
       padding: 4rem 2rem;
@@ -563,7 +615,6 @@
       color: var(--text-secondary);
     }
 
-    /* Footer */
     footer {
       max-width: 1600px;
       margin: 0 auto;
@@ -584,7 +635,6 @@
       font-size: 0.75rem;
     }
 
-    /* Scrollbar */
     ::-webkit-scrollbar {
       width: 8px;
       height: 8px;
@@ -603,7 +653,6 @@
       background: var(--text-muted);
     }
 
-    /* Animations */
     @keyframes fadeInUp {
       from {
         opacity: 0;
@@ -624,10 +673,9 @@
       }
     }
 
-    /* Responsive */
     @media (max-width: 1200px) {
       .app {
-        grid-template-columns: 1fr 340px;
+        grid-template-columns: 1fr 360px;
       }
     }
 
@@ -669,7 +717,7 @@
       }
 
       .brand h1 {
-        font-size: 1.4rem;
+        font-size: 1.3rem;
       }
 
       .prompts-grid {
@@ -720,9 +768,10 @@
     <div class="header-inner">
       <div class="brand">
         <h1>画风提示词库</h1>
-        <span>120 PROMPTS</span>
+        <span class="lang-badge">CN · EN</span>
       </div>
       <div class="header-actions">
+        <button class="icon-btn" id="bilingualBtn" title="切换双语显示">文/A</button>
         <button class="icon-btn" id="densityBtn" title="切换密度">☷</button>
         <button class="icon-btn" id="themeBtn" title="切换明暗">☀</button>
       </div>
@@ -733,7 +782,7 @@
     <main class="main-content">
       <div class="control-bar">
         <div class="search-box">
-          <input type="text" id="searchInput" placeholder="搜索提示词关键词，如：天守阁、巨兽、霓虹、竹林..." autocomplete="off">
+          <input type="text" id="searchInput" placeholder="搜索提示词关键词，如：天守阁、巨兽、霓虹、竹林... Search keywords..." autocomplete="off">
         </div>
         <div class="filter-row">
           <div class="theme-pills" id="themePills"></div>
@@ -759,7 +808,12 @@
         <span id="panelCount">0 / 120</span>
       </div>
       <div class="selected-list" id="selectedList"></div>
-      <textarea class="fusion-output" id="fusionOutput" placeholder="选择提示词后，融合结果将显示在这里。你也可以直接编辑..."></textarea>
+      <div class="fusion-tabs">
+        <button class="fusion-tab active" data-tab="mixed">中英对照</button>
+        <button class="fusion-tab" data-tab="zh">仅中文</button>
+        <button class="fusion-tab" data-tab="en">仅英文</button>
+      </div>
+      <textarea class="fusion-output" id="fusionOutput" placeholder="选择提示词后，融合结果将显示在这里。Selected prompts will be fused here..."></textarea>
       <div class="char-count" id="charCount">0 字符</div>
       <div class="panel-actions">
         <button class="btn btn-gold" id="copyBtn">📋 复制</button>
@@ -769,137 +823,137 @@
   </div>
 
   <footer>
-    <p>快捷键：<kbd>Ctrl/Cmd + A</kbd> 全选当前结果 · <kbd>Esc</kbd> 清空 · <kbd>Ctrl/Cmd + Enter</kbd> 复制融合结果</p>
-    <p style="margin-top: 0.5rem;">所有提示词基于日式二次元 3D 渲染风格设计，支持自由组合与再创作</p>
+    <p>快捷键：<kbd>Ctrl/Cmd + A</kbd> 全选 · <kbd>Esc</kbd> 清空 · <kbd>Ctrl/Cmd + Enter</kbd> 复制 · <kbd>B</kbd> 切换双语</p>
+    <p style="margin-top: 0.5rem;">所有提示词基于日式二次元 3D 渲染风格设计，中英双语对照，支持自由组合与再创作</p>
   </footer>
 
   <div class="toast" id="toast"></div>
 
   <script>
     const prompts = [
-      { id: 1, theme: "黎明曙光", content: "黎明高原，日系二次元3D少女身穿宽松中式白袍，面向初升太阳，动态单光源从侧后方打亮发梢，黄色高光与紫粉红光晕交织，背景远山天守阁若隐若现，神话巨兽剪影横亘，Web3D渲染，边缘柔化，纪录片镜头。" },
-      { id: 2, theme: "黎明曙光", content: "曙光下的城市边缘，二次元3D角色身着宽大飘逸长裙缓步前行，裙摆微动，主光源低角度侧光，整体偏暗但人物受光面明亮，紫色与粉色环境光反射，远景有巨兽轮廓，VRM质感，高粗糙度面料。" },
-      { id: 3, theme: "黎明曙光", content: "清晨雾气中的近郊，日系动漫脸3D少女坐在废弃轮胎上，身穿现代中式横流剪裁上衣，双手抱膝神情忧郁，顶光与雾散射，黄色高光，粉色边缘光，背景天守阁半隐，伪3D渲染。" },
-      { id: 4, theme: "黎明曙光", content: "黎明时分的高台，3D动漫少女张开双臂迎风伫立，宽松长袖与长裙飘动，动态光源追踪面部，紫红渐变天空，远景神话巨兽化身如山脉横卧，边缘检测效果，插画式3D融合。" },
-      { id: 5, theme: "黎明曙光", content: "曙光照亮的空旷广场，二次元3D角色背对镜头，长黑发中式宽大衣袍，地面有斑驳光影，单点强光从背后打出轮廓光，黄紫粉三色光晕，背景现代建筑与天守阁并置，Web3D视觉大片。" },
-      { id: 6, theme: "黎明曙光", content: "清晨薄雾竹林边缘，日系3D少女身着浅绿中式长裙手持竹笛缓步而行，侧逆光，人物边缘模糊柔化，整体画面偏暗，动态高光聚焦面部，远处有朦胧巨兽之眼，纪录片式构图。" },
-      { id: 7, theme: "黎明曙光", content: "黎明前的暗蓝时刻，二次元3D角色跪在荒地中央，宽大黑衣中式长袍铺地，双手触地情绪沉重，单一顶光聚焦，黄色主高光，紫色环境反射，背景山形如巨兽脊背，VRM渲染。" },
-      { id: 8, theme: "黎明曙光", content: "日出云海的悬崖边，3D动漫少女站立崖边，宽袖长袍被晨风吹起，面向右侧，动态侧光，金黄色高光面，粉紫色天空，脚下云海翻腾，远景天守阁与巨兽化身浮现，高对比光影。" },
-      { id: 9, theme: "黎明曙光", content: "清晨废弃神社，二次元3D角色身着朱白相间中式宽衣，站在鸟居前双手合十，柔和顶光，黄色高光，粉色雾气，背景破损天守阁，神话生物阴影，3D渲染融合插画。" },
-      { id: 10, theme: "黎明曙光", content: "黎明工业区天台，日系3D少女穿黑色宽大中式外套与长裙，坐在天台边缘双腿悬空，侧逆光打出金色轮廓，紫粉霓虹反光，背景烟囱与天守阁叠化，动态单光源，边缘柔化。" },
-      { id: 11, theme: "暮色边缘", content: "黄昏城市天桥，二次元3D少女身穿现代中式宽松长裙，倚靠栏杆，逆光剪影与面部补光，橙黄与紫粉天空，远处天守阁在暮光中，巨兽轮廓隐于云层，Web3D渲染。" },
-      { id: 12, theme: "暮色边缘", content: "暮色高原，3D动漫角色躺在草地上，宽大袖袍展开，仰望暗红天空，侧光勾勒身体曲线，黄色高光，紫色阴影，背景山脉如沉睡巨兽，画面偏暗，纪录片镜头。" },
-      { id: 13, theme: "暮色边缘", content: "黄昏海边堤坝，日系3D少女身着蓝白中式宽衣赤足行走，裙摆沾水，低角度逆光，金光穿透衣袖，粉紫海面反光，远景巨兽化身浮出水面，VRM质感。" },
-      { id: 14, theme: "暮色边缘", content: "暮色下的废弃游乐园，二次元3D角色穿粉色宽大中式连衣裙，坐在旋转木马上，侧光，黄色高光面，紫色环境光，背景摩天轮与天守阁叠影，边缘模糊，伪3D效果。" },
-      { id: 15, theme: "暮色边缘", content: "黄昏山间古道，3D动漫少女身着灰白长袍背负长剑独行，顶光穿过树冠形成斑驳光影，黄色主光，粉紫漫反射，远处巨兽咆哮身形隐于山雾，插画式3D。" },
-      { id: 16, theme: "暮色边缘", content: "暮色城市屋顶，日系3D角色穿黑红中式宽大衣迎风站立，衣摆猎猎，逆光轮廓，城市灯火与紫粉天光交织，背景天守阁高耸，动态光源追踪，Web3D大片。" },
-      { id: 17, theme: "暮色边缘", content: "黄昏芦苇荡，二次元3D少女身着米白宽松长裙，半蹲抚摸水面，低角度侧光，金色反光，紫色阴影，水面涟漪，远景巨兽化身倒映水中，边缘柔化。" },
-      { id: 18, theme: "暮色边缘", content: "暮色高架桥下，3D动漫角色穿深绿中式宽袖上衣与长裙，靠墙而立单手插兜，神情冷峻，单点侧光，黄紫粉三色，背景混凝土结构与天守阁残影，高粗糙度面料。" },
-      { id: 19, theme: "暮色边缘", content: "黄昏沙漠公路，日系3D少女身着红黄相间宽大长袍，独自走在公路中央背影，长逆光，地面尘埃泛金光，天空紫粉渐变，远景巨兽如山丘移动，纪录片式。" },
-      { id: 20, theme: "暮色边缘", content: "暮色图书馆废墟，二次元3D角色穿靛蓝中式宽衣，坐在书堆中手捧发光书卷，顶光照射，黄色高光，紫色环境反射，背景破碎天守阁窗影，3D动漫渲染。" },
-      { id: 21, theme: "雨夜霓虹", content: "雨夜霓虹街头，二次元3D少女穿黑色宽大中式风衣，站在便利店屋檐下，雨水打湿刘海，霓虹灯紫粉黄光反射在湿润地面，背景天守阁与现代高楼并置，VRM渲染。" },
-      { id: 22, theme: "雨夜霓虹", content: "雨夜天桥，3D动漫角色身着透明质感中式宽衣，撑红色油纸伞逆光行走，地面水洼倒映霓虹，黄色高光，紫色边缘光，远景巨兽化身在雨幕中，动态光源。" },
-      { id: 23, theme: "雨夜霓虹", content: "雨夜地下通道，日系3D少女穿深灰中式长裙靠墙蹲坐，抱膝低头，单一顶光，黄色高光面，紫色环境反光，墙面斑驳水渍，背景出口处天守阁轮廓，边缘模糊。" },
-      { id: 24, theme: "雨夜霓虹", content: "霓虹雨夜车顶，二次元3D角色穿银白宽大中式长袍，盘腿坐在废弃汽车顶，手持发光物体，周围雨水飞溅，紫粉黄光晕，背景巨兽之眼在霓虹中睁开，Web3D。" },
-      { id: 25, theme: "雨夜霓虹", content: "雨夜唐人街街巷，3D动漫少女身着红金中式宽衣，奔跑中回眸，裙摆飞扬，霓虹招牌反光，黄色主光，粉紫环境光，背景灯笼与天守阁叠化，高动态模糊。" },
-      { id: 26, theme: "雨夜霓虹", content: "雨夜高层落地窗，日系3D角色穿白色宽大中式睡衣风长袍，靠窗凝视雨夜，窗外霓虹与雨水流下，紫黄粉光交织，远处天守阁灯火，室内单一暖光，情绪渲染。" },
-      { id: 27, theme: "雨夜霓虹", content: "雨夜废弃车站，二次元3D少女穿墨绿中式宽袖外套，坐在长椅中，手中握茶杯冒热气，顶光，黄色高光，紫色阴影，背景破损电子屏与天守阁残影，纪录片风格。" },
-      { id: 28, theme: "雨夜霓虹", content: "霓虹雨夜码头，3D动漫角色穿蓝黑宽大中式长裙，站在集装箱顶，风吹衣摆，逆光剪影，水面霓虹倒影，黄紫粉色光，远景巨兽化身从海中升起，VRM质感。" },
-      { id: 29, theme: "雨夜霓虹", content: "雨夜自动扶梯，日系3D少女穿粉色中式宽大衣，逆向站在运行扶梯上，周围人群虚影，霓虹灯反射，黄色高光，紫色环境光，背景天守阁与现代商场，边缘柔化。" },
-      { id: 30, theme: "雨夜霓虹", content: "雨夜天台水箱旁，二次元3D角色穿黄紫拼色中式宽袍，仰头接雨水，动态顶光，面部黄色高光，紫粉天空，背景城市灯火与巨兽轮廓，伪3D渲染。" },
-      { id: 31, theme: "雪域高原", content: "雪域高原日出，二次元3D少女穿纯白宽大中式长袍，站立雪山之巅，晨光从侧面照射，黄紫粉光在雪地反射，背景天守阁冰封，远处巨兽化身如山脊横亘，Web3D。" },
-      { id: 32, theme: "雪域高原", content: "暴风雪中的木屋前，3D动漫角色身着藏青中式宽衣推门而出，雪花迎面扑来，顶光，黄色高光，紫色阴影，背景木屋与天守阁叠影，动态光源追踪。" },
-      { id: 33, theme: "雪域高原", content: "雪原独行者，日系3D少女穿朱红宽大中式斗篷，在雪地中艰难前行，逆风斗篷飞扬，侧逆光，金色轮廓，粉紫天空，远景巨兽脚印延伸，VRM渲染。" },
-      { id: 34, theme: "雪域高原", content: "冰川裂缝边缘，二次元3D角色穿冰蓝中式长裙，跪坐俯视深渊，单一顶光，黄色高光面，紫色环境反射，冰面折射光线，背景天守阁倒悬于冰川，插画式3D。" },
-      { id: 35, theme: "雪域高原", content: "雪夜温泉旁，3D动漫少女身着白色浴衣式宽袍，坐在温泉边脚浸水中，蒸汽缭绕，暖黄光源与冷紫环境光对比，背景雪山巨兽轮廓，边缘柔化。" },
-      { id: 36, theme: "雪域高原", content: "雪域废弃灯塔，日系3D角色穿灰白中式长大衣攀登结冰阶梯，背影，侧逆光，金黄高光，粉紫天空，灯塔光束扫过，远处天守阁与巨兽身影，纪录片镜头。" },
-      { id: 37, theme: "雪域高原", content: "雪地神社参道，二次元3D少女穿红白中式宽衣缓步拾级而上，两侧石灯笼积雪，顶光，黄色高光，紫色阴影，背景天守阁朱门，神话生物吐息可见，3D渲染。" },
-      { id: 38, theme: "雪域高原", content: "高原风雪车站，3D动漫角色穿黑色宽大中式冬袍，独自坐在候车亭，双手捧热饮，窗外风雪呼啸，室内暖黄光源，室外紫粉冷光，背景巨兽化身走过，VRM质感。" },
-      { id: 39, theme: "雪域高原", content: "雪山悬崖吊桥，日系3D少女穿浅紫中式宽袖长裙，行走在摇晃吊桥上，风雪吹动衣摆，侧光，黄色高光，粉紫环境，桥下深渊巨兽之眼，Web3D视觉大片。" },
-      { id: 40, theme: "雪域高原", content: "雪原落日，二次元3D角色穿橙黄宽大中式长袍，面向落日张开双臂，逆光剪影，雪地金紫粉反光，背景天守阁剪影，远处巨兽化身与落日重合，边缘检测。" },
-      { id: 41, theme: "竹林深处", content: "清晨竹林深处，二次元3D少女穿青绿中式宽衣，手持竹剑凝神站立，阳光穿透竹叶形成光束，黄色高光，紫色阴影，背景竹影婆娑，远处天守阁一角，纪录片式。" },
-      { id: 42, theme: "竹林深处", content: "竹林雾气中，3D动漫角色身着月白宽大中式长袍盘坐冥想，顶光透过竹叶形成斑驳光影，黄紫粉光晕，周围竹干上刻有符文，背景巨兽化身隐于雾中，VRM渲染。" },
-      { id: 43, theme: "竹林深处", content: "竹林小径，日系3D少女穿淡粉中式长裙赤足奔跑，裙摆与竹叶齐飞，侧逆光，金色轮廓，紫色环境反光，背景天守阁石阶，动态光源追踪，伪3D效果。" },
-      { id: 44, theme: "竹林深处", content: "雨夜竹林，二次元3D角色穿墨绿中式宽袖撑伞徐行，雨滴沿竹叶滑落，霓虹式紫黄粉光反射，背景天守阁灯火，黑暗中的神话兽眼，边缘柔化。" },
-      { id: 45, theme: "竹林深处", content: "竹林瀑布旁，3D动漫少女身着蓝白中式宽衣站在水潭边，水雾环绕，侧光，黄色高光面，紫色水雾，背景瀑布后隐约天守阁，动态单光源，Web3D。" },
-      { id: 46, theme: "竹林深处", content: "竹林废弃茶室，日系3D角色穿茶色中式宽袍跪坐品茶，窗外竹影摇曳，顶光，黄色高光，紫色环境反射，背景破损天守阁，情绪静谧，插画式3D融合。" },
-      { id: 47, theme: "竹林深处", content: "竹林高空栈道，二次元3D少女穿黑绿中式宽大衣，行走在悬空竹栈道俯视云海，侧逆光，金黄高光，粉紫云海，远处天守阁与巨兽化身，VRM质感。" },
-      { id: 48, theme: "竹林深处", content: "竹林月下，3D动漫角色身着银白中式长裙仰头望月，月光冷蓝，人物边缘柔化，黄色月光高光，紫色竹影，背景天守阁飞檐，巨兽咆哮于月后，纪录片镜头。" },
-      { id: 49, theme: "竹林深处", content: "竹林深处古井，日系3D少女穿靛青中式宽衣俯身望向古井，水面倒映面容，单一顶光，黄色高光，紫色井水反光，背景天守阁倒影，3D动漫渲染。" },
-      { id: 50, theme: "竹林深处", content: "竹林竞技场，二次元3D角色穿红黑中式宽袖武服，手持长枪战斗姿态，动态侧光，黄紫粉光晕，竹叶纷飞，背景天守阁观战席，巨兽化身盘踞，Web3D大片。" },
-      { id: 51, theme: "废弃神社", content: "废弃神社本殿，二次元3D少女穿巫女服改良中式宽衣，站在破败神龛前，顶光从破洞射入，黄色高光，紫色尘埃，背景天守阁残影，神话兽雕像，VRM渲染。" },
-      { id: 52, theme: "废弃神社", content: "神社鸟居前，3D动漫角色身着朱白中式宽袍双手合十祈祷，逆光，金色轮廓，粉紫雾气，背景巨大鸟居与天守阁，远处巨兽化身低头凝视，纪录片式。" },
-      { id: 53, theme: "废弃神社", content: "废弃神社石阶，日系3D少女穿灰粉中式长裙缓步上行，两侧石灯长明，侧光，黄色高光，紫色阴影，背景朱红神社与天守阁，边缘模糊，伪3D。" },
-      { id: 54, theme: "废弃神社", content: "雨夜神社，二次元3D角色穿深紫中式宽衣蹲在屋檐下避雨，手中握发光符咒，霓虹反光，黄紫粉光，背景天守阁闪电，巨兽化身咆哮，Web3D。" },
-      { id: 55, theme: "废弃神社", content: "神社后山墓地，3D动漫少女身着黑白中式宽袍站在墓碑间，低头凝视供品，顶光，黄色高光，紫色环境反射，背景天守阁远景，神话灵体漂浮，插画式3D。" },
-      { id: 56, theme: "废弃神社", content: "废弃神社舞台，日系3D角色穿华丽红白中式宽大衣跳神乐舞，长袖飞扬，动态多光源，黄紫粉光晕，背景破损天守阁，巨兽化身在烟雾中，VRM质感。" },
-      { id: 57, theme: "废弃神社", content: "神社仓库，二次元3D少女穿土黄中式宽衣坐在堆积的御神体中，手中把面具，单一侧光，黄色高光，紫色阴影，背景天守阁木格窗影，纪录片镜头。" },
-      { id: 58, theme: "废弃神社", content: "神社参道尽头，3D动漫角色身着青白中式长裙回头凝视镜头，风吹发丝，逆光，金色轮廓，粉紫天空，背景天守阁全貌，巨兽化身盘踞其上，边缘柔化。" },
-      { id: 59, theme: "废弃神社", content: "水下神社，日系3D少女穿蓝白中式宽袍漂浮在水中，衣摆与头发散开，顶光穿透水面，黄色高光，紫色水波，背景沉没天守阁，巨兽化身游过，3D渲染。" },
-      { id: 60, theme: "废弃神社", content: "神社秋日红叶，二次元3D角色穿橙红中式宽衣扫落叶，侧光，黄色高光，紫色阴影，红叶纷飞，背景天守阁与巨兽化身，Web3D视觉大片。" },
-      { id: 61, theme: "都市边缘", content: "都市边缘高架桥下，二次元3D少女穿黑灰中式宽大外套，倚靠涂鸦墙，单点侧光，黄色高光，紫色环境反光，背景钢筋结构与天守阁，VRM渲染。" },
-      { id: 62, theme: "都市边缘", content: "废弃工厂楼顶，3D动漫角色身着红白中式宽袍，坐在锈迹天线旁双腿悬空，逆光，金色轮廓，粉紫天空，背景烟囱群与天守阁，巨兽化身在云间，纪录片式。" },
-      { id: 63, theme: "都市边缘", content: "都市边缘铁轨，日系3D少女穿牛仔蓝中式宽衣走在铁轨中央，背影，长逆光，黄紫粉光晕，背景废弃列车与天守阁，动态光源追踪，伪3D。" },
-      { id: 64, theme: "都市边缘", content: "拆迁区废墟，二次元3D角色穿米白中式长裙站在断壁残垣中，手捧野花，顶光，黄色高光，紫色阴影，背景天守阁新建高楼对比，Web3D。" },
-      { id: 65, theme: "都市边缘", content: "都市边缘河堤，3D动漫少女身着墨绿中式长大衣坐在河堤上看水面，侧光，金色反光，粉紫天空，背景高速公路与天守阁，巨兽化身倒影水中，VRM质感。" },
-      { id: 66, theme: "都市边缘", content: "废弃停车场，日系3D角色穿黄紫拼色中式宽袍，躺在废弃汽车引擎盖上，单手遮眼，顶光，黄色高光，紫色车身反光，背景天守阁霓虹招牌，边缘柔化。" },
-      { id: 67, theme: "都市边缘", content: "都市边缘夜市，二次元3D少女穿红色中式宽衣，在小吃摊前驻足，霓虹灯反光，黄紫粉光交织，背景人群虚影与天守阁灯笼，动态单光源，纪录片风格。" },
-      { id: 68, theme: "都市边缘", content: "废弃电影院，3D动漫角色身着深蓝中式长裙，坐在破旧座椅中，银幕微光，黄色高光，紫色阴影，背景银幕播放天守阁画面，巨兽化身破幕而出，3D渲染。" },
-      { id: 69, theme: "都市边缘", content: "都市边缘天台花园，日系3D少女穿浅绿中式宽袍，照料盆栽，柔和侧光，黄色高光，粉紫天空，背景城市天际线与天守阁，Web3D视觉大片。" },
-      { id: 70, theme: "都市边缘", content: "深夜便利店外，二次元3D角色穿黑色中式宽大外套，吃关东煮，玻璃窗霓虹反光，黄紫粉光，背景天守阁与现代便利店铺并置，VRM渲染。" },
-      { id: 71, theme: "浮空岛屿", content: "云海浮空岛，二次元3D少女穿月白中式宽袍，站在岛边缘眺望，风动衣袖，侧逆光，金黄高光，粉紫云海，背景天守阁浮岛群，巨兽化身游于云间，Web3D。" },
-      { id: 72, theme: "浮空岛屿", content: "浮空岛古树林，3D动漫角色身着青绿中式长裙攀附发光古树，顶光透过树冠，黄色高光，紫色阴影，背景漂浮天守阁，神话兽巢穴，插画式3D。" },
-      { id: 73, theme: "浮空岛屿", content: "浮空岛瀑布，日系3D少女穿蓝白中式宽衣站在水流中，水雾环绕，侧光，金色水雾高光，粉紫天空，背景天守阁倒悬瀑布，动态光源，VRM质感。" },
-      { id: 74, theme: "浮空岛屿", content: "浮空岛废墟，二次元3D角色穿灰白中式宽袍在倒塌石柱间穿行，单一侧光，黄色高光，紫色阴影，背景漂浮天守阁残骸，巨兽化身盘踞，纪录片镜头。" },
-      { id: 75, theme: "浮空岛屿", content: "浮空岛花海，3D动漫少女身着粉紫中式长裙奔跑于发光花海，花瓣飞扬，逆光，金色轮廓，紫粉环境光，背景天守阁与巨兽化身，边缘柔化。" },
-      { id: 76, theme: "浮空岛屿", content: "浮空岛观测台，日系3D角色穿深紫中式宽大衣，操作古老仪器，顶光，黄色高光，紫色星图投影，背景星空下的天守阁，Web3D视觉大片。" },
-      { id: 77, theme: "浮空岛屿", content: "浮空岛底部，二次元3D少女穿黑白中式宽衣，倒悬攀爬岛底岩层，侧光，黄色高光，紫色深渊，背景天守阁根基，巨兽化身从下仰望，3D渲染。" },
-      { id: 78, theme: "浮空岛屿", content: "浮空岛连接桥，3D动漫角色身着红金中式宽袍，行走在光桥之上，长逆光，金黄高光，粉紫云雾，背景连串浮岛天守阁，VRM质感。" },
-      { id: 79, theme: "浮空岛屿", content: "浮空岛图书馆，日系3D少女穿棕色中式宽衣漂浮在书页间阅读，顶光，黄色高光，紫色魔法光尘，背景天守阁书架无限延伸，伪3D效果。" },
-      { id: 80, theme: "浮空岛屿", content: "浮空岛祭坛，二次元3D角色穿纯白中式宽袍站在发光祭坛中央，双手举过头顶，动态多光源，黄紫粉光晕，背景天守阁与巨兽化身共鸣，Web3D。" },
-      { id: 81, theme: "地下空间", content: "地下空洞，二次元3D少女穿灰蓝中式宽袍，站在巨大钟乳石下，顶光从裂缝射入，黄色高光，紫色阴影，背景地底天守阁，巨兽化身沉睡，纪录片式。" },
-      { id: 82, theme: "地下空间", content: "废弃地铁站，3D动漫角色身着橙黑中式宽衣，坐在站台边缘双腿悬空，应急灯侧光，黄色高光，紫色阴影，背景废弃列车与天守阁广告，VRM渲染。" },
-      { id: 83, theme: "地下空间", content: "地下湖，日系3D少女穿银白中式长裙站在水边，水面荧光，顶光，黄色高光，紫色水波反光，背景天守阁倒影，巨兽化身游于水下，3D动漫渲染。" },
-      { id: 84, theme: "地下空间", content: "地下隧道，二次元3D角色穿墨绿中式宽袍，持手电筒前行，光束穿透黑暗，黄色主光，紫色环境反光，背景隧道尽头天守阁，边缘柔化。" },
-      { id: 85, theme: "地下空间", content: "地下花园温室，3D动漫少女身着浅绿中式宽衣，触摸发光植物，顶光，黄色高光，紫色植物荧光，背景玻璃穹顶与天守阁，Web3D视觉大片。" },
-      { id: 86, theme: "地下空间", content: "地下竞技场，日系3D角色穿红黑中式宽袖武服，战斗姿态，动态侧光，黄紫粉光晕，背景观众席天守阁，巨兽化身在铁笼后，VRM质感。" },
-      { id: 87, theme: "地下空间", content: "地下工坊，二次元3D少女穿土黄中式宽袍，修理机械装置，焊接火花，黄色高光，紫色金属反光，背景齿轮结构与天守阁模型，纪录片镜头。" },
-      { id: 88, theme: "地下空间", content: "地下陵墓，3D动漫角色身着黑白中式长裙，走过长明甬道，两侧灯火，侧光，黄色高光，紫色阴影，背景天守阁主殿，神话兽浮雕，插画式3D。" },
-      { id: 89, theme: "地下空间", content: "地下雨庭，日系3D少女穿蓝白中式宽衣，站在地下天井中，雨水从天而降，顶光，黄色高光，紫色水雾，背景天守阁天窗，巨兽化身探头，Web3D。" },
-      { id: 90, theme: "地下空间", content: "地下指挥中心，二次元3D角色穿深灰中式宽大衣，坐在全息屏幕前，屏幕紫黄粉光映照面部，背景天守阁全息投影，动态光源，VRM渲染。" },
-      { id: 91, theme: "山海巨兽", content: "山脊之上，二次元3D少女穿红白中式宽袍，面对如山巨兽化身，风动衣摆，侧逆光，金黄高光，粉紫天空，背景天守阁与巨兽头颅，Web3D视觉大片。" },
-      { id: 92, theme: "山海巨兽", content: "海边礁石，3D动漫角色身着蓝白中式长裙，面对海中升起的巨兽，浪花飞溅，逆光，金色轮廓，紫粉海面，背景天守阁海岸，纪录片式。" },
-      { id: 93, theme: "山海巨兽", content: "巨兽背脊，日系3D少女穿黑红中式宽衣，站立在缓慢移动的巨兽背上，俯视云海，顶光，黄色高光，紫色阴影，背景天守阁漂浮，VRM渲染。" },
-      { id: 94, theme: "山海巨兽", content: "巨兽之眼，二次元3D角色穿银白中式宽袍，悬浮在巨大眼睛前方，眼瞳反射人物，单一光源从巨兽眼中发出，黄紫粉光，背景天守阁，3D动漫渲染。" },
-      { id: 95, theme: "山海巨兽", content: "巨兽骸骨山谷，3D动漫少女身着灰白中式长裙，穿行于巨大骸骨间，侧光，黄色高光，紫色阴影，背景骸骨天守阁，边缘柔化，伪3D。" },
-      { id: 96, theme: "山海巨兽", content: "巨兽羽翼下，日系3D角色穿金红中式宽大衣，躲在羽翼阴影中，抬头仰望，顶光从羽翼缝隙射入，黄紫粉光斑，背景天守阁，Web3D。" },
-      { id: 97, theme: "山海巨兽", content: "巨兽口中，二次元3D少女穿纯白中式宽袍，站在巨兽张开的嘴中，面对獠牙，逆光剪影，金黄粉紫光，背景天守阁喉咙，VRM质感。" },
-      { id: 98, theme: "山海巨兽", content: "巨兽角上，3D动漫角色身着青黑中式宽衣，攀坐在巨兽角尖，俯瞰大地，侧逆光，金色轮廓，粉紫天空，背景天守阁与群山，纪录片镜头。" },
-      { id: 99, theme: "山海巨兽", content: "巨兽尾尖，日系3D少女穿黄紫中式宽袍，平衡站立于摇摆的巨兽尾尖，动态光影，黄紫粉光晕，背景天守阁与云海，3D渲染。" },
-      { id: 100, theme: "山海巨兽", content: "巨兽心脏空间，二次元3D角色穿红金中式长裙，漂浮在发光心脏前，血管脉络，顶光，黄色高光，紫色血液反光，背景天守阁在心脏中，Web3D视觉大片。" },
-      { id: 101, theme: "花火夏祭", content: "夏日祭典屋顶，二次元3D少女穿浴衣式中式宽袍，手持团扇仰望烟花，顶光烟花映照，黄紫粉光，背景天守阁与人群，边缘柔化，VRM渲染。" },
-      { id: 102, theme: "花火夏祭", content: "花火下的河堤，3D动漫角色身着蓝白中式长裙，坐在河岸，烟花倒影水中，逆光，金色轮廓，粉紫天空，背景天守阁与巨兽化身，纪录片式。" },
-      { id: 103, theme: "花火夏祭", content: "祭典小吃摊前，日系3D少女穿粉红中式宽衣，吃苹果糖，霓虹灯笼反光，黄紫粉光，背景天守阁与烟火，动态光源，Web3D。" },
-      { id: 104, theme: "花火夏祭", content: "花火大会人群后，二次元3D角色穿黑金中式宽袍，独自站在人群边缘仰望天空，侧光烟花，黄色高光，紫色阴影，背景人群虚影与天守阁，伪3D。" },
-      { id: 105, theme: "花火夏祭", content: "祭典舞台，3D动漫少女身着华丽红白金中式宽衣跳传统舞蹈，长袖飞扬，动态多光源，黄紫粉光晕，背景天守阁与烟花，VRM质感。" },
-      { id: 106, theme: "花火夏祭", content: "花火下的桥，日系3D角色穿淡紫中式长裙，倚靠桥栏，烟花在身后绽放，逆光，金色轮廓，粉紫天空，背景天守阁与河流，纪录片镜头。" },
-      { id: 107, theme: "花火夏祭", content: "祭典面具摊，二次元3D少女穿绿白中式宽袍，挑选狐狸面具，灯笼光侧照，黄色高光，紫色阴影，背景天守阁与烟火，3D动漫渲染。" },
-      { id: 108, theme: "花火夏祭", content: "夏夜海边花火，3D动漫角色身着白蓝中式宽衣，赤足站在浅滩，烟花与海浪，逆光，金色反光，粉紫天空，背景天守阁海岸，Web3D视觉大片。" },
-      { id: 109, theme: "花火夏祭", content: "祭典神社阶梯，日系3D少女穿橙红中式宽衣，坐在石阶上吃刨冰，两侧灯笼，顶光，黄色高光，紫色阴影，背景天守阁与烟花，边缘柔化。" },
-      { id: 110, theme: "花火夏祭", content: "花火下的摩天轮，二次元3D角色穿银紫中式宽袍，坐在摩天轮舱内，窗外烟花绽放，黄紫粉光映照面部，背景天守阁与夜空，VRM渲染。" },
-      { id: 111, theme: "未来中式", content: "未来中式街道，二次元3D少女穿机能风宽大中式长袍，全息屏幕环绕，霓虹紫黄粉光，背景天守阁与摩天楼，Web3D视觉大片。" },
-      { id: 112, theme: "未来中式", content: "未来中式庭院，3D动漫角色身着白色智能面料宽衣，坐在发光石凳上，竹林投影，顶光，黄色高光，紫色环境光，背景全息天守阁，VRM质感。" },
-      { id: 113, theme: "未来中式", content: "未来中式飞船甲板，日系3D少女穿红黑中式宽大衣，面对星空，衣摆微动，侧逆光，金黄高光，粉紫星云，背景天守阁式飞船，巨兽化身游于星海，纪录片式。" },
-      { id: 114, theme: "未来中式", content: "未来中式实验室，二次元3D角色穿白大褂式中式宽袍，操作全息仪器，屏幕紫黄粉光映照，背景天守阁结构，3D动漫渲染。" },
-      { id: 115, theme: "未来中式", content: "未来中式高速列车顶，3D动漫少女身着蓝白中式宽衣，站立在飞驰列车顶，风压衣摆，逆光，金色轮廓，粉紫城市流光，背景天守阁高架，Web3D。" },
-      { id: 116, theme: "未来中式", content: "未来中式空中花园，日系3D角色穿浅绿中式宽袍，照料发光植物，柔和侧光，黄色高光，紫色植物荧光，背景浮空天守阁，VRM渲染。" },
-      { id: 117, theme: "未来中式", content: "未来中式武馆，二次元3D少女穿黑红中式宽袖武服，与全息对手对练，动态侧光，黄紫粉光晕，背景天守阁训练场，边缘柔化。" },
-      { id: 118, theme: "未来中式", content: "未来中式夜市，3D动漫角色身着紫黑中式宽衣，在悬浮摊位间穿行，霓虹反光，黄紫粉光，背景全息天守阁招牌，纪录片镜头。" },
-      { id: 119, theme: "未来中式", content: "未来中式书房，日系3D少女穿米白中式宽袍，阅读漂浮书页，暖光侧照，黄色高光，紫色全息投影，背景天守阁书架，3D渲染。" },
-      { id: 120, theme: "未来中式", content: "未来中式中枢塔顶，二次元3D角色穿白金华贵中式宽袍，站在塔顶俯瞰城市，动态单光源，黄紫粉光晕，背景巨型天守阁与巨兽化身，Web3D视觉大片。" }
+      { id: 1, theme: "黎明曙光", content: "黎明高原，日系二次元3D少女身穿宽松中式白袍，面向初升太阳，动态单光源从侧后方打亮发梢，黄色高光与紫粉红光晕交织，背景远山天守阁若隐若现，神话巨兽剪影横亘，Web3D渲染，边缘柔化，纪录片镜头。", en: "Dawn plateau, Japanese anime-style 3D girl in loose Chinese-style white robe, facing the rising sun, dynamic single light source illuminating hair tips from side-rear, yellow highlights interweaving with purple-pink halos, distant mountain Tenshu faintly visible, mythical giant beast silhouette stretching across, Web3D rendering, softened edges, documentary shot." },
+      { id: 2, theme: "黎明曙光", content: "曙光下的城市边缘，二次元3D角色身着宽大飘逸长裙缓步前行，裙摆微动，主光源低角度侧光，整体偏暗但人物受光面明亮，紫色与粉色环境光反射，远景有巨兽轮廓，VRM质感，高粗糙度面料。", en: "Urban edge at dawn, anime 3D character in loose flowing long dress walking slowly, hem swaying gently, main light source low-angle side light, overall image dark but character lit side bright, purple and pink ambient light reflections, distant beast silhouette, VRM texture, high-roughness fabric." },
+      { id: 3, theme: "黎明曙光", content: "清晨雾气中的近郊，日系动漫脸3D少女坐在废弃轮胎上，身穿现代中式横流剪裁上衣，双手抱膝神情忧郁，顶光与雾散射，黄色高光，粉色边缘光，背景天守阁半隐，伪3D渲染。", en: "Suburban morning mist, anime-faced 3D girl sitting on abandoned tire, wearing modern Chinese-style cross-cut top, hugging knees with melancholic expression, top light and mist scattering, yellow highlights, pink rim light, background Tenshu half-hidden, pseudo-3D rendering." },
+      { id: 4, theme: "黎明曙光", content: "黎明时分的高台，3D动漫少女张开双臂迎风伫立，宽松长袖与长裙飘动，动态光源追踪面部，紫红渐变天空，远景神话巨兽化身如山脉横卧，边缘检测效果，插画式3D融合。", en: "High platform at dawn, 3D anime girl standing arms open against wind, loose long sleeves and skirt fluttering, dynamic light tracking face, purple-red gradient sky, distant mythical beast incarnation lying like a mountain range, edge detection effect, illustration-style 3D fusion." },
+      { id: 5, theme: "黎明曙光", content: "曙光照亮的空旷广场，二次元3D角色背对镜头，长黑发中式宽大衣袍，地面有斑驳光影，单点强光从背后打出轮廓光，黄紫粉三色光晕，背景现代建筑与天守阁并置，Web3D视觉大片。", en: "Empty square illuminated by dawn light, anime 3D character back to camera, long black hair, Chinese-style loose robe, mottled light shadows on ground, single strong backlight creating rim light, yellow-purple-pink halos, background modern buildings and Tenshu juxtaposed, Web3D visual blockbuster." },
+      { id: 6, theme: "黎明曙光", content: "清晨薄雾竹林边缘，日系3D少女身着浅绿中式长裙手持竹笛缓步而行，侧逆光，人物边缘模糊柔化，整体画面偏暗，动态高光聚焦面部，远处有朦胧巨兽之眼，纪录片式构图。", en: "Bamboo forest edge in thin morning mist, Japanese 3D girl in light green Chinese-style long dress holding bamboo flute walking slowly, side backlight, character edges blurred and softened, overall image dark, dynamic highlight focusing on face, distant hazy beast eye, documentary composition." },
+      { id: 7, theme: "黎明曙光", content: "黎明前的暗蓝时刻，二次元3D角色跪在荒地中央，宽大黑衣中式长袍铺地，双手触地情绪沉重，单一顶光聚焦，黄色主高光，紫色环境反射，背景山形如巨兽脊背，VRM渲染。", en: "Dark blue hour before dawn, anime 3D character kneeling in wasteland center, loose black Chinese-style robe spread on ground, hands touching ground, heavy emotion, single top light focused, yellow main highlight, purple ambient reflection, background mountains shaped like beast spine, VRM rendering." },
+      { id: 8, theme: "黎明曙光", content: "日出云海的悬崖边，3D动漫少女站立崖边，宽袖长袍被晨风吹起，面向右侧，动态侧光，金黄色高光面，粉紫色天空，脚下云海翻腾，远景天守阁与巨兽化身浮现，高对比光影。", en: "Cliff edge of sunrise sea of clouds, 3D anime girl standing at cliff edge, wide sleeves and robe blown by morning wind, facing right, dynamic side light, golden yellow highlight surface, pink-purple sky, sea of clouds churning below, distant Tenshu and beast incarnation emerging, high-contrast lighting." },
+      { id: 9, theme: "黎明曙光", content: "清晨废弃神社，二次元3D角色身着朱白相间中式宽衣，站在鸟居前双手合十，柔和顶光，黄色高光，粉色雾气，背景破损天守阁，神话生物阴影，3D渲染融合插画。", en: "Early morning abandoned shrine, anime 3D character in red-white Chinese-style loose clothing, standing before torii gate, hands clasped in prayer, soft top light, yellow highlights, pink mist, background damaged Tenshu, mythological creature shadow, 3D rendering fused with illustration." },
+      { id: 10, theme: "黎明曙光", content: "黎明工业区天台，日系3D少女穿黑色宽大中式外套与长裙，坐在天台边缘双腿悬空，侧逆光打出金色轮廓，紫粉霓虹反光，背景烟囱与天守阁叠化，动态单光源，边缘柔化。", en: "Industrial rooftop at dawn, Japanese 3D girl in black loose Chinese-style coat and long skirt, sitting at rooftop edge legs dangling, side backlight creating golden outline, purple-pink neon reflection, background chimneys and Tenshu blending, dynamic single light source, softened edges." },
+      { id: 11, theme: "暮色边缘", content: "黄昏城市天桥，二次元3D少女身穿现代中式宽松长裙，倚靠栏杆，逆光剪影与面部补光，橙黄与紫粉天空，远处天守阁在暮光中，巨兽轮廓隐于云层，Web3D渲染。", en: "Urban overpass at dusk, anime 3D girl in modern Chinese-style loose long dress leaning on railing, backlight silhouette with face fill light, orange-yellow and purple-pink sky, distant Tenshu in twilight, beast silhouette hidden in clouds, Web3D rendering." },
+      { id: 12, theme: "暮色边缘", content: "暮色高原，3D动漫角色躺在草地上，宽大袖袍展开，仰望暗红天空，侧光勾勒身体曲线，黄色高光，紫色阴影，背景山脉如沉睡巨兽，画面偏暗，纪录片镜头。", en: "Plateau at dusk, 3D anime character lying on grass, wide sleeves spread open, gazing at dark red sky, side light outlining body curves, yellow highlights, purple shadows, background mountains like sleeping beast, image dark, documentary shot." },
+      { id: 13, theme: "暮色边缘", content: "黄昏海边堤坝，日系3D少女身着蓝白中式宽衣赤足行走，裙摆沾水，低角度逆光，金光穿透衣袖，粉紫海面反光，远景巨兽化身浮出水面，VRM质感。", en: "Seaside embankment at dusk, Japanese 3D girl in blue-white Chinese-style loose clothing walking barefoot, hem wet, low-angle backlight, golden light penetrating sleeves, pink-purple sea reflection, distant beast incarnation surfacing, VRM texture." },
+      { id: 14, theme: "暮色边缘", content: "暮色下的废弃游乐园，二次元3D角色穿粉色宽大中式连衣裙，坐在旋转木马上，侧光，黄色高光面，紫色环境光，背景摩天轮与天守阁叠影，边缘模糊，伪3D效果。", en: "Abandoned amusement park at dusk, anime 3D character in pink loose Chinese-style dress sitting on carousel, side light, yellow highlight surface, purple ambient light, background Ferris wheel and Tenshu overlapping, blurred edges, pseudo-3D effect." },
+      { id: 15, theme: "暮色边缘", content: "黄昏山间古道，3D动漫少女身着灰白长袍背负长剑独行，顶光穿过树冠形成斑驳光影，黄色主光，粉紫漫反射，远处巨兽咆哮身形隐于山雾，插画式3D。", en: "Ancient mountain path at dusk, 3D anime girl in gray-white robe carrying long sword walking alone, top light through tree canopy creating dappled shadows, yellow main light, pink-purple diffuse reflection, distant beast roaring figure hidden in mountain mist, illustration-style 3D." },
+      { id: 16, theme: "暮色边缘", content: "暮色城市屋顶，日系3D角色穿黑红中式宽大衣迎风站立，衣摆猎猎，逆光轮廓，城市灯火与紫粉天光交织，背景天守阁高耸，动态光源追踪，Web3D大片。", en: "City rooftop at dusk, Japanese 3D character in black-red Chinese-style loose coat standing against wind, hem flapping, backlight outline, city lights and purple-pink sky interweaving, background towering Tenshu, dynamic light tracking, Web3D blockbuster." },
+      { id: 17, theme: "暮色边缘", content: "黄昏芦苇荡，二次元3D少女身着米白宽松长裙，半蹲抚摸水面，低角度侧光，金色反光，紫色阴影，水面涟漪，远景巨兽化身倒映水中，边缘柔化。", en: "Reed marsh at dusk, anime 3D girl in off-white loose long dress crouching touching water, low-angle side light, golden reflection, purple shadows, water ripples, distant beast incarnation reflected in water, softened edges." },
+      { id: 18, theme: "暮色边缘", content: "暮色高架桥下，3D动漫角色穿深绿中式宽袖上衣与长裙，靠墙而立单手插兜，神情冷峻，单点侧光，黄紫粉三色，背景混凝土结构与天守阁残影，高粗糙度面料。", en: "Under overpass at dusk, 3D anime character in deep green Chinese-style wide-sleeve top and long skirt leaning against wall, one hand in pocket, cool expression, single side light, yellow-purple-pink three colors, background concrete structure and Tenshu afterimage, high-roughness fabric." },
+      { id: 19, theme: "暮色边缘", content: "黄昏沙漠公路，日系3D少女身着红黄相间宽大长袍，独自走在公路中央背影，长逆光，地面尘埃泛金光，天空紫粉渐变，远景巨兽如山丘移动，纪录片式。", en: "Desert highway at dusk, Japanese 3D girl in red-yellow loose robe walking alone in highway center, back view, long backlight, ground dust glowing golden, sky purple-pink gradient, distant beast moving like hill, documentary style." },
+      { id: 20, theme: "暮色边缘", content: "暮色图书馆废墟，二次元3D角色穿靛蓝中式宽衣，坐在书堆中手捧发光书卷，顶光照射，黄色高光，紫色环境反射，背景破碎天守阁窗影，3D动漫渲染。", en: "Library ruins at dusk, anime 3D character in indigo Chinese-style loose clothing sitting in book pile, holding glowing book scroll, top light, yellow highlights, purple ambient reflection, background broken Tenshu window shadows, 3D anime rendering." },
+      { id: 21, theme: "雨夜霓虹", content: "雨夜霓虹街头，二次元3D少女穿黑色宽大中式风衣，站在便利店屋檐下，雨水打湿刘海，霓虹灯紫粉黄光反射在湿润地面，背景天守阁与现代高楼并置，VRM渲染。", en: "Rainy neon street, anime 3D girl in black loose Chinese-style windbreaker standing under convenience store eaves, rain wetting bangs, neon purple-pink-yellow lights reflecting on wet ground, background Tenshu and modern high-rise juxtaposed, VRM rendering." },
+      { id: 22, theme: "雨夜霓虹", content: "雨夜天桥，3D动漫角色身着透明质感中式宽衣，撑红色油纸伞逆光行走，地面水洼倒映霓虹，黄色高光，紫色边缘光，远景巨兽化身在雨幕中，动态光源。", en: "Rainy overpass, 3D anime character in transparent-texture Chinese-style loose clothing holding red oil-paper umbrella walking against light, water puddles reflecting neon, yellow highlights, purple rim light, distant beast incarnation in rain curtain, dynamic light source." },
+      { id: 23, theme: "雨夜霓虹", content: "雨夜地下通道，日系3D少女穿深灰中式长裙靠墙蹲坐，抱膝低头，单一顶光，黄色高光面，紫色环境反光，墙面斑驳水渍，背景出口处天守阁轮廓，边缘模糊。", en: "Rainy underground passage, Japanese 3D girl in dark gray Chinese-style long skirt crouching against wall, hugging knees head down, single top light, yellow highlight surface, purple ambient reflection, wall mottled water stains, background Tenshu outline at exit, blurred edges." },
+      { id: 24, theme: "雨夜霓虹", content: "霓虹雨夜车顶，二次元3D角色穿银白宽大中式长袍，盘腿坐在废弃汽车顶，手持发光物体，周围雨水飞溅，紫粉黄光晕，背景巨兽之眼在霓虹中睁开，Web3D。", en: "Neon rainy night car roof, anime 3D character in silver-white loose Chinese-style robe sitting cross-legged on abandoned car roof, holding glowing object, rain splashing around, purple-pink-yellow halo, background beast eye opening in neon, Web3D." },
+      { id: 25, theme: "雨夜霓虹", content: "雨夜唐人街街巷，3D动漫少女身着红金中式宽衣，奔跑中回眸，裙摆飞扬，霓虹招牌反光，黄色主光，粉紫环境光，背景灯笼与天守阁叠化，高动态模糊。", en: "Rainy Chinatown street, 3D anime girl in red-gold Chinese-style loose clothing running while looking back, skirt flying, neon sign reflections, yellow main light, pink-purple ambient light, background lanterns and Tenshu blending, high motion blur." },
+      { id: 26, theme: "雨夜霓虹", content: "雨夜高层落地窗，日系3D角色穿白色宽大中式睡衣风长袍，靠窗凝视雨夜，窗外霓虹与雨水流下，紫黄粉光交织，远处天守阁灯火，室内单一暖光，情绪渲染。", en: "Rainy high-rise floor-to-ceiling window, Japanese 3D character in white loose Chinese-style pajama-style robe leaning against window gazing at rainy night, neon and rain flowing outside window, purple-yellow-pink light interweaving, distant Tenshu lights, single warm indoor light, emotional rendering." },
+      { id: 27, theme: "雨夜霓虹", content: "雨夜废弃车站，二次元3D少女穿墨绿中式宽袖外套，坐在长椅中，手中握茶杯冒热气，顶光，黄色高光，紫色阴影，背景破损电子屏与天守阁残影，纪录片风格。", en: "Rainy abandoned station, anime 3D girl in dark green Chinese-style wide-sleeve coat sitting on bench, holding teacup with steam rising, top light, yellow highlights, purple shadows, background broken electronic screen and Tenshu afterimage, documentary style." },
+      { id: 28, theme: "雨夜霓虹", content: "霓虹雨夜码头，3D动漫角色穿蓝黑宽大中式长裙，站在集装箱顶，风吹衣摆，逆光剪影，水面霓虹倒影，黄紫粉色光，远景巨兽化身从海中升起，VRM质感。", en: "Neon rainy night dock, 3D anime character in blue-black loose Chinese-style long skirt standing on container top, wind blowing hem, backlight silhouette, water surface neon reflection, yellow-purple-pink light, distant beast incarnation rising from sea, VRM texture." },
+      { id: 29, theme: "雨夜霓虹", content: "雨夜自动扶梯，日系3D少女穿粉色中式宽大衣，逆向站在运行扶梯上，周围人群虚影，霓虹灯反射，黄色高光，紫色环境光，背景天守阁与现代商场，边缘柔化。", en: "Rainy escalator, Japanese 3D girl in pink Chinese-style loose coat standing backward on moving escalator, surrounding crowd ghost shadows, neon light reflection, yellow highlights, purple ambient light, background Tenshu and modern mall, softened edges." },
+      { id: 30, theme: "雨夜霓虹", content: "雨夜天台水箱旁，二次元3D角色穿黄紫拼色中式宽袍，仰头接雨水，动态顶光，面部黄色高光，紫粉天空，背景城市灯火与巨兽轮廓，伪3D渲染。", en: "Rainy rooftop water tank side, anime 3D character in yellow-purple patchwork Chinese-style robe tilting head to catch rain, dynamic top light, face yellow highlights, pink-purple sky, background city lights and beast silhouette, pseudo-3D rendering." },
+      { id: 31, theme: "雪域高原", content: "雪域高原日出，二次元3D少女穿纯白宽大中式长袍，站立雪山之巅，晨光从侧面照射，黄紫粉光在雪地反射，背景天守阁冰封，远处巨兽化身如山脊横亘，Web3D。", en: "Snow plateau sunrise, anime 3D girl in pure white loose Chinese-style robe standing on snow mountain peak, morning light from side, yellow-purple-pink light reflecting on snow, background Tenshu frozen, distant beast incarnation like ridge stretching, Web3D." },
+      { id: 32, theme: "雪域高原", content: "暴风雪中的木屋前，3D动漫角色身着藏青中式宽衣推门而出，雪花迎面扑来，顶光，黄色高光，紫色阴影，背景木屋与天守阁叠影，动态光源追踪。", en: "Before wooden cabin in snowstorm, 3D anime character in navy Chinese-style loose clothing pushing door out, snowflakes flying head-on, top light, yellow highlights, purple shadows, background wooden cabin and Tenshu overlapping, dynamic light tracking." },
+      { id: 33, theme: "雪域高原", content: "雪原独行者，日系3D少女穿朱红宽大中式斗篷，在雪地中艰难前行，逆风斗篷飞扬，侧逆光，金色轮廓，粉紫天空，远景巨兽脚印延伸，VRM渲染。", en: "Snowfield lone walker, Japanese 3D girl in vermilion loose Chinese-style cloak struggling forward in snow, against wind cloak fluttering, side backlight, golden outline, pink-purple sky, distant beast footprints extending, VRM rendering." },
+      { id: 34, theme: "雪域高原", content: "冰川裂缝边缘，二次元3D角色穿冰蓝中式长裙，跪坐俯视深渊，单一顶光，黄色高光面，紫色环境反射，冰面折射光线，背景天守阁倒悬于冰川，插画式3D。", en: "Glacier crevasse edge, anime 3D character in ice-blue Chinese-style long skirt kneeling looking down at abyss, single top light, yellow highlight surface, purple ambient reflection, ice surface refracting light, background Tenshu suspended upside down in glacier, illustration-style 3D." },
+      { id: 35, theme: "雪域高原", content: "雪夜温泉旁，3D动漫少女身着白色浴衣式宽袍，坐在温泉边脚浸水中，蒸汽缭绕，暖黄光源与冷紫环境光对比，背景雪山巨兽轮廓，边缘柔化。", en: "Snowy night hot spring side, 3D anime girl in white yukata-style loose robe sitting by hot spring, feet in water, steam curling, warm yellow light source contrasting cold purple ambient light, background snow mountain beast silhouette, softened edges." },
+      { id: 36, theme: "雪域高原", content: "雪域废弃灯塔，日系3D角色穿灰白中式长大衣攀登结冰阶梯，背影，侧逆光，金黄高光，粉紫天空，灯塔光束扫过，远处天守阁与巨兽身影，纪录片镜头。", en: "Snowy abandoned lighthouse, Japanese 3D character in gray-white Chinese-style long coat climbing iced stairs, back view, side backlight, golden highlights, pink-purple sky, lighthouse beam sweeping, distant Tenshu and beast figure, documentary shot." },
+      { id: 37, theme: "雪域高原", content: "雪地神社参道，二次元3D少女穿红白中式宽衣缓步拾级而上，两侧石灯笼积雪，顶光，黄色高光，紫色阴影，背景天守阁朱门，神话生物吐息可见，3D渲染。", en: "Snowy shrine approach, anime 3D girl in red-white Chinese-style loose clothing slowly ascending stone steps, stone lanterns on both sides covered with snow, top light, yellow highlights, purple shadows, background Tenshu red gate, mythological creature breath visible, 3D rendering." },
+      { id: 38, theme: "雪域高原", content: "高原风雪车站，3D动漫角色穿黑色宽大中式冬袍，独自坐在候车亭，双手捧热饮，窗外风雪呼啸，室内暖黄光源，室外紫粉冷光，背景巨兽化身走过，VRM质感。", en: "Plateau wind-snow station, 3D anime character in black loose Chinese-style winter robe sitting alone in waiting shelter, hands holding hot drink, wind and snow howling outside window, warm yellow indoor light, purple-pink cold outdoor light, background beast incarnation walking past, VRM texture." },
+      { id: 39, theme: "雪域高原", content: "雪山悬崖吊桥，日系3D少女穿浅紫中式宽袖长裙，行走在摇晃吊桥上，风雪吹动衣摆，侧光，黄色高光，粉紫环境，桥下深渊巨兽之眼，Web3D视觉大片。", en: "Snow mountain cliff suspension bridge, Japanese 3D girl in light purple Chinese-style wide-sleeve long skirt walking on swaying bridge, wind and snow blowing hem, side light, yellow highlights, pink-purple environment, beast eye in abyss below bridge, Web3D visual blockbuster." },
+      { id: 40, theme: "雪域高原", content: "雪原落日，二次元3D角色穿橙黄宽大中式长袍，面向落日张开双臂，逆光剪影，雪地金紫粉反光，背景天守阁剪影，远处巨兽化身与落日重合，边缘检测。", en: "Snowfield sunset, anime 3D character in orange-yellow loose Chinese-style robe facing sunset arms open, backlight silhouette, snowfield golden-purple-pink reflection, background Tenshu silhouette, distant beast incarnation overlapping with sunset, edge detection." },
+      { id: 41, theme: "竹林深处", content: "清晨竹林深处，二次元3D少女穿青绿中式宽衣，手持竹剑凝神站立，阳光穿透竹叶形成光束，黄色高光，紫色阴影，背景竹影婆娑，远处天守阁一角，纪录片式。", en: "Deep bamboo forest in early morning, anime 3D girl in green Chinese-style loose clothing holding bamboo sword standing alert, sunlight through bamboo leaves forming light beams, yellow highlights, purple shadows, background bamboo shadows swaying, distant corner of Tenshu, documentary style." },
+      { id: 42, theme: "竹林深处", content: "竹林雾气中，3D动漫角色身着月白宽大中式长袍盘坐冥想，顶光透过竹叶形成斑驳光影，黄紫粉光晕，周围竹干上刻有符文，背景巨兽化身隐于雾中，VRM渲染。", en: "Bamboo forest mist, 3D anime character in moon-white loose Chinese-style robe sitting cross-legged meditating, top light through bamboo leaves creating dappled shadows, yellow-purple-pink halos, bamboo stems carved with runes around, background beast incarnation hidden in mist, VRM rendering." },
+      { id: 43, theme: "竹林深处", content: "竹林小径，日系3D少女穿淡粉中式长裙赤足奔跑，裙摆与竹叶齐飞，侧逆光，金色轮廓，紫色环境反光，背景天守阁石阶，动态光源追踪，伪3D效果。", en: "Bamboo forest path, Japanese 3D girl in light pink Chinese-style long skirt running barefoot, skirt and bamboo leaves flying together, side backlight, golden outline, purple ambient reflection, background Tenshu stone steps, dynamic light tracking, pseudo-3D effect." },
+      { id: 44, theme: "竹林深处", content: "雨夜竹林，二次元3D角色穿墨绿中式宽袖撑伞徐行，雨滴沿竹叶滑落，霓虹式紫黄粉光反射，背景天守阁灯火，黑暗中的神话兽眼，边缘柔化。", en: "Rainy night bamboo forest, anime 3D character in dark green Chinese-style wide sleeves walking slowly with umbrella, raindrops sliding down bamboo leaves, neon-style purple-yellow-pink light reflection, background Tenshu lights, mythological beast eyes in darkness, softened edges." },
+      { id: 45, theme: "竹林深处", content: "竹林瀑布旁，3D动漫少女身着蓝白中式宽衣站在水潭边，水雾环绕，侧光，黄色高光面，紫色水雾，背景瀑布后隐约天守阁，动态单光源，Web3D。", en: "Bamboo forest waterfall side, 3D anime girl in blue-white Chinese-style loose clothing standing by water pool, water mist surrounding, side light, yellow highlight surface, purple water mist, background Tenshu faint behind waterfall, dynamic single light source, Web3D." },
+      { id: 46, theme: "竹林深处", content: "竹林废弃茶室，日系3D角色穿茶色中式宽袍跪坐品茶，窗外竹影摇曳，顶光，黄色高光，紫色环境反射，背景破损天守阁，情绪静谧，插画式3D融合。", en: "Bamboo forest abandoned tea house, Japanese 3D character in tea-colored Chinese-style loose robe kneeling tasting tea, bamboo shadows swaying outside window, top light, yellow highlights, purple ambient reflection, background damaged Tenshu, quiet mood, illustration-style 3D fusion." },
+      { id: 47, theme: "竹林深处", content: "竹林高空栈道，二次元3D少女穿黑绿中式宽大衣，行走在悬空竹栈道俯视云海，侧逆光，金黄高光，粉紫云海，远处天守阁与巨兽化身，VRM质感。", en: "Bamboo forest elevated plank road, anime 3D girl in black-green Chinese-style loose coat walking on suspended bamboo plank road, overlooking sea of clouds, side backlight, golden highlights, pink-purple sea of clouds, distant Tenshu and beast incarnation, VRM texture." },
+      { id: 48, theme: "竹林深处", content: "竹林月下，3D动漫角色身着银白中式长裙仰头望月，月光冷蓝，人物边缘柔化，黄色月光高光，紫色竹影，背景天守阁飞檐，巨兽咆哮于月后，纪录片镜头。", en: "Bamboo forest under moon, 3D anime character in silver-white Chinese-style long skirt looking up at moon, cold blue moonlight, character edges softened, yellow moonlight highlights, purple bamboo shadows, background Tenshu eaves, beast roaring behind moon, documentary shot." },
+      { id: 49, theme: "竹林深处", content: "竹林深处古井，日系3D少女穿靛青中式宽衣俯身望向古井，水面倒映面容，单一顶光，黄色高光，紫色井水反光，背景天守阁倒影，3D动漫渲染。", en: "Deep bamboo forest ancient well, Japanese 3D girl in indigo Chinese-style loose clothing bending over looking at ancient well, water surface reflecting face, single top light, yellow highlights, purple well water reflection, background Tenshu reflection, 3D anime rendering." },
+      { id: 50, theme: "竹林深处", content: "竹林竞技场，二次元3D角色穿红黑中式宽袖武服，手持长枪战斗姿态，动态侧光，黄紫粉光晕，竹叶纷飞，背景天守阁观战席，巨兽化身盘踞，Web3D大片。", en: "Bamboo forest arena, anime 3D character in red-black Chinese-style wide-sleeve martial suit holding long spear in combat stance, dynamic side light, yellow-purple-pink halos, bamboo leaves flying, background Tenshu spectator seats, beast incarnation coiled, Web3D blockbuster." },
+      { id: 51, theme: "废弃神社", content: "废弃神社本殿，二次元3D少女穿巫女服改良中式宽衣，站在破败神龛前，顶光从破洞射入，黄色高光，紫色尘埃，背景天守阁残影，神话兽雕像，VRM渲染。", en: "Abandoned shrine main hall, anime 3D girl in shrine maiden modified Chinese-style loose clothing standing before ruined altar, top light shooting through hole, yellow highlights, purple dust, background Tenshu afterimage, mythological beast statue, VRM rendering." },
+      { id: 52, theme: "废弃神社", content: "神社鸟居前，3D动漫角色身着朱白中式宽袍双手合十祈祷，逆光，金色轮廓，粉紫雾气，背景巨大鸟居与天守阁，远处巨兽化身低头凝视，纪录片式。", en: "Before shrine torii gate, 3D anime character in red-white Chinese-style loose robe hands clasped in prayer, backlight, golden outline, pink-purple mist, background giant torii gate and Tenshu, distant beast incarnation lowering head to gaze, documentary style." },
+      { id: 53, theme: "废弃神社", content: "废弃神社石阶，日系3D少女穿灰粉中式长裙缓步上行，两侧石灯长明，侧光，黄色高光，紫色阴影，背景朱红神社与天守阁，边缘模糊，伪3D。", en: "Abandoned shrine stone steps, Japanese 3D girl in gray-pink Chinese-style long skirt slowly ascending, stone lanterns on both sides lit, side light, yellow highlights, purple shadows, background vermilion shrine and Tenshu, blurred edges, pseudo-3D." },
+      { id: 54, theme: "废弃神社", content: "雨夜神社，二次元3D角色穿深紫中式宽衣蹲在屋檐下避雨，手中握发光符咒，霓虹反光，黄紫粉光，背景天守阁闪电，巨兽化身咆哮，Web3D。", en: "Rainy night shrine, anime 3D character in deep purple Chinese-style loose clothing crouching under eaves avoiding rain, holding glowing talisman, neon reflection, yellow-purple-pink light, background Tenshu lightning, beast incarnation roaring, Web3D." },
+      { id: 55, theme: "废弃神社", content: "神社后山墓地，3D动漫少女身着黑白中式宽袍站在墓碑间，低头凝视供品，顶光，黄色高光，紫色环境反射，背景天守阁远景，神话灵体漂浮，插画式3D。", en: "Shrine back mountain cemetery, 3D anime girl in black-white Chinese-style loose robe standing among tombstones, head down gazing at offering, top light, yellow highlights, purple ambient reflection, background Tenshu distant view, mythological spirits floating, illustration-style 3D." },
+      { id: 56, theme: "废弃神社", content: "废弃神社舞台，日系3D角色穿华丽红白中式宽大衣跳神乐舞，长袖飞扬，动态多光源，黄紫粉光晕，背景破损天守阁，巨兽化身在烟雾中，VRM质感。", en: "Abandoned shrine stage, Japanese 3D character in gorgeous red-white Chinese-style loose coat performing kagura dance, long sleeves flying, dynamic multiple light sources, yellow-purple-pink halos, background damaged Tenshu, beast incarnation in smoke, VRM texture." },
+      { id: 57, theme: "废弃神社", content: "神社仓库，二次元3D少女穿土黄中式宽衣坐在堆积的御神体中，手中把面具，单一侧光，黄色高光，紫色阴影，背景天守阁木格窗影，纪录片镜头。", en: "Shrine storehouse, anime 3D girl in earth-yellow Chinese-style loose clothing sitting among piled mikoshi, holding mask in hand, single side light, yellow highlights, purple shadows, background Tenshu wooden lattice window shadows, documentary shot." },
+      { id: 58, theme: "废弃神社", content: "神社参道尽头，3D动漫角色身着青白中式长裙回头凝视镜头，风吹发丝，逆光，金色轮廓，粉紫天空，背景天守阁全貌，巨兽化身盘踞其上，边缘柔化。", en: "End of shrine approach, 3D anime character in blue-white Chinese-style long skirt turning back to gaze at camera, wind blowing hair, backlight, golden outline, pink-purple sky, background full view of Tenshu, beast incarnation coiled on top, softened edges." },
+      { id: 59, theme: "废弃神社", content: "水下神社，日系3D少女穿蓝白中式宽袍漂浮在水中，衣摆与头发散开，顶光穿透水面，黄色高光，紫色水波，背景沉没天守阁，巨兽化身游过，3D渲染。", en: "Underwater shrine, Japanese 3D girl in blue-white Chinese-style loose robe floating in water, hem and hair spreading, top light penetrating water surface, yellow highlights, purple water waves, background sunken Tenshu, beast incarnation swimming past, 3D rendering." },
+      { id: 60, theme: "废弃神社", content: "神社秋日红叶，二次元3D角色穿橙红中式宽衣扫落叶，侧光，黄色高光，紫色阴影，红叶纷飞，背景天守阁与巨兽化身，Web3D视觉大片。", en: "Shrine autumn red leaves, anime 3D character in orange-red Chinese-style loose clothing sweeping fallen leaves, side light, yellow highlights, purple shadows, red leaves flying, background Tenshu and beast incarnation, Web3D visual blockbuster." },
+      { id: 61, theme: "都市边缘", content: "都市边缘高架桥下，二次元3D少女穿黑灰中式宽大外套，倚靠涂鸦墙，单点侧光，黄色高光，紫色环境反光，背景钢筋结构与天守阁，VRM渲染。", en: "Under urban edge overpass, anime 3D girl in black-gray Chinese-style loose coat leaning on graffiti wall, single side light, yellow highlights, purple ambient reflection, background steel structure and Tenshu, VRM rendering." },
+      { id: 62, theme: "都市边缘", content: "废弃工厂楼顶，3D动漫角色身着红白中式宽袍，坐在锈迹天线旁双腿悬空，逆光，金色轮廓，粉紫天空，背景烟囱群与天守阁，巨兽化身在云间，纪录片式。", en: "Abandoned factory rooftop, 3D anime character in red-white Chinese-style loose robe sitting by rusty antenna legs dangling, backlight, golden outline, pink-purple sky, background chimneys and Tenshu, beast incarnation among clouds, documentary style." },
+      { id: 63, theme: "都市边缘", content: "都市边缘铁轨，日系3D少女穿牛仔蓝中式宽衣走在铁轨中央，背影，长逆光，黄紫粉光晕，背景废弃列车与天守阁，动态光源追踪，伪3D。", en: "Urban edge railway track, Japanese 3D girl in denim-blue Chinese-style loose clothing walking in track center, back view, long backlight, yellow-purple-pink halo, background abandoned train and Tenshu, dynamic light tracking, pseudo-3D." },
+      { id: 64, theme: "都市边缘", content: "拆迁区废墟，二次元3D角色穿米白中式长裙站在断壁残垣中，手捧野花，顶光，黄色高光，紫色阴影，背景天守阁新建高楼对比，Web3D。", en: "Demolition district ruins, anime 3D character in off-white Chinese-style long skirt standing in broken walls, holding wildflowers, top light, yellow highlights, purple shadows, background Tenshu and new high-rise contrast, Web3D." },
+      { id: 65, theme: "都市边缘", content: "都市边缘河堤，3D动漫少女身着墨绿中式长大衣坐在河堤上看水面，侧光，金色反光，粉紫天空，背景高速公路与天守阁，巨兽化身倒影水中，VRM质感。", en: "Urban edge river embankment, 3D anime girl in dark green Chinese-style long coat sitting on embankment looking at water, side light, golden reflection, pink-purple sky, background highway and Tenshu, beast incarnation reflected in water, VRM texture." },
+      { id: 66, theme: "都市边缘", content: "废弃停车场，日系3D角色穿黄紫拼色中式宽袍，躺在废弃汽车引擎盖上，单手遮眼，顶光，黄色高光，紫色车身反光，背景天守阁霓虹招牌，边缘柔化。", en: "Abandoned parking lot, Japanese 3D character in yellow-purple patchwork Chinese-style robe lying on abandoned car hood, one hand covering eyes, top light, yellow highlights, purple car body reflection, background Tenshu neon sign, softened edges." },
+      { id: 67, theme: "都市边缘", content: "都市边缘夜市，二次元3D少女穿红色中式宽衣，在小吃摊前驻足，霓虹灯反光，黄紫粉光交织，背景人群虚影与天守阁灯笼，动态单光源，纪录片风格。", en: "Urban edge night market, anime 3D girl in red Chinese-style loose clothing stopping at food stall, neon light reflection, yellow-purple-pink light interweaving, background crowd ghost shadows and Tenshu lanterns, dynamic single light source, documentary style." },
+      { id: 68, theme: "都市边缘", content: "废弃电影院，3D动漫角色身着深蓝中式长裙，坐在破旧座椅中，银幕微光，黄色高光，紫色阴影，背景银幕播放天守阁画面，巨兽化身破幕而出，3D渲染。", en: "Abandoned cinema, 3D anime character in deep blue Chinese-style long skirt sitting in worn seat, screen dim light, yellow highlights, purple shadows, background screen playing Tenshu image, beast incarnation breaking through screen, 3D rendering." },
+      { id: 69, theme: "都市边缘", content: "都市边缘天台花园，日系3D少女穿浅绿中式宽袍，照料盆栽，柔和侧光，黄色高光，粉紫天空，背景城市天际线与天守阁，Web3D视觉大片。", en: "Urban edge rooftop garden, Japanese 3D girl in light green Chinese-style loose robe tending potted plants, soft side light, yellow highlights, pink-purple sky, background city skyline and Tenshu, Web3D visual blockbuster." },
+      { id: 70, theme: "都市边缘", content: "深夜便利店外，二次元3D角色穿黑色中式宽大外套，吃关东煮，玻璃窗霓虹反光，黄紫粉光，背景天守阁与现代便利店铺并置，VRM渲染。", en: "Late night convenience store outside, anime 3D character in black Chinese-style loose coat eating oden, glass window neon reflection, yellow-purple-pink light, background Tenshu and modern convenience store juxtaposed, VRM rendering." },
+      { id: 71, theme: "浮空岛屿", content: "云海浮空岛，二次元3D少女穿月白中式宽袍，站在岛边缘眺望，风动衣袖，侧逆光，金黄高光，粉紫云海，背景天守阁浮岛群，巨兽化身游于云间，Web3D。", en: "Sea of clouds floating island, anime 3D girl in moon-white Chinese-style loose robe standing at island edge gazing into distance, wind moving sleeves, side backlight, golden highlights, pink-purple sea of clouds, background Tenshu floating island group, beast incarnation swimming among clouds, Web3D." },
+      { id: 72, theme: "浮空岛屿", content: "浮空岛古树林，3D动漫角色身着青绿中式长裙攀附发光古树，顶光透过树冠，黄色高光，紫色阴影，背景漂浮天守阁，神话兽巢穴，插画式3D。", en: "Floating island ancient forest, 3D anime character in green Chinese-style long skirt climbing glowing ancient tree, top light through tree canopy, yellow highlights, purple shadows, background floating Tenshu, mythological beast nest, illustration-style 3D." },
+      { id: 73, theme: "浮空岛屿", content: "浮空岛瀑布，日系3D少女穿蓝白中式宽衣站在水流中，水雾环绕，侧光，金色水雾高光，粉紫天空，背景天守阁倒悬瀑布，动态光源，VRM质感。", en: "Floating island waterfall, Japanese 3D girl in blue-white Chinese-style loose clothing standing in water flow, water mist surrounding, side light, golden water mist highlights, pink-purple sky, background Tenshu inverted waterfall, dynamic light source, VRM texture." },
+      { id: 74, theme: "浮空岛屿", content: "浮空岛废墟，二次元3D角色穿灰白中式宽袍在倒塌石柱间穿行，单一侧光，黄色高光，紫色阴影，背景漂浮天守阁残骸，巨兽化身盘踞，纪录片镜头。", en: "Floating island ruins, anime 3D character in gray-white Chinese-style loose robe walking among fallen stone pillars, single side light, yellow highlights, purple shadows, background floating Tenshu ruins, beast incarnation coiled, documentary shot." },
+      { id: 75, theme: "浮空岛屿", content: "浮空岛花海，3D动漫少女身着粉紫中式长裙奔跑于发光花海，花瓣飞扬，逆光，金色轮廓，紫粉环境光，背景天守阁与巨兽化身，边缘柔化。", en: "Floating island flower sea, 3D anime girl in pink-purple Chinese-style long skirt running through glowing flower sea, petals flying, backlight, golden outline, purple-pink ambient light, background Tenshu and beast incarnation, softened edges." },
+      { id: 76, theme: "浮空岛屿", content: "浮空岛观测台，日系3D角色穿深紫中式宽大衣，操作古老仪器，顶光，黄色高光，紫色星图投影，背景星空下的天守阁，Web3D视觉大片。", en: "Floating island observatory, Japanese 3D character in deep purple Chinese-style loose coat operating ancient instrument, top light, yellow highlights, purple star chart projection, background Tenshu under starry sky, Web3D visual blockbuster." },
+      { id: 77, theme: "浮空岛屿", content: "浮空岛底部，二次元3D少女穿黑白中式宽衣，倒悬攀爬岛底岩层，侧光，黄色高光，紫色深渊，背景天守阁根基，巨兽化身从下仰望，3D渲染。", en: "Bottom of floating island, anime 3D girl in black-white Chinese-style loose clothing inverted climbing island bottom rock layer, side light, yellow highlights, purple abyss, background Tenshu foundation, beast incarnation looking up from below, 3D rendering." },
+      { id: 78, theme: "浮空岛屿", content: "浮空岛连接桥，3D动漫角色身着红金中式宽袍，行走在光桥之上，长逆光，金黄高光，粉紫云雾，背景连串浮岛天守阁，VRM质感。", en: "Floating island connecting bridge, 3D anime character in red-gold Chinese-style loose robe walking on light bridge, long backlight, golden highlights, pink-purple clouds and mist, background chain of floating island Tenshu, VRM texture." },
+      { id: 79, theme: "浮空岛屿", content: "浮空岛图书馆，日系3D少女穿棕色中式宽衣漂浮在书页间阅读，顶光，黄色高光，紫色魔法光尘，背景天守阁书架无限延伸，伪3D效果。", en: "Floating island library, Japanese 3D girl in brown Chinese-style loose clothing floating among book pages reading, top light, yellow highlights, purple magical light dust, background Tenshu bookshelves extending infinitely, pseudo-3D effect." },
+      { id: 80, theme: "浮空岛屿", content: "浮空岛祭坛，二次元3D角色穿纯白中式宽袍站在发光祭坛中央，双手举过头顶，动态多光源，黄紫粉光晕，背景天守阁与巨兽化身共鸣，Web3D。", en: "Floating island altar, anime 3D character in pure white Chinese-style loose robe standing at glowing altar center, hands raised above head, dynamic multiple light sources, yellow-purple-pink halos, background Tenshu and beast incarnation resonating, Web3D." },
+      { id: 81, theme: "地下空间", content: "地下空洞，二次元3D少女穿灰蓝中式宽袍，站在巨大钟乳石下，顶光从裂缝射入，黄色高光，紫色阴影，背景地底天守阁，巨兽化身沉睡，纪录片式。", en: "Underground cave, anime 3D girl in gray-blue Chinese-style loose robe standing under huge stalactite, top light shooting through crack, yellow highlights, purple shadows, background underground Tenshu, beast incarnation sleeping, documentary style." },
+      { id: 82, theme: "地下空间", content: "废弃地铁站，3D动漫角色身着橙黑中式宽衣，坐在站台边缘双腿悬空，应急灯侧光，黄色高光，紫色阴影，背景废弃列车与天守阁广告，VRM渲染。", en: "Abandoned subway station, 3D anime character in orange-black Chinese-style loose clothing sitting at platform edge legs dangling, emergency light side light, yellow highlights, purple shadows, background abandoned train and Tenshu advertisement, VRM rendering." },
+      { id: 83, theme: "地下空间", content: "地下湖，日系3D少女穿银白中式长裙站在水边，水面荧光，顶光，黄色高光，紫色水波反光，背景天守阁倒影，巨兽化身游于水下，3D动漫渲染。", en: "Underground lake, Japanese 3D girl in silver-white Chinese-style long skirt standing by water, water surface fluorescent, top light, yellow highlights, purple water wave reflection, background Tenshu reflection, beast incarnation swimming underwater, 3D anime rendering." },
+      { id: 84, theme: "地下空间", content: "地下隧道，二次元3D角色穿墨绿中式宽袍，持手电筒前行，光束穿透黑暗，黄色主光，紫色环境反光，背景隧道尽头天守阁，边缘柔化。", en: "Underground tunnel, anime 3D character in dark green Chinese-style loose robe holding flashlight moving forward, light beam piercing darkness, yellow main light, purple ambient reflection, background Tenshu at tunnel end, softened edges." },
+      { id: 85, theme: "地下空间", content: "地下花园温室，3D动漫少女身着浅绿中式宽衣，触摸发光植物，顶光，黄色高光，紫色植物荧光，背景玻璃穹顶与天守阁，Web3D视觉大片。", en: "Underground garden greenhouse, 3D anime girl in light green Chinese-style loose clothing touching glowing plant, top light, yellow highlights, purple plant fluorescence, background glass dome and Tenshu, Web3D visual blockbuster." },
+      { id: 86, theme: "地下空间", content: "地下竞技场，日系3D角色穿红黑中式宽袖武服，战斗姿态，动态侧光，黄紫粉光晕，背景观众席天守阁，巨兽化身在铁笼后，VRM质感。", en: "Underground arena, Japanese 3D character in red-black Chinese-style wide-sleeve martial suit combat stance, dynamic side light, yellow-purple-pink halos, background spectator seats Tenshu, beast incarnation behind iron cage, VRM texture." },
+      { id: 87, theme: "地下空间", content: "地下工坊，二次元3D少女穿土黄中式宽袍，修理机械装置，焊接火花，黄色高光，紫色金属反光，背景齿轮结构与天守阁模型，纪录片镜头。", en: "Underground workshop, anime 3D girl in earth-yellow Chinese-style loose robe repairing mechanical device, welding sparks, yellow highlights, purple metal reflection, background gear structure and Tenshu model, documentary shot." },
+      { id: 88, theme: "地下空间", content: "地下陵墓，3D动漫角色身着黑白中式长裙，走过长明甬道，两侧灯火，侧光，黄色高光，紫色阴影，背景天守阁主殿，神话兽浮雕，插画式3D。", en: "Underground tomb, 3D anime character in black-white Chinese-style long skirt walking through long-lit corridor, lights on both sides, side light, yellow highlights, purple shadows, background Tenshu main hall, mythological beast relief, illustration-style 3D." },
+      { id: 89, theme: "地下空间", content: "地下雨庭，日系3D少女穿蓝白中式宽衣，站在地下天井中，雨水从天而降，顶光，黄色高光，紫色水雾，背景天守阁天窗，巨兽化身探头，Web3D。", en: "Underground rain courtyard, Japanese 3D girl in blue-white Chinese-style loose clothing standing in underground courtyard well, rain falling from sky, top light, yellow highlights, purple water mist, background Tenshu skylight, beast incarnation poking head, Web3D." },
+      { id: 90, theme: "地下空间", content: "地下指挥中心，二次元3D角色穿深灰中式宽大衣，坐在全息屏幕前，屏幕紫黄粉光映照面部，背景天守阁全息投影，动态光源，VRM渲染。", en: "Underground command center, anime 3D character in dark gray Chinese-style loose coat sitting before holographic screen, screen purple-yellow-pink light reflecting on face, background Tenshu holographic projection, dynamic light source, VRM rendering." },
+      { id: 91, theme: "山海巨兽", content: "山脊之上，二次元3D少女穿红白中式宽袍，面对如山巨兽化身，风动衣摆，侧逆光，金黄高光，粉紫天空，背景天守阁与巨兽头颅，Web3D视觉大片。", en: "On mountain ridge, anime 3D girl in red-white Chinese-style loose robe facing mountain-like beast incarnation, wind moving hem, side backlight, golden highlights, pink-purple sky, background Tenshu and beast head, Web3D visual blockbuster." },
+      { id: 92, theme: "山海巨兽", content: "海边礁石，3D动漫角色身着蓝白中式长裙，面对海中升起的巨兽，浪花飞溅，逆光，金色轮廓，紫粉海面，背景天守阁海岸，纪录片式。", en: "Seaside reef, 3D anime character in blue-white Chinese-style long skirt facing beast rising from sea, spray splashing, backlight, golden outline, pink-purple sea surface, background Tenshu coast, documentary style." },
+      { id: 93, theme: "山海巨兽", content: "巨兽背脊，日系3D少女穿黑红中式宽衣，站立在缓慢移动的巨兽背上，俯视云海，顶光，黄色高光，紫色阴影，背景天守阁漂浮，VRM渲染。", en: "On beast back, Japanese 3D girl in black-red Chinese-style loose clothing standing on slowly moving beast back, overlooking sea of clouds, top light, yellow highlights, purple shadows, background floating Tenshu, VRM rendering." },
+      { id: 94, theme: "山海巨兽", content: "巨兽之眼，二次元3D角色穿银白中式宽袍，悬浮在巨大眼睛前方，眼瞳反射人物，单一光源从巨兽眼中发出，黄紫粉光，背景天守阁，3D动漫渲染。", en: "Beast eye, anime 3D character in silver-white Chinese-style loose robe floating before giant eye, pupil reflecting character, single light source emitting from beast eye, yellow-purple-pink light, background Tenshu, 3D anime rendering." },
+      { id: 95, theme: "山海巨兽", content: "巨兽骸骨山谷，3D动漫少女身着灰白中式长裙，穿行于巨大骸骨间，侧光，黄色高光，紫色阴影，背景骸骨天守阁，边缘柔化，伪3D。", en: "Beast skeleton valley, 3D anime girl in gray-white Chinese-style long skirt walking among giant skeletons, side light, yellow highlights, purple shadows, background skeleton Tenshu, softened edges, pseudo-3D." },
+      { id: 96, theme: "山海巨兽", content: "巨兽羽翼下，日系3D角色穿金红中式宽大衣，躲在羽翼阴影中，抬头仰望，顶光从羽翼缝隙射入，黄紫粉光斑，背景天守阁，Web3D。", en: "Under beast wings, Japanese 3D character in gold-red Chinese-style loose coat hiding under wing shadow, looking up, top light shooting through wing gaps, yellow-purple-pink light spots, background Tenshu, Web3D." },
+      { id: 97, theme: "山海巨兽", content: "巨兽口中，二次元3D少女穿纯白中式宽袍，站在巨兽张开的嘴中，面对獠牙，逆光剪影，金黄粉紫光，背景天守阁喉咙，VRM质感。", en: "Inside beast mouth, anime 3D girl in pure white Chinese-style loose robe standing inside beast's open mouth, facing fangs, backlight silhouette, golden-pink-purple light, background Tenshu throat, VRM texture." },
+      { id: 98, theme: "山海巨兽", content: "巨兽角上，3D动漫角色身着青黑中式宽衣，攀坐在巨兽角尖，俯瞰大地，侧逆光，金色轮廓，粉紫天空，背景天守阁与群山，纪录片镜头。", en: "On beast horn, 3D anime character in blue-black Chinese-style loose clothing climbing sitting on beast horn tip, overlooking earth, side backlight, golden outline, pink-purple sky, background Tenshu and mountains, documentary shot." },
+      { id: 99, theme: "山海巨兽", content: "巨兽尾尖，日系3D少女穿黄紫中式宽袍，平衡站立于摇摆的巨兽尾尖，动态光影，黄紫粉光晕，背景天守阁与云海，3D渲染。", en: "On beast tail tip, Japanese 3D girl in yellow-purple Chinese-style loose robe balancing on swaying beast tail tip, dynamic light and shadow, yellow-purple-pink halos, background Tenshu and sea of clouds, 3D rendering." },
+      { id: 100, theme: "山海巨兽", content: "巨兽心脏空间，二次元3D角色穿红金中式长裙，漂浮在发光心脏前，血管脉络，顶光，黄色高光，紫色血液反光，背景天守阁在心脏中，Web3D视觉大片。", en: "Beast heart space, anime 3D character in red-gold Chinese-style long skirt floating before glowing heart, blood vessel patterns, top light, yellow highlights, purple blood reflection, background Tenshu inside heart, Web3D visual blockbuster." },
+      { id: 101, theme: "花火夏祭", content: "夏日祭典屋顶，二次元3D少女穿浴衣式中式宽袍，手持团扇仰望烟花，顶光烟花映照，黄紫粉光，背景天守阁与人群，边缘柔化，VRM渲染。", en: "Summer festival rooftop, anime 3D girl in yukata-style Chinese-style loose robe holding round fan looking up at fireworks, top light fireworks reflection, yellow-purple-pink light, background Tenshu and crowd, softened edges, VRM rendering." },
+      { id: 102, theme: "花火夏祭", content: "花火下的河堤，3D动漫角色身着蓝白中式长裙，坐在河岸，烟花倒影水中，逆光，金色轮廓，粉紫天空，背景天守阁与巨兽化身，纪录片式。", en: "Fireworks by river embankment, 3D anime character in blue-white Chinese-style long skirt sitting by river, fireworks reflection in water, backlight, golden outline, pink-purple sky, background Tenshu and beast incarnation, documentary style." },
+      { id: 103, theme: "花火夏祭", content: "祭典小吃摊前，日系3D少女穿粉红中式宽衣，吃苹果糖，霓虹灯笼反光，黄紫粉光，背景天守阁与烟火，动态光源，Web3D。", en: "Before festival food stall, Japanese 3D girl in pink Chinese-style loose clothing eating candy apple, neon lantern reflection, yellow-purple-pink light, background Tenshu and fireworks, dynamic light source, Web3D." },
+      { id: 104, theme: "花火夏祭", content: "花火大会人群后，二次元3D角色穿黑金中式宽袍，独自站在人群边缘仰望天空，侧光烟花，黄色高光，紫色阴影，背景人群虚影与天守阁，伪3D。", en: "Behind fireworks crowd, anime 3D character in black-gold Chinese-style loose robe standing alone at crowd edge looking up at sky, side light fireworks, yellow highlights, purple shadows, background crowd ghost shadows and Tenshu, pseudo-3D." },
+      { id: 105, theme: "花火夏祭", content: "祭典舞台，3D动漫少女身着华丽红白金中式宽衣跳传统舞蹈，长袖飞扬，动态多光源，黄紫粉光晕，背景天守阁与烟花，VRM质感。", en: "Festival stage, 3D anime girl in gorgeous red-white-gold Chinese-style loose clothing performing traditional dance, long sleeves flying, dynamic multiple light sources, yellow-purple-pink halos, background Tenshu and fireworks, VRM texture." },
+      { id: 106, theme: "花火夏祭", content: "花火下的桥，日系3D角色穿淡紫中式长裙，倚靠桥栏，烟花在身后绽放，逆光，金色轮廓，粉紫天空，背景天守阁与河流，纪录片镜头。", en: "Fireworks on bridge, Japanese 3D character in light purple Chinese-style long skirt leaning on bridge railing, fireworks blooming behind, backlight, golden outline, pink-purple sky, background Tenshu and river, documentary shot." },
+      { id: 107, theme: "花火夏祭", content: "祭典面具摊，二次元3D少女穿绿白中式宽袍，挑选狐狸面具，灯笼光侧照，黄色高光，紫色阴影，背景天守阁与烟火，3D动漫渲染。", en: "Festival mask stall, anime 3D girl in green-white Chinese-style loose robe choosing fox mask, lantern light side illumination, yellow highlights, purple shadows, background Tenshu and fireworks, 3D anime rendering." },
+      { id: 108, theme: "花火夏祭", content: "夏夜海边花火，3D动漫角色身着白蓝中式宽衣，赤足站在浅滩，烟花与海浪，逆光，金色反光，粉紫天空，背景天守阁海岸，Web3D视觉大片。", en: "Summer night seaside fireworks, 3D anime character in white-blue Chinese-style loose clothing standing barefoot in shallows, fireworks and waves, backlight, golden reflection, pink-purple sky, background Tenshu coast, Web3D visual blockbuster." },
+      { id: 109, theme: "花火夏祭", content: "祭典神社阶梯，日系3D少女穿橙红中式宽衣，坐在石阶上吃刨冰，两侧灯笼，顶光，黄色高光，紫色阴影，背景天守阁与烟花，边缘柔化。", en: "Festival shrine steps, Japanese 3D girl in orange-red Chinese-style loose clothing sitting on stone steps eating shaved ice, lanterns on both sides, top light, yellow highlights, purple shadows, background Tenshu and fireworks, softened edges." },
+      { id: 110, theme: "花火夏祭", content: "花火下的摩天轮，二次元3D角色穿银紫中式宽袍，坐在摩天轮舱内，窗外烟花绽放，黄紫粉光映照面部，背景天守阁与夜空，VRM渲染。", en: "Fireworks on Ferris wheel, anime 3D character in silver-purple Chinese-style loose robe sitting in Ferris wheel cabin, fireworks blooming outside window, yellow-purple-pink light reflecting on face, background Tenshu and night sky, VRM rendering." },
+      { id: 111, theme: "未来中式", content: "未来中式街道，二次元3D少女穿机能风宽大中式长袍，全息屏幕环绕，霓虹紫黄粉光，背景天守阁与摩天楼，Web3D视觉大片。", en: "Future Chinese-style street, anime 3D girl in techwear loose Chinese-style robe surrounded by holographic screens, neon purple-yellow-pink light, background Tenshu and skyscrapers, Web3D visual blockbuster." },
+      { id: 112, theme: "未来中式", content: "未来中式庭院，3D动漫角色身着白色智能面料宽衣，坐在发光石凳上，竹林投影，顶光，黄色高光，紫色环境光，背景全息天守阁，VRM质感。", en: "Future Chinese-style courtyard, 3D anime character in white smart-fabric loose clothing sitting on glowing stone bench, bamboo forest projection, top light, yellow highlights, purple ambient light, background holographic Tenshu, VRM texture." },
+      { id: 113, theme: "未来中式", content: "未来中式飞船甲板，日系3D少女穿红黑中式宽大衣，面对星空，衣摆微动，侧逆光，金黄高光，粉紫星云，背景天守阁式飞船，巨兽化身游于星海，纪录片式。", en: "Future Chinese-style spaceship deck, Japanese 3D girl in black-red Chinese-style loose coat facing starry sky, hem slightly moving, side backlight, golden highlights, pink-purple nebula, background Tenshu-style spaceship, beast incarnation swimming in sea of stars, documentary style." },
+      { id: 114, theme: "未来中式", content: "未来中式实验室，二次元3D角色穿白大褂式中式宽袍，操作全息仪器，屏幕紫黄粉光映照，背景天守阁结构，3D动漫渲染。", en: "Future Chinese-style laboratory, anime 3D character in white-coat-style Chinese-style loose robe operating holographic instrument, screen purple-yellow-pink light reflecting, background Tenshu structure, 3D anime rendering." },
+      { id: 115, theme: "未来中式", content: "未来中式高速列车顶，3D动漫少女身着蓝白中式宽衣，站立在飞驰列车顶，风压衣摆，逆光，金色轮廓，粉紫城市流光，背景天守阁高架，Web3D。", en: "Future Chinese-style high-speed train roof, 3D anime girl in blue-white Chinese-style loose clothing standing on speeding train roof, wind pressure moving hem, backlight, golden outline, pink-purple city streamers, background Tenshu elevated rail, Web3D." },
+      { id: 116, theme: "未来中式", content: "未来中式空中花园，日系3D角色穿浅绿中式宽袍，照料发光植物，柔和侧光，黄色高光，紫色植物荧光，背景浮空天守阁，VRM渲染。", en: "Future Chinese-style hanging garden, Japanese 3D character in light green Chinese-style loose robe tending glowing plants, soft side light, yellow highlights, purple plant fluorescence, background floating Tenshu, VRM rendering." },
+      { id: 117, theme: "未来中式", content: "未来中式武馆，二次元3D少女穿黑红中式宽袖武服，与全息对手对练，动态侧光，黄紫粉光晕，背景天守阁训练场，边缘柔化。", en: "Future Chinese-style martial arts hall, anime 3D girl in black-red Chinese-style wide-sleeve martial suit sparring with holographic opponent, dynamic side light, yellow-purple-pink halos, background Tenshu training ground, softened edges." },
+      { id: 118, theme: "未来中式", content: "未来中式夜市，3D动漫角色身着紫黑中式宽衣，在悬浮摊位间穿行，霓虹反光，黄紫粉光，背景全息天守阁招牌，纪录片镜头。", en: "Future Chinese-style night market, 3D anime character in purple-black Chinese-style loose clothing walking among floating stalls, neon reflection, yellow-purple-pink light, background holographic Tenshu sign, documentary shot." },
+      { id: 119, theme: "未来中式", content: "未来中式书房，日系3D少女穿米白中式宽袍，阅读漂浮书页，暖光侧照，黄色高光，紫色全息投影，背景天守阁书架，3D渲染。", en: "Future Chinese-style study, Japanese 3D girl in off-white Chinese-style loose robe reading floating book pages, warm side light, yellow highlights, purple holographic projection, background Tenshu bookshelf, 3D rendering." },
+      { id: 120, theme: "未来中式", content: "未来中式中枢塔顶，二次元3D角色穿白金华贵中式宽袍，站在塔顶俯瞰城市，动态单光源，黄紫粉光晕，背景巨型天守阁与巨兽化身，Web3D视觉大片。", en: "Future Chinese-style central tower top, anime 3D character in white-gold luxurious Chinese-style loose robe standing at tower top overlooking city, dynamic single light source, yellow-purple-pink halos, background giant Tenshu and beast incarnation, Web3D visual blockbuster." }
     ];
 
-    const STORAGE_KEY = "promptFusionToolState_v1";
+    const STORAGE_KEY = "promptFusionToolState_v2";
     const themes = [...new Set(prompts.map(p => p.theme))];
 
     let state = {
@@ -908,6 +962,8 @@
       activeTheme: "全部",
       density: "comfortable",
       darkMode: true,
+      bilingual: true,
+      fusionTab: "mixed",
       fusionText: ""
     };
 
@@ -928,8 +984,10 @@
       exportBtn: document.getElementById("exportBtn"),
       themeBtn: document.getElementById("themeBtn"),
       densityBtn: document.getElementById("densityBtn"),
+      bilingualBtn: document.getElementById("bilingualBtn"),
       fusionPanel: document.getElementById("fusionPanel"),
       panelToggle: document.getElementById("panelToggle"),
+      fusionTabs: document.querySelectorAll(".fusion-tab"),
       toast: document.getElementById("toast"),
       body: document.body
     };
@@ -951,7 +1009,9 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
           selectedIds: state.selectedIds,
           darkMode: state.darkMode,
-          density: state.density
+          density: state.density,
+          bilingual: state.bilingual,
+          fusionTab: state.fusionTab
         }));
       } catch (e) {
         console.warn("Failed to save state:", e);
@@ -964,23 +1024,33 @@
         const query = state.searchQuery.trim().toLowerCase();
         const matchesSearch = !query ||
           p.content.toLowerCase().includes(query) ||
+          p.en.toLowerCase().includes(query) ||
           p.theme.toLowerCase().includes(query);
         return matchesTheme && matchesSearch;
       });
+    }
+
+    function cleanText(text) {
+      return text
+        .replace(/。+/g, "。")
+        .replace(/，+/g, "，")
+        .replace(/。，/g, "，")
+        .replace(/，。/g, "。")
+        .replace(/\.+\s*/g, ". ")
+        .replace(/,\s*,+/g, ",")
+        .trim();
     }
 
     function fusePrompts() {
       const selected = prompts.filter(p => state.selectedIds.includes(p.id));
       if (selected.length === 0) return "";
 
-      const base = selected.map(p => p.content).join("，");
-      const deduped = base
-        .replace(/。+/g, "。")
-        .replace(/，+/g, "，")
-        .replace(/。，/g, "，")
-        .replace(/，。/g, "。");
+      const zh = cleanText(selected.map(p => p.content).join("，"));
+      const en = cleanText(selected.map(p => p.en).join(", "));
 
-      return deduped;
+      if (state.fusionTab === "zh") return zh;
+      if (state.fusionTab === "en") return en;
+      return `[中文]\n${zh}\n\n[English]\n${en}`;
     }
 
     function renderThemePills() {
@@ -1011,7 +1081,7 @@
         els.promptsContainer.innerHTML = `
           <div class="empty-state">
             <h3>未找到匹配的提示词</h3>
-            <p>尝试更换关键词或清除筛选条件</p>
+            <p>尝试更换关键词或清除筛选条件 / Try different keywords or clear filters</p>
           </div>
         `;
         return;
@@ -1043,6 +1113,7 @@
           card.innerHTML = `
             <div class="card-id">#${String(p.id).padStart(3, "0")}</div>
             <div class="card-content">${escapeHtml(p.content)}</div>
+            <div class="card-en ${state.bilingual ? "" : "hidden"}">${escapeHtml(p.en)}</div>
             <div class="card-theme">${p.theme}</div>
           `;
 
@@ -1085,7 +1156,7 @@
         item.className = "selected-item";
         item.innerHTML = `
           <span style="color: var(--accent-gold); font-weight: 600;">#${p.id}</span>
-          <span style="flex: 1; line-height: 1.5;">${escapeHtml(p.content.slice(0, 40))}${p.content.length > 40 ? "..." : ""}</span>
+          <span style="flex: 1; line-height: 1.5;">${escapeHtml(p.content.slice(0, 35))}${p.content.length > 35 ? "..." : ""}</span>
           <button title="移除" data-id="${p.id}">×</button>
         `;
         item.querySelector("button").addEventListener("click", (e) => {
@@ -1100,7 +1171,11 @@
         els.fusionOutput.value = fusionText;
       }
 
-      els.charCount.textContent = `${els.fusionOutput.value.length} 字符`;
+      els.charCount.textContent = `${els.fusionOutput.value.length} 字符 / chars`;
+
+      els.fusionTabs.forEach(tab => {
+        tab.classList.toggle("active", tab.dataset.tab === state.fusionTab);
+      });
     }
 
     function toggleSelection(id) {
@@ -1138,7 +1213,7 @@
     function randomFusion() {
       const pool = getFilteredPrompts();
       if (pool.length === 0) {
-        showToast("当前筛选结果为空，无法随机融合");
+        showToast("当前筛选结果为空，无法随机融合 / Filter result is empty");
         return;
       }
 
@@ -1148,7 +1223,7 @@
 
       state.selectedIds = picked.map(p => p.id).sort((a, b) => a - b);
       updateAll();
-      showToast(`已随机融合 ${picked.length} 组提示词`);
+      showToast(`已随机融合 ${picked.length} 组提示词 / Fused ${picked.length} prompts`);
     }
 
     function setTheme(theme) {
@@ -1162,6 +1237,12 @@
       updateAll();
     }
 
+    function toggleBilingual() {
+      state.bilingual = !state.bilingual;
+      els.bilingualBtn.classList.toggle("active", state.bilingual);
+      updateAll();
+    }
+
     function toggleTheme() {
       state.darkMode = !state.darkMode;
       els.body.setAttribute("data-theme", state.darkMode ? "dark" : "light");
@@ -1169,16 +1250,20 @@
       updateAll();
     }
 
+    function setFusionTab(tab) {
+      state.fusionTab = tab;
+      updateAll();
+    }
+
     async function copyToClipboard() {
       const text = els.fusionOutput.value.trim();
       if (!text) {
-        showToast("没有可复制的内容");
+        showToast("没有可复制的内容 / Nothing to copy");
         return;
       }
-
       try {
         await navigator.clipboard.writeText(text);
-        showToast("已复制到剪贴板");
+        showToast("已复制到剪贴板 / Copied");
       } catch (e) {
         const textarea = document.createElement("textarea");
         textarea.value = text;
@@ -1188,59 +1273,64 @@
         textarea.select();
         document.execCommand("copy");
         document.body.removeChild(textarea);
-        showToast("已复制到剪贴板");
+        showToast("已复制到剪贴板 / Copied");
       }
     }
 
     function exportFile(format) {
       const text = els.fusionOutput.value.trim();
       if (!text) {
-        showToast("没有可导出的内容");
+        showToast("没有可导出的内容 / Nothing to export");
         return;
       }
-
       const timestamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-");
       const selected = prompts.filter(p => state.selectedIds.includes(p.id));
-
       let content = "";
       let filename = "";
       let mimeType = "";
-
       if (format === "txt") {
         content = [
-          "=== 画风提示词融合结果 ===",
-          `生成时间：${new Date().toLocaleString()}`,
-          `融合数量：${selected.length} 组`,
+          "=== 画风提示词融合结果 / Prompt Fusion Result ===",
+          `生成时间 / Generated: ${new Date().toLocaleString()}`,
+          `融合数量 / Count: ${selected.length} 组`,
           "",
-          "【融合提示词】",
-          text,
+          "【中文融合提示词】",
+          cleanText(selected.map(p => p.content).join("，")),
           "",
-          "【原始提示词】",
-          ...selected.map(p => `[#${p.id}] ${p.theme}\n${p.content}`)
+          "【English Fusion Prompt】",
+          cleanText(selected.map(p => p.en).join(", ")),
+          "",
+          "【原始提示词 / Original Prompts】",
+          ...selected.map(p => `[#${p.id}] ${p.theme}\n中文：${p.content}\nEN: ${p.en}`)
         ].join("\n");
         filename = `prompt-fusion-${timestamp}.txt`;
         mimeType = "text/plain;charset=utf-8";
       } else if (format === "md") {
         content = [
-          "# 画风提示词融合结果",
+          "# 画风提示词融合结果 / Prompt Fusion Result",
           "",
-          `- 生成时间：${new Date().toLocaleString()}`,
-          `- 融合数量：${selected.length} 组`,
+          `- 生成时间 / Generated: ${new Date().toLocaleString()}`,
+          `- 融合数量 / Count: ${selected.length}`,
           "",
-          "## 融合提示词",
+          "## 中文融合提示词",
           "",
           "```text",
-          text,
+          cleanText(selected.map(p => p.content).join("，")),
           "```",
           "",
-          "## 原始提示词",
+          "## English Fusion Prompt",
           "",
-          ...selected.map(p => `### #${p.id} · ${p.theme}\n\n${p.content}`)
+          "```text",
+          cleanText(selected.map(p => p.en).join(", ")),
+          "```",
+          "",
+          "## 原始提示词 / Original Prompts",
+          "",
+          ...selected.map(p => `### #${p.id} · ${p.theme}\n\n**中文：** ${p.content}\n\n**EN:** ${p.en}`)
         ].join("\n");
         filename = `prompt-fusion-${timestamp}.md`;
         mimeType = "text/markdown;charset=utf-8";
       }
-
       const blob = new Blob([content], { type: mimeType });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -1250,7 +1340,7 @@
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      showToast(`已导出 ${format.toUpperCase()}`);
+      showToast(`已导出 ${format.toUpperCase()} / Exported`);
     }
 
     function showToast(message) {
@@ -1277,17 +1367,15 @@
       els.body.setAttribute("data-theme", state.darkMode ? "dark" : "light");
       els.themeBtn.textContent = state.darkMode ? "☀" : "☾";
       els.densityBtn.textContent = state.density === "comfortable" ? "☷" : "≣";
-
+      els.bilingualBtn.classList.toggle("active", state.bilingual);
       renderThemePills();
       renderPrompts();
       renderFusionPanel();
-
       els.searchInput.value = state.searchQuery;
       els.searchInput.addEventListener("input", (e) => {
         state.searchQuery = e.target.value;
         renderPrompts();
       });
-
       els.randomBtn.addEventListener("click", randomFusion);
       els.clearBtn.addEventListener("click", clearSelection);
       els.copyBtn.addEventListener("click", copyToClipboard);
@@ -1298,25 +1386,24 @@
       });
       els.themeBtn.addEventListener("click", toggleTheme);
       els.densityBtn.addEventListener("click", toggleDensity);
-
+      els.bilingualBtn.addEventListener("click", toggleBilingual);
+      els.fusionTabs.forEach(tab => {
+        tab.addEventListener("click", () => setFusionTab(tab.dataset.tab));
+      });
       els.fusionOutput.addEventListener("input", () => {
         state.fusionText = els.fusionOutput.value;
-        els.charCount.textContent = `${els.fusionOutput.value.length} 字符`;
+        els.charCount.textContent = `${els.fusionOutput.value.length} 字符 / chars`;
         els.fusionChars.textContent = els.fusionOutput.value.length;
       });
-
       els.panelToggle.addEventListener("click", () => {
         els.fusionPanel.classList.toggle("expanded");
       });
-
       document.addEventListener("keydown", (e) => {
         const isCmd = e.metaKey || e.ctrlKey;
-
         if (isCmd && e.key === "a" && document.activeElement !== els.fusionOutput) {
           e.preventDefault();
           selectAllVisible();
         }
-
         if (e.key === "Escape") {
           if (document.activeElement === els.searchInput) {
             els.searchInput.blur();
@@ -1324,10 +1411,12 @@
             clearSelection();
           }
         }
-
         if (isCmd && e.key === "Enter") {
           e.preventDefault();
           copyToClipboard();
+        }
+        if (e.key.toLowerCase() === "b" && document.activeElement !== els.searchInput && document.activeElement !== els.fusionOutput) {
+          toggleBilingual();
         }
       });
     }

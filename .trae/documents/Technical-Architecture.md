@@ -45,7 +45,8 @@ const prompts = [
   {
     id: 1,
     theme: "黎明曙光",
-    content: "黎明高原，日系二次元3D少女身穿宽松中式白袍..."
+    content: "黎明高原，日系二次元3D少女身穿宽松中式白袍...",
+    en: "Dawn plateau, Japanese anime-style 3D girl in loose Chinese-style white robe..."
   }
   // ... 共 120 条
 ];
@@ -58,7 +59,8 @@ const prompts = [
   theme: "dark",        // 或 "light"
   selectedIds: [1, 11, 21],
   lastFusion: "...",
-  density: "comfortable" // "compact" | "comfortable"
+  density: "comfortable", // "compact" | "comfortable"
+  bilingual: true       // 是否显示英文翻译
 }
 ```
 
