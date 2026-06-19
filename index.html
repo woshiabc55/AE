@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>画风提示词库 · 120 组提示词融合工具</title>
+  <style>
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: rgba(20, 20, 28, 0.7);
+      --bg-card: rgba(255, 255, 255, 0.04);
+      --bg-card-hover: rgba(255, 255, 255, 0.08);
+      --text-primary: #f5f5f7;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --accent-gold: #f6c344;
+      --accent-purple: #a855f7;
+      --accent-pink: #ec4899;
+      --accent-red: #ef4444;
+      --border: rgba(255, 255, 255, 0.08);
+      --shadow: rgba(0, 0, 0, 0.5);
+      --glass: rgba(255, 255, 255, 0.06);
+      --radius: 14px;
+      --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #f8f7f4;
+      --bg-secondary: rgba(255, 255, 255, 0.8);
+      --bg-card: rgba(0, 0, 0, 0.03);
+      --bg-card-hover: rgba(0, 0, 0, 0.06);
+      --text-primary: #1a1a1a;
+      --text-secondary: #4b5563;
+      --text-muted: #9ca3af;
+      --border: rgba(0, 0, 0, 0.08);
+      --shadow: rgba(0, 0, 0, 0.1);
+      --glass: rgba(255, 255, 255, 0.7);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+      transition: background var(--transition), color var(--transition);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 15% 25%, rgba(168, 85, 247, 0.12) 0%, transparent 35%),
+        radial-gradient(circle at 85% 75%, rgba(236, 72, 153, 0.1) 0%, transparent 35%),
+        radial-gradient(circle at 50% 50%, rgba(246, 195, 68, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+    }
+
+    .brand h1 {
+      font-family: "Songti SC", "SimSun", "Noto Serif SC", serif;
+      font-size: 1.75rem;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      background: linear-gradient(135deg, var(--accent-gold), var(--accent-pink), var(--accent-purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 40px rgba(168, 85, 247, 0.3);
+    }
+
+    .brand span {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-family: "SF Mono", "Fira Code", monospace;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--glass);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: all var(--transition);
+    }
+
+    .icon-btn:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-primary);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px var(--shadow);
+    }
+
+    /* Main layout */
+    .app {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Control bar */
+    .control-bar {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .search-box {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.875rem 1rem 0.875rem 2.75rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      transition: all var(--transition);
+      outline: none;
+    }
+
+    .search-box input:focus {
+      border-color: var(--accent-purple);
+      box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15);
+    }
+
+    .search-box::before {
+      content: "🔍";
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0.6;
+    }
+
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .theme-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      flex: 1;
+    }
+
+    .pill {
+      padding: 0.4rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
+
+    .pill:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-primary);
+    }
+
+    .pill.active {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.2));
+      border-color: var(--accent-purple);
+      color: var(--text-primary);
+      box-shadow: 0 0 16px rgba(168, 85, 247, 0.25);
+    }
+
+    .action-group {
+      display: flex;
+      gap: 0.5rem;
+      margin-left: auto;
+    }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--glass);
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn:hover {
+      background: var(--bg-card-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px var(--shadow);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+      border: none;
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 8px 24px rgba(168, 85, 247, 0.35);
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, var(--accent-gold), var(--accent-red));
+      border: none;
+      color: #1a1a1a;
+      font-weight: 600;
+    }
+
+    .stats-bar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .stat-value {
+      color: var(--accent-gold);
+      font-weight: 700;
+      font-family: "SF Mono", "Fira Code", monospace;
+    }
+
+    /* Prompt grid */
+    .theme-section {
+      margin-bottom: 2.5rem;
+      animation: fadeInUp 0.6s ease both;
+    }
+
+    .theme-title {
+      font-family: "Songti SC", "SimSun", "Noto Serif SC", serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      padding-left: 0.75rem;
+      border-left: 3px solid var(--accent-purple);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .theme-title small {
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      background: var(--bg-card);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    .prompts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1rem;
+    }
+
+    .prompts-grid.compact {
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .prompt-card {
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      cursor: pointer;
+      transition: all var(--transition);
+      overflow: hidden;
+    }
+
+    .prompt-card:hover {
+      background: var(--bg-card-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px var(--shadow);
+      border-color: rgba(168, 85, 247, 0.3);
+    }
+
+    .prompt-card.selected {
+      border-color: transparent;
+      background: linear-gradient(135deg, rgba(246, 195, 68, 0.08), rgba(168, 85, 247, 0.08), rgba(236, 72, 153, 0.08));
+      box-shadow: 0 0 24px rgba(168, 85, 247, 0.2), inset 0 0 0 1px rgba(168, 85, 247, 0.5);
+    }
+
+    .prompt-card.selected::before {
+      content: "✓";
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+      color: #1a1a1a;
+      font-size: 0.8rem;
+      font-weight: 800;
+      display: grid;
+      place-items: center;
+      animation: scaleIn 0.2s ease;
+    }
+
+    .card-id {
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .card-content {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      display: -webkit-box;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      transition: color var(--transition);
+    }
+
+    .prompt-card:hover .card-content,
+    .prompt-card.selected .card-content {
+      color: var(--text-primary);
+    }
+
+    .card-theme {
+      margin-top: 0.75rem;
+      font-size: 0.75rem;
+      color: var(--accent-purple);
+      font-weight: 500;
+      opacity: 0.8;
+    }
+
+    /* Fusion panel */
+    .fusion-panel {
+      position: sticky;
+      top: 92px;
+      height: fit-content;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 20px 60px var(--shadow);
+    }
+
+    .panel-header {
+      font-family: "Songti SC", "SimSun", "Noto Serif SC", serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .panel-header span {
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: var(--bg-card);
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+    }
+
+    .selected-list {
+      max-height: 160px;
+      overflow-y: auto;
+      margin-bottom: 1rem;
+      padding-right: 0.5rem;
+    }
+
+    .selected-list:empty::before {
+      content: "未选择提示词";
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      text-align: center;
+      padding: 1.5rem 0;
+    }
+
+    .selected-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      padding: 0.5rem;
+      margin-bottom: 0.4rem;
+      background: var(--bg-card);
+      border-radius: 8px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      border: 1px solid transparent;
+      transition: all var(--transition);
+    }
+
+    .selected-item:hover {
+      border-color: var(--accent-red);
+      color: var(--text-primary);
+    }
+
+    .selected-item button {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+      padding: 0 0.2rem;
+    }
+
+    .selected-item button:hover {
+      color: var(--accent-red);
+    }
+
+    .fusion-output {
+      width: 100%;
+      min-height: 220px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      resize: vertical;
+      outline: none;
+      transition: all var(--transition);
+      font-family: inherit;
+    }
+
+    .fusion-output:focus {
+      border-color: var(--accent-purple);
+      box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.12);
+    }
+
+    .char-count {
+      text-align: right;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.4rem;
+      font-family: "SF Mono", "Fira Code", monospace;
+    }
+
+    .panel-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+      margin-top: 1rem;
+    }
+
+    .panel-actions .btn {
+      justify-content: center;
+      padding: 0.7rem;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(120%);
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+      color: #fff;
+      padding: 0.8rem 1.5rem;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      box-shadow: 0 12px 32px rgba(168, 85, 247, 0.35);
+      z-index: 1000;
+      opacity: 0;
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-secondary);
+    }
+
+    /* Footer */
+    footer {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    footer kbd {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.1rem 0.4rem;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 0.75rem;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-muted);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0);
+      }
+      to {
+        transform: scale(1);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .app {
+        grid-template-columns: 1fr 340px;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .fusion-panel {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        top: auto;
+        border-radius: var(--radius) var(--radius) 0 0;
+        max-height: 60vh;
+        transform: translateY(calc(100% - 56px));
+        transition: transform var(--transition);
+        z-index: 200;
+      }
+
+      .fusion-panel.expanded {
+        transform: translateY(0);
+      }
+
+      .panel-toggle {
+        display: block;
+      }
+
+      .main-content {
+        padding-bottom: 70px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .header-inner {
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .brand h1 {
+        font-size: 1.4rem;
+      }
+
+      .prompts-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .action-group {
+        width: 100%;
+        margin-left: 0;
+      }
+
+      .action-group .btn {
+        flex: 1;
+        justify-content: center;
+      }
+    }
+
+    .panel-toggle {
+      display: none;
+    }
+
+    @media (max-width: 992px) {
+      .panel-toggle {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 0.5rem;
+        margin-bottom: 0.75rem;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        cursor: pointer;
+      }
+
+      .panel-toggle::before {
+        content: "";
+        display: inline-block;
+        width: 40px;
+        height: 4px;
+        background: var(--border);
+        border-radius: 2px;
+        margin-bottom: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body data-theme="dark">
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <h1>画风提示词库</h1>
+        <span>120 PROMPTS</span>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="densityBtn" title="切换密度">☷</button>
+        <button class="icon-btn" id="themeBtn" title="切换明暗">☀</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="app">
+    <main class="main-content">
+      <div class="control-bar">
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="搜索提示词关键词，如：天守阁、巨兽、霓虹、竹林..." autocomplete="off">
+        </div>
+        <div class="filter-row">
+          <div class="theme-pills" id="themePills"></div>
+          <div class="action-group">
+            <button class="btn btn-primary" id="randomBtn">🎲 随机融合</button>
+            <button class="btn" id="clearBtn">清空</button>
+          </div>
+        </div>
+        <div class="stats-bar">
+          <div>已选择 <span class="stat-value" id="selectedCount">0</span> 组</div>
+          <div>当前显示 <span class="stat-value" id="visibleCount">120</span> 组</div>
+          <div>融合字数 <span class="stat-value" id="fusionChars">0</span></div>
+        </div>
+      </div>
+
+      <div id="promptsContainer"></div>
+    </main>
+
+    <aside class="fusion-panel" id="fusionPanel">
+      <div class="panel-toggle" id="panelToggle"></div>
+      <div class="panel-header">
+        融合工作台
+        <span id="panelCount">0 / 120</span>
+      </div>
+      <div class="selected-list" id="selectedList"></div>
+      <textarea class="fusion-output" id="fusionOutput" placeholder="选择提示词后，融合结果将显示在这里。你也可以直接编辑..."></textarea>
+      <div class="char-count" id="charCount">0 字符</div>
+      <div class="panel-actions">
+        <button class="btn btn-gold" id="copyBtn">📋 复制</button>
+        <button class="btn btn-primary" id="exportBtn">💾 导出 TXT</button>
+      </div>
+    </aside>
+  </div>
+
+  <footer>
+    <p>快捷键：<kbd>Ctrl/Cmd + A</kbd> 全选当前结果 · <kbd>Esc</kbd> 清空 · <kbd>Ctrl/Cmd + Enter</kbd> 复制融合结果</p>
+    <p style="margin-top: 0.5rem;">所有提示词基于日式二次元 3D 渲染风格设计，支持自由组合与再创作</p>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const prompts = [
+      { id: 1, theme: "黎明曙光", content: "黎明高原，日系二次元3D少女身穿宽松中式白袍，面向初升太阳，动态单光源从侧后方打亮发梢，黄色高光与紫粉红光晕交织，背景远山天守阁若隐若现，神话巨兽剪影横亘，Web3D渲染，边缘柔化，纪录片镜头。" },
+      { id: 2, theme: "黎明曙光", content: "曙光下的城市边缘，二次元3D角色身着宽大飘逸长裙缓步前行，裙摆微动，主光源低角度侧光，整体偏暗但人物受光面明亮，紫色与粉色环境光反射，远景有巨兽轮廓，VRM质感，高粗糙度面料。" },
+      { id: 3, theme: "黎明曙光", content: "清晨雾气中的近郊，日系动漫脸3D少女坐在废弃轮胎上，身穿现代中式横流剪裁上衣，双手抱膝神情忧郁，顶光与雾散射，黄色高光，粉色边缘光，背景天守阁半隐，伪3D渲染。" },
+      { id: 4, theme: "黎明曙光", content: "黎明时分的高台，3D动漫少女张开双臂迎风伫立，宽松长袖与长裙飘动，动态光源追踪面部，紫红渐变天空，远景神话巨兽化身如山脉横卧，边缘检测效果，插画式3D融合。" },
+      { id: 5, theme: "黎明曙光", content: "曙光照亮的空旷广场，二次元3D角色背对镜头，长黑发中式宽大衣袍，地面有斑驳光影，单点强光从背后打出轮廓光，黄紫粉三色光晕，背景现代建筑与天守阁并置，Web3D视觉大片。" },
+      { id: 6, theme: "黎明曙光", content: "清晨薄雾竹林边缘，日系3D少女身着浅绿中式长裙手持竹笛缓步而行，侧逆光，人物边缘模糊柔化，整体画面偏暗，动态高光聚焦面部，远处有朦胧巨兽之眼，纪录片式构图。" },
+      { id: 7, theme: "黎明曙光", content: "黎明前的暗蓝时刻，二次元3D角色跪在荒地中央，宽大黑衣中式长袍铺地，双手触地情绪沉重，单一顶光聚焦，黄色主高光，紫色环境反射，背景山形如巨兽脊背，VRM渲染。" },
+      { id: 8, theme: "黎明曙光", content: "日出云海的悬崖边，3D动漫少女站立崖边，宽袖长袍被晨风吹起，面向右侧，动态侧光，金黄色高光面，粉紫色天空，脚下云海翻腾，远景天守阁与巨兽化身浮现，高对比光影。" },
+      { id: 9, theme: "黎明曙光", content: "清晨废弃神社，二次元3D角色身着朱白相间中式宽衣，站在鸟居前双手合十，柔和顶光，黄色高光，粉色雾气，背景破损天守阁，神话生物阴影，3D渲染融合插画。" },
+      { id: 10, theme: "黎明曙光", content: "黎明工业区天台，日系3D少女穿黑色宽大中式外套与长裙，坐在天台边缘双腿悬空，侧逆光打出金色轮廓，紫粉霓虹反光，背景烟囱与天守阁叠化，动态单光源，边缘柔化。" },
+      { id: 11, theme: "暮色边缘", content: "黄昏城市天桥，二次元3D少女身穿现代中式宽松长裙，倚靠栏杆，逆光剪影与面部补光，橙黄与紫粉天空，远处天守阁在暮光中，巨兽轮廓隐于云层，Web3D渲染。" },
+      { id: 12, theme: "暮色边缘", content: "暮色高原，3D动漫角色躺在草地上，宽大袖袍展开，仰望暗红天空，侧光勾勒身体曲线，黄色高光，紫色阴影，背景山脉如沉睡巨兽，画面偏暗，纪录片镜头。" },
+      { id: 13, theme: "暮色边缘", content: "黄昏海边堤坝，日系3D少女身着蓝白中式宽衣赤足行走，裙摆沾水，低角度逆光，金光穿透衣袖，粉紫海面反光，远景巨兽化身浮出水面，VRM质感。" },
+      { id: 14, theme: "暮色边缘", content: "暮色下的废弃游乐园，二次元3D角色穿粉色宽大中式连衣裙，坐在旋转木马上，侧光，黄色高光面，紫色环境光，背景摩天轮与天守阁叠影，边缘模糊，伪3D效果。" },
+      { id: 15, theme: "暮色边缘", content: "黄昏山间古道，3D动漫少女身着灰白长袍背负长剑独行，顶光穿过树冠形成斑驳光影，黄色主光，粉紫漫反射，远处巨兽咆哮身形隐于山雾，插画式3D。" },
+      { id: 16, theme: "暮色边缘", content: "暮色城市屋顶，日系3D角色穿黑红中式宽大衣迎风站立，衣摆猎猎，逆光轮廓，城市灯火与紫粉天光交织，背景天守阁高耸，动态光源追踪，Web3D大片。" },
+      { id: 17, theme: "暮色边缘", content: "黄昏芦苇荡，二次元3D少女身着米白宽松长裙，半蹲抚摸水面，低角度侧光，金色反光，紫色阴影，水面涟漪，远景巨兽化身倒映水中，边缘柔化。" },
+      { id: 18, theme: "暮色边缘", content: "暮色高架桥下，3D动漫角色穿深绿中式宽袖上衣与长裙，靠墙而立单手插兜，神情冷峻，单点侧光，黄紫粉三色，背景混凝土结构与天守阁残影，高粗糙度面料。" },
+      { id: 19, theme: "暮色边缘", content: "黄昏沙漠公路，日系3D少女身着红黄相间宽大长袍，独自走在公路中央背影，长逆光，地面尘埃泛金光，天空紫粉渐变，远景巨兽如山丘移动，纪录片式。" },
+      { id: 20, theme: "暮色边缘", content: "暮色图书馆废墟，二次元3D角色穿靛蓝中式宽衣，坐在书堆中手捧发光书卷，顶光照射，黄色高光，紫色环境反射，背景破碎天守阁窗影，3D动漫渲染。" },
+      { id: 21, theme: "雨夜霓虹", content: "雨夜霓虹街头，二次元3D少女穿黑色宽大中式风衣，站在便利店屋檐下，雨水打湿刘海，霓虹灯紫粉黄光反射在湿润地面，背景天守阁与现代高楼并置，VRM渲染。" },
+      { id: 22, theme: "雨夜霓虹", content: "雨夜天桥，3D动漫角色身着透明质感中式宽衣，撑红色油纸伞逆光行走，地面水洼倒映霓虹，黄色高光，紫色边缘光，远景巨兽化身在雨幕中，动态光源。" },
+      { id: 23, theme: "雨夜霓虹", content: "雨夜地下通道，日系3D少女穿深灰中式长裙靠墙蹲坐，抱膝低头，单一顶光，黄色高光面，紫色环境反光，墙面斑驳水渍，背景出口处天守阁轮廓，边缘模糊。" },
+      { id: 24, theme: "雨夜霓虹", content: "霓虹雨夜车顶，二次元3D角色穿银白宽大中式长袍，盘腿坐在废弃汽车顶，手持发光物体，周围雨水飞溅，紫粉黄光晕，背景巨兽之眼在霓虹中睁开，Web3D。" },
+      { id: 25, theme: "雨夜霓虹", content: "雨夜唐人街街巷，3D动漫少女身着红金中式宽衣，奔跑中回眸，裙摆飞扬，霓虹招牌反光，黄色主光，粉紫环境光，背景灯笼与天守阁叠化，高动态模糊。" },
+      { id: 26, theme: "雨夜霓虹", content: "雨夜高层落地窗，日系3D角色穿白色宽大中式睡衣风长袍，靠窗凝视雨夜，窗外霓虹与雨水流下，紫黄粉光交织，远处天守阁灯火，室内单一暖光，情绪渲染。" },
+      { id: 27, theme: "雨夜霓虹", content: "雨夜废弃车站，二次元3D少女穿墨绿中式宽袖外套，坐在长椅中，手中握茶杯冒热气，顶光，黄色高光，紫色阴影，背景破损电子屏与天守阁残影，纪录片风格。" },
+      { id: 28, theme: "雨夜霓虹", content: "霓虹雨夜码头，3D动漫角色穿蓝黑宽大中式长裙，站在集装箱顶，风吹衣摆，逆光剪影，水面霓虹倒影，黄紫粉色光，远景巨兽化身从海中升起，VRM质感。" },
+      { id: 29, theme: "雨夜霓虹", content: "雨夜自动扶梯，日系3D少女穿粉色中式宽大衣，逆向站在运行扶梯上，周围人群虚影，霓虹灯反射，黄色高光，紫色环境光，背景天守阁与现代商场，边缘柔化。" },
+      { id: 30, theme: "雨夜霓虹", content: "雨夜天台水箱旁，二次元3D角色穿黄紫拼色中式宽袍，仰头接雨水，动态顶光，面部黄色高光，紫粉天空，背景城市灯火与巨兽轮廓，伪3D渲染。" },
+      { id: 31, theme: "雪域高原", content: "雪域高原日出，二次元3D少女穿纯白宽大中式长袍，站立雪山之巅，晨光从侧面照射，黄紫粉光在雪地反射，背景天守阁冰封，远处巨兽化身如山脊横亘，Web3D。" },
+      { id: 32, theme: "雪域高原", content: "暴风雪中的木屋前，3D动漫角色身着藏青中式宽衣推门而出，雪花迎面扑来，顶光，黄色高光，紫色阴影，背景木屋与天守阁叠影，动态光源追踪。" },
+      { id: 33, theme: "雪域高原", content: "雪原独行者，日系3D少女穿朱红宽大中式斗篷，在雪地中艰难前行，逆风斗篷飞扬，侧逆光，金色轮廓，粉紫天空，远景巨兽脚印延伸，VRM渲染。" },
+      { id: 34, theme: "雪域高原", content: "冰川裂缝边缘，二次元3D角色穿冰蓝中式长裙，跪坐俯视深渊，单一顶光，黄色高光面，紫色环境反射，冰面折射光线，背景天守阁倒悬于冰川，插画式3D。" },
+      { id: 35, theme: "雪域高原", content: "雪夜温泉旁，3D动漫少女身着白色浴衣式宽袍，坐在温泉边脚浸水中，蒸汽缭绕，暖黄光源与冷紫环境光对比，背景雪山巨兽轮廓，边缘柔化。" },
+      { id: 36, theme: "雪域高原", content: "雪域废弃灯塔，日系3D角色穿灰白中式长大衣攀登结冰阶梯，背影，侧逆光，金黄高光，粉紫天空，灯塔光束扫过，远处天守阁与巨兽身影，纪录片镜头。" },
+      { id: 37, theme: "雪域高原", content: "雪地神社参道，二次元3D少女穿红白中式宽衣缓步拾级而上，两侧石灯笼积雪，顶光，黄色高光，紫色阴影，背景天守阁朱门，神话生物吐息可见，3D渲染。" },
+      { id: 38, theme: "雪域高原", content: "高原风雪车站，3D动漫角色穿黑色宽大中式冬袍，独自坐在候车亭，双手捧热饮，窗外风雪呼啸，室内暖黄光源，室外紫粉冷光，背景巨兽化身走过，VRM质感。" },
+      { id: 39, theme: "雪域高原", content: "雪山悬崖吊桥，日系3D少女穿浅紫中式宽袖长裙，行走在摇晃吊桥上，风雪吹动衣摆，侧光，黄色高光，粉紫环境，桥下深渊巨兽之眼，Web3D视觉大片。" },
+      { id: 40, theme: "雪域高原", content: "雪原落日，二次元3D角色穿橙黄宽大中式长袍，面向落日张开双臂，逆光剪影，雪地金紫粉反光，背景天守阁剪影，远处巨兽化身与落日重合，边缘检测。" },
+      { id: 41, theme: "竹林深处", content: "清晨竹林深处，二次元3D少女穿青绿中式宽衣，手持竹剑凝神站立，阳光穿透竹叶形成光束，黄色高光，紫色阴影，背景竹影婆娑，远处天守阁一角，纪录片式。" },
+      { id: 42, theme: "竹林深处", content: "竹林雾气中，3D动漫角色身着月白宽大中式长袍盘坐冥想，顶光透过竹叶形成斑驳光影，黄紫粉光晕，周围竹干上刻有符文，背景巨兽化身隐于雾中，VRM渲染。" },
+      { id: 43, theme: "竹林深处", content: "竹林小径，日系3D少女穿淡粉中式长裙赤足奔跑，裙摆与竹叶齐飞，侧逆光，金色轮廓，紫色环境反光，背景天守阁石阶，动态光源追踪，伪3D效果。" },
+      { id: 44, theme: "竹林深处", content: "雨夜竹林，二次元3D角色穿墨绿中式宽袖撑伞徐行，雨滴沿竹叶滑落，霓虹式紫黄粉光反射，背景天守阁灯火，黑暗中的神话兽眼，边缘柔化。" },
+      { id: 45, theme: "竹林深处", content: "竹林瀑布旁，3D动漫少女身着蓝白中式宽衣站在水潭边，水雾环绕，侧光，黄色高光面，紫色水雾，背景瀑布后隐约天守阁，动态单光源，Web3D。" },
+      { id: 46, theme: "竹林深处", content: "竹林废弃茶室，日系3D角色穿茶色中式宽袍跪坐品茶，窗外竹影摇曳，顶光，黄色高光，紫色环境反射，背景破损天守阁，情绪静谧，插画式3D融合。" },
+      { id: 47, theme: "竹林深处", content: "竹林高空栈道，二次元3D少女穿黑绿中式宽大衣，行走在悬空竹栈道俯视云海，侧逆光，金黄高光，粉紫云海，远处天守阁与巨兽化身，VRM质感。" },
+      { id: 48, theme: "竹林深处", content: "竹林月下，3D动漫角色身着银白中式长裙仰头望月，月光冷蓝，人物边缘柔化，黄色月光高光，紫色竹影，背景天守阁飞檐，巨兽咆哮于月后，纪录片镜头。" },
+      { id: 49, theme: "竹林深处", content: "竹林深处古井，日系3D少女穿靛青中式宽衣俯身望向古井，水面倒映面容，单一顶光，黄色高光，紫色井水反光，背景天守阁倒影，3D动漫渲染。" },
+      { id: 50, theme: "竹林深处", content: "竹林竞技场，二次元3D角色穿红黑中式宽袖武服，手持长枪战斗姿态，动态侧光，黄紫粉光晕，竹叶纷飞，背景天守阁观战席，巨兽化身盘踞，Web3D大片。" },
+      { id: 51, theme: "废弃神社", content: "废弃神社本殿，二次元3D少女穿巫女服改良中式宽衣，站在破败神龛前，顶光从破洞射入，黄色高光，紫色尘埃，背景天守阁残影，神话兽雕像，VRM渲染。" },
+      { id: 52, theme: "废弃神社", content: "神社鸟居前，3D动漫角色身着朱白中式宽袍双手合十祈祷，逆光，金色轮廓，粉紫雾气，背景巨大鸟居与天守阁，远处巨兽化身低头凝视，纪录片式。" },
+      { id: 53, theme: "废弃神社", content: "废弃神社石阶，日系3D少女穿灰粉中式长裙缓步上行，两侧石灯长明，侧光，黄色高光，紫色阴影，背景朱红神社与天守阁，边缘模糊，伪3D。" },
+      { id: 54, theme: "废弃神社", content: "雨夜神社，二次元3D角色穿深紫中式宽衣蹲在屋檐下避雨，手中握发光符咒，霓虹反光，黄紫粉光，背景天守阁闪电，巨兽化身咆哮，Web3D。" },
+      { id: 55, theme: "废弃神社", content: "神社后山墓地，3D动漫少女身着黑白中式宽袍站在墓碑间，低头凝视供品，顶光，黄色高光，紫色环境反射，背景天守阁远景，神话灵体漂浮，插画式3D。" },
+      { id: 56, theme: "废弃神社", content: "废弃神社舞台，日系3D角色穿华丽红白中式宽大衣跳神乐舞，长袖飞扬，动态多光源，黄紫粉光晕，背景破损天守阁，巨兽化身在烟雾中，VRM质感。" },
+      { id: 57, theme: "废弃神社", content: "神社仓库，二次元3D少女穿土黄中式宽衣坐在堆积的御神体中，手中把面具，单一侧光，黄色高光，紫色阴影，背景天守阁木格窗影，纪录片镜头。" },
+      { id: 58, theme: "废弃神社", content: "神社参道尽头，3D动漫角色身着青白中式长裙回头凝视镜头，风吹发丝，逆光，金色轮廓，粉紫天空，背景天守阁全貌，巨兽化身盘踞其上，边缘柔化。" },
+      { id: 59, theme: "废弃神社", content: "水下神社，日系3D少女穿蓝白中式宽袍漂浮在水中，衣摆与头发散开，顶光穿透水面，黄色高光，紫色水波，背景沉没天守阁，巨兽化身游过，3D渲染。" },
+      { id: 60, theme: "废弃神社", content: "神社秋日红叶，二次元3D角色穿橙红中式宽衣扫落叶，侧光，黄色高光，紫色阴影，红叶纷飞，背景天守阁与巨兽化身，Web3D视觉大片。" },
+      { id: 61, theme: "都市边缘", content: "都市边缘高架桥下，二次元3D少女穿黑灰中式宽大外套，倚靠涂鸦墙，单点侧光，黄色高光，紫色环境反光，背景钢筋结构与天守阁，VRM渲染。" },
+      { id: 62, theme: "都市边缘", content: "废弃工厂楼顶，3D动漫角色身着红白中式宽袍，坐在锈迹天线旁双腿悬空，逆光，金色轮廓，粉紫天空，背景烟囱群与天守阁，巨兽化身在云间，纪录片式。" },
+      { id: 63, theme: "都市边缘", content: "都市边缘铁轨，日系3D少女穿牛仔蓝中式宽衣走在铁轨中央，背影，长逆光，黄紫粉光晕，背景废弃列车与天守阁，动态光源追踪，伪3D。" },
+      { id: 64, theme: "都市边缘", content: "拆迁区废墟，二次元3D角色穿米白中式长裙站在断壁残垣中，手捧野花，顶光，黄色高光，紫色阴影，背景天守阁新建高楼对比，Web3D。" },
+      { id: 65, theme: "都市边缘", content: "都市边缘河堤，3D动漫少女身着墨绿中式长大衣坐在河堤上看水面，侧光，金色反光，粉紫天空，背景高速公路与天守阁，巨兽化身倒影水中，VRM质感。" },
+      { id: 66, theme: "都市边缘", content: "废弃停车场，日系3D角色穿黄紫拼色中式宽袍，躺在废弃汽车引擎盖上，单手遮眼，顶光，黄色高光，紫色车身反光，背景天守阁霓虹招牌，边缘柔化。" },
+      { id: 67, theme: "都市边缘", content: "都市边缘夜市，二次元3D少女穿红色中式宽衣，在小吃摊前驻足，霓虹灯反光，黄紫粉光交织，背景人群虚影与天守阁灯笼，动态单光源，纪录片风格。" },
+      { id: 68, theme: "都市边缘", content: "废弃电影院，3D动漫角色身着深蓝中式长裙，坐在破旧座椅中，银幕微光，黄色高光，紫色阴影，背景银幕播放天守阁画面，巨兽化身破幕而出，3D渲染。" },
+      { id: 69, theme: "都市边缘", content: "都市边缘天台花园，日系3D少女穿浅绿中式宽袍，照料盆栽，柔和侧光，黄色高光，粉紫天空，背景城市天际线与天守阁，Web3D视觉大片。" },
+      { id: 70, theme: "都市边缘", content: "深夜便利店外，二次元3D角色穿黑色中式宽大外套，吃关东煮，玻璃窗霓虹反光，黄紫粉光，背景天守阁与现代便利店铺并置，VRM渲染。" },
+      { id: 71, theme: "浮空岛屿", content: "云海浮空岛，二次元3D少女穿月白中式宽袍，站在岛边缘眺望，风动衣袖，侧逆光，金黄高光，粉紫云海，背景天守阁浮岛群，巨兽化身游于云间，Web3D。" },
+      { id: 72, theme: "浮空岛屿", content: "浮空岛古树林，3D动漫角色身着青绿中式长裙攀附发光古树，顶光透过树冠，黄色高光，紫色阴影，背景漂浮天守阁，神话兽巢穴，插画式3D。" },
+      { id: 73, theme: "浮空岛屿", content: "浮空岛瀑布，日系3D少女穿蓝白中式宽衣站在水流中，水雾环绕，侧光，金色水雾高光，粉紫天空，背景天守阁倒悬瀑布，动态光源，VRM质感。" },
+      { id: 74, theme: "浮空岛屿", content: "浮空岛废墟，二次元3D角色穿灰白中式宽袍在倒塌石柱间穿行，单一侧光，黄色高光，紫色阴影，背景漂浮天守阁残骸，巨兽化身盘踞，纪录片镜头。" },
+      { id: 75, theme: "浮空岛屿", content: "浮空岛花海，3D动漫少女身着粉紫中式长裙奔跑于发光花海，花瓣飞扬，逆光，金色轮廓，紫粉环境光，背景天守阁与巨兽化身，边缘柔化。" },
+      { id: 76, theme: "浮空岛屿", content: "浮空岛观测台，日系3D角色穿深紫中式宽大衣，操作古老仪器，顶光，黄色高光，紫色星图投影，背景星空下的天守阁，Web3D视觉大片。" },
+      { id: 77, theme: "浮空岛屿", content: "浮空岛底部，二次元3D少女穿黑白中式宽衣，倒悬攀爬岛底岩层，侧光，黄色高光，紫色深渊，背景天守阁根基，巨兽化身从下仰望，3D渲染。" },
+      { id: 78, theme: "浮空岛屿", content: "浮空岛连接桥，3D动漫角色身着红金中式宽袍，行走在光桥之上，长逆光，金黄高光，粉紫云雾，背景连串浮岛天守阁，VRM质感。" },
+      { id: 79, theme: "浮空岛屿", content: "浮空岛图书馆，日系3D少女穿棕色中式宽衣漂浮在书页间阅读，顶光，黄色高光，紫色魔法光尘，背景天守阁书架无限延伸，伪3D效果。" },
+      { id: 80, theme: "浮空岛屿", content: "浮空岛祭坛，二次元3D角色穿纯白中式宽袍站在发光祭坛中央，双手举过头顶，动态多光源，黄紫粉光晕，背景天守阁与巨兽化身共鸣，Web3D。" },
+      { id: 81, theme: "地下空间", content: "地下空洞，二次元3D少女穿灰蓝中式宽袍，站在巨大钟乳石下，顶光从裂缝射入，黄色高光，紫色阴影，背景地底天守阁，巨兽化身沉睡，纪录片式。" },
+      { id: 82, theme: "地下空间", content: "废弃地铁站，3D动漫角色身着橙黑中式宽衣，坐在站台边缘双腿悬空，应急灯侧光，黄色高光，紫色阴影，背景废弃列车与天守阁广告，VRM渲染。" },
+      { id: 83, theme: "地下空间", content: "地下湖，日系3D少女穿银白中式长裙站在水边，水面荧光，顶光，黄色高光，紫色水波反光，背景天守阁倒影，巨兽化身游于水下，3D动漫渲染。" },
+      { id: 84, theme: "地下空间", content: "地下隧道，二次元3D角色穿墨绿中式宽袍，持手电筒前行，光束穿透黑暗，黄色主光，紫色环境反光，背景隧道尽头天守阁，边缘柔化。" },
+      { id: 85, theme: "地下空间", content: "地下花园温室，3D动漫少女身着浅绿中式宽衣，触摸发光植物，顶光，黄色高光，紫色植物荧光，背景玻璃穹顶与天守阁，Web3D视觉大片。" },
+      { id: 86, theme: "地下空间", content: "地下竞技场，日系3D角色穿红黑中式宽袖武服，战斗姿态，动态侧光，黄紫粉光晕，背景观众席天守阁，巨兽化身在铁笼后，VRM质感。" },
+      { id: 87, theme: "地下空间", content: "地下工坊，二次元3D少女穿土黄中式宽袍，修理机械装置，焊接火花，黄色高光，紫色金属反光，背景齿轮结构与天守阁模型，纪录片镜头。" },
+      { id: 88, theme: "地下空间", content: "地下陵墓，3D动漫角色身着黑白中式长裙，走过长明甬道，两侧灯火，侧光，黄色高光，紫色阴影，背景天守阁主殿，神话兽浮雕，插画式3D。" },
+      { id: 89, theme: "地下空间", content: "地下雨庭，日系3D少女穿蓝白中式宽衣，站在地下天井中，雨水从天而降，顶光，黄色高光，紫色水雾，背景天守阁天窗，巨兽化身探头，Web3D。" },
+      { id: 90, theme: "地下空间", content: "地下指挥中心，二次元3D角色穿深灰中式宽大衣，坐在全息屏幕前，屏幕紫黄粉光映照面部，背景天守阁全息投影，动态光源，VRM渲染。" },
+      { id: 91, theme: "山海巨兽", content: "山脊之上，二次元3D少女穿红白中式宽袍，面对如山巨兽化身，风动衣摆，侧逆光，金黄高光，粉紫天空，背景天守阁与巨兽头颅，Web3D视觉大片。" },
+      { id: 92, theme: "山海巨兽", content: "海边礁石，3D动漫角色身着蓝白中式长裙，面对海中升起的巨兽，浪花飞溅，逆光，金色轮廓，紫粉海面，背景天守阁海岸，纪录片式。" },
+      { id: 93, theme: "山海巨兽", content: "巨兽背脊，日系3D少女穿黑红中式宽衣，站立在缓慢移动的巨兽背上，俯视云海，顶光，黄色高光，紫色阴影，背景天守阁漂浮，VRM渲染。" },
+      { id: 94, theme: "山海巨兽", content: "巨兽之眼，二次元3D角色穿银白中式宽袍，悬浮在巨大眼睛前方，眼瞳反射人物，单一光源从巨兽眼中发出，黄紫粉光，背景天守阁，3D动漫渲染。" },
+      { id: 95, theme: "山海巨兽", content: "巨兽骸骨山谷，3D动漫少女身着灰白中式长裙，穿行于巨大骸骨间，侧光，黄色高光，紫色阴影，背景骸骨天守阁，边缘柔化，伪3D。" },
+      { id: 96, theme: "山海巨兽", content: "巨兽羽翼下，日系3D角色穿金红中式宽大衣，躲在羽翼阴影中，抬头仰望，顶光从羽翼缝隙射入，黄紫粉光斑，背景天守阁，Web3D。" },
+      { id: 97, theme: "山海巨兽", content: "巨兽口中，二次元3D少女穿纯白中式宽袍，站在巨兽张开的嘴中，面对獠牙，逆光剪影，金黄粉紫光，背景天守阁喉咙，VRM质感。" },
+      { id: 98, theme: "山海巨兽", content: "巨兽角上，3D动漫角色身着青黑中式宽衣，攀坐在巨兽角尖，俯瞰大地，侧逆光，金色轮廓，粉紫天空，背景天守阁与群山，纪录片镜头。" },
+      { id: 99, theme: "山海巨兽", content: "巨兽尾尖，日系3D少女穿黄紫中式宽袍，平衡站立于摇摆的巨兽尾尖，动态光影，黄紫粉光晕，背景天守阁与云海，3D渲染。" },
+      { id: 100, theme: "山海巨兽", content: "巨兽心脏空间，二次元3D角色穿红金中式长裙，漂浮在发光心脏前，血管脉络，顶光，黄色高光，紫色血液反光，背景天守阁在心脏中，Web3D视觉大片。" },
+      { id: 101, theme: "花火夏祭", content: "夏日祭典屋顶，二次元3D少女穿浴衣式中式宽袍，手持团扇仰望烟花，顶光烟花映照，黄紫粉光，背景天守阁与人群，边缘柔化，VRM渲染。" },
+      { id: 102, theme: "花火夏祭", content: "花火下的河堤，3D动漫角色身着蓝白中式长裙，坐在河岸，烟花倒影水中，逆光，金色轮廓，粉紫天空，背景天守阁与巨兽化身，纪录片式。" },
+      { id: 103, theme: "花火夏祭", content: "祭典小吃摊前，日系3D少女穿粉红中式宽衣，吃苹果糖，霓虹灯笼反光，黄紫粉光，背景天守阁与烟火，动态光源，Web3D。" },
+      { id: 104, theme: "花火夏祭", content: "花火大会人群后，二次元3D角色穿黑金中式宽袍，独自站在人群边缘仰望天空，侧光烟花，黄色高光，紫色阴影，背景人群虚影与天守阁，伪3D。" },
+      { id: 105, theme: "花火夏祭", content: "祭典舞台，3D动漫少女身着华丽红白金中式宽衣跳传统舞蹈，长袖飞扬，动态多光源，黄紫粉光晕，背景天守阁与烟花，VRM质感。" },
+      { id: 106, theme: "花火夏祭", content: "花火下的桥，日系3D角色穿淡紫中式长裙，倚靠桥栏，烟花在身后绽放，逆光，金色轮廓，粉紫天空，背景天守阁与河流，纪录片镜头。" },
+      { id: 107, theme: "花火夏祭", content: "祭典面具摊，二次元3D少女穿绿白中式宽袍，挑选狐狸面具，灯笼光侧照，黄色高光，紫色阴影，背景天守阁与烟火，3D动漫渲染。" },
+      { id: 108, theme: "花火夏祭", content: "夏夜海边花火，3D动漫角色身着白蓝中式宽衣，赤足站在浅滩，烟花与海浪，逆光，金色反光，粉紫天空，背景天守阁海岸，Web3D视觉大片。" },
+      { id: 109, theme: "花火夏祭", content: "祭典神社阶梯，日系3D少女穿橙红中式宽衣，坐在石阶上吃刨冰，两侧灯笼，顶光，黄色高光，紫色阴影，背景天守阁与烟花，边缘柔化。" },
+      { id: 110, theme: "花火夏祭", content: "花火下的摩天轮，二次元3D角色穿银紫中式宽袍，坐在摩天轮舱内，窗外烟花绽放，黄紫粉光映照面部，背景天守阁与夜空，VRM渲染。" },
+      { id: 111, theme: "未来中式", content: "未来中式街道，二次元3D少女穿机能风宽大中式长袍，全息屏幕环绕，霓虹紫黄粉光，背景天守阁与摩天楼，Web3D视觉大片。" },
+      { id: 112, theme: "未来中式", content: "未来中式庭院，3D动漫角色身着白色智能面料宽衣，坐在发光石凳上，竹林投影，顶光，黄色高光，紫色环境光，背景全息天守阁，VRM质感。" },
+      { id: 113, theme: "未来中式", content: "未来中式飞船甲板，日系3D少女穿红黑中式宽大衣，面对星空，衣摆微动，侧逆光，金黄高光，粉紫星云，背景天守阁式飞船，巨兽化身游于星海，纪录片式。" },
+      { id: 114, theme: "未来中式", content: "未来中式实验室，二次元3D角色穿白大褂式中式宽袍，操作全息仪器，屏幕紫黄粉光映照，背景天守阁结构，3D动漫渲染。" },
+      { id: 115, theme: "未来中式", content: "未来中式高速列车顶，3D动漫少女身着蓝白中式宽衣，站立在飞驰列车顶，风压衣摆，逆光，金色轮廓，粉紫城市流光，背景天守阁高架，Web3D。" },
+      { id: 116, theme: "未来中式", content: "未来中式空中花园，日系3D角色穿浅绿中式宽袍，照料发光植物，柔和侧光，黄色高光，紫色植物荧光，背景浮空天守阁，VRM渲染。" },
+      { id: 117, theme: "未来中式", content: "未来中式武馆，二次元3D少女穿黑红中式宽袖武服，与全息对手对练，动态侧光，黄紫粉光晕，背景天守阁训练场，边缘柔化。" },
+      { id: 118, theme: "未来中式", content: "未来中式夜市，3D动漫角色身着紫黑中式宽衣，在悬浮摊位间穿行，霓虹反光，黄紫粉光，背景全息天守阁招牌，纪录片镜头。" },
+      { id: 119, theme: "未来中式", content: "未来中式书房，日系3D少女穿米白中式宽袍，阅读漂浮书页，暖光侧照，黄色高光，紫色全息投影，背景天守阁书架，3D渲染。" },
+      { id: 120, theme: "未来中式", content: "未来中式中枢塔顶，二次元3D角色穿白金华贵中式宽袍，站在塔顶俯瞰城市，动态单光源，黄紫粉光晕，背景巨型天守阁与巨兽化身，Web3D视觉大片。" }
+    ];
+
+    const STORAGE_KEY = "promptFusionToolState_v1";
+    const themes = [...new Set(prompts.map(p => p.theme))];
+
+    let state = {
+      selectedIds: [],
+      searchQuery: "",
+      activeTheme: "全部",
+      density: "comfortable",
+      darkMode: true,
+      fusionText: ""
+    };
+
+    const els = {
+      searchInput: document.getElementById("searchInput"),
+      themePills: document.getElementById("themePills"),
+      promptsContainer: document.getElementById("promptsContainer"),
+      selectedCount: document.getElementById("selectedCount"),
+      visibleCount: document.getElementById("visibleCount"),
+      fusionChars: document.getElementById("fusionChars"),
+      selectedList: document.getElementById("selectedList"),
+      fusionOutput: document.getElementById("fusionOutput"),
+      charCount: document.getElementById("charCount"),
+      panelCount: document.getElementById("panelCount"),
+      randomBtn: document.getElementById("randomBtn"),
+      clearBtn: document.getElementById("clearBtn"),
+      copyBtn: document.getElementById("copyBtn"),
+      exportBtn: document.getElementById("exportBtn"),
+      themeBtn: document.getElementById("themeBtn"),
+      densityBtn: document.getElementById("densityBtn"),
+      fusionPanel: document.getElementById("fusionPanel"),
+      panelToggle: document.getElementById("panelToggle"),
+      toast: document.getElementById("toast"),
+      body: document.body
+    };
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          state = { ...state, ...parsed };
+        }
+      } catch (e) {
+        console.warn("Failed to load state:", e);
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          selectedIds: state.selectedIds,
+          darkMode: state.darkMode,
+          density: state.density
+        }));
+      } catch (e) {
+        console.warn("Failed to save state:", e);
+      }
+    }
+
+    function getFilteredPrompts() {
+      return prompts.filter(p => {
+        const matchesTheme = state.activeTheme === "全部" || p.theme === state.activeTheme;
+        const query = state.searchQuery.trim().toLowerCase();
+        const matchesSearch = !query ||
+          p.content.toLowerCase().includes(query) ||
+          p.theme.toLowerCase().includes(query);
+        return matchesTheme && matchesSearch;
+      });
+    }
+
+    function fusePrompts() {
+      const selected = prompts.filter(p => state.selectedIds.includes(p.id));
+      if (selected.length === 0) return "";
+
+      const base = selected.map(p => p.content).join("，");
+      const deduped = base
+        .replace(/。+/g, "。")
+        .replace(/，+/g, "，")
+        .replace(/。，/g, "，")
+        .replace(/，。/g, "。");
+
+      return deduped;
+    }
+
+    function renderThemePills() {
+      const allPill = document.createElement("button");
+      allPill.className = `pill ${state.activeTheme === "全部" ? "active" : ""}`;
+      allPill.textContent = `全部 (${prompts.length})`;
+      allPill.addEventListener("click", () => setTheme("全部"));
+
+      els.themePills.innerHTML = "";
+      els.themePills.appendChild(allPill);
+
+      themes.forEach(theme => {
+        const count = prompts.filter(p => p.theme === theme).length;
+        const pill = document.createElement("button");
+        pill.className = `pill ${state.activeTheme === theme ? "active" : ""}`;
+        pill.textContent = `${theme} (${count})`;
+        pill.addEventListener("click", () => setTheme(theme));
+        els.themePills.appendChild(pill);
+      });
+    }
+
+    function renderPrompts() {
+      const filtered = getFilteredPrompts();
+      els.visibleCount.textContent = filtered.length;
+      els.promptsContainer.innerHTML = "";
+
+      if (filtered.length === 0) {
+        els.promptsContainer.innerHTML = `
+          <div class="empty-state">
+            <h3>未找到匹配的提示词</h3>
+            <p>尝试更换关键词或清除筛选条件</p>
+          </div>
+        `;
+        return;
+      }
+
+      const groups = groupByTheme(filtered);
+      let delay = 0;
+
+      Object.entries(groups).forEach(([theme, items]) => {
+        const section = document.createElement("section");
+        section.className = "theme-section";
+        section.style.animationDelay = `${delay}s`;
+
+        const title = document.createElement("h2");
+        title.className = "theme-title";
+        title.innerHTML = `${theme}<small>${items.length} 组</small>`;
+        section.appendChild(title);
+
+        const grid = document.createElement("div");
+        grid.className = `prompts-grid ${state.density === "compact" ? "compact" : ""}`;
+
+        items.forEach(p => {
+          const card = document.createElement("article");
+          card.className = `prompt-card ${state.selectedIds.includes(p.id) ? "selected" : ""}`;
+          card.setAttribute("role", "button");
+          card.setAttribute("tabindex", "0");
+          card.setAttribute("aria-pressed", state.selectedIds.includes(p.id));
+          card.dataset.id = p.id;
+          card.innerHTML = `
+            <div class="card-id">#${String(p.id).padStart(3, "0")}</div>
+            <div class="card-content">${escapeHtml(p.content)}</div>
+            <div class="card-theme">${p.theme}</div>
+          `;
+
+          card.addEventListener("click", () => toggleSelection(p.id));
+          card.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              toggleSelection(p.id);
+            }
+          });
+
+          grid.appendChild(card);
+        });
+
+        section.appendChild(grid);
+        els.promptsContainer.appendChild(section);
+        delay += 0.05;
+      });
+    }
+
+    function groupByTheme(items) {
+      return items.reduce((acc, item) => {
+        if (!acc[item.theme]) acc[item.theme] = [];
+        acc[item.theme].push(item);
+        return acc;
+      }, {});
+    }
+
+    function renderFusionPanel() {
+      const selected = prompts.filter(p => state.selectedIds.includes(p.id));
+      const fusionText = fusePrompts();
+
+      els.selectedCount.textContent = selected.length;
+      els.panelCount.textContent = `${selected.length} / ${prompts.length}`;
+      els.fusionChars.textContent = fusionText.length;
+
+      els.selectedList.innerHTML = "";
+      selected.forEach(p => {
+        const item = document.createElement("div");
+        item.className = "selected-item";
+        item.innerHTML = `
+          <span style="color: var(--accent-gold); font-weight: 600;">#${p.id}</span>
+          <span style="flex: 1; line-height: 1.5;">${escapeHtml(p.content.slice(0, 40))}${p.content.length > 40 ? "..." : ""}</span>
+          <button title="移除" data-id="${p.id}">×</button>
+        `;
+        item.querySelector("button").addEventListener("click", (e) => {
+          e.stopPropagation();
+          toggleSelection(p.id);
+        });
+        els.selectedList.appendChild(item);
+      });
+
+      if (state.fusionText !== fusionText) {
+        state.fusionText = fusionText;
+        els.fusionOutput.value = fusionText;
+      }
+
+      els.charCount.textContent = `${els.fusionOutput.value.length} 字符`;
+    }
+
+    function toggleSelection(id) {
+      const idx = state.selectedIds.indexOf(id);
+      if (idx > -1) {
+        state.selectedIds.splice(idx, 1);
+      } else {
+        state.selectedIds.push(id);
+      }
+      state.selectedIds.sort((a, b) => a - b);
+      updateAll();
+    }
+
+    function clearSelection() {
+      state.selectedIds = [];
+      updateAll();
+    }
+
+    function selectAllVisible() {
+      const visible = getFilteredPrompts();
+      const visibleIds = visible.map(p => p.id);
+      const allSelected = visibleIds.every(id => state.selectedIds.includes(id));
+
+      if (allSelected) {
+        state.selectedIds = state.selectedIds.filter(id => !visibleIds.includes(id));
+      } else {
+        visibleIds.forEach(id => {
+          if (!state.selectedIds.includes(id)) state.selectedIds.push(id);
+        });
+      }
+      state.selectedIds.sort((a, b) => a - b);
+      updateAll();
+    }
+
+    function randomFusion() {
+      const pool = getFilteredPrompts();
+      if (pool.length === 0) {
+        showToast("当前筛选结果为空，无法随机融合");
+        return;
+      }
+
+      const count = Math.min(5, Math.max(3, Math.floor(Math.random() * 3) + 3));
+      const shuffled = [...pool].sort(() => Math.random() - 0.5);
+      const picked = shuffled.slice(0, count);
+
+      state.selectedIds = picked.map(p => p.id).sort((a, b) => a - b);
+      updateAll();
+      showToast(`已随机融合 ${picked.length} 组提示词`);
+    }
+
+    function setTheme(theme) {
+      state.activeTheme = theme;
+      updateAll();
+    }
+
+    function toggleDensity() {
+      state.density = state.density === "comfortable" ? "compact" : "comfortable";
+      els.densityBtn.textContent = state.density === "comfortable" ? "☷" : "≣";
+      updateAll();
+    }
+
+    function toggleTheme() {
+      state.darkMode = !state.darkMode;
+      els.body.setAttribute("data-theme", state.darkMode ? "dark" : "light");
+      els.themeBtn.textContent = state.darkMode ? "☀" : "☾";
+      updateAll();
+    }
+
+    async function copyToClipboard() {
+      const text = els.fusionOutput.value.trim();
+      if (!text) {
+        showToast("没有可复制的内容");
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast("已复制到剪贴板");
+      } catch (e) {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+        showToast("已复制到剪贴板");
+      }
+    }
+
+    function exportFile(format) {
+      const text = els.fusionOutput.value.trim();
+      if (!text) {
+        showToast("没有可导出的内容");
+        return;
+      }
+
+      const timestamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-");
+      const selected = prompts.filter(p => state.selectedIds.includes(p.id));
+
+      let content = "";
+      let filename = "";
+      let mimeType = "";
+
+      if (format === "txt") {
+        content = [
+          "=== 画风提示词融合结果 ===",
+          `生成时间：${new Date().toLocaleString()}`,
+          `融合数量：${selected.length} 组`,
+          "",
+          "【融合提示词】",
+          text,
+          "",
+          "【原始提示词】",
+          ...selected.map(p => `[#${p.id}] ${p.theme}\n${p.content}`)
+        ].join("\n");
+        filename = `prompt-fusion-${timestamp}.txt`;
+        mimeType = "text/plain;charset=utf-8";
+      } else if (format === "md") {
+        content = [
+          "# 画风提示词融合结果",
+          "",
+          `- 生成时间：${new Date().toLocaleString()}`,
+          `- 融合数量：${selected.length} 组`,
+          "",
+          "## 融合提示词",
+          "",
+          "```text",
+          text,
+          "```",
+          "",
+          "## 原始提示词",
+          "",
+          ...selected.map(p => `### #${p.id} · ${p.theme}\n\n${p.content}`)
+        ].join("\n");
+        filename = `prompt-fusion-${timestamp}.md`;
+        mimeType = "text/markdown;charset=utf-8";
+      }
+
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast(`已导出 ${format.toUpperCase()}`);
+    }
+
+    function showToast(message) {
+      els.toast.textContent = message;
+      els.toast.classList.add("show");
+      setTimeout(() => els.toast.classList.remove("show"), 2500);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function updateAll() {
+      renderThemePills();
+      renderPrompts();
+      renderFusionPanel();
+      saveState();
+    }
+
+    function init() {
+      loadState();
+      els.body.setAttribute("data-theme", state.darkMode ? "dark" : "light");
+      els.themeBtn.textContent = state.darkMode ? "☀" : "☾";
+      els.densityBtn.textContent = state.density === "comfortable" ? "☷" : "≣";
+
+      renderThemePills();
+      renderPrompts();
+      renderFusionPanel();
+
+      els.searchInput.value = state.searchQuery;
+      els.searchInput.addEventListener("input", (e) => {
+        state.searchQuery = e.target.value;
+        renderPrompts();
+      });
+
+      els.randomBtn.addEventListener("click", randomFusion);
+      els.clearBtn.addEventListener("click", clearSelection);
+      els.copyBtn.addEventListener("click", copyToClipboard);
+      els.exportBtn.addEventListener("click", () => exportFile("txt"));
+      els.exportBtn.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+        exportFile("md");
+      });
+      els.themeBtn.addEventListener("click", toggleTheme);
+      els.densityBtn.addEventListener("click", toggleDensity);
+
+      els.fusionOutput.addEventListener("input", () => {
+        state.fusionText = els.fusionOutput.value;
+        els.charCount.textContent = `${els.fusionOutput.value.length} 字符`;
+        els.fusionChars.textContent = els.fusionOutput.value.length;
+      });
+
+      els.panelToggle.addEventListener("click", () => {
+        els.fusionPanel.classList.toggle("expanded");
+      });
+
+      document.addEventListener("keydown", (e) => {
+        const isCmd = e.metaKey || e.ctrlKey;
+
+        if (isCmd && e.key === "a" && document.activeElement !== els.fusionOutput) {
+          e.preventDefault();
+          selectAllVisible();
+        }
+
+        if (e.key === "Escape") {
+          if (document.activeElement === els.searchInput) {
+            els.searchInput.blur();
+          } else {
+            clearSelection();
+          }
+        }
+
+        if (isCmd && e.key === "Enter") {
+          e.preventDefault();
+          copyToClipboard();
+        }
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>
