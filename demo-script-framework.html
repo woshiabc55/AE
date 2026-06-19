@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>《最后一杯咖啡》— 剧本框架图</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --card: #181b21;
+      --accent: #e8b86d;
+      --accent2: #8fa8c9;
+      --text: #e6e6e6;
+      --muted: #9aa3ad;
+      --border: #2a2f36;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      line-height: 1.6;
+    }
+    header {
+      padding: 40px 24px 24px;
+      background: linear-gradient(90deg, #1a1d23 0%, #232833 100%);
+      border-bottom: 1px solid var(--border);
+    }
+    h1 { margin: 0; font-size: 28px; color: var(--accent); }
+    .meta { margin-top: 12px; color: var(--muted); font-size: 14px; }
+    .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      background: rgba(232,184,109,0.12);
+      color: var(--accent);
+      font-size: 12px;
+      margin-right: 8px;
+      margin-top: 8px;
+    }
+    main { max-width: 1100px; margin: 0 auto; padding: 32px 24px 80px; }
+    section { margin-bottom: 48px; }
+    h2 {
+      font-size: 20px;
+      color: var(--accent2);
+      border-left: 4px solid var(--accent);
+      padding-left: 12px;
+      margin-bottom: 20px;
+    }
+    .structure {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .act {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .act h3 { margin: 0 0 12px; color: var(--accent); font-size: 16px; }
+    .act ul { padding-left: 18px; margin: 0; }
+    .act li { margin-bottom: 8px; color: var(--text); font-size: 14px; }
+    .act .time { color: var(--muted); font-size: 12px; margin-top: 8px; }
+
+    .characters {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .char-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .char-card h4 { margin: 0 0 8px; color: var(--accent); }
+    .char-card p { margin: 4px 0; font-size: 13px; color: var(--text); }
+    .char-card .label { color: var(--muted); }
+
+    .timeline {
+      position: relative;
+      padding-left: 24px;
+      border-left: 3px solid var(--border);
+    }
+    .beat {
+      position: relative;
+      margin-bottom: 24px;
+      padding: 16px 20px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .beat::before {
+      content: "";
+      position: absolute;
+      left: -34px;
+      top: 20px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 3px solid var(--bg);
+    }
+    .beat.highlight { border-color: rgba(232,184,109,0.4); }
+    .beat .stamp { font-size: 12px; color: var(--accent2); margin-bottom: 4px; }
+    .beat .title { font-weight: 600; margin-bottom: 6px; }
+    .beat .desc { font-size: 14px; color: var(--muted); }
+
+    .tension-chart {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      height: 260px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; }
+    .bar {
+      width: 100%;
+      border-radius: 6px 6px 0 0;
+      background: linear-gradient(180deg, var(--accent) 0%, rgba(232,184,109,0.3) 100%);
+      transition: height 1s ease;
+    }
+    .bar-label { font-size: 11px; color: var(--muted); margin-top: 8px; text-align: center; white-space: nowrap; }
+
+    .summary {
+      background: rgba(143,168,201,0.08);
+      border: 1px solid rgba(143,168,201,0.25);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .summary p { margin: 6px 0; font-size: 14px; }
+
+    @media (max-width: 720px) {
+      .structure { grid-template-columns: 1fr; }
+      .tension-chart { height: 200px; }
+      .bar-label { font-size: 9px; transform: rotate(-30deg); transform-origin: top center; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>《最后一杯咖啡》</h1>
+    <div class="meta">60 秒悬疑反转短视频 | 平台：抖音/快手/YouTube Shorts | 主题：善意与真相的错位</div>
+    <div>
+      <span class="tag">悬疑</span>
+      <span class="tag">反转</span>
+      <span class="tag">情感</span>
+      <span class="tag">短视频</span>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <h2>一、三幕结构</h2>
+      <div class="structure">
+        <div class="act">
+          <h3>第一幕：建立（0-12s）</h3>
+          <ul>
+            <li>深夜咖啡馆，女主独自加班。</li>
+            <li>陌生男人递来一杯咖啡："你男朋友让我送的。"</li>
+          </ul>
+          <div class="time">占比 20%</div>
+        </div>
+        <div class="act">
+          <h3>第二幕：升级（12-45s）</h3>
+          <ul>
+            <li>女主怀疑，询问细节。</li>
+            <li>男人准确说出男友名字、习惯。</li>
+            <li>女主逐渐放下戒心，喝下咖啡。</li>
+            <li>中点：男人手机亮起，屏保是女主照片。</li>
+          </ul>
+          <div class="time">占比 55%</div>
+        </div>
+        <div class="act">
+          <h3>第三幕：反转（45-60s）</h3>
+          <ul>
+            <li>女主昏沉，男人靠近。</li>
+            <li>门被撞开，男友冲进来制服男人。</li>
+            <li>反转：咖啡没下药，男人是被通缉的跟踪狂，女主早已报警。</li>
+          </ul>
+          <div class="time">占比 25%</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>二、角色设定</h2>
+      <div class="characters">
+        <div class="char-card">
+          <h4>林晓（女主）</h4>
+          <p><span class="label">目标：</span>完成加班并安全回家</p>
+          <p><span class="label">缺陷：</span>过度信任表面善意</p>
+          <p><span class="label">弧线：</span>从疲惫顺从 → 警觉反击</p>
+          <p><span class="label">标签：</span>聪明、镇定、观察力强</p>
+        </div>
+        <div class="char-card">
+          <h4>陈默（男友）</h4>
+          <p><span class="label">目标：</span>保护林晓并抓捕跟踪者</p>
+          <p><span class="label">缺陷：</span>因工作无法时刻陪伴</p>
+          <p><span class="label">弧线：</span>幕后保护 → 正面营救</p>
+          <p><span class="label">标签：</span>可靠、果断、刑警</p>
+        </div>
+        <div class="char-card">
+          <h4>神秘男人（反派）</h4>
+          <p><span class="label">目标：</span>接近并控制林晓</p>
+          <p><span class="label">缺陷：</span>自负，低估目标</p>
+          <p><span class="label">弧线：</span>伪装成功 → 落入陷阱</p>
+          <p><span class="label">标签：</span>跟踪狂、信息收集者</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>三、关键节拍时间线</h2>
+      <div class="timeline">
+        <div class="beat highlight">
+          <div class="stamp">0-3s · Hook</div>
+          <div class="title">深夜，咖啡，陌生人</div>
+          <div class="desc">女人揉着太阳穴，面前突然出现一杯咖啡。</div>
+        </div>
+        <div class="beat">
+          <div class="stamp">5s · 激励事件</div>
+          <div class="title">"你男朋友让我送的。"</div>
+          <div class="desc">女主抬头，陌生男人微笑。善意与危险同时出现。</div>
+        </div>
+        <div class="beat">
+          <div class="stamp">15s · 试探</div>
+          <div class="title">他说对了男友的名字</div>
+          <div class="desc">女主戒心降低，开始闲聊。</div>
+        </div>
+        <div class="beat highlight">
+          <div class="stamp">30s · 中点反转</div>
+          <div class="title">他的手机屏保是她</div>
+          <div class="desc">女主察觉异常，但继续伪装镇定。</div>
+        </div>
+        <div class="beat">
+          <div class="stamp">45s · 危机</div>
+          <div class="title">她"昏倒"，他靠近</div>
+          <div class="desc">反派以为得手，露出真面目。</div>
+        </div>
+        <div class="beat highlight">
+          <div class="stamp">55s · 高潮揭示</div>
+          <div class="title">男友破门而入</div>
+          <div class="desc">反转：咖啡没下药，女主早已报警，这是诱捕。</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>四、情感/张力曲线</h2>
+      <div class="tension-chart">
+        <div class="bar-wrap"><div class="bar" style="height: 30%"></div><div class="bar-label">0s<br>好奇</div></div>
+        <div class="bar-wrap"><div class="bar" style="height: 55%"></div><div class="bar-label">10s<br>不安</div></div>
+        <div class="bar-wrap"><div class="bar" style="height: 40%"></div><div class="bar-label">20s<br>放松</div></div>
+        <div class="bar-wrap"><div class="bar" style="height: 75%"></div><div class="bar-label">30s<br>警觉</div></div>
+        <div class="bar-wrap"><div class="bar" style="height: 60%"></div><div class="bar-label">40s<br>伪装</div></div>
+        <div class="bar-wrap"><div class="bar" style="height: 95%"></div><div class="bar-label">50s<br>危机</div></div>
+        <div class="bar-wrap"><div class="bar" style="height: 85%"></div><div class="bar-label">60s<br>释放</div></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>五、核心设计总结</h2>
+      <div class="summary">
+        <p><strong>反转核心：</strong>观众以为女主是猎物，实际上她是诱饵。</p>
+        <p><strong>主题回扣：</strong>真正的保护不是时刻陪伴，而是信任与预案。</p>
+        <p><strong>钩子设计：</strong>日常场景（深夜咖啡）+ 陌生人介入，3 秒内建立悬念。</p>
+        <p><strong>平台适配：</strong>竖屏 9:16，字幕占画面 1/3，BGM 前 3 秒静音后切入紧张弦乐。</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
