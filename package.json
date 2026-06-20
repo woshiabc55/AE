@@ -1,0 +1,26 @@
+{
+  "name": "browser-mcp-demo",
+  "version": "1.0.0",
+  "description": "浏览器自动化 Demo：通过 MCP 协议控制浏览器",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "demo": "MCP_COMMAND=node MCP_ARGS=mock-browser-mcp.js node server.js",
+    "test": "node test.js"
+  },
+  "keywords": [
+    "mcp",
+    "browser",
+    "automation",
+    "playwright",
+    "demo"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.10.2",
+    "@playwright/mcp": "^0.0.76",
+    "express": "^4.21.2"
+  }
+}

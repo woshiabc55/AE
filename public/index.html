@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>浏览器 MCP 自动化 Demo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>浏览器 MCP 自动化 Demo</h1>
+      <p>通过 MCP 协议控制浏览器完成导航、截图、点击、输入等操作</p>
+    </header>
+
+    <section class="card">
+      <h2>连接状态</h2>
+      <div id="status" class="status loading">正在初始化 MCP...</div>
+      <button id="reloadToolsBtn">刷新工具列表</button>
+      <ul id="toolsList" class="tools-list"></ul>
+    </section>
+
+    <section class="card">
+      <h2>页面导航</h2>
+      <div class="row">
+        <input id="urlInput" type="url" placeholder="https://example.com" value="https://demo.playwright.dev/todomvc" />
+        <button id="navigateBtn">导航</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>快捷操作</h2>
+      <div class="actions">
+        <button id="snapshotBtn">获取页面快照</button>
+        <button id="screenshotBtn">截图</button>
+        <button id="backBtn">后退</button>
+      </div>
+      <div class="row">
+        <input id="refInput" type="text" placeholder="元素 ref 或 selector" />
+        <button id="clickBtn">点击</button>
+      </div>
+      <div class="row">
+        <input id="refTypeInput" type="text" placeholder="元素 ref 或 selector" />
+        <input id="textInput" type="text" placeholder="输入文本" />
+        <button id="typeBtn">输入</button>
+      </div>
+      <div class="row">
+        <input id="scriptInput" type="text" placeholder="JavaScript 代码，如 document.title" />
+        <button id="evaluateBtn">执行 JS</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>通用工具调用</h2>
+      <div class="row">
+        <input id="toolNameInput" type="text" placeholder="工具名称，如 browser_navigate" />
+      </div>
+      <textarea id="toolArgsInput" rows="4" placeholder='{"url":"https://example.com"}'></textarea>
+      <button id="callToolBtn">调用工具</button>
+    </section>
+
+    <section class="card">
+      <h2>结果输出</h2>
+      <pre id="output">等待操作...</pre>
+      <div id="screenshotContainer"></div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
