@@ -1,57 +1,71 @@
-# React + TypeScript + Vite
+# 拼豆半面工坊 · Perler Bead Studio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+一款网页端拼豆角色创作与骨架动画工具。绘制角色半面，自动镜像生成完整对称形象，再通过网格化拼豆呈现，绑定骨架后可拖拽关节生成可拉动动画，并将图案与动画数据持久化到浏览器数据库中。
 
-Currently, two official plugins are available:
+## 功能特性
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **半面镜像绘制**：左半绘制自动镜像到右半，中线虚线指示对称轴
+- **拼豆网格化**：48 色拼豆标准色卡 + 自定义颜色，16/24/32/48 四档网格
+- **骨架绑定**：添加关节、连接骨骼、指派格子、移动关节四种工具
+- **可拉动动画**：关键帧录制 + ease-in-out 插值 + 时间轴拖动预览
+- **数据库存储**：IndexedDB 持久化图案 + 骨架 + 关键帧，支持 JSON 导入导出
 
-## Expanding the ESLint configuration
+## 技术栈
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- React 18 + TypeScript + Vite
+- TailwindCSS 3 + Zustand
+- Canvas 2D 渲染
+- IndexedDB（idb 库封装）
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## 本地开发
+
+```bash
+npm install
+npm run dev      # 启动开发服务器
+npm run build    # 生产构建
+npm run preview  # 预览构建产物
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 部署到 GitHub Pages
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+本项目已配置 GitHub Actions 自动部署工作流（`.github/workflows/deploy.yml`）。
 
-export default tseslint.config({
-  extends: [
-    // other configs...
-    // Enable lint rules for React
-    reactX.configs['recommended-typescript'],
-    // Enable lint rules for React DOM
-    reactDom.configs.recommended,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### 首次部署步骤
+
+1. 在 GitHub 创建仓库 `bead-studio`
+2. 推送代码到 `main` 分支：
+   ```bash
+   git init
+   git remote add origin https://github.com/<你的用户名>/bead-studio.git
+   git add .
+   git commit -m "feat: 拼豆半面工坊首版"
+   git push -u origin main
+   ```
+3. 进入仓库 **Settings → Pages**
+4. **Source** 选择 **GitHub Actions**
+5. 等待 Actions 运行完成，访问 `https://<你的用户名>.github.io/bead-studio/`
+
+### 修改仓库名
+
+如果使用其他仓库名，需同步修改：
+- [vite.config.ts](vite.config.ts) 中的 `base: '/bead-studio/'`
+- [package.json](package.json) 中的 `homepage` 字段
+
+## 项目结构
+
 ```
+src/
+├── components/   Workspace(画布/工具栏/调色板) · Skeleton · Animation · Gallery · common
+├── engine/       gridUtils · skeleton · animation · renderer
+├── store/        useArtworkStore · useToolStore · useUIStore (Zustand)
+├── db/           database · artworkRepo (IndexedDB)
+├── types/        统一类型定义
+└── utils/        colors(色卡) · geometry(几何计算)
+```
+
+## 使用流程
+
+1. **绘制模式**（默认）：左半画布画拼豆，右侧自动镜像生成完整对称形象
+2. **骨架模式**：添加关节 → 连接骨骼 → 指派格子 → 拖拽关节测试变形
+3. **动画模式**：拖关节摆姿势 → 录制关键帧 → 播放可拉动动画
+4. **保存**：顶部「保存」按钮存入 IndexedDB，「存档」按钮管理作品

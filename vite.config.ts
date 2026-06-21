@@ -5,6 +5,8 @@ import { traeBadgePlugin } from 'vite-plugin-trae-solo-badge';
 
 // https://vite.dev/config/
 export default defineConfig({
+  // GitHub Pages 部署在 https://<user>.github.io/bead-studio/ 子路径下
+  base: '/bead-studio/',
   build: {
     sourcemap: 'hidden',
   },
@@ -24,7 +26,7 @@ export default defineConfig({
       clickUrl: 'https://www.trae.ai/solo?showJoin=1',
       autoTheme: true,
       autoThemeTarget: '#root'
-    }), 
+    }),
     tsconfigPaths()
   ],
 })
