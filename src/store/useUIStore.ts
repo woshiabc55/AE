@@ -1,0 +1,49 @@
+// UI 状态管理
+
+import { create } from "zustand";
+import type { WorkMode } from "@/types";
+
+interface UIState {
+  mode: WorkMode;
+  // 动画播放
+  isPlaying: boolean;
+  currentTime: number; // 0~1
+  loop: boolean;
+  // 选中
+  selectedJointId: string | null;
+  selectedBoneId: string | null;
+  // 骨架编辑模式
+  rigTool: "add" | "connect" | "assign" | "move";
+  // 面板
+  showGallery: boolean;
+
+  setMode: (mode: WorkMode) => void;
+  setPlaying: (playing: boolean) => void;
+  setCurrentTime: (t: number) => void;
+  toggleLoop: () => void;
+  selectJoint: (id: string | null) => void;
+  selectBone: (id: string | null) => void;
+  setRigTool: (tool: UIState["rigTool"]) => void;
+  setShowGallery: (show: boolean) => void;
+}
+
+export const useUIStore = create<UIState>((set) => ({
+  mode: "draw",
+  isPlaying: false,
+  currentTime: 0,
+  loop: true,
+  selectedJointId: null,
+  selectedBoneId: null,
+  rigTool: "add",
+  showGallery: false,
+
+  setMode: (mode) =>
+    set({ mode, isPlaying: false, selectedJointId: null, selectedBoneId: null }),
+  setPlaying: (playing) => set({ isPlaying: playing }),
+  setCurrentTime: (t) => set({ currentTime: Math.max(0, Math.min(1, t)) }),
+  toggleLoop: () => set((s) => ({ loop: !s.loop })),
+  selectJoint: (id) => set({ selectedJointId: id, selectedBoneId: null }),
+  selectBone: (id) => set({ selectedBoneId: id, selectedJointId: null }),
+  setRigTool: (tool) => set({ rigTool: tool }),
+  setShowGallery: (show) => set({ showGallery: show }),
+}));
