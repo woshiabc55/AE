@@ -1,0 +1,137 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  font-family: "Noto Sans SC", "JetBrains Mono", system-ui, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: #1a1a1f;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(180deg, #1a1a1f 0%, #0f0f14 100%);
+  background-size: 24px 24px, 100% 100%;
+  background-attachment: fixed;
+  color: #f4f1de;
+  overflow: hidden;
+}
+
+/* 像素风滚动条 */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #1a1a1f;
+}
+::-webkit-scrollbar-thumb {
+  background: #3a3a52;
+  border: 2px solid #1a1a1f;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #4a4a66;
+}
+
+@layer components {
+  /* 拼豆凸起按钮 */
+  .btn-bead {
+    @apply inline-flex items-center justify-center gap-2 rounded-bead px-4 py-2
+      font-mono text-sm font-bold uppercase tracking-wider
+      bg-ink-700 text-cream shadow-bead
+      transition-all duration-100
+      hover:bg-ink-600 hover:text-volt
+      active:translate-y-[2px] active:shadow-bead-press
+      disabled:opacity-40 disabled:cursor-not-allowed disabled:active:translate-y-0;
+  }
+  .btn-bead-primary {
+    @apply bg-mint text-ink-900 hover:bg-mint hover:text-ink-900;
+  }
+  .btn-bead-coral {
+    @apply bg-coral text-ink-900 hover:bg-coral;
+  }
+  .btn-bead-volt {
+    @apply bg-volt text-ink-900 hover:bg-volt;
+  }
+  .btn-bead-ghost {
+    @apply bg-transparent text-ink-400 shadow-none hover:text-cream hover:bg-ink-700;
+  }
+
+  /* 面板 */
+  .panel {
+    @apply bg-ink-700/80 backdrop-blur-sm border border-ink-600 rounded-bead;
+  }
+
+  /* 像素标题 */
+  .title-pixel {
+    @apply font-pixel text-[10px] uppercase tracking-widest text-cream;
+  }
+
+  /* 标签 */
+  .chip {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded
+      font-mono text-[10px] uppercase tracking-wider
+      bg-ink-600 text-ink-400 border border-ink-500;
+  }
+  .chip-mint {
+    @apply bg-mint/15 text-mint border-mint/40;
+  }
+  .chip-coral {
+    @apply bg-coral/15 text-coral border-coral/40;
+  }
+  .chip-volt {
+    @apply bg-volt/15 text-volt border-volt/40;
+  }
+
+  /* 工具按钮 */
+  .tool-btn {
+    @apply relative w-10 h-10 flex items-center justify-center rounded-bead
+      bg-ink-700 text-ink-400 shadow-bead-sm
+      hover:text-cream hover:bg-ink-600
+      active:translate-y-[1px] active:shadow-bead-press
+      transition-all duration-100;
+  }
+  .tool-btn-active {
+    @apply text-ink-900 bg-mint shadow-glow;
+  }
+}
+
+/* 噪点叠加层 */
+.noise-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: theme("backgroundImage.noise");
+  opacity: 0.04;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+/* 扫描线 */
+.scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, 0.08) 3px,
+    rgba(0, 0, 0, 0) 4px
+  );
+  pointer-events: none;
+}
