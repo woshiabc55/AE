@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "homepage": "https://trae-solo.github.io/bead-studio",
+  "homepage": "https://woshiabc55.github.io/AE",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

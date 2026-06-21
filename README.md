@@ -32,23 +32,15 @@ npm run preview  # 预览构建产物
 
 ### 首次部署步骤
 
-1. 在 GitHub 创建仓库 `bead-studio`
-2. 推送代码到 `main` 分支：
-   ```bash
-   git init
-   git remote add origin https://github.com/<你的用户名>/bead-studio.git
-   git add .
-   git commit -m "feat: 拼豆半面工坊首版"
-   git push -u origin main
-   ```
-3. 进入仓库 **Settings → Pages**
-4. **Source** 选择 **GitHub Actions**
-5. 等待 Actions 运行完成，访问 `https://<你的用户名>.github.io/bead-studio/`
+1. 代码已推送到 `woshiabc55/AE` 仓库的 `main` 分支
+2. 进入仓库 **Settings → Pages**
+3. **Source** 选择 **GitHub Actions**
+4. 等待 Actions 运行完成，访问 `https://woshiabc55.github.io/AE/`
 
 ### 修改仓库名
 
 如果使用其他仓库名，需同步修改：
-- [vite.config.ts](vite.config.ts) 中的 `base: '/bead-studio/'`
+- [vite.config.ts](vite.config.ts) 中的 `base: '/AE/'`
 - [package.json](package.json) 中的 `homepage` 字段
 
 ## 项目结构
