@@ -35,9 +35,23 @@ export function exportArtwork(record: ArtworkRecord): string {
 
 /** 从 JSON 字符串导入作品 */
 export function importArtwork(json: string): ArtworkRecord {
-  const data = JSON.parse(json) as ArtworkRecord;
+  const data = JSON.parse(json) as Partial<ArtworkRecord>;
   if (!data.id || !data.name || !Array.isArray(data.pixels)) {
     throw new Error("无效的作品文件格式");
   }
-  return data;
+  // 补全可选字段，防止旧版/残缺数据导致下游崩溃
+  return {
+    id: data.id,
+    name: data.name,
+    gridSize: data.gridSize ?? 24,
+    pixels: data.pixels,
+    skeleton:
+      data.skeleton && Array.isArray(data.skeleton.joints)
+        ? data.skeleton
+        : { joints: [], bones: [] },
+    keyframes: Array.isArray(data.keyframes) ? data.keyframes : [],
+    thumbnail: data.thumbnail,
+    createdAt: data.createdAt ?? Date.now(),
+    updatedAt: data.updatedAt ?? Date.now(),
+  };
 }

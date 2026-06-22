@@ -88,7 +88,8 @@ export function computeDeformedCells(
   if (bones.length === 0) return result;
 
   for (const bone of bones) {
-    if (bone.influencedCells.length === 0) continue;
+    const cells = Array.isArray(bone.influencedCells) ? bone.influencedCells : [];
+    if (cells.length === 0) continue;
     const fromJoint = findJoint(joints, bone.fromJointId);
     const toJoint = findJoint(joints, bone.toJointId);
     if (!fromJoint || !toJoint) continue;
@@ -97,7 +98,7 @@ export function computeDeformedCells(
     const newFrom = currentPose[bone.fromJointId] ?? origFrom;
     const newTo = currentPose[bone.toJointId] ?? origTo;
 
-    for (const cellKey of bone.influencedCells) {
+    for (const cellKey of cells) {
       if (result.has(cellKey)) continue; // 已被其他骨骼影响
       const [x, y] = cellKey.split(",").map(Number);
       const deformed = deformCell({ x, y }, origFrom, origTo, newFrom, newTo);

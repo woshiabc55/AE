@@ -1,6 +1,6 @@
 // 动画时间轴与播放控制
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   Play,
   Pause,
@@ -42,7 +42,21 @@ export function Timeline() {
   const rafRef = useRef<number | null>(null);
   const lastTsRef = useRef<number>(0);
 
-  const sortedKfs = sortKeyframes(keyframes);
+  const sortedKfs = useMemo(
+    () => sortKeyframes(Array.isArray(keyframes) ? keyframes : []),
+    [keyframes],
+  );
+
+  // 拖动时间轴时实时更新姿态（提前定义以供跳帧使用）
+  const handleScrub = useCallback(
+    (t: number) => {
+      setCurrentTime(t);
+      setPlaying(false);
+      const pose = samplePose(keyframes, t);
+      setPose(pose);
+    },
+    [setCurrentTime, setPlaying, keyframes, setPose],
+  );
 
   // 当前关键帧索引
   const currentKfIndex = useCallback(() => {
@@ -59,7 +73,7 @@ export function Timeline() {
     } else {
       handleScrub(sortedKfs[idx - 1].time);
     }
-  }, [sortedKfs, currentKfIndex]);
+  }, [sortedKfs, currentKfIndex, handleScrub]);
 
   // 跳到下一帧
   const goToNextKeyframe = useCallback(() => {
@@ -74,7 +88,7 @@ export function Timeline() {
     } else {
       handleScrub(sortedKfs[sortedKfs.length - 1].time);
     }
-  }, [sortedKfs, currentKfIndex, currentTime]);
+  }, [sortedKfs, currentKfIndex, currentTime, handleScrub]);
 
   // 播放循环
   useEffect(() => {
@@ -110,17 +124,6 @@ export function Timeline() {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, [isPlaying, loop, playbackSpeed, setCurrentTime, setPose, setPlaying]);
-
-  // 拖动时间轴时实时更新姿态
-  const handleScrub = useCallback(
-    (t: number) => {
-      setCurrentTime(t);
-      setPlaying(false);
-      const pose = samplePose(keyframes, t);
-      setPose(pose);
-    },
-    [setCurrentTime, setPlaying, keyframes, setPose],
-  );
 
   const trackRef = useRef<HTMLDivElement>(null);
   const draggingRef = useRef(false);
