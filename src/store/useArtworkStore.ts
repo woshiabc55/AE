@@ -59,8 +59,10 @@ interface ArtworkState {
 
   // === 骨架动作 ===
   addJoint: (x: number, y: number, name?: string) => string;
+  addMirrorJoints: (x: number, y: number, gridSize: number, name?: string) => string[];
   removeJoint: (id: string) => void;
   moveJoint: (id: string, x: number, y: number) => void;
+  moveJoints: (updates: Record<string, { x: number; y: number }>) => void;
   addBone: (fromId: string, toId: string) => string | null;
   removeBone: (id: string) => void;
   assignCellsToBone: (boneId: string, cellKeys: string[]) => void;
@@ -144,6 +146,47 @@ export const useArtworkStore = create<ArtworkState>((set, get) => ({
     }));
     return id;
   },
+
+  // 添加镜像关节对（半面对称骨架）
+  addMirrorJoints: (x, y, gridSize, name) => {
+    const id1 = uuid();
+    const id2 = uuid();
+    const baseName = name ?? `关节${get().skeleton.joints.length + 1}`;
+    const joint1: Joint = { id: id1, x, y, name: `${baseName}·L` };
+    const mx = mirrorX(x, gridSize);
+    const joint2: Joint = { id: id2, x: mx, y, name: `${baseName}·R` };
+    set((state) => ({
+      skeleton: {
+        joints: [...state.skeleton.joints, joint1, joint2],
+        bones: state.skeleton.bones,
+      },
+      currentPose: {
+        ...state.currentPose,
+        [id1]: { x, y },
+        [id2]: { x: mx, y },
+      },
+      dirty: true,
+    }));
+    return [id1, id2];
+  },
+
+  // 批量移动多个关节（保持相对位置）
+  moveJoints: (updates: Record<string, { x: number; y: number }>) =>
+    set((state) => {
+      const jointMap = new Map(state.skeleton.joints.map((j) => [j.id, j]));
+      const newJoints = state.skeleton.joints.map((j) =>
+        updates[j.id] ? { ...j, x: updates[j.id].x, y: updates[j.id].y } : j,
+      );
+      const newPose = { ...state.currentPose };
+      for (const [id, pos] of Object.entries(updates)) {
+        if (jointMap.has(id)) newPose[id] = pos;
+      }
+      return {
+        skeleton: { joints: newJoints, bones: state.skeleton.bones },
+        currentPose: newPose,
+        dirty: true,
+      };
+    }),
 
   removeJoint: (id) =>
     set((state) => {

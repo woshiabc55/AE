@@ -14,6 +14,7 @@ export interface RenderOptions {
   selectedBoneId: string | null;
   deformedCells?: Map<string, Point>;
   highlightedCells?: Set<string>;
+  selectedJointIds?: string[];
 }
 
 /** 绘制单个拼豆（圆形带高光） */
@@ -152,18 +153,20 @@ export function renderCanvas(
     }
 
     // 关节节点
+    const selectedSet = new Set(options.selectedJointIds ?? []);
     for (const joint of joints) {
       const pos = pose[joint.id] ?? { x: joint.x, y: joint.y };
       const cx = pos.x * cellSize + cellSize / 2;
       const cy = pos.y * cellSize + cellSize / 2;
       const isSelected = joint.id === options.selectedJointId;
-      if (isSelected) {
-        ctx.fillStyle = "rgba(255,210,63,0.25)";
+      const isMultiSelected = selectedSet.size > 1 && selectedSet.has(joint.id);
+      if (isSelected || isMultiSelected) {
+        ctx.fillStyle = isMultiSelected ? "rgba(78,205,196,0.25)" : "rgba(255,210,63,0.25)";
         ctx.beginPath();
         ctx.arc(cx, cy, cellSize * 0.7, 0, Math.PI * 2);
         ctx.fill();
       }
-      ctx.fillStyle = isSelected ? "#ffd23f" : "#ff6b35";
+      ctx.fillStyle = isSelected ? "#ffd23f" : isMultiSelected ? "#4ecdc4" : "#ff6b35";
       ctx.beginPath();
       ctx.arc(cx, cy, cellSize * 0.35, 0, Math.PI * 2);
       ctx.fill();
