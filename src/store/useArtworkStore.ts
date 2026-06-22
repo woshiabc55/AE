@@ -258,17 +258,25 @@ export const useArtworkStore = create<ArtworkState>((set, get) => ({
       dirty: false,
     }),
 
-  loadArtwork: (record) =>
+  loadArtwork: (record) => {
+    // 空值保护：防止导入/旧数据缺失字段导致崩溃
+    const safeSkeleton =
+      record.skeleton && Array.isArray(record.skeleton.joints)
+        ? record.skeleton
+        : emptySkeleton();
+    const safeKeyframes = Array.isArray(record.keyframes) ? record.keyframes : [];
+    const safePixels = record.pixels ? cellsToRecord(record.pixels) : {};
     set({
       id: record.id,
-      name: record.name,
-      gridSize: record.gridSize,
-      pixels: cellsToRecord(record.pixels),
-      skeleton: record.skeleton,
-      keyframes: record.keyframes,
-      currentPose: defaultPose(record.skeleton.joints),
+      name: record.name ?? "未命名作品",
+      gridSize: record.gridSize ?? DEFAULT_GRID_SIZE,
+      pixels: safePixels,
+      skeleton: safeSkeleton,
+      keyframes: safeKeyframes,
+      currentPose: defaultPose(safeSkeleton.joints),
       dirty: false,
-    }),
+    });
+  },
 
   toRecord: (thumbnail) => {
     const state = get();

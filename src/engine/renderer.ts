@@ -134,19 +134,22 @@ export function renderCanvas(
       ctx.stroke();
 
       // 受影响格子指示
-      if (isSelected && bone.influencedCells.length > 0) {
-        ctx.fillStyle = "rgba(255,210,63,0.6)";
-        for (const cellKey of bone.influencedCells) {
-          const [x, y] = cellKey.split(",").map(Number);
-          ctx.beginPath();
-          ctx.arc(
-            x * cellSize + cellSize / 2,
-            y * cellSize + cellSize / 2,
-            cellSize * 0.12,
-            0,
-            Math.PI * 2,
-          );
-          ctx.fill();
+      if (isSelected) {
+        const cells = Array.isArray(bone.influencedCells) ? bone.influencedCells : [];
+        if (cells.length > 0) {
+          ctx.fillStyle = "rgba(255,210,63,0.6)";
+          for (const cellKey of cells) {
+            const [x, y] = cellKey.split(",").map(Number);
+            ctx.beginPath();
+            ctx.arc(
+              x * cellSize + cellSize / 2,
+              y * cellSize + cellSize / 2,
+              cellSize * 0.12,
+              0,
+              Math.PI * 2,
+            );
+            ctx.fill();
+          }
         }
       }
     }

@@ -9,6 +9,7 @@ interface UIState {
   isPlaying: boolean;
   currentTime: number; // 0~1
   loop: boolean;
+  playbackSpeed: number;
   // 选中
   selectedJointId: string | null;
   selectedBoneId: string | null;
@@ -21,6 +22,7 @@ interface UIState {
   setPlaying: (playing: boolean) => void;
   setCurrentTime: (t: number) => void;
   toggleLoop: () => void;
+  setPlaybackSpeed: (speed: number) => void;
   selectJoint: (id: string | null) => void;
   selectBone: (id: string | null) => void;
   setRigTool: (tool: UIState["rigTool"]) => void;
@@ -32,6 +34,7 @@ export const useUIStore = create<UIState>((set) => ({
   isPlaying: false,
   currentTime: 0,
   loop: true,
+  playbackSpeed: 1,
   selectedJointId: null,
   selectedBoneId: null,
   rigTool: "add",
@@ -42,6 +45,7 @@ export const useUIStore = create<UIState>((set) => ({
   setPlaying: (playing) => set({ isPlaying: playing }),
   setCurrentTime: (t) => set({ currentTime: Math.max(0, Math.min(1, t)) }),
   toggleLoop: () => set((s) => ({ loop: !s.loop })),
+  setPlaybackSpeed: (speed) => set({ playbackSpeed: speed }),
   selectJoint: (id) => set({ selectedJointId: id, selectedBoneId: null }),
   selectBone: (id) => set({ selectedBoneId: id, selectedJointId: null }),
   setRigTool: (tool) => set({ rigTool: tool }),
