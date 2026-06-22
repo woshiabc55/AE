@@ -4,12 +4,13 @@ import { Header } from "@/components/Workspace/Header";
 import { CanvasPanel } from "@/components/Workspace/CanvasPanel";
 import { Toolbar } from "@/components/Workspace/Toolbar";
 import { Palette } from "@/components/Workspace/Palette";
+import { LayerPanel } from "@/components/Workspace/LayerPanel";
 import { RigToolbar } from "@/components/Skeleton/RigToolbar";
 import { Timeline } from "@/components/Animation/Timeline";
 import { ArtworkList } from "@/components/Gallery/ArtworkList";
 import { Panel } from "@/components/common/Panel";
 import { useUIStore } from "@/store/useUIStore";
-import { Brush, Bone, Film, Palette as PaletteIcon } from "lucide-react";
+import { Brush, Bone, Film, Palette as PaletteIcon, Layers } from "lucide-react";
 
 export default function Home() {
   const mode = useUIStore((s) => s.mode);
@@ -45,9 +46,14 @@ export default function Home() {
         {/* 右侧栏 */}
         <aside className="w-64 border-l border-ink-600/60 bg-ink-800/40 flex flex-col">
           {mode === "draw" && (
-            <Panel title="调色板" icon={<PaletteIcon size={14} />}>
-              <Palette />
-            </Panel>
+            <>
+              <Panel title="调色板" icon={<PaletteIcon size={14} />}>
+                <Palette />
+              </Panel>
+              <Panel title="图层" icon={<Layers size={14} />} className="flex-1">
+                <LayerPanel />
+              </Panel>
+            </>
           )}
           {mode === "rig" && (
             <Panel title="骨架预览" icon={<Bone size={14} />}>

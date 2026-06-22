@@ -14,7 +14,7 @@ interface UIState {
   selectedJointId: string | null;
   selectedBoneId: string | null;
   // 骨架编辑模式
-  rigTool: "add" | "connect" | "assign" | "move";
+  rigTool: "add" | "connect" | "assign" | "move" | "stretch";
   // 面板
   showGallery: boolean;
 

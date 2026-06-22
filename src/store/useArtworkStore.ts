@@ -7,8 +7,11 @@ import type {
   Joint,
   JointPositions,
   Keyframe,
+  Layer,
   PixelCell,
+  Point,
   SkeletonData,
+  StretchRegion,
 } from "@/types";
 import { uuid } from "@/utils/colors";
 import {
@@ -33,17 +36,46 @@ function defaultPose(joints: Joint[]): JointPositions {
   return pose;
 }
 
+/** 合并所有可见图层为扁平化像素 */
+function flattenLayers(layers: Layer[]): Record<string, string> {
+  const result: Record<string, string> = {};
+  for (const layer of layers) {
+    if (!layer.visible) continue;
+    for (const key in layer.pixels) {
+      result[key] = layer.pixels[key];
+    }
+  }
+  return result;
+}
+
+/** 创建默认图层 */
+function defaultLayer(name = "图层 1"): Layer {
+  return {
+    id: uuid(),
+    name,
+    visible: true,
+    locked: false,
+    opacity: 1,
+    pixels: {},
+  };
+}
+
 interface ArtworkState {
   // 作品元数据
   id: string;
   name: string;
   gridSize: number;
-  // 拼豆数据：键 "x,y" -> 颜色
+  // 拼豆数据：键 "x,y" -> 颜色（扁平化所有可见图层）
   pixels: Record<string, string>;
+  // 图层系统
+  layers: Layer[];
+  activeLayerId: string;
   // 骨架
   skeleton: SkeletonData;
   // 关键帧
   keyframes: Keyframe[];
+  // 拉伸区域
+  stretchRegions: StretchRegion[];
   // 当前姿态（关节位置）—— 用于动画播放与拖拽
   currentPose: JointPositions;
   // 是否有未保存修改
@@ -57,6 +89,18 @@ interface ArtworkState {
   setGridSize: (size: number) => void;
   setName: (name: string) => void;
 
+  // === 图层动作 ===
+  addLayer: (name?: string) => string;
+  removeLayer: (id: string) => void;
+  setLayerVisible: (id: string, visible: boolean) => void;
+  setLayerLocked: (id: string, locked: boolean) => void;
+  setLayerName: (id: string, name: string) => void;
+  setActiveLayer: (id: string) => void;
+  moveLayerUp: (id: string) => void;
+  moveLayerDown: (id: string) => void;
+  mergeLayerDown: (id: string) => void;
+  duplicateLayer: (id: string) => void;
+
   // === 骨架动作 ===
   addJoint: (x: number, y: number, name?: string) => string;
   removeJoint: (id: string) => void;
@@ -65,6 +109,12 @@ interface ArtworkState {
   removeBone: (id: string) => void;
   assignCellsToBone: (boneId: string, cellKeys: string[]) => void;
   clearSkeleton: () => void;
+
+  // === 拉伸区域动作 ===
+  addStretchRegion: (corner1: Point, corner2: Point) => string;
+  removeStretchRegion: (id: string) => void;
+  transformStretchRegion: (id: string, offset: Point, scale: Point) => void;
+  resetStretchRegion: (id: string) => void;
 
   // === 姿态动作 ===
   setPose: (pose: JointPositions) => void;
@@ -82,55 +132,190 @@ interface ArtworkState {
   markSaved: () => void;
 }
 
-export const useArtworkStore = create<ArtworkState>((set, get) => ({
+export const useArtworkStore = create<ArtworkState>((set, get) => {
+  const initLayer = defaultLayer();
+  return {
   id: newArtworkId(),
   name: "未命名作品",
   gridSize: DEFAULT_GRID_SIZE,
   pixels: {},
+  layers: [initLayer],
+  activeLayerId: initLayer.id,
   skeleton: emptySkeleton(),
   keyframes: [],
+  stretchRegions: [],
   currentPose: {},
   dirty: false,
 
   paintCell: (x, y, color, mirror) =>
     set((state) => {
-      const next = { ...state.pixels };
-      next[cellKey(x, y)] = color;
+      const activeLayer = state.layers.find((l) => l.id === state.activeLayerId);
+      if (!activeLayer || activeLayer.locked) return state;
+      const layerPixels = { ...activeLayer.pixels };
+      layerPixels[cellKey(x, y)] = color;
       if (mirror) {
         const mx = mirrorX(x, state.gridSize);
-        next[cellKey(mx, y)] = color;
+        layerPixels[cellKey(mx, y)] = color;
       }
-      return { pixels: next, dirty: true };
+      const layers = state.layers.map((l) =>
+        l.id === state.activeLayerId ? { ...l, pixels: layerPixels } : l,
+      );
+      return { layers, pixels: flattenLayers(layers), dirty: true };
     }),
 
   eraseCell: (x, y, mirror) =>
     set((state) => {
-      const next = { ...state.pixels };
-      delete next[cellKey(x, y)];
+      const activeLayer = state.layers.find((l) => l.id === state.activeLayerId);
+      if (!activeLayer || activeLayer.locked) return state;
+      const layerPixels = { ...activeLayer.pixels };
+      delete layerPixels[cellKey(x, y)];
       if (mirror) {
         const mx = mirrorX(x, state.gridSize);
-        delete next[cellKey(mx, y)];
+        delete layerPixels[cellKey(mx, y)];
       }
-      return { pixels: next, dirty: true };
+      const layers = state.layers.map((l) =>
+        l.id === state.activeLayerId ? { ...l, pixels: layerPixels } : l,
+      );
+      return { layers, pixels: flattenLayers(layers), dirty: true };
     }),
 
   fillArea: (x, y, color, mirror) =>
     set((state) => {
-      let next = floodFill(state.pixels, x, y, state.gridSize, color);
+      const activeLayer = state.layers.find((l) => l.id === state.activeLayerId);
+      if (!activeLayer || activeLayer.locked) return state;
+      let next = floodFill(activeLayer.pixels, x, y, state.gridSize, color);
       if (mirror) {
         const mx = mirrorX(x, state.gridSize);
         next = floodFill(next, mx, y, state.gridSize, color);
       }
-      return { pixels: next, dirty: true };
+      const layers = state.layers.map((l) =>
+        l.id === state.activeLayerId ? { ...l, pixels: next } : l,
+      );
+      return { layers, pixels: flattenLayers(layers), dirty: true };
     }),
 
-  clearGrid: () => set({ pixels: {}, dirty: true }),
+  clearGrid: () =>
+    set((state) => {
+      const activeLayer = state.layers.find((l) => l.id === state.activeLayerId);
+      if (!activeLayer || activeLayer.locked) return state;
+      const layers = state.layers.map((l) =>
+        l.id === state.activeLayerId ? { ...l, pixels: {} } : l,
+      );
+      return { layers, pixels: flattenLayers(layers), dirty: true };
+    }),
 
   setGridSize: (size) =>
-    set({ gridSize: size, pixels: {}, skeleton: emptySkeleton(), keyframes: [], currentPose: {}, dirty: true }),
+    set(() => {
+      const initLayer = defaultLayer();
+      return {
+        gridSize: size,
+        pixels: {},
+        layers: [initLayer],
+        activeLayerId: initLayer.id,
+        skeleton: emptySkeleton(),
+        keyframes: [],
+        stretchRegions: [],
+        currentPose: {},
+        dirty: true,
+      };
+    }),
 
   setName: (name) => set({ name, dirty: true }),
 
+  // === 图层动作 ===
+  addLayer: (name) => {
+    const layer = defaultLayer(name ?? `图层 ${get().layers.length + 1}`);
+    set((state) => ({
+      layers: [...state.layers, layer],
+      activeLayerId: layer.id,
+      dirty: true,
+    }));
+    return layer.id;
+  },
+
+  removeLayer: (id) =>
+    set((state) => {
+      if (state.layers.length <= 1) return state;
+      const layers = state.layers.filter((l) => l.id !== id);
+      const activeLayerId =
+        state.activeLayerId === id ? layers[layers.length - 1].id : state.activeLayerId;
+      return { layers, activeLayerId, pixels: flattenLayers(layers), dirty: true };
+    }),
+
+  setLayerVisible: (id, visible) =>
+    set((state) => {
+      const layers = state.layers.map((l) =>
+        l.id === id ? { ...l, visible } : l,
+      );
+      return { layers, pixels: flattenLayers(layers), dirty: true };
+    }),
+
+  setLayerLocked: (id, locked) =>
+    set((state) => ({
+      layers: state.layers.map((l) =>
+        l.id === id ? { ...l, locked } : l,
+      ),
+      dirty: true,
+    })),
+
+  setLayerName: (id, name) =>
+    set((state) => ({
+      layers: state.layers.map((l) =>
+        l.id === id ? { ...l, name } : l,
+      ),
+      dirty: true,
+    })),
+
+  setActiveLayer: (id) => set({ activeLayerId: id }),
+
+  moveLayerUp: (id) =>
+    set((state) => {
+      const idx = state.layers.findIndex((l) => l.id === id);
+      if (idx <= 0) return state;
+      const layers = [...state.layers];
+      [layers[idx - 1], layers[idx]] = [layers[idx], layers[idx - 1]];
+      return { layers, pixels: flattenLayers(layers), dirty: true };
+    }),
+
+  moveLayerDown: (id) =>
+    set((state) => {
+      const idx = state.layers.findIndex((l) => l.id === id);
+      if (idx < 0 || idx >= state.layers.length - 1) return state;
+      const layers = [...state.layers];
+      [layers[idx], layers[idx + 1]] = [layers[idx + 1], layers[idx]];
+      return { layers, pixels: flattenLayers(layers), dirty: true };
+    }),
+
+  mergeLayerDown: (id) =>
+    set((state) => {
+      const idx = state.layers.findIndex((l) => l.id === id);
+      if (idx <= 0) return state;
+      const upper = state.layers[idx];
+      const lower = state.layers[idx - 1];
+      const merged = { ...lower.pixels, ...upper.pixels };
+      const layers = state.layers
+        .filter((l) => l.id !== id)
+        .map((l) => (l.id === lower.id ? { ...l, pixels: merged } : l));
+      return { layers, pixels: flattenLayers(layers), dirty: true };
+    }),
+
+  duplicateLayer: (id) =>
+    set((state) => {
+      const src = state.layers.find((l) => l.id === id);
+      if (!src) return state;
+      const dup: Layer = {
+        ...src,
+        id: uuid(),
+        name: `${src.name} 副本`,
+        pixels: { ...src.pixels },
+      };
+      const idx = state.layers.findIndex((l) => l.id === id);
+      const layers = [...state.layers];
+      layers.splice(idx + 1, 0, dup);
+      return { layers, activeLayerId: dup.id, pixels: flattenLayers(layers), dirty: true };
+    }),
+
+  // === 骨架动作 ===
   addJoint: (x, y, name) => {
     const id = uuid();
     const joint: Joint = { id, x, y, name: name ?? `关节${get().skeleton.joints.length + 1}` };
@@ -215,6 +400,47 @@ export const useArtworkStore = create<ArtworkState>((set, get) => ({
       dirty: true,
     }),
 
+  // === 拉伸区域动作 ===
+  addStretchRegion: (corner1, corner2) => {
+    const id = uuid();
+    const region: StretchRegion = {
+      id,
+      name: `拉伸区 ${get().stretchRegions.length + 1}`,
+      corner1,
+      corner2,
+      offset: { x: 0, y: 0 },
+      scale: { x: 1, y: 1 },
+    };
+    set((state) => ({
+      stretchRegions: [...state.stretchRegions, region],
+      dirty: true,
+    }));
+    return id;
+  },
+
+  removeStretchRegion: (id) =>
+    set((state) => ({
+      stretchRegions: state.stretchRegions.filter((r) => r.id !== id),
+      dirty: true,
+    })),
+
+  transformStretchRegion: (id, offset, scale) =>
+    set((state) => ({
+      stretchRegions: state.stretchRegions.map((r) =>
+        r.id === id ? { ...r, offset, scale } : r,
+      ),
+      dirty: true,
+    })),
+
+  resetStretchRegion: (id) =>
+    set((state) => ({
+      stretchRegions: state.stretchRegions.map((r) =>
+        r.id === id ? { ...r, offset: { x: 0, y: 0 }, scale: { x: 1, y: 1 } } : r,
+      ),
+      dirty: true,
+    })),
+
+  // === 姿态动作 ===
   setPose: (pose) => set({ currentPose: pose }),
 
   resetPose: () =>
@@ -246,17 +472,22 @@ export const useArtworkStore = create<ArtworkState>((set, get) => ({
       dirty: true,
     })),
 
-  newArtwork: () =>
+  newArtwork: () => {
+    const initLayer = defaultLayer();
     set({
       id: newArtworkId(),
       name: "未命名作品",
       gridSize: DEFAULT_GRID_SIZE,
       pixels: {},
+      layers: [initLayer],
+      activeLayerId: initLayer.id,
       skeleton: emptySkeleton(),
       keyframes: [],
+      stretchRegions: [],
       currentPose: {},
       dirty: false,
-    }),
+    });
+  },
 
   loadArtwork: (record) => {
     // 空值保护：防止导入/旧数据缺失字段导致崩溃
@@ -265,14 +496,21 @@ export const useArtworkStore = create<ArtworkState>((set, get) => ({
         ? record.skeleton
         : emptySkeleton();
     const safeKeyframes = Array.isArray(record.keyframes) ? record.keyframes : [];
-    const safePixels = record.pixels ? cellsToRecord(record.pixels) : {};
+    const safeLayers: Layer[] = Array.isArray(record.layers) && record.layers.length > 0
+      ? record.layers
+      : [{ ...defaultLayer(), pixels: record.pixels ? cellsToRecord(record.pixels) : {} }];
+    const safeRegions: StretchRegion[] = Array.isArray(record.stretchRegions) ? record.stretchRegions : [];
+    const safePixels = flattenLayers(safeLayers);
     set({
       id: record.id,
       name: record.name ?? "未命名作品",
       gridSize: record.gridSize ?? DEFAULT_GRID_SIZE,
       pixels: safePixels,
+      layers: safeLayers,
+      activeLayerId: safeLayers[0].id,
       skeleton: safeSkeleton,
       keyframes: safeKeyframes,
+      stretchRegions: safeRegions,
       currentPose: defaultPose(safeSkeleton.joints),
       dirty: false,
     });
@@ -287,8 +525,10 @@ export const useArtworkStore = create<ArtworkState>((set, get) => ({
       thumbnail,
       gridSize: state.gridSize,
       pixels: cells,
+      layers: state.layers,
       skeleton: state.skeleton,
       keyframes: state.keyframes,
+      stretchRegions: state.stretchRegions,
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
@@ -296,4 +536,5 @@ export const useArtworkStore = create<ArtworkState>((set, get) => ({
   },
 
   markSaved: () => set({ dirty: false }),
-}));
+  };
+});

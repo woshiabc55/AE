@@ -46,9 +46,11 @@ export interface ArtworkRecord {
   name: string;
   thumbnail: string; // Base64 缩略图
   gridSize: number; // 拼豆网格尺寸 (如 32 表示 32×32)
-  pixels: PixelCell[];
+  pixels: PixelCell[]; // 兼容旧数据：扁平化所有图层
+  layers: Layer[];     // 图层数据
   skeleton: SkeletonData;
   keyframes: Keyframe[];
+  stretchRegions: StretchRegion[]; // 拉伸区域
   createdAt: number;
   updatedAt: number;
 }
@@ -70,4 +72,27 @@ export interface ToolState {
 export interface Point {
   x: number;
   y: number;
+}
+
+/** 图层 */
+export interface Layer {
+  id: string;
+  name: string;
+  visible: boolean;
+  locked: boolean;
+  opacity: number; // 0~1
+  pixels: Record<string, string>; // "x,y" -> color
+}
+
+/** 拉伸区域（两点确定矩形拉伸面） */
+export interface StretchRegion {
+  id: string;
+  name: string;
+  /** 原始矩形角点（网格坐标） */
+  corner1: Point;
+  corner2: Point;
+  /** 当前变形偏移（相对于原始位置） */
+  offset: Point;
+  /** 当前缩放 */
+  scale: Point; // {x: 1, y: 1} 表示无缩放
 }

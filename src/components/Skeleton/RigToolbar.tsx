@@ -1,6 +1,6 @@
 // 骨架工具栏
 
-import { Plus, Link2, Move, MousePointerClick, Trash2, RotateCcw } from "lucide-react";
+import { Plus, Link2, Move, MousePointerClick, Trash2, RotateCcw, StretchHorizontal } from "lucide-react";
 import { useUIStore } from "@/store/useUIStore";
 import { useArtworkStore } from "@/store/useArtworkStore";
 import { PixelButton } from "@/components/common/PixelButton";
@@ -11,6 +11,7 @@ const RIG_TOOLS = [
   { id: "connect" as const, icon: Link2, label: "连接骨骼" },
   { id: "move" as const, icon: Move, label: "移动关节" },
   { id: "assign" as const, icon: MousePointerClick, label: "指派格子" },
+  { id: "stretch" as const, icon: StretchHorizontal, label: "拉伸区域" },
 ];
 
 export function RigToolbar() {
@@ -157,6 +158,7 @@ export function RigToolbar() {
           {rigTool === "connect" && "依次点击两个关节，建立骨骼连接。"}
           {rigTool === "move" && "拖拽关节节点调整位置。"}
           {rigTool === "assign" && "点击骨骼选中，再拖拽框选拼豆格子指派给该骨骼。"}
+          {rigTool === "stretch" && "点击画布两个角点确定拉伸区域，再拖拽角点拉伸变形。"}
         </div>
       </div>
     </div>

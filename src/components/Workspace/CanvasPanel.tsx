@@ -12,6 +12,7 @@ import {
   getOriginalPose,
 } from "@/engine/skeleton";
 import { cellKey } from "@/engine/gridUtils";
+import { computeStretchDeform } from "@/engine/stretchDeform";
 import type { Point } from "@/types";
 
 const CANVAS_DISPLAY_SIZE = 576;
@@ -34,6 +35,9 @@ export function CanvasPanel() {
   const addBone = useArtworkStore((s) => s.addBone);
   const assignCellsToBone = useArtworkStore((s) => s.assignCellsToBone);
   const setPose = useArtworkStore((s) => s.setPose);
+  const stretchRegions = useArtworkStore((s) => s.stretchRegions);
+  const addStretchRegion = useArtworkStore((s) => s.addStretchRegion);
+  const transformStretchRegion = useArtworkStore((s) => s.transformStretchRegion);
 
   // 工具状态
   const tool = useToolStore((s) => s.tool);
@@ -57,17 +61,35 @@ export function CanvasPanel() {
   const [assigningBoneId, setAssigningBoneId] = useState<string | null>(null);
   const [assignStart, setAssignStart] = useState<Point | null>(null);
   const [assignEnd, setAssignEnd] = useState<Point | null>(null);
+  // 拉伸区域交互
+  const [stretchCorner1, setStretchCorner1] = useState<Point | null>(null);
+  const [draggingStretchId, setDraggingStretchId] = useState<string | null>(null);
 
   const cellSize = CANVAS_DISPLAY_SIZE / gridSize;
 
   // 原始姿态（关节定义位置）
   const originalPose = useMemo(() => getOriginalPose(joints), [joints]);
 
-  // 变形后的格子位置
+  // 变形后的格子位置（骨骼 + 拉伸区域）
   const deformedCells = useMemo(() => {
-    if (mode === "draw" || bones.length === 0) return undefined;
-    return computeDeformedCells(pixels, joints, bones, originalPose, currentPose);
-  }, [mode, pixels, joints, bones, originalPose, currentPose]);
+    const result = new Map<string, Point>();
+    // 骨骼变形
+    if (mode !== "draw" && bones.length > 0) {
+      const boneDeforms = computeDeformedCells(pixels, joints, bones, originalPose, currentPose);
+      for (const [key, pt] of boneDeforms) result.set(key, pt);
+    }
+    // 拉伸区域变形
+    if (mode === "rig" && stretchRegions.length > 0) {
+      for (const region of stretchRegions) {
+        if (region.offset.x === 0 && region.offset.y === 0 && region.scale.x === 1 && region.scale.y === 1) continue;
+        for (const key in pixels) {
+          const pt = computeStretchDeform(key, region);
+          if (pt) result.set(key, pt);
+        }
+      }
+    }
+    return result.size > 0 ? result : undefined;
+  }, [mode, pixels, joints, bones, originalPose, currentPose, stretchRegions]);
 
   // 高亮选中骨骼的受影响格子
   const highlightedCells = useMemo(() => {
@@ -94,8 +116,10 @@ export function CanvasPanel() {
       showSkeleton: mode !== "draw",
       selectedJointId,
       selectedBoneId,
+      selectedStretchId: draggingStretchId,
       deformedCells,
       highlightedCells,
+      stretchRegions: mode === "rig" ? stretchRegions : undefined,
     });
   }, [
     pixels,
@@ -110,6 +134,8 @@ export function CanvasPanel() {
     selectedBoneId,
     deformedCells,
     highlightedCells,
+    stretchRegions,
+    draggingStretchId,
   ]);
 
   // 绘制选区覆盖（指派格子时）
@@ -255,6 +281,17 @@ export function CanvasPanel() {
             selectBone(null);
             setAssigningBoneId(null);
           }
+        } else if (rigTool === "stretch") {
+          // 点击两个角点确定拉伸区域，或拖拽已有区域角点
+          setConnectFromId(null);
+          if (!stretchCorner1) {
+            setStretchCorner1(grid);
+          } else {
+            // 第二个角点 → 创建拉伸区域
+            const id = addStretchRegion(stretchCorner1, grid);
+            setStretchCorner1(null);
+            setDraggingStretchId(id);
+          }
         }
       } else if (mode === "animate") {
         // 拖拽关节改变姿态
@@ -287,6 +324,9 @@ export function CanvasPanel() {
       addBone,
       selectBone,
       bones,
+      stretchCorner1,
+      addStretchRegion,
+      setDraggingStretchId,
     ],
   );
 
@@ -310,6 +350,15 @@ export function CanvasPanel() {
         }
       } else if (assigningBoneId && assignStart) {
         setAssignEnd(grid);
+      } else if (draggingStretchId) {
+        const region = stretchRegions.find((r) => r.id === draggingStretchId);
+        if (region) {
+          const minX = Math.min(region.corner1.x, region.corner2.x);
+          const minY = Math.min(region.corner1.y, region.corner2.y);
+          const offset = { x: gridFloat.x - minX, y: gridFloat.y - minY };
+          const scale = { x: 1, y: 1 };
+          transformStretchRegion(draggingStretchId, offset, scale);
+        }
       }
     },
     [
@@ -326,6 +375,9 @@ export function CanvasPanel() {
       moveJoint,
       setPose,
       currentPose,
+      draggingStretchId,
+      stretchRegions,
+      transformStretchRegion,
     ],
   );
 
@@ -333,6 +385,7 @@ export function CanvasPanel() {
   const handleMouseUp = useCallback(() => {
     setIsDrawing(false);
     setDraggingJointId(null);
+    setDraggingStretchId(null);
     // 完成指派
     if (assigningBoneId && assignStart && assignEnd) {
       const minX = Math.min(assignStart.x, assignEnd.x);
@@ -368,6 +421,7 @@ export function CanvasPanel() {
     }
     if (mode === "rig") {
       if (rigTool === "move" || rigTool === "assign") return "pointer";
+      if (rigTool === "stretch") return "crosshair";
       return "crosshair";
     }
     return "grab";
@@ -412,7 +466,7 @@ export function CanvasPanel() {
         <div className="absolute -bottom-7 left-0 right-0 flex items-center justify-between text-[10px] font-mono text-ink-300">
           <span>
             {mode === "draw" && `绘制模式 · ${tool === "brush" ? "画笔" : tool === "eraser" ? "橡皮" : tool === "fill" ? "填充" : "吸管"}`}
-            {mode === "rig" && `骨架模式 · ${rigTool === "add" ? "添加关节" : rigTool === "connect" ? "连接骨骼" : rigTool === "move" ? "移动关节" : "指派格子"}`}
+            {mode === "rig" && `骨架模式 · ${rigTool === "add" ? "添加关节" : rigTool === "connect" ? "连接骨骼" : rigTool === "move" ? "移动关节" : rigTool === "assign" ? "指派格子" : "拉伸区域"}`}
             {mode === "animate" && "动画模式 · 拖拽关节摆姿势"}
           </span>
           {connectFromId && (

@@ -1,8 +1,9 @@
 // Canvas 2D 渲染器
 
-import type { Bone, Joint, JointPositions, Point } from "@/types";
+import type { Bone, Joint, JointPositions, Point, StretchRegion } from "@/types";
 import { findJoint } from "@/engine/skeleton";
 import { parseKey } from "@/engine/gridUtils";
+import { getStretchBounds } from "@/engine/stretchDeform";
 
 export interface RenderOptions {
   gridSize: number;
@@ -12,8 +13,10 @@ export interface RenderOptions {
   showSkeleton: boolean;
   selectedJointId: string | null;
   selectedBoneId: string | null;
+  selectedStretchId: string | null;
   deformedCells?: Map<string, Point>;
   highlightedCells?: Set<string>;
+  stretchRegions?: StretchRegion[];
 }
 
 /** 绘制单个拼豆（圆形带高光） */
@@ -177,6 +180,51 @@ export function renderCanvas(
       ctx.beginPath();
       ctx.arc(cx, cy, cellSize * 0.1, 0, Math.PI * 2);
       ctx.fill();
+    }
+  }
+
+  // 绘制拉伸区域
+  if (options.stretchRegions && options.stretchRegions.length > 0) {
+    for (const region of options.stretchRegions) {
+      const bounds = getStretchBounds(region);
+      const isSelected = region.id === options.selectedStretchId;
+      const x = bounds.minX * cellSize;
+      const y = bounds.minY * cellSize;
+      const w = (bounds.maxX - bounds.minX) * cellSize;
+      const h = (bounds.maxY - bounds.minY) * cellSize;
+
+      // 填充 + 边框
+      ctx.fillStyle = isSelected
+        ? "rgba(255,210,63,0.15)"
+        : "rgba(78,205,196,0.08)";
+      ctx.fillRect(x, y, w, h);
+      ctx.strokeStyle = isSelected ? "#ffd23f" : "rgba(78,205,196,0.5)";
+      ctx.lineWidth = isSelected ? 2 : 1.5;
+      ctx.setLineDash(isSelected ? [] : [4, 3]);
+      ctx.strokeRect(x, y, w, h);
+      ctx.setLineDash([]);
+
+      // 控制点
+      const corners = [
+        { x: bounds.minX * cellSize, y: bounds.minY * cellSize },
+        { x: bounds.maxX * cellSize, y: bounds.minY * cellSize },
+        { x: bounds.minX * cellSize, y: bounds.maxY * cellSize },
+        { x: bounds.maxX * cellSize, y: bounds.maxY * cellSize },
+      ];
+      for (const c of corners) {
+        ctx.fillStyle = isSelected ? "#ffd23f" : "#4ecdc4";
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, cellSize * 0.3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "#0f0a1a";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+
+      // 标签
+      ctx.fillStyle = isSelected ? "#ffd23f" : "#4ecdc4";
+      ctx.font = `${Math.max(9, cellSize * 0.55)}px "JetBrains Mono"`;
+      ctx.fillText(region.name, x + 4, y - 4);
     }
   }
 }
