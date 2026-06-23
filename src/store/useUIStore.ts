@@ -17,6 +17,8 @@ interface UIState {
   rigTool: "add" | "connect" | "assign" | "move" | "stretch";
   // 面板
   showGallery: boolean;
+  leftPanelOpen: boolean;
+  rightPanelOpen: boolean;
 
   setMode: (mode: WorkMode) => void;
   setPlaying: (playing: boolean) => void;
@@ -27,6 +29,8 @@ interface UIState {
   selectBone: (id: string | null) => void;
   setRigTool: (tool: UIState["rigTool"]) => void;
   setShowGallery: (show: boolean) => void;
+  toggleLeftPanel: () => void;
+  toggleRightPanel: () => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
@@ -39,6 +43,8 @@ export const useUIStore = create<UIState>((set) => ({
   selectedBoneId: null,
   rigTool: "add",
   showGallery: false,
+  leftPanelOpen: true,
+  rightPanelOpen: true,
 
   setMode: (mode) =>
     set({ mode, isPlaying: false, selectedJointId: null, selectedBoneId: null }),
@@ -50,4 +56,6 @@ export const useUIStore = create<UIState>((set) => ({
   selectBone: (id) => set({ selectedBoneId: id, selectedJointId: null }),
   setRigTool: (tool) => set({ rigTool: tool }),
   setShowGallery: (show) => set({ showGallery: show }),
+  toggleLeftPanel: () => set((s) => ({ leftPanelOpen: !s.leftPanelOpen })),
+  toggleRightPanel: () => set((s) => ({ rightPanelOpen: !s.rightPanelOpen })),
 }));

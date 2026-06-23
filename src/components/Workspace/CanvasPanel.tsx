@@ -15,11 +15,13 @@ import { cellKey } from "@/engine/gridUtils";
 import { computeStretchDeform } from "@/engine/stretchDeform";
 import type { Point } from "@/types";
 
-const CANVAS_DISPLAY_SIZE = 576;
+const MIN_CANVAS_SIZE = 320;
+const MAX_CANVAS_SIZE = 1024;
 
 export const CanvasPanel = memo(function CanvasPanel() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
+  const [canvasSize, setCanvasSize] = useState(576);
 
   // 作品状态
   const gridSize = useArtworkStore((s) => s.gridSize);
@@ -66,7 +68,23 @@ export const CanvasPanel = memo(function CanvasPanel() {
   const [stretchCorner1, setStretchCorner1] = useState<Point | null>(null);
   const [draggingStretchId, setDraggingStretchId] = useState<string | null>(null);
 
-  const cellSize = CANVAS_DISPLAY_SIZE / gridSize;
+  const cellSize = canvasSize / gridSize;
+
+  // 画布响应式缩放：监听容器尺寸变化
+  useEffect(() => {
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+    const observer = new ResizeObserver((entries) => {
+      const rect = entries[0].contentRect;
+      const padding = 48; // p-6 = 24px * 2
+      const available = Math.min(rect.width - padding, rect.height - padding);
+      // 对齐到 gridSize 的倍数，保证格子像素完美
+      const size = Math.max(MIN_CANVAS_SIZE, Math.min(MAX_CANVAS_SIZE, Math.floor(available / gridSize) * gridSize));
+      setCanvasSize(size);
+    });
+    observer.observe(wrap);
+    return () => observer.disconnect();
+  }, [gridSize]);
 
   // 原始姿态（关节定义位置）
   const originalPose = useMemo(() => getOriginalPose(joints), [joints]);
@@ -110,8 +128,8 @@ export const CanvasPanel = memo(function CanvasPanel() {
       if (!canvas) return;
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
-      canvas.width = CANVAS_DISPLAY_SIZE;
-      canvas.height = CANVAS_DISPLAY_SIZE;
+      canvas.width = canvasSize;
+      canvas.height = canvasSize;
 
       renderCanvas(ctx, pixels, joints, bones, currentPose, {
         gridSize,
@@ -135,7 +153,7 @@ export const CanvasPanel = memo(function CanvasPanel() {
     joints,
     bones,
     currentPose,
-    gridSize,
+    canvasSize,
     cellSize,
     mode,
     mirror,
@@ -466,8 +484,8 @@ export const CanvasPanel = memo(function CanvasPanel() {
           onMouseLeave={handleMouseLeave}
           className="border-2 border-ink-600 rounded-lg shadow-panel bg-ink-900"
           style={{
-            width: CANVAS_DISPLAY_SIZE,
-            height: CANVAS_DISPLAY_SIZE,
+            width: canvasSize,
+            height: canvasSize,
             cursor,
             imageRendering: "pixelated",
           }}

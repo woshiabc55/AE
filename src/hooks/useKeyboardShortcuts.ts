@@ -18,6 +18,8 @@ export function useKeyboardShortcuts() {
   const canRedo = useArtworkStore((s) => s.canRedo);
   const addLayer = useArtworkStore((s) => s.addLayer);
   const clearGrid = useArtworkStore((s) => s.clearGrid);
+  const toggleLeftPanel = useUIStore((s) => s.toggleLeftPanel);
+  const toggleRightPanel = useUIStore((s) => s.toggleRightPanel);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -40,6 +42,18 @@ export function useKeyboardShortcuts() {
       if (ctrl && (e.key === "y" || (e.key === "z" && e.shiftKey))) {
         e.preventDefault();
         redo();
+        return;
+      }
+
+      // 面板切换
+      if (ctrl && e.key === "b" && !e.shiftKey) {
+        e.preventDefault();
+        toggleLeftPanel();
+        return;
+      }
+      if (ctrl && e.key === "B" && e.shiftKey) {
+        e.preventDefault();
+        toggleRightPanel();
         return;
       }
 
@@ -126,5 +140,7 @@ export function useKeyboardShortcuts() {
     canRedo,
     addLayer,
     clearGrid,
+    toggleLeftPanel,
+    toggleRightPanel,
   ]);
 }

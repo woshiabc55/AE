@@ -11,63 +11,97 @@ import { ArtworkList } from "@/components/Gallery/ArtworkList";
 import { Panel } from "@/components/common/Panel";
 import { useUIStore } from "@/store/useUIStore";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
-import { Brush, Bone, Film, Palette as PaletteIcon, Layers } from "lucide-react";
+import { Brush, Bone, Film, Palette as PaletteIcon, Layers, PanelLeft, PanelRight } from "lucide-react";
 
 export default function Home() {
   const mode = useUIStore((s) => s.mode);
   const showGallery = useUIStore((s) => s.showGallery);
+  const leftPanelOpen = useUIStore((s) => s.leftPanelOpen);
+  const rightPanelOpen = useUIStore((s) => s.rightPanelOpen);
+  const toggleLeftPanel = useUIStore((s) => s.toggleLeftPanel);
+  const toggleRightPanel = useUIStore((s) => s.toggleRightPanel);
   useKeyboardShortcuts();
 
   return (
     <div className="h-full flex flex-col bg-ink-900 bg-noise">
       <Header />
 
-      <div className="flex-1 flex min-h-0">
+      <div className="flex-1 flex min-h-0 relative">
         {/* 左侧栏 */}
-        <aside className="w-64 border-r border-ink-600/60 bg-ink-800/40 flex flex-col">
-          {mode === "draw" && (
-            <Panel title="绘制工具" icon={<Brush size={14} />}>
-              <Toolbar />
-            </Panel>
-          )}
-          {mode === "rig" && (
-            <Panel title="骨架绑定" icon={<Bone size={14} />}>
-              <RigToolbar />
-            </Panel>
-          )}
-          {mode === "animate" && (
-            <Panel title="动画播放" icon={<Film size={14} />}>
-              <Timeline />
-            </Panel>
-          )}
-        </aside>
+        {leftPanelOpen && (
+          <aside className="w-64 flex-shrink-0 border-r border-ink-600/60 bg-ink-800/40 flex flex-col">
+            {mode === "draw" && (
+              <Panel title="绘制工具" icon={<Brush size={14} />}>
+                <Toolbar />
+              </Panel>
+            )}
+            {mode === "rig" && (
+              <Panel title="骨架绑定" icon={<Bone size={14} />}>
+                <RigToolbar />
+              </Panel>
+            )}
+            {mode === "animate" && (
+              <Panel title="动画播放" icon={<Film size={14} />}>
+                <Timeline />
+              </Panel>
+            )}
+          </aside>
+        )}
+
+        {/* 左侧面板折叠按钮 */}
+        <button
+          onClick={toggleLeftPanel}
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-5 h-12 bg-ink-700/80 hover:bg-ink-600 border border-ink-600/60 rounded-r-lg flex items-center justify-center transition-colors"
+          style={{ left: leftPanelOpen ? 256 : 0 }}
+          title={leftPanelOpen ? "收起左侧面板" : "展开左侧面板"}
+        >
+          <PanelLeft
+            size={10}
+            className={`text-ink-300 transition-transform ${leftPanelOpen ? "" : "rotate-180"}`}
+          />
+        </button>
 
         {/* 中央画布 */}
         <CanvasPanel />
 
         {/* 右侧栏 */}
-        <aside className="w-64 border-l border-ink-600/60 bg-ink-800/40 flex flex-col">
-          {mode === "draw" && (
-            <>
-              <Panel title="调色板" icon={<PaletteIcon size={14} />}>
-                <Palette />
+        {rightPanelOpen && (
+          <aside className="w-64 flex-shrink-0 border-l border-ink-600/60 bg-ink-800/40 flex flex-col">
+            {mode === "draw" && (
+              <>
+                <Panel title="调色板" icon={<PaletteIcon size={14} />}>
+                  <Palette />
+                </Panel>
+                <Panel title="图层" icon={<Layers size={14} />} className="flex-1">
+                  <LayerPanel />
+                </Panel>
+              </>
+            )}
+            {mode === "rig" && (
+              <Panel title="骨架预览" icon={<Bone size={14} />}>
+                <RigPreviewHelp />
               </Panel>
-              <Panel title="图层" icon={<Layers size={14} />} className="flex-1">
-                <LayerPanel />
+            )}
+            {mode === "animate" && (
+              <Panel title="动画提示" icon={<Film size={14} />}>
+                <AnimateHelp />
               </Panel>
-            </>
-          )}
-          {mode === "rig" && (
-            <Panel title="骨架预览" icon={<Bone size={14} />}>
-              <RigPreviewHelp />
-            </Panel>
-          )}
-          {mode === "animate" && (
-            <Panel title="动画提示" icon={<Film size={14} />}>
-              <AnimateHelp />
-            </Panel>
-          )}
-        </aside>
+            )}
+          </aside>
+        )}
+
+        {/* 右侧面板折叠按钮 */}
+        <button
+          onClick={toggleRightPanel}
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-5 h-12 bg-ink-700/80 hover:bg-ink-600 border border-ink-600/60 rounded-l-lg flex items-center justify-center transition-colors"
+          style={{ right: rightPanelOpen ? 256 : 0 }}
+          title={rightPanelOpen ? "收起右侧面板" : "展开右侧面板"}
+        >
+          <PanelRight
+            size={10}
+            className={`text-ink-300 transition-transform ${rightPanelOpen ? "" : "rotate-180"}`}
+          />
+        </button>
       </div>
 
       {showGallery && <ArtworkList />}

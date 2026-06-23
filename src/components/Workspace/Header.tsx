@@ -1,7 +1,7 @@
 // 顶部栏
 
 import { useState } from "react";
-import { Save, FolderOpen, FilePlus2, Circle, Undo, Redo } from "lucide-react";
+import { Save, FolderOpen, FilePlus2, Circle, Undo, Redo, PanelLeft, PanelRight } from "lucide-react";
 import { useArtworkStore } from "@/store/useArtworkStore";
 import { useUIStore } from "@/store/useUIStore";
 import { ModeSwitcher } from "@/components/Workspace/ModeSwitcher";
@@ -22,6 +22,10 @@ export function Header() {
   const canRedo = useArtworkStore((s) => s.canRedo);
   const undo = useArtworkStore((s) => s.undo);
   const redo = useArtworkStore((s) => s.redo);
+  const leftPanelOpen = useUIStore((s) => s.leftPanelOpen);
+  const rightPanelOpen = useUIStore((s) => s.rightPanelOpen);
+  const toggleLeftPanel = useUIStore((s) => s.toggleLeftPanel);
+  const toggleRightPanel = useUIStore((s) => s.toggleRightPanel);
 
   const [saving, setSaving] = useState(false);
 
@@ -105,6 +109,24 @@ export function Header() {
           title="重做 (Ctrl+Y)"
         >
           <Redo size={12} />
+        </button>
+      </div>
+
+      {/* 面板切换 */}
+      <div className="flex items-center gap-0.5">
+        <button
+          onClick={toggleLeftPanel}
+          className={`flex items-center gap-1 px-2 py-1.5 rounded text-[10px] font-mono transition-all ${leftPanelOpen ? "text-ember-400 hover:bg-ink-700/60" : "text-ink-500 hover:bg-ink-700/60"}`}
+          title={leftPanelOpen ? "收起左侧面板 (Ctrl+B)" : "展开左侧面板 (Ctrl+B)"}
+        >
+          <PanelLeft size={13} />
+        </button>
+        <button
+          onClick={toggleRightPanel}
+          className={`flex items-center gap-1 px-2 py-1.5 rounded text-[10px] font-mono transition-all ${rightPanelOpen ? "text-ember-400 hover:bg-ink-700/60" : "text-ink-500 hover:bg-ink-700/60"}`}
+          title={rightPanelOpen ? "收起右侧面板 (Ctrl+Shift+B)" : "展开右侧面板 (Ctrl+Shift+B)"}
+        >
+          <PanelRight size={13} />
         </button>
       </div>
 
