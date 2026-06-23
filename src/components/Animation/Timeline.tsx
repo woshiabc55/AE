@@ -1,6 +1,6 @@
 // 动画时间轴与播放控制
 
-import { useCallback, useEffect, useRef } from "react";
+import { memo, useCallback, useEffect, useRef } from "react";
 import { Play, Pause, Plus, Trash2, Repeat, SkipBack, SkipForward } from "lucide-react";
 import { useUIStore } from "@/store/useUIStore";
 import { useArtworkStore } from "@/store/useArtworkStore";
@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 
 const PLAYBACK_DURATION = 3000; // 3 秒一个循环
 
-export function Timeline() {
+export const Timeline = memo(function Timeline() {
   const isPlaying = useUIStore((s) => s.isPlaying);
   const setPlaying = useUIStore((s) => s.setPlaying);
   const currentTime = useUIStore((s) => s.currentTime);
@@ -290,4 +290,4 @@ export function Timeline() {
       </div>
     </div>
   );
-}
+});

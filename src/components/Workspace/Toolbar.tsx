@@ -1,5 +1,6 @@
 // 绘制工具栏
 
+import { memo } from "react";
 import {
   Brush,
   Eraser,
@@ -22,7 +23,7 @@ const TOOLS: Array<{ id: DrawTool; icon: typeof Brush; label: string }> = [
   { id: "picker", icon: Pipette, label: "吸管" },
 ];
 
-export function Toolbar() {
+export const Toolbar = memo(function Toolbar() {
   const tool = useToolStore((s) => s.tool);
   const setTool = useToolStore((s) => s.setTool);
   const brushSize = useToolStore((s) => s.brushSize);
@@ -147,4 +148,4 @@ export function Toolbar() {
       </PixelButton>
     </div>
   );
-}
+});

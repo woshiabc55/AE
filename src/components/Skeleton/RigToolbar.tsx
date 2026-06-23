@@ -1,5 +1,6 @@
 // 骨架工具栏
 
+import { memo } from "react";
 import { Plus, Link2, Move, MousePointerClick, Trash2, RotateCcw, StretchHorizontal } from "lucide-react";
 import { useUIStore } from "@/store/useUIStore";
 import { useArtworkStore } from "@/store/useArtworkStore";
@@ -14,7 +15,7 @@ const RIG_TOOLS = [
   { id: "stretch" as const, icon: StretchHorizontal, label: "拉伸区域" },
 ];
 
-export function RigToolbar() {
+export const RigToolbar = memo(function RigToolbar() {
   const rigTool = useUIStore((s) => s.rigTool);
   const setRigTool = useUIStore((s) => s.setRigTool);
   const selectedJointId = useUIStore((s) => s.selectedJointId);
@@ -163,4 +164,4 @@ export function RigToolbar() {
       </div>
     </div>
   );
-}
+});

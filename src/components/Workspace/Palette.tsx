@@ -1,11 +1,12 @@
 // 调色板
 
+import { memo } from "react";
 import { useToolStore } from "@/store/useToolStore";
 import { BEAD_PALETTE } from "@/utils/colors";
 import { cn } from "@/lib/utils";
 import { Pipette } from "lucide-react";
 
-export function Palette() {
+export const Palette = memo(function Palette() {
   const color = useToolStore((s) => s.color);
   const setColor = useToolStore((s) => s.setColor);
 
@@ -61,4 +62,4 @@ export function Palette() {
       </div>
     </div>
   );
-}
+});

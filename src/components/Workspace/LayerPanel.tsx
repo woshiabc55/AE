@@ -218,4 +218,4 @@ export const LayerPanel = memo(function LayerPanel() {
       </div>
     </div>
   );
-}
+});

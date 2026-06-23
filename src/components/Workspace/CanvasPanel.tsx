@@ -1,6 +1,6 @@
 // 画布主面板 - 处理绘制、骨架、动画的所有交互
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useArtworkStore } from "@/store/useArtworkStore";
 import { useToolStore } from "@/store/useToolStore";
 import { useUIStore } from "@/store/useUIStore";
@@ -17,7 +17,7 @@ import type { Point } from "@/types";
 
 const CANVAS_DISPLAY_SIZE = 576;
 
-export function CanvasPanel() {
+export const CanvasPanel = memo(function CanvasPanel() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
 
@@ -100,28 +100,36 @@ export function CanvasPanel() {
     return new Set(bone.influencedCells);
   }, [selectedBoneId, bones]);
 
-  // 渲染
+  // 渲染 — 使用 rAF 批处理，减少高频更新时的重复绘制
+  const rafIdRef = useRef<number | null>(null);
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    canvas.width = CANVAS_DISPLAY_SIZE;
-    canvas.height = CANVAS_DISPLAY_SIZE;
+    if (rafIdRef.current !== null) cancelAnimationFrame(rafIdRef.current);
+    rafIdRef.current = requestAnimationFrame(() => {
+      rafIdRef.current = null;
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      canvas.width = CANVAS_DISPLAY_SIZE;
+      canvas.height = CANVAS_DISPLAY_SIZE;
 
-    renderCanvas(ctx, pixels, joints, bones, currentPose, {
-      gridSize,
-      cellSize,
-      showGrid: true,
-      showCenterLine: mode === "draw" && mirror,
-      showSkeleton: mode !== "draw",
-      selectedJointId,
-      selectedBoneId,
-      selectedStretchId: draggingStretchId,
-      deformedCells,
-      highlightedCells,
-      stretchRegions: mode === "rig" ? stretchRegions : undefined,
+      renderCanvas(ctx, pixels, joints, bones, currentPose, {
+        gridSize,
+        cellSize,
+        showGrid: true,
+        showCenterLine: mode === "draw" && mirror,
+        showSkeleton: mode !== "draw",
+        selectedJointId,
+        selectedBoneId,
+        selectedStretchId: draggingStretchId,
+        deformedCells,
+        highlightedCells,
+        stretchRegions: mode === "rig" ? stretchRegions : undefined,
+      });
     });
+    return () => {
+      if (rafIdRef.current !== null) cancelAnimationFrame(rafIdRef.current);
+    };
   }, [
     pixels,
     joints,
@@ -479,4 +487,4 @@ export function CanvasPanel() {
       </div>
     </div>
   );
-}
+});
