@@ -10,11 +10,13 @@ import { Timeline } from "@/components/Animation/Timeline";
 import { ArtworkList } from "@/components/Gallery/ArtworkList";
 import { Panel } from "@/components/common/Panel";
 import { useUIStore } from "@/store/useUIStore";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { Brush, Bone, Film, Palette as PaletteIcon, Layers } from "lucide-react";
 
 export default function Home() {
   const mode = useUIStore((s) => s.mode);
   const showGallery = useUIStore((s) => s.showGallery);
+  useKeyboardShortcuts();
 
   return (
     <div className="h-full flex flex-col bg-ink-900 bg-noise">

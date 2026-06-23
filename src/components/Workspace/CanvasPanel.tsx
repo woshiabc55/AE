@@ -35,6 +35,7 @@ export function CanvasPanel() {
   const addBone = useArtworkStore((s) => s.addBone);
   const assignCellsToBone = useArtworkStore((s) => s.assignCellsToBone);
   const setPose = useArtworkStore((s) => s.setPose);
+  const pushHistory = useArtworkStore((s) => s.pushHistory);
   const stretchRegions = useArtworkStore((s) => s.stretchRegions);
   const addStretchRegion = useArtworkStore((s) => s.addStretchRegion);
   const transformStretchRegion = useArtworkStore((s) => s.transformStretchRegion);
@@ -222,6 +223,7 @@ export function CanvasPanel() {
   // 鼠标按下
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
+      pushHistory();
       const grid = toGrid(e);
       const gridFloat = toGridFloat(e);
 
@@ -327,6 +329,7 @@ export function CanvasPanel() {
       stretchCorner1,
       addStretchRegion,
       setDraggingStretchId,
+      pushHistory,
     ],
   );
 

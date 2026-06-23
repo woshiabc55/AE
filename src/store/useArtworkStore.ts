@@ -30,6 +30,17 @@ function emptySkeleton(): SkeletonData {
   return { joints: [], bones: [] };
 }
 
+/** 历史快照（用于 undo/redo） */
+interface HistorySnapshot {
+  layers: Layer[];
+  activeLayerId: string;
+  skeleton: SkeletonData;
+  stretchRegions: StretchRegion[];
+  currentPose: JointPositions;
+}
+
+const MAX_HISTORY = 50;
+
 function defaultPose(joints: Joint[]): JointPositions {
   const pose: JointPositions = {};
   for (const j of joints) pose[j.id] = { x: j.x, y: j.y };
@@ -80,6 +91,11 @@ interface ArtworkState {
   currentPose: JointPositions;
   // 是否有未保存修改
   dirty: boolean;
+  // 撤销历史
+  history: HistorySnapshot[];
+  future: HistorySnapshot[];
+  canUndo: boolean;
+  canRedo: boolean;
 
   // === 绘制动作 ===
   paintCell: (x: number, y: number, color: string, mirror: boolean) => void;
@@ -130,6 +146,10 @@ interface ArtworkState {
   loadArtwork: (record: ArtworkRecord) => void;
   toRecord: (thumbnail: string) => ArtworkRecord;
   markSaved: () => void;
+  // === 撤销/重做 ===
+  pushHistory: () => void;
+  undo: () => void;
+  redo: () => void;
 }
 
 export const useArtworkStore = create<ArtworkState>((set, get) => {
@@ -146,6 +166,10 @@ export const useArtworkStore = create<ArtworkState>((set, get) => {
   stretchRegions: [],
   currentPose: {},
   dirty: false,
+  history: [],
+  future: [],
+  canUndo: false,
+  canRedo: false,
 
   paintCell: (x, y, color, mirror) =>
     set((state) => {
@@ -536,5 +560,85 @@ export const useArtworkStore = create<ArtworkState>((set, get) => {
   },
 
   markSaved: () => set({ dirty: false }),
+
+  // === 撤销/重做 ===
+  pushHistory: () => {
+    const state = get();
+    const snapshot: HistorySnapshot = {
+      layers: state.layers.map((l) => ({ ...l, pixels: { ...l.pixels } })),
+      activeLayerId: state.activeLayerId,
+      skeleton: {
+        joints: state.skeleton.joints.map((j) => ({ ...j })),
+        bones: state.skeleton.bones.map((b) => ({ ...b, influencedCells: [...b.influencedCells] })),
+      },
+      stretchRegions: state.stretchRegions.map((r) => ({ ...r })),
+      currentPose: { ...state.currentPose },
+    };
+    set({
+      history: [...state.history.slice(-MAX_HISTORY + 1), snapshot],
+      future: [],
+      canUndo: true,
+      canRedo: false,
+    });
+  },
+
+  undo: () => {
+    const state = get();
+    if (state.history.length === 0) return;
+    const prev = state.history[state.history.length - 1];
+    // 保存当前状态到 future
+    const current: HistorySnapshot = {
+      layers: state.layers.map((l) => ({ ...l, pixels: { ...l.pixels } })),
+      activeLayerId: state.activeLayerId,
+      skeleton: {
+        joints: state.skeleton.joints.map((j) => ({ ...j })),
+        bones: state.skeleton.bones.map((b) => ({ ...b, influencedCells: [...b.influencedCells] })),
+      },
+      stretchRegions: state.stretchRegions.map((r) => ({ ...r })),
+      currentPose: { ...state.currentPose },
+    };
+    set({
+      layers: prev.layers,
+      activeLayerId: prev.activeLayerId,
+      skeleton: prev.skeleton,
+      stretchRegions: prev.stretchRegions,
+      currentPose: prev.currentPose,
+      pixels: flattenLayers(prev.layers),
+      history: state.history.slice(0, -1),
+      future: [current, ...state.future],
+      canUndo: state.history.length > 1,
+      canRedo: true,
+      dirty: true,
+    });
+  },
+
+  redo: () => {
+    const state = get();
+    if (state.future.length === 0) return;
+    const next = state.future[0];
+    const current: HistorySnapshot = {
+      layers: state.layers.map((l) => ({ ...l, pixels: { ...l.pixels } })),
+      activeLayerId: state.activeLayerId,
+      skeleton: {
+        joints: state.skeleton.joints.map((j) => ({ ...j })),
+        bones: state.skeleton.bones.map((b) => ({ ...b, influencedCells: [...b.influencedCells] })),
+      },
+      stretchRegions: state.stretchRegions.map((r) => ({ ...r })),
+      currentPose: { ...state.currentPose },
+    };
+    set({
+      layers: next.layers,
+      activeLayerId: next.activeLayerId,
+      skeleton: next.skeleton,
+      stretchRegions: next.stretchRegions,
+      currentPose: next.currentPose,
+      pixels: flattenLayers(next.layers),
+      history: [...state.history, current],
+      future: state.future.slice(1),
+      canUndo: true,
+      canRedo: state.future.length > 1,
+      dirty: true,
+    });
+  },
   };
 });

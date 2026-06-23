@@ -1,7 +1,7 @@
 // 顶部栏
 
 import { useState } from "react";
-import { Save, FolderOpen, FilePlus2, Circle } from "lucide-react";
+import { Save, FolderOpen, FilePlus2, Circle, Undo, Redo } from "lucide-react";
 import { useArtworkStore } from "@/store/useArtworkStore";
 import { useUIStore } from "@/store/useUIStore";
 import { ModeSwitcher } from "@/components/Workspace/ModeSwitcher";
@@ -18,6 +18,10 @@ export function Header() {
   const markSaved = useArtworkStore((s) => s.markSaved);
   const newArtwork = useArtworkStore((s) => s.newArtwork);
   const setShowGallery = useUIStore((s) => s.setShowGallery);
+  const canUndo = useArtworkStore((s) => s.canUndo);
+  const canRedo = useArtworkStore((s) => s.canRedo);
+  const undo = useArtworkStore((s) => s.undo);
+  const redo = useArtworkStore((s) => s.redo);
 
   const [saving, setSaving] = useState(false);
 
@@ -83,6 +87,26 @@ export function Header() {
 
       {/* 中：模式切换 */}
       <ModeSwitcher />
+
+      {/* 撤销/重做 */}
+      <div className="flex items-center gap-1">
+        <button
+          onClick={undo}
+          disabled={!canUndo}
+          className="flex items-center gap-1 px-2 py-1.5 rounded text-[10px] font-mono text-ink-300 hover:bg-ink-700/60 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+          title="撤销 (Ctrl+Z)"
+        >
+          <Undo size={12} />
+        </button>
+        <button
+          onClick={redo}
+          disabled={!canRedo}
+          className="flex items-center gap-1 px-2 py-1.5 rounded text-[10px] font-mono text-ink-300 hover:bg-ink-700/60 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+          title="重做 (Ctrl+Y)"
+        >
+          <Redo size={12} />
+        </button>
+      </div>
 
       {/* 右：操作 */}
       <div className="flex items-center gap-2">

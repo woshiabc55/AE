@@ -1,5 +1,6 @@
 // 图层面板
 
+import { memo } from "react";
 import {
   Eye,
   EyeOff,
@@ -16,7 +17,7 @@ import {
 import { useArtworkStore } from "@/store/useArtworkStore";
 import { cn } from "@/lib/utils";
 
-export function LayerPanel() {
+export const LayerPanel = memo(function LayerPanel() {
   const layers = useArtworkStore((s) => s.layers);
   const activeLayerId = useArtworkStore((s) => s.activeLayerId);
   const addLayer = useArtworkStore((s) => s.addLayer);
