@@ -28,32 +28,24 @@ app.use('/uploads', express.static(uploadsDir));
 // API 路由
 app.use('/api/memes', memeRoutes);
 
-// MCP 端点
-const mcpServer = createMcpServer();
+// MCP 端点 - 每次请求创建新的 server 实例
+const handleMcp = async (req: express.Request, res: express.Response) => {
+  try {
+    const mcpServer = createMcpServer();
+    const transport = new StreamableHTTPServerTransport({
+      sessionIdGenerator: undefined,
+    });
+    await mcpServer.connect(transport);
+    await transport.handleRequest(req, res);
+  } catch (err) {
+    console.error('MCP 请求处理失败:', err);
+    res.status(500).json({ error: 'MCP server error' });
+  }
+};
 
-app.post('/mcp', async (req, res) => {
-  const transport = new StreamableHTTPServerTransport({
-    sessionIdGenerator: undefined,
-  });
-  await mcpServer.connect(transport);
-  await transport.handleRequest(req, res);
-});
-
-app.get('/mcp', async (req, res) => {
-  const transport = new StreamableHTTPServerTransport({
-    sessionIdGenerator: undefined,
-  });
-  await mcpServer.connect(transport);
-  await transport.handleRequest(req, res);
-});
-
-app.delete('/mcp', async (req, res) => {
-  const transport = new StreamableHTTPServerTransport({
-    sessionIdGenerator: undefined,
-  });
-  await mcpServer.connect(transport);
-  await transport.handleRequest(req, res);
-});
+app.post('/mcp', handleMcp);
+app.get('/mcp', handleMcp);
+app.delete('/mcp', handleMcp);
 
 // 健康检查
 app.get('/api/health', (_req, res) => {
