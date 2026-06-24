@@ -1,0 +1,216 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" font-family="'Noto Serif SC', 'SimSun', 'STSong', serif">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a0a0a"/>
+      <stop offset="100%" stop-color="#1a1a1a"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bgGrad)"/>
+
+  <!-- Title -->
+  <text x="800" y="55" text-anchor="middle" fill="#c0a060" font-size="22" letter-spacing="12" filter="url(#glow)">色彩演进总谱</text>
+  <text x="800" y="80" text-anchor="middle" fill="#6a6a6a" font-size="11" letter-spacing="4">COLOR EVOLUTION SPECTRUM · 窑火不息·追迹</text>
+  <line x1="200" y1="92" x2="1400" y2="92" stroke="#c0a060" stroke-opacity="0.3" stroke-width="0.5"/>
+
+  <!-- Phase labels -->
+  <text x="130" y="130" text-anchor="middle" fill="#888" font-size="9" letter-spacing="2">序</text>
+  <text x="130" y="145" text-anchor="middle" fill="#666" font-size="8">起源</text>
+
+  <text x="380" y="130" text-anchor="middle" fill="#888" font-size="9" letter-spacing="2">第一幕</text>
+  <text x="380" y="145" text-anchor="middle" fill="#666" font-size="8">火·哥弟关系</text>
+
+  <text x="630" y="130" text-anchor="middle" fill="#888" font-size="9" letter-spacing="2">第二幕</text>
+  <text x="630" y="145" text-anchor="middle" fill="#666" font-size="8">水·嫉妒裂变</text>
+
+  <text x="880" y="130" text-anchor="middle" fill="#888" font-size="9" letter-spacing="2">第三幕</text>
+  <text x="880" y="145" text-anchor="middle" fill="#666" font-size="8">裂·哥窑诞生</text>
+
+  <text x="1130" y="130" text-anchor="middle" fill="#888" font-size="9" letter-spacing="2">第四幕</text>
+  <text x="1130" y="145" text-anchor="middle" fill="#666" font-size="8">绊·人生裂痕</text>
+
+  <text x="1380" y="130" text-anchor="middle" fill="#888" font-size="9" letter-spacing="2">第五幕</text>
+  <text x="1380" y="145" text-anchor="middle" fill="#666" font-size="8">迹·文明余火</text>
+
+  <!-- MAIN COLOR BAND -->
+  <g transform="translate(50, 170)">
+    <!-- Background bar -->
+    <rect x="0" y="0" width="1500" height="100" rx="6" fill="#111" stroke="#333" stroke-width="0.5"/>
+
+    <!-- Color blocks - 14 segments -->
+    <!-- 序: 青灰×金丝铁线 -->
+    <rect x="0" y="5" width="90" height="90" rx="4" fill="#7a8a7a"/>
+    <rect x="0" y="5" width="90" height="90" rx="4" fill="url(#goldWire)" opacity="0.6"/>
+    <defs>
+      <pattern id="goldWire" width="12" height="12" patternUnits="userSpaceOnUse">
+        <line x1="0" y1="6" x2="12" y2="6" stroke="#c0a060" stroke-width="0.8"/>
+        <line x1="6" y1="2" x2="6" y2="10" stroke="#c0a060" stroke-width="0.5"/>
+      </pattern>
+    </defs>
+
+    <!-- 一·火: 深蓝×琥珀橙 -->
+    <rect x="110" y="5" width="90" height="90" rx="4" fill="#1a2a4a"/>
+    <rect x="110" y="5" width="90" height="90" rx="4" fill="#d4782a" opacity="0.35"/>
+
+    <!-- 一·关怀: 暖褐×青筋 -->
+    <rect x="220" y="5" width="90" height="90" rx="4" fill="#5a3a2a"/>
+    <rect x="220" y="5" width="90" height="90" rx="4" fill="#7a8a7a" opacity="0.3"/>
+
+    <!-- 一·冷落: 青白×褐黑 -->
+    <rect x="330" y="5" width="90" height="90" rx="4" fill="#c8d8d0"/>
+    <rect x="330" y="5" width="90" height="90" rx="4" fill="#2a1a0a" opacity="0.4"/>
+
+    <!-- 二·疼痛: 暗红×灰褐 -->
+    <rect x="440" y="5" width="90" height="90" rx="4" fill="#6a2020"/>
+    <rect x="440" y="5" width="90" height="90" rx="4" fill="#5a4a3a" opacity="0.5"/>
+
+    <!-- 二·爆发: 炽红×惨白 -->
+    <rect x="550" y="5" width="90" height="90" rx="4" fill="#cc2222"/>
+    <rect x="550" y="5" width="90" height="90" rx="4" fill="#e8e8e8" opacity="0.5"/>
+
+    <!-- 三·惊愕: 青釉×黑纹 -->
+    <rect x="660" y="5" width="90" height="90" rx="4" fill="#8aaa9a"/>
+    <rect x="660" y="5" width="90" height="90" rx="4" fill="#1a1a1a" opacity="0.35"/>
+
+    <!-- 三·顿悟: 青釉×金光 -->
+    <rect x="770" y="5" width="90" height="90" rx="4" fill="#8aaa9a"/>
+    <rect x="770" y="5" width="90" height="90" rx="4" fill="#d4a830" opacity="0.5"/>
+
+    <!-- 四·和解: 暖橙×暗褐 -->
+    <rect x="880" y="5" width="90" height="90" rx="4" fill="#d4882a"/>
+    <rect x="880" y="5" width="90" height="90" rx="4" fill="#3a2a1a" opacity="0.5"/>
+
+    <!-- 四·释放: 暖橙×泪光 -->
+    <rect x="990" y="5" width="90" height="90" rx="4" fill="#d4882a"/>
+    <rect x="990" y="5" width="90" height="90" rx="4" fill="#e8e0d0" opacity="0.4"/>
+
+    <!-- 四·脆弱: 暖暗×晶莹 -->
+    <rect x="1100" y="5" width="90" height="90" rx="4" fill="#4a3020"/>
+    <rect x="1100" y="5" width="90" height="90" rx="4" fill="#d8e8e8" opacity="0.3"/>
+
+    <!-- 四·怀旧: 暖黄×冷白 -->
+    <rect x="1210" y="5" width="90" height="90" rx="4" fill="#d4b060"/>
+    <rect x="1210" y="5" width="90" height="90" rx="4" fill="#d0d8e0" opacity="0.4"/>
+
+    <!-- 五·传承: 青釉×金锔钉×雪白 -->
+    <rect x="1320" y="5" width="90" height="90" rx="4" fill="#8aaa9a"/>
+    <rect x="1320" y="5" width="90" height="90" rx="4" fill="#d4a830" opacity="0.4"/>
+    <circle cx="1365" cy="50" r="4" fill="none" stroke="#d4a830" stroke-width="1.2"/>
+    <circle cx="1355" cy="65" r="3" fill="none" stroke="#d4a830" stroke-width="1"/>
+
+    <!-- 五·定格: 青瓷绿×金 -->
+    <rect x="1410" y="5" width="90" height="90" rx="4" fill="#7a9a7a"/>
+    <rect x="1410" y="5" width="90" height="90" rx="4" fill="#d4a830" opacity="0.35"/>
+  </g>
+
+  <!-- Labels below color blocks -->
+  <g transform="translate(50, 280)" fill="#999" font-size="8" text-anchor="middle">
+    <text x="45" y="0">青灰×金丝</text>
+    <text x="155" y="0">深蓝×琥珀</text>
+    <text x="265" y="0">暖褐×青筋</text>
+    <text x="375" y="0">青白×褐黑</text>
+    <text x="485" y="0">暗红×灰褐</text>
+    <text x="595" y="0">炽红×惨白</text>
+    <text x="705" y="0">青釉×黑纹</text>
+    <text x="815" y="0">青釉×金光</text>
+    <text x="925" y="0">暖橙×暗褐</text>
+    <text x="1035" y="0">暖橙×泪光</text>
+    <text x="1145" y="0">暖暗×晶莹</text>
+    <text x="1255" y="0">暖黄×冷白</text>
+    <text x="1365" y="0">青釉×锔钉</text>
+    <text x="1455" y="0">青绿×金</text>
+  </g>
+
+  <!-- Spectrum arc -->
+  <g transform="translate(50, 330)">
+    <defs>
+      <linearGradient id="spectrumArc" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#7a8a7a"/>
+        <stop offset="7%" stop-color="#c0a060"/>
+        <stop offset="15%" stop-color="#1a2a4a"/>
+        <stop offset="22%" stop-color="#d4782a"/>
+        <stop offset="30%" stop-color="#5a3a2a"/>
+        <stop offset="38%" stop-color="#c8d8d0"/>
+        <stop offset="45%" stop-color="#6a2020"/>
+        <stop offset="52%" stop-color="#cc2222"/>
+        <stop offset="60%" stop-color="#8aaa9a"/>
+        <stop offset="68%" stop-color="#d4a830"/>
+        <stop offset="75%" stop-color="#d4882a"/>
+        <stop offset="82%" stop-color="#e8e0d0"/>
+        <stop offset="90%" stop-color="#d4b060"/>
+        <stop offset="100%" stop-color="#8aaa9a"/>
+      </linearGradient>
+    </defs>
+    <rect x="0" y="0" width="1500" height="8" rx="4" fill="url(#spectrumArc)" opacity="0.8"/>
+    <text x="750" y="24" text-anchor="middle" fill="#555" font-size="8" letter-spacing="3">黑 → 冷 → 暖 → 冷 → 炽 → 金 → 暖 → 泪 → 暗 → 忆 → 金 → 永恒</text>
+  </g>
+
+  <!-- Emotional Arc -->
+  <g transform="translate(50, 400)">
+    <text x="0" y="0" fill="#c0a060" font-size="12" letter-spacing="3" filter="url(#glow)">情绪弧线</text>
+    <path d="M0,60 Q 200,55 375,40 Q 480,30 550,10 Q 700,5 750,40 Q 850,55 1120,45 Q 1350,35 1500,30" stroke="#c0a060" stroke-opacity="0.6" fill="none" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <circle cx="0" cy="60" r="4" fill="#7a8a7a"/>
+    <circle cx="375" cy="40" r="4" fill="#d4782a"/>
+    <circle cx="550" cy="10" r="4" fill="#cc2222"/>
+    <circle cx="750" cy="40" r="4" fill="#d4a830"/>
+    <circle cx="1120" cy="45" r="4" fill="#e8e0d0"/>
+    <circle cx="1500" cy="30" r="4" fill="#8aaa9a"/>
+
+    <text x="0" y="82" fill="#666" font-size="8" text-anchor="middle">期待</text>
+    <text x="230" y="82" fill="#666" font-size="8" text-anchor="middle">沉默</text>
+    <text x="375" y="82" fill="#666" font-size="8" text-anchor="middle">压抑</text>
+    <text x="550" y="82" fill="#666" font-size="8" text-anchor="middle">爆发</text>
+    <text x="750" y="82" fill="#666" font-size="8" text-anchor="middle">顿悟</text>
+    <text x="1120" y="82" fill="#666" font-size="8" text-anchor="middle">释放</text>
+    <text x="1500" y="82" fill="#666" font-size="8" text-anchor="middle">永恒</text>
+  </g>
+
+  <!-- Legend -->
+  <g transform="translate(50, 500)">
+    <text x="0" y="0" fill="#c0a060" font-size="11" letter-spacing="3" filter="url(#glow)">色彩语义</text>
+    <rect x="0" y="15" width="12" height="12" rx="2" fill="#7a8a7a"/>
+    <text x="18" y="25" fill="#888" font-size="9">青灰 = 时间沉淀 · 金丝 = 伤痕勋章</text>
+    <rect x="280" y="15" width="12" height="12" rx="2" fill="#1a2a4a"/>
+    <text x="298" y="25" fill="#888" font-size="9">深蓝 = 威胁/自然 · 琥珀 = 庇护/文明</text>
+    <rect x="560" y="15" width="12" height="12" rx="2" fill="#6a2020"/>
+    <text x="578" y="25" fill="#888" font-size="9">暗红 = 疼痛 · 灰褐 = 时间</text>
+    <rect x="780" y="15" width="12" height="12" rx="2" fill="#cc2222"/>
+    <text x="798" y="25" fill="#888" font-size="9">炽红 = 愤怒 · 惨白 = 虚无</text>
+    <rect x="1020" y="15" width="12" height="12" rx="2" fill="#8aaa9a"/>
+    <text x="1038" y="25" fill="#888" font-size="9">青釉 = 瓷器 · 金光 = 恩典</text>
+    <rect x="1240" y="15" width="12" height="12" rx="2" fill="#d4b060"/>
+    <text x="1258" y="25" fill="#888" font-size="9">暖黄 = 记忆 · 冷白 = 现实</text>
+
+    <rect x="0" y="42" width="12" height="12" rx="2" fill="#c0a060"/>
+    <text x="18" y="52" fill="#888" font-size="9">金色 = 贯穿全片的"锔钉"隐喻——伤痕即勋章</text>
+  </g>
+
+  <!-- Timeline -->
+  <g transform="translate(50, 580)">
+    <text x="0" y="0" fill="#c0a060" font-size="11" letter-spacing="3" filter="url(#glow)">时间轴</text>
+    <line x1="0" y1="20" x2="1500" y2="20" stroke="#444" stroke-width="0.5"/>
+    <circle cx="20" cy="20" r="3" fill="#7a8a7a"/>
+    <text x="20" y="35" text-anchor="middle" fill="#666" font-size="7">0:00</text>
+    <circle cx="300" cy="20" r="3" fill="#d4782a"/>
+    <text x="300" y="35" text-anchor="middle" fill="#666" font-size="7">3:00</text>
+    <circle cx="600" cy="20" r="3" fill="#cc2222"/>
+    <text x="600" y="35" text-anchor="middle" fill="#666" font-size="7">6:00</text>
+    <circle cx="900" cy="20" r="3" fill="#d4a830"/>
+    <text x="900" y="35" text-anchor="middle" fill="#666" font-size="7">9:00</text>
+    <circle cx="1200" cy="20" r="3" fill="#d4b060"/>
+    <text x="1200" y="35" text-anchor="middle" fill="#666" font-size="7">12:00</text>
+    <circle cx="1480" cy="20" r="3" fill="#8aaa9a"/>
+    <text x="1480" y="35" text-anchor="middle" fill="#666" font-size="7">15:00</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="800" y="870" text-anchor="middle" fill="#333" font-size="8" letter-spacing="2">窑火不息·追迹 | 适配分镜表 | 色彩演进总谱</text>
+</svg>

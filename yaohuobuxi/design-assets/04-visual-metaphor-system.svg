@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" font-family="'Noto Serif SC', 'SimSun', 'STSong', serif">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a0a0a"/>
+      <stop offset="100%" stop-color="#1a1a1a"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bgGrad)"/>
+
+  <text x="800" y="50" text-anchor="middle" fill="#c0a060" font-size="22" letter-spacing="12" filter="url(#glow)">视觉隐喻体系</text>
+  <text x="800" y="75" text-anchor="middle" fill="#6a6a6a" font-size="11" letter-spacing="4">VISUAL METAPHOR SYSTEM · 窑火不息·追迹</text>
+  <line x1="200" y1="87" x2="1400" y2="87" stroke="#c0a060" stroke-opacity="0.3" stroke-width="0.5"/>
+
+  <!-- Central hub -->
+  <g transform="translate(800, 200)">
+    <circle cx="0" cy="0" r="60" fill="none" stroke="#c0a060" stroke-width="1.5" opacity="0.6"/>
+    <circle cx="0" cy="0" r="45" fill="none" stroke="#c0a060" stroke-width="0.5" opacity="0.3"/>
+    <text x="0" y="-8" text-anchor="middle" fill="#d4a830" font-size="16" letter-spacing="6" filter="url(#glow)">裂痕</text>
+    <text x="0" y="14" text-anchor="middle" fill="#888" font-size="9">CRACK</text>
+    <text x="0" y="30" text-anchor="middle" fill="#666" font-size="8">核心视觉母题</text>
+  </g>
+
+  <!-- Metaphor 1: 裂纹=神经网络 -->
+  <g transform="translate(200, 200)">
+    <line x1="0" y1="0" x2="540" y2="0" stroke="#7a8a7a" stroke-opacity="0.2" stroke-width="0.5"/>
+    <rect x="0" y="-30" width="180" height="60" rx="6" fill="#111" stroke="#7a8a7a" stroke-opacity="0.5" stroke-width="0.8"/>
+    <text x="90" y="-12" text-anchor="middle" fill="#7a8a7a" font-size="10">裂纹=神经网络</text>
+    <text x="90" y="8" text-anchor="middle" fill="#666" font-size="8">=时间地图</text>
+    <text x="90" y="24" text-anchor="middle" fill="#555" font-size="7">微距→峡谷/河流/山脉</text>
+  </g>
+
+  <!-- Metaphor 2: 裂纹=光的通道 -->
+  <g transform="translate(1240, 200)">
+    <line x1="0" y1="0" x2="-440" y2="0" stroke="#8aaa9a" stroke-opacity="0.2" stroke-width="0.5"/>
+    <rect x="0" y="-30" width="180" height="60" rx="6" fill="#111" stroke="#8aaa9a" stroke-opacity="0.5" stroke-width="0.8"/>
+    <text x="90" y="-12" text-anchor="middle" fill="#8aaa9a" font-size="10">裂纹=光的通道</text>
+    <text x="90" y="8" text-anchor="middle" fill="#666" font-size="8">裂痕成为恩典入口</text>
+    <text x="90" y="24" text-anchor="middle" fill="#555" font-size="7">耶稣光·液态金</text>
+  </g>
+
+  <!-- Metaphor 3: 彝炉=时间的面部 -->
+  <g transform="translate(200, 350)">
+    <line x1="0" y1="0" x2="0" y2="-90" stroke="#c0a060" stroke-opacity="0.2" stroke-width="0.5"/>
+    <rect x="0" y="-30" width="180" height="60" rx="6" fill="#111" stroke="#c0a060" stroke-opacity="0.5" stroke-width="0.8"/>
+    <text x="90" y="-12" text-anchor="middle" fill="#c0a060" font-size="10">彝炉=时间的面部</text>
+    <text x="90" y="8" text-anchor="middle" fill="#666" font-size="8">裂纹=山河/掌纹/旧伤</text>
+    <text x="90" y="24" text-anchor="middle" fill="#555" font-size="7">三重预演</text>
+  </g>
+
+  <!-- Metaphor 4: 推泥=推心 -->
+  <g transform="translate(1240, 350)">
+    <line x1="0" y1="0" x2="0" y2="-90" stroke="#d4782a" stroke-opacity="0.2" stroke-width="0.5"/>
+    <rect x="0" y="-30" width="180" height="60" rx="6" fill="#111" stroke="#d4782a" stroke-opacity="0.5" stroke-width="0.8"/>
+    <text x="90" y="-12" text-anchor="middle" fill="#d4782a" font-size="10">推泥=推心</text>
+    <text x="90" y="8" text-anchor="middle" fill="#666" font-size="8">泥团=无法言说的情感</text>
+    <text x="90" y="24" text-anchor="middle" fill="#555" font-size="7">爱在动作里</text>
+  </g>
+
+  <!-- Metaphor 5: 伤疤=人形哥窑 -->
+  <g transform="translate(200, 500)">
+    <line x1="0" y1="0" x2="0" y2="-90" stroke="#cc2222" stroke-opacity="0.2" stroke-width="0.5"/>
+    <rect x="0" y="-30" width="180" height="60" rx="6" fill="#111" stroke="#cc2222" stroke-opacity="0.5" stroke-width="0.8"/>
+    <text x="90" y="-12" text-anchor="middle" fill="#cc4444" font-size="10">伤疤=人形哥窑</text>
+    <text x="90" y="8" text-anchor="middle" fill="#666" font-size="8">身体=苦难地图</text>
+    <text x="90" y="24" text-anchor="middle" fill="#555" font-size="7">如干裂大地</text>
+  </g>
+
+  <!-- Metaphor 6: 白烟=情感蘑菇云 -->
+  <g transform="translate(1240, 500)">
+    <line x1="0" y1="0" x2="0" y2="-90" stroke="#cc2222" stroke-opacity="0.2" stroke-width="0.5"/>
+    <rect x="0" y="-30" width="180" height="60" rx="6" fill="#111" stroke="#cc2222" stroke-opacity="0.5" stroke-width="0.8"/>
+    <text x="90" y="-12" text-anchor="middle" fill="#cc4444" font-size="10">白烟=情感蘑菇云</text>
+    <text x="90" y="8" text-anchor="middle" fill="#666" font-size="8">毁灭的崇高化</text>
+    <text x="90" y="24" text-anchor="middle" fill="#555" font-size="7">水入窑火</text>
+  </g>
+
+  <!-- Metaphor 7: 泪痕=瓷上开片 -->
+  <g transform="translate(200, 650)">
+    <line x1="0" y1="0" x2="0" y2="-90" stroke="#d4b060" stroke-opacity="0.2" stroke-width="0.5"/>
+    <rect x="0" y="-30" width="180" height="60" rx="6" fill="#111" stroke="#d4b060" stroke-opacity="0.5" stroke-width="0.8"/>
+    <text x="90" y="-12" text-anchor="middle" fill="#d4b060" font-size="10">泪痕=瓷上开片</text>
+    <text x="90" y="8" text-anchor="middle" fill="#666" font-size="8">人脸=另一只哥窑碗</text>
+    <text x="90" y="24" text-anchor="middle" fill="#555" font-size="7">传神阿堵</text>
+  </g>
+
+  <!-- Metaphor 8: 锔钉=修复勋章 -->
+  <g transform="translate(1240, 650)">
+    <line x1="0" y1="0" x2="0" y2="-90" stroke="#8aaa9a" stroke-opacity="0.2" stroke-width="0.5"/>
+    <rect x="0" y="-30" width="180" height="60" rx="6" fill="#111" stroke="#8aaa9a" stroke-opacity="0.5" stroke-width="0.8"/>
+    <text x="90" y="-12" text-anchor="middle" fill="#8aaa9a" font-size="10">锔钉=修复勋章</text>
+    <text x="90" y="8" text-anchor="middle" fill="#666" font-size="8">缺陷成为装饰</text>
+    <text x="90" y="24" text-anchor="middle" fill="#555" font-size="7">修复>完美</text>
+  </g>
+
+  <!-- Metaphor 9: 黑场=宇宙子宫 -->
+  <g transform="translate(800, 750)">
+    <rect x="-90" y="-30" width="180" height="60" rx="6" fill="#111" stroke="#444" stroke-opacity="0.5" stroke-width="0.8"/>
+    <text x="0" y="-12" text-anchor="middle" fill="#888" font-size="10">黑场=宇宙的子宫</text>
+    <text x="0" y="8" text-anchor="middle" fill="#666" font-size="8">观众被迫面对自身黑暗</text>
+    <text x="0" y="24" text-anchor="middle" fill="#555" font-size="7">观看者→倾听者→冥想者</text>
+  </g>
+
+  <!-- Connecting lines from center -->
+  <line x1="740" y1="200" x2="380" y2="200" stroke="#7a8a7a" stroke-opacity="0.15" stroke-width="0.5"/>
+  <line x1="860" y1="200" x2="1240" y2="200" stroke="#8aaa9a" stroke-opacity="0.15" stroke-width="0.5"/>
+  <line x1="740" y1="215" x2="380" y2="350" stroke="#c0a060" stroke-opacity="0.15" stroke-width="0.5"/>
+  <line x1="860" y1="215" x2="1240" y2="350" stroke="#d4782a" stroke-opacity="0.15" stroke-width="0.5"/>
+  <line x1="740" y1="230" x2="380" y2="500" stroke="#cc2222" stroke-opacity="0.15" stroke-width="0.5"/>
+  <line x1="860" y1="230" x2="1240" y2="500" stroke="#cc2222" stroke-opacity="0.15" stroke-width="0.5"/>
+  <line x1="740" y1="245" x2="380" y2="650" stroke="#d4b060" stroke-opacity="0.15" stroke-width="0.5"/>
+  <line x1="860" y1="245" x2="1240" y2="650" stroke="#8aaa9a" stroke-opacity="0.15" stroke-width="0.5"/>
+
+  <!-- Summary bar -->
+  <g transform="translate(50, 820)">
+    <rect x="0" y="0" width="1500" height="30" rx="4" fill="#111" stroke="#333" stroke-width="0.5"/>
+    <text x="750" y="20" text-anchor="middle" fill="#888" font-size="9">裂痕 → 神经网络 → 时间地图 → 光的通道 → 苦难勋章 → 修复美学 → 文明遗嘱  |  核心：缺陷即神性 · 伤痕即勋章</text>
+  </g>
+
+  <text x="800" y="880" text-anchor="middle" fill="#333" font-size="8" letter-spacing="2">窑火不息·追迹 | 适配分镜表 | 视觉隐喻体系</text>
+</svg>

@@ -1,0 +1,204 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" font-family="'Noto Serif SC', 'SimSun', 'STSong', serif">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a0a0a"/>
+      <stop offset="100%" stop-color="#1a1a1a"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="dashGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bgGrad)"/>
+
+  <text x="800" y="50" text-anchor="middle" fill="#c0a060" font-size="22" letter-spacing="12" filter="url(#glow)">破折号对话范式</text>
+  <text x="800" y="75" text-anchor="middle" fill="#6a6a6a" font-size="11" letter-spacing="4">DASH DIALOGUE PARADIGM · 主体——动作——了</text>
+  <line x1="200" y1="87" x2="1400" y2="87" stroke="#c0a060" stroke-opacity="0.3" stroke-width="0.5"/>
+
+  <!-- Core formula -->
+  <g transform="translate(50, 120)">
+    <text x="0" y="0" fill="#c0a060" font-size="14" letter-spacing="3" filter="url(#glow)">核心范式</text>
+    <rect x="0" y="15" width="1500" height="80" rx="6" fill="#111" stroke="#c0a060" stroke-opacity="0.4" stroke-width="1"/>
+    <text x="200" y="48" text-anchor="middle" fill="#d4a830" font-size="20" letter-spacing="6" filter="url(#glow)">主体</text>
+    <text x="400" y="48" text-anchor="middle" fill="#c0a060" font-size="24" filter="url(#dashGlow)">——</text>
+    <text x="600" y="48" text-anchor="middle" fill="#d4a830" font-size="20" letter-spacing="6" filter="url(#glow)">动作</text>
+    <text x="800" y="48" text-anchor="middle" fill="#c0a060" font-size="24" filter="url(#dashGlow)">——</text>
+    <text x="1000" y="48" text-anchor="middle" fill="#d4a830" font-size="20" letter-spacing="6" filter="url(#glow)">了</text>
+    <text x="1300" y="48" text-anchor="middle" fill="#666" font-size="11">完成时态 · 永恒</text>
+    <text x="750" y="80" text-anchor="middle" fill="#555" font-size="9">破折号 = 1.5秒停顿 · 时间的悬停 · 呼吸的绵长 · 认知的跃升</text>
+  </g>
+
+  <!-- 12 dialogue cards -->
+  <g transform="translate(50, 250)">
+
+    <!-- Card 1 -->
+    <rect x="0" y="0" width="230" height="95" rx="4" fill="#111" stroke="#7a8a7a" stroke-opacity="0.4" stroke-width="0.5"/>
+    <text x="10" y="18" fill="#7a8a7a" font-size="8">0-7 序·烧</text>
+    <text x="10" y="38" fill="#c0a060" font-size="12" filter="url(#glow)">"宋人烧瓷——"</text>
+    <text x="10" y="56" fill="#666" font-size="8">时间悬停，余韵消散</text>
+    <text x="10" y="72" fill="#555" font-size="7">气声绵长 · 基频90Hz</text>
+    <text x="10" y="88" fill="#555" font-size="7">RT60=1.8秒</text>
+
+    <!-- Card 2 -->
+    <rect x="250" y="0" width="230" height="95" rx="4" fill="#111" stroke="#7a8a7a" stroke-opacity="0.4" stroke-width="0.5"/>
+    <text x="10" y="18" fill="#7a8a7a" font-size="8">0-8 序·到</text>
+    <text x="10" y="38" fill="#c0a060" font-size="12" filter="url(#glow)">"烧到最后——"</text>
+    <text x="10" y="56" fill="#666" font-size="8">极限之后的空白</text>
+    <text x="10" y="72" fill="#555" font-size="7">声音下沉 · 基频再降10Hz</text>
+    <text x="10" y="88" fill="#555" font-size="7">"最后"的语义重量</text>
+
+    <!-- Card 3 -->
+    <rect x="500" y="0" width="230" height="95" rx="4" fill="#111" stroke="#7a8a7a" stroke-opacity="0.4" stroke-width="0.5"/>
+    <text x="10" y="18" fill="#7a8a7a" font-size="8">0-9 序·不</text>
+    <text x="10" y="38" fill="#c0a060" font-size="12" filter="url(#glow)">"烧的就不只是瓷了——"</text>
+    <text x="10" y="56" fill="#666" font-size="8">跃升后的悬空</text>
+    <text x="10" y="72" fill="#555" font-size="7">全片最长停顿</text>
+    <text x="10" y="88" fill="#555" font-size="7">尾音留白3秒</text>
+
+    <!-- Card 4 -->
+    <rect x="750" y="0" width="230" height="95" rx="4" fill="#111" stroke="#d4782a" stroke-opacity="0.4" stroke-width="0.5"/>
+    <text x="10" y="18" fill="#d4782a" font-size="8">1-2 一·出窑</text>
+    <text x="10" y="38" fill="#c0a060" font-size="12" filter="url(#glow)">"又是——章家长子的窑。"</text>
+    <text x="10" y="56" fill="#666" font-size="8">钝器拖长 · 匿名暴力</text>
+    <text x="10" y="72" fill="#555" font-size="7">"又"=钝器，"到底"=判决</text>
+    <text x="10" y="88" fill="#555" font-size="7">结构性压迫</text>
+
+    <!-- Card 5 -->
+    <rect x="1000" y="0" width="230" height="95" rx="4" fill="#111" stroke="#d4782a" stroke-opacity="0.4" stroke-width="0.5"/>
+    <text x="10" y="18" fill="#d4782a" font-size="8">1-2 一·出窑</text>
+    <text x="10" y="38" fill="#c0a060" font-size="12" filter="url(#glow)">"到底是——章生一。"</text>
+    <text x="10" y="56" fill="#666" font-size="8">判决的停顿</text>
+    <text x="10" y="72" fill="#555" font-size="7">"到底"=终极判决</text>
+    <text x="10" y="88" fill="#555" font-size="7">权威的缺席在场</text>
+
+    <!-- Card 6 -->
+    <rect x="1250" y="0" width="250" height="95" rx="4" fill="#111" stroke="#d4782a" stroke-opacity="0.4" stroke-width="0.5"/>
+    <text x="10" y="18" fill="#d4782a" font-size="8">2-1 二·对话</text>
+    <text x="10" y="38" fill="#c0a060" font-size="12" filter="url(#glow)">"哥。""……嗯。"</text>
+    <text x="10" y="56" fill="#666" font-size="8">省略号替代破折号</text>
+    <text x="10" y="72" fill="#555" font-size="7">雨声填充 · 最小应答</text>
+    <text x="10" y="88" fill="#555" font-size="7">"嗯"=亲密=无需解释</text>
+  </g>
+
+  <!-- Row 2 -->
+  <g transform="translate(50, 365)">
+    <!-- Card 7 -->
+    <rect x="0" y="0" width="230" height="95" rx="4" fill="#111" stroke="#cc2222" stroke-opacity="0.4" stroke-width="0.5"/>
+    <text x="10" y="18" fill="#cc4444" font-size="8">2-3 二·伤疤</text>
+    <text x="10" y="38" fill="#c0a060" font-size="12" filter="url(#glow)">"疼吗？"→"……什么？"</text>
+    <text x="10" y="56" fill="#666" font-size="8">停顿=试探，省略号=否认</text>
+    <text x="10" y="72" fill="#555" font-size="7">拒绝问题本身</text>
+    <text x="10" y="88" fill="#555" font-size="7">更深层的拒绝</text>
+
+    <!-- Card 8 -->
+    <rect x="250" y="0" width="230" height="95" rx="4" fill="#111" stroke="#cc2222" stroke-opacity="0.4" stroke-width="0.5"/>
+    <text x="10" y="18" fill="#cc4444" font-size="8">2-4 二·泼水</text>
+    <text x="10" y="38" fill="#c0a060" font-size="12" filter="url(#glow)">"为什么——所有人——都只"</text>
+    <text x="10" y="54" fill="#c0a060" font-size="12" filter="url(#glow)">记得——你！"</text>
+    <text x="10" y="70" fill="#666" font-size="8">哽咽的断裂 · 质问作为告白</text>
+    <text x="10" y="88" fill="#555" font-size="7">全片情绪顶点</text>
+
+    <!-- Card 9 -->
+    <rect x="500" y="0" width="230" height="95" rx="4" fill="#111" stroke="#8aaa9a" stroke-opacity="0.4" stroke-width="0.5"/>
+    <text x="10" y="18" fill="#8aaa9a" font-size="8">3-1 三·出窑</text>
+    <text x="10" y="38" fill="#c0a060" font-size="12" filter="url(#glow)">"裂了——"</text>
+    <text x="10" y="56" fill="#c0a060" font-size="12" filter="url(#glow)">"它——活过了。"</text>
+    <text x="10" y="72" fill="#666" font-size="8">尾音上扬=疑问 | 停顿=敬畏</text>
+    <text x="10" y="88" fill="#555" font-size="7">认知跃升 · 全片核心镜</text>
+
+    <!-- Card 10 -->
+    <rect x="750" y="0" width="230" height="95" rx="4" fill="#111" stroke="#8aaa9a" stroke-opacity="0.4" stroke-width="0.5"/>
+    <text x="10" y="18" fill="#8aaa9a" font-size="8">3-2 三·对坐</text>
+    <text x="10" y="38" fill="#c0a060" font-size="12" filter="url(#glow)">"我——嫉妒你。"</text>
+    <text x="10" y="56" fill="#c0a060" font-size="12" filter="url(#glow)">"人活着——哪有不裂的。"</text>
+    <text x="10" y="72" fill="#666" font-size="8">羞耻的停顿 | 普世真理的宣告</text>
+    <text x="10" y="88" fill="#555" font-size="7">仪式和解 · 敲碗"叮"</text>
+
+    <!-- Card 11 -->
+    <rect x="1000" y="0" width="230" height="95" rx="4" fill="#111" stroke="#d4b060" stroke-opacity="0.4" stroke-width="0.5"/>
+    <text x="10" y="18" fill="#d4b060" font-size="8">4-1 四·看火</text>
+    <text x="10" y="38" fill="#c0a060" font-size="12" filter="url(#glow)">"裂了以后——才像活过。"</text>
+    <text x="10" y="56" fill="#c0a060" font-size="12" filter="url(#glow)">"疼吗……裂的时候？"</text>
+    <text x="10" y="72" fill="#666" font-size="8">删除"真的"，破折号改省略号</text>
+    <text x="10" y="88" fill="#555" font-size="7">不敢惊动 · 情感核心镜</text>
+
+    <!-- Card 12 -->
+    <rect x="1250" y="0" width="250" height="95" rx="4" fill="#111" stroke="#d4b060" stroke-opacity="0.4" stroke-width="0.5"/>
+    <text x="10" y="18" fill="#d4b060" font-size="8">4-2 四·茶寮</text>
+    <text x="10" y="38" fill="#c0a060" font-size="12" filter="url(#glow)">"太完整了——不像活过。"</text>
+    <text x="10" y="56" fill="#666" font-size="8">删除"反倒" · 顿悟的停顿</text>
+    <text x="10" y="72" fill="#555" font-size="7">旁观者点题</text>
+    <text x="10" y="88" fill="#555" font-size="7">个人伤痛→普遍美学</text>
+  </g>
+
+  <!-- Row 3 - 5-1 -->
+  <g transform="translate(50, 480)">
+    <rect x="0" y="0" width="230" height="95" rx="4" fill="#111" stroke="#8aaa9a" stroke-opacity="0.4" stroke-width="0.5"/>
+    <text x="10" y="18" fill="#8aaa9a" font-size="8">5-1 五·茶室</text>
+    <text x="10" y="38" fill="#c0a060" font-size="12" filter="url(#glow)">"已经——裂了。"</text>
+    <text x="10" y="56" fill="#c0a060" font-size="12" filter="url(#glow)">"还能——用。"</text>
+    <text x="10" y="72" fill="#666" font-size="8">惊讶的停顿 | 智慧的节奏</text>
+    <text x="10" y="88" fill="#555" font-size="7">代际对话 · 跨文明传承</text>
+  </g>
+
+  <!-- Technical specifications -->
+  <g transform="translate(50, 610)">
+    <text x="0" y="0" fill="#c0a060" font-size="12" letter-spacing="3" filter="url(#glow)">技术参数</text>
+
+    <rect x="0" y="15" width="350" height="85" rx="4" fill="#111" stroke="#333" stroke-width="0.5"/>
+    <text x="15" y="35" fill="#c0a060" font-size="9">气声参数</text>
+    <text x="15" y="52" fill="#888" font-size="8">声带不完全闭合</text>
+    <text x="15" y="68" fill="#666" font-size="8">基频 90Hz（可降至80Hz）</text>
+    <text x="15" y="84" fill="#666" font-size="8">高频泛音衰减 · 尾音融入环境底噪</text>
+
+    <rect x="380" y="15" width="350" height="85" rx="4" fill="#111" stroke="#333" stroke-width="0.5"/>
+    <text x="15" y="35" fill="#c0a060" font-size="9">停顿参数</text>
+    <text x="15" y="52" fill="#888" font-size="8">破折号 = 1.5秒（标准）</text>
+    <text x="15" y="68" fill="#666" font-size="8">尾音留白 = 3秒（0-9，全片最长）</text>
+    <text x="15" y="84" fill="#666" font-size="8">省略号 = 呼吸间隙（2-3, 4-1）</text>
+
+    <rect x="760" y="15" width="350" height="85" rx="4" fill="#111" stroke="#333" stroke-width="0.5"/>
+    <text x="15" y="35" fill="#c0a060" font-size="9">混响参数</text>
+    <text x="15" y="52" fill="#888" font-size="8">RT60 = 1.8秒（标准）</text>
+    <text x="15" y="68" fill="#666" font-size="8">博物馆展柜共鸣</text>
+    <text x="15" y="84" fill="#666" font-size="8">从-30dB渐弱至-50dB</text>
+
+    <rect x="1140" y="15" width="360" height="85" rx="4" fill="#111" stroke="#333" stroke-width="0.5"/>
+    <text x="15" y="35" fill="#c0a060" font-size="9">对白统计</text>
+    <text x="15" y="52" fill="#888" font-size="8">破折号对白：12处</text>
+    <text x="15" y="68" fill="#666" font-size="8">省略号对白：3处</text>
+    <text x="15" y="84" fill="#666" font-size="8">无对白镜：4镜 / 纯声音镜：3镜</text>
+  </g>
+
+  <!-- Function diagram -->
+  <g transform="translate(50, 730)">
+    <text x="0" y="0" fill="#c0a060" font-size="12" letter-spacing="3" filter="url(#glow)">破折号功能矩阵</text>
+
+    <rect x="0" y="15" width="280" height="50" rx="4" fill="#111" stroke="#7a8a7a" stroke-opacity="0.3" stroke-width="0.5"/>
+    <text x="140" y="35" text-anchor="middle" fill="#7a8a7a" font-size="9">时间悬停</text>
+    <text x="140" y="52" text-anchor="middle" fill="#555" font-size="7">前一词的余韵消散</text>
+
+    <rect x="300" y="15" width="280" height="50" rx="4" fill="#111" stroke="#d4782a" stroke-opacity="0.3" stroke-width="0.5"/>
+    <text x="440" y="35" text-anchor="middle" fill="#d4782a" font-size="9">认知跃升</text>
+    <text x="440" y="52" text-anchor="middle" fill="#555" font-size="7">从具体到抽象的悬空</text>
+
+    <rect x="600" y="15" width="280" height="50" rx="4" fill="#111" stroke="#cc2222" stroke-opacity="0.3" stroke-width="0.5"/>
+    <text x="740" y="35" text-anchor="middle" fill="#cc4444" font-size="9">情感断裂</text>
+    <text x="740" y="52" text-anchor="middle" fill="#555" font-size="7">哽咽的节奏化</text>
+
+    <rect x="900" y="15" width="280" height="50" rx="4" fill="#111" stroke="#8aaa9a" stroke-opacity="0.3" stroke-width="0.5"/>
+    <text x="1040" y="35" text-anchor="middle" fill="#8aaa9a" font-size="9">真理宣告</text>
+    <text x="1040" y="52" text-anchor="middle" fill="#555" font-size="7">普世智慧的节奏</text>
+
+    <rect x="1200" y="15" width="300" height="50" rx="4" fill="#111" stroke="#d4a830" stroke-opacity="0.3" stroke-width="0.5"/>
+    <text x="1350" y="35" text-anchor="middle" fill="#d4a830" font-size="9">呼吸绵长</text>
+    <text x="1350" y="52" text-anchor="middle" fill="#555" font-size="7">语言的诗意延展</text>
+  </g>
+
+  <text x="800" y="870" text-anchor="middle" fill="#333" font-size="8" letter-spacing="2">窑火不息·追迹 | 适配分镜表 | 破折号对话范式</text>
+</svg>

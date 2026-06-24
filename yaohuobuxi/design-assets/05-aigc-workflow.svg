@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" font-family="'Noto Serif SC', 'SimSun', 'STSong', serif">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a0a0a"/>
+      <stop offset="100%" stop-color="#1a1a1a"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <marker id="arrowGold" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#c0a060" opacity="0.6"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bgGrad)"/>
+
+  <text x="800" y="50" text-anchor="middle" fill="#c0a060" font-size="22" letter-spacing="12" filter="url(#glow)">AIGC 创作流程</text>
+  <text x="800" y="75" text-anchor="middle" fill="#6a6a6a" font-size="11" letter-spacing="4">AIGC CREATIVE PIPELINE · 窑火不息·追迹</text>
+  <line x1="200" y1="87" x2="1400" y2="87" stroke="#c0a060" stroke-opacity="0.3" stroke-width="0.5"/>
+
+  <!-- Phase 1: 文字层 -->
+  <g transform="translate(50, 120)">
+    <rect x="0" y="0" width="1500" height="55" rx="6" fill="#111" stroke="#7a8a7a" stroke-opacity="0.5" stroke-width="1"/>
+    <rect x="0" y="0" width="8" height="55" rx="4" fill="#7a8a7a"/>
+    <text x="25" y="22" fill="#7a8a7a" font-size="13" letter-spacing="3" filter="url(#glow)">PHASE 1 · 文字层</text>
+    <text x="25" y="42" fill="#666" font-size="9">文学剧本 → 分镜表 → 对话范式「主体——动作——了」→ 哲学注释 → 技术参数表</text>
+    <text x="580" y="42" fill="#555" font-size="8">产出：适配分镜表.md | 核心命题：真正活过的东西，都会留下裂痕</text>
+  </g>
+
+  <line x1="800" y1="175" x2="800" y2="195" stroke="#c0a060" stroke-opacity="0.3" stroke-width="1" marker-end="url(#arrowGold)"/>
+
+  <!-- Phase 2: 图像层 -->
+  <g transform="translate(50, 200)">
+    <rect x="0" y="0" width="1500" height="55" rx="6" fill="#111" stroke="#d4782a" stroke-opacity="0.5" stroke-width="1"/>
+    <rect x="0" y="0" width="8" height="55" rx="4" fill="#d4782a"/>
+    <text x="25" y="22" fill="#d4782a" font-size="13" letter-spacing="3" filter="url(#glow)">PHASE 2 · 图像层</text>
+    <text x="25" y="42" fill="#666" font-size="9">MJ V6 --style raw --s 200-400 → 25镜提示词 → 批量生成 → 人工筛选（每镜5-8选1）→ 细节修复</text>
+    <text x="620" y="42" fill="#555" font-size="8">产出：25张关键帧 | 格式：PNG 16-bit | 色彩空间：Rec.709</text>
+  </g>
+
+  <line x1="800" y1="255" x2="800" y2="275" stroke="#c0a060" stroke-opacity="0.3" stroke-width="1" marker-end="url(#arrowGold)"/>
+
+  <!-- Phase 3: 动态层 -->
+  <g transform="translate(50, 280)">
+    <rect x="0" y="0" width="1500" height="55" rx="6" fill="#111" stroke="#cc2222" stroke-opacity="0.5" stroke-width="1"/>
+    <rect x="0" y="0" width="8" height="55" rx="4" fill="#cc2222"/>
+    <text x="25" y="22" fill="#cc4444" font-size="13" letter-spacing="3" filter="url(#glow)">PHASE 3 · 动态层</text>
+    <text x="25" y="42" fill="#666" font-size="9">Runway Gen-3 / Pika Labs → 关键帧动画化 → 相机运动模拟（推轨/摇镜/升格）→ 转场合成</text>
+    <text x="640" y="42" fill="#555" font-size="8">产出：25段动态素材 | 格式：ProRes 422 HQ | 帧率：24fps</text>
+  </g>
+
+  <line x1="800" y1="335" x2="800" y2="355" stroke="#c0a060" stroke-opacity="0.3" stroke-width="1" marker-end="url(#arrowGold)"/>
+
+  <!-- Phase 4: 声音层 -->
+  <g transform="translate(50, 360)">
+    <rect x="0" y="0" width="1500" height="55" rx="6" fill="#111" stroke="#8aaa9a" stroke-opacity="0.5" stroke-width="1"/>
+    <rect x="0" y="0" width="8" height="55" rx="4" fill="#8aaa9a"/>
+    <text x="25" y="22" fill="#8aaa9a" font-size="13" letter-spacing="3" filter="url(#glow)">PHASE 4 · 声音层</text>
+    <text x="25" y="42" fill="#666" font-size="9">ElevenLabs 旁白TTS（气声·基频90Hz）→ 拟音合成（火/水/瓷/雨）→ 静默设计（4镜无对白）</text>
+    <text x="640" y="42" fill="#555" font-size="8">产出：5.1环绕混音 | 格式：WAV 48kHz/24bit | 动态范围：-30dB ~ -5dB</text>
+  </g>
+
+  <line x1="800" y1="415" x2="800" y2="435" stroke="#c0a060" stroke-opacity="0.3" stroke-width="1" marker-end="url(#arrowGold)"/>
+
+  <!-- Phase 5: 剪辑层 -->
+  <g transform="translate(50, 440)">
+    <rect x="0" y="0" width="1500" height="55" rx="6" fill="#111" stroke="#d4a830" stroke-opacity="0.5" stroke-width="1"/>
+    <rect x="0" y="0" width="8" height="55" rx="4" fill="#d4a830"/>
+    <text x="25" y="22" fill="#d4a830" font-size="13" letter-spacing="3" filter="url(#glow)">PHASE 5 · 剪辑层</text>
+    <text x="25" y="42" fill="#666" font-size="9">DaVinci Resolve → 时间线编排 → 9种转场实现 → 破折号节奏匹配 → 镜像结构对应</text>
+    <text x="620" y="42" fill="#555" font-size="8">产出：15分钟成片 | 格式：DCP 2K Flat | 色彩空间：DCI-P3</text>
+  </g>
+
+  <line x1="800" y1="495" x2="800" y2="515" stroke="#c0a060" stroke-opacity="0.3" stroke-width="1" marker-end="url(#arrowGold)"/>
+
+  <!-- Phase 6: 调色层 -->
+  <g transform="translate(50, 520)">
+    <rect x="0" y="0" width="1500" height="55" rx="6" fill="#111" stroke="#d4b060" stroke-opacity="0.5" stroke-width="1"/>
+    <rect x="0" y="0" width="8" height="55" rx="4" fill="#d4b060"/>
+    <text x="25" y="22" fill="#d4b060" font-size="13" letter-spacing="3" filter="url(#glow)">PHASE 6 · 调色层</text>
+    <text x="25" y="42" fill="#666" font-size="9">11段LUT序列 → 色彩演进总谱套用 → 青灰→深蓝→炽红→青釉→暖橙→永恒黑</text>
+    <text x="620" y="42" fill="#555" font-size="8">产出：最终调色版 | 参考：Emotional Color Mapping</text>
+  </g>
+
+  <!-- Feedback loop -->
+  <g transform="translate(50, 600)">
+    <rect x="0" y="0" width="1500" height="45" rx="6" fill="#1a1a1a" stroke="#c0a060" stroke-opacity="0.2" stroke-width="0.5" stroke-dasharray="4,4"/>
+    <text x="750" y="20" text-anchor="middle" fill="#c0a060" font-size="10" letter-spacing="3" filter="url(#glow)">↻ 反馈迭代循环</text>
+    <text x="750" y="38" text-anchor="middle" fill="#666" font-size="8">每阶段产出 → 对照分镜表审核 → 必要时回溯至上游阶段 → 确保"窑变"质量</text>
+  </g>
+
+  <!-- Parallel tracks -->
+  <g transform="translate(50, 670)">
+    <text x="0" y="0" fill="#c0a060" font-size="12" letter-spacing="3" filter="url(#glow)">并行工作流</text>
+
+    <rect x="0" y="15" width="350" height="70" rx="4" fill="#111" stroke="#7a8a7a" stroke-opacity="0.3" stroke-width="0.5"/>
+    <text x="15" y="35" fill="#c0a060" font-size="9">视觉并行</text>
+    <text x="15" y="52" fill="#666" font-size="8">图像生成 + 动态化 + 调色</text>
+    <text x="15" y="68" fill="#555" font-size="7">MJ V6批量 → Runway处理 → 同步进行</text>
+
+    <rect x="380" y="15" width="350" height="70" rx="4" fill="#111" stroke="#8aaa9a" stroke-opacity="0.3" stroke-width="0.5"/>
+    <text x="15" y="35" fill="#c0a060" font-size="9">声音并行</text>
+    <text x="15" y="52" fill="#666" font-size="8">旁白TTS + 拟音合成 + 环境声</text>
+    <text x="15" y="68" fill="#555" font-size="7">ElevenLabs → 拟音 → 混音</text>
+
+    <rect x="760" y="15" width="350" height="70" rx="4" fill="#111" stroke="#d4a830" stroke-opacity="0.3" stroke-width="0.5"/>
+    <text x="15" y="35" fill="#c0a060" font-size="9">叙事并行</text>
+    <text x="15" y="52" fill="#666" font-size="8">分镜表修订 + 对话范式校验</text>
+    <text x="15" y="68" fill="#555" font-size="7">持续迭代至定稿</text>
+
+    <rect x="1140" y="15" width="360" height="70" rx="4" fill="#111" stroke="#d4b060" stroke-opacity="0.3" stroke-width="0.5"/>
+    <text x="15" y="35" fill="#c0a060" font-size="9">质量并行</text>
+    <text x="15" y="52" fill="#666" font-size="8">每镜审查 → 哲学一致性校验</text>
+    <text x="15" y="68" fill="#555" font-size="7">确保"窑变"美学贯彻</text>
+  </g>
+
+  <!-- Timeline estimate -->
+  <g transform="translate(50, 780)">
+    <text x="0" y="0" fill="#c0a060" font-size="11" letter-spacing="3" filter="url(#glow)">预估制作周期</text>
+
+    <rect x="0" y="15" width="230" height="35" rx="3" fill="#111" stroke="#7a8a7a" stroke-opacity="0.3" stroke-width="0.5"/>
+    <text x="115" y="37" text-anchor="middle" fill="#7a8a7a" font-size="9">文字层：第1-2周</text>
+
+    <rect x="250" y="15" width="230" height="35" rx="3" fill="#111" stroke="#d4782a" stroke-opacity="0.3" stroke-width="0.5"/>
+    <text x="365" y="37" text-anchor="middle" fill="#d4782a" font-size="9">图像层：第2-4周</text>
+
+    <rect x="500" y="15" width="230" height="35" rx="3" fill="#111" stroke="#cc2222" stroke-opacity="0.3" stroke-width="0.5"/>
+    <text x="615" y="37" text-anchor="middle" fill="#cc4444" font-size="9">动态层：第4-6周</text>
+
+    <rect x="750" y="15" width="230" height="35" rx="3" fill="#111" stroke="#8aaa9a" stroke-opacity="0.3" stroke-width="0.5"/>
+    <text x="865" y="37" text-anchor="middle" fill="#8aaa9a" font-size="9">声音层：第3-5周</text>
+
+    <rect x="1000" y="15" width="230" height="35" rx="3" fill="#111" stroke="#d4a830" stroke-opacity="0.3" stroke-width="0.5"/>
+    <text x="1115" y="37" text-anchor="middle" fill="#d4a830" font-size="9">剪辑调色：第6-8周</text>
+
+    <rect x="1250" y="15" width="250" height="35" rx="3" fill="#111" stroke="#d4b060" stroke-opacity="0.3" stroke-width="0.5"/>
+    <text x="1375" y="37" text-anchor="middle" fill="#d4b060" font-size="9">交付审查：第8-10周</text>
+  </g>
+
+  <text x="800" y="870" text-anchor="middle" fill="#333" font-size="8" letter-spacing="2">窑火不息·追迹 | 适配分镜表 | AIGC创作流程</text>
+</svg>
