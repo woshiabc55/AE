@@ -1,0 +1,689 @@
+{
+  "memes": [
+    {
+      "id": "9fc6e18f-bb11-48c7-9cd3-ab292a5c4c72",
+      "title": "当AI学会写代码",
+      "description": "程序员集体失业的第一天",
+      "tags": [
+        "AI",
+        "程序员",
+        "搞笑"
+      ],
+      "imageUrl": "",
+      "source": "sample",
+      "width": 0,
+      "height": 0,
+      "hotScore": 77,
+      "createdAt": "2026-06-24T10:28:54.089Z",
+      "updatedAt": "2026-06-24T10:28:54.090Z"
+    },
+    {
+      "id": "eeb75b45-a772-4bf8-b03e-fc5b573f8a2b",
+      "title": "调试代码的我",
+      "description": "一行console.log走天下",
+      "tags": [
+        "编程",
+        "调试",
+        "日常"
+      ],
+      "imageUrl": "",
+      "source": "sample",
+      "width": 0,
+      "height": 0,
+      "hotScore": 59,
+      "createdAt": "2026-06-24T10:28:54.151Z",
+      "updatedAt": "2026-06-24T10:28:54.151Z"
+    },
+    {
+      "id": "133c19f2-d33c-47eb-bb0b-f74cda1a91ac",
+      "title": "产品经理的需求",
+      "description": "这个需求很简单怎么实现我不管",
+      "tags": [
+        "产品",
+        "职场",
+        "吐槽"
+      ],
+      "imageUrl": "",
+      "source": "sample",
+      "width": 0,
+      "height": 0,
+      "hotScore": 83,
+      "createdAt": "2026-06-24T10:28:54.206Z",
+      "updatedAt": "2026-06-24T10:28:54.206Z"
+    },
+    {
+      "id": "9b9e7aa5-3d21-490c-a247-2fe165f85a72",
+      "title": "开源项目维护者",
+      "description": "PR越来越多头发越来越少",
+      "tags": [
+        "开源",
+        "GitHub",
+        "程序员"
+      ],
+      "imageUrl": "",
+      "source": "sample",
+      "width": 0,
+      "height": 0,
+      "hotScore": 68,
+      "createdAt": "2026-06-24T10:28:54.270Z",
+      "updatedAt": "2026-06-24T10:28:54.270Z"
+    },
+    {
+      "id": "6147a12f-fbf5-47ac-ab1c-829dbbfd71ef",
+      "title": "周一早上的我",
+      "description": "灵魂还在周末身体已在工位",
+      "tags": [
+        "职场",
+        "日常",
+        "周一"
+      ],
+      "imageUrl": "",
+      "source": "sample",
+      "width": 0,
+      "height": 0,
+      "hotScore": 56,
+      "createdAt": "2026-06-24T10:28:54.325Z",
+      "updatedAt": "2026-06-24T10:28:54.325Z"
+    },
+    {
+      "id": "116b07d7-f7c2-49e5-a62e-71f27dd203f2",
+      "title": "AI绘画翻车现场",
+      "description": "我想要的vsAI给我的",
+      "tags": [
+        "AI",
+        "绘画",
+        "搞笑"
+      ],
+      "imageUrl": "",
+      "source": "sample",
+      "width": 0,
+      "height": 0,
+      "hotScore": 57,
+      "createdAt": "2026-06-24T10:28:54.380Z",
+      "updatedAt": "2026-06-24T10:28:54.380Z"
+    },
+    {
+      "id": "401dbef5-6529-48fd-a583-dc3f8ef623c5",
+      "title": "代码审查时",
+      "description": "这段代码是谁写的git blame一下",
+      "tags": [
+        "编程",
+        "代码审查",
+        "日常"
+      ],
+      "imageUrl": "",
+      "source": "sample",
+      "width": 0,
+      "height": 0,
+      "hotScore": 65,
+      "createdAt": "2026-06-24T10:28:54.434Z",
+      "updatedAt": "2026-06-24T10:28:54.434Z"
+    },
+    {
+      "id": "facdefc8-b758-452d-9056-6da4dd85e291",
+      "title": "周五下班前",
+      "description": "git push --force然后跑路",
+      "tags": [
+        "职场",
+        "周五",
+        "程序员"
+      ],
+      "imageUrl": "",
+      "source": "sample",
+      "width": 0,
+      "height": 0,
+      "hotScore": 62,
+      "createdAt": "2026-06-24T10:28:54.487Z",
+      "updatedAt": "2026-06-24T10:28:54.487Z"
+    },
+    {
+      "id": "dafc81af-cffa-4d61-812f-fec17f8698d4",
+      "title": "老板说这个很简单",
+      "description": "实际上要改整个架构",
+      "tags": [
+        "职场",
+        "吐槽",
+        "程序员"
+      ],
+      "imageUrl": "",
+      "source": "sample",
+      "width": 0,
+      "height": 0,
+      "hotScore": 77,
+      "createdAt": "2026-06-24T10:28:54.550Z",
+      "updatedAt": "2026-06-24T10:28:54.550Z"
+    },
+    {
+      "id": "08d50bd5-af15-4da6-b0c7-2a646d568280",
+      "title": "StackOverflow救我狗命",
+      "description": "复制粘贴就是我的编程方式",
+      "tags": [
+        "编程",
+        "搞笑",
+        "日常"
+      ],
+      "imageUrl": "",
+      "source": "sample",
+      "width": 0,
+      "height": 0,
+      "hotScore": 91,
+      "createdAt": "2026-06-24T10:28:54.605Z",
+      "updatedAt": "2026-06-24T10:28:54.605Z"
+    },
+    {
+      "id": "be919c68-98df-4d3b-a5ca-0e2277851da7",
+      "title": "Docker又崩了",
+      "description": "It works on my machine",
+      "tags": [
+        "运维",
+        "Docker",
+        "吐槽"
+      ],
+      "imageUrl": "",
+      "source": "sample",
+      "width": 0,
+      "height": 0,
+      "hotScore": 58,
+      "createdAt": "2026-06-24T10:28:54.658Z",
+      "updatedAt": "2026-06-24T10:28:54.658Z"
+    },
+    {
+      "id": "f2c78e7c-4efd-4824-9aa5-7340856e46bb",
+      "title": "996的福报",
+      "description": "ICU的床位先预定好",
+      "tags": [
+        "职场",
+        "吐槽",
+        "日常"
+      ],
+      "imageUrl": "",
+      "source": "sample",
+      "width": 0,
+      "height": 0,
+      "hotScore": 94,
+      "createdAt": "2026-06-24T10:28:54.711Z",
+      "updatedAt": "2026-06-24T10:28:54.711Z"
+    },
+    {
+      "id": "28e6c99c-af1a-4b2a-b681-7a6437b1b4e1",
+      "title": "API文档永远不更新",
+      "description": "看代码比看文档靠谱",
+      "tags": [
+        "编程",
+        "API",
+        "吐槽"
+      ],
+      "imageUrl": "",
+      "source": "sample",
+      "width": 0,
+      "height": 0,
+      "hotScore": 93,
+      "createdAt": "2026-06-24T10:28:54.764Z",
+      "updatedAt": "2026-06-24T10:28:54.764Z"
+    },
+    {
+      "id": "487a1216-bd27-49d2-9892-0370b8aff848",
+      "title": "ChatGPT是我的导师",
+      "description": "每天问AI一百个问题",
+      "tags": [
+        "AI",
+        "ChatGPT",
+        "搞笑"
+      ],
+      "imageUrl": "",
+      "source": "sample",
+      "width": 0,
+      "height": 0,
+      "hotScore": 50,
+      "createdAt": "2026-06-24T10:28:54.817Z",
+      "updatedAt": "2026-06-24T10:28:54.817Z"
+    },
+    {
+      "id": "d6ecbf77-43ba-483f-884f-c791b7b62c7f",
+      "title": "周五下午的commit",
+      "description": "出bug就周一再说",
+      "tags": [
+        "编程",
+        "周五",
+        "搞笑"
+      ],
+      "imageUrl": "",
+      "source": "sample",
+      "width": 0,
+      "height": 0,
+      "hotScore": 53,
+      "createdAt": "2026-06-24T10:28:54.869Z",
+      "updatedAt": "2026-06-24T10:28:54.869Z"
+    },
+    {
+      "id": "ae09bebd-d231-4543-b891-3284a616b910",
+      "title": "我爱开源",
+      "description": "Star就是动力PR就是生命",
+      "tags": [
+        "开源",
+        "GitHub",
+        "治愈"
+      ],
+      "imageUrl": "",
+      "source": "sample",
+      "width": 0,
+      "height": 0,
+      "hotScore": 52,
+      "createdAt": "2026-06-24T10:28:54.924Z",
+      "updatedAt": "2026-06-24T10:28:54.924Z"
+    },
+    {
+      "id": "11b21eb7-7d3c-4631-816d-db62831e72e0",
+      "title": "面试造火箭",
+      "description": "进来拧螺丝说的就是你",
+      "tags": [
+        "职场",
+        "面试",
+        "吐槽"
+      ],
+      "imageUrl": "",
+      "source": "sample",
+      "width": 0,
+      "height": 0,
+      "hotScore": 78,
+      "createdAt": "2026-06-24T10:28:54.977Z",
+      "updatedAt": "2026-06-24T10:28:54.977Z"
+    },
+    {
+      "id": "ecfa925c-0a7f-460c-b503-9a50fb0280cc",
+      "title": "VSCode vs JetBrains",
+      "description": "编辑器之战的永恒话题",
+      "tags": [
+        "编程",
+        "IDE",
+        "搞笑"
+      ],
+      "imageUrl": "",
+      "source": "sample",
+      "width": 0,
+      "height": 0,
+      "hotScore": 65,
+      "createdAt": "2026-06-24T10:28:55.030Z",
+      "updatedAt": "2026-06-24T10:28:55.030Z"
+    },
+    {
+      "id": "cc450287-86cf-4bf2-8916-9ec86f4924ff",
+      "title": "云服务器又欠费了",
+      "description": "每个月都在为爱发电",
+      "tags": [
+        "运维",
+        "云服务",
+        "日常"
+      ],
+      "imageUrl": "",
+      "source": "sample",
+      "width": 0,
+      "height": 0,
+      "hotScore": 70,
+      "createdAt": "2026-06-24T10:28:55.085Z",
+      "updatedAt": "2026-06-24T10:28:55.085Z"
+    },
+    {
+      "id": "3ce79299-4fba-47d8-840c-b8230c2667f8",
+      "title": "Kubernetes配置地狱",
+      "description": "YAML缩进错了整个集群崩了",
+      "tags": [
+        "运维",
+        "K8s",
+        "吐槽"
+      ],
+      "imageUrl": "",
+      "source": "sample",
+      "width": 0,
+      "height": 0,
+      "hotScore": 72,
+      "createdAt": "2026-06-24T10:28:55.139Z",
+      "updatedAt": "2026-06-24T10:28:55.139Z"
+    }
+  ],
+  "analyses": [
+    {
+      "id": "trend-1782296960547",
+      "type": "trend",
+      "data": {
+        "totalMemes": 20,
+        "topTags": [
+          {
+            "tag": "吐槽",
+            "count": 7
+          },
+          {
+            "tag": "职场",
+            "count": 6
+          },
+          {
+            "tag": "日常",
+            "count": 6
+          },
+          {
+            "tag": "编程",
+            "count": 6
+          },
+          {
+            "tag": "搞笑",
+            "count": 6
+          },
+          {
+            "tag": "程序员",
+            "count": 4
+          },
+          {
+            "tag": "AI",
+            "count": 3
+          },
+          {
+            "tag": "运维",
+            "count": 3
+          },
+          {
+            "tag": "开源",
+            "count": 2
+          },
+          {
+            "tag": "GitHub",
+            "count": 2
+          }
+        ],
+        "avgHotScore": 69,
+        "hotMemes": [
+          {
+            "id": "f2c78e7c-4efd-4824-9aa5-7340856e46bb",
+            "title": "996的福报",
+            "hotScore": 94
+          },
+          {
+            "id": "28e6c99c-af1a-4b2a-b681-7a6437b1b4e1",
+            "title": "API文档永远不更新",
+            "hotScore": 93
+          },
+          {
+            "id": "08d50bd5-af15-4da6-b0c7-2a646d568280",
+            "title": "StackOverflow救我狗命",
+            "hotScore": 91
+          },
+          {
+            "id": "133c19f2-d33c-47eb-bb0b-f74cda1a91ac",
+            "title": "产品经理的需求",
+            "hotScore": 83
+          },
+          {
+            "id": "11b21eb7-7d3c-4631-816d-db62831e72e0",
+            "title": "面试造火箭",
+            "hotScore": 78
+          }
+        ]
+      },
+      "createdAt": "2026-06-24T10:29:20.547Z"
+    },
+    {
+      "id": "category-1782296961117",
+      "type": "category",
+      "data": {
+        "categories": [
+          {
+            "tag": "职场",
+            "count": 6,
+            "percentage": "30.0"
+          },
+          {
+            "tag": "吐槽",
+            "count": 7,
+            "percentage": "35.0"
+          },
+          {
+            "tag": "日常",
+            "count": 6,
+            "percentage": "30.0"
+          },
+          {
+            "tag": "编程",
+            "count": 6,
+            "percentage": "30.0"
+          },
+          {
+            "tag": "API",
+            "count": 1,
+            "percentage": "5.0"
+          },
+          {
+            "tag": "搞笑",
+            "count": 6,
+            "percentage": "30.0"
+          },
+          {
+            "tag": "产品",
+            "count": 1,
+            "percentage": "5.0"
+          },
+          {
+            "tag": "面试",
+            "count": 1,
+            "percentage": "5.0"
+          },
+          {
+            "tag": "AI",
+            "count": 3,
+            "percentage": "15.0"
+          },
+          {
+            "tag": "程序员",
+            "count": 4,
+            "percentage": "20.0"
+          },
+          {
+            "tag": "运维",
+            "count": 3,
+            "percentage": "15.0"
+          },
+          {
+            "tag": "K8s",
+            "count": 1,
+            "percentage": "5.0"
+          },
+          {
+            "tag": "云服务",
+            "count": 1,
+            "percentage": "5.0"
+          },
+          {
+            "tag": "开源",
+            "count": 2,
+            "percentage": "10.0"
+          },
+          {
+            "tag": "GitHub",
+            "count": 2,
+            "percentage": "10.0"
+          },
+          {
+            "tag": "代码审查",
+            "count": 1,
+            "percentage": "5.0"
+          },
+          {
+            "tag": "IDE",
+            "count": 1,
+            "percentage": "5.0"
+          },
+          {
+            "tag": "周五",
+            "count": 2,
+            "percentage": "10.0"
+          },
+          {
+            "tag": "调试",
+            "count": 1,
+            "percentage": "5.0"
+          },
+          {
+            "tag": "Docker",
+            "count": 1,
+            "percentage": "5.0"
+          },
+          {
+            "tag": "绘画",
+            "count": 1,
+            "percentage": "5.0"
+          },
+          {
+            "tag": "周一",
+            "count": 1,
+            "percentage": "5.0"
+          },
+          {
+            "tag": "治愈",
+            "count": 1,
+            "percentage": "5.0"
+          },
+          {
+            "tag": "ChatGPT",
+            "count": 1,
+            "percentage": "5.0"
+          }
+        ]
+      },
+      "createdAt": "2026-06-24T10:29:21.117Z"
+    },
+    {
+      "id": "sentiment-1782296961883",
+      "type": "sentiment",
+      "data": {
+        "overall": 0.64,
+        "distribution": {
+          "positive": 6,
+          "neutral": 14,
+          "negative": 0
+        },
+        "details": [
+          {
+            "id": "f2c78e7c-4efd-4824-9aa5-7340856e46bb",
+            "title": "996的福报",
+            "score": 0.5
+          },
+          {
+            "id": "28e6c99c-af1a-4b2a-b681-7a6437b1b4e1",
+            "title": "API文档永远不更新",
+            "score": 0.6
+          },
+          {
+            "id": "08d50bd5-af15-4da6-b0c7-2a646d568280",
+            "title": "StackOverflow救我狗命",
+            "score": 0.5
+          },
+          {
+            "id": "133c19f2-d33c-47eb-bb0b-f74cda1a91ac",
+            "title": "产品经理的需求",
+            "score": 0.6
+          },
+          {
+            "id": "11b21eb7-7d3c-4631-816d-db62831e72e0",
+            "title": "面试造火箭",
+            "score": 0.6
+          },
+          {
+            "id": "9fc6e18f-bb11-48c7-9cd3-ab292a5c4c72",
+            "title": "当AI学会写代码",
+            "score": 0.9
+          },
+          {
+            "id": "dafc81af-cffa-4d61-812f-fec17f8698d4",
+            "title": "老板说这个很简单",
+            "score": 0.6
+          },
+          {
+            "id": "3ce79299-4fba-47d8-840c-b8230c2667f8",
+            "title": "Kubernetes配置地狱",
+            "score": 0.6
+          },
+          {
+            "id": "cc450287-86cf-4bf2-8916-9ec86f4924ff",
+            "title": "云服务器又欠费了",
+            "score": 0.5
+          },
+          {
+            "id": "9b9e7aa5-3d21-490c-a247-2fe165f85a72",
+            "title": "开源项目维护者",
+            "score": 0.5
+          },
+          {
+            "id": "401dbef5-6529-48fd-a583-dc3f8ef623c5",
+            "title": "代码审查时",
+            "score": 0.5
+          },
+          {
+            "id": "ecfa925c-0a7f-460c-b503-9a50fb0280cc",
+            "title": "VSCode vs JetBrains",
+            "score": 0.9
+          },
+          {
+            "id": "facdefc8-b758-452d-9056-6da4dd85e291",
+            "title": "周五下班前",
+            "score": 0.4
+          },
+          {
+            "id": "eeb75b45-a772-4bf8-b03e-fc5b573f8a2b",
+            "title": "调试代码的我",
+            "score": 0.5
+          },
+          {
+            "id": "be919c68-98df-4d3b-a5ca-0e2277851da7",
+            "title": "Docker又崩了",
+            "score": 0.6
+          },
+          {
+            "id": "116b07d7-f7c2-49e5-a62e-71f27dd203f2",
+            "title": "AI绘画翻车现场",
+            "score": 0.9
+          },
+          {
+            "id": "6147a12f-fbf5-47ac-ab1c-829dbbfd71ef",
+            "title": "周一早上的我",
+            "score": 0.5
+          },
+          {
+            "id": "d6ecbf77-43ba-483f-884f-c791b7b62c7f",
+            "title": "周五下午的commit",
+            "score": 0.9
+          },
+          {
+            "id": "ae09bebd-d231-4543-b891-3284a616b910",
+            "title": "我爱开源",
+            "score": 0.8
+          },
+          {
+            "id": "487a1216-bd27-49d2-9892-0370b8aff848",
+            "title": "ChatGPT是我的导师",
+            "score": 0.9
+          }
+        ]
+      },
+      "createdAt": "2026-06-24T10:29:21.883Z"
+    },
+    {
+      "id": "generation-1782296962513",
+      "type": "generation",
+      "data": {
+        "idea": {
+          "title": "AI绘画翻车现场",
+          "desc": "我想要的 vs AI给我的",
+          "tags": [
+            "AI",
+            "绘画",
+            "搞笑"
+          ]
+        },
+        "basedOn": [
+          "搞笑",
+          "AI"
+        ],
+        "generatedAt": "2026-06-24T10:29:22.513Z"
+      },
+      "createdAt": "2026-06-24T10:29:22.513Z"
+    }
+  ]
+}

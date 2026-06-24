@@ -65,6 +65,29 @@ router.post('/', upload.single('image'), (req, res) => {
   res.status(201).json(meme);
 });
 
+// 创建梗图（纯文本，无需图片）
+router.post('/create', (req, res) => {
+  const { title, description, tags, source } = req.body;
+  if (!title) return res.status(400).json({ error: 'Title is required' });
+
+  const meme: Meme = {
+    id: uuid(),
+    title,
+    description: description || '',
+    tags: tags || [],
+    imageUrl: '',
+    source: source || 'text_created',
+    width: 0,
+    height: 0,
+    hotScore: Math.floor(Math.random() * 50) + 50,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+
+  addMeme(meme);
+  res.status(201).json(meme);
+});
+
 // 更新梗图
 router.patch('/:id', (req, res) => {
   const updated = updateMeme(req.params.id, req.body);
