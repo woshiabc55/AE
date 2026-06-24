@@ -26,6 +26,7 @@ export const CanvasPanel = memo(function CanvasPanel() {
   // 作品状态
   const gridSize = useArtworkStore((s) => s.gridSize);
   const pixels = useArtworkStore((s) => s.pixels);
+  const layers = useArtworkStore((s) => s.layers);
   const joints = useArtworkStore((s) => s.skeleton.joints);
   const bones = useArtworkStore((s) => s.skeleton.bones);
   const currentPose = useArtworkStore((s) => s.currentPose);
@@ -143,6 +144,7 @@ export const CanvasPanel = memo(function CanvasPanel() {
         deformedCells,
         highlightedCells,
         stretchRegions: mode === "rig" ? stretchRegions : undefined,
+        layers,
       });
     });
     return () => {
@@ -163,6 +165,7 @@ export const CanvasPanel = memo(function CanvasPanel() {
     highlightedCells,
     stretchRegions,
     draggingStretchId,
+    layers,
   ]);
 
   // 绘制选区覆盖（指派格子时）

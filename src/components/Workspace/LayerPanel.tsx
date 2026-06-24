@@ -1,6 +1,6 @@
 // 图层面板
 
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import {
   Eye,
   EyeOff,
@@ -17,6 +17,46 @@ import {
 import { useArtworkStore } from "@/store/useArtworkStore";
 import { cn } from "@/lib/utils";
 
+/** 迷你图层预览 Canvas */
+function LayerThumbnail({ pixels, gridSize }: { pixels: Record<string, string>; gridSize: number }) {
+  const thumbSize = 28;
+  const cellSize = thumbSize / gridSize;
+  const radius = Math.max(0.5, cellSize * 0.42);
+
+  const canvasContent = useMemo(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = thumbSize;
+    canvas.height = thumbSize;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return "";
+    ctx.fillStyle = "#0f0a1a";
+    ctx.fillRect(0, 0, thumbSize, thumbSize);
+    for (const key in pixels) {
+      const [x, y] = key.split(",").map(Number);
+      const cx = x * cellSize + cellSize / 2;
+      const cy = y * cellSize + cellSize / 2;
+      ctx.fillStyle = pixels[key];
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    return canvas.toDataURL();
+  }, [pixels, gridSize, cellSize, radius]);
+
+  return (
+    <div
+      className="w-7 h-7 rounded border border-ink-600 flex-shrink-0 overflow-hidden"
+      style={{ backgroundColor: "#0f0a1a" }}
+    >
+      {canvasContent ? (
+        <img src={canvasContent} alt="" className="w-full h-full" style={{ imageRendering: "pixelated" }} />
+      ) : (
+        <div className="w-full h-full" />
+      )}
+    </div>
+  );
+}
+
 export const LayerPanel = memo(function LayerPanel() {
   const layers = useArtworkStore((s) => s.layers);
   const activeLayerId = useArtworkStore((s) => s.activeLayerId);
@@ -25,11 +65,13 @@ export const LayerPanel = memo(function LayerPanel() {
   const setLayerVisible = useArtworkStore((s) => s.setLayerVisible);
   const setLayerLocked = useArtworkStore((s) => s.setLayerLocked);
   const setLayerName = useArtworkStore((s) => s.setLayerName);
+  const setLayerOpacity = useArtworkStore((s) => s.setLayerOpacity);
   const setActiveLayer = useArtworkStore((s) => s.setActiveLayer);
   const moveLayerUp = useArtworkStore((s) => s.moveLayerUp);
   const moveLayerDown = useArtworkStore((s) => s.moveLayerDown);
   const mergeLayerDown = useArtworkStore((s) => s.mergeLayerDown);
   const duplicateLayer = useArtworkStore((s) => s.duplicateLayer);
+  const gridSize = useArtworkStore((s) => s.gridSize);
 
   // 列表从上到下 = layers 数组从后往前（顶层在上）
   const displayLayers = [...layers].reverse();
@@ -45,7 +87,7 @@ export const LayerPanel = memo(function LayerPanel() {
         <button
           onClick={() => addLayer()}
           className="p-1 rounded hover:bg-ink-700 text-ink-400 hover:text-ember-400 transition-colors"
-          title="新建图层"
+          title="新建图层 (Ctrl+N)"
         >
           <Plus size={14} />
         </button>
@@ -58,143 +100,143 @@ export const LayerPanel = memo(function LayerPanel() {
           const pixelCount = Object.keys(layer.pixels).length;
 
           return (
-            <div
-              key={layer.id}
-              onClick={() => setActiveLayer(layer.id)}
-              className={cn(
-                "flex items-center gap-1.5 px-2 py-2 rounded-lg border transition-all cursor-pointer group",
-                isActive
-                  ? "bg-ember-500/15 border-ember-500/50"
-                  : "bg-ink-900/40 border-ink-600/30 hover:border-ink-500",
-              )}
-            >
-              {/* 缩略色块 */}
+            <div key={layer.id}>
               <div
-                className="w-7 h-7 rounded border border-ink-600 flex-shrink-0 grid grid-cols-2 grid-rows-2 gap-px p-0.5"
-                style={{ backgroundColor: "#0f0a1a" }}
-              >
-                {(() => {
-                  const colors = Object.values(layer.pixels).slice(0, 4);
-                  while (colors.length < 4) colors.push("transparent");
-                  return colors.map((c, i) => (
-                    <div
-                      key={i}
-                      className="rounded-sm"
-                      style={{ backgroundColor: c }}
-                    />
-                  ));
-                })()}
-              </div>
-
-              {/* 名称 */}
-              <input
-                value={layer.name}
-                onChange={(e) => setLayerName(layer.id, e.target.value)}
-                onClick={(e) => e.stopPropagation()}
+                onClick={() => setActiveLayer(layer.id)}
                 className={cn(
-                  "flex-1 min-w-0 bg-transparent text-xs font-mono px-1 py-0.5 rounded focus:outline-none focus:bg-ink-900/80",
-                  isActive ? "text-ink-100" : "text-ink-300",
+                  "flex items-center gap-1.5 px-2 py-2 rounded-lg border transition-all cursor-pointer group",
+                  isActive
+                    ? "bg-ember-500/15 border-ember-500/50"
+                    : "bg-ink-900/40 border-ink-600/30 hover:border-ink-500",
                 )}
-              />
+              >
+                {/* 缩略预览 */}
+                <LayerThumbnail pixels={layer.pixels} gridSize={gridSize} />
 
-              {/* 像素数 */}
-              <span className="text-[9px] text-ink-500 font-mono flex-shrink-0">
-                {pixelCount}
-              </span>
+                {/* 名称 */}
+                <input
+                  value={layer.name}
+                  onChange={(e) => setLayerName(layer.id, e.target.value)}
+                  onClick={(e) => e.stopPropagation()}
+                  className={cn(
+                    "flex-1 min-w-0 bg-transparent text-xs font-mono px-1 py-0.5 rounded focus:outline-none focus:bg-ink-900/80",
+                    isActive ? "text-ink-100" : "text-ink-300",
+                  )}
+                />
 
-              {/* 操作按钮 (hover 显示) */}
-              <div className="hidden group-hover:flex items-center gap-0.5 flex-shrink-0">
-                {/* 上移 */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    moveLayerUp(layer.id);
-                  }}
-                  className="p-0.5 rounded hover:bg-ink-600 text-ink-400 hover:text-ink-200"
-                  title="上移"
-                >
-                  <ArrowUp size={10} />
-                </button>
-                {/* 下移 */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    moveLayerDown(layer.id);
-                  }}
-                  className="p-0.5 rounded hover:bg-ink-600 text-ink-400 hover:text-ink-200"
-                  title="下移"
-                >
-                  <ArrowDown size={10} />
-                </button>
-                {/* 复制 */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    duplicateLayer(layer.id);
-                  }}
-                  className="p-0.5 rounded hover:bg-ink-600 text-ink-400 hover:text-mint-400"
-                  title="复制图层"
-                >
-                  <Copy size={10} />
-                </button>
-                {/* 向下合并 */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    mergeLayerDown(layer.id);
-                  }}
-                  className="p-0.5 rounded hover:bg-ink-600 text-ink-400 hover:text-sun-400"
-                  title="向下合并"
-                  disabled={layer.id === layers[0]?.id}
-                >
-                  <Merge size={10} />
-                </button>
-                {/* 删除 */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (layers.length <= 1) return;
-                    removeLayer(layer.id);
-                  }}
-                  className="p-0.5 rounded hover:bg-red-600/30 text-ink-400 hover:text-red-400"
-                  title="删除图层"
-                  disabled={layers.length <= 1}
-                >
-                  <Trash2 size={10} />
-                </button>
+                {/* 像素数 */}
+                <span className="text-[9px] text-ink-500 font-mono flex-shrink-0">
+                  {pixelCount}
+                </span>
+
+                {/* 操作按钮 (hover 显示) */}
+                <div className="hidden group-hover:flex items-center gap-0.5 flex-shrink-0">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      moveLayerUp(layer.id);
+                    }}
+                    className="p-0.5 rounded hover:bg-ink-600 text-ink-400 hover:text-ink-200"
+                    title="上移"
+                  >
+                    <ArrowUp size={10} />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      moveLayerDown(layer.id);
+                    }}
+                    className="p-0.5 rounded hover:bg-ink-600 text-ink-400 hover:text-ink-200"
+                    title="下移"
+                  >
+                    <ArrowDown size={10} />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      duplicateLayer(layer.id);
+                    }}
+                    className="p-0.5 rounded hover:bg-ink-600 text-ink-400 hover:text-mint-400"
+                    title="复制图层"
+                  >
+                    <Copy size={10} />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      mergeLayerDown(layer.id);
+                    }}
+                    className="p-0.5 rounded hover:bg-ink-600 text-ink-400 hover:text-sun-400"
+                    title="向下合并"
+                    disabled={layer.id === layers[0]?.id}
+                  >
+                    <Merge size={10} />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (layers.length <= 1) return;
+                      removeLayer(layer.id);
+                    }}
+                    className="p-0.5 rounded hover:bg-red-600/30 text-ink-400 hover:text-red-400"
+                    title="删除图层"
+                    disabled={layers.length <= 1}
+                  >
+                    <Trash2 size={10} />
+                  </button>
+                </div>
+
+                {/* 可见性 / 锁定 — 始终显示 */}
+                <div className="flex items-center gap-0.5 flex-shrink-0">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setLayerVisible(layer.id, !layer.visible);
+                    }}
+                    className="p-0.5 rounded hover:bg-ink-600 transition-colors"
+                    title={layer.visible ? "隐藏" : "显示"}
+                  >
+                    {layer.visible ? (
+                      <Eye size={11} className="text-ink-300" />
+                    ) : (
+                      <EyeOff size={11} className="text-ink-500" />
+                    )}
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setLayerLocked(layer.id, !layer.locked);
+                    }}
+                    className="p-0.5 rounded hover:bg-ink-600 transition-colors"
+                    title={layer.locked ? "解锁" : "锁定"}
+                  >
+                    {layer.locked ? (
+                      <Lock size={11} className="text-sun-400" />
+                    ) : (
+                      <Unlock size={11} className="text-ink-500" />
+                    )}
+                  </button>
+                </div>
               </div>
 
-              {/* 可见性 / 锁定 — 始终显示 */}
-              <div className="flex items-center gap-0.5 flex-shrink-0">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setLayerVisible(layer.id, !layer.visible);
-                  }}
-                  className="p-0.5 rounded hover:bg-ink-600 transition-colors"
-                  title={layer.visible ? "隐藏" : "显示"}
-                >
-                  {layer.visible ? (
-                    <Eye size={11} className="text-ink-300" />
-                  ) : (
-                    <EyeOff size={11} className="text-ink-500" />
-                  )}
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setLayerLocked(layer.id, !layer.locked);
-                  }}
-                  className="p-0.5 rounded hover:bg-ink-600 transition-colors"
-                  title={layer.locked ? "解锁" : "锁定"}
-                >
-                  {layer.locked ? (
-                    <Lock size={11} className="text-sun-400" />
-                  ) : (
-                    <Unlock size={11} className="text-ink-500" />
-                  )}
-                </button>
-              </div>
+              {/* 不透明度滑块 — 活跃图层展开 */}
+              {isActive && (
+                <div className="mt-1 ml-2 flex items-center gap-2 px-2 py-1.5 bg-ink-900/40 rounded-lg border border-ink-600/30">
+                  <span className="text-[9px] text-ink-400 font-mono flex-shrink-0">不透明</span>
+                  <input
+                    type="range"
+                    min={0}
+                    max={100}
+                    value={Math.round(layer.opacity * 100)}
+                    onChange={(e) => setLayerOpacity(layer.id, Number(e.target.value) / 100)}
+                    onClick={(e) => e.stopPropagation()}
+                    className="flex-1 h-1 accent-ember-500"
+                  />
+                  <span className="text-[9px] text-ink-300 font-mono w-7 text-right">
+                    {Math.round(layer.opacity * 100)}%
+                  </span>
+                </div>
+              )}
             </div>
           );
         })}

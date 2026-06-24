@@ -53,6 +53,9 @@ export function importArtwork(json: string): ArtworkRecord {
         ? data.skeleton
         : { joints: [], bones: [] },
     keyframes: Array.isArray(data.keyframes) ? data.keyframes : [],
+    animationClips: Array.isArray(data.animationClips) && data.animationClips.length > 0
+      ? data.animationClips
+      : [{ id: crypto.randomUUID(), name: "默认动作", keyframes: Array.isArray(data.keyframes) ? data.keyframes : [] }],
     stretchRegions: Array.isArray(data.stretchRegions) ? data.stretchRegions : [],
     thumbnail: data.thumbnail ?? "",
     createdAt: data.createdAt ?? Date.now(),

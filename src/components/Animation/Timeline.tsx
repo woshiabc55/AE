@@ -1,14 +1,15 @@
-// 动画时间轴与播放控制
+// 动画时间轴与播放控制 — 支持动画片段、可拉伸缩放、动作表
 
-import { memo, useCallback, useEffect, useRef } from "react";
-import { Play, Pause, Plus, Trash2, Repeat, SkipBack, SkipForward } from "lucide-react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { Play, Pause, Plus, Trash2, Repeat, SkipBack, SkipForward, ZoomIn, ZoomOut, Film, ChevronDown } from "lucide-react";
 import { useUIStore } from "@/store/useUIStore";
 import { useArtworkStore } from "@/store/useArtworkStore";
 import { samplePose, sortKeyframes } from "@/engine/animation";
 import { PixelButton } from "@/components/common/PixelButton";
 import { cn } from "@/lib/utils";
 
-const PLAYBACK_DURATION = 3000; // 3 秒一个循环
+const MIN_DURATION = 1000;
+const MAX_DURATION = 8000;
 
 export const Timeline = memo(function Timeline() {
   const isPlaying = useUIStore((s) => s.isPlaying);
@@ -24,11 +25,21 @@ export const Timeline = memo(function Timeline() {
   const addKeyframeAt = useArtworkStore((s) => s.addKeyframeAt);
   const removeKeyframe = useArtworkStore((s) => s.removeKeyframe);
   const resetPose = useArtworkStore((s) => s.resetPose);
+  const animationClips = useArtworkStore((s) => s.animationClips);
+  const activeClipId = useArtworkStore((s) => s.activeClipId);
+  const addClip = useArtworkStore((s) => s.addClip);
+  const removeClip = useArtworkStore((s) => s.removeClip);
+  const renameClip = useArtworkStore((s) => s.renameClip);
+  const setActiveClip = useArtworkStore((s) => s.setActiveClip);
+
+  const [playbackDuration, setPlaybackDuration] = useState(3000);
+  const [showClipMenu, setShowClipMenu] = useState(false);
 
   const rafRef = useRef<number | null>(null);
   const lastTsRef = useRef<number>(0);
 
   const sortedKfs = sortKeyframes(keyframes);
+  const activeClip = animationClips.find((c) => c.id === activeClipId);
 
   // 播放循环
   useEffect(() => {
@@ -41,7 +52,7 @@ export const Timeline = memo(function Timeline() {
     const tick = (ts: number) => {
       const dt = ts - lastTsRef.current;
       lastTsRef.current = ts;
-      const advance = dt / PLAYBACK_DURATION;
+      const advance = dt / playbackDuration;
       const uiState = useUIStore.getState();
       let next = uiState.currentTime + advance;
       if (next >= 1) {
@@ -63,9 +74,8 @@ export const Timeline = memo(function Timeline() {
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [isPlaying, loop, setCurrentTime, setPose, setPlaying]);
+  }, [isPlaying, loop, playbackDuration, setCurrentTime, setPose, setPlaying]);
 
-  // 拖动时间轴时实时更新姿态
   const handleScrub = useCallback(
     (t: number) => {
       setCurrentTime(t);
@@ -114,6 +124,71 @@ export const Timeline = memo(function Timeline() {
 
   return (
     <div className="p-3 space-y-3">
+      {/* 动画片段选择 */}
+      <div className="relative">
+        <button
+          onClick={() => setShowClipMenu(!showClipMenu)}
+          className="w-full flex items-center justify-between px-3 py-2 rounded-lg border border-ink-600 bg-ink-900/60 hover:bg-ink-800/60 transition-colors"
+        >
+          <div className="flex items-center gap-2">
+            <Film size={12} className="text-ember-400" />
+            <span className="font-mono text-xs text-ink-200">
+              {activeClip?.name ?? "默认动作"}
+            </span>
+            <span className="text-[10px] text-ink-500">
+              ({sortedKfs.length} 帧)
+            </span>
+          </div>
+          <ChevronDown
+            size={12}
+            className={cn("text-ink-400 transition-transform", showClipMenu && "rotate-180")}
+          />
+        </button>
+        {showClipMenu && (
+          <div className="absolute top-full left-0 right-0 mt-1 z-30 bg-ink-800 border border-ink-600 rounded-lg shadow-xl overflow-hidden">
+            {animationClips.map((clip) => (
+              <div
+                key={clip.id}
+                onClick={() => {
+                  setActiveClip(clip.id);
+                  setShowClipMenu(false);
+                }}
+                className={cn(
+                  "flex items-center justify-between px-3 py-2 cursor-pointer hover:bg-ink-700/60 transition-colors",
+                  clip.id === activeClipId && "bg-ember-500/15",
+                )}
+              >
+                <span className="font-mono text-xs text-ink-200">{clip.name}</span>
+                <span className="text-[10px] text-ink-500">{clip.keyframes.length} 帧</span>
+              </div>
+            ))}
+            <div className="border-t border-ink-600/60 flex">
+              <button
+                onClick={() => {
+                  addClip();
+                  setShowClipMenu(false);
+                }}
+                className="flex-1 flex items-center justify-center gap-1 px-3 py-2 text-xs font-mono text-mint-400 hover:bg-ink-700/60 transition-colors"
+              >
+                <Plus size={10} />
+                新建片段
+              </button>
+              {animationClips.length > 1 && (
+                <button
+                  onClick={() => {
+                    removeClip(activeClipId);
+                    setShowClipMenu(false);
+                  }}
+                  className="flex items-center justify-center gap-1 px-3 py-2 text-xs font-mono text-red-400 hover:bg-ink-700/60 transition-colors border-l border-ink-600/60"
+                >
+                  <Trash2 size={10} />
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* 播放控制 */}
       <div className="flex items-center gap-2">
         <PixelButton
@@ -161,20 +236,38 @@ export const Timeline = memo(function Timeline() {
         </button>
       </div>
 
+      {/* 时间轴伸缩控制 */}
+      <div className="flex items-center justify-between">
+        <span className="text-[10px] text-ink-300 font-mono uppercase tracking-wider">
+          时间轴
+        </span>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setPlaybackDuration((d) => Math.max(MIN_DURATION, d - 500))}
+            className="p-1 rounded hover:bg-ink-700 text-ink-400 hover:text-ink-200 transition-colors"
+            title="缩短时间轴（加速）"
+          >
+            <ZoomIn size={12} />
+          </button>
+          <span className="text-[10px] text-ember-400 font-mono min-w-[40px] text-center">
+            {(playbackDuration / 1000).toFixed(1)}s
+          </span>
+          <button
+            onClick={() => setPlaybackDuration((d) => Math.min(MAX_DURATION, d + 500))}
+            className="p-1 rounded hover:bg-ink-700 text-ink-400 hover:text-ink-200 transition-colors"
+            title="拉长时间轴（减速）"
+          >
+            <ZoomOut size={12} />
+          </button>
+        </div>
+      </div>
+
       {/* 时间轴轨道 */}
       <div>
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-[10px] text-ink-300 font-mono uppercase tracking-wider">
-            时间轴
-          </span>
-          <span className="text-[10px] text-ember-400 font-mono">
-            {(currentTime * 100).toFixed(0)}%
-          </span>
-        </div>
         <div
           ref={trackRef}
           onMouseDown={handleTrackMouseDown}
-          className="relative h-12 bg-ink-900 rounded-lg border border-ink-600 cursor-pointer overflow-hidden"
+          className="relative h-14 bg-ink-900 rounded-lg border border-ink-600 cursor-pointer overflow-hidden"
         >
           {/* 进度条 */}
           <div
@@ -210,11 +303,11 @@ export const Timeline = memo(function Timeline() {
         </div>
         {/* 刻度 */}
         <div className="flex justify-between mt-1 text-[9px] text-ink-400 font-mono">
-          <span>0</span>
-          <span>0.25</span>
-          <span>0.5</span>
-          <span>0.75</span>
-          <span>1</span>
+          <span>0%</span>
+          <span>25%</span>
+          <span>50%</span>
+          <span>75%</span>
+          <span>100%</span>
         </div>
       </div>
 
@@ -233,43 +326,47 @@ export const Timeline = memo(function Timeline() {
         </PixelButton>
       </div>
 
-      {/* 关键帧列表 */}
+      {/* 关键帧动作表 */}
       {sortedKfs.length > 0 && (
         <div>
           <div className="text-[10px] text-ink-300 font-mono mb-2 uppercase tracking-wider">
-            关键帧列表 ({sortedKfs.length})
+            动作表 ({sortedKfs.length} 帧)
           </div>
-          <div className="space-y-1 max-h-40 overflow-auto">
+          <div className="space-y-1 max-h-52 overflow-auto">
+            <div className="grid grid-cols-[28px_1fr_40px_28px] gap-1 text-[9px] text-ink-400 font-mono px-1">
+              <span>#</span>
+              <span>时间</span>
+              <span>关节</span>
+              <span></span>
+            </div>
             {sortedKfs.map((kf, idx) => (
               <div
                 key={kf.id}
                 className={cn(
-                  "flex items-center justify-between px-2.5 py-1.5 rounded-lg border transition-all cursor-pointer",
+                  "grid grid-cols-[28px_1fr_40px_28px] gap-1 items-center px-2 py-1.5 rounded-lg border transition-all cursor-pointer",
                   Math.abs(kf.time - currentTime) < 0.02
                     ? "bg-ember-500/15 border-ember-500"
                     : "bg-ink-900/40 border-ink-600/40 hover:border-ink-500",
                 )}
                 onClick={() => handleScrub(kf.time)}
               >
-                <div className="flex items-center gap-2">
-                  <span className="w-5 h-5 rounded bg-sun-500/20 text-sun-500 text-[10px] font-mono flex items-center justify-center">
-                    {idx + 1}
-                  </span>
-                  <span className="font-mono text-xs text-ink-200">
-                    {(kf.time * 100).toFixed(0)}%
-                  </span>
-                  <span className="font-mono text-[10px] text-ink-400">
-                    {Object.keys(kf.jointPositions).length} 关节
-                  </span>
-                </div>
+                <span className="w-5 h-5 rounded bg-sun-500/20 text-sun-500 text-[10px] font-mono flex items-center justify-center">
+                  {idx + 1}
+                </span>
+                <span className="font-mono text-xs text-ink-200">
+                  {(kf.time * 100).toFixed(0)}% · {(kf.time * playbackDuration / 1000).toFixed(1)}s
+                </span>
+                <span className="font-mono text-[10px] text-ink-400">
+                  {Object.keys(kf.jointPositions).length}
+                </span>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     removeKeyframe(kf.id);
                   }}
-                  className="text-ink-400 hover:text-red-400 transition-colors"
+                  className="text-ink-400 hover:text-red-400 transition-colors flex justify-center"
                 >
-                  <Trash2 size={12} />
+                  <Trash2 size={11} />
                 </button>
               </div>
             ))}
@@ -280,7 +377,7 @@ export const Timeline = memo(function Timeline() {
       {/* 当前姿态信息 */}
       <div className="bg-ink-900/40 rounded-lg p-2.5 border border-ink-600/30">
         <div className="text-[10px] text-ink-300 font-mono">
-          当前姿态 · {Object.keys(currentPose).length} 个关节
+          当前姿态 · {Object.keys(currentPose).length} 个关节 · {playbackDuration / 1000}s 循环
         </div>
         <div className="text-[10px] text-ink-400 font-mono mt-1">
           {keyframes.length === 0

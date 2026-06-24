@@ -17,14 +17,14 @@ export function ModeSwitcher() {
   const setMode = useUIStore((s) => s.setMode);
   const jointCount = useArtworkStore((s) => s.skeleton.joints.length);
   const boneCount = useArtworkStore((s) => s.skeleton.bones.length);
-  const kfCount = useArtworkStore((s) => s.keyframes.length);
+  const clipCount = useArtworkStore((s) => s.animationClips.length);
 
   return (
     <div className="flex items-center gap-1 bg-ink-900/80 p-1 rounded-xl border border-ink-600/60">
       {MODES.map(({ id, icon: Icon, label, desc }) => {
         const active = mode === id;
         const badge =
-          id === "rig" ? jointCount + boneCount : id === "animate" ? kfCount : null;
+          id === "rig" ? jointCount + boneCount : id === "animate" ? clipCount : null;
         return (
           <button
             key={id}

@@ -1,6 +1,6 @@
 // Canvas 2D 渲染器
 
-import type { Bone, Joint, JointPositions, Point, StretchRegion } from "@/types";
+import type { Bone, Joint, JointPositions, Layer, Point, StretchRegion } from "@/types";
 import { findJoint } from "@/engine/skeleton";
 import { parseKey } from "@/engine/gridUtils";
 import { getStretchBounds } from "@/engine/stretchDeform";
@@ -17,6 +17,7 @@ export interface RenderOptions {
   deformedCells?: Map<string, Point>;
   highlightedCells?: Set<string>;
   stretchRegions?: StretchRegion[];
+  layers?: Layer[];
 }
 
 /** 绘制单个拼豆（圆形带高光） */
@@ -97,25 +98,55 @@ export function renderCanvas(
     ctx.setLineDash([]);
   }
 
-  // 绘制拼豆
+  // 绘制拼豆 — 支持图层不透明度
   const beadRadius = cellSize * 0.42;
-  for (const key in pixels) {
-    const color = pixels[key];
-    let pos: Point;
-    if (options.deformedCells && options.deformedCells.has(key)) {
-      pos = options.deformedCells.get(key)!;
-    } else {
-      pos = parseKey(key);
-    }
-    const cx = pos.x * cellSize + cellSize / 2;
-    const cy = pos.y * cellSize + cellSize / 2;
+  if (options.layers && options.layers.length > 0) {
+    // 逐层渲染（从底层到顶层）
+    for (const layer of options.layers) {
+      if (!layer.visible) continue;
+      const alpha = layer.opacity;
+      if (alpha <= 0) continue;
+      if (alpha < 1) ctx.globalAlpha = alpha;
+      for (const key in layer.pixels) {
+        const color = layer.pixels[key];
+        let pos: Point;
+        if (options.deformedCells && options.deformedCells.has(key)) {
+          pos = options.deformedCells.get(key)!;
+        } else {
+          pos = parseKey(key);
+        }
+        const cx = pos.x * cellSize + cellSize / 2;
+        const cy = pos.y * cellSize + cellSize / 2;
 
-    if (options.highlightedCells && options.highlightedCells.has(key)) {
-      ctx.fillStyle = "rgba(255,210,63,0.25)";
-      ctx.fillRect(pos.x * cellSize, pos.y * cellSize, cellSize, cellSize);
-    }
+        if (options.highlightedCells && options.highlightedCells.has(key)) {
+          ctx.fillStyle = "rgba(255,210,63,0.25)";
+          ctx.fillRect(pos.x * cellSize, pos.y * cellSize, cellSize, cellSize);
+        }
 
-    drawBead(ctx, cx, cy, beadRadius, color);
+        drawBead(ctx, cx, cy, beadRadius, color);
+      }
+      if (alpha < 1) ctx.globalAlpha = 1;
+    }
+  } else {
+    // 兼容旧逻辑：扁平化像素
+    for (const key in pixels) {
+      const color = pixels[key];
+      let pos: Point;
+      if (options.deformedCells && options.deformedCells.has(key)) {
+        pos = options.deformedCells.get(key)!;
+      } else {
+        pos = parseKey(key);
+      }
+      const cx = pos.x * cellSize + cellSize / 2;
+      const cy = pos.y * cellSize + cellSize / 2;
+
+      if (options.highlightedCells && options.highlightedCells.has(key)) {
+        ctx.fillStyle = "rgba(255,210,63,0.25)";
+        ctx.fillRect(pos.x * cellSize, pos.y * cellSize, cellSize, cellSize);
+      }
+
+      drawBead(ctx, cx, cy, beadRadius, color);
+    }
   }
 
   // 绘制骨架

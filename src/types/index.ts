@@ -40,6 +40,13 @@ export interface Keyframe {
   jointPositions: JointPositions;
 }
 
+/** 动画片段（不同位面/动作状态） */
+export interface AnimationClip {
+  id: string;
+  name: string;
+  keyframes: Keyframe[];
+}
+
 /** 作品记录（IndexedDB 持久化） */
 export interface ArtworkRecord {
   id: string;
@@ -50,6 +57,7 @@ export interface ArtworkRecord {
   layers: Layer[];     // 图层数据
   skeleton: SkeletonData;
   keyframes: Keyframe[];
+  animationClips: AnimationClip[]; // 动画片段
   stretchRegions: StretchRegion[]; // 拉伸区域
   createdAt: number;
   updatedAt: number;

@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import type {
+  AnimationClip,
   ArtworkRecord,
   Bone,
   Joint,
@@ -71,6 +72,15 @@ function defaultLayer(name = "图层 1"): Layer {
   };
 }
 
+/** 创建默认动画片段 */
+function defaultClip(name = "默认动作"): AnimationClip {
+  return {
+    id: uuid(),
+    name,
+    keyframes: [],
+  };
+}
+
 interface ArtworkState {
   // 作品元数据
   id: string;
@@ -85,6 +95,9 @@ interface ArtworkState {
   skeleton: SkeletonData;
   // 关键帧
   keyframes: Keyframe[];
+  // 动画片段
+  animationClips: AnimationClip[];
+  activeClipId: string;
   // 拉伸区域
   stretchRegions: StretchRegion[];
   // 当前姿态（关节位置）—— 用于动画播放与拖拽
@@ -116,6 +129,7 @@ interface ArtworkState {
   moveLayerDown: (id: string) => void;
   mergeLayerDown: (id: string) => void;
   duplicateLayer: (id: string) => void;
+  setLayerOpacity: (id: string, opacity: number) => void;
 
   // === 骨架动作 ===
   addJoint: (x: number, y: number, name?: string) => string;
@@ -141,6 +155,12 @@ interface ArtworkState {
   removeKeyframe: (id: string) => void;
   updateKeyframeTime: (id: string, time: number) => void;
 
+  // === 动画片段动作 ===
+  addClip: (name?: string) => string;
+  removeClip: (id: string) => void;
+  renameClip: (id: string, name: string) => void;
+  setActiveClip: (id: string) => void;
+
   // === 作品管理 ===
   newArtwork: () => void;
   loadArtwork: (record: ArtworkRecord) => void;
@@ -154,6 +174,7 @@ interface ArtworkState {
 
 export const useArtworkStore = create<ArtworkState>((set, get) => {
   const initLayer = defaultLayer();
+  const initClip = defaultClip();
   return {
   id: newArtworkId(),
   name: "未命名作品",
@@ -163,6 +184,8 @@ export const useArtworkStore = create<ArtworkState>((set, get) => {
   activeLayerId: initLayer.id,
   skeleton: emptySkeleton(),
   keyframes: [],
+  animationClips: [initClip],
+  activeClipId: initClip.id,
   stretchRegions: [],
   currentPose: {},
   dirty: false,
@@ -231,6 +254,7 @@ export const useArtworkStore = create<ArtworkState>((set, get) => {
   setGridSize: (size) =>
     set(() => {
       const initLayer = defaultLayer();
+      const initClip = defaultClip();
       return {
         gridSize: size,
         pixels: {},
@@ -238,6 +262,8 @@ export const useArtworkStore = create<ArtworkState>((set, get) => {
         activeLayerId: initLayer.id,
         skeleton: emptySkeleton(),
         keyframes: [],
+        animationClips: [initClip],
+        activeClipId: initClip.id,
         stretchRegions: [],
         currentPose: {},
         dirty: true,
@@ -339,6 +365,14 @@ export const useArtworkStore = create<ArtworkState>((set, get) => {
       return { layers, activeLayerId: dup.id, pixels: flattenLayers(layers), dirty: true };
     }),
 
+  setLayerOpacity: (id, opacity) =>
+    set((state) => {
+      const layers = state.layers.map((l) =>
+        l.id === id ? { ...l, opacity: Math.max(0, Math.min(1, opacity)) } : l,
+      );
+      return { layers, dirty: true };
+    }),
+
   // === 骨架动作 ===
   addJoint: (x, y, name) => {
     const id = uuid();
@@ -416,13 +450,17 @@ export const useArtworkStore = create<ArtworkState>((set, get) => {
       dirty: true,
     })),
 
-  clearSkeleton: () =>
+  clearSkeleton: () => {
+    const clip = defaultClip();
     set({
       skeleton: emptySkeleton(),
       currentPose: defaultPose([]),
       keyframes: [],
+      animationClips: [clip],
+      activeClipId: clip.id,
       dirty: true,
-    }),
+    });
+  },
 
   // === 拉伸区域动作 ===
   addStretchRegion: (corner1, corner2) => {
@@ -472,32 +510,105 @@ export const useArtworkStore = create<ArtworkState>((set, get) => {
 
   addKeyframeAt: (time) =>
     set((state) => {
+      const clip = state.animationClips.find((c) => c.id === state.activeClipId);
+      const clipKeyframes = clip?.keyframes ?? [];
       const kf: Keyframe = {
         id: newKeyframeId(),
         time: Math.max(0, Math.min(1, time)),
         jointPositions: { ...state.currentPose },
       };
-      // 移除同一时间的关键帧
-      const filtered = state.keyframes.filter((k) => Math.abs(k.time - kf.time) > 0.001);
-      return { keyframes: [...filtered, kf], dirty: true };
+      const filtered = clipKeyframes.filter((k) => Math.abs(k.time - kf.time) > 0.001);
+      const newKeyframes = [...filtered, kf];
+      const animationClips = state.animationClips.map((c) =>
+        c.id === state.activeClipId ? { ...c, keyframes: newKeyframes } : c,
+      );
+      return {
+        animationClips,
+        keyframes: newKeyframes,
+        dirty: true,
+      };
     }),
 
   removeKeyframe: (id) =>
-    set((state) => ({
-      keyframes: state.keyframes.filter((k) => k.id !== id),
-      dirty: true,
-    })),
+    set((state) => {
+      const animationClips = state.animationClips.map((c) => {
+        if (c.id !== state.activeClipId) return c;
+        const newKeyframes = c.keyframes.filter((k) => k.id !== id);
+        return { ...c, keyframes: newKeyframes };
+      });
+      const activeClip = animationClips.find((c) => c.id === state.activeClipId);
+      return {
+        animationClips,
+        keyframes: activeClip?.keyframes ?? [],
+        dirty: true,
+      };
+    }),
 
   updateKeyframeTime: (id, time) =>
+    set((state) => {
+      const animationClips = state.animationClips.map((c) => {
+        if (c.id !== state.activeClipId) return c;
+        const newKeyframes = c.keyframes.map((k) =>
+          k.id === id ? { ...k, time: Math.max(0, Math.min(1, time)) } : k,
+        );
+        return { ...c, keyframes: newKeyframes };
+      });
+      const activeClip = animationClips.find((c) => c.id === state.activeClipId);
+      return {
+        animationClips,
+        keyframes: activeClip?.keyframes ?? [],
+        dirty: true,
+      };
+    }),
+
+  // === 动画片段动作 ===
+  addClip: (name) => {
+    const clip = defaultClip(name ?? `动作 ${get().animationClips.length + 1}`);
     set((state) => ({
-      keyframes: state.keyframes.map((k) =>
-        k.id === id ? { ...k, time: Math.max(0, Math.min(1, time)) } : k,
+      animationClips: [...state.animationClips, clip],
+      activeClipId: clip.id,
+      keyframes: clip.keyframes,
+      dirty: true,
+    }));
+    return clip.id;
+  },
+
+  removeClip: (id) =>
+    set((state) => {
+      if (state.animationClips.length <= 1) return state;
+      const animationClips = state.animationClips.filter((c) => c.id !== id);
+      const activeClipId =
+        state.activeClipId === id ? animationClips[0].id : state.activeClipId;
+      const activeClip = animationClips.find((c) => c.id === activeClipId);
+      return {
+        animationClips,
+        activeClipId,
+        keyframes: activeClip?.keyframes ?? [],
+        dirty: true,
+      };
+    }),
+
+  renameClip: (id, name) =>
+    set((state) => ({
+      animationClips: state.animationClips.map((c) =>
+        c.id === id ? { ...c, name } : c,
       ),
       dirty: true,
     })),
 
+  setActiveClip: (id) =>
+    set((state) => {
+      const clip = state.animationClips.find((c) => c.id === id);
+      return {
+        activeClipId: id,
+        keyframes: clip?.keyframes ?? [],
+        currentPose: {},
+      };
+    }),
+
   newArtwork: () => {
     const initLayer = defaultLayer();
+    const initClip = defaultClip();
     set({
       id: newArtworkId(),
       name: "未命名作品",
@@ -507,6 +618,8 @@ export const useArtworkStore = create<ArtworkState>((set, get) => {
       activeLayerId: initLayer.id,
       skeleton: emptySkeleton(),
       keyframes: [],
+      animationClips: [initClip],
+      activeClipId: initClip.id,
       stretchRegions: [],
       currentPose: {},
       dirty: false,
@@ -525,6 +638,12 @@ export const useArtworkStore = create<ArtworkState>((set, get) => {
       : [{ ...defaultLayer(), pixels: record.pixels ? cellsToRecord(record.pixels) : {} }];
     const safeRegions: StretchRegion[] = Array.isArray(record.stretchRegions) ? record.stretchRegions : [];
     const safePixels = flattenLayers(safeLayers);
+    const safeClips: AnimationClip[] = Array.isArray(record.animationClips) && record.animationClips.length > 0
+      ? record.animationClips
+      : (Array.isArray(record.keyframes) && record.keyframes.length > 0
+        ? [{ ...defaultClip(), keyframes: record.keyframes }]
+        : [defaultClip()]);
+    const firstClip = safeClips[0];
     set({
       id: record.id,
       name: record.name ?? "未命名作品",
@@ -533,7 +652,9 @@ export const useArtworkStore = create<ArtworkState>((set, get) => {
       layers: safeLayers,
       activeLayerId: safeLayers[0].id,
       skeleton: safeSkeleton,
-      keyframes: safeKeyframes,
+      keyframes: firstClip.keyframes,
+      animationClips: safeClips,
+      activeClipId: firstClip.id,
       stretchRegions: safeRegions,
       currentPose: defaultPose(safeSkeleton.joints),
       dirty: false,
@@ -552,6 +673,7 @@ export const useArtworkStore = create<ArtworkState>((set, get) => {
       layers: state.layers,
       skeleton: state.skeleton,
       keyframes: state.keyframes,
+      animationClips: state.animationClips,
       stretchRegions: state.stretchRegions,
       createdAt: Date.now(),
       updatedAt: Date.now(),
