@@ -196,7 +196,7 @@ export interface Project {
 }
 
 // ===== 工具类型 =====
-export type ToolType = 'select' | 'rect' | 'circle' | 'ellipse' | 'line' | 'path' | 'text' | 'hand';
+export type ToolType = 'select' | 'rect' | 'circle' | 'ellipse' | 'line' | 'path' | 'text' | 'image' | 'hand';
 
 // ===== UI 状态 =====
 export type PanelTab = 'properties' | 'logic' | 'export';

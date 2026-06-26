@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   MousePointer2, Square, Circle, CircleDot, Minus,
-  PenTool, Type, Hand, ZoomIn, ZoomOut, Maximize,
+  PenTool, Type, ImageIcon, Hand, ZoomIn, ZoomOut, Maximize,
 } from 'lucide-react';
 import { useToolStore } from '../../store/useToolStore';
 import { useProjectStore } from '../../store/useProjectStore';
@@ -16,6 +16,7 @@ const tools: { type: ToolType; icon: typeof MousePointer2; label: string }[] = [
   { type: 'line', icon: Minus, label: '线条' },
   { type: 'path', icon: PenTool, label: '路径' },
   { type: 'text', icon: Type, label: '文字' },
+  { type: 'image', icon: ImageIcon, label: '图像' },
   { type: 'hand', icon: Hand, label: '手型' },
 ];
 

@@ -6,7 +6,9 @@ import type { ToolType, SVGElement as SVGEl } from '../../types';
 import SVGElementRenderer from './SVGElementRenderer';
 import SelectionBox from './SelectionBox';
 
-const SHAPE_TOOLS: ToolType[] = ['rect', 'circle', 'ellipse', 'line', 'path', 'text'];
+const SHAPE_TOOLS: ToolType[] = ['rect', 'circle', 'ellipse', 'line', 'path', 'text', 'image'];
+const SNAP_THRESHOLD = 8; // 画布坐标中的吸附阈值
+const GRID_SIZE = 20;
 
 // 伪3D 挤压层配置（轻柔，避免重影）
 const EXTRUDE_LAYERS = 3;
@@ -18,8 +20,12 @@ export default function SVGCanvas() {
   const { canvasZoom, canvasPanX, canvasPanY, showGrid, setCanvasZoom, setCanvasPan } = useUIStore();
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [panState, setPanState] = useState<{ isPanning: boolean; startX: number; startY: number } | null>(null);
   const [dragState, setDragState] = useState<{ id: string; startX: number; startY: number; originX: number; originY: number } | null>(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [snapLines, setSnapLines] = useState<{ x?: number; y?: number }>({});
+  const [imageDraw, setImageDraw] = useState<{ start: { x: number; y: number }; end: { x: number; y: number } } | null>(null);
 
   const selectedElement = project.elements.find((el) => el.id === selectedElementId);
 
@@ -44,6 +50,50 @@ export default function SVGCanvas() {
       };
     },
     [canvasZoom, canvasPanX, canvasPanY, project.width, project.height],
+  );
+
+  // 计算吸附位置
+  const getSnapPosition = useCallback(
+    (x: number, y: number, excludeId?: string): { x: number; y: number; lines: { x?: number; y?: number } } => {
+      const lines: { x?: number; y?: number } = {};
+      let snapX = x;
+      let snapY = y;
+
+      // 网格吸附
+      if (showGrid) {
+        const gridX = Math.round(x / GRID_SIZE) * GRID_SIZE;
+        const gridY = Math.round(y / GRID_SIZE) * GRID_SIZE;
+        if (Math.abs(gridX - x) <= SNAP_THRESHOLD) { snapX = gridX; lines.x = gridX; }
+        if (Math.abs(gridY - y) <= SNAP_THRESHOLD) { snapY = gridY; lines.y = gridY; }
+      }
+
+      // 对齐其他元素中心/边缘
+      const threshold = SNAP_THRESHOLD;
+      for (const el of project.elements) {
+        if (el.id === excludeId) continue;
+        const box = getElementWorldBox(el);
+        if (!box) continue;
+
+        const candidatesX = [box.cx, box.x, box.x + box.width];
+        const candidatesY = [box.cy, box.y, box.y + box.height];
+
+        for (const cx of candidatesX) {
+          if (Math.abs(cx - x) <= threshold && Math.abs(cx - x) < Math.abs((lines.x ?? Infinity) - x)) {
+            snapX = cx;
+            lines.x = cx;
+          }
+        }
+        for (const cy of candidatesY) {
+          if (Math.abs(cy - y) <= threshold && Math.abs(cy - y) < Math.abs((lines.y ?? Infinity) - y)) {
+            snapY = cy;
+            lines.y = cy;
+          }
+        }
+      }
+
+      return { x: snapX, y: snapY, lines };
+    },
+    [project.elements, showGrid],
   );
 
   // 滚轮缩放（以鼠标为中心缩放）
@@ -76,6 +126,61 @@ export default function SVGCanvas() {
     [canvasZoom, canvasPanX, canvasPanY, setCanvasZoom, setCanvasPan],
   );
 
+  // 图像上传处理：支持点击放置或拖拽框定区域
+  const handleImageUpload = (placement: { x: number; y: number; width?: number; height?: number }) => {
+    const input = fileInputRef.current;
+    if (!input) return;
+
+    const onChange = () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          let w: number;
+          let h: number;
+          let tx: number;
+          let ty: number;
+
+          if (placement.width && placement.height) {
+            // 拖拽框定：按 contain 适配图像
+            const scale = Math.min(placement.width / img.width, placement.height / img.height, 1);
+            w = img.width * scale;
+            h = img.height * scale;
+            tx = placement.x + (placement.width - w) / 2;
+            ty = placement.y + (placement.height - h) / 2;
+          } else {
+            // 点击放置：限制最大尺寸
+            const maxSize = 200;
+            const scale = Math.min(maxSize / img.width, maxSize / img.height, 1);
+            w = img.width * scale;
+            h = img.height * scale;
+            tx = placement.x - w / 2;
+            ty = placement.y - h / 2;
+          }
+
+          const el = addElement('image', {
+            x: 0,
+            y: 0,
+            width: w,
+            height: h,
+            href: String(reader.result || ''),
+          });
+          updateElementTransform(el.id, { translateX: tx, translateY: ty });
+          selectElement(el.id);
+        };
+        img.src = String(reader.result || '');
+      };
+      reader.readAsDataURL(file);
+      input.value = '';
+      input.removeEventListener('change', onChange);
+    };
+
+    input.addEventListener('change', onChange);
+    input.click();
+  };
+
   // 鼠标按下
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
@@ -89,6 +194,12 @@ export default function SVGCanvas() {
       if (e.button === 0 && SHAPE_TOOLS.includes(activeTool)) {
         const pos = toCanvasCoords(e.clientX, e.clientY);
         const type = activeTool as SVGEl['type'];
+
+        if (type === 'image') {
+          // 图像工具进入拖拽绘制定位模式
+          setImageDraw({ start: pos, end: pos });
+          return;
+        }
 
         // 默认 transform 定位到点击中心，attrs 使用相对坐标
         const defaultsByType: Record<string, Record<string, number | string>> = {
@@ -119,28 +230,64 @@ export default function SVGCanvas() {
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => {
+      const pos = toCanvasCoords(e.clientX, e.clientY);
+      setMousePos(pos);
+
       if (panState?.isPanning) {
         setCanvasPan(e.clientX - panState.startX, e.clientY - panState.startY);
         return;
       }
+
+      // 图像工具拖拽绘制定位
+      if (imageDraw) {
+        const snap = getSnapPosition(pos.x, pos.y);
+        setSnapLines(snap.lines);
+        setImageDraw((prev) => (prev ? { ...prev, end: { x: snap.x, y: snap.y } } : null));
+        return;
+      }
+
       if (dragState && selectedElement) {
-        const dx = (e.clientX - dragState.startX) / canvasZoom;
-        const dy = (e.clientY - dragState.startY) / canvasZoom;
+        const rawX = dragState.originX + (e.clientX - dragState.startX) / canvasZoom;
+        const rawY = dragState.originY + (e.clientY - dragState.startY) / canvasZoom;
+        const snap = getSnapPosition(rawX, rawY, dragState.id);
+        setSnapLines(snap.lines);
         updateElementTransform(dragState.id, {
-          translateX: dragState.originX + dx,
-          translateY: dragState.originY + dy,
+          translateX: snap.x,
+          translateY: snap.y,
         });
+      } else {
+        setSnapLines({});
       }
     },
-    [panState, dragState, selectedElement, canvasZoom, setCanvasPan, updateElementTransform],
+    [panState, dragState, selectedElement, imageDraw, canvasZoom, setCanvasPan, updateElementTransform, toCanvasCoords, getSnapPosition],
   );
 
   const handleMouseUp = useCallback(() => {
     if (dragState) {
       setDragState(null);
     }
+
+    // 图像工具拖拽完成：根据拖拽框触发上传
+    if (imageDraw) {
+      const { start, end } = imageDraw;
+      const dx = Math.abs(end.x - start.x);
+      const dy = Math.abs(end.y - start.y);
+      if (dx > 4 || dy > 4) {
+        const x = Math.min(start.x, end.x);
+        const y = Math.min(start.y, end.y);
+        handleImageUpload({ x, y, width: dx, height: dy });
+      } else {
+        handleImageUpload({ x: start.x, y: start.y });
+      }
+      setImageDraw(null);
+      setSnapLines({});
+      setPanState(null);
+      return;
+    }
+
     setPanState(null);
-  }, [dragState]);
+    setSnapLines({});
+  }, [dragState, imageDraw]);
 
   // 元素选中 + 拖拽
   const handleSelect = useCallback(
@@ -167,7 +314,7 @@ export default function SVGCanvas() {
     if (!showGrid) return null;
     const w = project.width;
     const h = project.height;
-    const gridSize = 20;
+    const gridSize = GRID_SIZE;
     const lines: React.ReactNode[] = [];
 
     for (let i = 0; i <= Math.ceil(w / gridSize); i++) {
@@ -194,6 +341,61 @@ export default function SVGCanvas() {
     }
 
     return lines;
+  };
+
+  // 智能对齐线
+  const renderSnapGuides = () => {
+    if (!snapLines.x && !snapLines.y) return null;
+    const w = project.width;
+    const h = project.height;
+    return (
+      <g pointerEvents="none">
+        {snapLines.x !== undefined && (
+          <line
+            x1={snapLines.x} y1={-20}
+            x2={snapLines.x} y2={h + 20}
+            stroke="#00e5ff"
+            strokeWidth={1 / canvasZoom}
+            strokeDasharray={`${4 / canvasZoom} ${4 / canvasZoom}`}
+            opacity={0.6}
+          />
+        )}
+        {snapLines.y !== undefined && (
+          <line
+            x1={-20} y1={snapLines.y}
+            x2={w + 20} y2={snapLines.y}
+            stroke="#00e5ff"
+            strokeWidth={1 / canvasZoom}
+            strokeDasharray={`${4 / canvasZoom} ${4 / canvasZoom}`}
+            opacity={0.6}
+          />
+        )}
+      </g>
+    );
+  };
+
+  // 图像拖拽绘制预览框
+  const renderImageDrawPreview = () => {
+    if (!imageDraw) return null;
+    const x = Math.min(imageDraw.start.x, imageDraw.end.x);
+    const y = Math.min(imageDraw.start.y, imageDraw.end.y);
+    const w = Math.abs(imageDraw.end.x - imageDraw.start.x);
+    const h = Math.abs(imageDraw.end.y - imageDraw.start.y);
+    return (
+      <g pointerEvents="none">
+        <rect
+          x={x} y={y} width={w} height={h}
+          fill="rgba(0,229,255,0.08)"
+          stroke="#00e5ff"
+          strokeWidth={1 / canvasZoom}
+          strokeDasharray={`${4 / canvasZoom} ${4 / canvasZoom}`}
+          rx={2}
+        />
+        {/* 对角线 */}
+        <line x1={x} y1={y} x2={x + w} y2={y + h} stroke="#00e5ff" strokeWidth={0.5 / canvasZoom} opacity={0.5} />
+        <line x1={x + w} y1={y} x2={x} y2={y + h} stroke="#00e5ff" strokeWidth={0.5 / canvasZoom} opacity={0.5} />
+      </g>
+    );
   };
 
   // 伪3D 深度阴影
@@ -245,6 +447,7 @@ export default function SVGCanvas() {
   const cursorClass =
     activeTool === 'hand' ? 'cursor-grab' :
     panState?.isPanning ? 'cursor-grabbing' :
+    imageDraw ? 'cursor-crosshair' :
     SHAPE_TOOLS.includes(activeTool) ? 'cursor-crosshair' :
     'cursor-default';
 
@@ -262,6 +465,13 @@ export default function SVGCanvas() {
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
     >
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+      />
+
       <svg width="100%" height="100%" style={{ userSelect: 'none' }}>
         <defs>
           <filter id="canvas-shadow" x="-10%" y="-10%" width="130%" height="130%">
@@ -326,6 +536,12 @@ export default function SVGCanvas() {
             );
           })}
 
+          {/* 智能对齐线 */}
+          {renderSnapGuides()}
+
+          {/* 图像拖拽绘制预览 */}
+          {renderImageDrawPreview()}
+
           {/* 选中框 */}
           {selectedElement && <SelectionBox element={selectedElement} zoom={canvasZoom} />}
 
@@ -355,6 +571,53 @@ export default function SVGCanvas() {
           <span className="text-[10px] text-[#00e5ff] font-mono">Y: {Math.round(selectedElement.transform.translateY)}</span>
         </div>
       )}
+
+      {/* 鼠标坐标 */}
+      <div className="absolute bottom-3 left-3 bg-[#16181f]/90 backdrop-blur-sm rounded-md px-2.5 py-1 border border-white/5 shadow-lg select-none">
+        <span className="text-[10px] text-gray-500 font-mono">{Math.round(mousePos.x)}, {Math.round(mousePos.y)}</span>
+      </div>
     </div>
   );
+}
+
+// 获取元素在世界坐标中的包围盒（含变换）
+function getElementWorldBox(el: SVGEl): { x: number; y: number; width: number; height: number; cx: number; cy: number } | null {
+  const a = el.attrs;
+  let x = 0, y = 0, w = 0, h = 0;
+
+  switch (el.type) {
+    case 'rect':
+    case 'image':
+      x = Number(a.x) || 0; y = Number(a.y) || 0; w = Number(a.width) || 0; h = Number(a.height) || 0;
+      break;
+    case 'circle': {
+      const cx = Number(a.cx) || 0, cy = Number(a.cy) || 0, r = Number(a.r) || 0;
+      x = cx - r; y = cy - r; w = r * 2; h = r * 2;
+      break;
+    }
+    case 'ellipse': {
+      const cx = Number(a.cx) || 0, cy = Number(a.cy) || 0, rx = Number(a.rx) || 0, ry = Number(a.ry) || 0;
+      x = cx - rx; y = cy - ry; w = rx * 2; h = ry * 2;
+      break;
+    }
+    case 'line':
+      return null;
+    case 'text':
+      x = Number(a.x) || 0; y = (Number(a.y) || 0) - (Number(a.fontSize) || 24); w = 80; h = Number(a.fontSize) || 24;
+      break;
+    default:
+      return null;
+  }
+
+  const t = el.transform;
+  const worldX = t.translateX + x * t.scaleX;
+  const worldY = t.translateY + y * t.scaleY;
+  return {
+    x: worldX,
+    y: worldY,
+    width: w * t.scaleX,
+    height: h * t.scaleY,
+    cx: worldX + (w * t.scaleX) / 2,
+    cy: worldY + (h * t.scaleY) / 2,
+  };
 }

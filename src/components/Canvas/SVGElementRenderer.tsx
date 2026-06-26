@@ -43,6 +43,8 @@ function getBBoxCenter(el: SVGEl): { cx: number; cy: number } {
       return { cx: ((Number(a.x1) || 0) + (Number(a.x2) || 0)) / 2, cy: ((Number(a.y1) || 0) + (Number(a.y2) || 0)) / 2 };
     case 'text':
       return { cx: Number(a.x) || 0, cy: Number(a.y) || 0 };
+    case 'image':
+      return { cx: (Number(a.x) || 0) + (Number(a.width) || 0) / 2, cy: (Number(a.y) || 0) + (Number(a.height) || 0) / 2 };
     default:
       return { cx: 0, cy: 0 };
   }
@@ -51,7 +53,8 @@ function getBBoxCenter(el: SVGEl): { cx: number; cy: number } {
 export function getElementBBox(el: SVGEl): { x: number; y: number; width: number; height: number } {
   const a = el.attrs;
   switch (el.type) {
-    case 'rect': {
+    case 'rect':
+    case 'image': {
       const x = Number(a.x) || 0, y = Number(a.y) || 0;
       return { x, y, width: Number(a.width) || 0, height: Number(a.height) || 0 };
     }
@@ -118,6 +121,18 @@ export default function SVGElementRenderer({ element, isSelected, onSelect, isEx
         <text x={a.x} y={a.y} fontSize={a.fontSize} fontFamily="IBM Plex Sans, sans-serif" {...commonProps}>
           {String(a.textContent || '')}
         </text>
+      );
+    case 'image':
+      return (
+        <image
+          x={a.x}
+          y={a.y}
+          width={a.width}
+          height={a.height}
+          href={String(a.href || '')}
+          preserveAspectRatio="xMidYMid slice"
+          {...commonProps}
+        />
       );
     default:
       return null;

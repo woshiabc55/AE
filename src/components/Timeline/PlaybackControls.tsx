@@ -1,7 +1,12 @@
-import { Play, Pause, Square, Repeat, Repeat1 } from 'lucide-react';
+import { Play, Pause, Square, Repeat, Repeat1, ZoomIn, ZoomOut } from 'lucide-react';
 import { useTimelineStore } from '../../store/useTimelineStore';
 
-export default function PlaybackControls() {
+interface Props {
+  frameW: number;
+  setFrameW: (w: number) => void;
+}
+
+export default function PlaybackControls({ frameW, setFrameW }: Props) {
   const {
     currentFrame, totalFrames, isPlaying, isLooping, fps,
     togglePlay, setIsPlaying, toggleLoop, setCurrentFrame,
@@ -11,6 +16,9 @@ export default function PlaybackControls() {
     setIsPlaying(false);
     setCurrentFrame(0);
   };
+
+  const zoomIn = () => setFrameW(Math.min(40, frameW + 2));
+  const zoomOut = () => setFrameW(Math.max(4, frameW - 2));
 
   return (
     <div className="flex items-center gap-2 px-3 h-9 border-b border-white/10 shrink-0">
@@ -60,6 +68,27 @@ export default function PlaybackControls() {
       <span className="text-xs text-gray-500 tabular-nums">
         {fps} FPS
       </span>
+
+      <div className="flex-1" />
+
+      {/* 时间轴缩放 */}
+      <div className="flex items-center gap-0.5">
+        <button
+          title="缩小时间轴"
+          onClick={zoomOut}
+          className="p-1 rounded text-gray-500 hover:text-white hover:bg-white/10 transition-colors"
+        >
+          <ZoomOut size={12} />
+        </button>
+        <span className="text-[10px] text-gray-500 w-8 text-center font-mono">{Math.round(frameW)}px</span>
+        <button
+          title="放大时间轴"
+          onClick={zoomIn}
+          className="p-1 rounded text-gray-500 hover:text-white hover:bg-white/10 transition-colors"
+        >
+          <ZoomIn size={12} />
+        </button>
+      </div>
     </div>
   );
 }

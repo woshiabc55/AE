@@ -1,11 +1,12 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import { useTimelineStore } from '../../store/useTimelineStore';
 import { useProjectStore } from '../../store/useProjectStore';
 import { useUIStore } from '../../store/useUIStore';
 import PlaybackControls from './PlaybackControls';
 import type { Keyframe } from '../../types';
 
-const FRAME_W = 8;
+const MIN_FRAME_W = 4;
+const MAX_FRAME_W = 40;
 const LAYER_LABEL_W = 110;
 const TICK_INTERVAL = 10;
 
@@ -15,12 +16,16 @@ export default function TimelinePanel() {
     setCurrentFrame, setIsPlaying,
   } = useTimelineStore();
 
-  const { project, addKeyframe, removeKeyframe, selectedLayerId, selectLayer } = useProjectStore();
+  const { project, addKeyframe, removeKeyframe, updateKeyframe, selectedLayerId, selectLayer } = useProjectStore();
   const timelineHeight = useUIStore((s) => s.timelineHeight);
 
   const rafRef = useRef<number>(0);
   const prevTimeRef = useRef<number>(0);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const [frameW, setFrameW] = useState(8);
+  const [dragKf, setDragKf] = useState<{ id: string; layerId: string; startX: number; originFrame: number } | null>(null);
+  const [scrubbing, setScrubbing] = useState(false);
 
   // 播放循环
   const tick = useCallback((time: number) => {
@@ -61,15 +66,18 @@ export default function TimelinePanel() {
   useEffect(() => {
     const scroller = scrollRef.current;
     if (!scroller) return;
-    const target = currentFrame * FRAME_W - scroller.clientWidth / 2;
+    const target = currentFrame * frameW - scroller.clientWidth / 2;
     scroller.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
-  }, [currentFrame]);
+  }, [currentFrame, frameW]);
+
+  const timelineW = totalFrames * frameW;
+  const sortedLayers = [...project.layers].sort((a, b) => a.order - b.order);
 
   // 点击标尺定位帧
   const handleRulerClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
-    const frame = Math.max(0, Math.min(totalFrames - 1, Math.floor(x / FRAME_W)));
+    const frame = Math.max(0, Math.min(totalFrames - 1, Math.floor(x / frameW)));
     setCurrentFrame(frame);
   };
 
@@ -77,7 +85,7 @@ export default function TimelinePanel() {
   const handleTrackDoubleClick = (layerId: string, e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
-    const frame = Math.max(0, Math.min(totalFrames - 1, Math.floor(x / FRAME_W)));
+    const frame = Math.max(0, Math.min(totalFrames - 1, Math.floor(x / frameW)));
     const layer = project.layers.find((l) => l.id === layerId);
     if (!layer || layer.elementIds.length === 0) return;
 
@@ -99,8 +107,52 @@ export default function TimelinePanel() {
     removeKeyframe(kfId);
   };
 
-  const timelineW = totalFrames * FRAME_W;
-  const sortedLayers = [...project.layers].sort((a, b) => a.order - b.order);
+  // 关键帧拖拽
+  const handleKfMouseDown = (kf: Keyframe, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setDragKf({ id: kf.id, layerId: kf.layerId, startX: e.clientX, originFrame: kf.frame });
+  };
+
+  // 播放头拖拽 scrub
+  const handlePlayheadMouseDown = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setScrubbing(true);
+  };
+
+  const frameFromMouseX = (clientX: number, currentTarget: HTMLElement) => {
+    const rect = currentTarget.getBoundingClientRect();
+    const x = clientX - rect.left + currentTarget.scrollLeft;
+    return Math.max(0, Math.min(totalFrames - 1, Math.round(x / frameW)));
+  };
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (scrubbing) {
+        setCurrentFrame(frameFromMouseX(e.clientX, e.currentTarget));
+        return;
+      }
+      if (!dragKf) return;
+      const dx = e.clientX - dragKf.startX;
+      const frameDelta = Math.round(dx / frameW);
+      const nextFrame = Math.max(0, Math.min(totalFrames - 1, dragKf.originFrame + frameDelta));
+      updateKeyframe(dragKf.id, { frame: nextFrame });
+    },
+    [scrubbing, dragKf, frameW, totalFrames, updateKeyframe, setCurrentFrame],
+  );
+
+  const handleMouseUp = useCallback(() => {
+    setDragKf(null);
+    setScrubbing(false);
+  }, []);
+
+  // 滚轮缩放时间轴
+  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    if (e.ctrlKey || e.metaKey) {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -1 : 1;
+      setFrameW((prev) => Math.max(MIN_FRAME_W, Math.min(MAX_FRAME_W, prev + delta)));
+    }
+  };
 
   // 标尺刻度
   const ticks: number[] = [];
@@ -115,7 +167,7 @@ export default function TimelinePanel() {
       <div className="h-px bg-gradient-to-r from-transparent via-white/8 to-transparent shrink-0" />
 
       {/* 控制栏 */}
-      <PlaybackControls />
+      <PlaybackControls frameW={frameW} setFrameW={setFrameW} />
 
       {/* 主体区域 */}
       <div className="flex flex-1 min-h-0">
@@ -158,8 +210,37 @@ export default function TimelinePanel() {
         </div>
 
         {/* 时间线滚动区域 */}
-        <div ref={scrollRef} className="flex-1 overflow-x-auto overflow-y-auto bg-[#13151e]">
+        <div
+          ref={scrollRef}
+          className="flex-1 overflow-x-auto overflow-y-auto bg-[#13151e] relative"
+          onWheel={handleWheel}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+        >
           <div style={{ width: timelineW, position: 'relative' }}>
+            {/* 时间轴主轴栋梁 - 贯穿所有轨道的强水平参考线 */}
+            <div
+              className="absolute left-0 right-0 h-px pointer-events-none z-0"
+              style={{
+                top: 28,
+                background: 'linear-gradient(to right, transparent, rgba(0,229,255,0.25) 20%, rgba(0,229,255,0.35) 50%, rgba(0,229,255,0.25) 80%, transparent)',
+                boxShadow: '0 1px 6px rgba(0,229,255,0.15)',
+              }}
+            />
+
+            {/* 主轴垂直栋梁 - 主刻度处的竖向支柱 */}
+            {ticks.map((f) => (
+              <div
+                key={`beam-${f}`}
+                className="absolute top-7 bottom-0 w-px pointer-events-none z-0"
+                style={{
+                  left: f * frameW,
+                  background: 'linear-gradient(to bottom, rgba(0,229,255,0.12), transparent 80%)',
+                }}
+              />
+            ))}
+
             {/* 标尺 */}
             <div
               className="h-7 border-b border-[#0a0c14] relative cursor-pointer shrink-0 bg-[#15171f]"
@@ -169,7 +250,7 @@ export default function TimelinePanel() {
                 <div
                   key={f}
                   className="absolute top-0 h-full"
-                  style={{ left: f * FRAME_W }}
+                  style={{ left: f * frameW }}
                 >
                   <div className="w-px h-3 bg-white/15 absolute bottom-0" />
                   <span className="text-[7px] text-white/25 absolute bottom-3 left-0.5 font-mono">
@@ -198,15 +279,16 @@ export default function TimelinePanel() {
                     <div
                       key={kf.id}
                       className="absolute top-1/2 -translate-y-1/2 z-10"
-                      style={{ left: kf.frame * FRAME_W - 6 }}
+                      style={{ left: kf.frame * frameW - 6, cursor: dragKf?.id === kf.id ? 'grabbing' : 'grab' }}
                       onContextMenu={(e) => handleKeyframeContextMenu(kf.id, e)}
+                      onMouseDown={(e) => handleKfMouseDown(kf, e)}
                       title={`帧 ${kf.frame}`}
                     >
                       {/* 阴影层 */}
                       <div className="w-3 h-3 rotate-45 bg-black/40 absolute top-[2px] left-[2px]" />
                       {/* 主体 */}
                       <div
-                        className="w-3 h-3 rotate-45 bg-[#00e5ff] hover:bg-white cursor-pointer transition-colors relative z-10"
+                        className="w-3 h-3 rotate-45 bg-[#00e5ff] hover:bg-white transition-colors relative z-10"
                         style={{ boxShadow: '0 0 4px rgba(0,229,255,0.4)' }}
                       />
                       {/* 高光 */}
@@ -222,17 +304,49 @@ export default function TimelinePanel() {
               );
             })}
 
-            {/* 播放头 */}
+            {/* 播放头水平横梁 - 贯穿所有轨道 */}
             <div
-              className="absolute top-0 bottom-0 w-0.5 pointer-events-none z-30"
+              className="absolute right-0 h-px pointer-events-none z-20"
               style={{
-                left: currentFrame * FRAME_W,
-                background: 'linear-gradient(to bottom, #ff4444, #ff6666)',
-                boxShadow: '0 0 8px rgba(255,68,68,0.4), 2px 0 4px rgba(0,0,0,0.3)',
+                top: 28,
+                left: currentFrame * frameW,
+                background: 'linear-gradient(to right, rgba(255,68,68,0.45), rgba(255,68,68,0.15) 60%, transparent)',
+                boxShadow: '0 0 6px rgba(255,68,68,0.25)',
               }}
+            />
+
+            {/* 播放头 - 时间轴主轴指示器 */}
+            <div
+              className="absolute top-0 bottom-0 z-30"
+              style={{
+                left: currentFrame * frameW,
+                width: frameW,
+                cursor: 'ew-resize',
+              }}
+              onMouseDown={handlePlayheadMouseDown}
+              title="拖动以 scrub 时间轴"
             >
+              {/* 当前帧高亮柱 */}
               <div
-                className="w-3 h-3 rounded-full -translate-x-[5px] -translate-y-0.5"
+                className="absolute top-0 bottom-0 pointer-events-none"
+                style={{
+                  left: -frameW / 2,
+                  width: frameW,
+                  background: 'linear-gradient(to bottom, rgba(255,68,68,0.12), rgba(255,68,68,0.02))',
+                }}
+              />
+              {/* 中心线 */}
+              <div
+                className="absolute top-0 bottom-0 w-0.5 pointer-events-none"
+                style={{
+                  left: -1,
+                  background: 'linear-gradient(to bottom, #ff4444, #ff6666)',
+                  boxShadow: '0 0 8px rgba(255,68,68,0.4), 2px 0 4px rgba(0,0,0,0.3)',
+                }}
+              />
+              {/* 顶部圆点 */}
+              <div
+                className="w-3 h-3 rounded-full -translate-x-[5px] -translate-y-0.5 pointer-events-none"
                 style={{
                   background: 'radial-gradient(circle at 40% 35%, #ff8888, #ff4444)',
                   boxShadow: '0 1px 4px rgba(0,0,0,0.4), 0 0 6px rgba(255,68,68,0.3)',
