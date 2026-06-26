@@ -12,7 +12,8 @@ import {
   getOriginalPose,
 } from "@/engine/skeleton";
 import { cellKey } from "@/engine/gridUtils";
-import type { Point } from "@/types";
+import { hitTestShape } from "@/engine/shapeRenderer";
+import type { Point, ShapeType } from "@/types";
 
 const CANVAS_DISPLAY_SIZE = 576;
 
@@ -26,6 +27,8 @@ export function CanvasPanel() {
   const joints = useArtworkStore((s) => s.skeleton.joints);
   const bones = useArtworkStore((s) => s.skeleton.bones);
   const currentPose = useArtworkStore((s) => s.currentPose);
+  const shapes = useArtworkStore((s) => s.shapes);
+  const parts = useArtworkStore((s) => s.parts);
   const paintCell = useArtworkStore((s) => s.paintCell);
   const eraseCell = useArtworkStore((s) => s.eraseCell);
   const fillArea = useArtworkStore((s) => s.fillArea);
@@ -36,6 +39,8 @@ export function CanvasPanel() {
   const addBone = useArtworkStore((s) => s.addBone);
   const assignCellsToBone = useArtworkStore((s) => s.assignCellsToBone);
   const setPose = useArtworkStore((s) => s.setPose);
+  const addShape = useArtworkStore((s) => s.addShape);
+  const updateShape = useArtworkStore((s) => s.updateShape);
 
   // 工具状态
   const tool = useToolStore((s) => s.tool);
@@ -49,14 +54,19 @@ export function CanvasPanel() {
   const rigTool = useUIStore((s) => s.rigTool);
   const selectedJointId = useUIStore((s) => s.selectedJointId);
   const selectedBoneId = useUIStore((s) => s.selectedBoneId);
+  const selectedShapeId = useUIStore((s) => s.selectedShapeId);
+  const selectedPartId = useUIStore((s) => s.selectedPartId);
   const selectedJointIds = useUIStore((s) => s.selectedJointIds);
   const selectJoint = useUIStore((s) => s.selectJoint);
   const selectBone = useUIStore((s) => s.selectBone);
+  const selectShape = useUIStore((s) => s.selectShape);
+  const shapeTool = useUIStore((s) => s.shapeTool);
   const toggleJointSelected = useUIStore((s) => s.toggleJointSelected);
   const clearSelection = useUIStore((s) => s.clearSelection);
   const selectMultipleJoints = useUIStore((s) => s.selectMultipleJoints);
   const snapToGrid = useUIStore((s) => s.snapToGrid);
   const mirrorSkeleton = useUIStore((s) => s.mirrorSkeleton);
+  const currentTime = useUIStore((s) => s.currentTime);
 
   // 交互状态
   const [isDrawing, setIsDrawing] = useState(false);
@@ -71,6 +81,9 @@ export function CanvasPanel() {
   const [selecting, setSelecting] = useState(false);
   const [selectStart, setSelectStart] = useState<Point | null>(null);
   const [selectEnd, setSelectEnd] = useState<Point | null>(null);
+  // 图形拖拽
+  const [draggingShapeId, setDraggingShapeId] = useState<string | null>(null);
+  const dragShapeStartRef = useRef<Point>({ x: 0, y: 0 });
 
   const cellSize = CANVAS_DISPLAY_SIZE / gridSize;
 
@@ -117,19 +130,31 @@ export function CanvasPanel() {
       gridSize,
       cellSize,
       showGrid: true,
-      showCenterLine: mode !== "animate" && (mirror || mirrorSkeleton),
-      showSkeleton: mode !== "draw",
+      showCenterLine: mode !== "animate" && mode !== "shape" && (mirror || mirrorSkeleton),
+      showSkeleton: mode !== "draw" && mode !== "shape",
       selectedJointId,
       selectedBoneId,
       deformedCells,
       highlightedCells,
       selectedJointIds,
+      showShapes: true,
+      shapes,
+      parts,
+      shapeOptions: {
+        gridSize,
+        cellSize,
+        selectedShapeId,
+        selectedPartId,
+        time: currentTime,
+      },
     });
   }, [
     pixels,
     joints,
     bones,
     currentPose,
+    shapes,
+    parts,
     gridSize,
     cellSize,
     mode,
@@ -137,9 +162,12 @@ export function CanvasPanel() {
     mirrorSkeleton,
     selectedJointId,
     selectedBoneId,
+    selectedShapeId,
+    selectedPartId,
     selectedJointIds,
     deformedCells,
     highlightedCells,
+    currentTime,
   ]);
 
   // 绘制选区覆盖（指派格子 / 框选关节）
@@ -383,12 +411,31 @@ export function CanvasPanel() {
         } else {
           selectJoint(null);
         }
+      } else if (mode === "shape") {
+        if (shapeTool === "select") {
+          const canvasPx = toCanvasPixel(e);
+          const hit = hitTestShape(shapes, parts, joints, bones, currentPose, canvasPx, cellSize, currentTime);
+          if (hit) {
+            selectShape(hit.id);
+            setDraggingShapeId(hit.id);
+            dragShapeStartRef.current = gridFloat;
+          } else {
+            selectShape(null);
+          }
+        } else if (["rect", "circle", "triangle", "polygon", "star"].includes(shapeTool)) {
+          const snapped = snapPoint(gridFloat);
+          const cx = Math.max(0, Math.min(gridSize - 1, snapped.x));
+          const cy = Math.max(0, Math.min(gridSize - 1, snapped.y));
+          const id = addShape(shapeTool as ShapeType, cx, cy, color);
+          selectShape(id);
+        }
       }
     },
     [
       mode,
       tool,
       rigTool,
+      shapeTool,
       toGrid,
       toGridFloat,
       toCanvasPixel,
@@ -413,6 +460,12 @@ export function CanvasPanel() {
       clearSelection,
       selectBone,
       bones,
+      shapes,
+      parts,
+      cellSize,
+      currentTime,
+      selectShape,
+      addShape,
     ],
   );
 
@@ -466,6 +519,20 @@ export function CanvasPanel() {
       } else if (selecting) {
         const canvasPx = toCanvasPixel(e);
         setSelectEnd(canvasPx);
+      } else if (draggingShapeId) {
+        const shape = shapes.find((s) => s.id === draggingShapeId);
+        if (shape) {
+          const dx = gridFloat.x - dragShapeStartRef.current.x;
+          const dy = gridFloat.y - dragShapeStartRef.current.y;
+          updateShape(draggingShapeId, {
+            transform: {
+              ...shape.transform,
+              x: Math.max(0, Math.min(gridSize - 1, shape.transform.x + dx)),
+              y: Math.max(0, Math.min(gridSize - 1, shape.transform.y + dy)),
+            },
+          });
+          dragShapeStartRef.current = gridFloat;
+        }
       }
     },
     [
@@ -473,6 +540,7 @@ export function CanvasPanel() {
       isDrawing,
       tool,
       draggingJointId,
+      draggingShapeId,
       assigningBoneId,
       assignStart,
       selecting,
@@ -487,6 +555,8 @@ export function CanvasPanel() {
       moveJoints,
       setPose,
       currentPose,
+      shapes,
+      updateShape,
     ],
   );
 
@@ -494,6 +564,7 @@ export function CanvasPanel() {
   const handleMouseUp = useCallback(() => {
     setIsDrawing(false);
     setDraggingJointId(null);
+    setDraggingShapeId(null);
     dragOffsetsRef.current.clear();
 
     // 完成指派
@@ -565,6 +636,7 @@ export function CanvasPanel() {
   const handleMouseLeave = useCallback(() => {
     setIsDrawing(false);
     setDraggingJointId(null);
+    setDraggingShapeId(null);
     dragOffsetsRef.current.clear();
   }, []);
 
@@ -579,8 +651,12 @@ export function CanvasPanel() {
       if (rigTool === "assign") return "pointer";
       return "crosshair";
     }
+    if (mode === "shape") {
+      if (shapeTool === "select") return "default";
+      return "crosshair";
+    }
     return "grab";
-  }, [mode, tool, rigTool]);
+  }, [mode, rigTool, shapeTool]);
 
   return (
     <div
@@ -631,6 +707,7 @@ export function CanvasPanel() {
             {mode === "draw" && `绘制模式 · ${tool === "brush" ? "画笔" : tool === "eraser" ? "橡皮" : tool === "fill" ? "填充" : "吸管"}`}
             {mode === "rig" && `骨架模式 · ${rigTool === "add" ? "添加关节" : rigTool === "connect" ? "连接骨骼" : rigTool === "move" ? "移动关节" : rigTool === "select" ? "选择点位" : "指派格子"}`}
             {mode === "animate" && "动画模式 · 拖拽关节摆姿势"}
+            {mode === "shape" && `图形模式 · ${shapeTool === "select" ? "选择图形" : shapeTool === "rect" ? "矩形" : shapeTool === "circle" ? "圆形" : shapeTool === "triangle" ? "三角形" : shapeTool === "polygon" ? "多边形" : "星形"}`}
           </span>
           {connectFromId && (
             <span className="text-sun-500">已选起点关节，点击终点关节完成连接</span>

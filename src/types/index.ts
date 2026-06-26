@@ -49,15 +49,69 @@ export interface ArtworkRecord {
   pixels: PixelCell[];
   skeleton: SkeletonData;
   keyframes: Keyframe[];
+  shapes: Shape[];
+  parts: Part[];
   createdAt: number;
   updatedAt: number;
 }
 
 /** 创作模式 */
-export type WorkMode = "draw" | "rig" | "animate";
+export type WorkMode = "draw" | "rig" | "animate" | "shape";
 
 /** 绘制工具 */
 export type DrawTool = "brush" | "eraser" | "fill" | "picker";
+
+/** 图形类型 */
+export type ShapeType = "rect" | "circle" | "triangle" | "polygon" | "star";
+
+/** 2D 变换 */
+export interface Transform2D {
+  x: number;
+  y: number;
+  rotation: number; // 角度
+  scaleX: number;
+  scaleY: number;
+}
+
+/** 单个图形 */
+export interface Shape {
+  id: string;
+  type: ShapeType;
+  name: string;
+  transform: Transform2D;
+  fill: string;
+  stroke: string;
+  strokeWidth: number;
+  opacity: number;
+  // 类型专属参数
+  width: number;
+  height: number;
+  radius: number;
+  sides: number;
+  points: number;
+  innerRadius: number;
+}
+
+/** 动画偏移关键帧 */
+export interface OffsetKeyframe {
+  id: string;
+  time: number; // 0~1
+  offset: Transform2D;
+}
+
+/** 部件：由若干图形组成，可绑定到骨骼并携带动画偏移 */
+export interface Part {
+  id: string;
+  name: string;
+  shapeIds: string[];
+  boneId?: string;
+  jointId?: string;
+  baseOffset: Transform2D;
+  offsetKeyframes: OffsetKeyframe[];
+}
+
+/** 图形编辑工具 */
+export type ShapeTool = "select" | "rect" | "circle" | "triangle" | "polygon" | "star";
 
 /** 工具状态 */
 export interface ToolState {

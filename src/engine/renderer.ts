@@ -1,8 +1,9 @@
 // Canvas 2D 渲染器
 
-import type { Bone, Joint, JointPositions, Point } from "@/types";
+import type { Bone, Joint, JointPositions, Part, Point, Shape } from "@/types";
 import { findJoint } from "@/engine/skeleton";
 import { parseKey } from "@/engine/gridUtils";
+import { renderShapes, type ShapeRenderOptions } from "@/engine/shapeRenderer";
 
 export interface RenderOptions {
   gridSize: number;
@@ -15,6 +16,10 @@ export interface RenderOptions {
   deformedCells?: Map<string, Point>;
   highlightedCells?: Set<string>;
   selectedJointIds?: string[];
+  showShapes?: boolean;
+  shapes?: Shape[];
+  parts?: Part[];
+  shapeOptions?: ShapeRenderOptions;
 }
 
 /** 绘制单个拼豆（圆形带高光） */
@@ -58,7 +63,7 @@ export function renderCanvas(
   pose: JointPositions,
   options: RenderOptions,
 ) {
-  const { gridSize, cellSize, showGrid, showCenterLine, showSkeleton } = options;
+  const { gridSize, cellSize, showGrid, showCenterLine, showSkeleton, showShapes, shapes, parts, shapeOptions } = options;
   const w = gridSize * cellSize;
   const h = gridSize * cellSize;
 
@@ -178,6 +183,17 @@ export function renderCanvas(
       ctx.arc(cx, cy, cellSize * 0.1, 0, Math.PI * 2);
       ctx.fill();
     }
+  }
+
+  // 绘制图形层
+  if (showShapes && shapes && shapes.length > 0) {
+    renderShapes(ctx, shapes, parts ?? [], joints, bones, pose, {
+      gridSize,
+      cellSize,
+      selectedShapeId: shapeOptions?.selectedShapeId ?? null,
+      selectedPartId: shapeOptions?.selectedPartId ?? null,
+      time: shapeOptions?.time ?? 0,
+    });
   }
 }
 

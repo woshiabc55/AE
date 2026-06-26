@@ -6,10 +6,12 @@ import { Toolbar } from "@/components/Workspace/Toolbar";
 import { Palette } from "@/components/Workspace/Palette";
 import { RigToolbar } from "@/components/Skeleton/RigToolbar";
 import { Timeline } from "@/components/Animation/Timeline";
+import { ShapeToolbar } from "@/components/Shape/ShapeToolbar";
+import { ShapeConfigPanel } from "@/components/Shape/ShapeConfigPanel";
 import { ArtworkList } from "@/components/Gallery/ArtworkList";
 import { Panel } from "@/components/common/Panel";
 import { useUIStore } from "@/store/useUIStore";
-import { Brush, Bone, Film, Palette as PaletteIcon } from "lucide-react";
+import { Brush, Bone, Film, Palette as PaletteIcon, Shapes, SlidersHorizontal } from "lucide-react";
 
 export default function Home() {
   const mode = useUIStore((s) => s.mode);
@@ -25,6 +27,11 @@ export default function Home() {
           {mode === "draw" && (
             <Panel title="绘制工具" icon={<Brush size={14} />}>
               <Toolbar />
+            </Panel>
+          )}
+          {mode === "shape" && (
+            <Panel title="图形部件" icon={<Shapes size={14} />}>
+              <ShapeToolbar />
             </Panel>
           )}
           {mode === "rig" && (
@@ -47,6 +54,11 @@ export default function Home() {
           {mode === "draw" && (
             <Panel title="调色板" icon={<PaletteIcon size={14} />}>
               <Palette />
+            </Panel>
+          )}
+          {mode === "shape" && (
+            <Panel title="参数调节" icon={<SlidersHorizontal size={14} />}>
+              <ShapeConfigPanel />
             </Panel>
           )}
           {mode === "rig" && (

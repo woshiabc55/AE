@@ -50,6 +50,8 @@ export function importArtwork(json: string): ArtworkRecord {
         ? data.skeleton
         : { joints: [], bones: [] },
     keyframes: Array.isArray(data.keyframes) ? data.keyframes : [],
+    shapes: Array.isArray(data.shapes) ? data.shapes : [],
+    parts: Array.isArray(data.parts) ? data.parts : [],
     thumbnail: data.thumbnail,
     createdAt: data.createdAt ?? Date.now(),
     updatedAt: data.updatedAt ?? Date.now(),

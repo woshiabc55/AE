@@ -7,8 +7,13 @@ import type {
   Joint,
   JointPositions,
   Keyframe,
+  OffsetKeyframe,
+  Part,
   PixelCell,
+  Shape,
+  ShapeType,
   SkeletonData,
+  Transform2D,
 } from "@/types";
 import { uuid } from "@/utils/colors";
 import {
@@ -20,6 +25,7 @@ import {
   recordToCells,
 } from "@/engine/gridUtils";
 import { newKeyframeId } from "@/engine/animation";
+import { createPart, createShape, DEFAULT_TRANSFORM } from "@/engine/shapeUtils";
 
 const DEFAULT_GRID_SIZE = 32;
 
@@ -46,6 +52,9 @@ interface ArtworkState {
   keyframes: Keyframe[];
   // 当前姿态（关节位置）—— 用于动画播放与拖拽
   currentPose: JointPositions;
+  // 图形与部件
+  shapes: Shape[];
+  parts: Part[];
   // 是否有未保存修改
   dirty: boolean;
 
@@ -77,6 +86,23 @@ interface ArtworkState {
   removeKeyframe: (id: string) => void;
   updateKeyframeTime: (id: string, time: number) => void;
 
+  // === 图形动作 ===
+  addShape: (type: ShapeType, x?: number, y?: number, fill?: string) => string;
+  removeShape: (id: string) => void;
+  updateShape: (id: string, patch: Partial<Shape>) => void;
+  reorderShapes: (shapes: Shape[]) => void;
+
+  // === 部件动作 ===
+  addPart: (name?: string) => string;
+  removePart: (id: string) => void;
+  updatePart: (id: string, patch: Partial<Part>) => void;
+  assignShapeToPart: (shapeId: string, partId: string | null) => void;
+
+  // === 动画偏移动作 ===
+  addOffsetKeyframe: (partId: string, time: number, offset?: Transform2D) => void;
+  removeOffsetKeyframe: (partId: string, kfId: string) => void;
+  updateOffsetKeyframe: (partId: string, kfId: string, patch: Partial<OffsetKeyframe>) => void;
+
   // === 作品管理 ===
   newArtwork: () => void;
   loadArtwork: (record: ArtworkRecord) => void;
@@ -92,6 +118,8 @@ export const useArtworkStore = create<ArtworkState>((set, get) => ({
   skeleton: emptySkeleton(),
   keyframes: [],
   currentPose: {},
+  shapes: [],
+  parts: [],
   dirty: false,
 
   paintCell: (x, y, color, mirror) =>
@@ -129,7 +157,16 @@ export const useArtworkStore = create<ArtworkState>((set, get) => ({
   clearGrid: () => set({ pixels: {}, dirty: true }),
 
   setGridSize: (size) =>
-    set({ gridSize: size, pixels: {}, skeleton: emptySkeleton(), keyframes: [], currentPose: {}, dirty: true }),
+    set({
+      gridSize: size,
+      pixels: {},
+      skeleton: emptySkeleton(),
+      keyframes: [],
+      currentPose: {},
+      shapes: [],
+      parts: [],
+      dirty: true,
+    }),
 
   setName: (name) => set({ name, dirty: true }),
 
@@ -289,6 +326,123 @@ export const useArtworkStore = create<ArtworkState>((set, get) => ({
       dirty: true,
     })),
 
+  // === 图形动作 ===
+  addShape: (type, x = 0, y = 0, fill = "#ff6b35") => {
+    const shape = createShape(type, x, y, fill);
+    set((state) => ({ shapes: [...state.shapes, shape], dirty: true }));
+    return shape.id;
+  },
+
+  removeShape: (id) =>
+    set((state) => ({
+      shapes: state.shapes.filter((s) => s.id !== id),
+      parts: state.parts.map((p) => ({
+        ...p,
+        shapeIds: p.shapeIds.filter((sid) => sid !== id),
+      })),
+      dirty: true,
+    })),
+
+  updateShape: (id, patch) =>
+    set((state) => ({
+      shapes: state.shapes.map((s) => (s.id === id ? { ...s, ...patch } : s)),
+      dirty: true,
+    })),
+
+  reorderShapes: (shapes) => set({ shapes, dirty: true }),
+
+  // === 部件动作 ===
+  addPart: (name) => {
+    const part = createPart(name ?? `部件${get().parts.length + 1}`);
+    set((state) => ({ parts: [...state.parts, part], dirty: true }));
+    return part.id;
+  },
+
+  removePart: (id) =>
+    set((state) => ({
+      parts: state.parts.filter((p) => p.id !== id),
+      dirty: true,
+    })),
+
+  updatePart: (id, patch) =>
+    set((state) => ({
+      parts: state.parts.map((p) => (p.id === id ? { ...p, ...patch } : p)),
+      dirty: true,
+    })),
+
+  assignShapeToPart: (shapeId, partId) =>
+    set((state) => {
+      // 先从所有部件中移除
+      const parts = state.parts.map((p) => ({
+        ...p,
+        shapeIds: p.shapeIds.filter((sid) => sid !== shapeId),
+      }));
+      // 再添加到目标部件
+      if (partId) {
+        return {
+          parts: parts.map((p) =>
+            p.id === partId ? { ...p, shapeIds: [...p.shapeIds, shapeId] } : p,
+          ),
+          dirty: true,
+        };
+      }
+      return { parts, dirty: true };
+    }),
+
+  // === 动画偏移动作 ===
+  addOffsetKeyframe: (partId, time, offset = { ...DEFAULT_TRANSFORM }) => {
+    set((state) => {
+      const kf: OffsetKeyframe = {
+        id: `ok_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`,
+        time: Math.max(0, Math.min(1, time)),
+        offset: { ...offset },
+      };
+      return {
+        parts: state.parts.map((p) =>
+          p.id === partId
+            ? {
+                ...p,
+                offsetKeyframes: [...p.offsetKeyframes.filter((k) => Math.abs(k.time - kf.time) > 0.001), kf],
+              }
+            : p,
+        ),
+        dirty: true,
+      };
+    });
+  },
+
+  removeOffsetKeyframe: (partId, kfId) =>
+    set((state) => ({
+      parts: state.parts.map((p) =>
+        p.id === partId
+          ? { ...p, offsetKeyframes: p.offsetKeyframes.filter((k) => k.id !== kfId) }
+          : p,
+      ),
+      dirty: true,
+    })),
+
+  updateOffsetKeyframe: (partId, kfId, patch) =>
+    set((state) => ({
+      parts: state.parts.map((p) =>
+        p.id === partId
+          ? {
+              ...p,
+              offsetKeyframes: p.offsetKeyframes.map((k) =>
+                k.id === kfId
+                  ? {
+                      ...k,
+                      ...patch,
+                      time: patch.time !== undefined ? Math.max(0, Math.min(1, patch.time)) : k.time,
+                      offset: patch.offset ? { ...patch.offset } : k.offset,
+                    }
+                  : k,
+              ),
+            }
+          : p,
+      ),
+      dirty: true,
+    })),
+
   newArtwork: () =>
     set({
       id: newArtworkId(),
@@ -298,6 +452,8 @@ export const useArtworkStore = create<ArtworkState>((set, get) => ({
       skeleton: emptySkeleton(),
       keyframes: [],
       currentPose: {},
+      shapes: [],
+      parts: [],
       dirty: false,
     }),
 
@@ -309,6 +465,8 @@ export const useArtworkStore = create<ArtworkState>((set, get) => ({
         : emptySkeleton();
     const safeKeyframes = Array.isArray(record.keyframes) ? record.keyframes : [];
     const safePixels = record.pixels ? cellsToRecord(record.pixels) : {};
+    const safeShapes = Array.isArray(record.shapes) ? record.shapes : [];
+    const safeParts = Array.isArray(record.parts) ? record.parts : [];
     set({
       id: record.id,
       name: record.name ?? "未命名作品",
@@ -317,6 +475,8 @@ export const useArtworkStore = create<ArtworkState>((set, get) => ({
       skeleton: safeSkeleton,
       keyframes: safeKeyframes,
       currentPose: defaultPose(safeSkeleton.joints),
+      shapes: safeShapes,
+      parts: safeParts,
       dirty: false,
     });
   },
@@ -332,6 +492,8 @@ export const useArtworkStore = create<ArtworkState>((set, get) => ({
       pixels: cells,
       skeleton: state.skeleton,
       keyframes: state.keyframes,
+      shapes: state.shapes,
+      parts: state.parts,
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };

@@ -1,6 +1,6 @@
 // 模式切换器
 
-import { Pencil, Bone, Film } from "lucide-react";
+import { Pencil, Bone, Film, Shapes } from "lucide-react";
 import { useUIStore } from "@/store/useUIStore";
 import { useArtworkStore } from "@/store/useArtworkStore";
 import type { WorkMode } from "@/types";
@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 
 const MODES: Array<{ id: WorkMode; icon: typeof Pencil; label: string; desc: string }> = [
   { id: "draw", icon: Pencil, label: "绘制", desc: "半面镜像绘制拼豆" },
+  { id: "shape", icon: Shapes, label: "图形", desc: "添加图形与部件" },
   { id: "rig", icon: Bone, label: "骨架", desc: "绑定骨骼与权重" },
   { id: "animate", icon: Film, label: "动画", desc: "录制关键帧播放" },
 ];
@@ -18,13 +19,15 @@ export function ModeSwitcher() {
   const jointCount = useArtworkStore((s) => s.skeleton.joints.length);
   const boneCount = useArtworkStore((s) => s.skeleton.bones.length);
   const kfCount = useArtworkStore((s) => s.keyframes.length);
+  const shapeCount = useArtworkStore((s) => s.shapes.length);
+  const partCount = useArtworkStore((s) => s.parts.length);
 
   return (
     <div className="flex items-center gap-1 bg-ink-900/80 p-1 rounded-xl border border-ink-600/60">
       {MODES.map(({ id, icon: Icon, label, desc }) => {
         const active = mode === id;
         const badge =
-          id === "rig" ? jointCount + boneCount : id === "animate" ? kfCount : null;
+          id === "rig" ? jointCount + boneCount : id === "animate" ? kfCount : id === "shape" ? shapeCount + partCount : null;
         return (
           <button
             key={id}
