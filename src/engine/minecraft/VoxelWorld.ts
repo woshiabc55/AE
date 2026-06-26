@@ -84,16 +84,21 @@ function smoothNoise(x: number, z: number) {
 }
 
 function terrainHeight(x: number, z: number) {
-  let h = smoothNoise(x * 0.08, z * 0.08) * 4;
-  h += smoothNoise(x * 0.03, z * 0.03) * 6;
-  h += smoothNoise(x * 0.15, z * 0.15) * 1.5;
-  return Math.floor(h) + 4;
+  // 低频大起伏：山脉与谷地
+  let h = smoothNoise(x * 0.035, z * 0.035) * 14;
+  // 中频丘陵
+  h += smoothNoise(x * 0.09, z * 0.09) * 5;
+  // 高频细节
+  h += smoothNoise(x * 0.22, z * 0.22) * 1.5;
+  // 使地形更尖锐：幂函数放大高点
+  h = Math.pow(Math.abs(h) / 18, 1.4) * Math.sign(h) * 18;
+  return Math.floor(h) + 8;
 }
 
 export class VoxelWorld {
   blocks = new Map<string, Block>();
-  worldSize = 48;
-  maxHeight = 18;
+  worldSize = 64;
+  maxHeight = 36;
 
   constructor() {
     this.generate();

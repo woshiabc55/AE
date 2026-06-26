@@ -2,19 +2,32 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, MousePointerClick, Move, Box, Trash2, Eye } from "lucide-react";
+import * as THREE from "three";
+import {
+  ArrowLeft,
+  MousePointerClick,
+  Move,
+  Box,
+  Trash2,
+  Eye,
+  User,
+  Video,
+} from "lucide-react";
 import { VoxelWorld, PLACEABLE_BLOCKS, BlockType, BLOCK_DEFS } from "@/engine/minecraft/VoxelWorld";
 import { VoxelRenderer } from "@/engine/minecraft/VoxelRenderer";
 import { FirstPersonControls } from "@/engine/minecraft/FirstPersonControls";
+import { OrbitControls } from "@/engine/minecraft/OrbitControls";
 import { IsoRenderer, isWebGLAvailable } from "@/engine/minecraft/IsoRenderer";
 
 type RenderMode = "webgl" | "iso";
+type CameraMode = "first" | "orbit";
 
 interface WebGLEngine {
   type: "webgl";
   world: VoxelWorld;
   renderer: VoxelRenderer;
-  controls: FirstPersonControls;
+  controls: FirstPersonControls | OrbitControls;
+  cameraMode: CameraMode;
 }
 
 interface IsoEngine {
@@ -29,6 +42,7 @@ export default function MinecraftPage() {
   const rafRef = useRef<number>(0);
 
   const [renderMode, setRenderMode] = useState<RenderMode>("webgl");
+  const [cameraMode, setCameraMode] = useState<CameraMode>("first");
   const [selectedBlock, setSelectedBlock] = useState<BlockType>("grass");
   const selectedBlockRef = useRef<BlockType>("grass");
   selectedBlockRef.current = selectedBlock;
@@ -46,6 +60,41 @@ export default function MinecraftPage() {
     setBlockCount(engine.world.blocks.size);
   }, []);
 
+  // 切换第一人称 / 第三人称
+  const toggleCameraMode = useCallback(() => {
+    const engine = engineRef.current;
+    if (!engine || engine.type !== "webgl") return;
+
+    const newMode = engine.cameraMode === "first" ? "orbit" : "first";
+    const renderer = engine.renderer;
+    const world = engine.world;
+
+    // 释放旧控制器
+    engine.controls.dispose();
+
+    if (newMode === "first") {
+      // 从当前相机位置切换到第一人称，保持位置并提取当前朝向为 yaw/pitch
+      const dir = new THREE.Vector3();
+      renderer.camera.getWorldDirection(dir);
+      const controls = new FirstPersonControls(renderer.camera, renderer.renderer.domElement, world);
+      controls.onLockChange = (locked) => setIsLocked(locked);
+      controls.yaw = Math.atan2(dir.x, dir.z);
+      controls.pitch = Math.asin(Math.max(-1, Math.min(1, -dir.y)));
+      controls.updateCameraRotation();
+      engine.controls = controls;
+    } else {
+      // 从当前相机位置切换到第三人称环绕
+      const controls = new OrbitControls(renderer.camera, renderer.renderer.domElement, world);
+      controls.target.copy(getCameraLookPoint(renderer.camera));
+      controls.distance = 18;
+      controls.updateCamera();
+      engine.controls = controls;
+    }
+
+    engine.cameraMode = newMode;
+    setCameraMode(newMode);
+  }, []);
+
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -59,15 +108,32 @@ export default function MinecraftPage() {
       // WebGL 3D 模式
       setRenderMode("webgl");
       const renderer = new VoxelRenderer(container, world);
+
+      // 初始相机：水平看向 -Z 方向，避免与 yaw=0/pitch=0 不一致
+      renderer.camera.position.set(0, 14, 22);
+      renderer.camera.lookAt(0, 14, 0);
+
       const controls = new FirstPersonControls(renderer.camera, renderer.renderer.domElement, world);
       controls.onLockChange = (locked) => setIsLocked(locked);
+      // 同步四元数与水平视角
+      controls.yaw = 0;
+      controls.pitch = 0;
+      controls.updateCameraRotation();
 
-      engineRef.current = { type: "webgl", world, renderer, controls };
+      engineRef.current = { type: "webgl", world, renderer, controls, cameraMode: "first" };
+      setCameraMode("first");
 
       const canvas = renderer.renderer.domElement;
 
       const handleMouseDown = (e: MouseEvent) => {
-        if (!controls.isLocked) return;
+        const ctrl = engineRef.current;
+        if (!ctrl || ctrl.type !== "webgl") return;
+
+        // 第一人称模式下必须锁定鼠标才能交互；第三人称模式下左键可拖拽视角，右键放置
+        if (ctrl.cameraMode === "first" && !(ctrl.controls as FirstPersonControls).isLocked) {
+          return;
+        }
+
         const target = renderer.getTargetBlock();
         if (!target) return;
 
@@ -78,10 +144,18 @@ export default function MinecraftPage() {
           const nx = target.block.x + Math.round(target.normal.x);
           const ny = target.block.y + Math.round(target.normal.y);
           const nz = target.block.z + Math.round(target.normal.z);
-          const cx = Math.round(renderer.camera.position.x);
-          const cy = Math.round(renderer.camera.position.y);
-          const cz = Math.round(renderer.camera.position.z);
+
+          // 避免与相机/目标点重叠
+          let cx = 0, cy = 0, cz = 0;
+          if (ctrl.cameraMode === "first") {
+            const cam = renderer.camera.position;
+            cx = Math.round(cam.x); cy = Math.round(cam.y); cz = Math.round(cam.z);
+          } else {
+            const t = (ctrl.controls as OrbitControls).target;
+            cx = Math.round(t.x); cy = Math.round(t.y); cz = Math.round(t.z);
+          }
           if (nx === cx && ny === cy && nz === cz) return;
+
           world.setBlock(nx, ny, nz, selectedBlockRef.current);
           rebuild();
         }
@@ -96,14 +170,18 @@ export default function MinecraftPage() {
         const engine = engineRef.current as WebGLEngine | null;
         if (!engine || engine.type !== "webgl") return;
         const delta = Math.min((time - lastTime) / 1000, 0.1);
-        controls.update(delta);
+        engine.controls.update(delta);
         renderer.updateHighlight();
         renderer.render();
-        setPosition({
-          x: Math.round(renderer.camera.position.x),
-          y: Math.round(renderer.camera.position.y),
-          z: Math.round(renderer.camera.position.z),
-        });
+
+        if (engine.cameraMode === "first") {
+          const cam = renderer.camera.position;
+          setPosition({ x: Math.round(cam.x), y: Math.round(cam.y), z: Math.round(cam.z) });
+        } else {
+          const t = (engine.controls as OrbitControls).target;
+          setPosition({ x: Math.round(t.x), y: Math.round(t.y), z: Math.round(t.z) });
+        }
+
         lastTime = time;
         rafRef.current = requestAnimationFrame(loop);
       };
@@ -148,13 +226,25 @@ export default function MinecraftPage() {
       if (e.code === "KeyR") {
         world.generate();
         rebuild();
-        if (engineRef.current?.type === "webgl") {
-          engineRef.current.renderer.camera.position.set(0, 12, 18);
-          engineRef.current.renderer.camera.lookAt(0, 0, 0);
-          engineRef.current.controls.yaw = 0;
-          engineRef.current.controls.pitch = 0;
-          engineRef.current.controls.updateCameraRotation();
+        const engine = engineRef.current;
+        if (engine?.type === "webgl") {
+          engine.renderer.camera.position.set(0, 14, 22);
+          engine.renderer.camera.lookAt(0, 14, 0);
+          if (engine.cameraMode === "first") {
+            const fp = engine.controls as FirstPersonControls;
+            fp.yaw = 0;
+            fp.pitch = 0;
+            fp.updateCameraRotation();
+          } else {
+            const orb = engine.controls as OrbitControls;
+            orb.target.set(0, 14, 0);
+            orb.distance = 18;
+            orb.updateCamera();
+          }
         }
+      }
+      if (e.code === "KeyV") {
+        toggleCameraMode();
       }
     };
 
@@ -165,7 +255,7 @@ export default function MinecraftPage() {
       cleanup();
       engineRef.current = null;
     };
-  }, [rebuild]);
+  }, [rebuild, toggleCameraMode]);
 
   const showOverlay = renderMode === "iso" || !isLocked;
 
@@ -184,7 +274,7 @@ export default function MinecraftPage() {
           <span className="text-xs font-mono">返回工坊</span>
         </Link>
 
-        {renderMode === "webgl" && (
+        {renderMode === "webgl" && cameraMode === "first" && (
           <div className="hidden sm:flex items-center gap-3 px-4 py-2 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60 text-xs font-mono text-ink-300">
             <span className="flex items-center gap-1.5">
               <Move size={12} className="text-mint-400" />
@@ -198,7 +288,22 @@ export default function MinecraftPage() {
               左键破坏 / 右键放置
             </span>
             <span className="w-px h-3 bg-ink-600/60" />
-            <span>R 重新生成世界</span>
+            <span>V 切换第三人称</span>
+          </div>
+        )}
+
+        {renderMode === "webgl" && cameraMode === "orbit" && (
+          <div className="hidden sm:flex items-center gap-3 px-4 py-2 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60 text-xs font-mono text-ink-300">
+            <span className="flex items-center gap-1.5">
+              <Move size={12} className="text-mint-400" />
+              WASD 移动目标点
+            </span>
+            <span className="w-px h-3 bg-ink-600/60" />
+            <span>空格上升 / Shift 下降</span>
+            <span className="w-px h-3 bg-ink-600/60" />
+            <span>拖拽旋转视角 · 滚轮缩放</span>
+            <span className="w-px h-3 bg-ink-600/60" />
+            <span>V 切换第一人称</span>
           </div>
         )}
 
@@ -215,22 +320,34 @@ export default function MinecraftPage() {
           </div>
         )}
 
-        <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60 text-xs font-mono text-ink-300">
-          <Box size={12} className="text-sun-400" />
-          <span>方块: {blockCount}</span>
+        <div className="flex items-center gap-2 pointer-events-auto">
           {renderMode === "webgl" && (
-            <>
-              <span className="w-px h-3 bg-ink-600/60" />
-              <span>
-                X:{position.x} Y:{position.y} Z:{position.z}
-              </span>
-            </>
+            <button
+              onClick={toggleCameraMode}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60 text-xs font-mono text-ink-200 hover:text-ember-400 hover:border-ember-500/40 transition-colors"
+              title="V 键切换"
+            >
+              {cameraMode === "first" ? <User size={12} /> : <Video size={12} />}
+              <span>{cameraMode === "first" ? "第一人称" : "第三人称"}</span>
+            </button>
           )}
+          <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60 text-xs font-mono text-ink-300">
+            <Box size={12} className="text-sun-400" />
+            <span>方块: {blockCount}</span>
+            {renderMode === "webgl" && (
+              <>
+                <span className="w-px h-3 bg-ink-600/60" />
+                <span>
+                  X:{position.x} Y:{position.y} Z:{position.z}
+                </span>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* 准星（仅 3D 模式） */}
-      {renderMode === "webgl" && (
+      {/* 准星（仅第一人称 3D 模式） */}
+      {renderMode === "webgl" && cameraMode === "first" && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="relative w-5 h-5">
             <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-white/80 -translate-y-1/2" />
@@ -244,12 +361,26 @@ export default function MinecraftPage() {
         <div className="absolute inset-0 z-20 flex items-center justify-center bg-ink-900/60 backdrop-blur-sm pointer-events-none">
           <div className="text-center space-y-4 animate-fade-in">
             <div className="font-pixel text-2xl text-ember-400 text-glow-ember">MINECRAFT 3D</div>
-            {renderMode === "webgl" ? (
+            {renderMode === "webgl" && cameraMode === "first" ? (
               <>
                 <div className="text-sm font-mono text-ink-200">点击画面开始探索方块世界</div>
                 <div className="flex items-center justify-center gap-2 text-xs font-mono text-ink-400">
                   <span className="px-2 py-1 rounded bg-ink-800 border border-ink-600/60">ESC</span>
                   <span>释放鼠标</span>
+                  <span className="w-px h-3 bg-ink-600/60 mx-1" />
+                  <span className="px-2 py-1 rounded bg-ink-800 border border-ink-600/60">V</span>
+                  <span>切换第三人称</span>
+                </div>
+              </>
+            ) : renderMode === "webgl" && cameraMode === "orbit" ? (
+              <>
+                <div className="text-sm font-mono text-ink-200">第三人称环绕模式</div>
+                <div className="flex items-center justify-center gap-2 text-xs font-mono text-ink-400">
+                  <span className="px-2 py-1 rounded bg-ink-800 border border-ink-600/60">拖拽</span>
+                  <span>旋转视角</span>
+                  <span className="w-px h-3 bg-ink-600/60 mx-1" />
+                  <span className="px-2 py-1 rounded bg-ink-800 border border-ink-600/60">V</span>
+                  <span>切换第一人称</span>
                 </div>
               </>
             ) : (
@@ -293,7 +424,7 @@ export default function MinecraftPage() {
 
       {/* 移动端操作说明 */}
       <div className="sm:hidden absolute bottom-24 left-4 right-4 z-10 px-4 py-3 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60 text-[10px] font-mono text-ink-300 space-y-1">
-        {renderMode === "webgl" ? (
+        {renderMode === "webgl" && cameraMode === "first" && (
           <>
             <div className="flex items-center gap-2">
               <Move size={10} className="text-mint-400" /> WASD 移动
@@ -303,7 +434,16 @@ export default function MinecraftPage() {
               <MousePointerClick size={10} className="text-ember-400" /> 左键破坏 / 右键放置
             </div>
           </>
-        ) : (
+        )}
+        {renderMode === "webgl" && cameraMode === "orbit" && (
+          <>
+            <div className="flex items-center gap-2">
+              <Move size={10} className="text-mint-400" /> WASD 移动目标点
+            </div>
+            <div>拖拽旋转 · 滚轮缩放</div>
+          </>
+        )}
+        {renderMode === "iso" && (
           <>
             <div className="flex items-center gap-2">
               <Eye size={10} className="text-mint-400" /> 2D 等距预览
@@ -314,7 +454,19 @@ export default function MinecraftPage() {
         <div className="flex items-center gap-2">
           <Trash2 size={10} className="text-ink-400" /> R 重新生成世界
         </div>
+        {renderMode === "webgl" && (
+          <div className="flex items-center gap-2">
+            <Video size={10} className="text-ember-400" /> V 切换视角
+          </div>
+        )}
       </div>
     </div>
   );
+}
+
+// 计算相机前方不远处的一个点，用于模式切换时保持朝向
+function getCameraLookPoint(camera: THREE.PerspectiveCamera) {
+  const dir = new THREE.Vector3();
+  camera.getWorldDirection(dir);
+  return camera.position.clone().add(dir.multiplyScalar(10));
 }

@@ -25,7 +25,7 @@ export class VoxelRenderer {
     // 场景
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x87ceeb);
-    this.scene.fog = new THREE.Fog(0x87ceeb, 20, 80);
+    this.scene.fog = new THREE.Fog(0x87ceeb, 30, 140);
 
     // 相机
     this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
@@ -47,7 +47,7 @@ export class VoxelRenderer {
       opacity: 1,
     });
 
-    this.mesh = new THREE.InstancedMesh(this.geometry, this.material, 20000);
+    this.mesh = new THREE.InstancedMesh(this.geometry, this.material, 100000);
     this.mesh.castShadow = true;
     this.mesh.receiveShadow = true;
     this.scene.add(this.mesh);
@@ -72,10 +72,10 @@ export class VoxelRenderer {
     sun.shadow.mapSize.height = 2048;
     sun.shadow.camera.near = 0.5;
     sun.shadow.camera.far = 200;
-    sun.shadow.camera.left = -50;
-    sun.shadow.camera.right = 50;
-    sun.shadow.camera.top = 50;
-    sun.shadow.camera.bottom = -50;
+    sun.shadow.camera.left = -80;
+    sun.shadow.camera.right = 80;
+    sun.shadow.camera.top = 80;
+    sun.shadow.camera.bottom = -80;
     this.scene.add(sun);
 
     // 地面底板（虚空之下的薄板，增加深度感）
