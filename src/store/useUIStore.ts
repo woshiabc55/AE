@@ -1,113 +1,40 @@
-// UI 状态管理
-
-import { create } from "zustand";
-import type { WorkMode } from "@/types";
-
-export type RigTool = "add" | "connect" | "assign" | "move" | "select";
-export type AnimateTool = "drag" | "select";
+import { create } from 'zustand';
+import type { PanelTab } from '../types';
 
 interface UIState {
-  mode: WorkMode;
-  // 动画播放
-  isPlaying: boolean;
-  currentTime: number; // 0~1
-  loop: boolean;
-  playbackSpeed: number; // 0.25 ~ 2
-  // 选中
-  selectedJointId: string | null;
-  selectedBoneId: string | null;
-  // 多选（点位/区域选择）
-  selectedJointIds: string[];
-  // 骨架编辑模式
-  rigTool: RigTool;
-  // 动画模式工具
-  animateTool: AnimateTool;
-  // 网格吸附（确保整齐不偏差）
-  snapToGrid: boolean;
-  // 镜像骨架（对称添加关节）
-  mirrorSkeleton: boolean;
-  // 面板
-  showGallery: boolean;
+  leftPanelWidth: number;
+  rightPanelWidth: number;
+  timelineHeight: number;
+  activeRightTab: PanelTab;
+  canvasZoom: number;
+  canvasPanX: number;
+  canvasPanY: number;
+  showGrid: boolean;
 
-  setMode: (mode: WorkMode) => void;
-  setPlaying: (playing: boolean) => void;
-  setCurrentTime: (t: number) => void;
-  toggleLoop: () => void;
-  setPlaybackSpeed: (speed: number) => void;
-  selectJoint: (id: string | null) => void;
-  selectBone: (id: string | null) => void;
-  // 多选
-  toggleJointSelected: (id: string) => void;
-  clearSelection: () => void;
-  selectMultipleJoints: (ids: string[]) => void;
-  setRigTool: (tool: RigTool) => void;
-  setAnimateTool: (tool: AnimateTool) => void;
-  toggleSnap: () => void;
-  setSnap: (on: boolean) => void;
-  toggleMirrorSkeleton: () => void;
-  setShowGallery: (show: boolean) => void;
+  setLeftPanelWidth: (w: number) => void;
+  setRightPanelWidth: (w: number) => void;
+  setTimelineHeight: (h: number) => void;
+  setActiveRightTab: (tab: PanelTab) => void;
+  setCanvasZoom: (z: number) => void;
+  setCanvasPan: (x: number, y: number) => void;
+  toggleGrid: () => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
-  mode: "draw",
-  isPlaying: false,
-  currentTime: 0,
-  loop: true,
-  playbackSpeed: 1,
-  selectedJointId: null,
-  selectedBoneId: null,
-  selectedJointIds: [],
-  rigTool: "add",
-  animateTool: "drag",
-  snapToGrid: true,
-  mirrorSkeleton: false,
-  showGallery: false,
+  leftPanelWidth: 220,
+  rightPanelWidth: 260,
+  timelineHeight: 220,
+  activeRightTab: 'properties',
+  canvasZoom: 1,
+  canvasPanX: 0,
+  canvasPanY: 0,
+  showGrid: true,
 
-  setMode: (mode) =>
-    set({
-      mode,
-      isPlaying: false,
-      selectedJointId: null,
-      selectedBoneId: null,
-      selectedJointIds: [],
-    }),
-  setPlaying: (playing) => set({ isPlaying: playing }),
-  setCurrentTime: (t) => set({ currentTime: Math.max(0, Math.min(1, t)) }),
-  toggleLoop: () => set((s) => ({ loop: !s.loop })),
-  setPlaybackSpeed: (speed) =>
-    set({ playbackSpeed: Math.max(0.25, Math.min(2, speed)) }),
-  selectJoint: (id) =>
-    set({
-      selectedJointId: id,
-      selectedBoneId: null,
-      selectedJointIds: id ? [id] : [],
-    }),
-  selectBone: (id) =>
-    set({ selectedBoneId: id, selectedJointId: null, selectedJointIds: [] }),
-  toggleJointSelected: (id) =>
-    set((s) => {
-      const exists = s.selectedJointIds.includes(id);
-      const next = exists
-        ? s.selectedJointIds.filter((x) => x !== id)
-        : [...s.selectedJointIds, id];
-      return {
-        selectedJointIds: next,
-        selectedJointId: next[next.length - 1] ?? null,
-        selectedBoneId: null,
-      };
-    }),
-  clearSelection: () =>
-    set({ selectedJointId: null, selectedBoneId: null, selectedJointIds: [] }),
-  selectMultipleJoints: (ids) =>
-    set({
-      selectedJointIds: ids,
-      selectedJointId: ids[ids.length - 1] ?? null,
-      selectedBoneId: null,
-    }),
-  setRigTool: (tool) => set({ rigTool: tool }),
-  setAnimateTool: (tool) => set({ animateTool: tool }),
-  toggleSnap: () => set((s) => ({ snapToGrid: !s.snapToGrid })),
-  setSnap: (on) => set({ snapToGrid: on }),
-  toggleMirrorSkeleton: () => set((s) => ({ mirrorSkeleton: !s.mirrorSkeleton })),
-  setShowGallery: (show) => set({ showGallery: show }),
+  setLeftPanelWidth: (w) => set({ leftPanelWidth: w }),
+  setRightPanelWidth: (w) => set({ rightPanelWidth: w }),
+  setTimelineHeight: (h) => set({ timelineHeight: h }),
+  setActiveRightTab: (tab) => set({ activeRightTab: tab }),
+  setCanvasZoom: (z) => set({ canvasZoom: Math.max(0.1, Math.min(5, z)) }),
+  setCanvasPan: (x, y) => set({ canvasPanX: x, canvasPanY: y }),
+  toggleGrid: () => set((s) => ({ showGrid: !s.showGrid })),
 }));

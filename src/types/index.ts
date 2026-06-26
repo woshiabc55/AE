@@ -1,73 +1,207 @@
-// 拼豆半面工坊 - 核心类型定义
-
-/** 拼豆格子 */
-export interface PixelCell {
-  x: number;
-  y: number;
-  color: string; // hex 格式，如 #ff6b35
+// ===== 基础变换 =====
+export interface Transform {
+  translateX: number;
+  translateY: number;
+  rotate: number;
+  scaleX: number;
+  scaleY: number;
+  skewX: number;
+  skewY: number;
+  originX: number;
+  originY: number;
 }
 
-/** 关节节点 */
-export interface Joint {
+export const defaultTransform: Transform = {
+  translateX: 0,
+  translateY: 0,
+  rotate: 0,
+  scaleX: 1,
+  scaleY: 1,
+  skewX: 0,
+  skewY: 0,
+  originX: 0.5,
+  originY: 0.5,
+};
+
+// ===== 填充与描边 =====
+export interface GradientStop {
+  offset: number;
+  color: string;
+  opacity: number;
+}
+
+export interface FillStyle {
+  type: 'none' | 'solid' | 'linear-gradient' | 'radial-gradient';
+  color: string;
+  opacity: number;
+  gradientStops?: GradientStop[];
+}
+
+export interface StrokeStyle {
+  color: string;
+  width: number;
+  opacity: number;
+  linecap: 'butt' | 'round' | 'square';
+  linejoin: 'miter' | 'round' | 'bevel';
+  dasharray?: string;
+}
+
+export const defaultFill: FillStyle = { type: 'solid', color: '#00e5ff', opacity: 1 };
+export const defaultStroke: StrokeStyle = { color: '#ffffff', width: 0, opacity: 1, linecap: 'round', linejoin: 'round' };
+
+// ===== SVG 元素 =====
+export type SVGElementType = 'rect' | 'circle' | 'ellipse' | 'line' | 'path' | 'text' | 'g' | 'image';
+
+export interface SVGElement {
   id: string;
-  x: number; // 网格坐标
-  y: number;
+  layerId: string;
+  type: SVGElementType;
+  attrs: Record<string, number | string>;
+  transform: Transform;
+  fill: FillStyle;
+  stroke: StrokeStyle;
+  children?: SVGElement[];
+}
+
+// ===== 图层 =====
+export type LayerType = 'shape' | 'group' | 'image' | 'text';
+
+export interface Layer {
+  id: string;
   name: string;
-  parentBoneId?: string;
+  type: LayerType;
+  visible: boolean;
+  locked: boolean;
+  opacity: number;
+  blendMode: string;
+  parentId: string | null;
+  order: number;
+  colorTag: string;
+  elementIds: string[];
+  expanded: boolean;
 }
 
-/** 骨骼连接 */
-export interface Bone {
-  id: string;
-  fromJointId: string;
-  toJointId: string;
-  influencedCells: string[]; // 受影响格子键 "x,y"
+// ===== 缓动 =====
+export type EasingPreset =
+  | 'linear'
+  | 'ease-in'
+  | 'ease-out'
+  | 'ease-in-out'
+  | 'back-in'
+  | 'back-out'
+  | 'back-in-out'
+  | 'elastic-in'
+  | 'elastic-out'
+  | 'bounce-in'
+  | 'bounce-out';
+
+export interface EasingData {
+  type: 'preset' | 'cubic-bezier' | 'spring';
+  name?: EasingPreset;
+  cubicBezier?: [number, number, number, number];
+  springConfig?: { stiffness: number; damping: number; mass: number };
 }
 
-/** 骨架数据 */
-export interface SkeletonData {
-  joints: Joint[];
-  bones: Bone[];
+export const defaultEasing: EasingData = { type: 'preset', name: 'ease-in-out' };
+
+// ===== 关键帧 =====
+export interface KeyframeProps {
+  transform?: Partial<Transform>;
+  opacity?: number;
+  fill?: Partial<FillStyle>;
+  stroke?: Partial<StrokeStyle>;
+  [key: string]: unknown;
 }
 
-/** 关键帧中的关节位置快照 */
-export type JointPositions = Record<string, { x: number; y: number }>;
-
-/** 动画关键帧 */
 export interface Keyframe {
   id: string;
-  time: number; // 0~1 归一化时间
-  jointPositions: JointPositions;
+  layerId: string;
+  elementId: string;
+  frame: number;
+  properties: KeyframeProps;
+  easing: EasingData;
 }
 
-/** 作品记录（IndexedDB 持久化） */
-export interface ArtworkRecord {
+// ===== 场景 =====
+export type TransitionType = 'none' | 'fade' | 'slide-left' | 'slide-right' | 'slide-up' | 'slide-down' | 'zoom-in' | 'zoom-out';
+
+export interface Transition {
+  type: TransitionType;
+  duration: number;
+  easing: EasingData;
+}
+
+export const defaultTransition: Transition = { type: 'fade', duration: 15, easing: defaultEasing };
+
+export interface Scene {
   id: string;
   name: string;
-  thumbnail: string; // Base64 缩略图
-  gridSize: number; // 拼豆网格尺寸 (如 32 表示 32×32)
-  pixels: PixelCell[];
-  skeleton: SkeletonData;
+  order: number;
+  startFrame: number;
+  endFrame: number;
+  transition: Transition;
+  thumbnail: string;
+}
+
+// ===== 变量与事件 =====
+export type VariableType = 'number' | 'string' | 'boolean' | 'color';
+
+export interface Variable {
+  id: string;
+  name: string;
+  type: VariableType;
+  defaultValue: string | number | boolean;
+  currentValue: string | number | boolean;
+}
+
+export type EventType = 'click' | 'hover' | 'frame-reach' | 'variable-change' | 'scene-end';
+export type ActionType = 'play-scene' | 'set-variable' | 'toggle-visibility' | 'set-property' | 'play-animation';
+
+export interface Action {
+  type: ActionType;
+  targetId?: string;
+  params: Record<string, unknown>;
+}
+
+export interface EventBinding {
+  id: string;
+  eventType: EventType;
+  sourceElementId?: string;
+  sourceFrame?: number;
+  sourceVariableId?: string;
+  condition?: {
+    operator: 'eq' | 'neq' | 'gt' | 'lt' | 'gte' | 'lte';
+    value: unknown;
+  };
+  actions: Action[];
+}
+
+// ===== 项目 =====
+export interface Project {
+  id: string;
+  name: string;
+  width: number;
+  height: number;
+  fps: number;
+  duration: number;
+  backgroundColor: string;
+  scenes: Scene[];
+  layers: Layer[];
+  elements: SVGElement[];
   keyframes: Keyframe[];
+  variables: Variable[];
+  eventBindings: EventBinding[];
   createdAt: number;
   updatedAt: number;
 }
 
-/** 创作模式 */
-export type WorkMode = "draw" | "rig" | "animate";
+// ===== 工具类型 =====
+export type ToolType = 'select' | 'rect' | 'circle' | 'ellipse' | 'line' | 'path' | 'text' | 'hand';
 
-/** 绘制工具 */
-export type DrawTool = "brush" | "eraser" | "fill" | "picker";
+// ===== UI 状态 =====
+export type PanelTab = 'properties' | 'logic' | 'export';
 
-/** 工具状态 */
-export interface ToolState {
-  tool: DrawTool;
-  color: string;
-  brushSize: number;
-}
-
-/** 几何点 */
-export interface Point {
-  x: number;
-  y: number;
-}
+export const LAYER_COLORS = [
+  '#00e5ff', '#ff6b6b', '#a855f7', '#22c55e',
+  '#f472b6', '#facc15', '#3b82f6', '#ef4444',
+];
