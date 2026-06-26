@@ -1,10 +1,11 @@
 // 顶部栏
 
 import { useState } from "react";
-import { Save, FolderOpen, FilePlus2, Circle } from "lucide-react";
+import { Save, FolderOpen, FilePlus2, Circle, Gamepad2 } from "lucide-react";
 import { useArtworkStore } from "@/store/useArtworkStore";
 import { useUIStore } from "@/store/useUIStore";
 import { ModeSwitcher } from "@/components/Workspace/ModeSwitcher";
+import { useNavigate } from "react-router-dom";
 import { PixelButton } from "@/components/common/PixelButton";
 import { generateThumbnail } from "@/engine/renderer";
 import { saveArtwork } from "@/db/artworkRepo";
@@ -20,6 +21,7 @@ export function Header() {
   const setShowGallery = useUIStore((s) => s.setShowGallery);
 
   const [saving, setSaving] = useState(false);
+  const navigate = useNavigate();
 
   const handleSave = async () => {
     setSaving(true);
@@ -86,6 +88,12 @@ export function Header() {
 
       {/* 右：操作 */}
       <div className="flex items-center gap-2">
+        <PixelButton variant="ghost" size="sm" onClick={() => navigate("/minecraft")}>
+          <span className="flex items-center gap-1.5">
+            <Gamepad2 size={14} />
+            <span className="hidden sm:inline">我的世界</span>
+          </span>
+        </PixelButton>
         <PixelButton
           variant="ghost"
           size="sm"
