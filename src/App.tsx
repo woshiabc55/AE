@@ -4,7 +4,7 @@ import MinecraftPage from "@/pages/MinecraftPage";
 
 export default function App() {
   return (
-    <Router>
+    <Router basename="/AE">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/minecraft" element={<MinecraftPage />} />
