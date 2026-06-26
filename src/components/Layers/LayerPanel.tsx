@@ -53,57 +53,83 @@ export default function LayerPanel() {
 
   return (
     <div
-      className="flex flex-col bg-[#1a1d27] border-r border-white/10 select-none"
+      className="flex flex-col bg-[#15171f] select-none relative"
       style={{ width: leftPanelWidth }}
     >
-      {/* 头部 */}
-      <div className="flex items-center justify-between px-3 h-9 border-b border-white/10 shrink-0">
-        <span className="text-xs font-medium text-gray-300">图层</span>
-        <div className="flex items-center gap-1">
-          <button
-            title="添加图层"
-            onClick={handleAddLayer}
-            className="p-1 rounded text-gray-400 hover:text-[#00e5ff] hover:bg-white/10 transition-colors"
-          >
-            <Plus size={14} />
-          </button>
-          <button
-            title="删除图层"
-            onClick={handleDeleteLayer}
-            disabled={!selectedLayerId}
-            className="p-1 rounded text-gray-400 hover:text-red-400 hover:bg-white/10 transition-colors disabled:opacity-30 disabled:pointer-events-none"
-          >
-            <Trash2 size={14} />
-          </button>
+      {/* 3D 右侧内嵌阴影 */}
+      <div className="absolute top-0 right-0 bottom-0 w-px bg-[#0a0c14]" />
+      <div className="absolute top-0 right-0 bottom-0 w-2 pointer-events-none"
+        style={{ background: 'linear-gradient(to left, rgba(0,0,0,0.15), transparent)' }}
+      />
+
+      {/* 头部 - 3D 浮雕 */}
+      <div className="relative">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+        <div className="flex items-center justify-between px-3 h-9 border-b border-[#0a0c14] shrink-0">
+          <span className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">图层</span>
+          <div className="flex items-center gap-0.5">
+            <button
+              title="添加图层"
+              onClick={handleAddLayer}
+              className="p-1 rounded text-gray-500 hover:text-[#00e5ff] hover:bg-white/[0.06] transition-colors"
+            >
+              <Plus size={13} />
+            </button>
+            <button
+              title="删除图层"
+              onClick={handleDeleteLayer}
+              disabled={!selectedLayerId}
+              className="p-1 rounded text-gray-500 hover:text-red-400 hover:bg-white/[0.06] transition-colors disabled:opacity-25 disabled:pointer-events-none"
+            >
+              <Trash2 size={13} />
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* 图层列表 */}
+      {/* 图层列表 - 深度压缩效果 */}
       <div className="flex-1 overflow-y-auto">
-        {sortedLayers.map((layer) => {
+        {sortedLayers.map((layer, idx) => {
           const isSelected = layer.id === selectedLayerId;
           const isEditing = editingId === layer.id;
+          // 深度压缩：越往下越暗
+          const depthAlpha = 1 - Math.min(idx * 0.04, 0.2);
 
           return (
             <div
               key={layer.id}
               onClick={() => handleLayerClick(layer.id)}
-              className={`flex items-center gap-2 px-2 h-8 cursor-pointer transition-colors ${
+              className={`flex items-center gap-2 px-2 h-9 cursor-pointer transition-all duration-150 relative ${
                 isSelected
-                  ? 'bg-[#00e5ff]/10 border-l-2 border-[#00e5ff]'
-                  : 'border-l-2 border-transparent hover:bg-white/5'
+                  ? 'bg-[#00e5ff]/8'
+                  : 'hover:bg-white/[0.03]'
               }`}
+              style={{ opacity: depthAlpha }}
             >
-              {/* 颜色标签 */}
+              {/* 左侧选中条 - 3D 内嵌效果 */}
+              {isSelected && (
+                <div
+                  className="absolute left-0 top-0 bottom-0 w-0.5"
+                  style={{
+                    background: 'linear-gradient(to bottom, #00e5ff, #0088aa)',
+                    boxShadow: '2px 0 4px rgba(0,229,255,0.2)',
+                  }}
+                />
+              )}
+
+              {/* 颜色标签 - 3D 球体效果 */}
               <span
-                className="w-2.5 h-2.5 rounded-full shrink-0"
-                style={{ backgroundColor: layer.colorTag }}
+                className="w-2.5 h-2.5 rounded-full shrink-0 relative"
+                style={{
+                  backgroundColor: layer.colorTag,
+                  boxShadow: `0 1px 2px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.2)`,
+                }}
               />
 
               {/* 图层名称 */}
               {isEditing ? (
                 <input
-                  className="flex-1 bg-transparent text-white text-xs outline-none border-b border-[#00e5ff] min-w-0"
+                  className="flex-1 bg-[#0f1117] text-white text-[11px] outline-none border border-[#00e5ff]/40 rounded px-1.5 py-0.5 min-w-0 shadow-[inset_0_1px_2px_rgba(0,0,0,0.3)]"
                   value={editValue}
                   onChange={(e) => setEditValue(e.target.value)}
                   onBlur={() => handleNameBlur(layer.id)}
@@ -113,8 +139,8 @@ export default function LayerPanel() {
                 />
               ) : (
                 <span
-                  className={`flex-1 text-xs truncate min-w-0 ${
-                    isSelected ? 'text-white' : 'text-gray-400'
+                  className={`flex-1 text-[11px] truncate min-w-0 ${
+                    isSelected ? 'text-white' : 'text-gray-500'
                   }`}
                   onDoubleClick={(e) => {
                     e.stopPropagation();
@@ -129,26 +155,33 @@ export default function LayerPanel() {
               <button
                 title={layer.visible ? '隐藏' : '显示'}
                 onClick={(e) => { e.stopPropagation(); toggleLayerVisibility(layer.id); }}
-                className="p-0.5 rounded text-gray-500 hover:text-white transition-colors"
+                className={`p-0.5 rounded transition-colors ${
+                  layer.visible ? 'text-gray-600 hover:text-gray-300' : 'text-gray-700'
+                }`}
               >
-                {layer.visible ? <Eye size={12} /> : <EyeOff size={12} />}
+                {layer.visible ? <Eye size={11} /> : <EyeOff size={11} />}
               </button>
 
               {/* 锁定切换 */}
               <button
                 title={layer.locked ? '解锁' : '锁定'}
                 onClick={(e) => { e.stopPropagation(); toggleLayerLock(layer.id); }}
-                className="p-0.5 rounded text-gray-500 hover:text-white transition-colors"
+                className={`p-0.5 rounded transition-colors ${
+                  layer.locked ? 'text-[#ff6b6b]/60' : 'text-gray-700 hover:text-gray-400'
+                }`}
               >
-                {layer.locked ? <Lock size={12} /> : <Unlock size={12} />}
+                {layer.locked ? <Lock size={11} /> : <Unlock size={11} />}
               </button>
             </div>
           );
         })}
 
         {sortedLayers.length === 0 && (
-          <div className="flex items-center justify-center h-20 text-xs text-gray-600">
-            暂无图层
+          <div className="flex flex-col items-center justify-center h-24 text-[10px] text-white/15 gap-1">
+            <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center mb-1">
+              <Plus size={10} />
+            </div>
+            使用工具创建图形
           </div>
         )}
       </div>

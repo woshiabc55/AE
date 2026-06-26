@@ -12,30 +12,30 @@ export default function Home() {
       <MainToolbar />
 
       {/* 中间区域 */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden min-h-0">
         {/* 左侧图层面板 */}
-        <div className="flex-shrink-0 border-r border-[#2a2d37]">
+        <div className="flex-shrink-0">
           <LayerPanel />
         </div>
 
         {/* 中央画布 */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden min-w-0">
           <SVGCanvas />
         </div>
 
         {/* 右侧属性面板 */}
-        <div className="flex-shrink-0 border-l border-[#2a2d37]">
+        <div className="flex-shrink-0">
           <PropertyPanel />
         </div>
       </div>
 
       {/* 底部时间线 */}
-      <div className="flex-shrink-0 border-t border-[#2a2d37]">
+      <div className="flex-shrink-0">
         <TimelinePanel />
       </div>
 
       {/* 底部场景管理条 */}
-      <div className="flex-shrink-0 border-t border-[#2a2d37]">
+      <div className="flex-shrink-0">
         <SceneManager />
       </div>
     </div>

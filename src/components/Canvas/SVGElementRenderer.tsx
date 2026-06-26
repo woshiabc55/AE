@@ -4,12 +4,12 @@ interface Props {
   element: SVGEl;
   isSelected?: boolean;
   onSelect?: (id: string, e: React.MouseEvent) => void;
+  isExtrude?: boolean; // 伪3D 挤压层，不响应交互
 }
 
 function resolveFill(fill: FillStyle): string {
   if (fill.type === 'none') return 'none';
   if (fill.type === 'solid') return fill.color;
-  // 渐变暂时回退为纯色
   return fill.color;
 }
 
@@ -75,7 +75,7 @@ export function getElementBBox(el: SVGEl): { x: number; y: number; width: number
   }
 }
 
-export default function SVGElementRenderer({ element, isSelected, onSelect }: Props) {
+export default function SVGElementRenderer({ element, isSelected, onSelect, isExtrude }: Props) {
   const a = element.attrs;
   const fill = resolveFill(element.fill);
   const stroke = resolveStroke(element.stroke);
@@ -91,11 +91,15 @@ export default function SVGElementRenderer({ element, isSelected, onSelect }: Pr
     strokeDasharray,
     opacity,
     transform: transform || undefined,
-    style: { cursor: isSelected ? 'move' : 'pointer' },
-    onClick: (e: React.MouseEvent) => {
-      e.stopPropagation();
-      onSelect?.(element.id, e);
-    },
+    style: isExtrude
+      ? { pointerEvents: 'none' }
+      : { cursor: isSelected ? 'move' : 'pointer' },
+    onClick: isExtrude
+      ? undefined
+      : (e: React.MouseEvent) => {
+          e.stopPropagation();
+          onSelect?.(element.id, e);
+        },
   };
 
   switch (element.type) {
@@ -111,7 +115,7 @@ export default function SVGElementRenderer({ element, isSelected, onSelect }: Pr
       return <path d={String(a.d ?? '')} {...commonProps} />;
     case 'text':
       return (
-        <text x={a.x} y={a.y} fontSize={a.fontSize} fontFamily="sans-serif" {...commonProps}>
+        <text x={a.x} y={a.y} fontSize={a.fontSize} fontFamily="IBM Plex Sans, sans-serif" {...commonProps}>
           {String(a.textContent || '')}
         </text>
       );

@@ -44,81 +44,114 @@ export default function MainToolbar() {
   const handleZoomOut = () => setCanvasZoom(canvasZoom - 0.1);
 
   return (
-    <div className="flex items-center h-10 px-2 bg-[#1a1d27] border-b border-white/10 select-none">
-      {/* 工具按钮 */}
-      <div className="flex items-center gap-0.5">
-        {tools.map((tool, i) => {
-          const Icon = tool.icon;
-          const isActive = activeTool === tool.type;
-          return (
-            <button
-              key={tool.type}
-              title={tool.label}
-              onClick={() => setActiveTool(tool.type)}
-              className={`p-1.5 rounded transition-colors ${
-                isActive
-                  ? 'bg-[#00e5ff]/20 text-[#00e5ff]'
-                  : 'text-gray-400 hover:text-white hover:bg-white/10'
-              }`}
-            >
-              <Icon size={16} />
-            </button>
-          );
-        })}
-      </div>
+    <div className="relative">
+      {/* 3D 底部阴影线 */}
+      <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-black/40 to-transparent" />
 
-      {/* 分隔符 */}
-      <div className="w-px h-5 mx-3 bg-white/15" />
+      <div className="flex items-center h-11 px-3 bg-[#16181f] select-none relative">
+        {/* 3D 顶部高光 */}
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
-      {/* 项目名称 */}
-      {editingName ? (
-        <input
-          className="bg-transparent text-white text-sm outline-none border-b border-[#00e5ff] w-32 px-0.5"
-          value={nameValue}
-          onChange={(e) => setNameValue(e.target.value)}
-          onBlur={handleNameBlur}
-          onKeyDown={handleNameKeyDown}
-          autoFocus
-        />
-      ) : (
-        <span
-          className="text-sm text-gray-300 cursor-pointer hover:text-white truncate max-w-36"
-          onDoubleClick={() => { setEditingName(true); setNameValue(project.name); }}
-          title="双击编辑项目名称"
-        >
-          {project.name}
-        </span>
-      )}
+        {/* 品牌标识 */}
+        <div className="flex items-center gap-1.5 mr-3">
+          <div
+            className="w-5 h-5 rounded flex items-center justify-center text-[8px] font-bold"
+            style={{
+              background: 'linear-gradient(135deg, #00e5ff, #0088aa)',
+              boxShadow: '0 2px 4px rgba(0,229,255,0.25), inset 0 1px 0 rgba(255,255,255,0.2)',
+            }}
+          >
+            M
+          </div>
+          <span className="text-[11px] font-display font-semibold text-white/70 tracking-wide hidden sm:inline">
+            MotionCanvas
+          </span>
+        </div>
 
-      {/* 弹性间距 */}
-      <div className="flex-1" />
+        {/* 分隔符 */}
+        <div className="w-px h-5 mx-1 bg-white/10" />
 
-      {/* 缩放控制 */}
-      <div className="flex items-center gap-1">
-        <button
-          title="适应画布"
-          onClick={handleFitZoom}
-          className="p-1 rounded text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+        {/* 工具按钮 - 3D 浮雕效果 */}
+        <div className="flex items-center gap-0.5 ml-1">
+          {tools.map((tool) => {
+            const Icon = tool.icon;
+            const isActive = activeTool === tool.type;
+            return (
+              <button
+                key={tool.type}
+                title={tool.label}
+                onClick={() => setActiveTool(tool.type)}
+                className={`p-1.5 rounded-md transition-all duration-150 relative ${
+                  isActive
+                    ? 'bg-[#00e5ff]/15 text-[#00e5ff]'
+                    : 'text-gray-500 hover:text-white hover:bg-white/[0.06]'
+                }`}
+                style={isActive ? {
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1), 0 0 8px rgba(0,229,255,0.15)',
+                } : undefined}
+              >
+                <Icon size={15} />
+              </button>
+            );
+          })}
+        </div>
+
+        {/* 分隔符 */}
+        <div className="w-px h-5 mx-3 bg-white/10" />
+
+        {/* 项目名称 - 3D 内嵌效果 */}
+        {editingName ? (
+          <input
+            className="bg-[#0f1117] text-white text-sm outline-none border border-[#00e5ff]/50 rounded px-2 py-0.5 w-36 shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)]"
+            value={nameValue}
+            onChange={(e) => setNameValue(e.target.value)}
+            onBlur={handleNameBlur}
+            onKeyDown={handleNameKeyDown}
+            autoFocus
+          />
+        ) : (
+          <span
+            className="text-sm text-gray-400 cursor-pointer hover:text-white truncate max-w-40 transition-colors"
+            onDoubleClick={() => { setEditingName(true); setNameValue(project.name); }}
+            title="双击编辑项目名称"
+          >
+            {project.name}
+          </span>
+        )}
+
+        {/* 弹性间距 */}
+        <div className="flex-1" />
+
+        {/* 缩放控制 - 3D 压缩效果 */}
+        <div
+          className="flex items-center gap-1 px-2 py-1 rounded-md bg-[#0f1117]/60"
+          style={{ boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.3)' }}
         >
-          <Maximize size={14} />
-        </button>
-        <button
-          title="缩小"
-          onClick={handleZoomOut}
-          className="p-1 rounded text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
-        >
-          <ZoomOut size={14} />
-        </button>
-        <span className="text-xs text-gray-400 w-10 text-center tabular-nums">
-          {zoomPercent}%
-        </span>
-        <button
-          title="放大"
-          onClick={handleZoomIn}
-          className="p-1 rounded text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
-        >
-          <ZoomIn size={14} />
-        </button>
+          <button
+            title="适应画布"
+            onClick={handleFitZoom}
+            className="p-1 rounded text-gray-500 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            <Maximize size={12} />
+          </button>
+          <button
+            title="缩小"
+            onClick={handleZoomOut}
+            className="p-1 rounded text-gray-500 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            <ZoomOut size={12} />
+          </button>
+          <span className="text-[10px] text-gray-400 w-9 text-center tabular-nums font-mono">
+            {zoomPercent}%
+          </span>
+          <button
+            title="放大"
+            onClick={handleZoomIn}
+            className="p-1 rounded text-gray-500 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            <ZoomIn size={12} />
+          </button>
+        </div>
       </div>
     </div>
   );
