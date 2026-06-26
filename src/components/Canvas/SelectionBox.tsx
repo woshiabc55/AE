@@ -6,78 +6,69 @@ interface Props {
   zoom: number;
 }
 
-const HANDLE_SIZE = 8;
-const HANDLE_OFFSET = HANDLE_SIZE / 2;
-
-// 8 个手柄位置: 四角 + 四边中点
-const HANDLE_POSITIONS = [
-  'top-left', 'top-center', 'top-right',
-  'middle-left', 'middle-right',
-  'bottom-left', 'bottom-center', 'bottom-right',
-] as const;
-
-type HandlePos = (typeof HANDLE_POSITIONS)[number];
-
-function getHandleCoords(pos: HandlePos, bbox: { x: number; y: number; width: number; height: number }) {
-  const { x, y, width, height } = bbox;
-  const mx = x + width / 2, my = y + height / 2;
-  switch (pos) {
-    case 'top-left': return { cx: x, cy: y };
-    case 'top-center': return { cx: mx, cy: y };
-    case 'top-right': return { cx: x + width, cy: y };
-    case 'middle-left': return { cx: x, cy: my };
-    case 'middle-right': return { cx: x + width, cy: my };
-    case 'bottom-left': return { cx: x, cy: y + height };
-    case 'bottom-center': return { cx: mx, cy: y + height };
-    case 'bottom-right': return { cx: x + width, cy: y + height };
-  }
-}
-
-function getCursorForHandle(pos: HandlePos): string {
-  switch (pos) {
-    case 'top-left': case 'bottom-right': return 'nwse-resize';
-    case 'top-right': case 'bottom-left': return 'nesw-resize';
-    case 'top-center': case 'bottom-center': return 'ns-resize';
-    case 'middle-left': case 'middle-right': return 'ew-resize';
-  }
-}
+const HANDLE_SIZE = 7;
 
 export default function SelectionBox({ element, zoom }: Props) {
-  const bbox = getElementBBox(element);
-  const scaledHandle = HANDLE_SIZE / zoom;
+  const { x, y, width, height } = getElementBBox(element);
+  const hs = HANDLE_SIZE / zoom;
+
+  const half = hs / 2;
+  const positions = [
+    { x: x - half, y: y - half }, // tl
+    { x: x + width / 2 - half, y: y - half }, // t
+    { x: x + width - half, y: y - half }, // tr
+    { x: x + width - half, y: y + height / 2 - half }, // r
+    { x: x + width - half, y: y + height - half }, // br
+    { x: x + width / 2 - half, y: y + height - half }, // b
+    { x: x - half, y: y + height - half }, // bl
+    { x: x - half, y: y + height / 2 - half }, // l
+  ];
 
   return (
-    <g>
-      {/* 选中虚线边框 */}
+    <g pointerEvents="none">
+      {/* 外框 - 虚线 */}
       <rect
-        x={bbox.x}
-        y={bbox.y}
-        width={bbox.width}
-        height={bbox.height}
+        x={x} y={y}
+        width={width} height={height}
         fill="none"
         stroke="#00e5ff"
-        strokeWidth={1.5 / zoom}
+        strokeWidth={1.2 / zoom}
         strokeDasharray={`${6 / zoom} ${3 / zoom}`}
-        pointerEvents="none"
+        opacity={0.9}
+        style={{ filter: 'drop-shadow(0 0 3px rgba(0,229,255,0.5))' }}
       />
 
-      {/* 8 个缩放手柄 */}
-      {HANDLE_POSITIONS.map((pos) => {
-        const { cx, cy } = getHandleCoords(pos, bbox);
-        return (
+      {/* 8个手柄 - 3D 球体效果 */}
+      {positions.map((p, i) => (
+        <g key={i}>
           <rect
-            key={pos}
-            x={cx - scaledHandle / 2}
-            y={cy - scaledHandle / 2}
-            width={scaledHandle}
-            height={scaledHandle}
-            fill="#0f1117"
-            stroke="#00e5ff"
-            strokeWidth={1.5 / zoom}
-            style={{ cursor: getCursorForHandle(pos) }}
+            x={p.x + 1 / zoom}
+            y={p.y + 1 / zoom}
+            width={hs}
+            height={hs}
+            rx={1.5 / zoom}
+            fill="rgba(0,0,0,0.4)"
           />
-        );
-      })}
+          <rect
+            x={p.x}
+            y={p.y}
+            width={hs}
+            height={hs}
+            rx={1.5 / zoom}
+            fill="#1a1d27"
+            stroke="#00e5ff"
+            strokeWidth={1 / zoom}
+          />
+          <rect
+            x={p.x}
+            y={p.y}
+            width={hs}
+            height={hs / 2}
+            rx={1.5 / zoom}
+            fill="rgba(255,255,255,0.12)"
+          />
+        </g>
+      ))}
     </g>
   );
 }

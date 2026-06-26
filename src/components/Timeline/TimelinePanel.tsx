@@ -3,7 +3,6 @@ import { useTimelineStore } from '../../store/useTimelineStore';
 import { useProjectStore } from '../../store/useProjectStore';
 import { useUIStore } from '../../store/useUIStore';
 import PlaybackControls from './PlaybackControls';
-import EasingEditor from './EasingEditor';
 import type { Keyframe } from '../../types';
 
 const FRAME_W = 8;
@@ -58,6 +57,14 @@ export default function TimelinePanel() {
     return () => cancelAnimationFrame(rafRef.current);
   }, [isPlaying, tick]);
 
+  // 当前帧变化时，滚动播放头进入可视区
+  useEffect(() => {
+    const scroller = scrollRef.current;
+    if (!scroller) return;
+    const target = currentFrame * FRAME_W - scroller.clientWidth / 2;
+    scroller.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
+  }, [currentFrame]);
+
   // 点击标尺定位帧
   const handleRulerClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -104,23 +111,21 @@ export default function TimelinePanel() {
       className="flex flex-col bg-[#13151e] select-none"
       style={{ height: timelineHeight }}
     >
-      {/* 3D 顶部高光条 - 模拟光源 */}
-      <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent shrink-0" />
+      {/* 3D 顶部高光条 */}
+      <div className="h-px bg-gradient-to-r from-transparent via-white/8 to-transparent shrink-0" />
 
       {/* 控制栏 */}
       <PlaybackControls />
 
       {/* 主体区域 */}
       <div className="flex flex-1 min-h-0">
-        {/* 图层名列表（固定左侧） - 3D 浮雕效果 */}
+        {/* 图层名列表 */}
         <div
           className="shrink-0 border-r border-[#0a0c14] flex flex-col bg-[#15171f]"
           style={{ width: LAYER_LABEL_W }}
         >
-          {/* 左上角内嵌阴影 */}
-          <div className="h-px bg-white/5 shrink-0" />
           {/* 标尺占位 */}
-          <div className="h-7 border-b border-[#0a0c14] shrink-0 flex items-center px-2">
+          <div className="h-7 border-b border-[#0a0c14] shrink-0 flex items-center px-2.5">
             <span className="text-[8px] text-white/20 uppercase tracking-wider font-medium">图层</span>
           </div>
 
@@ -128,21 +133,23 @@ export default function TimelinePanel() {
             <div
               key={layer.id}
               onClick={() => selectLayer(layer.id)}
-              className={`flex items-center h-8 px-2 border-b border-[#0a0c14] cursor-pointer transition-all duration-150 ${
+              className={`flex items-center h-8 px-2.5 border-b border-[#0a0c14] cursor-pointer transition-all duration-150 ${
                 selectedLayerId === layer.id
                   ? 'bg-[#00e5ff]/10 text-white shadow-[inset_2px_0_0_#00e5ff]'
                   : 'text-gray-500 hover:bg-white/[0.03] hover:text-gray-300'
               }`}
             >
               <span
-                className="w-2 h-2 rounded-full mr-2 shrink-0 shadow-sm"
-                style={{ backgroundColor: layer.colorTag }}
+                className="w-2 h-2 rounded-full mr-2 shrink-0"
+                style={{
+                  backgroundColor: layer.colorTag,
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.2)',
+                }}
               />
               <span className="text-[10px] truncate">{layer.name}</span>
             </div>
           ))}
 
-          {/* 空图层占位 */}
           {sortedLayers.length === 0 && (
             <div className="flex-1 flex items-center justify-center">
               <span className="text-[9px] text-white/15">创建图形以添加图层</span>
@@ -153,7 +160,7 @@ export default function TimelinePanel() {
         {/* 时间线滚动区域 */}
         <div ref={scrollRef} className="flex-1 overflow-x-auto overflow-y-auto bg-[#13151e]">
           <div style={{ width: timelineW, position: 'relative' }}>
-            {/* 标尺 - 3D 压缩效果 */}
+            {/* 标尺 */}
             <div
               className="h-7 border-b border-[#0a0c14] relative cursor-pointer shrink-0 bg-[#15171f]"
               onClick={handleRulerClick}
@@ -172,10 +179,9 @@ export default function TimelinePanel() {
               ))}
             </div>
 
-            {/* 轨道 - 压缩深度效果 */}
+            {/* 轨道 */}
             {sortedLayers.map((layer, layerIdx) => {
               const layerKfs = project.keyframes.filter((kf) => kf.layerId === layer.id);
-              // 根据图层顺序计算深度色调
               const depthFactor = Math.min(layerIdx * 0.03, 0.15);
               return (
                 <div
@@ -187,7 +193,7 @@ export default function TimelinePanel() {
                   {/* 轨道水平参考线 */}
                   <div className="absolute left-0 right-0 top-1/2 h-px bg-white/[0.03]" />
 
-                  {/* 关键帧菱形 - 3D 立体效果 */}
+                  {/* 关键帧菱形 */}
                   {layerKfs.map((kf) => (
                     <div
                       key={kf.id}
@@ -197,9 +203,7 @@ export default function TimelinePanel() {
                       title={`帧 ${kf.frame}`}
                     >
                       {/* 阴影层 */}
-                      <div
-                        className="w-3 h-3 rotate-45 bg-black/40 absolute top-[2px] left-[2px]"
-                      />
+                      <div className="w-3 h-3 rotate-45 bg-black/40 absolute top-[2px] left-[2px]" />
                       {/* 主体 */}
                       <div
                         className="w-3 h-3 rotate-45 bg-[#00e5ff] hover:bg-white cursor-pointer transition-colors relative z-10"
@@ -218,7 +222,7 @@ export default function TimelinePanel() {
               );
             })}
 
-            {/* 播放头 - 3D 立体效果 */}
+            {/* 播放头 */}
             <div
               className="absolute top-0 bottom-0 w-0.5 pointer-events-none z-30"
               style={{
@@ -227,7 +231,6 @@ export default function TimelinePanel() {
                 boxShadow: '0 0 8px rgba(255,68,68,0.4), 2px 0 4px rgba(0,0,0,0.3)',
               }}
             >
-              {/* 顶部圆点 */}
               <div
                 className="w-3 h-3 rounded-full -translate-x-[5px] -translate-y-0.5"
                 style={{
@@ -239,9 +242,6 @@ export default function TimelinePanel() {
           </div>
         </div>
       </div>
-
-      {/* 缓动编辑器 */}
-      <EasingEditor />
 
       {/* 底部3D 阴影线 */}
       <div className="h-px bg-gradient-to-r from-transparent via-black/40 to-transparent shrink-0" />

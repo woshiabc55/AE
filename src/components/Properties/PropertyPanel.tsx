@@ -4,22 +4,16 @@ import { useProjectStore } from '../../store/useProjectStore';
 import FillEditor from './FillEditor';
 import StrokeEditor from './StrokeEditor';
 import TransformEditor from './TransformEditor';
+import EasingEditor from '../Timeline/EasingEditor';
 
-const tabs = [
-  { key: 'properties' as const, label: '属性' },
-];
-
-function Section({
-  title,
-  collapsed,
-  onToggle,
-  children,
-}: {
+interface SectionProps {
   title: string;
   collapsed: boolean;
   onToggle: () => void;
   children: React.ReactNode;
-}) {
+}
+
+function Section({ title, collapsed, onToggle, children }: SectionProps) {
   return (
     <div className="border-b border-[#0a0c14]">
       <button
@@ -39,8 +33,12 @@ export default function PropertyPanel() {
   const elements = useProjectStore((s) => s.project.elements);
   const element = elements.find((e) => e.id === selectedElementId);
 
-  const [activeTab] = useState<'properties'>('properties');
-  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({
+    fill: false,
+    stroke: false,
+    transform: false,
+    easing: false,
+  });
 
   const toggleSection = (key: string) => {
     setCollapsed((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -54,22 +52,13 @@ export default function PropertyPanel() {
         style={{ background: 'linear-gradient(to right, rgba(0,0,0,0.15), transparent)' }}
       />
 
-      {/* 标签栏 - 3D 浮雕效果 */}
+      {/* 标签栏 */}
       <div className="relative">
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
         <div className="flex items-center h-9 border-b border-[#0a0c14] shrink-0">
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              className={`px-3 h-full text-[10px] transition-all duration-150 uppercase tracking-wider ${
-                activeTab === tab.key
-                  ? 'text-[#00e5ff] border-b-2 border-[#00e5ff]'
-                  : 'text-gray-500 hover:text-gray-300'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+          <button className="px-3 h-full text-[10px] text-[#00e5ff] border-b-2 border-[#00e5ff] uppercase tracking-wider">
+            属性
+          </button>
         </div>
       </div>
 
@@ -87,7 +76,7 @@ export default function PropertyPanel() {
           </div>
         ) : (
           <div className="py-1">
-            {/* 元素类型标识 - 3D 徽章 */}
+            {/* 元素类型标识 */}
             <div className="px-3 py-2">
               <div
                 className="inline-flex items-center gap-1.5 px-2 py-1 rounded text-[9px] font-medium"
@@ -125,6 +114,14 @@ export default function PropertyPanel() {
               onToggle={() => toggleSection('transform')}
             >
               <TransformEditor element={element} />
+            </Section>
+
+            <Section
+              title="缓动"
+              collapsed={!!collapsed.easing}
+              onToggle={() => toggleSection('easing')}
+            >
+              <EasingEditor />
             </Section>
           </div>
         )}
