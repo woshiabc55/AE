@@ -1,8 +1,9 @@
+import { memo } from 'react';
 import { useEditorStore } from '@/store/editorStore';
 import PanelSection from './PanelSection';
 import NumberInput from './NumberInput';
 
-export default function TransformPanel() {
+function TransformPanel() {
   const selectedObjectId = useEditorStore((s) => s.selectedObjectId);
   const objects = useEditorStore((s) => s.objects);
   const updateTransform = useEditorStore((s) => s.updateTransform);
@@ -124,3 +125,5 @@ export default function TransformPanel() {
     </PanelSection>
   );
 }
+
+export default memo(TransformPanel);

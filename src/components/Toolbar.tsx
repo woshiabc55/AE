@@ -1,10 +1,9 @@
+import { memo } from 'react';
 import {
   MousePointer2,
   Move,
   RotateCcw,
   Maximize2,
-  Upload,
-  Camera,
   Undo2,
   Redo2,
 } from 'lucide-react';
@@ -17,9 +16,13 @@ const tools: { type: ToolType; icon: typeof MousePointer2; label: string }[] = [
   { type: 'scale', icon: Maximize2, label: '缩放 (R)' },
 ];
 
-export default function Toolbar() {
+function Toolbar() {
   const activeTool = useEditorStore((s) => s.activeTool);
   const setActiveTool = useEditorStore((s) => s.setActiveTool);
+  const undo = useEditorStore((s) => s.undo);
+  const redo = useEditorStore((s) => s.redo);
+  const canUndo = useEditorStore((s) => s.historyIndex > 0);
+  const canRedo = useEditorStore((s) => s.historyIndex < s.history.length - 1);
 
   return (
     <div className="flex h-10 items-center gap-1 border-b border-[#0f3460]/60 bg-[#16213e]/80 px-2 backdrop-blur-sm">
@@ -43,14 +46,22 @@ export default function Toolbar() {
       <div className="mx-2 h-5 w-px bg-[#0f3460]" />
 
       <button
-        className="flex items-center gap-1.5 rounded px-2 py-1 text-xs text-white/40 transition-colors hover:bg-white/5 hover:text-white/70"
-        title="撤销"
+        onClick={undo}
+        disabled={!canUndo}
+        className={`flex items-center gap-1.5 rounded px-2 py-1 text-xs transition-colors ${
+          canUndo ? 'text-white/40 hover:bg-white/5 hover:text-white/70' : 'text-white/15 cursor-not-allowed'
+        }`}
+        title="撤销 (Ctrl+Z)"
       >
         <Undo2 className="h-3.5 w-3.5" />
       </button>
       <button
-        className="flex items-center gap-1.5 rounded px-2 py-1 text-xs text-white/40 transition-colors hover:bg-white/5 hover:text-white/70"
-        title="重做"
+        onClick={redo}
+        disabled={!canRedo}
+        className={`flex items-center gap-1.5 rounded px-2 py-1 text-xs transition-colors ${
+          canRedo ? 'text-white/40 hover:bg-white/5 hover:text-white/70' : 'text-white/15 cursor-not-allowed'
+        }`}
+        title="重做 (Ctrl+Shift+Z)"
       >
         <Redo2 className="h-3.5 w-3.5" />
       </button>
@@ -63,3 +74,5 @@ export default function Toolbar() {
     </div>
   );
 }
+
+export default memo(Toolbar);

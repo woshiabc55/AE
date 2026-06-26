@@ -1,8 +1,9 @@
+import { memo } from 'react';
 import { useEditorStore } from '@/store/editorStore';
 import PanelSection from './PanelSection';
 import NumberInput from './NumberInput';
 
-export default function LightingPanel() {
+function LightingPanel() {
   const ambientIntensity = useEditorStore((s) => s.ambientIntensity);
   const directionalLightDir = useEditorStore((s) => s.directionalLightDir);
   const directionalLightColor = useEditorStore((s) => s.directionalLightColor);
@@ -105,3 +106,5 @@ export default function LightingPanel() {
     </PanelSection>
   );
 }
+
+export default memo(LightingPanel);

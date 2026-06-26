@@ -1,7 +1,8 @@
+import { memo } from 'react';
 import { useEditorStore } from '@/store/editorStore';
 import PanelSection from './PanelSection';
 
-export default function MaterialPanel() {
+function MaterialPanel() {
   const selectedObjectId = useEditorStore((s) => s.selectedObjectId);
   const objects = useEditorStore((s) => s.objects);
   const updateMaterial = useEditorStore((s) => s.updateMaterial);
@@ -112,3 +113,5 @@ export default function MaterialPanel() {
     </PanelSection>
   );
 }
+
+export default memo(MaterialPanel);

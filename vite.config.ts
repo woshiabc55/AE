@@ -7,6 +7,16 @@ import { traeBadgePlugin } from 'vite-plugin-trae-solo-badge';
 export default defineConfig({
   build: {
     sourcemap: 'hidden',
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'playcanvas': ['playcanvas'],
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'state': ['zustand'],
+        },
+      },
+    },
   },
   plugins: [
     react({

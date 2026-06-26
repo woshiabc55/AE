@@ -28,6 +28,11 @@ export interface SceneObject {
   parent: string | null;
 }
 
+interface HistoryEntry {
+  objects: SceneObject[];
+  selectedObjectId: string | null;
+}
+
 let pcApp: pc.Application | null = null;
 const entityMap = new Map<string, pc.Entity>();
 
@@ -49,6 +54,8 @@ export const getEntity = (id: string): pc.Entity | undefined => {
   return entityMap.get(id);
 };
 
+const MAX_HISTORY = 50;
+
 interface EditorState {
   objects: SceneObject[];
   selectedObjectId: string | null;
@@ -57,6 +64,8 @@ interface EditorState {
   directionalLightDir: [number, number, number];
   directionalLightColor: string;
   directionalLightIntensity: number;
+  history: HistoryEntry[];
+  historyIndex: number;
 
   setActiveTool: (tool: ToolType) => void;
   selectObject: (id: string | null) => void;
@@ -70,6 +79,20 @@ interface EditorState {
   setDirectionalLightDir: (dir: [number, number, number]) => void;
   setDirectionalLightColor: (color: string) => void;
   setDirectionalLightIntensity: (intensity: number) => void;
+  undo: () => void;
+  redo: () => void;
+  pushHistory: () => void;
+}
+
+function applyEntityTransforms(objects: SceneObject[]) {
+  for (const obj of objects) {
+    const entity = entityMap.get(obj.id);
+    if (!entity) continue;
+    entity.setPosition(obj.transform.position[0], obj.transform.position[1], obj.transform.position[2]);
+    entity.setEulerAngles(obj.transform.rotation[0], obj.transform.rotation[1], obj.transform.rotation[2]);
+    entity.setLocalScale(obj.transform.scale[0], obj.transform.scale[1], obj.transform.scale[2]);
+    entity.enabled = obj.visible;
+  }
 }
 
 export const useEditorStore = create<EditorState>((set, get) => ({
@@ -80,12 +103,57 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   directionalLightDir: [45, 30, 0],
   directionalLightColor: '#ffffff',
   directionalLightIntensity: 1.0,
+  history: [{ objects: [], selectedObjectId: null }],
+  historyIndex: 0,
+
+  pushHistory: () => {
+    const { objects, selectedObjectId, history, historyIndex } = get();
+    const snapshot: HistoryEntry = {
+      objects: JSON.parse(JSON.stringify(objects)),
+      selectedObjectId,
+    };
+    const newHistory = history.slice(0, historyIndex + 1);
+    newHistory.push(snapshot);
+    if (newHistory.length > MAX_HISTORY) {
+      newHistory.shift();
+    }
+    set({ history: newHistory, historyIndex: newHistory.length - 1 });
+  },
+
+  undo: () => {
+    const { history, historyIndex } = get();
+    if (historyIndex <= 0) return;
+    const newIndex = historyIndex - 1;
+    const entry = history[newIndex];
+    set({
+      objects: JSON.parse(JSON.stringify(entry.objects)),
+      selectedObjectId: entry.selectedObjectId,
+      historyIndex: newIndex,
+    });
+    applyEntityTransforms(get().objects);
+  },
+
+  redo: () => {
+    const { history, historyIndex } = get();
+    if (historyIndex >= history.length - 1) return;
+    const newIndex = historyIndex + 1;
+    const entry = history[newIndex];
+    set({
+      objects: JSON.parse(JSON.stringify(entry.objects)),
+      selectedObjectId: entry.selectedObjectId,
+      historyIndex: newIndex,
+    });
+    applyEntityTransforms(get().objects);
+  },
 
   setActiveTool: (tool) => set({ activeTool: tool }),
 
   selectObject: (id) => set({ selectedObjectId: id }),
 
-  addObject: (obj) => set((state) => ({ objects: [...state.objects, obj] })),
+  addObject: (obj) => {
+    set((state) => ({ objects: [...state.objects, obj] }));
+    get().pushHistory();
+  },
 
   removeObject: (id) => {
     const entity = entityMap.get(id);
@@ -97,6 +165,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       objects: state.objects.filter((o) => o.id !== id),
       selectedObjectId: state.selectedObjectId === id ? null : state.selectedObjectId,
     }));
+    get().pushHistory();
   },
 
   updateTransform: (id, transform) => {
@@ -114,6 +183,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       entity.setEulerAngles(t.rotation[0], t.rotation[1], t.rotation[2]);
       entity.setLocalScale(t.scale[0], t.scale[1], t.scale[2]);
     }
+    get().pushHistory();
   },
 
   updateMaterial: (id, material) => {
@@ -163,6 +233,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
         }
       });
     }
+    get().pushHistory();
   },
 
   toggleVisibility: (id) => {
@@ -178,6 +249,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
         obj.id === id ? { ...obj, visible: !obj.visible } : obj
       ),
     }));
+    get().pushHistory();
   },
 
   renameObject: (id, name) =>
