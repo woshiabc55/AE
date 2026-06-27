@@ -366,7 +366,7 @@ export default function MinecraftPage() {
 
     return () => {
       cancelled = true;
-      worldRef.current = null;
+      // 注意：不要在这里清空 worldRef，因为紧接着的 playing 阶段还需要它
     };
   }, [gamePhase]);
 
