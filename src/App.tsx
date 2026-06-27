@@ -4,7 +4,7 @@ import Gallery from "@/pages/Gallery";
 
 export default function App() {
   return (
-    <Router>
+    <Router basename="/AE">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/gallery" element={<Gallery />} />
