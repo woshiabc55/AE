@@ -164,19 +164,19 @@ export default function MinecraftPage() {
       renderer.camera.position.set(0, 14, 22);
       renderer.camera.lookAt(0, 14, 0);
 
-      const controls = new FirstPersonControls(renderer.camera, renderer.renderer.domElement, world);
-      controls.onLockChange = (locked) => setIsLocked(locked);
-      controls.yaw = 0;
-      controls.pitch = 0;
-      controls.updateCameraRotation();
+      // 默认使用第三人称环绕，避免 Pointer Lock 在某些环境不生效导致无法体验
+      const controls = new OrbitControls(renderer.camera, renderer.renderer.domElement, world);
+      controls.target.set(0, 14, 0);
+      controls.distance = 18;
+      controls.updateCamera();
 
       const avatar = new PlayerAvatar();
-      avatar.setVisible(false);
+      avatar.setVisible(true);
       renderer.scene.add(avatar.group);
 
       const heldBlock = new HeldBlock(renderer.camera);
       heldBlock.setType("grass");
-      heldBlock.setVisible(true);
+      heldBlock.setVisible(false);
 
       const sound = new SoundSynth();
       const effects = new BlockEffects(renderer.scene, world);
@@ -206,7 +206,7 @@ export default function MinecraftPage() {
         world,
         renderer,
         controls,
-        cameraMode: "first",
+        cameraMode: "orbit",
         avatar,
         heldBlock,
         effects,
@@ -215,7 +215,7 @@ export default function MinecraftPage() {
         leftMouseDown: false,
         lastStepTime: 0,
       };
-      setCameraMode("first");
+      setCameraMode("orbit");
 
       const canvas = renderer.renderer.domElement;
 
@@ -473,7 +473,7 @@ export default function MinecraftPage() {
   const inventoryRef = useRef(inventory);
   inventoryRef.current = inventory;
 
-  const showOverlay = renderMode === "iso" || !isLocked;
+  const showOverlay = renderMode === "iso" || (cameraMode === "first" && !isLocked);
 
   return (
     <div className="h-screen w-screen overflow-hidden bg-ink-900 relative">

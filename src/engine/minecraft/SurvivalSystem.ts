@@ -33,10 +33,10 @@ export class SurvivalSystem {
   isDead = false;
 
   dayTime = 0; // 0 ~ 1, 0=正午, 0.5=日落, 0.75=午夜, 1=次日正午
-  dayDuration = 90; // 一天秒数
+  dayDuration = 120; // 一天秒数
 
   mobs: Mob[] = [];
-  maxMobs = 8;
+  maxMobs = 5;
   items: DroppedItem[] = [];
 
   hungerDecay = 0.4; // 每秒
@@ -117,7 +117,7 @@ export class SurvivalSystem {
   spawnMobs(playerX: number, playerZ: number) {
     if (!this.isNight()) return;
     if (this.mobs.length >= this.maxMobs) return;
-    if (Math.random() > 0.02) return;
+    if (Math.random() > 0.01) return;
 
     const angle = Math.random() * Math.PI * 2;
     const dist = 12 + Math.random() * 16;
@@ -196,8 +196,9 @@ export class SurvivalSystem {
         if (mob.hitFlash < 0) mob.hitFlash = 0;
         mob.mesh.traverse((obj) => {
           const mesh = obj as THREE.Mesh;
-          if (mesh.material && !Array.isArray(mesh.material)) {
-            (mesh.material as THREE.MeshLambertMaterial).emissive.setHex(mob.hitFlash > 0 ? 0x555555 : 0x000000);
+          const mat = mesh.material;
+          if (mat && !Array.isArray(mat) && "emissive" in mat) {
+            (mat as THREE.MeshLambertMaterial).emissive.setHex(mob.hitFlash > 0 ? 0x555555 : 0x000000);
           }
         });
       }
@@ -227,8 +228,8 @@ export class SurvivalSystem {
       // 攻击玩家
       mob.attackCooldown -= delta;
       if (dist < 1.5 && mob.attackCooldown <= 0) {
-        this.health = Math.max(0, this.health - 8);
-        mob.attackCooldown = 1.0;
+        this.health = Math.max(0, this.health - 5);
+        mob.attackCooldown = 1.2;
       }
 
       // 掉落到地形
