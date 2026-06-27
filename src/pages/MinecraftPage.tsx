@@ -1,4 +1,4 @@
-// 我的世界还原体验页
+// 我的世界还原体验页（含生存模式）
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
@@ -14,6 +14,12 @@ import {
   Video,
   Volume2,
   VolumeX,
+  Heart,
+  Utensils,
+  Skull,
+  RefreshCw,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { VoxelWorld, PLACEABLE_BLOCKS, BlockType, BLOCK_DEFS } from "@/engine/minecraft/VoxelWorld";
 import { VoxelRenderer } from "@/engine/minecraft/VoxelRenderer";
@@ -24,6 +30,7 @@ import { PlayerAvatar } from "@/engine/minecraft/PlayerAvatar";
 import { HeldBlock } from "@/engine/minecraft/HeldBlock";
 import { BlockEffects } from "@/engine/minecraft/BlockEffects";
 import { SoundSynth } from "@/engine/minecraft/SoundSynth";
+import { SurvivalSystem, ItemType } from "@/engine/minecraft/SurvivalSystem";
 
 type RenderMode = "webgl" | "iso";
 type CameraMode = "first" | "orbit";
@@ -38,6 +45,7 @@ interface WebGLEngine {
   heldBlock: HeldBlock;
   effects: BlockEffects;
   sound: SoundSynth;
+  survival: SurvivalSystem;
   leftMouseDown: boolean;
   lastStepTime: number;
 }
@@ -64,6 +72,14 @@ export default function MinecraftPage() {
   const [blockCount, setBlockCount] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(true);
 
+  // 生存模式 UI 状态
+  const [health, setHealth] = useState(100);
+  const [hunger, setHunger] = useState(100);
+  const [isDead, setIsDead] = useState(false);
+  const [dayTime, setDayTime] = useState(0);
+  const [isNight, setIsNight] = useState(false);
+  const [inventory, setInventory] = useState({ apple: 0, meat: 0 });
+
   const rebuild = useCallback(() => {
     const engine = engineRef.current;
     if (!engine) return;
@@ -71,6 +87,22 @@ export default function MinecraftPage() {
       engine.renderer.rebuildMesh();
     }
     setBlockCount(engine.world.blocks.size);
+  }, []);
+
+  const respawn = useCallback(() => {
+    const engine = engineRef.current;
+    if (!engine || engine.type !== "webgl") return;
+    const y = 14;
+    if (engine.cameraMode === "first") {
+      engine.renderer.camera.position.set(0, y, 0);
+    } else {
+      (engine.controls as OrbitControls).target.set(0, y, 0);
+      (engine.controls as OrbitControls).updateCamera();
+    }
+    engine.survival.respawn(0, y, 0);
+    setIsDead(false);
+    setHealth(100);
+    setHunger(100);
   }, []);
 
   // 切换第一人称 / 第三人称
@@ -82,7 +114,6 @@ export default function MinecraftPage() {
     const renderer = engine.renderer;
     const world = engine.world;
 
-    // 释放旧控制器
     engine.controls.dispose();
 
     if (newMode === "first") {
@@ -153,6 +184,23 @@ export default function MinecraftPage() {
         sound.playBreak(type);
       };
 
+      const survival = new SurvivalSystem(
+        renderer.scene,
+        world,
+        renderer.sun,
+        renderer.ambient,
+        renderer.scene.background as THREE.Color,
+      );
+      survival.onDeath = () => setIsDead(true);
+      survival.onRespawn = () => {
+        setIsDead(false);
+        setHealth(100);
+        setHunger(100);
+      };
+      survival.onItemPickup = (type) => {
+        setInventory((prev) => ({ ...prev, [type]: prev[type] + 1 }));
+      };
+
       engineRef.current = {
         type: "webgl",
         world,
@@ -163,6 +211,7 @@ export default function MinecraftPage() {
         heldBlock,
         effects,
         sound,
+        survival,
         leftMouseDown: false,
         lastStepTime: 0,
       };
@@ -175,16 +224,17 @@ export default function MinecraftPage() {
         if (!ctrl || ctrl.type !== "webgl") return;
 
         if (e.button === 0) {
-          // 第一人称必须锁定才能交互；第三人称左键用于拖拽视角，不破坏
-          if (ctrl.cameraMode === "first" && !(ctrl.controls as FirstPersonControls).isLocked) {
-            return;
-          }
-          if (ctrl.cameraMode === "orbit") return;
-
-          const target = renderer.getTargetBlock();
-          if (target) {
-            ctrl.effects.startBreak(target.block.x, target.block.y, target.block.z, target.block.type);
-            ctrl.leftMouseDown = true;
+          if (ctrl.cameraMode === "first") {
+            // 优先攻击怪物
+            const attackPoint = getCameraForwardPoint(renderer.camera, 2.5);
+            if (ctrl.survival.damageMobAt(attackPoint.x, attackPoint.y, attackPoint.z, 10)) {
+              return;
+            }
+            const target = renderer.getTargetBlock();
+            if (target) {
+              ctrl.effects.startBreak(target.block.x, target.block.y, target.block.z, target.block.type);
+              ctrl.leftMouseDown = true;
+            }
           }
         } else if (e.button === 2) {
           const target = renderer.getTargetBlock();
@@ -218,6 +268,23 @@ export default function MinecraftPage() {
           ctrl.effects.cancelBreak();
           ctrl.leftMouseDown = false;
         }
+        if (e.button === 0 && ctrl.cameraMode === "orbit") {
+          const orb = ctrl.controls as OrbitControls;
+          if (orb.consumeClick()) {
+            // 第三人称：快速点击优先攻击怪物，否则破坏方块
+            const targetPos = (ctrl.controls as OrbitControls).target;
+            const attackPoint = getCameraForwardPoint(renderer.camera, 2.5);
+            if (!ctrl.survival.damageMobAt(attackPoint.x, attackPoint.y, attackPoint.z, 10)) {
+              const target = renderer.getTargetBlock();
+              if (target) {
+                world.removeBlock(target.block.x, target.block.y, target.block.z);
+                ctrl.effects.spawnBreakParticles(target.block.x, target.block.y, target.block.z, target.block.type);
+                ctrl.sound.playBreak(target.block.type);
+                rebuild();
+              }
+            }
+          }
+        }
       };
 
       const handleContextMenu = (e: MouseEvent) => e.preventDefault();
@@ -233,6 +300,22 @@ export default function MinecraftPage() {
         const delta = Math.min((time - lastTime) / 1000, 0.1);
 
         engine.controls.update(delta);
+
+        // 玩家位置
+        let px = 0, py = 0, pz = 0;
+        if (engine.cameraMode === "first") {
+          const cam = engine.renderer.camera.position;
+          px = cam.x; py = cam.y; pz = cam.z;
+        } else {
+          const t = (engine.controls as OrbitControls).target;
+          px = t.x; py = t.y; pz = t.z;
+        }
+
+        // 动态加载区块
+        engine.world.updateLoadedChunks(px, pz);
+
+        // 生存系统更新
+        engine.survival.update(delta, px, py, pz);
 
         const target = renderer.getTargetBlock();
         const currentTargetPos = target
@@ -266,13 +349,12 @@ export default function MinecraftPage() {
         renderer.updateHighlight();
         renderer.render();
 
-        if (engine.cameraMode === "first") {
-          const cam = renderer.camera.position;
-          setPosition({ x: Math.round(cam.x), y: Math.round(cam.y), z: Math.round(cam.z) });
-        } else {
-          const t = (engine.controls as OrbitControls).target;
-          setPosition({ x: Math.round(t.x), y: Math.round(t.y), z: Math.round(t.z) });
-        }
+        setPosition({ x: Math.round(px), y: Math.round(py), z: Math.round(pz) });
+        setBlockCount(engine.world.blocks.size);
+        setHealth(engine.survival.health);
+        setHunger(engine.survival.hunger);
+        setDayTime(engine.survival.dayTime);
+        setIsNight(engine.survival.isNight());
 
         lastTime = time;
         rafRef.current = requestAnimationFrame(loop);
@@ -297,6 +379,7 @@ export default function MinecraftPage() {
         renderer.scene.remove(avatar.group);
         heldBlock.dispose();
         effects.dispose();
+        survival.dispose();
         renderer.destroy();
       };
     } else {
@@ -321,6 +404,13 @@ export default function MinecraftPage() {
     setBlockCount(world.blocks.size);
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (isDead) {
+        if (e.code === "Enter" || e.code === "Space") {
+          respawn();
+        }
+        return;
+      }
+
       const index = Number(e.key);
       if (index >= 1 && index <= PLACEABLE_BLOCKS.length) {
         setSelectedBlock(PLACEABLE_BLOCKS[index - 1]);
@@ -330,6 +420,10 @@ export default function MinecraftPage() {
         rebuild();
         const engine = engineRef.current;
         if (engine?.type === "webgl") {
+          engine.survival.health = 100;
+          engine.survival.hunger = 100;
+          engine.survival.isDead = false;
+          engine.survival.dayTime = 0;
           engine.renderer.camera.position.set(0, 14, 22);
           engine.renderer.camera.lookAt(0, 14, 0);
           if (engine.cameraMode === "first") {
@@ -348,6 +442,22 @@ export default function MinecraftPage() {
       if (e.code === "KeyV") {
         toggleCameraMode();
       }
+      if (e.code === "KeyE") {
+        const engine = engineRef.current;
+        if (engine?.type === "webgl") {
+          const inv = inventoryRef.current;
+          if (inv.meat > 0) {
+            engine.survival.eat("meat");
+            setInventory((prev) => ({ ...prev, meat: prev.meat - 1 }));
+          } else if (inv.apple > 0) {
+            engine.survival.eat("apple");
+            setInventory((prev) => ({ ...prev, apple: prev.apple - 1 }));
+          }
+        }
+      }
+      if (e.code === "KeyM") {
+        toggleSound();
+      }
     };
 
     document.addEventListener("keydown", handleKeyDown);
@@ -357,7 +467,11 @@ export default function MinecraftPage() {
       cleanup();
       engineRef.current = null;
     };
-  }, [rebuild, toggleCameraMode]);
+  }, [rebuild, toggleCameraMode, toggleSound, respawn, isDead]);
+
+  // 用于在 keydown 闭包中读取最新库存
+  const inventoryRef = useRef(inventory);
+  inventoryRef.current = inventory;
 
   const showOverlay = renderMode === "iso" || !isLocked;
 
@@ -385,10 +499,10 @@ export default function MinecraftPage() {
             <span className="w-px h-3 bg-ink-600/60" />
             <span className="flex items-center gap-1.5">
               <MousePointerClick size={12} className="text-ember-400" />
-              按住左键破坏 / 右键放置
+              左键攻击/破坏 / 右键放置
             </span>
             <span className="w-px h-3 bg-ink-600/60" />
-            <span>V 切换第三人称</span>
+            <span>V 第三人称 · E 吃东西</span>
           </div>
         )}
 
@@ -401,9 +515,9 @@ export default function MinecraftPage() {
             <span className="w-px h-3 bg-ink-600/60" />
             <span>空格上升 / Shift 下降</span>
             <span className="w-px h-3 bg-ink-600/60" />
-            <span>拖拽旋转视角 · 滚轮缩放</span>
+            <span>拖拽旋转 · 滚轮缩放</span>
             <span className="w-px h-3 bg-ink-600/60" />
-            <span>右键放置 · V 切第一人称</span>
+            <span>V 第一人称 · E 吃东西</span>
           </div>
         )}
 
@@ -415,8 +529,6 @@ export default function MinecraftPage() {
             </span>
             <span className="w-px h-3 bg-ink-600/60" />
             <span>拖拽平移 · 滚轮缩放</span>
-            <span className="w-px h-3 bg-ink-600/60" />
-            <span>R 重新生成世界</span>
           </div>
         )}
 
@@ -455,6 +567,40 @@ export default function MinecraftPage() {
         </div>
       </div>
 
+      {/* 生存模式状态条 */}
+      {renderMode === "webgl" && (
+        <div className="absolute top-16 left-4 z-10 flex flex-col gap-2 pointer-events-none">
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60">
+            <Heart size={14} className="text-rose-500" />
+            <div className="w-32 h-2 rounded-full bg-ink-900 overflow-hidden">
+              <div
+                className="h-full bg-rose-500 transition-all"
+                style={{ width: `${Math.max(0, health)}%` }}
+              />
+            </div>
+            <span className="text-xs font-mono text-ink-200 w-8">{Math.ceil(health)}</span>
+          </div>
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60">
+            <Utensils size={14} className="text-amber-500" />
+            <div className="w-32 h-2 rounded-full bg-ink-900 overflow-hidden">
+              <div
+                className="h-full bg-amber-500 transition-all"
+                style={{ width: `${Math.max(0, hunger)}%` }}
+              />
+            </div>
+            <span className="text-xs font-mono text-ink-200 w-8">{Math.ceil(hunger)}</span>
+          </div>
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60 text-xs font-mono text-ink-300">
+            {isNight ? <Moon size={14} className="text-indigo-400" /> : <Sun size={14} className="text-sun-400" />}
+            <span>{isNight ? "夜晚" : "白天"}</span>
+          </div>
+          <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60 text-xs font-mono text-ink-300">
+            <span className="text-rose-400">🍎 {inventory.apple}</span>
+            <span className="text-amber-400">🍖 {inventory.meat}</span>
+          </div>
+        </div>
+      )}
+
       {renderMode === "webgl" && cameraMode === "first" && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="relative w-5 h-5">
@@ -464,7 +610,7 @@ export default function MinecraftPage() {
         </div>
       )}
 
-      {showOverlay && (
+      {showOverlay && !isDead && (
         <div className="absolute inset-0 z-20 flex items-center justify-center bg-ink-900/60 backdrop-blur-sm pointer-events-none">
           <div className="text-center space-y-4 animate-fade-in">
             <div className="font-pixel text-2xl text-ember-400 text-glow-ember">MINECRAFT 3D</div>
@@ -504,6 +650,26 @@ export default function MinecraftPage() {
         </div>
       )}
 
+      {/* 死亡画面 */}
+      {isDead && (
+        <div className="absolute inset-0 z-30 flex items-center justify-center bg-red-950/80 backdrop-blur-md pointer-events-auto">
+          <div className="text-center space-y-6">
+            <div className="flex items-center justify-center gap-3">
+              <Skull size={40} className="text-ink-100" />
+              <span className="font-pixel text-4xl text-ink-100">你死了</span>
+            </div>
+            <div className="text-sm font-mono text-ink-300">按 Enter / Space 或点击下方按钮重生</div>
+            <button
+              onClick={respawn}
+              className="flex items-center gap-2 mx-auto px-6 py-3 rounded-lg bg-ember-500 hover:bg-ember-400 text-ink-900 font-mono text-sm transition-colors"
+            >
+              <RefreshCw size={16} />
+              重生
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-end gap-1.5 p-2 rounded-xl bg-ink-800/80 backdrop-blur border border-ink-600/60">
         {PLACEABLE_BLOCKS.map((type, idx) => {
           const def = BLOCK_DEFS[type];
@@ -536,8 +702,9 @@ export default function MinecraftPage() {
             </div>
             <div>空格上升 · Shift 下降</div>
             <div className="flex items-center gap-2">
-              <MousePointerClick size={10} className="text-ember-400" /> 按住左键破坏 / 右键放置
+              <MousePointerClick size={10} className="text-ember-400" /> 左键攻击/破坏 / 右键放置
             </div>
+            <div>E 吃东西 · M 开关音效</div>
           </>
         )}
         {renderMode === "webgl" && cameraMode === "orbit" && (
@@ -573,4 +740,10 @@ function getCameraLookPoint(camera: THREE.PerspectiveCamera) {
   const dir = new THREE.Vector3();
   camera.getWorldDirection(dir);
   return camera.position.clone().add(dir.multiplyScalar(10));
+}
+
+function getCameraForwardPoint(camera: THREE.PerspectiveCamera, distance: number) {
+  const dir = new THREE.Vector3();
+  camera.getWorldDirection(dir);
+  return camera.position.clone().add(dir.multiplyScalar(distance));
 }

@@ -19,6 +19,12 @@ export class OrbitControls {
   maxDistance = 60;
   dragging = false;
   lastMouse = { x: 0, y: 0 };
+  dragStart = { x: 0, y: 0 };
+  dragStartTime = 0;
+  dragDistance = 0;
+  wasClick = false;
+  clickThreshold = 6; // 像素
+  clickTimeThreshold = 250; // 毫秒
 
   constructor(
     public camera: THREE.PerspectiveCamera,
@@ -60,6 +66,10 @@ export class OrbitControls {
     if (e.button === 0 || e.button === 2) {
       this.dragging = true;
       this.lastMouse = { x: e.clientX, y: e.clientY };
+      this.dragStart = { x: e.clientX, y: e.clientY };
+      this.dragStartTime = performance.now();
+      this.dragDistance = 0;
+      this.wasClick = false;
     }
   };
 
@@ -68,6 +78,7 @@ export class OrbitControls {
     const dx = e.clientX - this.lastMouse.x;
     const dy = e.clientY - this.lastMouse.y;
     this.lastMouse = { x: e.clientX, y: e.clientY };
+    this.dragDistance += Math.sqrt(dx * dx + dy * dy);
 
     this.azimuth -= dx * this.mouseSensitivity;
     this.polar += dy * this.mouseSensitivity;
@@ -75,9 +86,20 @@ export class OrbitControls {
     this.updateCamera();
   };
 
-  onMouseUp = () => {
+  onMouseUp = (e: MouseEvent) => {
+    if (!this.dragging) return;
+    const elapsed = performance.now() - this.dragStartTime;
+    if (this.dragDistance < this.clickThreshold && elapsed < this.clickTimeThreshold) {
+      this.wasClick = true;
+    }
     this.dragging = false;
   };
+
+  consumeClick() {
+    const clicked = this.wasClick;
+    this.wasClick = false;
+    return clicked;
+  }
 
   onWheel = (e: WheelEvent) => {
     e.preventDefault();

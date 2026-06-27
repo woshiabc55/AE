@@ -79,8 +79,6 @@ export class FirstPersonControls {
   }
 
   update(delta: number) {
-    if (!this.isLocked) return;
-
     const forward = Number(this.keys["KeyW"] || this.keys["ArrowUp"]);
     const backward = Number(this.keys["KeyS"] || this.keys["ArrowDown"]);
     const left = Number(this.keys["KeyA"] || this.keys["ArrowLeft"]);
@@ -113,7 +111,7 @@ export class FirstPersonControls {
       move.normalize().multiplyScalar(this.speed * delta);
       const nextPos = this.camera.position.clone().add(move);
 
-      // 简单的碰撞检测：限制在世界范围内，并防止进入实心方块
+      // 简单的碰撞检测：防止进入实心方块
       if (!this.isSolidAt(nextPos.x, this.camera.position.y, nextPos.z)) {
         this.camera.position.x = nextPos.x;
       }

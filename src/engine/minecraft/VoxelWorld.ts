@@ -1,4 +1,4 @@
-// 方块世界数据与生成逻辑
+// 方块世界数据、区块生成与动态加载逻辑
 
 export type BlockType =
   | "air"
@@ -56,8 +56,12 @@ export const PLACEABLE_BLOCKS: BlockType[] = [
   "diamond",
 ];
 
-function key(x: number, y: number, z: number) {
+function blockKey(x: number, y: number, z: number) {
   return `${x},${y},${z}`;
+}
+
+function chunkKey(cx: number, cz: number) {
+  return `${cx},${cz}`;
 }
 
 // 简单的伪随机噪声（基于整数坐标）
@@ -83,7 +87,7 @@ function smoothNoise(x: number, z: number) {
   return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
 }
 
-function terrainHeight(x: number, z: number) {
+export function terrainHeight(x: number, z: number) {
   // 低频大起伏：山脉与谷地
   let h = smoothNoise(x * 0.035, z * 0.035) * 14;
   // 中频丘陵
@@ -95,22 +99,136 @@ function terrainHeight(x: number, z: number) {
   return Math.floor(h) + 8;
 }
 
-export class VoxelWorld {
+export class Chunk {
   blocks = new Map<string, Block>();
-  worldSize = 64;
+  loaded = false;
+
+  constructor(public cx: number, public cz: number, public size: number = 16) {}
+
+  worldX(lx: number) {
+    return this.cx * this.size + lx;
+  }
+  worldZ(lz: number) {
+    return this.cz * this.size + lz;
+  }
+
+  setBlock(x: number, y: number, z: number, type: BlockType) {
+    if (type === "air") {
+      this.blocks.delete(blockKey(x, y, z));
+    } else {
+      this.blocks.set(blockKey(x, y, z), { x, y, z, type });
+    }
+  }
+
+  removeBlock(x: number, y: number, z: number) {
+    this.blocks.delete(blockKey(x, y, z));
+  }
+
+  getBlock(x: number, y: number, z: number): Block | null {
+    return this.blocks.get(blockKey(x, y, z)) || null;
+  }
+}
+
+export class VoxelWorld {
+  blocks = new Map<string, Block>(); // 全局方块表，供渲染器使用
+  chunks = new Map<string, Chunk>();
+  loadedChunks = new Set<string>();
+  chunkSize = 16;
   maxHeight = 36;
+  renderDistance = 3; // 加载半径（区块数）
 
   constructor() {
     this.generate();
   }
 
+  // 生成/重新生成世界，从原点周围加载
   generate() {
     this.blocks.clear();
-    const size = this.worldSize;
-    const half = Math.floor(size / 2);
+    this.chunks.clear();
+    this.loadedChunks.clear();
+    this.updateLoadedChunks(0, 0, this.renderDistance);
+  }
 
-    for (let x = -half; x < half; x++) {
-      for (let z = -half; z < half; z++) {
+  getChunk(cx: number, cz: number): Chunk | undefined {
+    return this.chunks.get(chunkKey(cx, cz));
+  }
+
+  ensureChunk(cx: number, cz: number): Chunk {
+    const key = chunkKey(cx, cz);
+    let chunk = this.chunks.get(key);
+    if (!chunk) {
+      chunk = new Chunk(cx, cz, this.chunkSize);
+      this.chunks.set(key, chunk);
+    }
+    return chunk;
+  }
+
+  loadChunk(cx: number, cz: number) {
+    const key = chunkKey(cx, cz);
+    if (this.loadedChunks.has(key)) return;
+
+    const chunk = this.ensureChunk(cx, cz);
+    if (chunk.blocks.size === 0) {
+      this.populateChunk(chunk);
+    }
+
+    // 将区块方块同步到全局表
+    for (const block of chunk.blocks.values()) {
+      this.blocks.set(blockKey(block.x, block.y, block.z), block);
+    }
+    this.loadedChunks.add(key);
+    chunk.loaded = true;
+  }
+
+  unloadChunk(cx: number, cz: number) {
+    const key = chunkKey(cx, cz);
+    if (!this.loadedChunks.has(key)) return;
+
+    const chunk = this.chunks.get(key);
+    if (chunk) {
+      for (const block of chunk.blocks.values()) {
+        this.blocks.delete(blockKey(block.x, block.y, block.z));
+      }
+      chunk.loaded = false;
+    }
+    this.loadedChunks.delete(key);
+  }
+
+  updateLoadedChunks(playerX: number, playerZ: number, distance?: number) {
+    const dist = distance ?? this.renderDistance;
+    const pcx = Math.floor(playerX / this.chunkSize);
+    const pcz = Math.floor(playerZ / this.chunkSize);
+
+    const desired = new Set<string>();
+    for (let dx = -dist; dx <= dist; dx++) {
+      for (let dz = -dist; dz <= dist; dz++) {
+        const cx = pcx + dx;
+        const cz = pcz + dz;
+        desired.add(chunkKey(cx, cz));
+      }
+    }
+
+    // 卸载不需要的区块
+    for (const key of this.loadedChunks) {
+      if (!desired.has(key)) {
+        const [cx, cz] = key.split(",").map(Number);
+        this.unloadChunk(cx, cz);
+      }
+    }
+
+    // 加载需要的区块
+    for (const key of desired) {
+      const [cx, cz] = key.split(",").map(Number);
+      this.loadChunk(cx, cz);
+    }
+  }
+
+  populateChunk(chunk: Chunk) {
+    const size = this.chunkSize;
+    for (let lx = 0; lx < size; lx++) {
+      for (let lz = 0; lz < size; lz++) {
+        const x = chunk.worldX(lx);
+        const z = chunk.worldZ(lz);
         const h = terrainHeight(x, z);
 
         // 地表
@@ -119,39 +237,42 @@ export class VoxelWorld {
           if (y === h) type = "grass";
           else if (y >= h - 2) type = "dirt";
           else type = "stone";
-          this.setBlock(x, y, z, type);
+          chunk.setBlock(x, y, z, type);
         }
 
         // 沙地 / 水域
         if (h < 3) {
           for (let y = h + 1; y <= 3; y++) {
-            this.setBlock(x, y, z, "water");
+            chunk.setBlock(x, y, z, "water");
           }
-          if (h === 2) this.setBlock(x, h, z, "sand");
+          if (h === 2) chunk.setBlock(x, h, z, "sand");
         }
 
         // 树木
         if (h >= 3 && h <= 12 && hash(x, z) > 0.96) {
-          this.makeTree(x, h + 1, z);
+          this.makeTree(chunk, x, h + 1, z);
         }
       }
     }
 
-    // 生成一些漂浮钻石矿
-    for (let i = 0; i < 8; i++) {
-      const x = Math.floor((hash(i, 1) - 0.5) * size * 0.6);
-      const z = Math.floor((hash(i, 2) - 0.5) * size * 0.6);
-      const y = Math.floor(hash(i, 3) * 4) + 1;
-      if (this.getBlock(x, y, z)?.type === "stone") {
-        this.setBlock(x, y, z, "diamond");
+    // 钻石矿
+    const diamondCount = 2;
+    for (let i = 0; i < diamondCount; i++) {
+      const lx = Math.floor(hash(chunk.cx, i) * size);
+      const lz = Math.floor(hash(chunk.cz, i + 10) * size);
+      const x = chunk.worldX(lx);
+      const z = chunk.worldZ(lz);
+      const y = Math.floor(hash(x, z) * 4) + 1;
+      if (chunk.getBlock(x, y, z)?.type === "stone") {
+        chunk.setBlock(x, y, z, "diamond");
       }
     }
   }
 
-  makeTree(x: number, y: number, z: number) {
+  makeTree(chunk: Chunk, x: number, y: number, z: number) {
     const trunkHeight = 3 + Math.floor(hash(x, y + z) * 2);
     for (let i = 0; i < trunkHeight; i++) {
-      this.setBlock(x, y + i, z, "wood");
+      chunk.setBlock(x, y + i, z, "wood");
     }
 
     const leafStart = y + trunkHeight - 1;
@@ -163,7 +284,8 @@ export class VoxelWorld {
           const dy = ly - leafStart;
           if (dx + dz + dy <= 3 && !(dx === 0 && dz === 0 && dy === 0)) {
             if (hash(lx, ly + lz) > 0.15) {
-              this.setBlock(lx, ly, lz, "leaves");
+              const targetChunk = this.getChunkAt(lx, lz) ?? chunk;
+              targetChunk.setBlock(lx, ly, lz, "leaves");
             }
           }
         }
@@ -171,24 +293,36 @@ export class VoxelWorld {
     }
   }
 
+  getChunkAt(x: number, z: number): Chunk | undefined {
+    const cx = Math.floor(x / this.chunkSize);
+    const cz = Math.floor(z / this.chunkSize);
+    return this.chunks.get(chunkKey(cx, cz));
+  }
+
   getBlock(x: number, y: number, z: number): Block | null {
-    return this.blocks.get(key(x, y, z)) || null;
+    return this.blocks.get(blockKey(x, y, z)) || null;
   }
 
   setBlock(x: number, y: number, z: number, type: BlockType) {
+    const key = blockKey(x, y, z);
     if (type === "air") {
-      this.blocks.delete(key(x, y, z));
+      this.blocks.delete(key);
     } else {
-      this.blocks.set(key(x, y, z), { x, y, z, type });
+      this.blocks.set(key, { x, y, z, type });
     }
+    // 同步到对应区块
+    const chunk = this.getChunkAt(x, z);
+    if (chunk) chunk.setBlock(x, y, z, type);
   }
 
   removeBlock(x: number, y: number, z: number) {
-    this.blocks.delete(key(x, y, z));
+    this.blocks.delete(blockKey(x, y, z));
+    const chunk = this.getChunkAt(x, z);
+    if (chunk) chunk.removeBlock(x, y, z);
   }
 
   hasBlock(x: number, y: number, z: number) {
-    return this.blocks.has(key(x, y, z));
+    return this.blocks.has(blockKey(x, y, z));
   }
 
   isSolid(x: number, y: number, z: number) {

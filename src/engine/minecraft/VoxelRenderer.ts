@@ -14,6 +14,8 @@ export class VoxelRenderer {
   dummy = new THREE.Object3D();
   raycaster = new THREE.Raycaster();
   pointer = new THREE.Vector2(0, 0);
+  sun: THREE.DirectionalLight;
+  ambient: THREE.AmbientLight;
 
   // 记录实例索引 -> 方块坐标的映射
   instanceMap: { x: number; y: number; z: number; type: BlockType }[] = [];
@@ -47,7 +49,7 @@ export class VoxelRenderer {
       opacity: 1,
     });
 
-    this.mesh = new THREE.InstancedMesh(this.geometry, this.material, 100000);
+    this.mesh = new THREE.InstancedMesh(this.geometry, this.material, 400000);
     this.mesh.castShadow = true;
     this.mesh.receiveShadow = true;
     this.scene.add(this.mesh);
@@ -62,21 +64,21 @@ export class VoxelRenderer {
     this.scene.add(this.highlight);
 
     // 灯光
-    const ambient = new THREE.AmbientLight(0xffffff, 0.45);
-    this.scene.add(ambient);
+    this.ambient = new THREE.AmbientLight(0xffffff, 0.45);
+    this.scene.add(this.ambient);
 
-    const sun = new THREE.DirectionalLight(0xfff5e0, 0.9);
-    sun.position.set(40, 60, 30);
-    sun.castShadow = true;
-    sun.shadow.mapSize.width = 2048;
-    sun.shadow.mapSize.height = 2048;
-    sun.shadow.camera.near = 0.5;
-    sun.shadow.camera.far = 200;
-    sun.shadow.camera.left = -80;
-    sun.shadow.camera.right = 80;
-    sun.shadow.camera.top = 80;
-    sun.shadow.camera.bottom = -80;
-    this.scene.add(sun);
+    this.sun = new THREE.DirectionalLight(0xfff5e0, 0.9);
+    this.sun.position.set(40, 60, 30);
+    this.sun.castShadow = true;
+    this.sun.shadow.mapSize.width = 2048;
+    this.sun.shadow.mapSize.height = 2048;
+    this.sun.shadow.camera.near = 0.5;
+    this.sun.shadow.camera.far = 200;
+    this.sun.shadow.camera.left = -80;
+    this.sun.shadow.camera.right = 80;
+    this.sun.shadow.camera.top = 80;
+    this.sun.shadow.camera.bottom = -80;
+    this.scene.add(this.sun);
 
     // 地面底板（虚空之下的薄板，增加深度感）
     const groundPlane = new THREE.Mesh(
