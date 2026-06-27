@@ -4,20 +4,18 @@
 flowchart TD
     subgraph "前端层 (React + Vite)"
         "UI[页面组件]" --> "Store[Zustand 状态管理]"
-        "Store" --> "Engine[创作引擎核心]"
+        "Store" --> "Engine[游戏引擎核心]"
     end
-    subgraph "创作引擎层"
-        "Engine" --> "Draw[半面绘制模块]"
-        "Engine" --> "Grid[拼豆网格模块]"
-        "Engine" --> "Rig[骨架绑定模块]"
-        "Engine" --> "Anim[动画插值模块]"
-    end
-    subgraph "数据层"
-        "Store" --> "DB[IndexedDB 存储模块]"
-        "DB" --> "IDB[(IndexedDB)]"
+    subgraph "游戏引擎层"
+        "Engine" --> "Grid[棋盘网格系统]"
+        "Engine" --> "Plant[植物系统]"
+        "Engine" --> "Zombie[僵尸系统]"
+        "Engine" --> "Projectile[子弹系统]"
+        "Engine" --> "Sun[阳光系统]"
+        "Engine" --> "Wave[波次系统]"
     end
     subgraph "渲染层"
-        "Engine" --> "Canvas[Canvas 2D 渲染器]"
+        "Engine" --> "SVG[SVG 渲染器]"
     end
 ```
 
@@ -25,67 +23,85 @@ flowchart TD
 
 - **前端框架**：React@18 + TypeScript + Vite@5
 - **样式方案**：TailwindCSS@3 + CSS Variables（主题色管理）
-- **状态管理**：Zustand（轻量、无 boilerplate）
-- **渲染方案**：原生 Canvas 2D API（拼豆网格 + 骨架绘制 + 动画帧渲染）
-- **数据库**：IndexedDB（通过 `idb` 库封装，支持图案 + 骨架 + 关键帧持久化）
+- **状态管理**：Zustand（管理阳光、棋盘、植物、僵尸、子弹、游戏状态）
+- **渲染方案**：纯 SVG（所有游戏元素均为 SVG 组件，无 Canvas）
+- **动画方案**：CSS animations + React state 驱动的 transform 过渡
 - **初始化工具**：`npm create vite@latest` React + TS 模板
-- **后端**：无（纯前端应用，数据全部存浏览器）
+- **后端**：无（纯前端应用）
 
 ## 3. 路由定义
 
 | 路由 | 用途 |
 |------|------|
-| `/` | 创作工作台（默认进入，含绘制/骨架/动画三模式切换） |
-| `/gallery` | 存档管理面板（作品列表、导入导出） |
+| `/` | 游戏主界面（默认进入） |
+| `/gallery` | SVG 设定图鉴展示 |
 
 ## 4. API 定义
 
-无后端 API。所有数据通过 IndexedDB 本地存取，封装为 `db` 模块：
+无后端 API。所有数据通过本地状态管理。
 
 ```typescript
-// 数据库接口定义
-interface ArtworkRecord {
-  id: string;              // UUID
-  name: string;            // 作品名称
-  thumbnail: string;       // Base64 缩略图
-  gridSize: number;        // 拼豆网格尺寸 (如 32 表示 32×32)
-  pixels: PixelCell[];     // 拼豆格子数据 [{x, y, color}]
-  skeleton: SkeletonData;  // 骨架数据
-  keyframes: Keyframe[];   // 关键帧数组
-  createdAt: number;
-  updatedAt: number;
+// 核心类型定义
+interface PlantType {
+  id: string;
+  name: string;
+  cost: number;
+  cooldown: number;
+  health: number;
+  attackSpeed?: number;
+  sunRate?: number;
+  svg: React.FC<{ variant?: string }>;
 }
 
-interface PixelCell {
+interface Plant {
+  id: string;
+  typeId: string;
+  row: number;
+  col: number;
+  health: number;
+  lastAttackAt: number;
+  lastSunAt: number;
+}
+
+interface ZombieType {
+  id: string;
+  name: string;
+  health: number;
+  speed: number;
+  damage: number;
+  reward: number;
+  svg: React.FC<{ frame?: number; hurt?: boolean }>;
+}
+
+interface Zombie {
+  id: string;
+  typeId: string;
+  row: number;
+  x: number;
+  health: number;
+  maxHealth: number;
+  isEating: boolean;
+}
+
+interface Projectile {
+  id: string;
+  row: number;
+  x: number;
+  damage: number;
+}
+
+interface Sun {
+  id: string;
   x: number;
   y: number;
-  color: string;  // hex 格式
+  value: number;
+  type: 'sky' | 'plant';
 }
 
-interface SkeletonData {
-  joints: Joint[];      // 关节节点
-  bones: Bone[];        // 骨骼连接
-}
-
-interface Joint {
-  id: string;
-  x: number;            // 网格坐标
-  y: number;
-  name: string;
-  parentBoneId?: string;
-}
-
-interface Bone {
-  id: string;
-  fromJointId: string;
-  toJointId: string;
-  influencedCells: number[]; // 受影响格子索引
-}
-
-interface Keyframe {
-  id: string;
-  time: number;          // 0~1 归一化时间
-  jointPositions: Record<string, {x: number; y: number}>;
+interface Cell {
+  row: number;
+  col: number;
+  plant?: Plant;
 }
 ```
 
@@ -99,103 +115,93 @@ interface Keyframe {
 
 ```mermaid
 erDiagram
-    Artwork ||--o{ PixelCell : contains
-    Artwork ||--|| SkeletonData : has
-    Artwork ||--o{ Keyframe : has
-    SkeletonData ||--o{ Joint : contains
-    SkeletonData ||--o{ Bone : contains
-    Bone }o--|| Joint : "from"
-    Bone }o--|| Joint : "to"
-    Keyframe ||--o{ JointPosition : stores
+    GameState ||--o{ Cell : contains
+    GameState ||--o{ Plant : contains
+    GameState ||--o{ Zombie : contains
+    GameState ||--o{ Projectile : contains
+    GameState ||--o{ Sun : contains
+    Cell ||--o| Plant : holds
+    Plant ||--|| PlantType : is
+    Zombie ||--|| ZombieType : is
 
-    Artwork {
-        string id PK
-        string name
-        string thumbnail
-        number gridSize
-        number createdAt
-        number updatedAt
+    GameState {
+        number sun
+        number wave
+        boolean isRunning
+        boolean isPaused
+        number lives
     }
-    PixelCell {
+    Cell {
+        number row
+        number col
+    }
+    Plant {
+        string id PK
+        string typeId FK
+        number row
+        number col
+        number health
+    }
+    Zombie {
+        string id PK
+        string typeId FK
+        number row
+        number x
+        number health
+    }
+    Projectile {
+        string id PK
+        number row
+        number x
+        number damage
+    }
+    Sun {
+        string id PK
         number x
         number y
-        string color
+        number value
     }
-    Joint {
-        string id PK
-        number x
-        number y
-        string name
-    }
-    Bone {
-        string id PK
-        string fromJointId FK
-        string toJointId FK
-    }
-    Keyframe {
-        string id PK
-        number time
-    }
-```
-
-### 6.2 数据定义语言（IndexedDB Schema）
-
-```javascript
-// IndexedDB 数据库结构
-db = {
-  name: "PerlerBeadStudio",
-  version: 1,
-  stores: {
-    artworks: {
-      keyPath: "id",
-      indexes: [
-        { name: "by_updatedAt", keyPath: "updatedAt" },
-        { name: "by_name", keyPath: "name" }
-      ]
-    }
-  }
-}
 ```
 
 ## 7. 项目目录结构（整理框架）
 
 ```
-perler-bead-studio/
+pvz-svg-template/
 ├── src/
-│   ├── components/              # UI 组件层
-│   │   ├── Workspace/           # 创作工作台
-│   │   │   ├── CanvasPanel.tsx       # 画布主面板
-│   │   │   ├── Toolbar.tsx           # 工具栏
-│   │   │   ├── Palette.tsx           # 调色板
-│   │   │   └── ModeSwitcher.tsx      # 模式切换
-│   │   ├── Skeleton/            # 骨架绑定面板
-│   │   │   ├── JointEditor.tsx       # 关节编辑器
-│   │   │   └── BoneConnector.tsx     # 骨骼连接器
-│   │   ├── Animation/           # 动画面板
-│   │   │   ├── Timeline.tsx          # 时间轴
-│   │   │   └── PlaybackControls.tsx  # 播放控制
-│   │   ├── Gallery/             # 存档管理
-│   │   │   ├── ArtworkList.tsx       # 作品列表
-│   │   │   └── ArtworkCard.tsx       # 作品卡片
-│   │   └── common/              # 通用组件
-│   ├── engine/                  # 创作引擎核心层
-│   │   ├── DrawingEngine.ts     # 半面绘制 + 镜像
-│   │   ├── GridEngine.ts        # 拼豆网格化
-│   │   ├── SkeletonEngine.ts    # 骨架绑定与变形
-│   │   ├── AnimationEngine.ts   # 关键帧插值
-│   │   └── Renderer.ts          # Canvas 渲染器
-│   ├── store/                   # 状态管理层
-│   │   ├── useArtworkStore.ts   # 作品状态
-│   │   ├── useToolStore.ts      # 工具状态
-│   │   └── useUIStore.ts        # UI 状态
-│   ├── db/                      # 数据持久化层
-│   │   ├── database.ts          # IndexedDB 初始化
-│   │   └── artworkRepo.ts       # 作品 CRUD
-│   ├── types/                   # TypeScript 类型
+│   ├── components/
+│   │   ├── Game/                  # 游戏主界面组件
+│   │   │   ├── Board.tsx          # 棋盘
+│   │   │   ├── Cell.tsx           # 单个格子
+│   │   │   ├── Hud.tsx            # 顶部 HUD
+│   │   │   ├── SeedPackets.tsx    # 植物卡槽
+│   │   │   └── Controls.tsx       # 控制按钮
+│   │   ├── Gallery/               # 图鉴组件
+│   │   │   ├── GalleryGrid.tsx
+│   │   │   └── GalleryCard.tsx
+│   │   ├── svg/                   # SVG 设定组件
+│   │   │   ├── plants/            # 植物 SVG
+│   │   │   │   ├── Sunflower.tsx
+│   │   │   │   ├── Peashooter.tsx
+│   │   │   │   └── WallNut.tsx
+│   │   │   ├── zombies/           # 僵尸 SVG
+│   │   │   │   ├── BasicZombie.tsx
+│   │   │   │   ├── ConeheadZombie.tsx
+│   │   │   │   └── BucketheadZombie.tsx
+│   │   │   ├── ui/                # UI 与道具 SVG
+│   │   │   │   ├── Sun.tsx
+│   │   │   │   ├── Pea.tsx
+│   │   │   │   └── Lawn.tsx
+│   │   │   └── scenes/            # 场景 SVG
+│   │   │       └── Background.tsx
+│   │   └── common/                # 通用组件
+│   ├── engine/
+│   │   ├── gameLoop.ts            # 游戏循环
+│   │   ├── collision.ts           # 碰撞检测
+│   │   └── constants.ts           # 网格、速度等常量
+│   ├── store/
+│   │   └── useGameStore.ts        # Zustand 状态
+│   ├── types/
 │   │   └── index.ts
-│   ├── utils/                   # 工具函数
-│   │   ├── colors.ts            # 拼豆色卡
-│   │   └── geometry.ts          # 几何计算
 │   ├── App.tsx
 │   ├── main.tsx
 │   └── index.css

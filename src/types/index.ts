@@ -1,73 +1,91 @@
-// 拼豆半面工坊 - 核心类型定义
+export type PlantType = "sunflower" | "peashooter" | "wallnut";
+export type ZombieType = "basic" | "conehead" | "buckethead";
 
-/** 拼豆格子 */
-export interface PixelCell {
+export interface Position {
   x: number;
   y: number;
-  color: string; // hex 格式，如 #ff6b35
 }
 
-/** 关节节点 */
-export interface Joint {
+export interface Plant {
   id: string;
-  x: number; // 网格坐标
+  type: PlantType;
+  row: number;
+  col: number;
+  hp: number;
+  maxHp: number;
+  lastActionAt: number;
+}
+
+export interface Zombie {
+  id: string;
+  type: ZombieType;
+  row: number;
+  x: number;
+  hp: number;
+  maxHp: number;
+  speed: number;
+  damage: number;
+  attackCooldown: number;
+  lastAttackAt: number;
+  isAttacking: boolean;
+  isHit: boolean;
+  hitUntil: number;
+}
+
+export interface Projectile {
+  id: string;
+  row: number;
+  x: number;
   y: number;
-  name: string;
-  parentBoneId?: string;
+  damage: number;
+  speed: number;
 }
 
-/** 骨骼连接 */
-export interface Bone {
+export interface Sun {
   id: string;
-  fromJointId: string;
-  toJointId: string;
-  influencedCells: string[]; // 受影响格子键 "x,y"
-}
-
-/** 骨架数据 */
-export interface SkeletonData {
-  joints: Joint[];
-  bones: Bone[];
-}
-
-/** 关键帧中的关节位置快照 */
-export type JointPositions = Record<string, { x: number; y: number }>;
-
-/** 动画关键帧 */
-export interface Keyframe {
-  id: string;
-  time: number; // 0~1 归一化时间
-  jointPositions: JointPositions;
-}
-
-/** 作品记录（IndexedDB 持久化） */
-export interface ArtworkRecord {
-  id: string;
-  name: string;
-  thumbnail: string; // Base64 缩略图
-  gridSize: number; // 拼豆网格尺寸 (如 32 表示 32×32)
-  pixels: PixelCell[];
-  skeleton: SkeletonData;
-  keyframes: Keyframe[];
+  x: number;
+  y: number;
+  value: number;
   createdAt: number;
-  updatedAt: number;
+  lifetime: number;
 }
 
-/** 创作模式 */
-export type WorkMode = "draw" | "rig" | "animate";
-
-/** 绘制工具 */
-export type DrawTool = "brush" | "eraser" | "fill" | "picker";
-
-/** 工具状态 */
-export interface ToolState {
-  tool: DrawTool;
-  color: string;
-  brushSize: number;
+export interface SeedPacket {
+  type: PlantType;
+  name: string;
+  cost: number;
+  cooldown: number;
+  rechargedAt: number;
 }
 
-/** 几何点 */
-export interface Point {
-  x: number;
-  y: number;
+export type GameStatus = "idle" | "running" | "paused" | "gameover";
+
+export interface GameState {
+  status: GameStatus;
+  sun: number;
+  lives: number;
+  wave: number;
+  lastTick: number;
+  lastSkySunAt: number;
+  plants: Plant[];
+  zombies: Zombie[];
+  projectiles: Projectile[];
+  suns: Sun[];
+  selectedSeed: PlantType | null;
+  seedPackets: SeedPacket[];
+  hoveredCell: { row: number; col: number } | null;
+  waveState: {
+    remaining: number;
+    lastSpawnAt: number;
+  };
 }
+
+export type GameAction =
+  | { type: "START" }
+  | { type: "PAUSE" }
+  | { type: "RESET" }
+  | { type: "TICK"; now: number }
+  | { type: "SELECT_SEED"; seed: PlantType | null }
+  | { type: "PLANT"; row: number; col: number }
+  | { type: "COLLECT_SUN"; id: string }
+  | { type: "HOVER_CELL"; cell: { row: number; col: number } | null };

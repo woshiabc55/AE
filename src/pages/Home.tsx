@@ -1,121 +1,51 @@
-// 创作工作台主页
-
-import { Header } from "@/components/Workspace/Header";
-import { CanvasPanel } from "@/components/Workspace/CanvasPanel";
-import { Toolbar } from "@/components/Workspace/Toolbar";
-import { Palette } from "@/components/Workspace/Palette";
-import { RigToolbar } from "@/components/Skeleton/RigToolbar";
-import { Timeline } from "@/components/Animation/Timeline";
-import { ArtworkList } from "@/components/Gallery/ArtworkList";
-import { Panel } from "@/components/common/Panel";
-import { useUIStore } from "@/store/useUIStore";
-import { Brush, Bone, Film, Palette as PaletteIcon } from "lucide-react";
+import { useEffect } from "react";
+import { useGameStore } from "@/store/useGameStore";
+import Board from "@/components/Game/Board";
+import Hud from "@/components/Game/Hud";
+import SeedPackets from "@/components/Game/SeedPackets";
+import Controls from "@/components/Game/Controls";
 
 export default function Home() {
-  const mode = useUIStore((s) => s.mode);
-  const showGallery = useUIStore((s) => s.showGallery);
+  const dispatch = useGameStore((s) => s.dispatch);
+  const status = useGameStore((s) => s.status);
+
+  useEffect(() => {
+    let raf = 0;
+    const loop = (t: number) => {
+      dispatch({ type: "TICK", now: t });
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, [dispatch]);
 
   return (
-    <div className="h-full flex flex-col bg-ink-900 bg-noise">
-      <Header />
-
-      <div className="flex-1 flex min-h-0">
-        {/* 左侧栏 */}
-        <aside className="w-64 border-r border-ink-600/60 bg-ink-800/40 flex flex-col">
-          {mode === "draw" && (
-            <Panel title="绘制工具" icon={<Brush size={14} />}>
-              <Toolbar />
-            </Panel>
-          )}
-          {mode === "rig" && (
-            <Panel title="骨架绑定" icon={<Bone size={14} />}>
-              <RigToolbar />
-            </Panel>
-          )}
-          {mode === "animate" && (
-            <Panel title="动画播放" icon={<Film size={14} />}>
-              <Timeline />
-            </Panel>
-          )}
-        </aside>
-
-        {/* 中央画布 */}
-        <CanvasPanel />
-
-        {/* 右侧栏 */}
-        <aside className="w-64 border-l border-ink-600/60 bg-ink-800/40 flex flex-col">
-          {mode === "draw" && (
-            <Panel title="调色板" icon={<PaletteIcon size={14} />}>
-              <Palette />
-            </Panel>
-          )}
-          {mode === "rig" && (
-            <Panel title="骨架预览" icon={<Bone size={14} />}>
-              <RigPreviewHelp />
-            </Panel>
-          )}
-          {mode === "animate" && (
-            <Panel title="动画提示" icon={<Film size={14} />}>
-              <AnimateHelp />
-            </Panel>
-          )}
-        </aside>
+    <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-gradient-to-b from-sky-400 to-sky-300 p-6">
+      <div className="flex w-full max-w-5xl flex-col items-center gap-4">
+        <h1 className="font-pixel text-2xl text-white text-shadow drop-shadow-md">
+          植物大战僵尸 SVG 模板
+        </h1>
+        <div className="flex w-full flex-wrap items-center justify-between gap-4">
+          <Hud />
+          <SeedPackets />
+          <Controls />
+        </div>
+        <Board />
       </div>
-
-      {showGallery && <ArtworkList />}
-    </div>
-  );
-}
-
-function RigPreviewHelp() {
-  return (
-    <div className="p-4 space-y-3 text-xs font-mono text-ink-300 leading-relaxed">
-      <div className="bg-ink-900/60 rounded-lg p-3 border border-ink-600/40">
-        <div className="text-ember-400 mb-2 font-pixel text-[10px]">操作流程</div>
-        <ol className="space-y-1.5 list-decimal list-inside">
-          <li>选择「添加关节」，点击画布放置节点</li>
-          <li>选择「连接骨骼」，依次点击两个关节</li>
-          <li>选择「指派格子」，点击骨骼后框选拼豆</li>
-          <li>选择「移动关节」，拖拽调整位置</li>
-        </ol>
-      </div>
-      <div className="bg-ink-900/60 rounded-lg p-3 border border-ink-600/40">
-        <div className="text-mint-400 mb-2 font-pixel text-[10px]">变形原理</div>
-        <p>
-          每根骨骼影响其绑定的拼豆格子。当关节移动时，相关格子会跟随骨骼做刚体变换（旋转 + 缩放 + 平移），实现可拉动动画。
-        </p>
-      </div>
-      <div className="bg-ink-900/60 rounded-lg p-3 border border-sun-500/30">
-        <div className="text-sun-500 mb-1 font-pixel text-[10px]">小提示</div>
-        <p>建议先在绘制模式完成形象，再切到骨架模式绑定。半面镜像下，骨架也建议对称放置。</p>
-      </div>
-    </div>
-  );
-}
-
-function AnimateHelp() {
-  return (
-    <div className="p-4 space-y-3 text-xs font-mono text-ink-300 leading-relaxed">
-      <div className="bg-ink-900/60 rounded-lg p-3 border border-ink-600/40">
-        <div className="text-ember-400 mb-2 font-pixel text-[10px]">录制流程</div>
-        <ol className="space-y-1.5 list-decimal list-inside">
-          <li>拖拽关节摆出起始姿势</li>
-          <li>点击「录制关键帧」保存当前姿态</li>
-          <li>拖动时间轴到新位置</li>
-          <li>调整关节为新姿势，再次录制</li>
-          <li>点击「播放」预览动画</li>
-        </ol>
-      </div>
-      <div className="bg-ink-900/60 rounded-lg p-3 border border-ink-600/40">
-        <div className="text-mint-400 mb-2 font-pixel text-[10px]">可拉动动画</div>
-        <p>
-          关键帧之间会自动插值过渡（ease-in-out 缓动）。拖动时间轴可实时预览任意时刻的姿态。
-        </p>
-      </div>
-      <div className="bg-ink-900/60 rounded-lg p-3 border border-sun-500/30">
-        <div className="text-sun-500 mb-1 font-pixel text-[10px]">快捷操作</div>
-        <p>右键点击关键帧标记可快速删除。点击关键帧列表项可跳转到该帧。</p>
-      </div>
+      {status === "gameover" && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="rounded-3xl bg-lawn-800 p-10 text-center text-white shadow-2xl">
+            <h2 className="mb-4 font-pixel text-3xl text-red-400">游戏结束</h2>
+            <p className="mb-6 text-lg">僵尸吃掉了你的脑子！</p>
+            <button
+              onClick={() => dispatch({ type: "RESET" })}
+              className="rounded-xl bg-plant px-6 py-3 font-bold text-white transition-transform hover:bg-lawn-400 active:scale-95"
+            >
+              重新开始
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
