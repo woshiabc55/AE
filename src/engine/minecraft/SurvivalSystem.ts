@@ -43,6 +43,8 @@ export class SurvivalSystem {
   healthRegen = 2; // 每秒（饥饿>50时）
   starveDamage = 2; // 每秒（饥饿为0时）
 
+  creativeMode = false;
+
   onDeath?: () => void;
   onRespawn?: () => void;
   onItemPickup?: (type: ItemType) => void;
@@ -56,32 +58,57 @@ export class SurvivalSystem {
   ) {}
 
   update(delta: number, playerX: number, playerY: number, playerZ: number) {
-    if (this.isDead) return;
+    if (this.isDead && !this.creativeMode) return;
 
     // 昼夜循环
     this.dayTime += delta / this.dayDuration;
     if (this.dayTime >= 1) this.dayTime -= 1;
     this.updateLighting();
 
-    // 饥饿
-    this.hunger = Math.max(0, this.hunger - this.hungerDecay * delta);
-    if (this.hunger > 50 && this.health < this.maxHealth) {
-      this.health = Math.min(this.maxHealth, this.health + this.healthRegen * delta);
-    } else if (this.hunger === 0) {
-      this.health = Math.max(0, this.health - this.starveDamage * delta);
+    if (!this.creativeMode) {
+      // 饥饿
+      this.hunger = Math.max(0, this.hunger - this.hungerDecay * delta);
+      if (this.hunger > 50 && this.health < this.maxHealth) {
+        this.health = Math.min(this.maxHealth, this.health + this.healthRegen * delta);
+      } else if (this.hunger === 0) {
+        this.health = Math.max(0, this.health - this.starveDamage * delta);
+      }
+
+      // 怪物
+      this.updateMobs(delta, playerX, playerY, playerZ);
+      this.spawnMobs(playerX, playerZ);
+
+      // 掉落物
+      this.updateItems(delta, playerX, playerY, playerZ);
+
+      // 死亡判定
+      if (this.health <= 0) {
+        this.die();
+      }
+    } else {
+      // 创造模式：清空怪物与掉落物，保持满状态
+      this.despawnMobs();
+      this.clearItems();
+      this.health = this.maxHealth;
+      this.hunger = this.maxHunger;
+      this.isDead = false;
     }
+  }
 
-    // 怪物
-    this.updateMobs(delta, playerX, playerY, playerZ);
-    this.spawnMobs(playerX, playerZ);
-
-    // 掉落物
-    this.updateItems(delta, playerX, playerY, playerZ);
-
-    // 死亡判定
-    if (this.health <= 0) {
-      this.die();
+  despawnMobs() {
+    for (const mob of this.mobs) {
+      this.scene.remove(mob.mesh);
     }
+    this.mobs = [];
+  }
+
+  clearItems() {
+    for (const item of this.items) {
+      this.scene.remove(item.mesh);
+      item.mesh.geometry.dispose();
+      (item.mesh.material as THREE.Material).dispose();
+    }
+    this.items = [];
   }
 
   updateLighting() {

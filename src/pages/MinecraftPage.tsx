@@ -1,4 +1,4 @@
-// 我的世界还原体验页（含生存模式）
+// 我的世界还原体验页（含生存 / 创造模式）
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
@@ -20,6 +20,11 @@ import {
   RefreshCw,
   Sun,
   Moon,
+  Zap,
+  Settings,
+  Keyboard,
+  Crosshair,
+  Play,
 } from "lucide-react";
 import { VoxelWorld, PLACEABLE_BLOCKS, BlockType, BLOCK_DEFS } from "@/engine/minecraft/VoxelWorld";
 import { VoxelRenderer } from "@/engine/minecraft/VoxelRenderer";
@@ -30,7 +35,7 @@ import { PlayerAvatar } from "@/engine/minecraft/PlayerAvatar";
 import { HeldBlock } from "@/engine/minecraft/HeldBlock";
 import { BlockEffects } from "@/engine/minecraft/BlockEffects";
 import { SoundSynth } from "@/engine/minecraft/SoundSynth";
-import { SurvivalSystem, ItemType } from "@/engine/minecraft/SurvivalSystem";
+import { SurvivalSystem } from "@/engine/minecraft/SurvivalSystem";
 
 type RenderMode = "webgl" | "iso";
 type CameraMode = "first" | "orbit";
@@ -56,21 +61,40 @@ interface IsoEngine {
   renderer: IsoRenderer;
 }
 
+const KEY_BINDINGS = [
+  { keys: "W A S D", action: "移动" },
+  { keys: "Space / Shift", action: "上升 / 下降" },
+  { keys: "鼠标左键", action: "攻击怪物 / 按住破坏方块" },
+  { keys: "鼠标右键", action: "放置方块" },
+  { keys: "1 - 0", action: "选择方块" },
+  { keys: "V", action: "切换第一/第三人称" },
+  { keys: "C", action: "切换创造/生存模式" },
+  { keys: "E", action: "吃东西" },
+  { keys: "Tab", action: "暂停 / 设置" },
+  { keys: "R", action: "重新生成世界" },
+  { keys: "M", action: "开关音效" },
+  { keys: "ESC", action: "释放鼠标" },
+];
+
 export default function MinecraftPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<WebGLEngine | IsoEngine | null>(null);
   const rafRef = useRef<number>(0);
 
   const [renderMode, setRenderMode] = useState<RenderMode>("webgl");
-  const [cameraMode, setCameraMode] = useState<CameraMode>("first");
+  const [cameraMode, setCameraMode] = useState<CameraMode>("orbit");
   const [selectedBlock, setSelectedBlock] = useState<BlockType>("grass");
   const selectedBlockRef = useRef<BlockType>("grass");
   selectedBlockRef.current = selectedBlock;
 
   const [isLocked, setIsLocked] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [creativeMode, setCreativeMode] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0, z: 0 });
   const [blockCount, setBlockCount] = useState(0);
+  const [chunkCount, setChunkCount] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [fps, setFps] = useState(0);
 
   // 生存模式 UI 状态
   const [health, setHealth] = useState(100);
@@ -87,6 +111,7 @@ export default function MinecraftPage() {
       engine.renderer.rebuildMesh();
     }
     setBlockCount(engine.world.blocks.size);
+    setChunkCount(engine.world.loadedChunks.size);
   }, []);
 
   const respawn = useCallback(() => {
@@ -103,6 +128,18 @@ export default function MinecraftPage() {
     setIsDead(false);
     setHealth(100);
     setHunger(100);
+  }, []);
+
+  const setCreative = useCallback((enabled: boolean) => {
+    const engine = engineRef.current;
+    if (!engine || engine.type !== "webgl") return;
+    engine.survival.creativeMode = enabled;
+    setCreativeMode(enabled);
+    if (enabled) {
+      setHealth(100);
+      setHunger(100);
+      setIsDead(false);
+    }
   }, []);
 
   // 切换第一人称 / 第三人称
@@ -164,7 +201,7 @@ export default function MinecraftPage() {
       renderer.camera.position.set(0, 14, 22);
       renderer.camera.lookAt(0, 14, 0);
 
-      // 默认使用第三人称环绕，避免 Pointer Lock 在某些环境不生效导致无法体验
+      // 默认第三人称环绕
       const controls = new OrbitControls(renderer.camera, renderer.renderer.domElement, world);
       controls.target.set(0, 14, 0);
       controls.distance = 18;
@@ -221,11 +258,10 @@ export default function MinecraftPage() {
 
       const handleMouseDown = (e: MouseEvent) => {
         const ctrl = engineRef.current;
-        if (!ctrl || ctrl.type !== "webgl") return;
+        if (!ctrl || ctrl.type !== "webgl" || isPausedRef.current) return;
 
         if (e.button === 0) {
           if (ctrl.cameraMode === "first") {
-            // 优先攻击怪物
             const attackPoint = getCameraForwardPoint(renderer.camera, 2.5);
             if (ctrl.survival.damageMobAt(attackPoint.x, attackPoint.y, attackPoint.z, 10)) {
               return;
@@ -268,11 +304,9 @@ export default function MinecraftPage() {
           ctrl.effects.cancelBreak();
           ctrl.leftMouseDown = false;
         }
-        if (e.button === 0 && ctrl.cameraMode === "orbit") {
+        if (e.button === 0 && ctrl.cameraMode === "orbit" && !isPausedRef.current) {
           const orb = ctrl.controls as OrbitControls;
           if (orb.consumeClick()) {
-            // 第三人称：快速点击优先攻击怪物，否则破坏方块
-            const targetPos = (ctrl.controls as OrbitControls).target;
             const attackPoint = getCameraForwardPoint(renderer.camera, 2.5);
             if (!ctrl.survival.damageMobAt(attackPoint.x, attackPoint.y, attackPoint.z, 10)) {
               const target = renderer.getTargetBlock();
@@ -294,14 +328,26 @@ export default function MinecraftPage() {
       document.addEventListener("mouseup", handleMouseUp);
 
       let lastTime = performance.now();
+      let frameCount = 0;
+      let lastFpsTime = performance.now();
+
       const loop = (time: number) => {
         const engine = engineRef.current as WebGLEngine | null;
         if (!engine || engine.type !== "webgl") return;
         const delta = Math.min((time - lastTime) / 1000, 0.1);
 
-        engine.controls.update(delta);
+        // FPS 计算
+        frameCount++;
+        if (time - lastFpsTime >= 500) {
+          setFps(Math.round((frameCount * 1000) / (time - lastFpsTime)));
+          frameCount = 0;
+          lastFpsTime = time;
+        }
 
-        // 玩家位置
+        if (!isPausedRef.current) {
+          engine.controls.update(delta);
+        }
+
         let px = 0, py = 0, pz = 0;
         if (engine.cameraMode === "first") {
           const cam = engine.renderer.camera.position;
@@ -311,11 +357,10 @@ export default function MinecraftPage() {
           px = t.x; py = t.y; pz = t.z;
         }
 
-        // 动态加载区块
-        engine.world.updateLoadedChunks(px, pz);
-
-        // 生存系统更新
-        engine.survival.update(delta, px, py, pz);
+        if (!isPausedRef.current) {
+          engine.world.updateLoadedChunks(px, pz);
+          engine.survival.update(delta, px, py, pz);
+        }
 
         const target = renderer.getTargetBlock();
         const currentTargetPos = target
@@ -326,7 +371,6 @@ export default function MinecraftPage() {
         engine.heldBlock.setType(selectedBlockRef.current);
         engine.heldBlock.update(delta, engine.controls.isMoving);
 
-        // 玩家模型位置与动画
         if (engine.cameraMode === "orbit") {
           const orb = engine.controls as OrbitControls;
           engine.avatar.setPosition(orb.target.x, orb.target.y, orb.target.z);
@@ -337,8 +381,7 @@ export default function MinecraftPage() {
           engine.avatar.update(delta, fp.isMoving, fp.moveDir);
         }
 
-        // 脚步声
-        if (engine.controls.isMoving && engine.sound.enabled) {
+        if (!isPausedRef.current && engine.controls.isMoving && engine.sound.enabled) {
           const stepInterval = 0.35;
           if (time - engine.lastStepTime > stepInterval * 1000) {
             engine.sound.playStep();
@@ -351,6 +394,7 @@ export default function MinecraftPage() {
 
         setPosition({ x: Math.round(px), y: Math.round(py), z: Math.round(pz) });
         setBlockCount(engine.world.blocks.size);
+        setChunkCount(engine.world.loadedChunks.size);
         setHealth(engine.survival.health);
         setHunger(engine.survival.hunger);
         setDayTime(engine.survival.dayTime);
@@ -402,20 +446,38 @@ export default function MinecraftPage() {
     }
 
     setBlockCount(world.blocks.size);
+    setChunkCount(world.loadedChunks.size);
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (isDead) {
-        if (e.code === "Enter" || e.code === "Space") {
-          respawn();
-        }
+      // 全局游戏按键阻止默认行为
+      const gameKeys = [
+        "KeyW", "KeyA", "KeyS", "KeyD", "Space", "ShiftLeft", "ShiftRight",
+        "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight",
+      ];
+      if (gameKeys.includes(e.code)) {
+        e.preventDefault();
+      }
+
+      if (e.code === "Tab") {
+        e.preventDefault();
+        setIsPaused((p) => !p);
         return;
       }
+
+      if (isDead && (e.code === "Enter" || e.code === "Space")) {
+        e.preventDefault();
+        respawn();
+        return;
+      }
+
+      if (isPausedRef.current || isDead) return;
 
       const index = Number(e.key);
       if (index >= 1 && index <= PLACEABLE_BLOCKS.length) {
         setSelectedBlock(PLACEABLE_BLOCKS[index - 1]);
       }
       if (e.code === "KeyR") {
+        e.preventDefault();
         world.generate();
         rebuild();
         const engine = engineRef.current;
@@ -440,9 +502,18 @@ export default function MinecraftPage() {
         }
       }
       if (e.code === "KeyV") {
+        e.preventDefault();
         toggleCameraMode();
       }
+      if (e.code === "KeyC") {
+        e.preventDefault();
+        const engine = engineRef.current;
+        if (engine?.type === "webgl") {
+          setCreative(!engine.survival.creativeMode);
+        }
+      }
       if (e.code === "KeyE") {
+        e.preventDefault();
         const engine = engineRef.current;
         if (engine?.type === "webgl") {
           const inv = inventoryRef.current;
@@ -456,6 +527,7 @@ export default function MinecraftPage() {
         }
       }
       if (e.code === "KeyM") {
+        e.preventDefault();
         toggleSound();
       }
     };
@@ -467,13 +539,15 @@ export default function MinecraftPage() {
       cleanup();
       engineRef.current = null;
     };
-  }, [rebuild, toggleCameraMode, toggleSound, respawn, isDead]);
+  }, [rebuild, toggleCameraMode, toggleSound, respawn, isDead, setCreative]);
 
-  // 用于在 keydown 闭包中读取最新库存
+  // 用于在 keydown 闭包中读取最新库存与暂停状态
   const inventoryRef = useRef(inventory);
   inventoryRef.current = inventory;
+  const isPausedRef = useRef(isPaused);
+  isPausedRef.current = isPaused;
 
-  const showOverlay = renderMode === "iso" || (cameraMode === "first" && !isLocked);
+  const showOverlay = renderMode === "iso" || (cameraMode === "first" && !isLocked && !isPaused);
 
   return (
     <div className="h-screen w-screen overflow-hidden bg-ink-900 relative">
@@ -490,43 +564,31 @@ export default function MinecraftPage() {
 
         {renderMode === "webgl" && cameraMode === "first" && (
           <div className="hidden sm:flex items-center gap-3 px-4 py-2 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60 text-xs font-mono text-ink-300">
-            <span className="flex items-center gap-1.5">
-              <Move size={12} className="text-mint-400" />
-              WASD 移动
-            </span>
+            <span className="flex items-center gap-1.5"><Move size={12} className="text-mint-400" /> WASD 移动</span>
             <span className="w-px h-3 bg-ink-600/60" />
             <span>空格上升 / Shift 下降</span>
             <span className="w-px h-3 bg-ink-600/60" />
-            <span className="flex items-center gap-1.5">
-              <MousePointerClick size={12} className="text-ember-400" />
-              左键攻击/破坏 / 右键放置
-            </span>
+            <span className="flex items-center gap-1.5"><MousePointerClick size={12} className="text-ember-400" /> 左键攻击/破坏 / 右键放置</span>
             <span className="w-px h-3 bg-ink-600/60" />
-            <span>V 第三人称 · E 吃东西</span>
+            <span>V 第三人称 · E 吃东西 · Tab 设置</span>
           </div>
         )}
 
         {renderMode === "webgl" && cameraMode === "orbit" && (
           <div className="hidden sm:flex items-center gap-3 px-4 py-2 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60 text-xs font-mono text-ink-300">
-            <span className="flex items-center gap-1.5">
-              <Move size={12} className="text-mint-400" />
-              WASD 移动角色
-            </span>
+            <span className="flex items-center gap-1.5"><Move size={12} className="text-mint-400" /> WASD 移动角色</span>
             <span className="w-px h-3 bg-ink-600/60" />
             <span>空格上升 / Shift 下降</span>
             <span className="w-px h-3 bg-ink-600/60" />
             <span>拖拽旋转 · 滚轮缩放</span>
             <span className="w-px h-3 bg-ink-600/60" />
-            <span>V 第一人称 · E 吃东西</span>
+            <span>V 第一人称 · Tab 设置</span>
           </div>
         )}
 
         {renderMode === "iso" && (
           <div className="hidden sm:flex items-center gap-3 px-4 py-2 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60 text-xs font-mono text-ink-300">
-            <span className="flex items-center gap-1.5">
-              <Eye size={12} className="text-mint-400" />
-              2D 等距预览模式
-            </span>
+            <span className="flex items-center gap-1.5"><Eye size={12} className="text-mint-400" /> 2D 等距预览模式</span>
             <span className="w-px h-3 bg-ink-600/60" />
             <span>拖拽平移 · 滚轮缩放</span>
           </div>
@@ -535,6 +597,17 @@ export default function MinecraftPage() {
         <div className="flex items-center gap-2 pointer-events-auto">
           {renderMode === "webgl" && (
             <>
+              <div className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60 text-xs font-mono text-ink-300">
+                <Crosshair size={12} className="text-ember-400" />
+                <span>FPS {fps}</span>
+              </div>
+              <button
+                onClick={() => setIsPaused(true)}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60 text-xs font-mono text-ink-200 hover:text-ember-400 hover:border-ember-500/40 transition-colors"
+                title="Tab 键暂停"
+              >
+                <Settings size={12} />
+              </button>
               <button
                 onClick={toggleSound}
                 className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60 text-xs font-mono text-ink-200 hover:text-ember-400 hover:border-ember-500/40 transition-colors"
@@ -550,6 +623,21 @@ export default function MinecraftPage() {
                 {cameraMode === "first" ? <User size={12} /> : <Video size={12} />}
                 <span>{cameraMode === "first" ? "第一人称" : "第三人称"}</span>
               </button>
+              <button
+                onClick={() => {
+                  const engine = engineRef.current;
+                  if (engine?.type === "webgl") setCreative(!engine.survival.creativeMode);
+                }}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg bg-ink-800/80 backdrop-blur border text-xs font-mono transition-colors ${
+                  creativeMode
+                    ? "border-ember-500/60 text-ember-400"
+                    : "border-ink-600/60 text-ink-200 hover:text-ember-400 hover:border-ember-500/40"
+                }`}
+                title="C 键切换"
+              >
+                <Zap size={12} />
+                <span>{creativeMode ? "创造" : "生存"}</span>
+              </button>
             </>
           )}
           <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60 text-xs font-mono text-ink-300">
@@ -558,9 +646,9 @@ export default function MinecraftPage() {
             {renderMode === "webgl" && (
               <>
                 <span className="w-px h-3 bg-ink-600/60" />
-                <span>
-                  X:{position.x} Y:{position.y} Z:{position.z}
-                </span>
+                <span>区块: {chunkCount}</span>
+                <span className="w-px h-3 bg-ink-600/60" />
+                <span>X:{position.x} Y:{position.y} Z:{position.z}</span>
               </>
             )}
           </div>
@@ -568,25 +656,19 @@ export default function MinecraftPage() {
       </div>
 
       {/* 生存模式状态条 */}
-      {renderMode === "webgl" && (
+      {renderMode === "webgl" && !creativeMode && (
         <div className="absolute top-16 left-4 z-10 flex flex-col gap-2 pointer-events-none">
           <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60">
             <Heart size={14} className="text-rose-500" />
             <div className="w-32 h-2 rounded-full bg-ink-900 overflow-hidden">
-              <div
-                className="h-full bg-rose-500 transition-all"
-                style={{ width: `${Math.max(0, health)}%` }}
-              />
+              <div className="h-full bg-rose-500 transition-all" style={{ width: `${Math.max(0, health)}%` }} />
             </div>
             <span className="text-xs font-mono text-ink-200 w-8">{Math.ceil(health)}</span>
           </div>
           <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60">
             <Utensils size={14} className="text-amber-500" />
             <div className="w-32 h-2 rounded-full bg-ink-900 overflow-hidden">
-              <div
-                className="h-full bg-amber-500 transition-all"
-                style={{ width: `${Math.max(0, hunger)}%` }}
-              />
+              <div className="h-full bg-amber-500 transition-all" style={{ width: `${Math.max(0, hunger)}%` }} />
             </div>
             <span className="text-xs font-mono text-ink-200 w-8">{Math.ceil(hunger)}</span>
           </div>
@@ -601,6 +683,14 @@ export default function MinecraftPage() {
         </div>
       )}
 
+      {/* 创造模式指示器 */}
+      {renderMode === "webgl" && creativeMode && (
+        <div className="absolute top-16 left-4 z-10 px-3 py-2 rounded-lg bg-ember-500/20 backdrop-blur border border-ember-500/40 text-xs font-mono text-ember-300 flex items-center gap-2">
+          <Zap size={14} className="text-ember-400" />
+          <span>创造模式 · 无敌 · 无怪物</span>
+        </div>
+      )}
+
       {renderMode === "webgl" && cameraMode === "first" && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="relative w-5 h-5">
@@ -610,33 +700,22 @@ export default function MinecraftPage() {
         </div>
       )}
 
-      {showOverlay && !isDead && (
+      {showOverlay && (
         <div className="absolute inset-0 z-20 flex items-center justify-center bg-ink-900/60 backdrop-blur-sm pointer-events-none">
           <div className="text-center space-y-4 animate-fade-in">
             <div className="font-pixel text-2xl text-ember-400 text-glow-ember">MINECRAFT 3D</div>
             {renderMode === "webgl" && cameraMode === "first" ? (
               <>
-                <div className="text-sm font-mono text-ink-200">点击画面开始探索方块世界</div>
+                <div className="text-sm font-mono text-ink-200">点击画面锁定鼠标，开始探索方块世界</div>
                 <div className="flex items-center justify-center gap-2 text-xs font-mono text-ink-400">
                   <span className="px-2 py-1 rounded bg-ink-800 border border-ink-600/60">ESC</span>
                   <span>释放鼠标</span>
                   <span className="w-px h-3 bg-ink-600/60 mx-1" />
-                  <span className="px-2 py-1 rounded bg-ink-800 border border-ink-600/60">V</span>
-                  <span>切换第三人称</span>
+                  <span className="px-2 py-1 rounded bg-ink-800 border border-ink-600/60">Tab</span>
+                  <span>设置</span>
                 </div>
               </>
-            ) : renderMode === "webgl" && cameraMode === "orbit" ? (
-              <>
-                <div className="text-sm font-mono text-ink-200">第三人称环绕模式</div>
-                <div className="flex items-center justify-center gap-2 text-xs font-mono text-ink-400">
-                  <span className="px-2 py-1 rounded bg-ink-800 border border-ink-600/60">拖拽</span>
-                  <span>旋转视角</span>
-                  <span className="w-px h-3 bg-ink-600/60 mx-1" />
-                  <span className="px-2 py-1 rounded bg-ink-800 border border-ink-600/60">V</span>
-                  <span>切换第一人称</span>
-                </div>
-              </>
-            ) : (
+            ) : renderMode === "iso" && (
               <>
                 <div className="text-sm font-mono text-ink-200">当前使用 2D 等距预览模式</div>
                 <div className="text-xs font-mono text-ink-400">您的环境未启用 WebGL，已自动切换</div>
@@ -646,6 +725,83 @@ export default function MinecraftPage() {
                 </div>
               </>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* 暂停 / 设置面板 */}
+      {isPaused && renderMode === "webgl" && (
+        <div className="absolute inset-0 z-30 flex items-center justify-center bg-ink-900/80 backdrop-blur-md pointer-events-auto">
+          <div className="w-full max-w-md p-6 rounded-2xl bg-ink-800 border border-ink-600/60 shadow-2xl space-y-5">
+            <div className="flex items-center justify-between">
+              <h2 className="font-pixel text-xl text-ember-400 flex items-center gap-2">
+                <Settings size={20} />
+                游戏设置
+              </h2>
+              <button
+                onClick={() => setIsPaused(false)}
+                className="p-2 rounded-lg hover:bg-ink-700 text-ink-300 transition-colors"
+              >
+                <Play size={18} />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => setIsPaused(false)}
+                className="px-4 py-3 rounded-lg bg-mint-500/20 border border-mint-500/40 text-mint-300 font-mono text-sm hover:bg-mint-500/30 transition-colors"
+              >
+                继续游戏
+              </button>
+              <button
+                onClick={toggleCameraMode}
+                className="px-4 py-3 rounded-lg bg-ink-700 border border-ink-600 text-ink-200 font-mono text-sm hover:bg-ink-600 transition-colors flex items-center justify-center gap-2"
+              >
+                <Video size={14} />
+                切换视角
+              </button>
+              <button
+                onClick={() => {
+                  const engine = engineRef.current;
+                  if (engine?.type === "webgl") setCreative(!engine.survival.creativeMode);
+                }}
+                className={`px-4 py-3 rounded-lg border font-mono text-sm transition-colors flex items-center justify-center gap-2 ${
+                  creativeMode
+                    ? "bg-ember-500/20 border-ember-500/40 text-ember-300 hover:bg-ember-500/30"
+                    : "bg-ink-700 border-ink-600 text-ink-200 hover:bg-ink-600"
+                }`}
+              >
+                <Zap size={14} />
+                {creativeMode ? "创造模式" : "生存模式"}
+              </button>
+              <button
+                onClick={toggleSound}
+                className="px-4 py-3 rounded-lg bg-ink-700 border border-ink-600 text-ink-200 font-mono text-sm hover:bg-ink-600 transition-colors flex items-center justify-center gap-2"
+              >
+                {soundEnabled ? <Volume2 size={14} /> : <VolumeX size={14} />}
+                {soundEnabled ? "音效开" : "音效关"}
+              </button>
+            </div>
+
+            <div className="p-4 rounded-xl bg-ink-900/50 border border-ink-700/50 space-y-3">
+              <div className="flex items-center gap-2 text-xs font-mono text-ink-400">
+                <Keyboard size={14} className="text-sun-400" />
+                <span>按键绑定</span>
+              </div>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs font-mono">
+                {KEY_BINDINGS.map((bind) => (
+                  <div key={bind.action} className="flex items-center justify-between">
+                    <span className="px-1.5 py-0.5 rounded bg-ink-700 text-ink-200">{bind.keys}</span>
+                    <span className="text-ink-400">{bind.action}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between text-xs font-mono text-ink-400 pt-2 border-t border-ink-700/50">
+              <span>FPS {fps}</span>
+              <span>方块 {blockCount} · 区块 {chunkCount}</span>
+            </div>
           </div>
         </div>
       )}
@@ -697,39 +853,30 @@ export default function MinecraftPage() {
       <div className="sm:hidden absolute bottom-24 left-4 right-4 z-10 px-4 py-3 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60 text-[10px] font-mono text-ink-300 space-y-1">
         {renderMode === "webgl" && cameraMode === "first" && (
           <>
-            <div className="flex items-center gap-2">
-              <Move size={10} className="text-mint-400" /> WASD 移动
-            </div>
+            <div className="flex items-center gap-2"><Move size={10} className="text-mint-400" /> WASD 移动</div>
             <div>空格上升 · Shift 下降</div>
-            <div className="flex items-center gap-2">
-              <MousePointerClick size={10} className="text-ember-400" /> 左键攻击/破坏 / 右键放置
-            </div>
-            <div>E 吃东西 · M 开关音效</div>
+            <div className="flex items-center gap-2"><MousePointerClick size={10} className="text-ember-400" /> 左键攻击/破坏 / 右键放置</div>
+            <div>E 吃东西 · Tab 设置 · M 音效</div>
           </>
         )}
         {renderMode === "webgl" && cameraMode === "orbit" && (
           <>
-            <div className="flex items-center gap-2">
-              <Move size={10} className="text-mint-400" /> WASD 移动角色
-            </div>
+            <div className="flex items-center gap-2"><Move size={10} className="text-mint-400" /> WASD 移动角色</div>
             <div>拖拽旋转 · 滚轮缩放</div>
           </>
         )}
         {renderMode === "iso" && (
           <>
-            <div className="flex items-center gap-2">
-              <Eye size={10} className="text-mint-400" /> 2D 等距预览
-            </div>
+            <div className="flex items-center gap-2"><Eye size={10} className="text-mint-400" /> 2D 等距预览</div>
             <div>拖拽平移 · 滚轮缩放</div>
           </>
         )}
-        <div className="flex items-center gap-2">
-          <Trash2 size={10} className="text-ink-400" /> R 重新生成世界
-        </div>
+        <div className="flex items-center gap-2"><Trash2 size={10} className="text-ink-400" /> R 重新生成世界</div>
         {renderMode === "webgl" && (
-          <div className="flex items-center gap-2">
-            <Video size={10} className="text-ember-400" /> V 切换视角
-          </div>
+          <>
+            <div className="flex items-center gap-2"><Video size={10} className="text-ember-400" /> V 切换视角</div>
+            <div className="flex items-center gap-2"><Zap size={10} className="text-ember-400" /> C 创造模式</div>
+          </>
         )}
       </div>
     </div>

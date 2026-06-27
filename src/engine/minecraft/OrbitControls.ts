@@ -54,12 +54,24 @@ export class OrbitControls {
     this.domElement.removeEventListener("wheel", this.onWheel);
   }
 
+  gameKeys = new Set([
+    "KeyW", "KeyA", "KeyS", "KeyD",
+    "Space", "ShiftLeft", "ShiftRight",
+    "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight",
+  ]);
+
   onKeyDown = (e: KeyboardEvent) => {
-    this.keys[e.code] = true;
+    if (this.gameKeys.has(e.code)) {
+      e.preventDefault();
+      this.keys[e.code] = true;
+    }
   };
 
   onKeyUp = (e: KeyboardEvent) => {
-    this.keys[e.code] = false;
+    if (this.gameKeys.has(e.code)) {
+      e.preventDefault();
+      this.keys[e.code] = false;
+    }
   };
 
   onMouseDown = (e: MouseEvent) => {
