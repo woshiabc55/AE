@@ -15,6 +15,12 @@ export class FirstPersonControls {
   keys: Record<string, boolean> = {};
   onLockChange?: (locked: boolean) => void;
 
+  // 移动状态供外部使用（动画、音效）
+  isMoving = false;
+  moveDir = new THREE.Vector3();
+  headBobPhase = 0;
+  baseY = 0;
+
   constructor(
     public camera: THREE.PerspectiveCamera,
     public domElement: HTMLElement,
@@ -100,7 +106,10 @@ export class FirstPersonControls {
       .addScaledVector(sideDir, this.direction.x);
     move.y = this.direction.y;
 
-    if (move.length() > 0) {
+    this.isMoving = move.lengthSq() > 0;
+    this.moveDir.copy(move).normalize();
+
+    if (this.isMoving) {
       move.normalize().multiplyScalar(this.speed * delta);
       const nextPos = this.camera.position.clone().add(move);
 
@@ -114,6 +123,14 @@ export class FirstPersonControls {
       if (!this.isSolidAt(this.camera.position.x, this.camera.position.y, nextPos.z)) {
         this.camera.position.z = nextPos.z;
       }
+
+      // 行走镜头晃动（head bob）
+      this.headBobPhase += delta * 12;
+      const bobAmount = 0.04;
+      this.camera.position.y += Math.sin(this.headBobPhase) * bobAmount;
+    } else {
+      // 静止时缓慢回到基础高度
+      this.headBobPhase = 0;
     }
   }
 

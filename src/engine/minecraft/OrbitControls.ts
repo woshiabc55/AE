@@ -8,6 +8,8 @@ export class OrbitControls {
   speed = 8;
   mouseSensitivity = 0.005;
   target = new THREE.Vector3(0, 12, 0);
+  isMoving = false;
+  moveDir = new THREE.Vector3();
   distance = 18;
   azimuth = 0; // 水平角度（弧度）
   polar = Math.PI / 4; // 垂直角度（弧度），从正 Y 轴向下
@@ -107,8 +109,6 @@ export class OrbitControls {
     const dirX = right - left;
     const dirY = up - down;
 
-    if (dirX === 0 && dirY === 0 && dirZ === 0) return;
-
     // 以相机水平朝向为前方
     const camDir = new THREE.Vector3();
     this.camera.getWorldDirection(camDir);
@@ -122,7 +122,10 @@ export class OrbitControls {
       .addScaledVector(sideDir, dirX);
     move.y = dirY;
 
-    if (move.length() > 0) {
+    this.isMoving = move.lengthSq() > 0;
+    this.moveDir.copy(move).normalize();
+
+    if (this.isMoving) {
       move.normalize().multiplyScalar(this.speed * delta);
 
       const nextTarget = this.target.clone().add(move);

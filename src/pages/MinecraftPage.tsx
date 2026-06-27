@@ -12,12 +12,18 @@ import {
   Eye,
   User,
   Video,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 import { VoxelWorld, PLACEABLE_BLOCKS, BlockType, BLOCK_DEFS } from "@/engine/minecraft/VoxelWorld";
 import { VoxelRenderer } from "@/engine/minecraft/VoxelRenderer";
 import { FirstPersonControls } from "@/engine/minecraft/FirstPersonControls";
 import { OrbitControls } from "@/engine/minecraft/OrbitControls";
 import { IsoRenderer, isWebGLAvailable } from "@/engine/minecraft/IsoRenderer";
+import { PlayerAvatar } from "@/engine/minecraft/PlayerAvatar";
+import { HeldBlock } from "@/engine/minecraft/HeldBlock";
+import { BlockEffects } from "@/engine/minecraft/BlockEffects";
+import { SoundSynth } from "@/engine/minecraft/SoundSynth";
 
 type RenderMode = "webgl" | "iso";
 type CameraMode = "first" | "orbit";
@@ -28,6 +34,12 @@ interface WebGLEngine {
   renderer: VoxelRenderer;
   controls: FirstPersonControls | OrbitControls;
   cameraMode: CameraMode;
+  avatar: PlayerAvatar;
+  heldBlock: HeldBlock;
+  effects: BlockEffects;
+  sound: SoundSynth;
+  leftMouseDown: boolean;
+  lastStepTime: number;
 }
 
 interface IsoEngine {
@@ -50,6 +62,7 @@ export default function MinecraftPage() {
   const [isLocked, setIsLocked] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0, z: 0 });
   const [blockCount, setBlockCount] = useState(0);
+  const [soundEnabled, setSoundEnabled] = useState(true);
 
   const rebuild = useCallback(() => {
     const engine = engineRef.current;
@@ -73,7 +86,6 @@ export default function MinecraftPage() {
     engine.controls.dispose();
 
     if (newMode === "first") {
-      // 从当前相机位置切换到第一人称，保持位置并提取当前朝向为 yaw/pitch
       const dir = new THREE.Vector3();
       renderer.camera.getWorldDirection(dir);
       const controls = new FirstPersonControls(renderer.camera, renderer.renderer.domElement, world);
@@ -82,17 +94,28 @@ export default function MinecraftPage() {
       controls.pitch = Math.asin(Math.max(-1, Math.min(1, -dir.y)));
       controls.updateCameraRotation();
       engine.controls = controls;
+      engine.avatar.setVisible(false);
+      engine.heldBlock.setVisible(true);
     } else {
-      // 从当前相机位置切换到第三人称环绕
       const controls = new OrbitControls(renderer.camera, renderer.renderer.domElement, world);
       controls.target.copy(getCameraLookPoint(renderer.camera));
       controls.distance = 18;
       controls.updateCamera();
       engine.controls = controls;
+      engine.avatar.setVisible(true);
+      engine.heldBlock.setVisible(false);
     }
 
     engine.cameraMode = newMode;
     setCameraMode(newMode);
+  }, []);
+
+  const toggleSound = useCallback(() => {
+    const engine = engineRef.current;
+    if (engine?.type === "webgl") {
+      engine.sound.toggle();
+      setSoundEnabled(engine.sound.enabled);
+    }
   }, []);
 
   useEffect(() => {
@@ -105,22 +128,44 @@ export default function MinecraftPage() {
     let cleanup = () => {};
 
     if (webglOk) {
-      // WebGL 3D 模式
       setRenderMode("webgl");
       const renderer = new VoxelRenderer(container, world);
-
-      // 初始相机：水平看向 -Z 方向，避免与 yaw=0/pitch=0 不一致
       renderer.camera.position.set(0, 14, 22);
       renderer.camera.lookAt(0, 14, 0);
 
       const controls = new FirstPersonControls(renderer.camera, renderer.renderer.domElement, world);
       controls.onLockChange = (locked) => setIsLocked(locked);
-      // 同步四元数与水平视角
       controls.yaw = 0;
       controls.pitch = 0;
       controls.updateCameraRotation();
 
-      engineRef.current = { type: "webgl", world, renderer, controls, cameraMode: "first" };
+      const avatar = new PlayerAvatar();
+      avatar.setVisible(false);
+      renderer.scene.add(avatar.group);
+
+      const heldBlock = new HeldBlock(renderer.camera);
+      heldBlock.setType("grass");
+      heldBlock.setVisible(true);
+
+      const sound = new SoundSynth();
+      const effects = new BlockEffects(renderer.scene, world);
+      effects.onBreak = (x, y, z, type) => {
+        sound.playBreak(type);
+      };
+
+      engineRef.current = {
+        type: "webgl",
+        world,
+        renderer,
+        controls,
+        cameraMode: "first",
+        avatar,
+        heldBlock,
+        effects,
+        sound,
+        leftMouseDown: false,
+        lastStepTime: 0,
+      };
       setCameraMode("first");
 
       const canvas = renderer.renderer.domElement;
@@ -129,23 +174,26 @@ export default function MinecraftPage() {
         const ctrl = engineRef.current;
         if (!ctrl || ctrl.type !== "webgl") return;
 
-        // 第一人称模式下必须锁定鼠标才能交互；第三人称模式下左键可拖拽视角，右键放置
-        if (ctrl.cameraMode === "first" && !(ctrl.controls as FirstPersonControls).isLocked) {
-          return;
-        }
-
-        const target = renderer.getTargetBlock();
-        if (!target) return;
-
         if (e.button === 0) {
-          world.removeBlock(target.block.x, target.block.y, target.block.z);
-          rebuild();
+          // 第一人称必须锁定才能交互；第三人称左键用于拖拽视角，不破坏
+          if (ctrl.cameraMode === "first" && !(ctrl.controls as FirstPersonControls).isLocked) {
+            return;
+          }
+          if (ctrl.cameraMode === "orbit") return;
+
+          const target = renderer.getTargetBlock();
+          if (target) {
+            ctrl.effects.startBreak(target.block.x, target.block.y, target.block.z, target.block.type);
+            ctrl.leftMouseDown = true;
+          }
         } else if (e.button === 2) {
+          const target = renderer.getTargetBlock();
+          if (!target) return;
+
           const nx = target.block.x + Math.round(target.normal.x);
           const ny = target.block.y + Math.round(target.normal.y);
           const nz = target.block.z + Math.round(target.normal.z);
 
-          // 避免与相机/目标点重叠
           let cx = 0, cy = 0, cz = 0;
           if (ctrl.cameraMode === "first") {
             const cam = renderer.camera.position;
@@ -157,20 +205,64 @@ export default function MinecraftPage() {
           if (nx === cx && ny === cy && nz === cz) return;
 
           world.setBlock(nx, ny, nz, selectedBlockRef.current);
+          ctrl.effects.spawnPlaceParticles(nx, ny, nz, selectedBlockRef.current);
+          ctrl.sound.playPlace(selectedBlockRef.current);
           rebuild();
+        }
+      };
+
+      const handleMouseUp = (e: MouseEvent) => {
+        const ctrl = engineRef.current;
+        if (!ctrl || ctrl.type !== "webgl") return;
+        if (e.button === 0 && ctrl.leftMouseDown) {
+          ctrl.effects.cancelBreak();
+          ctrl.leftMouseDown = false;
         }
       };
 
       const handleContextMenu = (e: MouseEvent) => e.preventDefault();
       canvas.addEventListener("mousedown", handleMouseDown);
+      canvas.addEventListener("mouseup", handleMouseUp);
       canvas.addEventListener("contextmenu", handleContextMenu);
+      document.addEventListener("mouseup", handleMouseUp);
 
       let lastTime = performance.now();
       const loop = (time: number) => {
         const engine = engineRef.current as WebGLEngine | null;
         if (!engine || engine.type !== "webgl") return;
         const delta = Math.min((time - lastTime) / 1000, 0.1);
+
         engine.controls.update(delta);
+
+        const target = renderer.getTargetBlock();
+        const currentTargetPos = target
+          ? { x: target.block.x, y: target.block.y, z: target.block.z }
+          : null;
+        engine.effects.update(delta, currentTargetPos);
+
+        engine.heldBlock.setType(selectedBlockRef.current);
+        engine.heldBlock.update(delta, engine.controls.isMoving);
+
+        // 玩家模型位置与动画
+        if (engine.cameraMode === "orbit") {
+          const orb = engine.controls as OrbitControls;
+          engine.avatar.setPosition(orb.target.x, orb.target.y, orb.target.z);
+          engine.avatar.update(delta, orb.isMoving, orb.moveDir);
+        } else {
+          const fp = engine.controls as FirstPersonControls;
+          engine.avatar.setPosition(fp.camera.position.x, fp.camera.position.y, fp.camera.position.z);
+          engine.avatar.update(delta, fp.isMoving, fp.moveDir);
+        }
+
+        // 脚步声
+        if (engine.controls.isMoving && engine.sound.enabled) {
+          const stepInterval = 0.35;
+          if (time - engine.lastStepTime > stepInterval * 1000) {
+            engine.sound.playStep();
+            engine.lastStepTime = time;
+          }
+        }
+
         renderer.updateHighlight();
         renderer.render();
 
@@ -190,22 +282,32 @@ export default function MinecraftPage() {
       cleanup = () => {
         cancelAnimationFrame(rafRef.current);
         canvas.removeEventListener("mousedown", handleMouseDown);
+        canvas.removeEventListener("mouseup", handleMouseUp);
         canvas.removeEventListener("contextmenu", handleContextMenu);
+        document.removeEventListener("mouseup", handleMouseUp);
         controls.dispose();
+        avatar.group.traverse((obj) => {
+          if ((obj as THREE.Mesh).geometry) (obj as THREE.Mesh).geometry.dispose();
+          if ((obj as THREE.Mesh).material) {
+            const mat = (obj as THREE.Mesh).material;
+            if (Array.isArray(mat)) mat.forEach((m) => m.dispose());
+            else mat.dispose();
+          }
+        });
+        renderer.scene.remove(avatar.group);
+        heldBlock.dispose();
+        effects.dispose();
         renderer.destroy();
       };
     } else {
-      // Canvas 2D 等距降级模式
       setRenderMode("iso");
       const renderer = new IsoRenderer(container, world);
       engineRef.current = { type: "iso", world, renderer };
 
-      let lastTime = performance.now();
       const loop = (time: number) => {
         const engine = engineRef.current as IsoEngine | null;
         if (!engine || engine.type !== "iso") return;
         renderer.render();
-        lastTime = time;
         rafRef.current = requestAnimationFrame(loop);
       };
       rafRef.current = requestAnimationFrame(loop);
@@ -261,10 +363,8 @@ export default function MinecraftPage() {
 
   return (
     <div className="h-screen w-screen overflow-hidden bg-ink-900 relative">
-      {/* 画布容器 */}
       <div ref={containerRef} className="absolute inset-0 cursor-crosshair" />
 
-      {/* 顶部导航与信息 */}
       <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-4 py-3 pointer-events-none">
         <Link
           to="/"
@@ -285,7 +385,7 @@ export default function MinecraftPage() {
             <span className="w-px h-3 bg-ink-600/60" />
             <span className="flex items-center gap-1.5">
               <MousePointerClick size={12} className="text-ember-400" />
-              左键破坏 / 右键放置
+              按住左键破坏 / 右键放置
             </span>
             <span className="w-px h-3 bg-ink-600/60" />
             <span>V 切换第三人称</span>
@@ -296,14 +396,14 @@ export default function MinecraftPage() {
           <div className="hidden sm:flex items-center gap-3 px-4 py-2 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60 text-xs font-mono text-ink-300">
             <span className="flex items-center gap-1.5">
               <Move size={12} className="text-mint-400" />
-              WASD 移动目标点
+              WASD 移动角色
             </span>
             <span className="w-px h-3 bg-ink-600/60" />
             <span>空格上升 / Shift 下降</span>
             <span className="w-px h-3 bg-ink-600/60" />
             <span>拖拽旋转视角 · 滚轮缩放</span>
             <span className="w-px h-3 bg-ink-600/60" />
-            <span>V 切换第一人称</span>
+            <span>右键放置 · V 切第一人称</span>
           </div>
         )}
 
@@ -322,14 +422,23 @@ export default function MinecraftPage() {
 
         <div className="flex items-center gap-2 pointer-events-auto">
           {renderMode === "webgl" && (
-            <button
-              onClick={toggleCameraMode}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60 text-xs font-mono text-ink-200 hover:text-ember-400 hover:border-ember-500/40 transition-colors"
-              title="V 键切换"
-            >
-              {cameraMode === "first" ? <User size={12} /> : <Video size={12} />}
-              <span>{cameraMode === "first" ? "第一人称" : "第三人称"}</span>
-            </button>
+            <>
+              <button
+                onClick={toggleSound}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60 text-xs font-mono text-ink-200 hover:text-ember-400 hover:border-ember-500/40 transition-colors"
+                title="M 键切换音效"
+              >
+                {soundEnabled ? <Volume2 size={12} /> : <VolumeX size={12} />}
+              </button>
+              <button
+                onClick={toggleCameraMode}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60 text-xs font-mono text-ink-200 hover:text-ember-400 hover:border-ember-500/40 transition-colors"
+                title="V 键切换"
+              >
+                {cameraMode === "first" ? <User size={12} /> : <Video size={12} />}
+                <span>{cameraMode === "first" ? "第一人称" : "第三人称"}</span>
+              </button>
+            </>
           )}
           <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60 text-xs font-mono text-ink-300">
             <Box size={12} className="text-sun-400" />
@@ -346,7 +455,6 @@ export default function MinecraftPage() {
         </div>
       </div>
 
-      {/* 准星（仅第一人称 3D 模式） */}
       {renderMode === "webgl" && cameraMode === "first" && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="relative w-5 h-5">
@@ -356,7 +464,6 @@ export default function MinecraftPage() {
         </div>
       )}
 
-      {/* 覆盖提示层 */}
       {showOverlay && (
         <div className="absolute inset-0 z-20 flex items-center justify-center bg-ink-900/60 backdrop-blur-sm pointer-events-none">
           <div className="text-center space-y-4 animate-fade-in">
@@ -397,7 +504,6 @@ export default function MinecraftPage() {
         </div>
       )}
 
-      {/* 底部快捷栏 */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-end gap-1.5 p-2 rounded-xl bg-ink-800/80 backdrop-blur border border-ink-600/60">
         {PLACEABLE_BLOCKS.map((type, idx) => {
           const def = BLOCK_DEFS[type];
@@ -422,7 +528,6 @@ export default function MinecraftPage() {
         })}
       </div>
 
-      {/* 移动端操作说明 */}
       <div className="sm:hidden absolute bottom-24 left-4 right-4 z-10 px-4 py-3 rounded-lg bg-ink-800/80 backdrop-blur border border-ink-600/60 text-[10px] font-mono text-ink-300 space-y-1">
         {renderMode === "webgl" && cameraMode === "first" && (
           <>
@@ -431,14 +536,14 @@ export default function MinecraftPage() {
             </div>
             <div>空格上升 · Shift 下降</div>
             <div className="flex items-center gap-2">
-              <MousePointerClick size={10} className="text-ember-400" /> 左键破坏 / 右键放置
+              <MousePointerClick size={10} className="text-ember-400" /> 按住左键破坏 / 右键放置
             </div>
           </>
         )}
         {renderMode === "webgl" && cameraMode === "orbit" && (
           <>
             <div className="flex items-center gap-2">
-              <Move size={10} className="text-mint-400" /> WASD 移动目标点
+              <Move size={10} className="text-mint-400" /> WASD 移动角色
             </div>
             <div>拖拽旋转 · 滚轮缩放</div>
           </>
@@ -464,7 +569,6 @@ export default function MinecraftPage() {
   );
 }
 
-// 计算相机前方不远处的一个点，用于模式切换时保持朝向
 function getCameraLookPoint(camera: THREE.PerspectiveCamera) {
   const dir = new THREE.Vector3();
   camera.getWorldDirection(dir);
