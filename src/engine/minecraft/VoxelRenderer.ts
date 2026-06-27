@@ -123,6 +123,11 @@ export class VoxelRenderer {
     this.renderer.setSize(width, height);
   }
 
+  setFov(fov: number) {
+    this.camera.fov = fov;
+    this.camera.updateProjectionMatrix();
+  }
+
   render() {
     this.renderer.render(this.scene, this.camera);
   }

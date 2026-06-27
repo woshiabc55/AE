@@ -149,6 +149,33 @@ export class VoxelWorld {
     this.updateLoadedChunks(0, 0, this.renderDistance);
   }
 
+  // 异步生成世界并报告进度（用于加载界面）
+  async generateAsync(distance: number, onProgress?: (percent: number) => void) {
+    this.blocks.clear();
+    this.chunks.clear();
+    this.loadedChunks.clear();
+
+    const desired: { cx: number; cz: number }[] = [];
+    for (let dx = -distance; dx <= distance; dx++) {
+      for (let dz = -distance; dz <= distance; dz++) {
+        desired.push({ cx: dx, cz: dz });
+      }
+    }
+
+    const total = desired.length;
+    for (let i = 0; i < total; i++) {
+      const { cx, cz } = desired[i];
+      this.loadChunk(cx, cz);
+      if (onProgress) {
+        onProgress(Math.round(((i + 1) / total) * 100));
+      }
+      // 让出主线程，避免阻塞 UI
+      if (i % 4 === 0) {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      }
+    }
+  }
+
   getChunk(cx: number, cz: number): Chunk | undefined {
     return this.chunks.get(chunkKey(cx, cz));
   }

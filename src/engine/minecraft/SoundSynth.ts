@@ -3,9 +3,14 @@
 export class SoundSynth {
   ctx: AudioContext | null = null;
   enabled = true;
+  volume = 0.8;
 
   constructor() {
     // 懒加载 AudioContext，直到用户交互后再创建，避免自动播放策略拦截
+  }
+
+  setVolume(v: number) {
+    this.volume = Math.max(0, Math.min(1, v));
   }
 
   private ensureContext() {
@@ -43,7 +48,7 @@ export class SoundSynth {
     filter.frequency.value = frequency;
 
     const gain = ctx.createGain();
-    gain.gain.setValueAtTime(volume, ctx.currentTime);
+    gain.gain.setValueAtTime(volume * this.volume, ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
 
     src.connect(filter);
@@ -62,7 +67,7 @@ export class SoundSynth {
     osc.frequency.setValueAtTime(freq, ctx.currentTime);
 
     const gain = ctx.createGain();
-    gain.gain.setValueAtTime(volume, ctx.currentTime);
+    gain.gain.setValueAtTime(volume * this.volume, ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
 
     osc.connect(gain);
