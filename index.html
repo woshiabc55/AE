@@ -4,22 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>AI 剧本制作框架逻辑图</title>
+  <title>AI 剧本制作 · 极细框架逻辑图</title>
   <style>
     :root {
-      --bg-deep: #0b0f14;
-      --bg-panel: rgba(16, 22, 30, 0.95);
-      --node-1: #4a90d9;
-      --node-2: #5b8c5a;
-      --node-3: #c9a86c;
-      --node-4: #9b7cb6;
-      --node-5: #5aa3a3;
-      --node-6: #d07a5a;
-      --node-7: #6b8cce;
-      --text-main: #eef2f6;
-      --text-sub: #9aa7b8;
-      --accent: #6dc0ff;
-      --line: rgba(109, 192, 255, 0.35);
+      --bg-deep: #080b10;
+      --bg-panel: rgba(14, 19, 27, 0.96);
+      --text-main: #e8eef5;
+      --text-sub: #8795a8;
+      --accent: #5ec4ff;
+      --spine: rgba(94, 196, 255, 0.28);
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
@@ -39,7 +32,7 @@
       background: var(--bg-deep);
       color: var(--text-main);
       font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
-      line-height: 1.6;
+      line-height: 1.55;
     }
 
     #app {
@@ -60,7 +53,7 @@
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
-      transition: opacity 0.45s ease, visibility 0.45s ease;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
       z-index: 10;
       background: var(--bg-deep);
     }
@@ -73,48 +66,47 @@
 
     .screen-diagram {
       justify-content: flex-start;
-      padding-top: calc(18px + var(--safe-top));
-      padding-bottom: calc(12px + var(--safe-bottom));
+      padding-top: var(--safe-top);
+      padding-bottom: var(--safe-bottom);
     }
 
     .modal-card {
       position: relative;
-      z-index: 3;
-      width: min(88vw, 460px);
-      max-height: 80vh;
+      z-index: 30;
+      width: min(90vw, 480px);
+      max-height: 82vh;
       background: var(--bg-panel);
-      border: 1px solid rgba(109, 192, 255, 0.22);
+      border: 1px solid rgba(94, 196, 255, 0.22);
       border-radius: 18px;
-      padding: 26px 22px 22px;
+      padding: 24px 20px 20px;
       text-align: left;
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      box-shadow: 0 24px 70px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.05);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 28px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
       overflow-y: auto;
     }
 
     .modal-title {
-      font-size: clamp(22px, 6vw, 30px);
+      font-size: clamp(20px, 5.6vw, 26px);
       font-weight: 600;
-      letter-spacing: 0.06em;
-      margin-bottom: 10px;
-      color: var(--accent);
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
       text-align: center;
     }
 
     .modal-subtitle {
-      font-size: clamp(13px, 3.6vw, 15px);
+      font-size: 12px;
       color: var(--text-sub);
-      margin-bottom: 18px;
-      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+      letter-spacing: 0.06em;
       text-align: center;
     }
 
     .modal-message {
-      font-size: clamp(14px, 4vw, 16px);
+      font-size: 14px;
       color: var(--text-main);
-      margin-bottom: 22px;
-      line-height: 1.75;
+      margin-bottom: 18px;
+      line-height: 1.7;
     }
 
     .modal-actions {
@@ -134,7 +126,7 @@
       border-radius: 12px;
       font-size: 15px;
       font-weight: 500;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.05em;
       transition: transform 0.12s ease, opacity 0.12s ease;
       text-align: center;
     }
@@ -142,8 +134,8 @@
     .btn:active { transform: scale(0.97); }
 
     .btn-primary {
-      background: linear-gradient(180deg, #6dc0ff 0%, #3a8fd9 100%);
-      color: #051018;
+      background: linear-gradient(180deg, #5ec4ff 0%, #2f9ad9 100%);
+      color: #02080d;
     }
 
     .btn-secondary {
@@ -157,21 +149,22 @@
       z-index: 20;
       width: 100%;
       text-align: center;
-      padding: 10px 20px 14px;
+      padding: 14px 18px 10px;
       flex-shrink: 0;
+      background: linear-gradient(to bottom, var(--bg-deep) 0%, rgba(8,11,16,0.92) 100%);
     }
 
     .diagram-header h1 {
-      font-size: clamp(18px, 5vw, 24px);
+      font-size: clamp(17px, 4.8vw, 22px);
       color: var(--accent);
       letter-spacing: 0.08em;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
 
     .diagram-header p {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-sub);
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
     }
 
     .diagram-scroll {
@@ -182,14 +175,14 @@
       overflow-y: auto;
       overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
-      padding: 0 16px 30px;
+      padding: 0 14px 24px;
     }
 
     .diagram-scroll::-webkit-scrollbar { width: 0; height: 0; }
 
     .diagram-svg {
       width: 100%;
-      max-width: 420px;
+      max-width: 460px;
       margin: 0 auto;
       display: block;
       height: auto;
@@ -197,48 +190,65 @@
 
     .node-rect {
       cursor: pointer;
-      transition: filter 0.2s ease, transform 0.2s ease;
+      transition: filter 0.18s ease, transform 0.18s ease;
     }
 
-    .node-rect:hover { filter: brightness(1.15); }
+    .node-rect:hover { filter: brightness(1.18); }
 
-    .node-rect:active { transform: scale(0.98); transform-origin: center; }
+    .node-rect:active { transform: scale(0.97); }
 
-    .node-label {
+    .node-title {
       pointer-events: none;
       font-weight: 600;
-      letter-spacing: 0.04em;
+      font-size: 12px;
+      letter-spacing: 0.02em;
     }
 
     .node-desc {
       pointer-events: none;
-      font-size: 11px;
-      opacity: 0.85;
+      font-size: 9px;
+      opacity: 0.82;
+    }
+
+    .phase-bar {
+      pointer-events: none;
+    }
+
+    .phase-title {
+      pointer-events: none;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .spine-line {
+      pointer-events: none;
+    }
+
+    .connector {
+      pointer-events: none;
+      stroke-linecap: round;
     }
 
     .flow-particle {
       pointer-events: none;
-      filter: drop-shadow(0 0 4px var(--accent));
+      filter: drop-shadow(0 0 3px var(--accent));
     }
 
-    .detail-row {
-      margin-bottom: 14px;
-    }
-
+    .detail-row { margin-bottom: 13px; }
     .detail-row:last-child { margin-bottom: 0; }
 
     .detail-label {
-      font-size: 12px;
-      color: var(--accent);
+      font-size: 11px;
       letter-spacing: 0.08em;
       margin-bottom: 4px;
       font-weight: 600;
     }
 
     .detail-text {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--text-main);
-      line-height: 1.7;
+      line-height: 1.65;
     }
 
     .detail-list {
@@ -248,58 +258,59 @@
 
     .detail-list li {
       position: relative;
-      padding-left: 14px;
-      margin-bottom: 6px;
-      font-size: 14px;
+      padding-left: 13px;
+      margin-bottom: 5px;
+      font-size: 13px;
       color: var(--text-main);
-      line-height: 1.6;
+      line-height: 1.55;
     }
 
     .detail-list li::before {
       content: '';
       position: absolute;
       left: 0;
-      top: 9px;
+      top: 8px;
       width: 5px;
       height: 5px;
       border-radius: 50%;
-      background: var(--accent);
     }
 
-    .legend {
+    .mini-legend {
       display: flex;
       justify-content: center;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
-      margin-top: 14px;
-      font-size: 11px;
+      margin-top: 12px;
+      font-size: 10px;
       color: var(--text-sub);
     }
 
-    .legend-item {
+    .mini-legend span {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
     }
 
-    .legend-dot {
-      width: 8px;
-      height: 8px;
+    .mini-legend i {
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
+      display: inline-block;
     }
 
     .pulse-ring {
       animation: pulseRing 2.4s ease-out infinite;
       transform-origin: center;
+      pointer-events: none;
     }
 
     @keyframes pulseRing {
-      0% { opacity: 0.6; transform: scale(1); }
-      100% { opacity: 0; transform: scale(1.5); }
+      0% { opacity: 0.5; transform: scale(1); }
+      100% { opacity: 0; transform: scale(1.6); }
     }
 
     @media (max-width: 360px) {
-      .diagram-scroll { padding: 0 10px 24px; }
+      .diagram-scroll { padding: 0 10px 20px; }
     }
   </style>
 </head>
@@ -307,128 +318,25 @@
   <div id="app">
     <div id="screen-start" class="screen active" aria-hidden="false">
       <div class="modal-card">
-        <h1 class="modal-title">AI 剧本制作框架逻辑图</h1>
-        <p class="modal-subtitle">从创意种子到成品输出的全流程</p>
+        <h1 class="modal-title" style="color: var(--accent);">AI 剧本制作 · 极细框架逻辑图</h1>
+        <p class="modal-subtitle">从输入到输出 · 提示词 · 分镜 · 素材 · 剪辑</p>
         <p class="modal-message">
-          这是一个可交互的 SVG 框架图，展示当前流行的 AIGC 剧本/短片制作工作流。<br><br>
-          点击流程节点，查看每一阶段的输入、AI 方法、输出与关键注意点。
+          这是一张高密度、可交互的 SVG 流程框架图，拆解了 AIGC 剧本/短片制作的 9 大阶段、50+ 节点。<br><br>
+          点击任意节点查看输入、AI 方法、输出与关键注意点。
         </p>
         <div class="modal-actions">
-          <button class="btn btn-primary" data-action="start" type="button">查看框架图</button>
+          <button class="btn btn-primary" data-action="start" type="button">展开框架图</button>
         </div>
       </div>
     </div>
 
     <div id="screen-diagram" class="screen screen-diagram" aria-hidden="true">
       <div class="diagram-header">
-        <h1>AI 剧本制作框架</h1>
-        <p>点击节点查看阶段详情</p>
+        <h1>AI 剧本制作 · 极细框架逻辑图</h1>
+        <p>点击节点查看阶段详情 · 下滑查看更多</p>
       </div>
       <div class="diagram-scroll">
-        <svg class="diagram-svg" viewBox="0 0 360 960" preserveAspectRatio="xMidYMin meet" xmlns="http://www.w3.org/2000/svg" id="framework-svg">
-          <defs>
-            <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="rgba(109,192,255,0.15)"/>
-              <stop offset="50%" stop-color="rgba(109,192,255,0.45)"/>
-              <stop offset="100%" stop-color="rgba(109,192,255,0.15)"/>
-            </linearGradient>
-            <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="2.5" result="blur"/>
-              <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-            </filter>
-          </defs>
-
-          <rect width="360" height="960" fill="#0b0f14"/>
-
-          <g opacity="0.18">
-            <line x1="30" y1="0" x2="30" y2="960" stroke="#6dc0ff" stroke-width="0.5"/>
-            <line x1="330" y1="0" x2="330" y2="960" stroke="#6dc0ff" stroke-width="0.5"/>
-            <line x1="180" y1="0" x2="180" y2="960" stroke="#6dc0ff" stroke-width="0.5" stroke-dasharray="4 6"/>
-          </g>
-
-          <g id="connections" stroke="url(#lineGrad)" stroke-width="2" fill="none" stroke-linecap="round">
-            <path d="M180,118 L180,148"/>
-            <path d="M180,228 L180,258"/>
-            <path d="M180,338 L180,368"/>
-            <path d="M180,448 L180,478"/>
-            <path d="M180,558 L180,588"/>
-            <path d="M180,668 L180,698"/>
-          </g>
-
-          <g id="flow-particles"></g>
-
-          <g class="node-group" data-index="0" transform="translate(180, 70)">
-            <circle class="pulse-ring" cx="0" cy="0" r="52" fill="none" stroke="var(--node-1)" stroke-width="1.5" opacity="0"/>
-            <rect class="node-rect" x="-130" y="-38" width="260" height="76" rx="14" fill="rgba(74,144,217,0.14)" stroke="var(--node-1)" stroke-width="1.5"/>
-            <circle cx="-100" cy="0" r="18" fill="var(--node-1)"/>
-            <text x="-100" y="5" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">1</text>
-            <text class="node-label" x="0" y="-4" text-anchor="middle" fill="var(--text-main)" font-size="16">创意种子</text>
-            <text class="node-desc" x="0" y="18" text-anchor="middle" fill="var(--text-sub)" font-size="11">主题 · 情绪 · 受众 · 核心命题</text>
-          </g>
-
-          <g class="node-group" data-index="1" transform="translate(180, 183)">
-            <rect class="node-rect" x="-130" y="-38" width="260" height="76" rx="14" fill="rgba(91,140,90,0.14)" stroke="var(--node-2)" stroke-width="1.5"/>
-            <circle cx="-100" cy="0" r="18" fill="var(--node-2)"/>
-            <text x="-100" y="5" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">2</text>
-            <text class="node-label" x="0" y="-4" text-anchor="middle" fill="var(--text-main)" font-size="16">AI 剧本生成</text>
-            <text class="node-desc" x="0" y="18" text-anchor="middle" fill="var(--text-sub)" font-size="11">梗概 · 分幕 · 对白 · 人物设定</text>
-          </g>
-
-          <g class="node-group" data-index="2" transform="translate(180, 296)">
-            <rect class="node-rect" x="-130" y="-38" width="260" height="76" rx="14" fill="rgba(201,168,108,0.14)" stroke="var(--node-3)" stroke-width="1.5"/>
-            <circle cx="-100" cy="0" r="18" fill="var(--node-3)"/>
-            <text x="-100" y="5" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">3</text>
-            <text class="node-label" x="0" y="-4" text-anchor="middle" fill="var(--text-main)" font-size="16">逻辑巡演</text>
-            <text class="node-desc" x="0" y="18" text-anchor="middle" fill="var(--text-sub)" font-size="11">逻辑校验 · 时间线 · 情感曲线</text>
-          </g>
-
-          <g class="node-group" data-index="3" transform="translate(180, 409)">
-            <rect class="node-rect" x="-130" y="-38" width="260" height="76" rx="14" fill="rgba(155,124,182,0.14)" stroke="var(--node-4)" stroke-width="1.5"/>
-            <circle cx="-100" cy="0" r="18" fill="var(--node-4)"/>
-            <text x="-100" y="5" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">4</text>
-            <text class="node-label" x="0" y="-4" text-anchor="middle" fill="var(--text-main)" font-size="16">生成参考</text>
-            <text class="node-desc" x="0" y="18" text-anchor="middle" fill="var(--text-sub)" font-size="11">概念图 · 角色 · 色彩 · 分镜</text>
-          </g>
-
-          <g class="node-group" data-index="4" transform="translate(180, 522)">
-            <rect class="node-rect" x="-130" y="-38" width="260" height="76" rx="14" fill="rgba(90,163,163,0.14)" stroke="var(--node-5)" stroke-width="1.5"/>
-            <circle cx="-100" cy="0" r="18" fill="var(--node-5)"/>
-            <text x="-100" y="5" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">5</text>
-            <text class="node-label" x="0" y="-4" text-anchor="middle" fill="var(--text-main)" font-size="16">集中处理</text>
-            <text class="node-desc" x="0" y="18" text-anchor="middle" fill="var(--text-sub)" font-size="11">标准化 · 元数据 · 资产库</text>
-          </g>
-
-          <g class="node-group" data-index="5" transform="translate(180, 635)">
-            <rect class="node-rect" x="-130" y="-38" width="260" height="76" rx="14" fill="rgba(208,122,90,0.14)" stroke="var(--node-6)" stroke-width="1.5"/>
-            <circle cx="-100" cy="0" r="18" fill="var(--node-6)"/>
-            <text x="-100" y="5" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">6</text>
-            <text class="node-label" x="0" y="-4" text-anchor="middle" fill="var(--text-main)" font-size="16">剪辑框架</text>
-            <text class="node-desc" x="0" y="18" text-anchor="middle" fill="var(--text-sub)" font-size="11">时间线 · 粗剪 · 节奏 · 字幕</text>
-          </g>
-
-          <g class="node-group" data-index="6" transform="translate(180, 748)">
-            <rect class="node-rect" x="-130" y="-38" width="260" height="76" rx="14" fill="rgba(107,140,206,0.14)" stroke="var(--node-7)" stroke-width="1.5"/>
-            <circle cx="-100" cy="0" r="18" fill="var(--node-7)"/>
-            <text x="-100" y="5" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">7</text>
-            <text class="node-label" x="0" y="-4" text-anchor="middle" fill="var(--text-main)" font-size="16">成品输出</text>
-            <text class="node-desc" x="0" y="18" text-anchor="middle" fill="var(--text-sub)" font-size="11">精剪 · 增强 · 多平台适配</text>
-          </g>
-
-          <g transform="translate(180, 855)">
-            <text x="0" y="0" text-anchor="middle" fill="var(--text-sub)" font-size="12" letter-spacing="0.1em">闭环反馈</text>
-            <path d="M-60,18 Q0,58 60,18" fill="none" stroke="var(--line)" stroke-width="1.5" stroke-dasharray="4 4"/>
-            <polygon points="58,14 64,20 56,22" fill="var(--line)"/>
-          </g>
-
-          <g class="legend" transform="translate(180, 915)">
-            <text x="-80" y="0" text-anchor="middle" fill="var(--text-sub)" font-size="10">生成层</text>
-            <circle cx="-50" cy="-3" r="4" fill="var(--node-2)"/>
-            <text x="-10" y="0" text-anchor="middle" fill="var(--text-sub)" font-size="10">校验层</text>
-            <circle cx="20" cy="-3" r="4" fill="var(--node-3)"/>
-            <text x="55" y="0" text-anchor="middle" fill="var(--text-sub)" font-size="10">资产层</text>
-            <circle cx="85" cy="-3" r="4" fill="var(--node-4)"/>
-          </g>
-        </svg>
+        <svg class="diagram-svg" id="framework-svg" xmlns="http://www.w3.org/2000/svg"></svg>
       </div>
     </div>
 
@@ -437,7 +345,7 @@
         <h2 class="modal-title" id="detail-title"></h2>
         <p class="modal-subtitle" id="detail-subtitle"></p>
         <div id="detail-body"></div>
-        <div class="modal-actions" style="margin-top: 22px;">
+        <div class="modal-actions" style="margin-top: 20px;">
           <button class="btn btn-secondary" data-action="close-detail" type="button">返回框架图</button>
         </div>
       </div>
@@ -448,97 +356,122 @@
     (function() {
       'use strict';
 
-      const nodes = [
+      const W = 380;
+      const MARGIN_LEFT = 18;
+      const MARGIN_RIGHT = 18;
+      const COL_GAP = 8;
+      const NODE_W = (W - MARGIN_LEFT - MARGIN_RIGHT - COL_GAP) / 2;
+      const NODE_H = 48;
+      const NODE_GAP_Y = 7;
+      const PHASE_TITLE_H = 28;
+      const PHASE_GAP = 22;
+      const START_Y = 18;
+      const SPINE_X = W / 2;
+
+      const phases = [
         {
-          title: '1. 创意种子',
-          subtitle: 'Creative Seed',
+          title: '输入层 INPUT',
           color: '#4a90d9',
-          input: '主题命题、目标受众、情绪基调、参考片/参考文本、平台调性',
-          method: [
-            '用 AI 进行关键词发散与主题聚类',
-            '生成情绪板关键词云与视觉锚点',
-            '分析参考片的叙事结构、节奏、色彩倾向'
-          ],
-          output: '创意 brief、核心一句话命题、关键词云、风格锚点',
-          note: '这是整个流程的“根”。命题越具体，后续生成越可控。'
+          nodes: [
+            { title: '原始剧本', desc: '故事/对白/场景', input: '文字剧本、小说、故事梗概、角色设定草稿', method: ['格式化清洗', '按场景拆分', '提取时间地点人物'], output: '结构化剧本文档、场景清单', note: '越规范的输入，后续 AI 提取越稳定。' },
+            { title: '创意 brief', desc: '命题/受众/情绪', input: '项目目标、目标受众、传播平台、情绪基调', method: ['AI 辅助关键词聚类', '生成一句话命题', '确定风格锚点'], output: '创意 brief、核心命题、关键词云', note: 'brief 是后续所有生成的“北极星”。' },
+            { title: '参考片/参考图', desc: '风格/对标案例', input: '同行业短片、电影片段、插画、摄影作品', method: ['视觉特征拆解', '色彩/构图/节奏分析', '提取可复用 prompt 元素'], output: '参考图库、风格描述词、节奏参考表', note: '参考要具体，避免泛泛的“电影感”。' },
+            { title: '平台规范', desc: '尺寸/时长/审核', input: '抖音/视频号/B站等平台规则', method: ['整理分辨率、时长、码率、字幕安全区', '列出审核红线与禁用词'], output: '平台技术规范表、内容安全清单', note: '前置规范能避免返工。' }
+          ]
         },
         {
-          title: '2. AI 剧本生成',
-          subtitle: 'AI Script Generation',
-          color: '#5b8c5a',
-          input: '创意 brief、角色设定、结构模板（三幕/五幕/英雄之旅）',
-          method: [
-            '大模型生成故事梗概与核心冲突',
-            '逐幕扩展：场景 → 动作 → 对白',
-            '角色一致性校验：动机、语言风格、成长弧线'
-          ],
-          output: '完整剧本、人物小传、场景清单、对白文本',
-          note: '建议分阶段生成，先结构后细节，避免一次性输出导致逻辑失控。'
-        },
-        {
-          title: '3. 逻辑巡演',
-          subtitle: 'Logic Tour / Narrative Verification',
-          color: '#c9a86c',
-          input: '剧本文本、时间线、角色关系网',
-          method: [
-            'AI 检查情节逻辑漏洞与因果链',
-            '梳理时间线与空间线是否自洽',
-            '分析情感曲线：起承转合、高潮位置、节奏密度'
-          ],
-          output: '逻辑校验报告、修订建议、情感曲线图、节奏图谱',
-          note: 'AI 容易写出“看起来对但连不起来”的情节，此阶段必须人工 + AI 双重校验。'
-        },
-        {
-          title: '4. 生成参考',
-          subtitle: 'Generation References',
-          color: '#9b7cb6',
-          input: '剧本场景描述、角色外貌、氛围关键词',
-          method: [
-            '文生图批量生成概念图与氛围参考',
-            '角色参考：固定种子/LoRA 保持形象一致',
-            '分镜参考：关键帧构图、色彩、光影'
-          ],
-          output: '参考图库、风格指南、角色卡、分镜草图',
-          note: '参考图决定最终视觉上限，建议建立统一的 prompt 模板与负面词库。'
-        },
-        {
-          title: '5. 集中处理',
-          subtitle: 'Centralized Processing',
+          title: '解析层 ANALYSIS',
           color: '#5aa3a3',
-          input: '剧本 + 参考资产 + 生成素材',
-          method: [
-            '统一命名规范与文件夹结构',
-            '自动打标签：场景、角色、情绪、用途',
-            '素材去重、裁切、格式标准化、版本管理'
-          ],
-          output: '结构化资产库、可检索标签、制作清单、版本记录',
-          note: '资产混乱是后期崩溃的主因，越早标准化越好。'
+          nodes: [
+            { title: '剧本结构化', desc: '场景/角色/动作', input: '结构化剧本', method: ['识别场景边界', '标注场号、地点、时间', '提取动作与对白'], output: '场景表、角色出场表、对白清单', note: '结构化是后续自动化的基础。' },
+            { title: '情绪曲线标注', desc: '节奏/高潮/留白', input: '剧本与场景表', method: ['逐场情绪打分', '绘制情感曲线', '标注高潮与转折点'], output: '情绪曲线图、节奏密度表', note: '情绪曲线决定观众代入感。' },
+            { title: '视觉关键词提取', desc: '色彩/光影/氛围', input: '每场描述文本', method: ['提取视觉形容词', '归纳色彩、光影、天气、空间', '关联参考图标签'], output: '视觉关键词库、每场景氛围卡', note: '关键词要转化成 AI 可理解的英文/中文 prompt。' },
+            { title: '角色关系网', desc: '动机/冲突/成长', input: '人物小传与对白', method: ['梳理人物关系', '标注核心冲突', '绘制角色成长弧线'], output: '角色关系图、人物弧光表', note: '关系网是逻辑校验的重要依据。' },
+            { title: '镜头类型标注', desc: '特写/全景/运动', input: '场景动作描述', method: ['根据动作推荐镜头', '标注景别、机位、运动方式'], output: '镜头建议表、初步分镜文字描述', note: '镜头标注为分镜提取做准备。' }
+          ]
         },
         {
-          title: '6. 剪辑框架',
-          subtitle: 'Editing Framework',
+          title: '提示词工程 PROMPT',
+          color: '#c9a86c',
+          nodes: [
+            { title: '场景提示词', desc: '空间/环境/时代', input: '场景地点、时间、氛围关键词', method: ['组合主体+环境+光影+风格', '固定风格关键词前缀'], output: '每场景文生图 prompt', note: '保持场景间视觉一致性。' },
+            { title: '角色提示词', desc: '外貌/服装/气质', input: '角色外貌、服饰、性格描述', method: ['构建角色固定描述块', '使用种子/LoRA 固化形象', '多角度一致性测试'], output: '角色主 prompt、角色卡', note: '角色一致性是 AIGC 短片最大难点之一。' },
+            { title: '构图/镜头提示词', desc: '景别/角度/运动', input: '镜头类型标注', method: ['添加 close-up/wide shot/dutch angle 等', '结合景深、焦段描述'], output: '镜头级 prompt 变体', note: '镜头语言决定叙事节奏。' },
+            { title: '氛围/光影提示词', desc: '情绪/色调/天气', input: '情绪曲线、视觉关键词', method: ['匹配冷暖色调', '添加时间光线（golden hour/blue hour）', '加入天气与空气感'], output: '氛围 prompt 库', note: '光影是情绪的外化。' },
+            { title: '负向提示词库', desc: '排除/降低/规避', input: '常见错误与平台禁忌', method: ['整理 deformity/blur/low quality 等通用负词', '针对项目补充禁忌内容'], output: '通用负词库 + 项目负词库', note: '负向词能显著提升出图可用率。' },
+            { title: 'Prompt 模板固化', desc: '可复用/可迭代', input: '各类 prompt 实践结果', method: ['沉淀为可复用模板', '建立变量替换机制', '版本化管理'], output: 'Prompt 模板库、变量表', note: '模板化是规模化生产的前提。' }
+          ]
+        },
+        {
+          title: '分镜提取 STORYBOARD',
+          color: '#9b7cb6',
+          nodes: [
+            { title: '文本分镜生成', desc: '场次/镜头/时长', input: '结构化剧本 + 镜头标注', method: ['每场拆分为若干镜头', '估算每个镜头时长', '输出文字分镜表'], output: '文字分镜脚本、镜头时长表', note: '文字分镜是视觉化的第一步。' },
+            { title: '关键帧标注', desc: '起幅/落幅/高潮帧', input: '文字分镜 + 情绪曲线', method: ['标注每个镜头的关键画面', '标记高潮与转折帧', '关联参考图'], output: '关键帧列表、情绪锚点图', note: '关键帧是视觉参考的核心。' },
+            { title: '分镜视觉预览', desc: '草图/气氛图', input: '关键帧 prompt', method: ['批量生成关键帧概念图', '按时间线排列预览', '快速验证视觉方向'], output: '分镜气氛图序列、视觉预览板', note: '早期预览能避免大方向错误。' },
+            { title: '镜头运动标注', desc: '推/拉/摇/移/跟', input: '文字分镜与动作描述', method: ['标注镜头运动类型', '结合 AI 生成动态参考', '输出运动描述词'], output: '镜头运动表、动态参考片段', note: '运动标注影响后续剪辑节奏。' },
+            { title: '时长/节奏标注', desc: '节拍点/转场点', input: '情绪曲线、音乐参考', method: ['标注节拍点与切点', '计算每场累计时长', '预留呼吸与留白'], output: '节奏表、时间线草稿', note: '节奏是短片的“呼吸”。' }
+          ]
+        },
+        {
+          title: '设计元素生成 ELEMENTS',
           color: '#d07a5a',
-          input: '分镜/镜头素材、剧本时间线、音频参考',
-          method: [
-            '按剧本时间线排列镜头粗剪',
-            'AI 辅助匹配节奏点、生成字幕、推荐转场',
-            '人工精修：情绪、留白、对白、音乐'
-          ],
-          output: '粗剪版本、精剪时间线、字幕文件、音频工程',
-          note: '剪辑是“二次创作”，AI 负责效率，人负责情绪与取舍。'
+          nodes: [
+            { title: '角色设计', desc: '造型/表情/动态', input: '角色 prompt 与一致性方案', method: ['生成角色三视图/表情/动作', '使用 ControlNet/LoRA 固定形象', '输出角色素材包'], output: '角色设计稿、表情集、动作库', note: '角色是观众情感投射的载体。' },
+            { title: '场景/背景设计', desc: '空间/时代/氛围', input: '场景 prompt 与关键帧', method: ['生成主场景与变体', '输出多时间/天气版本', '建立场景资产库'], output: '背景图、场景延展图、气氛图', note: '场景要与角色视觉风格统一。' },
+            { title: '道具/服装设计', desc: '器物/服饰/纹样', input: '剧本道具与服装描述', method: ['生成关键道具与服装', '结合时代与风格校验', '输出透明底/分层素材'], output: '道具库、服装参考、纹样素材', note: '道具细节增强真实感。' },
+            { title: '色彩板生成', desc: '主色/辅色/渐变', input: '参考图与氛围关键词', method: ['提取主色调与辅色', '生成配色方案', '建立 LUT/调色预设'], output: '色彩板、LUT 预设、配色规范', note: '统一色彩板是视觉一致性的关键。' },
+            { title: '字体/排版风格', desc: '标题/字幕/包装', input: '项目风格与平台规范', method: ['选择/生成字体风格', '设计标题版式', '制定字幕规范'], output: '字体方案、标题模板、字幕样式', note: '字体风格影响整体气质。' },
+            { title: '图形/ICON 元素', desc: '转场/装饰/信息图', input: '包装需求与视觉风格', method: ['生成装饰图形、转场元素', '设计信息图表样式', '输出 SVG/PNG 素材'], output: '图形包、转场素材、信息图模板', note: '图形元素提升包装精致度。' }
+          ]
         },
         {
-          title: '7. 成品输出',
-          subtitle: 'Final Output',
+          title: '素材批量生成 ASSETS',
+          color: '#5b8c5a',
+          nodes: [
+            { title: '文生图批量', desc: '按分镜批量出图', input: '分镜 prompt + 模板', method: ['批量跑图', '按镜头编号归档', '初筛可用图'], output: '原始生成图库', note: '批量生成需要稳定的 prompt 与种子。' },
+            { title: '图生图迭代', desc: '精修/变体/优化', input: '初筛图与修改意见', method: ['局部重绘', '风格迁移', ' upscale 放大'], output: '精修后的高质量图像', note: '迭代是提升质量的核心环节。' },
+            { title: '角色一致性控制', desc: '种子/LoRA/ControlNet', input: '角色主 prompt 与参考图', method: ['固定种子与参数', '使用 LoRA/IP-Adapter', 'ControlNet 姿态控制'], output: '统一角色形象的系列素材', note: '一致性是叙事可信度的基础。' },
+            { title: '场景延展生成', desc: '多角度/多时间', input: '主场景图与描述', method: ['生成同场景不同角度', '输出不同时间段变体', '保持透视与风格一致'], output: '场景多角度图、时间变体', note: '延展素材支持镜头调度。' },
+            { title: '动态素材生成', desc: '动画/运镜/特效', input: '静态图与运动描述', method: ['图生视频/动画', 'AI 补帧与慢动作', '生成粒子/光效素材'], output: '动态镜头片段、特效素材', note: '动态素材让画面更有生命力。' },
+            { title: '音效/配乐生成', desc: '氛围/节奏/情绪', input: '情绪曲线与节奏表', method: ['AI 生成氛围音效', '生成/推荐配乐', '按节奏点对齐'], output: '音效库、配乐轨道、节拍标记', note: '音频是情绪的一半。' }
+          ]
+        },
+        {
+          title: '集中处理 PIPELINE',
           color: '#6b8cce',
-          input: '精剪成片、封面、字幕、标题',
-          method: [
-            '画质增强、调色统一、音频对齐',
-            '多平台裁剪：横版/竖版/方形',
-            '生成封面、缩略图、发布文案'
-          ],
-          output: '最终成片、封面图、字幕文件、多平台版本',
-          note: '输出前需再次检查平台规范：分辨率、码率、时长、字幕安全区。'
+          nodes: [
+            { title: '自动筛选', desc: '质量/匹配度评分', input: '批量生成素材', method: ['AI 图像质量评分', '与 prompt 语义匹配度排序', '人工二筛'], output: '候选素材集、淘汰素材', note: '筛选决定后期效率。' },
+            { title: '智能标注', desc: '场景/角色/用途', input: '候选素材', method: ['自动识别内容标签', '关联场景编号与镜头号', '标注情绪与用途'], output: '带标签素材库', note: '标注让素材可检索。' },
+            { title: '去重与版本', desc: '相似合并/迭代记录', input: '大量生成图', method: ['相似图聚类去重', '保留最优版本', '记录生成参数与版本'], output: '去重后的素材集、版本记录', note: '避免资产膨胀。' },
+            { title: '格式标准化', desc: '尺寸/色彩/命名', input: '最终候选素材', method: ['统一输出尺寸与色彩空间', '裁切至平台安全区', '转换所需格式'], output: '标准格式素材包', note: '标准化减少剪辑时的问题。' },
+            { title: '命名规范', desc: '可检索/可追溯', input: '标准化素材', method: ['制定项目命名规则', '包含场景-镜头-版本-用途'], output: '规范命名文件清单', note: '好命名是团队协作的基础。' },
+            { title: '资产库归档', desc: '结构化/可复用', input: '全部处理完毕素材', method: ['按项目/场景/类型归档', '建立元数据库', '输出资产清单'], output: '结构化资产库、制作清单', note: '资产库支持后续迭代与复用。' }
+          ]
+        },
+        {
+          title: '剪辑合成 EDITING',
+          color: '#d06a8c',
+          nodes: [
+            { title: '智能粗剪', desc: '按分镜拼贴', input: '分镜脚本 + 素材库', method: ['按镜头编号自动对齐', '按时间线拼接', '生成初版时间线'], output: '粗剪版本 V1', note: '粗剪是结构的快速验证。' },
+            { title: '节奏点匹配', desc: '音乐/情绪/切点', input: '粗剪 + 配乐 + 情绪曲线', method: ['按节拍调整切点', '强化情绪起伏', '控制镜头时长'], output: '节奏优化版 V2', note: '节奏匹配决定观看流畅度。' },
+            { title: '转场设计', desc: '硬切/溶解/动效', input: '节奏版与风格需求', method: ['选择匹配转场类型', '生成/应用转场素材', '保持风格统一'], output: '带转场的剪辑版 V3', note: '转场不要喧宾夺主。' },
+            { title: '字幕/对白', desc: '台词/唱词/信息', input: '对白文本与字幕样式', method: ['自动识别/导入对白', '按时间轴对齐', '应用字体与样式'], output: '字幕轨道、成品字幕文件', note: '字幕要清晰可读，符合安全区。' },
+            { title: '音效对齐', desc: '环境/动作/情绪音', input: '音效库与剪辑时间线', method: ['按动作添加音效', '铺环境声', '音乐淡入淡出'], output: '完整音轨、混音版本', note: '音效细节大幅提升沉浸感。' },
+            { title: '调色/风格统一', desc: 'LUT/色彩匹配', input: '各镜头素材与色彩板', method: ['应用 LUT 与调色预设', '统一各镜头色彩', '修正曝光与白平衡'], output: '调色完成版 V4', note: '调色统一视觉风格。' }
+          ]
+        },
+        {
+          title: '输出迭代 OUTPUT',
+          color: '#8a9a5a',
+          nodes: [
+            { title: '多平台裁剪', desc: '横/竖/方/封面', input: '精剪成片与平台规范', method: ['自动生成多比例版本', '调整构图安全区', '输出不同分辨率'], output: '9:16 / 16:9 / 1:1 等版本', note: '一源多用，适配各平台。' },
+            { title: '封面/缩略图', desc: '标题/人物/悬念', input: '成片关键帧与标题', method: ['生成高吸引力封面', '突出标题与人物', 'A/B 测试备选'], output: '封面图、缩略图集', note: '封面决定点击率。' },
+            { title: '发布文案', desc: '标题/话题/简介', input: '核心命题与关键词', method: ['AI 生成多版标题与简介', '提取话题标签', '适配平台调性'], output: '发布文案包、话题标签', note: '文案要与内容风格一致。' },
+            { title: '数据回收', desc: '播放/互动/完播', input: '平台后台数据', method: ['监控播放、点赞、评论、完播率', '识别高光与流失点'], output: '数据报告、观众反馈', note: '数据是迭代的依据。' },
+            { title: 'A/B 测试', desc: '封面/标题/开头', input: '多版本封面与文案', method: ['小范围测试不同封面/标题', '对比点击率与完播率'], output: '最优版本、测试结论', note: '用数据验证创意假设。' },
+            { title: '迭代优化', desc: '复盘/沉淀/复用', input: '数据反馈与项目经验', method: ['复盘成功与失败因素', '沉淀 prompt 与模板', '更新资产库与规范'], output: '迭代版本、经验文档、复用资产', note: '闭环让下一次制作更高效。' }
+          ]
         }
       ];
 
@@ -556,27 +489,202 @@
         }
       }
 
-      function renderDetail(index) {
-        const n = nodes[index];
-        el('detail-title').textContent = n.title;
-        el('detail-title').style.color = n.color;
-        el('detail-subtitle').textContent = n.subtitle;
+      function createSVGElement(tag, attrs) {
+        const e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+        for (const k in attrs) e.setAttribute(k, attrs[k]);
+        return e;
+      }
+
+      function hexToRgba(hex, alpha) {
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        return `rgba(${r},${g},${b},${alpha})`;
+      }
+
+      function renderDiagram() {
+        const svg = el('framework-svg');
+        svg.innerHTML = '';
+
+        const defs = createSVGElement('defs', {});
+        const grad = createSVGElement('linearGradient', { id: 'spineGrad', x1: '0', y1: '0', x2: '0', y2: '1' });
+        grad.appendChild(createSVGElement('stop', { offset: '0%', 'stop-color': 'rgba(94,196,255,0.1)' }));
+        grad.appendChild(createSVGElement('stop', { offset: '50%', 'stop-color': 'rgba(94,196,255,0.45)' }));
+        grad.appendChild(createSVGElement('stop', { offset: '100%', 'stop-color': 'rgba(94,196,255,0.1)' }));
+        defs.appendChild(grad);
+        svg.appendChild(defs);
+
+        const bg = createSVGElement('rect', { width: W, height: computeTotalHeight(), fill: '#080b10' });
+        svg.appendChild(bg);
+
+        const grid = createSVGElement('g', { opacity: '0.12' });
+        for (let x = 20; x < W; x += 40) {
+          grid.appendChild(createSVGElement('line', { x1: x, y1: 0, x2: x, y2: computeTotalHeight(), stroke: '#5ec4ff', 'stroke-width': 0.5 }));
+        }
+        svg.appendChild(grid);
+
+        const spineGroup = createSVGElement('g', {});
+        const spineH = computeTotalHeight();
+        spineGroup.appendChild(createSVGElement('line', { class: 'spine-line', x1: SPINE_X, y1: START_Y, x2: SPINE_X, y2: spineH - 30, stroke: 'url(#spineGrad)', 'stroke-width': 3 }));
+        svg.appendChild(spineGroup);
+
+        const connectorGroup = createSVGElement('g', { class: 'connectors', stroke: 'rgba(94,196,255,0.18)', 'stroke-width': 1, fill: 'none' });
+        const nodeGroup = createSVGElement('g', { class: 'nodes' });
+
+        let currentY = START_Y;
+        const phasePositions = [];
+
+        phases.forEach((phase, pi) => {
+          const phaseH = PHASE_TITLE_H + Math.ceil(phase.nodes.length / 2) * (NODE_H + NODE_GAP_Y) - NODE_GAP_Y + 12;
+
+          const bar = createSVGElement('rect', {
+            class: 'phase-bar',
+            x: MARGIN_LEFT,
+            y: currentY,
+            width: W - MARGIN_LEFT - MARGIN_RIGHT,
+            height: PHASE_TITLE_H,
+            rx: 8,
+            fill: hexToRgba(phase.color, 0.14),
+            stroke: phase.color,
+            'stroke-width': 1.2
+          });
+          nodeGroup.appendChild(bar);
+
+          const title = createSVGElement('text', {
+            class: 'phase-title',
+            x: SPINE_X,
+            y: currentY + 18,
+            'text-anchor': 'middle',
+            fill: phase.color
+          });
+          title.textContent = phase.title;
+          nodeGroup.appendChild(title);
+
+          const rows = Math.ceil(phase.nodes.length / 2);
+          phase.nodes.forEach((node, ni) => {
+            const row = Math.floor(ni / 2);
+            const col = ni % 2;
+            const nx = MARGIN_LEFT + col * (NODE_W + COL_GAP);
+            const ny = currentY + PHASE_TITLE_H + 8 + row * (NODE_H + NODE_GAP_Y);
+
+            const g = createSVGElement('g', { class: 'node-group', 'data-phase': pi, 'data-index': ni, transform: `translate(${nx},${ny})` });
+
+            const rect = createSVGElement('rect', {
+              class: 'node-rect',
+              x: 0,
+              y: 0,
+              width: NODE_W,
+              height: NODE_H,
+              rx: 10,
+              fill: hexToRgba(phase.color, 0.12),
+              stroke: phase.color,
+              'stroke-width': 1.1
+            });
+            g.appendChild(rect);
+
+            g.appendChild(createSVGElement('text', {
+              class: 'node-title',
+              x: NODE_W / 2,
+              y: 19,
+              'text-anchor': 'middle',
+              fill: '#fff'
+            })).textContent = node.title;
+
+            g.appendChild(createSVGElement('text', {
+              class: 'node-desc',
+              x: NODE_W / 2,
+              y: 35,
+              'text-anchor': 'middle',
+              fill: hexToRgba('#e8eef5', 0.75)
+            })).textContent = node.desc;
+
+            nodeGroup.appendChild(g);
+
+            const cx = nx + NODE_W / 2;
+            const cy = ny + NODE_H / 2;
+            const side = col === 0 ? 1 : -1;
+            connectorGroup.appendChild(createSVGElement('path', {
+              class: 'connector',
+              d: `M${cx + (NODE_W / 2 - 2) * side},${cy} Q${cx + (NODE_W / 2 + 14) * side},${cy} ${SPINE_X + (col === 0 ? -8 : 8)},${cy}`
+            }));
+          });
+
+          phasePositions.push({ y: currentY + phaseH / 2, color: phase.color });
+          currentY += phaseH + PHASE_GAP;
+        });
+
+        svg.appendChild(connectorGroup);
+        svg.appendChild(nodeGroup);
+
+        const flowGroup = createSVGElement('g', { id: 'flow-particles' });
+        svg.appendChild(flowGroup);
+
+        svg.setAttribute('viewBox', `0 0 ${W} ${computeTotalHeight()}`);
+        svg.setAttribute('preserveAspectRatio', 'xMidYMin meet');
+
+        startFlowAnimation(phasePositions);
+      }
+
+      function computeTotalHeight() {
+        let h = START_Y;
+        phases.forEach(phase => {
+          const rows = Math.ceil(phase.nodes.length / 2);
+          const phaseH = PHASE_TITLE_H + rows * (NODE_H + NODE_GAP_Y) - NODE_GAP_Y + 12;
+          h += phaseH + PHASE_GAP;
+        });
+        return h + 40;
+      }
+
+      function startFlowAnimation(phasePositions) {
+        const container = el('flow-particles');
+        container.innerHTML = '';
+        for (let i = 0; i < phasePositions.length - 1; i++) {
+          const y1 = phasePositions[i].y;
+          const y2 = phasePositions[i + 1].y;
+          const c = createSVGElement('circle', {
+            cx: SPINE_X,
+            cy: y1,
+            r: 3.5,
+            fill: '#5ec4ff',
+            class: 'flow-particle'
+          });
+          container.appendChild(c);
+
+          const anim = createSVGElement('animate', {
+            attributeName: 'cy',
+            values: `${y1};${y2};${y1}`,
+            dur: `${1.8 + i * 0.12}s`,
+            repeatCount: 'indefinite',
+            begin: `${i * 0.25}s`,
+            calcMode: 'spline',
+            keySplines: '0.45 0 0.55 1;0.45 0 0.55 1'
+          });
+          c.appendChild(anim);
+        }
+      }
+
+      function renderDetail(phaseIndex, nodeIndex) {
+        const phase = phases[phaseIndex];
+        const node = phase.nodes[nodeIndex];
+        el('detail-title').textContent = node.title;
+        el('detail-title').style.color = phase.color;
+        el('detail-subtitle').textContent = `${phase.title.split(' ')[0]} · ${node.desc}`;
         el('detail-body').innerHTML = `
           <div class="detail-row">
-            <div class="detail-label">输入 Input</div>
-            <div class="detail-text">${n.input}</div>
+            <div class="detail-label" style="color:${phase.color}">输入 Input</div>
+            <div class="detail-text">${node.input}</div>
           </div>
           <div class="detail-row">
-            <div class="detail-label">AI 方法 Method</div>
-            <ul class="detail-list">${n.method.map(m => `<li>${m}</li>`).join('')}</ul>
+            <div class="detail-label" style="color:${phase.color}">AI 方法 Method</div>
+            <ul class="detail-list">${node.method.map(m => `<li style="--dot:${phase.color}"><span style="position:absolute;left:0;top:8px;width:5px;height:5px;border-radius:50%;background:${phase.color}"></span>${m}</li>`).join('')}</ul>
           </div>
           <div class="detail-row">
-            <div class="detail-label">输出 Output</div>
-            <div class="detail-text">${n.output}</div>
+            <div class="detail-label" style="color:${phase.color}">输出 Output</div>
+            <div class="detail-text">${node.output}</div>
           </div>
           <div class="detail-row">
-            <div class="detail-label">关键提示 Key Point</div>
-            <div class="detail-text">${n.note}</div>
+            <div class="detail-label" style="color:${phase.color}">关键提示 Key Point</div>
+            <div class="detail-text">${node.note}</div>
           </div>
         `;
         showScreen('screen-detail');
@@ -589,7 +697,6 @@
 
           if (action === 'start') {
             showScreen('screen-diagram');
-            startFlowAnimation();
             return;
           }
           if (action === 'close-detail') {
@@ -599,8 +706,9 @@
 
           const group = target.closest('.node-group');
           if (group) {
-            const index = parseInt(group.dataset.index, 10);
-            if (!isNaN(index)) renderDetail(index);
+            const pi = parseInt(group.dataset.phase, 10);
+            const ni = parseInt(group.dataset.index, 10);
+            if (!isNaN(pi) && !isNaN(ni)) renderDetail(pi, ni);
           }
         });
 
@@ -613,46 +721,14 @@
         });
       }
 
-      function startFlowAnimation() {
-        const container = el('flow-particles');
-        container.innerHTML = '';
-        const paths = [
-          { x: 180, y1: 118, y2: 148 },
-          { x: 180, y1: 228, y2: 258 },
-          { x: 180, y1: 338, y2: 368 },
-          { x: 180, y1: 448, y2: 478 },
-          { x: 180, y1: 558, y2: 588 },
-          { x: 180, y1: 668, y2: 698 }
-        ];
-
-        paths.forEach((p, i) => {
-          const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-          c.setAttribute('cx', p.x);
-          c.setAttribute('cy', p.y1);
-          c.setAttribute('r', 4);
-          c.setAttribute('fill', 'var(--accent)');
-          c.classList.add('flow-particle');
-          container.appendChild(c);
-
-          const anim = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
-          anim.setAttribute('attributeName', 'cy');
-          anim.setAttribute('values', `${p.y1};${p.y2};${p.y1}`);
-          anim.setAttribute('dur', `${2 + i * 0.2}s`);
-          anim.setAttribute('repeatCount', 'indefinite');
-          anim.setAttribute('begin', `${i * 0.3}s`);
-          anim.setAttribute('calcMode', 'spline');
-          anim.setAttribute('keySplines', '0.45 0 0.55 1;0.45 0 0.55 1');
-          c.appendChild(anim);
-        });
-      }
-
       window.addEventListener('load', () => {
         try {
           bindEvents();
+          renderDiagram();
         } catch (error) {
           console.error(error);
           const fallback = document.createElement('div');
-          fallback.style.cssText = 'position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#0b0f14;color:#eef2f6;font-size:18px;padding:24px;text-align:center;z-index:9999;';
+          fallback.style.cssText = 'position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#080b10;color:#e8eef5;font-size:18px;padding:24px;text-align:center;z-index:9999;';
           fallback.textContent = '哎呀，出错了，请重启试试吧~';
           document.body.innerHTML = '';
           document.body.appendChild(fallback);
