@@ -1,30 +1,767 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>拼豆半面工坊 · Perler Bead Studio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
-    <script type="module">
-      if (import.meta.hot?.on) {
-        import.meta.hot.on('vite:error', (error) => {
-          if (error.err) {
-            console.error(
-              [error.err.message, error.err.frame].filter(Boolean).join('\n'),
-            )
-          }
-        })
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>直流布线工坊</title>
+<style>
+  :root{
+    --bg-1:#0e1726;
+    --bg-2:#16243d;
+    --panel:#1e2f4d;
+    --line:#3a5478;
+    --accent:#4cd6ff;
+    --accent-2:#7c5cff;
+    --pos:#ff5d6c;
+    --neg:#4cd6ff;
+    --good:#3ddc97;
+    --warn:#ffd166;
+    --txt:#e8f1ff;
+    --txt-dim:#9fb3d1;
+    --safe-b:env(safe-area-inset-bottom);
+    --safe-t:env(safe-area-inset-top);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    color:var(--txt);
+    background:radial-gradient(120% 80% at 50% 0%,var(--bg-2) 0%,var(--bg-1) 60%,#070d18 100%);
+    overflow:hidden;
+    user-select:none;
+    -webkit-user-select:none;
+    touch-action:manipulation;
+  }
+  #app{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    height:100dvh;
+    overflow:hidden;
+  }
+
+  /* ====== 顶部条 ====== */
+  .topbar{
+    position:absolute;top:0;left:0;right:0;
+    padding:calc(var(--safe-t) + 10px) 14px 10px;
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    z-index:5;
+  }
+  .topbar .title{
+    font-size:16px;font-weight:700;letter-spacing:1px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .topbar .title .dot{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--accent);box-shadow:0 0 10px var(--accent);
+  }
+  .topbar .lvchip{
+    font-size:12px;color:var(--txt-dim);
+    background:rgba(255,255,255,.06);
+    border:1px solid var(--line);
+    padding:6px 10px;border-radius:20px;
+  }
+  .topbar .lvchip b{color:var(--accent);font-weight:700;}
+  .iconbtn{
+    width:38px;height:38px;border-radius:12px;
+    background:rgba(255,255,255,.06);
+    border:1px solid var(--line);
+    color:var(--txt);font-size:16px;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+  }
+  .iconbtn:active{transform:scale(.94);}
+
+  /* ====== 任务条 ====== */
+  .mission{
+    position:absolute;top:calc(var(--safe-t) + 60px);left:14px;right:14px;
+    background:linear-gradient(135deg,rgba(124,92,255,.18),rgba(76,214,255,.12));
+    border:1px solid rgba(124,92,255,.35);
+    border-radius:14px;
+    padding:10px 14px;
+    z-index:5;
+  }
+  .mission .m-title{font-size:13px;color:var(--accent);font-weight:700;margin-bottom:3px;}
+  .mission .m-desc{font-size:12px;color:var(--txt-dim);line-height:1.5;}
+
+  /* ====== 画布区 ====== */
+  .stage{
+    position:absolute;
+    top:calc(var(--safe-t) + 140px);
+    left:0;right:0;bottom:calc(var(--safe-b) + 92px);
+    display:flex;align-items:center;justify-content:center;
+    padding:6px;
+  }
+  .stage svg{
+    width:100%;height:100%;
+    display:block;
+    touch-action:none;
+  }
+  .terminal{
+    cursor:pointer;
+    transition:transform .12s ease;
+    transform-box:fill-box;transform-origin:center;
+  }
+  .terminal:hover{transform:scale(1.15);}
+  .terminal.sel{filter:drop-shadow(0 0 6px #fff);}
+  .wire{cursor:pointer;transition:opacity .15s;}
+  .wire:hover{opacity:.55;}
+
+  /* ====== 底部工具 ====== */
+  .dock{
+    position:absolute;bottom:0;left:0;right:0;
+    padding:12px 14px calc(var(--safe-b) + 14px);
+    display:flex;gap:10px;align-items:center;justify-content:center;
+    z-index:5;
+  }
+  .dock .btn{
+    flex:1;max-width:160px;
+    padding:13px 10px;border-radius:14px;
+    font-size:14px;font-weight:700;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.05);
+    color:var(--txt);
+    display:flex;align-items:center;justify-content:center;gap:6px;
+    cursor:pointer;
+  }
+  .dock .btn:active{transform:scale(.97);}
+  .dock .btn.primary{
+    background:linear-gradient(135deg,var(--accent-2),var(--accent));
+    border-color:transparent;color:#061021;
+  }
+  .dock .btn.ghost{background:rgba(255,255,255,.04);}
+
+  /* ====== 弹层 ====== */
+  .screen{
+    position:absolute;inset:0;
+    background:rgba(6,11,22,.78);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+    display:flex;align-items:center;justify-content:center;
+    padding:24px;
+    opacity:0;visibility:hidden;pointer-events:none;
+    transition:opacity .25s ease, visibility .25s;
+    z-index:50;
+  }
+  .screen.active{opacity:1;visibility:visible;pointer-events:auto;}
+  .modal-card{
+    width:100%;max-width:340px;
+    background:linear-gradient(160deg,#1b2a47,#15203a);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:22px 20px calc(20px + var(--safe-b));
+    box-shadow:0 20px 60px rgba(0,0,0,.5);
+    text-align:center;
+    transform:translateY(14px) scale(.96);
+    transition:transform .3s cubic-bezier(.2,.9,.3,1.2);
+  }
+  .screen.active .modal-card{transform:translateY(0) scale(1);}
+  .modal-emoji{font-size:46px;line-height:1;margin-bottom:8px;}
+  .modal-title{font-size:20px;font-weight:800;margin:4px 0 6px;letter-spacing:1px;}
+  .modal-message{font-size:13px;color:var(--txt-dim);line-height:1.6;margin-bottom:16px;}
+  .modal-score{
+    display:flex;justify-content:center;gap:18px;margin:6px 0 14px;
+  }
+  .modal-score .si{display:flex;flex-direction:column;align-items:center;}
+  .modal-score .si .v{font-size:22px;font-weight:800;color:var(--accent);}
+  .modal-score .si .k{font-size:11px;color:var(--txt-dim);margin-top:2px;}
+  .modal-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+  .modal-actions button{
+    flex:1;min-width:110px;
+    padding:12px;border-radius:12px;
+    font-size:14px;font-weight:700;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.06);
+    color:var(--txt);cursor:pointer;
+  }
+  .modal-actions button:active{transform:scale(.97);}
+  .modal-actions button.primary{
+    background:linear-gradient(135deg,var(--accent-2),var(--accent));
+    border-color:transparent;color:#061021;
+  }
+  .help-list{text-align:left;font-size:12.5px;color:var(--txt-dim);line-height:1.7;margin:8px 4px 16px;}
+  .help-list b{color:var(--accent);}
+  .help-list li{margin:5px 0;}
+
+  .toast{
+    position:absolute;left:50%;bottom:calc(var(--safe-b) + 110px);
+    transform:translate(-50%,20px);
+    background:rgba(20,30,55,.95);
+    border:1px solid var(--line);
+    color:var(--txt);
+    padding:9px 16px;border-radius:20px;
+    font-size:12.5px;
+    opacity:0;visibility:hidden;
+    transition:opacity .25s,transform .25s,visibility .25s;
+    z-index:40;white-space:nowrap;
+  }
+  .toast.show{opacity:1;visibility:visible;transform:translate(-50%,0);}
+
+  /* 电流流动动画 */
+  @keyframes flow{to{stroke-dashoffset:-24;}}
+  .current-flow{
+    stroke-dasharray:6 6;
+    animation:flow .6s linear infinite;
+  }
+  @keyframes glowPulse{0%,100%{filter:drop-shadow(0 0 4px #ffd166);}50%{filter:drop-shadow(0 0 14px #ffd166);}}
+  .led-on{animation:glowPulse 1s ease-in-out infinite;}
+
+  .fallback{
+    position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+    background:#0e1726;color:#e8f1ff;font-size:16px;padding:24px;text-align:center;z-index:9999;
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div class="topbar">
+    <div class="title"><span class="dot"></span>直流布线工坊</div>
+    <div class="lvchip">关卡 <b id="lvNum">1</b> / 3</div>
+    <button class="iconbtn" id="btnHelp" aria-label="说明">?</button>
+  </div>
+
+  <div class="mission">
+    <div class="m-title" id="mTitle">任务一 · 点亮一颗灯珠</div>
+    <div class="m-desc" id="mDesc">点击器件端子两两连线，搭出闭合回路：电池正极 → 开关 → 灯珠正极 → 灯珠负极 → 电池负极。</div>
+  </div>
+
+  <div class="stage">
+    <svg id="board" viewBox="0 0 360 460" preserveAspectRatio="xMidYMid meet" aria-label="电路画布">
+      <defs>
+        <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d="M20 0 L0 0 0 20" fill="none" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+        </pattern>
+        <radialGradient id="ledGrad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#fff3c4"/>
+          <stop offset="60%" stop-color="#ffd166"/>
+          <stop offset="100%" stop-color="#c98a00"/>
+        </radialGradient>
+      </defs>
+      <rect x="0" y="0" width="360" height="460" fill="url(#grid)"/>
+      <g id="layerWires"></g>
+      <g id="layerComps"></g>
+      <g id="layerCurrent"></g>
+      <g id="layerTerminals"></g>
+    </svg>
+  </div>
+
+  <div class="dock">
+    <button class="btn ghost" id="btnClear">清空连线</button>
+    <button class="btn primary" id="btnCheck">检测通电</button>
+  </div>
+
+  <!-- 开始 -->
+  <div id="screen-start" class="screen active">
+    <div class="modal-card">
+      <div class="modal-emoji">🔌</div>
+      <div class="modal-title">直流布线工坊</div>
+      <div class="modal-message">用 SVG 框架搭建直流回路。点击端子两两连线，让电流从电池正极出发、流经器件、回到负极，点亮灯珠即可通关。</div>
+      <div class="modal-actions">
+        <button type="button" data-action="start" class="primary">开始挑战</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 帮助 -->
+  <div id="screen-help" class="screen">
+    <div class="modal-card">
+      <div class="modal-emoji">📖</div>
+      <div class="modal-title">操作说明</div>
+      <ul class="help-list">
+        <li><b>红色端子</b>=正极，<b>蓝色端子</b>=负极。</li>
+        <li>依次点击两个端子即可绘制一条导线。</li>
+        <li>点击已绘制的<b>导线</b>可删除该连线。</li>
+        <li>灯珠有极性，正负接反不会点亮。</li>
+        <li>完成回路后点「检测通电」验证。</li>
+        <li>进度自动保存，可随时返回继续。</li>
+      </ul>
+      <div class="modal-actions">
+        <button type="button" data-action="close-help" class="primary">明白了</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 通关 -->
+  <div id="screen-win" class="screen">
+    <div class="modal-card">
+      <div class="modal-emoji">💡</div>
+      <div class="modal-title" id="winTitle">回路通电成功</div>
+      <div class="modal-message" id="winMsg">电流顺利流过，灯珠被点亮！</div>
+      <div class="modal-score">
+        <div class="si"><div class="v" id="winStep">0</div><div class="k">连线数</div></div>
+        <div class="si"><div class="v" id="winBest">0</div><div class="k">已通关</div></div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" data-action="restart" id="winRetry">重玩本关</button>
+        <button type="button" data-action="next" class="primary" id="winNext">下一关</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 失败 -->
+  <div id="screen-fail" class="screen">
+    <div class="modal-card">
+      <div class="modal-emoji">🧭</div>
+      <div class="modal-title">还未形成闭合回路</div>
+      <div class="modal-message" id="failMsg">检查正负极方向、是否有断点，或灯珠极性是否接反。</div>
+      <div class="modal-actions">
+        <button type="button" data-action="close-fail" class="primary">继续调整</button>
+        <button type="button" data-action="clear-fail">清空重连</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 全通 -->
+  <div id="screen-all" class="screen">
+    <div class="modal-card">
+      <div class="modal-emoji">🏆</div>
+      <div class="modal-title">全部关卡完成</div>
+      <div class="modal-message">你已掌握直流回路的基本布线。返回首关可继续练习。</div>
+      <div class="modal-actions">
+        <button type="button" data-action="restart-all" class="primary">从头再来</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var SVG_NS='http://www.w3.org/2000/svg';
+  var STORE_KEY='dcwiring_progress_v1';
+
+  // 关卡数据：器件 + 端子 + 正确连接集合
+  // 端子：{id, x, y, pol:'+'/'-'/''}
+  // 正确连线：[[aId,bId],...] 顺序无关
+  var LEVELS=[
+    {
+      title:'任务一 · 点亮一颗灯珠',
+      desc:'点击端子连线，搭出闭合回路：电池正极 → 开关 → 灯珠正极 → 灯珠负极 → 电池负极。',
+      comps:[
+        {id:'BAT',type:'battery',x:60,y:360,label:'电池 3V'},
+        {id:'SW',type:'switch',x:180,y:120,label:'开关'},
+        {id:'LED',type:'led',x:300,y:300,label:'灯珠'}
+      ],
+      terminals:[
+        {id:'BAT+',owner:'BAT',x:96,y:360,pol:'+'},
+        {id:'BAT-',owner:'BAT',x:24,y:360,pol:'-'},
+        {id:'SWa',owner:'SW',x:148,y:120,pol:''},
+        {id:'SWb',owner:'SW',x:212,y:120,pol:''},
+        {id:'LED+',owner:'LED',x:300,y:266,pol:'+'},
+        {id:'LED-',owner:'LED',x:300,y:334,pol:'-'}
+      ],
+      solution:[['BAT+','SWa'],['SWb','LED+'],['LED-','BAT-']]
+    },
+    {
+      title:'任务二 · 串入限流电阻',
+      desc:'加入电阻限流。回路：电池正极 → 开关 → 电阻 → 灯珠正极 → 灯珠负极 → 电池负极。',
+      comps:[
+        {id:'BAT',type:'battery',x:60,y:380,label:'电池 3V'},
+        {id:'SW',type:'switch',x:170,y:90,label:'开关'},
+        {id:'R',type:'resistor',x:260,y:180,label:'电阻'},
+        {id:'LED',type:'led',x:300,y:340,label:'灯珠'}
+      ],
+      terminals:[
+        {id:'BAT+',owner:'BAT',x:96,y:380,pol:'+'},
+        {id:'BAT-',owner:'BAT',x:24,y:380,pol:'-'},
+        {id:'SWa',owner:'SW',x:138,y:90,pol:''},
+        {id:'SWb',owner:'SW',x:202,y:90,pol:''},
+        {id:'Ra',owner:'R',x:222,y:180,pol:''},
+        {id:'Rb',owner:'R',x:298,y:180,pol:''},
+        {id:'LED+',owner:'LED',x:300,y:306,pol:'+'},
+        {id:'LED-',owner:'LED',x:300,y:374,pol:'-'}
+      ],
+      solution:[['BAT+','SWa'],['SWb','Ra'],['Rb','LED+'],['LED-','BAT-']]
+    },
+    {
+      title:'任务三 · 并联双灯珠',
+      desc:'两条支路并联：电池正极分别接到两颗灯珠正极，两颗灯珠负极共同回到电池负极。',
+      comps:[
+        {id:'BAT',type:'battery',x:60,y:380,label:'电池 3V'},
+        {id:'L1',type:'led',x:200,y:130,label:'灯珠①'},
+        {id:'L2',type:'led',x:300,y:300,label:'灯珠②'}
+      ],
+      terminals:[
+        {id:'BAT+',owner:'BAT',x:96,y:380,pol:'+'},
+        {id:'BAT-',owner:'BAT',x:24,y:380,pol:'-'},
+        {id:'L1+',owner:'L1',x:200,y:96,pol:'+'},
+        {id:'L1-',owner:'L1',x:200,y:164,pol:'-'},
+        {id:'L2+',owner:'L2',x:300,y:266,pol:'+'},
+        {id:'L2-',owner:'L2',x:300,y:334,pol:'-'}
+      ],
+      solution:[['BAT+','L1+'],['BAT+','L2+'],['L1-','BAT-'],['L2-','BAT-']]
+    }
+  ];
+
+  // ====== 状态 ======
+  var state={
+    level:0,
+    wires:[],            // [{a,b}]
+    selTerm:null,
+    bestLevel:0
+  };
+
+  // ====== DOM ======
+  var $=function(s){return document.querySelector(s);};
+  var svg=$('#board');
+  var layerWires=$('#layerWires');
+  var layerComps=$('#layerComps');
+  var layerCurrent=$('#layerCurrent');
+  var layerTerminals=$('#layerTerminals');
+  var toastEl=$('#toast');
+
+  // ====== 存档 ======
+  function loadStore(){
+    try{
+      var raw=localStorage.getItem(STORE_KEY);
+      if(raw){var o=JSON.parse(raw);state.bestLevel=o.bestLevel||0;}
+    }catch(e){}
+  }
+  function saveStore(){
+    try{localStorage.setItem(STORE_KEY,JSON.stringify({bestLevel:state.bestLevel}));}catch(e){}
+  }
+
+  // ====== 弹层 ======
+  function hideAllScreens(){
+    document.querySelectorAll('.screen').forEach(function(n){
+      n.classList.remove('active');
+      n.setAttribute('aria-hidden','true');
+    });
+  }
+  function showScreen(id){
+    hideAllScreens();
+    var t=document.getElementById(id);
+    if(!t)return;
+    t.classList.add('active');
+    t.setAttribute('aria-hidden','false');
+  }
+  var toastTimer=null;
+  function toast(msg){
+    toastEl.textContent=msg;
+    toastEl.classList.add('show');
+    if(toastTimer)clearTimeout(toastTimer);
+    toastTimer=setTimeout(function(){toastEl.classList.remove('show');},1400);
+  }
+
+  // ====== SVG 工具 ======
+  function el(name,attrs){
+    var e=document.createElementNS(SVG_NS,name);
+    if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);
+    return e;
+  }
+  function clearLayer(l){while(l.firstChild)l.removeChild(l.firstChild);}
+
+  // ====== 绘制器件 ======
+  function drawComp(c){
+    var g=el('g',{transform:'translate('+c.x+' '+c.y+')'});
+    var label=el('text',{x:0,y:0,fill:'#9fb3d1','font-size':10,'text-anchor':'middle','dominant-baseline':'middle','opacity':.8});
+    if(c.type==='battery'){
+      // 长板=正极(右)，短板=负极(左)
+      g.appendChild(el('rect',{x:-32,y:-18,width:64,height:36,rx:8,fill:'#16243d',stroke:'#3a5478','stroke-width':1.5}));
+      g.appendChild(el('line',{x1:18,y1:-22,x2:18,y2:22,stroke:'#ff5d6c','stroke-width':4,'stroke-linecap':'round'}));
+      g.appendChild(el('line',{x1:-18,y1:-12,x2:-18,y2:12,stroke:'#4cd6ff','stroke-width':3,'stroke-linecap':'round'}));
+      label.setAttribute('y',30);label.textContent=c.label;g.appendChild(label);
+    }else if(c.type==='switch'){
+      g.appendChild(el('circle',{cx:-22,cy:0,r:5,fill:'#16243d',stroke:'#9fb3d1','stroke-width':1.5}));
+      g.appendChild(el('circle',{cx:22,cy:0,r:5,fill:'#16243d',stroke:'#9fb3d1','stroke-width':1.5}));
+      g.appendChild(el('line',{x1:-18,y1:0,x2:14,y2:-20,stroke:'#e8f1ff','stroke-width':2.4,'stroke-linecap':'round'}));
+      label.setAttribute('y',26);label.textContent=c.label;g.appendChild(label);
+    }else if(c.type==='led'){
+      g.appendChild(el('circle',{cx:0,cy:0,r:22,fill:'#16243d',stroke:'#3a5478','stroke-width':1.5}));
+      var bulb=el('circle',{cx:0,cy:0,r:13,fill:'#2a3a5a'});
+      g.appendChild(bulb);
+      // 极性标记 + 在上 - 在下
+      var tplus=el('text',{x:0,y:-26,fill:'#ff5d6c','font-size':11,'text-anchor':'middle','font-weight':700});
+      tplus.textContent='+';g.appendChild(tplus);
+      var tmin=el('text',{x:0,y:32,fill:'#4cd6ff','font-size':11,'text-anchor':'middle','font-weight':700});
+      tmin.textContent='−';g.appendChild(tmin);
+      c._bulb=bulb;
+      label.setAttribute('y',46);label.textContent=c.label;g.appendChild(label);
+    }else if(c.type==='resistor'){
+      g.appendChild(el('rect',{x:-30,y:-9,width:60,height:18,rx:4,fill:'#2a3a5a',stroke:'#9fb3d1','stroke-width':1.5}));
+      for(var i=-2;i<=2;i++){
+        g.appendChild(el('line',{x1:i*10,y1:-9,x2:i*10+5,y2:9,stroke:'#9fb3d1','stroke-width':1}));
       }
-    </script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+      label.setAttribute('y',24);label.textContent=c.label;g.appendChild(label);
+    }
+    return g;
+  }
+
+  function drawTerminal(t){
+    var color=t.pol==='+'?'#ff5d6c':(t.pol==='-'?'#4cd6ff':'#9fb3d1');
+    var g=el('g',{class:'terminal','data-id':t.id,transform:'translate('+t.x+' '+t.y+')'});
+    g.appendChild(el('circle',{r:9,fill:'#0e1726',stroke:color,'stroke-width':2}));
+    g.appendChild(el('circle',{r:4,fill:color}));
+    if(t.pol){
+      var lab=el('text',{y:-13,fill:color,'font-size':10,'text-anchor':'middle','font-weight':700});
+      lab.textContent=t.pol;g.appendChild(lab);
+    }
+    return g;
+  }
+
+  // ====== 渲染关卡 ======
+  function renderLevel(){
+    var lv=LEVELS[state.level];
+    clearLayer(layerComps);clearLayer(layerWires);clearLayer(layerCurrent);clearLayer(layerTerminals);
+    $('#lvNum').textContent=(state.level+1);
+    $('#mTitle').textContent=lv.title;
+    $('#mDesc').textContent=lv.desc;
+    lv.comps.forEach(function(c){layerComps.appendChild(drawComp(c));});
+    lv.terminals.forEach(function(t){layerTerminals.appendChild(drawTerminal(t));});
+    state.wires=[];state.selTerm=null;
+    syncWires();
+  }
+
+  // ====== 导线 ======
+  function findTerm(id){
+    var lv=LEVELS[state.level];
+    for(var i=0;i<lv.terminals.length;i++)if(lv.terminals[i].id===id)return lv.terminals[i];
+    return null;
+  }
+  function wireKey(a,b){return a<b?a+'|'+b:b+'|'+a;}
+  function hasWire(a,b){
+    var k=wireKey(a,b);
+    return state.wires.some(function(w){return wireKey(w.a,w.b)===k;});
+  }
+  function addWire(a,b){
+    if(a===b)return;
+    if(hasWire(a,b))return;
+    // 同一器件的两个端子之间不允许直接短接
+    var ta=findTerm(a),tb=findTerm(b);
+    if(ta&&tb&&ta.owner===tb.owner){toast('同一器件两端不能直接短接');return;}
+    state.wires.push({a:a,b:b});
+    syncWires();
+  }
+  function removeWire(a,b){
+    var k=wireKey(a,b);
+    state.wires=state.wires.filter(function(w){return wireKey(w.a,w.b)!==k;});
+    syncWires();
+  }
+
+  function syncWires(){
+    clearLayer(layerWires);
+    state.wires.forEach(function(w){
+      var ta=findTerm(w.a),tb=findTerm(w.b);
+      if(!ta||!tb)return;
+      // 走直角折线
+      var path=el('path',{
+        d:orthoPath(ta.x,ta.y,tb.x,tb.y),
+        fill:'none',stroke:'#4cd6ff','stroke-width':3,'stroke-linecap':'round','stroke-linejoin':'round',
+        class:'wire','data-a':w.a,'data-b':w.b
+      });
+      path.addEventListener('click',function(e){
+        e.stopPropagation();
+        removeWire(w.a,w.b);
+      });
+      layerWires.appendChild(path);
+    });
+    // 选中态高亮
+    document.querySelectorAll('.terminal').forEach(function(n){
+      if(state.selTerm&&n.getAttribute('data-id')===state.selTerm)n.classList.add('sel');
+      else n.classList.remove('sel');
+    });
+  }
+
+  function orthoPath(x1,y1,x2,y2){
+    // 简易 L 形：先水平后垂直，或先垂直后水平
+    var midX=(x1+x2)/2;
+    return 'M'+x1+' '+y1+' H'+midX+' V'+y2+' H'+x2;
+  }
+
+  // ====== 端子点击 ======
+  function onTerminalClick(id){
+    if(!state.selTerm){
+      state.selTerm=id;syncWires();return;
+    }
+    if(state.selTerm===id){state.selTerm=null;syncWires();return;}
+    addWire(state.selTerm,id);
+    state.selTerm=null;
+    syncWires();
+  }
+
+  // ====== 检测通电 ======
+  function check(){
+    var lv=LEVELS[state.level];
+    // 用图遍历：从 BAT+ 出发能否经器件到达 BAT-
+    var adj={};
+    lv.terminals.forEach(function(t){adj[t.id]=[];});
+    state.wires.forEach(function(w){
+      adj[w.a].push(w.b);adj[w.b].push(w.a);
+    });
+    // 期望：每一对 solution 连接都已建立（端子等价类匹配）
+    // 更宽松：连通性 + 灯珠极性正确接入
+    var reached={};
+    function dfs(node){
+      if(reached[node])return;reached[node]=true;
+      (adj[node]||[]).forEach(function(n){dfs(n);});
+    }
+    // 找正极/负极
+    var posId=null,negId=null;
+    lv.terminals.forEach(function(t){
+      if(t.owner==='BAT'&&t.pol==='+')posId=t.id;
+      if(t.owner==='BAT'&&t.pol==='-')negId=t.id;
+    });
+    if(!posId||!negId){failCheck('未找到电池端子');return;}
+    dfs(posId);
+    if(!reached[negId]){failCheck('回路未闭合：电池正负极未连通');return;}
+
+    // 检查每个灯珠是否两端都被接入且极性方向被连通到正/负
+    var ledOwners={};
+    lv.terminals.forEach(function(t){
+      var lv2=LEVELS[state.level];
+      var comp=lv2.comps.find(function(c){return c.id===t.owner;});
+      if(comp&&comp.type==='led'){
+        ledOwners[t.owner]=ledOwners[t.owner]||{};
+        ledOwners[t.owner][t.pol]=t.id;
+      }
+    });
+    var allLit=true;var ledMsg=[];
+    Object.keys(ledOwners).forEach(function(k){
+      var p=ledOwners[k]['+'],n=ledOwners[k]['-'];
+      if(!p||!n){allLit=false;return;}
+      var rp={};(function rec(node){if(rp[node])return;rp[node]=true;(adj[node]||[]).forEach(function(x){rec(x);});})(posId);
+      var rn={};(function rec2(node){if(rn[node])return;rn[node]=true;(adj[node]||[]).forEach(function(x){rec2(x);});})(negId);
+      if(rp[p]&&rn[n]){
+        // 正极连到正端，负极连到负端，正确
+      }else if(rp[n]&&rn[p]){
+        allLit=false;ledMsg.push('灯珠极性接反');
+      }else if((rp[p]||rn[n])&&!(rp[p]&&rn[n])){
+        allLit=false;ledMsg.push('灯珠未同时接入正负');
+      }else{
+        allLit=false;ledMsg.push('灯珠未正常接入');
+      }
+    });
+
+    if(!allLit){failCheck(ledMsg[0]||'回路未正确流经灯珠');return;}
+
+    // 通过：点亮灯珠 + 电流动画
+    lightUp();
+    flowCurrent();
+    state.bestLevel=Math.max(state.bestLevel,state.level+1);
+    saveStore();
+    showWin();
+  }
+
+  function failCheck(msg){
+    document.getElementById('failMsg').textContent=msg||'请检查连线';
+    showScreen('screen-fail');
+  }
+
+  function lightUp(){
+    var lv=LEVELS[state.level];
+    lv.comps.forEach(function(c){
+      if(c.type==='led'&&c._bulb){
+        c._bulb.setAttribute('fill','url(#ledGrad)');
+        c._bulb.setAttribute('class','led-on');
+      }
+    });
+  }
+  function unlight(){
+    var lv=LEVELS[state.level];
+    lv.comps.forEach(function(c){
+      if(c.type==='led'&&c._bulb){
+        c._bulb.setAttribute('fill','#2a3a5a');
+        c._bulb.removeAttribute('class');
+      }
+    });
+  }
+  function flowCurrent(){
+    clearLayer(layerCurrent);
+    state.wires.forEach(function(w){
+      var ta=findTerm(w.a),tb=findTerm(w.b);
+      if(!ta||!tb)return;
+      var p=el('path',{
+        d:orthoPath(ta.x,ta.y,tb.x,tb.y),
+        fill:'none',stroke:'#ffd166','stroke-width':2.4,'stroke-linecap':'round','stroke-linejoin':'round',
+        class:'current-flow',opacity:.95
+      });
+      layerCurrent.appendChild(p);
+    });
+  }
+
+  function showWin(){
+    document.getElementById('winStep').textContent=state.wires.length;
+    document.getElementById('winBest').textContent=state.bestLevel+'/'+LEVELS.length;
+    var isLast=state.level>=LEVELS.length-1;
+    document.getElementById('winNext').textContent=isLast?'完成全部':'下一关';
+    setTimeout(function(){showScreen('screen-win');},650);
+  }
+
+  function nextLevel(){
+    if(state.level<LEVELS.length-1){
+      state.level++;renderLevel();hideAllScreens();
+    }else{
+      showScreen('screen-all');
+    }
+  }
+
+  // ====== 事件绑定 ======
+  function bind(){
+    // 端子点击：事件委托
+    layerTerminals.addEventListener('click',function(e){
+      var g=e.target.closest('.terminal');
+      if(!g)return;
+      onTerminalClick(g.getAttribute('data-id'));
+    });
+    // 画布空白点击：取消选中
+    svg.addEventListener('click',function(e){
+      if(e.target===svg||e.target.tagName==='rect'){
+        state.selTerm=null;syncWires();
+      }
+    });
+
+    $('#btnClear').addEventListener('click',function(){
+      state.wires=[];state.selTerm=null;syncWires();clearLayer(layerCurrent);unlight();
+      toast('已清空所有连线');
+    });
+    $('#btnCheck').addEventListener('click',function(){check();});
+    $('#btnHelp').addEventListener('click',function(){showScreen('screen-help');});
+
+    // 弹层按钮
+    document.body.addEventListener('click',function(e){
+      var btn=e.target.closest('[data-action]');
+      if(!btn)return;
+      var a=btn.getAttribute('data-action');
+      switch(a){
+        case 'start':renderLevel();hideAllScreens();break;
+        case 'close-help':hideAllScreens();break;
+        case 'close-fail':hideAllScreens();break;
+        case 'clear-fail':state.wires=[];state.selTerm=null;syncWires();clearLayer(layerCurrent);unlight();hideAllScreens();break;
+        case 'restart':renderLevel();hideAllScreens();break;
+        case 'next':nextLevel();break;
+        case 'restart-all':state.level=0;renderLevel();hideAllScreens();break;
+      }
+    });
+
+    // 防双击缩放
+    document.addEventListener('gesturestart',function(e){e.preventDefault();});
+    window.addEventListener('error',function(e){
+      console.error(e.error||e.message);
+    });
+  }
+
+  // ====== 启动 ======
+  function init(){
+    loadStore();
+    bind();
+    // 首屏保持 screen-start
+  }
+  try{
+    init();
+  }catch(err){
+    console.error(err);
+    var fb=document.createElement('div');
+    fb.className='fallback';
+    fb.textContent='哎呀，出错了，请重启试试吧~';
+    document.body.innerHTML='';
+    document.body.appendChild(fb);
+  }
+})();
+</script>
+</body>
 </html>
