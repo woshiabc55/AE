@@ -1,30 +1,409 @@
 <!doctype html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>拼豆半面工坊 · Perler Bead Studio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
-    <script type="module">
-      if (import.meta.hot?.on) {
-        import.meta.hot.on('vite:error', (error) => {
-          if (error.err) {
-            console.error(
-              [error.err.message, error.err.frame].filter(Boolean).join('\n'),
-            )
-          }
-        })
-      }
-    </script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AVCF — AI Video Creation Framework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=JetBrains+Mono:wght@300;400;500;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0a07;
+    --bg-2:#100e0a;
+    --fg:#f3efe4;
+    --muted:#7d776c;
+    --dim:#4a463f;
+    --accent:#ff8a3d;
+    --accent-soft:#ffb27a;
+    --cyan:#6ee7d3;
+    --magenta:#ff5c8a;
+    --line:rgba(243,239,228,0.07);
+    --line-strong:rgba(243,239,228,0.16);
+    --card:rgba(255,255,255,0.018);
+    --grid:rgba(255,138,61,0.045);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--fg);font-family:"JetBrains Mono",monospace;font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:auto}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(1200px 700px at 12% -10%, rgba(255,138,61,0.10), transparent 60%),
+      radial-gradient(900px 600px at 110% 120%, rgba(110,231,211,0.06), transparent 60%),
+      linear-gradient(180deg,#0c0b08 0%,#0a0907 100%);
+    position:relative;
+  }
+  /* blueprint grid */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:
+      linear-gradient(var(--grid) 1px,transparent 1px),
+      linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:48px 48px;
+    mask-image:radial-gradient(ellipse at center,#000 30%,transparent 85%);
+  }
+  /* grain */
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.5;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  /* scanline sweep */
+  .scan{position:fixed;left:0;right:0;height:2px;z-index:2;pointer-events:none;
+    background:linear-gradient(90deg,transparent,rgba(255,138,61,0.55),transparent);
+    filter:blur(1px);animation:sweep 9s linear infinite}
+  @keyframes sweep{0%{top:-2%}100%{top:102%}}
+
+  .frame{position:relative;z-index:3;max-width:1640px;margin:0 auto;padding:28px 40px 60px}
+
+  /* ===== top bar ===== */
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:24px;
+    border:1px solid var(--line);border-left:2px solid var(--accent);
+    padding:12px 18px;background:linear-gradient(90deg,rgba(255,138,61,0.05),transparent 70%);
+    backdrop-filter:blur(4px)}
+  .brand{display:flex;align-items:center;gap:14px}
+  .mark{width:30px;height:30px;position:relative;flex:none}
+  .mark svg{width:100%;height:100%}
+  .brand .id{font-weight:700;letter-spacing:.12em;font-size:12px}
+  .brand .id .v{color:var(--accent)}
+  .brand .sub{color:var(--muted);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase}
+  .topbar .meta{display:flex;gap:28px;color:var(--muted);font-size:11px;letter-spacing:.1em}
+  .topbar .meta b{color:var(--fg);font-weight:500}
+  .topbar .meta .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-right:6px;box-shadow:0 0 12px var(--accent);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+  /* ===== hero ===== */
+  .hero{margin:46px 0 38px;display:grid;grid-template-columns:1.4fr 1fr;gap:48px;align-items:end}
+  .kicker{display:inline-flex;align-items:center;gap:10px;color:var(--accent);font-size:11px;letter-spacing:.32em;text-transform:uppercase;margin-bottom:18px}
+  .kicker::before{content:"";width:34px;height:1px;background:var(--accent)}
+  h1{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:clamp(44px,5.6vw,84px);line-height:.92;letter-spacing:-.025em}
+  h1 .it{font-family:"Instrument Serif",serif;font-style:italic;font-weight:400;color:var(--accent)}
+  h1 .out{display:block;color:var(--muted);font-weight:200;font-size:.5em;letter-spacing:.04em;margin-top:14px}
+  .lede{color:var(--fg);opacity:.78;font-size:13.5px;line-height:1.7;max-width:46ch;border-left:1px solid var(--line-strong);padding-left:18px}
+  .lede em{font-family:"Instrument Serif",serif;font-style:italic;color:var(--accent-soft);font-style:italic;font-size:15px}
+
+  /* ===== pipeline ===== */
+  .pipeline{position:relative;margin-top:14px;padding:30px 0 8px;border-top:1px dashed var(--line-strong)}
+  .pipeline-label{position:absolute;top:-9px;left:0;background:var(--bg);padding:0 12px 0 0;color:var(--muted);font-size:10.5px;letter-spacing:.28em;text-transform:uppercase}
+  .pipeline-label::before{content:"◢ ";color:var(--accent)}
+
+  .rail{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:0;position:relative}
+
+  /* horizontal flow line behind nodes */
+  .flowline{position:absolute;left:0;right:0;top:38px;height:1px;background:var(--line-strong);z-index:0}
+  .flowline::after{content:"";position:absolute;inset:0;
+    background:linear-gradient(90deg,transparent,var(--accent),transparent);
+    background-size:200% 100%;animation:flow 6s linear infinite;opacity:.65}
+  @keyframes flow{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+  .node{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;padding:0 6px}
+
+  .badge{position:relative;width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle at 30% 25%,#1a1712,#0c0b08 75%);
+    border:1px solid var(--line-strong);
+    box-shadow:0 0 0 6px rgba(11,10,7,.9),0 0 24px rgba(255,138,61,.18);
+    transition:transform .4s ease,box-shadow .4s}
+  .badge::before{content:"";position:absolute;inset:-2px;border-radius:50%;border:1px dashed var(--line);animation:spin 26s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .badge .num{font-family:"Bricolage Grotesque",sans-serif;font-weight:600;font-size:22px;letter-spacing:-.02em;color:var(--fg)}
+  .badge .num small{display:block;font-family:"JetBrains Mono";font-weight:400;font-size:9px;color:var(--accent);letter-spacing:.22em;margin-top:-2px}
+  .node:hover .badge{transform:translateY(-4px) scale(1.05);box-shadow:0 0 0 6px rgba(11,10,7,.9),0 0 40px rgba(255,138,61,.45)}
+
+  .connector{position:absolute;top:38px;left:50%;width:100%;height:2px;z-index:1;transform:translateX(50%)}
+  .connector svg{display:block;width:100%;height:14px;overflow:visible}
+  .node:last-child .connector{display:none}
+
+  .stage{margin-top:22px;width:100%;min-height:230px;
+    border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.005));
+    padding:16px 16px 18px;position:relative;overflow:hidden;
+    transition:border-color .35s,transform .35s,background .35s}
+  .stage::before{content:"";position:absolute;top:0;left:0;width:36px;height:1px;background:var(--accent)}
+  .stage::after{content:"";position:absolute;top:0;left:0;height:14px;width:1px;background:var(--accent)}
+  .node:hover .stage{border-color:rgba(255,138,61,.35);transform:translateY(-2px);
+    background:linear-gradient(180deg,rgba(255,138,61,.05),rgba(255,138,61,.005))}
+
+  .s-key{font-size:10px;letter-spacing:.26em;color:var(--accent);text-transform:uppercase}
+  .s-name{font-family:"Bricolage Grotesque",sans-serif;font-weight:600;font-size:21px;letter-spacing:-.02em;line-height:1.05;margin:6px 0 2px}
+  .s-cn{font-family:"Instrument Serif",serif;font-style:italic;color:var(--accent-soft);font-size:15px;margin-bottom:14px;display:block}
+  .s-list{list-style:none;border-top:1px dashed var(--line);padding-top:12px;margin-top:6px}
+  .s-list li{display:flex;gap:8px;padding:5px 0;font-size:11.5px;color:var(--fg);opacity:.85;border-bottom:1px solid rgba(255,255,255,.025)}
+  .s-list li:last-child{border-bottom:0}
+  .s-list li .tag{color:var(--muted);font-size:9.5px;letter-spacing:.12em;width:42px;flex:none;padding-top:1px}
+  .s-list li .txt{flex:1}
+  .s-list li .txt b{font-weight:500;color:var(--fg)}
+  .s-list li .txt span{display:block;color:var(--muted);font-size:10px;margin-top:1px}
+
+  /* footer metrics */
+  .metrics{margin-top:42px;display:grid;grid-template-columns:repeat(5,1fr);gap:0;border:1px solid var(--line);background:rgba(255,255,255,.012)}
+  .metric{padding:18px 20px;border-right:1px solid var(--line);position:relative}
+  .metric:last-child{border-right:0}
+  .metric .k{font-size:10px;letter-spacing:.24em;color:var(--muted);text-transform:uppercase}
+  .metric .v{font-family:"Bricolage Grotesque",sans-serif;font-weight:600;font-size:30px;letter-spacing:-.03em;margin-top:6px}
+  .metric .v small{font-family:"JetBrains Mono";font-size:11px;color:var(--muted);font-weight:400;margin-left:6px;letter-spacing:.05em}
+  .metric .v.acc{color:var(--accent)}
+  .metric .v.cy{color:var(--cyan)}
+  .metric .bar{height:3px;background:rgba(255,255,255,.06);margin-top:10px;overflow:hidden}
+  .metric .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-soft));transform-origin:left;animation:grow 1.4s ease both}
+  @keyframes grow{from{transform:scaleX(0)}}
+
+  /* corner annotations */
+  .annot{position:fixed;font-size:9.5px;letter-spacing:.18em;color:var(--dim);text-transform:uppercase;z-index:4}
+  .annot.bl{bottom:14px;left:18px}
+  .annot.br{bottom:14px;right:18px}
+  .annot .x{color:var(--accent)}
+
+  /* legend */
+  .legend{display:flex;gap:18px;align-items:center;margin-top:24px;color:var(--muted);font-size:10.5px;letter-spacing:.14em}
+  .legend .sw{display:inline-block;width:18px;height:2px;margin-right:8px;vertical-align:middle}
+  .sw.a{background:var(--accent);box-shadow:0 0 8px var(--accent)}
+  .sw.c{background:var(--cyan)}
+  .sw.d{background:var(--dim);border-top:1px dashed var(--muted);height:0}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(14px);animation:rise .8s cubic-bezier(.2,.7,.2,1) forwards}
+  .reveal.d1{animation-delay:.05s}.reveal.d2{animation-delay:.15s}.reveal.d3{animation-delay:.25s}
+  .reveal.d4{animation-delay:.35s}.reveal.d5{animation-delay:.45s}.reveal.d6{animation-delay:.55s}.reveal.d7{animation-delay:.65s}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  @media(max-width:1180px){
+    .rail{grid-template-columns:repeat(2,1fr);gap:24px 12px}
+    .flowline,.connector{display:none}
+    .hero{grid-template-columns:1fr;gap:18px}
+    .metrics{grid-template-columns:repeat(2,1fr)}
+    .metric{border-bottom:1px solid var(--line)}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="scan"></div>
+
+<div class="frame">
+
+  <!-- top bar -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="mark">
+        <svg viewBox="0 0 32 32" fill="none">
+          <rect x="2" y="9" width="20" height="14" rx="1.5" stroke="#ff8a3d" stroke-width="1.2"/>
+          <path d="M22 13l8-3v12l-8-3z" stroke="#6ee7d3" stroke-width="1.2"/>
+          <circle cx="9" cy="16" r="2.4" fill="#ff8a3d"/>
+          <path d="M5 22h8" stroke="#ff8a3d" stroke-width=".8"/>
+        </svg>
+      </div>
+      <div>
+        <div class="id">AVCF<span class="v">·</span>v2.4</div>
+        <div class="sub">AI Video Creation Framework</div>
+      </div>
+    </div>
+    <div class="meta">
+      <span><span class="dot"></span>SYSTEM <b>ONLINE</b></span>
+      <span>NODES <b>07</b></span>
+      <span>SUBTASKS <b>21</b></span>
+      <span>FRAME <b>30FPS</b></span>
+      <span>SIG <b>0xA1-9F</b></span>
+    </div>
+  </header>
+
+  <!-- hero -->
+  <section class="hero">
+    <div>
+      <div class="kicker">Concept Map · 创作流水线</div>
+      <h1>
+        AI Video<br/>
+        <span class="it">Creation</span> Framework
+        <span class="out">/ 从灵感到成片的工程化路径</span>
+      </h1>
+    </div>
+    <p class="lede">
+      AVCF 是一套面向 AI 视频生产的创作框架。它把一次完整的生成式视频制作拆解为 <em>七个耦合的阶段</em>：
+      每个阶段拥有明确的输入、产物与可控参数，形成可回溯、可复现、可组合的流水线。
+      下方概念图展示了端到端的流程拓扑与节点结构。
+    </p>
+  </section>
+
+  <!-- pipeline -->
+  <section class="pipeline">
+    <span class="pipeline-label">pipeline · end-to-end</span>
+    <div class="rail">
+      <div class="flowline"></div>
+
+      <!-- 01 INSIGHT -->
+      <div class="node reveal d1">
+        <div class="badge"><div class="num">01<small>STAGE</small></div></div>
+        <div class="connector">
+          <svg viewBox="0 0 100 14" preserveAspectRatio="none"><path d="M0 7 H92 M86 2 L92 7 L86 12" stroke="#ff8a3d" stroke-width="1" fill="none" stroke-dasharray="3 3"/></svg>
+        </div>
+        <div class="stage">
+          <div class="s-key">INSIGHT</div>
+          <div class="s-name">Ideation</div>
+          <span class="s-cn">创意洞察</span>
+          <ul class="s-list">
+            <li><span class="tag">IN</span><span class="txt"><b>主题定义</b><span>theme · brief</span></span></li>
+            <li><span class="tag">RES</span><span class="txt"><b>受众洞察</b><span>audience profile</span></span></li>
+            <li><span class="tag">OUT</span><span class="txt"><b>目标设定</b><span>success metric</span></span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 02 SCRIPTURE -->
+      <div class="node reveal d2">
+        <div class="badge"><div class="num">02<small>STAGE</small></div></div>
+        <div class="connector">
+          <svg viewBox="0 0 100 14" preserveAspectRatio="none"><path d="M0 7 H92 M86 2 L92 7 L86 12" stroke="#ff8a3d" stroke-width="1" fill="none" stroke-dasharray="3 3"/></svg>
+        </div>
+        <div class="stage">
+          <div class="s-key">SCRIPTURE</div>
+          <div class="s-name">Narrative</div>
+          <span class="s-cn">剧本架构</span>
+          <ul class="s-list">
+            <li><span class="tag">IN</span><span class="txt"><b>故事大纲</b><span>story outline</span></span></li>
+            <li><span class="tag">RES</span><span class="txt"><b>分镜设计</b><span>storyboard</span></span></li>
+            <li><span class="tag">OUT</span><span class="txt"><b>镜头脚本</b><span>shot list</span></span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 03 PROMPT -->
+      <div class="node reveal d3">
+        <div class="badge"><div class="num">03<small>STAGE</small></div></div>
+        <div class="connector">
+          <svg viewBox="0 0 100 14" preserveAspectRatio="none"><path d="M0 7 H92 M86 2 L92 7 L86 12" stroke="#ff8a3d" stroke-width="1" fill="none" stroke-dasharray="3 3"/></svg>
+        </div>
+        <div class="stage">
+          <div class="s-key">PROMPT</div>
+          <div class="s-name">Conditioning</div>
+          <span class="s-cn">提示工程</span>
+          <ul class="s-list">
+            <li><span class="tag">IN</span><span class="txt"><b>风格参照</b><span>style ref</span></span></li>
+            <li><span class="tag">RES</span><span class="txt"><b>提示词编排</b><span>prompt design</span></span></li>
+            <li><span class="tag">OUT</span><span class="txt"><b>负向约束</b><span>negative set</span></span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 04 SYNTHESIS -->
+      <div class="node reveal d4">
+        <div class="badge"><div class="num">04<small>STAGE</small></div></div>
+        <div class="connector">
+          <svg viewBox="0 0 100 14" preserveAspectRatio="none"><path d="M0 7 H92 M86 2 L92 7 L86 12" stroke="#ff8a3d" stroke-width="1" fill="none" stroke-dasharray="3 3"/></svg>
+        </div>
+        <div class="stage">
+          <div class="s-key">SYNTHESIS</div>
+          <div class="s-name">Generation</div>
+          <span class="s-cn">AI 生成</span>
+          <ul class="s-list">
+            <li><span class="tag">T2V</span><span class="txt"><b>文生视频</b><span>text-to-video</span></span></li>
+            <li><span class="tag">I2V</span><span class="txt"><b>图生视频</b><span>image-to-video</span></span></li>
+            <li><span class="tag">V2V</span><span class="txt"><b>视频生视频</b><span>video-to-video</span></span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 05 SONICS -->
+      <div class="node reveal d5">
+        <div class="badge"><div class="num">05<small>STAGE</small></div></div>
+        <div class="connector">
+          <svg viewBox="0 0 100 14" preserveAspectRatio="none"><path d="M0 7 H92 M86 2 L92 7 L86 12" stroke="#ff8a3d" stroke-width="1" fill="none" stroke-dasharray="3 3"/></svg>
+        </div>
+        <div class="stage">
+          <div class="s-key">SONICS</div>
+          <div class="s-name">Sound</div>
+          <span class="s-cn">声音设计</span>
+          <ul class="s-list">
+            <li><span class="tag">VO</span><span class="txt"><b>配音合成</b><span>voice clone</span></span></li>
+            <li><span class="tag">MUS</span><span class="txt"><b>配乐生成</b><span>AI music</span></span></li>
+            <li><span class="tag">SFX</span><span class="txt"><b>音效设计</b><span>foley / fx</span></span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 06 FORGE -->
+      <div class="node reveal d6">
+        <div class="badge"><div class="num">06<small>STAGE</small></div></div>
+        <div class="connector">
+          <svg viewBox="0 0 100 14" preserveAspectRatio="none"><path d="M0 7 H92 M86 2 L92 7 L86 12" stroke="#ff8a3d" stroke-width="1" fill="none" stroke-dasharray="3 3"/></svg>
+        </div>
+        <div class="stage">
+          <div class="s-key">FORGE</div>
+          <div class="s-name">Composite</div>
+          <span class="s-cn">后期合成</span>
+          <ul class="s-list">
+            <li><span class="tag">EDT</span><span class="txt"><b>剪辑</b><span>editing</span></span></li>
+            <li><span class="tag">GRD</span><span class="txt"><b>调色</b><span>color grade</span></span></li>
+            <li><span class="tag">VFX</span><span class="txt"><b>特效合成</b><span>compositing</span></span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 07 DELIVER -->
+      <div class="node reveal d7">
+        <div class="badge"><div class="num">07<small>STAGE</small></div></div>
+        <div class="connector"></div>
+        <div class="stage">
+          <div class="s-key">DELIVER</div>
+          <div class="s-name">Release</div>
+          <span class="s-cn">发布交付</span>
+          <ul class="s-list">
+            <li><span class="tag">QC</span><span class="txt"><b>质量审核</b><span>quality check</span></span></li>
+            <li><span class="tag">FMT</span><span class="txt"><b>多端适配</b><span>multi-format</span></span></li>
+            <li><span class="tag">PUB</span><span class="txt"><b>分发发布</b><span>distribute</span></span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span><i class="sw a"></i>主流程数据流</span>
+      <span><i class="sw c"></i>分支反馈回路</span>
+      <span><i class="sw d"></i>可选迭代</span>
+      <span style="margin-left:auto">↻ 鼠标悬停查看节点详情</span>
+    </div>
+  </section>
+
+  <!-- metrics -->
+  <section class="metrics">
+    <div class="metric">
+      <div class="k">stages</div>
+      <div class="v acc">07</div>
+      <div class="bar"><i style="width:100%"></i></div>
+    </div>
+    <div class="metric">
+      <div class="k">sub-tasks</div>
+      <div class="v">21<small>nodes</small></div>
+      <div class="bar"><i style="width:78%"></i></div>
+    </div>
+    <div class="metric">
+      <div class="k">modalities</div>
+      <div class="v cy">T · I · V</div>
+      <div class="bar"><i style="width:60%"></i></div>
+    </div>
+    <div class="metric">
+      <div class="k">avg iterations</div>
+      <div class="v">3.2<small>/ shot</small></div>
+      <div class="bar"><i style="width:42%"></i></div>
+    </div>
+    <div class="metric">
+      <div class="k">human-in-loop</div>
+      <div class="v acc">HIGH</div>
+      <div class="bar"><i style="width:88%"></i></div>
+    </div>
+  </section>
+
+</div>
+
+<span class="annot bl">x:<span class="x">000</span> · y:000 · zoom 100%</span>
+<span class="annot br">© AVCF · blueprint render · 2026</span>
+
+<script>
+  // live coordinates follow cursor for that console-y feel
+  document.addEventListener('mousemove',e=>{
+    const bl=document.querySelector('.annot.bl');
+    if(!bl) return;
+    const x=String(Math.round(e.clientX)).padStart(3,'0');
+    const y=String(Math.round(e.clientY)).padStart(3,'0');
+    bl.innerHTML=`x:<span class="x">${x}</span> · y:${y} · zoom 100%`;
+  });
+</script>
+</body>
 </html>
