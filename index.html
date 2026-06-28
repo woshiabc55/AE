@@ -1,30 +1,960 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>拼豆半面工坊 · Perler Bead Studio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
-    <script type="module">
-      if (import.meta.hot?.on) {
-        import.meta.hot.on('vite:error', (error) => {
-          if (error.err) {
-            console.error(
-              [error.err.message, error.err.frame].filter(Boolean).join('\n'),
-            )
-          }
-        })
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>窑火不息·追迹</title>
+  <style>
+    :root {
+      --bg-deep: #0f0c0a;
+      --bg-panel: rgba(20, 16, 13, 0.92);
+      --fire-core: #ff9d4d;
+      --fire-mid: #e85a2b;
+      --fire-dim: #5a1e12;
+      --celadon: #8fb8a8;
+      --celadon-dark: #4a6b5f;
+      --crack: #d9c6a8;
+      --text-main: #f3ece3;
+      --text-sub: #b8a89a;
+      --accent: #c9a86c;
+      --danger: #b94e38;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg-deep);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+      line-height: 1.6;
+    }
+
+    #app {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+      z-index: 10;
+      background: var(--bg-deep);
+    }
+
+    .screen.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .screen-scene {
+      justify-content: flex-end;
+      padding: 0 0 100px;
+    }
+
+    .scene-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .scene-canvas svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 45%, transparent 0%, rgba(0,0,0,0.4) 70%, rgba(0,0,0,0.85) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .grain {
+      position: absolute;
+      inset: 0;
+      opacity: 0.06;
+      pointer-events: none;
+      z-index: 2;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    .modal-card {
+      position: relative;
+      z-index: 3;
+      width: min(88vw, 420px);
+      max-height: 80vh;
+      background: var(--bg-panel);
+      border: 1px solid rgba(201, 168, 108, 0.25);
+      border-radius: 18px;
+      padding: 28px 24px 24px;
+      text-align: center;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.06);
+      overflow-y: auto;
+    }
+
+    .modal-title {
+      font-size: clamp(22px, 6vw, 30px);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+      color: var(--accent);
+    }
+
+    .modal-subtitle {
+      font-size: clamp(13px, 3.6vw, 15px);
+      color: var(--text-sub);
+      margin-bottom: 18px;
+      letter-spacing: 0.1em;
+    }
+
+    .modal-message {
+      font-size: clamp(14px, 4vw, 16px);
+      color: var(--text-main);
+      margin-bottom: 24px;
+      line-height: 1.75;
+      text-align: left;
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn {
+      appearance: none;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      font: inherit;
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, #d4a85c 0%, #b0863e 100%);
+      color: #1a1209;
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.08);
+      color: var(--text-main);
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-sub);
+      padding: 10px;
+      font-size: 14px;
+    }
+
+    .narrative-card {
+      position: relative;
+      z-index: 3;
+      width: 100%;
+      padding: 22px 22px calc(22px + var(--safe-bottom));
+      background: linear-gradient(to top, rgba(10,8,6,0.96) 0%, rgba(10,8,6,0.78) 75%, transparent 100%);
+    }
+
+    .narrative-inner {
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .scene-label {
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .scene-text {
+      font-size: clamp(15px, 4.2vw, 18px);
+      line-height: 1.85;
+      color: var(--text-main);
+      margin-bottom: 18px;
+      min-height: 3.6em;
+    }
+
+    .scene-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 12px;
+    }
+
+    .scene-hint::after {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--fire-core);
+      animation: pulse 1.4s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
+
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--fire-mid), var(--accent));
+      width: 0%;
+      z-index: 50;
+      transition: width 0.5s ease;
+    }
+
+    .top-controls {
+      position: fixed;
+      top: calc(12px + var(--safe-top));
+      right: 14px;
+      z-index: 40;
+      display: flex;
+      gap: 10px;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .credit-line {
+      font-size: 12px;
+      color: var(--text-sub);
+      margin-top: 16px;
+      letter-spacing: 0.05em;
+    }
+
+    .hidden { display: none !important; }
+
+    .typing-cursor::after {
+      content: '|';
+      animation: blink 1s step-start infinite;
+      color: var(--accent);
+    }
+
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .tap-zone {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      cursor: pointer;
+    }
+
+    .crack-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+      z-index: 2;
+    }
+
+    .crack-overlay.active { opacity: 1; }
+
+    @media (max-height: 560px) {
+      .screen-scene { padding-bottom: 84px; }
+      .narrative-card { padding-top: 16px; }
+      .modal-card { padding: 22px 20px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="progress-bar" id="progress-bar" aria-hidden="true"></div>
+
+    <div class="top-controls" id="top-controls" aria-hidden="true">
+      <button class="icon-btn" id="btn-pause" type="button" aria-label="暂停">❚❚</button>
+    </div>
+
+    <div id="screen-start" class="screen active" aria-hidden="false">
+      <div class="scene-canvas" id="start-canvas"></div>
+      <div class="vignette"></div>
+      <div class="grain"></div>
+      <div class="modal-card">
+        <h1 class="modal-title">窑火不息 · 追迹</h1>
+        <p class="modal-subtitle">AIGC 东方文明叙事互动体验</p>
+        <p class="modal-message">
+          真正活过的东西，都会留下裂痕。<br><br>
+          这是一段关于哥窑、窑火与兄弟羁绊的追迹。你将亲历一冷一热之间，裂纹自生的瞬间。
+        </p>
+        <div class="modal-actions">
+          <button class="btn btn-primary" data-action="start" type="button">进入体验</button>
+          <button class="btn btn-secondary" data-action="reset-progress" type="button">从头开始</button>
+        </div>
+        <p class="credit-line">献给所有活过的痕迹</p>
+      </div>
+    </div>
+
+    <div id="screen-scenes" class="screen screen-scene" aria-hidden="true">
+      <div class="scene-canvas" id="scene-canvas"></div>
+      <div class="vignette"></div>
+      <div class="grain"></div>
+      <div class="crack-overlay" id="crack-overlay"></div>
+      <div class="tap-zone" id="tap-zone" role="button" aria-label="继续"></div>
+      <div class="narrative-card">
+        <div class="narrative-inner">
+          <div class="scene-label" id="scene-label"></div>
+          <div class="scene-hint" id="scene-hint">点击画面继续</div>
+          <p class="scene-text typing-cursor" id="scene-text"></p>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-pause" class="screen" aria-hidden="true">
+      <div class="vignette"></div>
+      <div class="modal-card">
+        <h2 class="modal-title">已暂停</h2>
+        <p class="modal-message">进度已自动保存，随时可以回来继续这段追迹。</p>
+        <div class="modal-actions">
+          <button class="btn btn-primary" data-action="resume" type="button">继续体验</button>
+          <button class="btn btn-secondary" data-action="restart" type="button">重新体验</button>
+          <button class="btn btn-ghost" data-action="back-to-start" type="button">返回首页</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-end" class="screen" aria-hidden="true">
+      <div class="scene-canvas" id="end-canvas"></div>
+      <div class="vignette"></div>
+      <div class="grain"></div>
+      <div class="modal-card">
+        <h2 class="modal-title">一冷一热之间</h2>
+        <p class="modal-subtitle">裂纹自生</p>
+        <p class="modal-message" id="end-message"></p>
+        <div class="modal-actions">
+          <button class="btn btn-primary" data-action="restart" type="button">再次追迹</button>
+          <button class="btn btn-secondary" data-action="back-to-start" type="button">返回首页</button>
+        </div>
+        <p class="credit-line">谨以此片，献给所有活过的痕迹。</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      'use strict';
+
+      const STORAGE_KEY = 'yaohuo_trace_progress_v1';
+      const TOTAL_SCENES = 8;
+
+      const scenes = [
+        {
+          id: 'prologue',
+          label: '序 · 裂',
+          texts: [
+            '黑场。只有火声。',
+            '“噼啪——” “噼啪——”',
+            '像有人在黑暗里缓缓呼吸。',
+            '随后，一声极轻的：“咔——”',
+            '像冰层裂开。'
+          ],
+          svg: svgPrologue,
+          interactive: true,
+          hint: '轻触屏幕，唤醒那件开片瓷'
+        },
+        {
+          id: 'act1',
+          label: '一 · 火',
+          texts: [
+            '暴雨夜，窑火却烧得通红。',
+            '章生一正在拉坯，沉默，粗粝。',
+            '角落里，少年章生二偷偷模仿哥哥。',
+            '泥坯忽然塌了。',
+            '哥哥没回头，只是把那团更好的泥，推到弟弟面前。'
+          ],
+          svg: svgAct1,
+          interactive: false,
+          hint: '点击画面继续'
+        },
+        {
+          id: 'act2',
+          label: '二 · 水',
+          texts: [
+            '深夜，章生一独自守窑。',
+            '弟弟站在不远处，看了很久。',
+            '“你有没有怕过？怕有一天，它烧坏了。”',
+            '哥哥低声说：“火本来就会伤人。”',
+            '弟弟眼眶通红：“为什么……所有人都只记得你。”'
+          ],
+          svg: svgAct2,
+          interactive: true,
+          hint: '轻触屏幕，看那瓢冷水落下'
+        },
+        {
+          id: 'act3',
+          label: '三 · 裂',
+          texts: [
+            '一夜无眠。窑门缓缓打开。',
+            '章生一取出第一只碗。',
+            '器身上，裂纹缓缓蔓延。',
+            '像冰河，像山脉，像大地干裂。',
+            '“它活过了。”'
+          ],
+          svg: svgAct3,
+          interactive: true,
+          hint: '轻触屏幕，让光穿过裂纹'
+        },
+        {
+          id: 'act4',
+          label: '四 · 绊',
+          texts: [
+            '兄弟二人沉默坐着，中间放着那只开片瓷碗。',
+            '“我嫉妒你。”弟弟终于开口。',
+            '哥哥轻轻敲了敲那只碗。碗没碎。',
+            '“人活着，哪有不裂的。”',
+            '“可有些东西，偏偏裂了以后，才像真的活过。”'
+          ],
+          svg: svgAct4,
+          interactive: true,
+          hint: '轻触屏幕，轻叩那只碗'
+        },
+        {
+          id: 'act5',
+          label: '五 · 迹',
+          texts: [
+            '多年后，风雪将至的茶寮。',
+            '白发苍苍的章生二打开旧木箱。',
+            '里面，是当年那只裂开的哥窑。',
+            '裂纹更多了，却仍旧完整。',
+            '“有些东西，太完整了，反倒不像活过。”'
+          ],
+          svg: svgAct5,
+          interactive: true,
+          hint: '轻触屏幕，打开那只木箱'
+        },
+        {
+          id: 'epilogue',
+          label: '彩蛋 · 东渡',
+          texts: [
+            '日本茶室，雪落庭院。',
+            '一只开片青瓷被缓缓放下，锔钉如蚂蝗伏于裂痕。',
+            '“已经裂了。”年轻茶人说。',
+            '老人抚过裂纹：“还能用。”',
+            '茶盏轻落桌面。窗外落雪无声。'
+          ],
+          svg: svgEpilogue,
+          interactive: false,
+          hint: '点击画面继续'
+        }
+      ];
+
+      let currentSceneIndex = -1;
+      let currentTextIndex = 0;
+      let isPaused = false;
+      let typingTimer = null;
+      let animationId = null;
+      let interactionTriggered = false;
+
+      function el(id) { return document.getElementById(id); }
+
+      function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(node => {
+          node.classList.remove('active');
+          node.setAttribute('aria-hidden', 'true');
+        });
+        const target = el(id);
+        if (target) {
+          target.classList.add('active');
+          target.setAttribute('aria-hidden', 'false');
+        }
       }
-    </script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+
+      function saveProgress() {
+        try {
+          localStorage.setItem(STORAGE_KEY, String(currentSceneIndex));
+        } catch (e) {}
+      }
+
+      function loadProgress() {
+        try {
+          const v = localStorage.getItem(STORAGE_KEY);
+          return v === null ? -1 : parseInt(v, 10);
+        } catch (e) { return -1; }
+      }
+
+      function clearProgress() {
+        try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+      }
+
+      function updateProgress() {
+        const pct = Math.max(0, Math.min(100, ((currentSceneIndex + 1) / TOTAL_SCENES) * 100));
+        el('progress-bar').style.width = pct + '%';
+      }
+
+      function typeText(text) {
+        const node = el('scene-text');
+        node.textContent = '';
+        node.classList.add('typing-cursor');
+        let i = 0;
+        clearInterval(typingTimer);
+        typingTimer = setInterval(() => {
+          if (i >= text.length) {
+            clearInterval(typingTimer);
+            node.classList.remove('typing-cursor');
+            return;
+          }
+          node.textContent += text.charAt(i);
+          i++;
+        }, 42);
+      }
+
+      function renderScene(index) {
+        const scene = scenes[index];
+        currentSceneIndex = index;
+        currentTextIndex = 0;
+        interactionTriggered = false;
+        saveProgress();
+        updateProgress();
+
+        el('scene-label').textContent = scene.label;
+        el('scene-hint').textContent = scene.hint;
+        el('scene-canvas').innerHTML = scene.svg();
+        el('crack-overlay').classList.remove('active');
+        el('crack-overlay').innerHTML = '';
+
+        typeText(scene.texts[0]);
+        startAmbientAnimation();
+
+        showScreen('screen-scenes');
+        el('top-controls').setAttribute('aria-hidden', 'false');
+      }
+
+      function nextTextOrScene() {
+        if (isPaused) return;
+        const scene = scenes[currentSceneIndex];
+
+        if (scene.interactive && !interactionTriggered) {
+          interactionTriggered = true;
+          triggerInteraction(scene.id);
+          el('scene-hint').textContent = '点击画面继续';
+          return;
+        }
+
+        currentTextIndex++;
+        if (currentTextIndex < scene.texts.length) {
+          typeText(scene.texts[currentTextIndex]);
+        } else {
+          if (currentSceneIndex < scenes.length - 1) {
+            renderScene(currentSceneIndex + 1);
+          } else {
+            finishExperience();
+          }
+        }
+      }
+
+      function triggerInteraction(id) {
+        if (id === 'prologue') {
+          el('crack-overlay').innerHTML = buildCrackSvg('#d9c6a8', 0.7);
+          el('crack-overlay').classList.add('active');
+        } else if (id === 'act2') {
+          el('crack-overlay').innerHTML = '<div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(255,255,255,0) 0%,rgba(200,220,235,0.35) 60%,rgba(255,255,255,0.6) 100%);opacity:0;transition:opacity 0.8s ease;"></div>';
+          const water = el('crack-overlay').firstChild;
+          requestAnimationFrame(() => water.style.opacity = '1');
+          setTimeout(() => water.style.opacity = '0', 1400);
+        } else if (id === 'act3') {
+          el('crack-overlay').innerHTML = buildCrackSvg('#f3ece3', 0.85);
+          el('crack-overlay').classList.add('active');
+          const glow = document.createElement('div');
+          glow.style.cssText = 'position:absolute;inset:0;background:radial-gradient(circle at 50% 55%,rgba(255,200,120,0.45) 0%,transparent 60%);opacity:0;transition:opacity 1s ease;';
+          el('crack-overlay').appendChild(glow);
+          requestAnimationFrame(() => glow.style.opacity = '1');
+        } else if (id === 'act4') {
+          const bowl = el('scene-canvas').querySelector('.bowl-group');
+          if (bowl) {
+            bowl.style.transformOrigin = '50% 55%';
+            bowl.animate([
+              { transform: 'scale(1)' },
+              { transform: 'scale(1.03)' },
+              { transform: 'scale(0.99)' },
+              { transform: 'scale(1)' }
+            ], { duration: 420, easing: 'ease-out' });
+          }
+          el('crack-overlay').innerHTML = buildCrackSvg('#d9c6a8', 0.55);
+          el('crack-overlay').classList.add('active');
+        } else if (id === 'act5') {
+          const lid = el('scene-canvas').querySelector('.box-lid');
+          if (lid) {
+            lid.style.transformOrigin = '50% 20%';
+            lid.style.transition = 'transform 1.2s ease';
+            requestAnimationFrame(() => lid.style.transform = 'rotateX(75deg) translateY(-12px)');
+          }
+          el('crack-overlay').innerHTML = buildCrackSvg('#d9c6a8', 0.6);
+          el('crack-overlay').classList.add('active');
+        }
+      }
+
+      function buildCrackSvg(color, opacity) {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        let d = '';
+        const seeds = 12;
+        for (let i = 0; i < seeds; i++) {
+          let x = 30 + Math.random() * 40;
+          let y = 20 + Math.random() * 60;
+          d += `M ${x * w / 100} ${y * h / 100} `;
+          for (let j = 0; j < 8; j++) {
+            x += (Math.random() - 0.5) * 12;
+            y += (Math.random() - 0.2) * 10;
+            d += `L ${x * w / 100} ${y * h / 100} `;
+          }
+        }
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><path d="${d}" fill="none" stroke="${color}" stroke-width="1.2" stroke-opacity="${opacity}" stroke-linecap="round"/></svg>`;
+      }
+
+      function startExperience() {
+        const saved = loadProgress();
+        if (saved >= 0 && saved < scenes.length - 1) {
+          renderScene(saved + 1);
+        } else {
+          renderScene(0);
+        }
+      }
+
+      function finishExperience() {
+        const endMsg = el('end-message');
+        endMsg.innerHTML = '你已完成这段关于哥窑、窑火与兄弟羁绊的追迹。<br><br>那些看似破碎的裂纹，正是时间留下的掌纹。';
+        el('end-canvas').innerHTML = svgEpilogue();
+        showScreen('screen-end');
+        el('top-controls').setAttribute('aria-hidden', 'true');
+        clearProgress();
+      }
+
+      function startAmbientAnimation() {
+        cancelAnimationFrame(animationId);
+        const flames = el('scene-canvas').querySelectorAll('.flame');
+        const particles = el('scene-canvas').querySelectorAll('.particle');
+        if (!flames.length && !particles.length) return;
+
+        let t = 0;
+        function loop() {
+          t += 0.05;
+          flames.forEach((f, i) => {
+            const s = 1 + Math.sin(t + i * 1.3) * 0.08;
+            const r = Math.sin(t * 0.7 + i) * 2;
+            f.style.transform = `scale(${s}) rotate(${r}deg)`;
+            f.style.transformOrigin = '50% 100%';
+          });
+          particles.forEach((p, i) => {
+            const y = (parseFloat(p.dataset.y) || 0) - 0.15;
+            p.dataset.y = y;
+            const x = (parseFloat(p.dataset.x) || 0) + Math.sin(t + i) * 0.08;
+            p.dataset.x = x;
+            p.style.transform = `translate(${x}px, ${y}px)`;
+            if (y < -40) { p.dataset.y = 0; p.dataset.x = 0; }
+          });
+          animationId = requestAnimationFrame(loop);
+        }
+        animationId = requestAnimationFrame(loop);
+      }
+
+      function bindEvents() {
+        document.addEventListener('click', (e) => {
+          const target = e.target;
+          const action = target.dataset.action;
+
+          if (action === 'start') {
+            startExperience();
+            return;
+          }
+          if (action === 'reset-progress') {
+            clearProgress();
+            renderScene(0);
+            return;
+          }
+          if (action === 'resume') {
+            isPaused = false;
+            showScreen('screen-scenes');
+            return;
+          }
+          if (action === 'restart') {
+            clearProgress();
+            renderScene(0);
+            return;
+          }
+          if (action === 'back-to-start') {
+            isPaused = false;
+            showScreen('screen-start');
+            el('top-controls').setAttribute('aria-hidden', 'true');
+            return;
+          }
+          if (target.id === 'btn-pause') {
+            isPaused = true;
+            showScreen('screen-pause');
+            return;
+          }
+        });
+
+        el('tap-zone').addEventListener('click', (e) => {
+          e.stopPropagation();
+          nextTextOrScene();
+        });
+
+        el('tap-zone').addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          nextTextOrScene();
+        }, { passive: false });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.code === 'Space' || e.code === 'Enter') {
+            if (el('screen-scenes').classList.contains('active')) {
+              nextTextOrScene();
+            }
+          }
+        });
+      }
+
+      function svgPrologue() {
+        return `<svg viewBox="0 0 375 667" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="glow" cx="50%" cy="45%" r="60%"><stop offset="0%" stop-color="#5a1e12"/><stop offset="100%" stop-color="#0f0c0a"/></radialGradient>
+            <linearGradient id="porcelain" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8fb8a8"/><stop offset="100%" stop-color="#4a6b5f"/></linearGradient>
+          </defs>
+          <rect width="375" height="667" fill="url(#glow)"/>
+          <g transform="translate(187, 300)">
+            <ellipse cx="0" cy="75" rx="95" ry="28" fill="#000" opacity="0.35"/>
+            <path d="M-70,40 Q-80,-20 0,-50 Q80,-20 70,40 Q60,80 0,85 Q-60,80 -70,40 Z" fill="url(#porcelain)"/>
+            <path d="M-55,20 Q-35,10 -20,35 T10,25 T45,40" fill="none" stroke="#d9c6a8" stroke-width="1.5" opacity="0.7"/>
+            <path d="M-40,50 Q-20,45 0,60 T40,55" fill="none" stroke="#d9c6a8" stroke-width="1.2" opacity="0.6"/>
+            <rect x="-85" y="-45" width="170" height="90" rx="8" fill="none" stroke="#c9a86c" stroke-width="1.5" opacity="0.25"/>
+          </g>
+          <g opacity="0.7">
+            <circle class="particle" cx="120" cy="520" r="1.5" fill="#ff9d4d" data-x="0" data-y="0"/>
+            <circle class="particle" cx="180" cy="540" r="2" fill="#e85a2b" data-x="0" data-y="0"/>
+            <circle class="particle" cx="250" cy="510" r="1.5" fill="#ff9d4d" data-x="0" data-y="0"/>
+          </g>
+        </svg>`;
+      }
+
+      function svgAct1() {
+        return `<svg viewBox="0 0 375 667" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="night" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a1410"/><stop offset="100%" stop-color="#0a0705"/></linearGradient>
+            <linearGradient id="fire" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#5a1e12"/><stop offset="50%" stop-color="#e85a2b"/><stop offset="100%" stop-color="#ff9d4d"/></linearGradient>
+          </defs>
+          <rect width="375" height="667" fill="url(#night)"/>
+          <g transform="translate(60, 420)">
+            <path class="flame" d="M0,0 Q15,-60 0,-110 Q-15,-60 0,0 Z" fill="url(#fire)" opacity="0.85"/>
+            <path class="flame" d="M30,5 Q45,-45 30,-90 Q15,-45 30,5 Z" fill="#e85a2b" opacity="0.7"/>
+            <path class="flame" d="M-25,5 Q-10,-40 -25,-80 Q-40,-40 -25,5 Z" fill="#ff9d4d" opacity="0.6"/>
+          </g>
+          <g transform="translate(240, 360)">
+            <ellipse cx="0" cy="95" rx="40" ry="10" fill="#000" opacity="0.3"/>
+            <path d="M-25,90 L-20,30 L-15,90 Z" fill="#3a2e26"/>
+            <path d="M-18,45 Q-5,40 10,48" fill="none" stroke="#6b5a4d" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="-5" cy="25" r="16" fill="#5a4a3e"/>
+            <path d="M-20,90 L-10,55 L10,58 L20,90 Z" fill="#2e241e"/>
+          </g>
+          <g transform="translate(90, 320)">
+            <ellipse cx="0" cy="130" rx="55" ry="14" fill="#000" opacity="0.35"/>
+            <path d="M-30,130 L-25,50 L-15,130 Z" fill="#4a3a30"/>
+            <path d="M-22,70 Q0,60 22,72" fill="none" stroke="#5c4b40" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="0" cy="42" r="20" fill="#4a3a30"/>
+            <path d="M-35,130 L-15,80 L20,82 L40,130 Z" fill="#332820"/>
+          </g>
+          <text x="187" y="620" text-anchor="middle" fill="#6b5a4d" font-size="12" letter-spacing="2">龙泉窑 · 夜</text>
+        </svg>`;
+      }
+
+      function svgAct2() {
+        return `<svg viewBox="0 0 375 667" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="storm" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#151b22"/><stop offset="100%" stop-color="#0a0c0e"/></linearGradient>
+            <linearGradient id="kiln2" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#3a1510"/><stop offset="100%" stop-color="#e85a2b"/></linearGradient>
+          </defs>
+          <rect width="375" height="667" fill="url(#storm)"/>
+          <g transform="translate(70, 400)">
+            <path class="flame" d="M0,0 Q20,-70 0,-130 Q-20,-70 0,0 Z" fill="url(#kiln2)" opacity="0.8"/>
+            <path class="flame" d="M40,10 Q55,-50 40,-100 Q25,-50 40,10 Z" fill="#b94e38" opacity="0.65"/>
+          </g>
+          <g transform="translate(260, 330)">
+            <ellipse cx="0" cy="110" rx="45" ry="12" fill="#000" opacity="0.3"/>
+            <path d="M-22,110 L-18,40 L-12,110 Z" fill="#3a2e26"/>
+            <path d="M-15,55 Q0,48 15,56" fill="none" stroke="#5c4b40" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="0" cy="30" r="15" fill="#5a4a3e"/>
+            <path d="M-28,110 L-12,70 L12,72 L26,110 Z" fill="#2e241e"/>
+          </g>
+          <g transform="translate(110, 360)">
+            <ellipse cx="0" cy="90" rx="38" ry="10" fill="#000" opacity="0.35"/>
+            <path d="M-18,90 L-15,35 L-10,90 Z" fill="#4a3a30"/>
+            <path d="M-12,50 Q0,44 12,52" fill="none" stroke="#6b5a4d" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="0" cy="25" r="14" fill="#4a3a30"/>
+            <path d="M-22,90 L-10,55 L10,57 L22,90 Z" fill="#332820"/>
+          </g>
+          <g opacity="0.35">
+            <line x1="50" y1="100" x2="70" y2="180" stroke="#8fb8a8" stroke-width="1"/>
+            <line x1="120" y1="90" x2="130" y2="160" stroke="#8fb8a8" stroke-width="1"/>
+            <line x1="260" y1="110" x2="250" y2="190" stroke="#8fb8a8" stroke-width="1"/>
+            <line x1="320" y1="95" x2="335" y2="170" stroke="#8fb8a8" stroke-width="1"/>
+          </g>
+        </svg>`;
+      }
+
+      function svgAct3() {
+        return `<svg viewBox="0 0 375 667" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="dawn" cx="50%" cy="35%" r="70%"><stop offset="0%" stop-color="#6b4a2d"/><stop offset="100%" stop-color="#0f0c0a"/></radialGradient>
+            <radialGradient id="bowlGrad" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#a3c8b8"/><stop offset="100%" stop-color="#4a6b5f"/></radialGradient>
+          </defs>
+          <rect width="375" height="667" fill="url(#dawn)"/>
+          <g class="bowl-group" transform="translate(187, 320)">
+            <ellipse cx="0" cy="85" rx="90" ry="22" fill="#000" opacity="0.35"/>
+            <path d="M-80,50 Q-90,-30 0,-60 Q90,-30 80,50 Q65,95 0,100 Q-65,95 -80,50 Z" fill="url(#bowlGrad)"/>
+            <path d="M-60,30 Q-30,15 0,35 T60,30" fill="none" stroke="#d9c6a8" stroke-width="1.4" opacity="0.5"/>
+            <path d="M-50,60 Q-25,50 0,65 T50,60" fill="none" stroke="#d9c6a8" stroke-width="1.2" opacity="0.45"/>
+          </g>
+          <g opacity="0.6">
+            <circle class="particle" cx="150" cy="500" r="1.5" fill="#ffdb9d" data-x="0" data-y="0"/>
+            <circle class="particle" cx="220" cy="520" r="2" fill="#ff9d4d" data-x="0" data-y="0"/>
+            <circle class="particle" cx="180" cy="540" r="1.5" fill="#e85a2b" data-x="0" data-y="0"/>
+          </g>
+        </svg>`;
+      }
+
+      function svgAct4() {
+        return `<svg viewBox="0 0 375 667" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="fireglow4" cx="50%" cy="60%" r="65%"><stop offset="0%" stop-color="#4a1a10"/><stop offset="100%" stop-color="#0a0503"/></radialGradient>
+            <radialGradient id="bowl4" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#8fb8a8"/><stop offset="100%" stop-color="#3d5c52"/></radialGradient>
+          </defs>
+          <rect width="375" height="667" fill="url(#fireglow4)"/>
+          <g transform="translate(90, 520)">
+            <path class="flame" d="M0,0 Q12,-45 0,-90 Q-12,-45 0,0 Z" fill="#e85a2b" opacity="0.7"/>
+            <path class="flame" d="M25,5 Q35,-35 25,-70 Q15,-35 25,5 Z" fill="#ff9d4d" opacity="0.55"/>
+          </g>
+          <g class="bowl-group" transform="translate(187, 340)">
+            <ellipse cx="0" cy="80" rx="80" ry="20" fill="#000" opacity="0.4"/>
+            <path d="M-70,45 Q-78,-25 0,-55 Q78,-25 70,45 Q58,88 0,92 Q-58,88 -70,45 Z" fill="url(#bowl4)"/>
+            <path d="M-55,25 Q-25,15 0,30 T55,25" fill="none" stroke="#d9c6a8" stroke-width="1.3" opacity="0.55"/>
+            <path d="M-45,55 Q-22,48 0,60 T45,55" fill="none" stroke="#d9c6a8" stroke-width="1.1" opacity="0.5"/>
+          </g>
+          <g opacity="0.5">
+            <circle class="particle" cx="130" cy="500" r="1.5" fill="#ff9d4d" data-x="0" data-y="0"/>
+            <circle class="particle" cx="170" cy="510" r="1.5" fill="#e85a2b" data-x="0" data-y="0"/>
+            <circle class="particle" cx="240" cy="505" r="2" fill="#ff9d4d" data-x="0" data-y="0"/>
+          </g>
+        </svg>`;
+      }
+
+      function svgAct5() {
+        return `<svg viewBox="0 0 375 667" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="tearoom" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1e2226"/><stop offset="100%" stop-color="#0d0f11"/></linearGradient>
+            <radialGradient id="boxLight" cx="50%" cy="55%" r="50%"><stop offset="0%" stop-color="#3a2e22"/><stop offset="100%" stop-color="#0d0f11"/></radialGradient>
+          </defs>
+          <rect width="375" height="667" fill="url(#tearoom)"/>
+          <g transform="translate(187, 340)">
+            <ellipse cx="0" cy="115" rx="110" ry="28" fill="#000" opacity="0.45"/>
+            <path d="M-100,110 L-100,30 L100,30 L100,110 Z" fill="#2a2018"/>
+            <path class="box-lid" d="M-105,30 L-105,10 L105,10 L105,30 Z" fill="#3d3026"/>
+            <rect x="-90" y="40" width="180" height="60" fill="url(#boxLight)"/>
+            <path d="M-55,55 Q-30,45 0,58 T55,55" fill="none" stroke="#d9c6a8" stroke-width="1.2" opacity="0.45"/>
+          </g>
+          <g opacity="0.35">
+            <circle cx="60" cy="120" r="1.5" fill="#d9e6ef"/>
+            <circle cx="300" cy="150" r="2" fill="#d9e6ef"/>
+            <circle cx="250" cy="100" r="1.5" fill="#d9e6ef"/>
+          </g>
+        </svg>`;
+      }
+
+      function svgEpilogue() {
+        return `<svg viewBox="0 0 375 667" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="tearoom2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#242a2e"/><stop offset="100%" stop-color="#111416"/></linearGradient>
+            <radialGradient id="teaGlow" cx="50%" cy="45%" r="55%"><stop offset="0%" stop-color="#5a4a3a"/><stop offset="100%" stop-color="#111416"/></radialGradient>
+          </defs>
+          <rect width="375" height="667" fill="url(#tearoom2)"/>
+          <g transform="translate(187, 330)">
+            <ellipse cx="0" cy="90" rx="75" ry="18" fill="#000" opacity="0.4"/>
+            <path d="M-60,55 Q-68,-20 0,-50 Q68,-20 60,55 Q48,95 0,98 Q-48,95 -60,55 Z" fill="#7a9a8c"/>
+            <path d="M-45,35 Q-25,25 0,38 T45,35" fill="none" stroke="#d9c6a8" stroke-width="1.2" opacity="0.55"/>
+            <path d="M-35,60 Q-18,54 0,64 T35,60" fill="none" stroke="#c9a86c" stroke-width="1.5" opacity="0.6"/>
+            <path d="M-20,45 L-18,50 M-5,35 L-3,42 M15,48 L18,54 M30,40 L33,47" fill="none" stroke="#c9a86c" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+          </g>
+          <g opacity="0.4">
+            <circle class="particle" cx="100" cy="200" r="1.5" fill="#fff" data-x="0" data-y="0"/>
+            <circle class="particle" cx="280" cy="180" r="2" fill="#fff" data-x="0" data-y="0"/>
+            <circle class="particle" cx="190" cy="150" r="1.5" fill="#fff" data-x="0" data-y="0"/>
+          </g>
+        </svg>`;
+      }
+
+      window.addEventListener('load', () => {
+        try {
+          bindEvents();
+          el('start-canvas').innerHTML = svgPrologue();
+          el('top-controls').setAttribute('aria-hidden', 'true');
+        } catch (error) {
+          console.error(error);
+          const fallback = document.createElement('div');
+          fallback.style.cssText = 'position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#0f0c0a;color:#f3ece3;font-size:18px;padding:24px;text-align:center;z-index:9999;';
+          fallback.textContent = '哎呀，出错了，请重启试试吧~';
+          document.body.innerHTML = '';
+          document.body.appendChild(fallback);
+        }
+      });
+    })();
+  </script>
+</body>
 </html>
