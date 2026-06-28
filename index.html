@@ -4,15 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>AI 剧本制作 · 极细框架逻辑图</title>
+  <title>AI 剧本制作 · 主逻辑回路图</title>
   <style>
     :root {
-      --bg-deep: #080b10;
-      --bg-panel: rgba(14, 19, 27, 0.96);
-      --text-main: #e8eef5;
-      --text-sub: #8795a8;
-      --accent: #5ec4ff;
-      --spine: rgba(94, 196, 255, 0.28);
+      --bg-deep: #070a0e;
+      --bg-panel: rgba(12, 17, 25, 0.96);
+      --text-main: #e8f0f8;
+      --text-sub: #7e8ca0;
+      --accent: #4ec3ff;
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
@@ -66,17 +65,17 @@
 
     .screen-diagram {
       justify-content: flex-start;
-      padding-top: var(--safe-top);
+      padding-top: calc(10px + var(--safe-top));
       padding-bottom: var(--safe-bottom);
     }
 
     .modal-card {
       position: relative;
       z-index: 30;
-      width: min(90vw, 480px);
+      width: min(90vw, 460px);
       max-height: 82vh;
       background: var(--bg-panel);
-      border: 1px solid rgba(94, 196, 255, 0.22);
+      border: 1px solid rgba(78, 195, 255, 0.22);
       border-radius: 18px;
       padding: 24px 20px 20px;
       text-align: left;
@@ -134,8 +133,8 @@
     .btn:active { transform: scale(0.97); }
 
     .btn-primary {
-      background: linear-gradient(180deg, #5ec4ff 0%, #2f9ad9 100%);
-      color: #02080d;
+      background: linear-gradient(180deg, #4ec3ff 0%, #2794d9 100%);
+      color: #01070a;
     }
 
     .btn-secondary {
@@ -149,43 +148,41 @@
       z-index: 20;
       width: 100%;
       text-align: center;
-      padding: 14px 18px 10px;
+      padding: 8px 16px 6px;
       flex-shrink: 0;
-      background: linear-gradient(to bottom, var(--bg-deep) 0%, rgba(8,11,16,0.92) 100%);
     }
 
     .diagram-header h1 {
-      font-size: clamp(17px, 4.8vw, 22px);
+      font-size: clamp(16px, 4.6vw, 21px);
       color: var(--accent);
       letter-spacing: 0.08em;
-      margin-bottom: 3px;
+      margin-bottom: 2px;
     }
 
     .diagram-header p {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text-sub);
       letter-spacing: 0.04em;
     }
 
-    .diagram-scroll {
+    .diagram-stage {
       position: relative;
       z-index: 15;
       width: 100%;
       flex: 1;
-      overflow-y: auto;
-      overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
-      padding: 0 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+      padding: 0 10px;
     }
-
-    .diagram-scroll::-webkit-scrollbar { width: 0; height: 0; }
 
     .diagram-svg {
       width: 100%;
-      max-width: 460px;
-      margin: 0 auto;
+      height: 100%;
+      max-width: 520px;
+      max-height: 520px;
       display: block;
-      height: auto;
     }
 
     .node-rect {
@@ -193,46 +190,49 @@
       transition: filter 0.18s ease, transform 0.18s ease;
     }
 
-    .node-rect:hover { filter: brightness(1.18); }
+    .node-rect:hover { filter: brightness(1.2); }
 
-    .node-rect:active { transform: scale(0.97); }
+    .node-rect:active { transform: scale(0.96); }
 
     .node-title {
       pointer-events: none;
-      font-weight: 600;
-      font-size: 12px;
-      letter-spacing: 0.02em;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.04em;
     }
 
-    .node-desc {
+    .node-sub {
       pointer-events: none;
       font-size: 9px;
-      opacity: 0.82;
+      opacity: 0.8;
     }
 
-    .phase-bar {
+    .node-badge {
       pointer-events: none;
-    }
-
-    .phase-title {
-      pointer-events: none;
-      font-size: 12px;
+      font-size: 10px;
       font-weight: 700;
-      letter-spacing: 0.08em;
     }
 
-    .spine-line {
+    .circuit-line {
       pointer-events: none;
-    }
-
-    .connector {
-      pointer-events: none;
+      fill: none;
       stroke-linecap: round;
+    }
+
+    .feedback-line {
+      pointer-events: none;
+      fill: none;
+      stroke-linecap: round;
+      stroke-dasharray: 5 4;
     }
 
     .flow-particle {
       pointer-events: none;
       filter: drop-shadow(0 0 3px var(--accent));
+    }
+
+    .center-ring {
+      pointer-events: none;
     }
 
     .detail-row { margin-bottom: 13px; }
@@ -265,52 +265,43 @@
       line-height: 1.55;
     }
 
-    .detail-list li::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 8px;
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
+    .sub-node-title {
+      font-weight: 600;
+      margin-bottom: 2px;
     }
 
-    .mini-legend {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 12px;
+    .sub-node-desc {
+      font-size: 12px;
+      color: var(--text-sub);
+      line-height: 1.5;
+    }
+
+    .legend-bar {
+      position: relative;
+      z-index: 20;
+      width: 100%;
+      text-align: center;
+      padding: 6px 16px 10px;
       font-size: 10px;
       color: var(--text-sub);
-    }
-
-    .mini-legend span {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .mini-legend i {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      display: inline-block;
+      flex-shrink: 0;
     }
 
     .pulse-ring {
-      animation: pulseRing 2.4s ease-out infinite;
+      animation: pulseRing 2.6s ease-out infinite;
       transform-origin: center;
       pointer-events: none;
     }
 
     @keyframes pulseRing {
-      0% { opacity: 0.5; transform: scale(1); }
-      100% { opacity: 0; transform: scale(1.6); }
+      0% { opacity: 0.45; transform: scale(1); }
+      100% { opacity: 0; transform: scale(1.55); }
     }
 
-    @media (max-width: 360px) {
-      .diagram-scroll { padding: 0 10px 20px; }
+    @media (max-height: 620px) {
+      .diagram-header h1 { font-size: 15px; }
+      .node-title { font-size: 11px; }
+      .node-sub { font-size: 8px; }
     }
   </style>
 </head>
@@ -318,26 +309,27 @@
   <div id="app">
     <div id="screen-start" class="screen active" aria-hidden="false">
       <div class="modal-card">
-        <h1 class="modal-title" style="color: var(--accent);">AI 剧本制作 · 极细框架逻辑图</h1>
-        <p class="modal-subtitle">从输入到输出 · 提示词 · 分镜 · 素材 · 剪辑</p>
+        <h1 class="modal-title" style="color: var(--accent);">AI 剧本制作 · 主逻辑回路图</h1>
+        <p class="modal-subtitle">不可移动界面 · 单屏闭环框架</p>
         <p class="modal-message">
-          这是一张高密度、可交互的 SVG 流程框架图，拆解了 AIGC 剧本/短片制作的 9 大阶段、50+ 节点。<br><br>
-          点击任意节点查看输入、AI 方法、输出与关键注意点。
+          本框架图将所有流程节点收敛为一个主逻辑回路，完整显示在单屏内。<br><br>
+          点击环上任意阶段，查看该阶段下所有子流程与执行细节。
         </p>
         <div class="modal-actions">
-          <button class="btn btn-primary" data-action="start" type="button">展开框架图</button>
+          <button class="btn btn-primary" data-action="start" type="button">进入回路图</button>
         </div>
       </div>
     </div>
 
     <div id="screen-diagram" class="screen screen-diagram" aria-hidden="true">
       <div class="diagram-header">
-        <h1>AI 剧本制作 · 极细框架逻辑图</h1>
-        <p>点击节点查看阶段详情 · 下滑查看更多</p>
+        <h1>AI 剧本制作 · 主逻辑回路</h1>
+        <p>点击环上节点查看子流程 · 实线为主回路 · 虚线为反馈闭环</p>
       </div>
-      <div class="diagram-scroll">
-        <svg class="diagram-svg" id="framework-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="diagram-stage">
+        <svg class="diagram-svg" id="framework-svg" viewBox="0 0 400 420" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"></svg>
       </div>
+      <div class="legend-bar">核心回路：输入 → 解析 → 提示词 → 分镜 → 元素 → 素材 → 处理 → 剪辑 → 输出 → 反馈</div>
     </div>
 
     <div id="screen-detail" class="screen" aria-hidden="true">
@@ -346,7 +338,7 @@
         <p class="modal-subtitle" id="detail-subtitle"></p>
         <div id="detail-body"></div>
         <div class="modal-actions" style="margin-top: 20px;">
-          <button class="btn btn-secondary" data-action="close-detail" type="button">返回框架图</button>
+          <button class="btn btn-secondary" data-action="close-detail" type="button">返回回路图</button>
         </div>
       </div>
     </div>
@@ -356,54 +348,58 @@
     (function() {
       'use strict';
 
-      const W = 380;
-      const MARGIN_LEFT = 18;
-      const MARGIN_RIGHT = 18;
-      const COL_GAP = 8;
-      const NODE_W = (W - MARGIN_LEFT - MARGIN_RIGHT - COL_GAP) / 2;
+      const W = 400;
+      const H = 420;
+      const CX = 200;
+      const CY = 210;
+      const R = 138;
+      const NODE_W = 86;
       const NODE_H = 48;
-      const NODE_GAP_Y = 7;
-      const PHASE_TITLE_H = 28;
-      const PHASE_GAP = 22;
-      const START_Y = 18;
-      const SPINE_X = W / 2;
 
       const phases = [
         {
-          title: '输入层 INPUT',
+          title: '输入层',
+          subtitle: 'INPUT',
+          short: '输入',
           color: '#4a90d9',
           nodes: [
-            { title: '原始剧本', desc: '故事/对白/场景', input: '文字剧本、小说、故事梗概、角色设定草稿', method: ['格式化清洗', '按场景拆分', '提取时间地点人物'], output: '结构化剧本文档、场景清单', note: '越规范的输入，后续 AI 提取越稳定。' },
-            { title: '创意 brief', desc: '命题/受众/情绪', input: '项目目标、目标受众、传播平台、情绪基调', method: ['AI 辅助关键词聚类', '生成一句话命题', '确定风格锚点'], output: '创意 brief、核心命题、关键词云', note: 'brief 是后续所有生成的“北极星”。' },
-            { title: '参考片/参考图', desc: '风格/对标案例', input: '同行业短片、电影片段、插画、摄影作品', method: ['视觉特征拆解', '色彩/构图/节奏分析', '提取可复用 prompt 元素'], output: '参考图库、风格描述词、节奏参考表', note: '参考要具体，避免泛泛的“电影感”。' },
-            { title: '平台规范', desc: '尺寸/时长/审核', input: '抖音/视频号/B站等平台规则', method: ['整理分辨率、时长、码率、字幕安全区', '列出审核红线与禁用词'], output: '平台技术规范表、内容安全清单', note: '前置规范能避免返工。' }
+            { title: '原始剧本', desc: '故事/对白/场景结构化', input: '文字剧本、小说、故事梗概、角色设定草稿', method: ['格式化清洗', '按场景拆分', '提取时间地点人物'], output: '结构化剧本文档、场景清单', note: '越规范的输入，后续 AI 提取越稳定。' },
+            { title: '创意 brief', desc: '命题/受众/情绪/平台', input: '项目目标、目标受众、传播平台、情绪基调', method: ['AI 辅助关键词聚类', '生成一句话命题', '确定风格锚点'], output: '创意 brief、核心命题、关键词云', note: 'brief 是后续所有生成的“北极星”。' },
+            { title: '参考片/参考图', desc: '风格/对标案例分析', input: '同行业短片、电影片段、插画、摄影作品', method: ['视觉特征拆解', '色彩/构图/节奏分析', '提取可复用 prompt 元素'], output: '参考图库、风格描述词、节奏参考表', note: '参考要具体，避免泛泛的“电影感”。' },
+            { title: '平台规范', desc: '尺寸/时长/审核规则', input: '抖音/视频号/B站等平台规则', method: ['整理分辨率、时长、码率、字幕安全区', '列出审核红线与禁用词'], output: '平台技术规范表、内容安全清单', note: '前置规范能避免返工。' }
           ]
         },
         {
-          title: '解析层 ANALYSIS',
+          title: '解析层',
+          subtitle: 'ANALYSIS',
+          short: '解析',
           color: '#5aa3a3',
           nodes: [
-            { title: '剧本结构化', desc: '场景/角色/动作', input: '结构化剧本', method: ['识别场景边界', '标注场号、地点、时间', '提取动作与对白'], output: '场景表、角色出场表、对白清单', note: '结构化是后续自动化的基础。' },
+            { title: '剧本结构化', desc: '场景/角色/动作提取', input: '结构化剧本', method: ['识别场景边界', '标注场号、地点、时间', '提取动作与对白'], output: '场景表、角色出场表、对白清单', note: '结构化是后续自动化的基础。' },
             { title: '情绪曲线标注', desc: '节奏/高潮/留白', input: '剧本与场景表', method: ['逐场情绪打分', '绘制情感曲线', '标注高潮与转折点'], output: '情绪曲线图、节奏密度表', note: '情绪曲线决定观众代入感。' },
-            { title: '视觉关键词提取', desc: '色彩/光影/氛围', input: '每场描述文本', method: ['提取视觉形容词', '归纳色彩、光影、天气、空间', '关联参考图标签'], output: '视觉关键词库、每场景氛围卡', note: '关键词要转化成 AI 可理解的英文/中文 prompt。' },
+            { title: '视觉关键词提取', desc: '色彩/光影/氛围', input: '每场描述文本', method: ['提取视觉形容词', '归纳色彩、光影、天气、空间', '关联参考图标签'], output: '视觉关键词库、每场景氛围卡', note: '关键词要转化成 AI 可理解的 prompt。' },
             { title: '角色关系网', desc: '动机/冲突/成长', input: '人物小传与对白', method: ['梳理人物关系', '标注核心冲突', '绘制角色成长弧线'], output: '角色关系图、人物弧光表', note: '关系网是逻辑校验的重要依据。' },
             { title: '镜头类型标注', desc: '特写/全景/运动', input: '场景动作描述', method: ['根据动作推荐镜头', '标注景别、机位、运动方式'], output: '镜头建议表、初步分镜文字描述', note: '镜头标注为分镜提取做准备。' }
           ]
         },
         {
-          title: '提示词工程 PROMPT',
+          title: '提示词工程',
+          subtitle: 'PROMPT',
+          short: '提示词',
           color: '#c9a86c',
           nodes: [
             { title: '场景提示词', desc: '空间/环境/时代', input: '场景地点、时间、氛围关键词', method: ['组合主体+环境+光影+风格', '固定风格关键词前缀'], output: '每场景文生图 prompt', note: '保持场景间视觉一致性。' },
             { title: '角色提示词', desc: '外貌/服装/气质', input: '角色外貌、服饰、性格描述', method: ['构建角色固定描述块', '使用种子/LoRA 固化形象', '多角度一致性测试'], output: '角色主 prompt、角色卡', note: '角色一致性是 AIGC 短片最大难点之一。' },
             { title: '构图/镜头提示词', desc: '景别/角度/运动', input: '镜头类型标注', method: ['添加 close-up/wide shot/dutch angle 等', '结合景深、焦段描述'], output: '镜头级 prompt 变体', note: '镜头语言决定叙事节奏。' },
-            { title: '氛围/光影提示词', desc: '情绪/色调/天气', input: '情绪曲线、视觉关键词', method: ['匹配冷暖色调', '添加时间光线（golden hour/blue hour）', '加入天气与空气感'], output: '氛围 prompt 库', note: '光影是情绪的外化。' },
+            { title: '氛围/光影提示词', desc: '情绪/色调/天气', input: '情绪曲线与视觉关键词', method: ['匹配冷暖色调', '添加时间光线（golden hour/blue hour）', '加入天气与空气感'], output: '氛围 prompt 库', note: '光影是情绪的外化。' },
             { title: '负向提示词库', desc: '排除/降低/规避', input: '常见错误与平台禁忌', method: ['整理 deformity/blur/low quality 等通用负词', '针对项目补充禁忌内容'], output: '通用负词库 + 项目负词库', note: '负向词能显著提升出图可用率。' },
             { title: 'Prompt 模板固化', desc: '可复用/可迭代', input: '各类 prompt 实践结果', method: ['沉淀为可复用模板', '建立变量替换机制', '版本化管理'], output: 'Prompt 模板库、变量表', note: '模板化是规模化生产的前提。' }
           ]
         },
         {
-          title: '分镜提取 STORYBOARD',
+          title: '分镜提取',
+          subtitle: 'STORYBOARD',
+          short: '分镜',
           color: '#9b7cb6',
           nodes: [
             { title: '文本分镜生成', desc: '场次/镜头/时长', input: '结构化剧本 + 镜头标注', method: ['每场拆分为若干镜头', '估算每个镜头时长', '输出文字分镜表'], output: '文字分镜脚本、镜头时长表', note: '文字分镜是视觉化的第一步。' },
@@ -414,7 +410,9 @@
           ]
         },
         {
-          title: '设计元素生成 ELEMENTS',
+          title: '设计元素生成',
+          subtitle: 'ELEMENTS',
+          short: '元素',
           color: '#d07a5a',
           nodes: [
             { title: '角色设计', desc: '造型/表情/动态', input: '角色 prompt 与一致性方案', method: ['生成角色三视图/表情/动作', '使用 ControlNet/LoRA 固定形象', '输出角色素材包'], output: '角色设计稿、表情集、动作库', note: '角色是观众情感投射的载体。' },
@@ -426,11 +424,13 @@
           ]
         },
         {
-          title: '素材批量生成 ASSETS',
+          title: '素材批量生成',
+          subtitle: 'ASSETS',
+          short: '素材',
           color: '#5b8c5a',
           nodes: [
             { title: '文生图批量', desc: '按分镜批量出图', input: '分镜 prompt + 模板', method: ['批量跑图', '按镜头编号归档', '初筛可用图'], output: '原始生成图库', note: '批量生成需要稳定的 prompt 与种子。' },
-            { title: '图生图迭代', desc: '精修/变体/优化', input: '初筛图与修改意见', method: ['局部重绘', '风格迁移', ' upscale 放大'], output: '精修后的高质量图像', note: '迭代是提升质量的核心环节。' },
+            { title: '图生图迭代', desc: '精修/变体/优化', input: '初筛图与修改意见', method: ['局部重绘', '风格迁移', 'upscale 放大'], output: '精修后的高质量图像', note: '迭代是提升质量的核心环节。' },
             { title: '角色一致性控制', desc: '种子/LoRA/ControlNet', input: '角色主 prompt 与参考图', method: ['固定种子与参数', '使用 LoRA/IP-Adapter', 'ControlNet 姿态控制'], output: '统一角色形象的系列素材', note: '一致性是叙事可信度的基础。' },
             { title: '场景延展生成', desc: '多角度/多时间', input: '主场景图与描述', method: ['生成同场景不同角度', '输出不同时间段变体', '保持透视与风格一致'], output: '场景多角度图、时间变体', note: '延展素材支持镜头调度。' },
             { title: '动态素材生成', desc: '动画/运镜/特效', input: '静态图与运动描述', method: ['图生视频/动画', 'AI 补帧与慢动作', '生成粒子/光效素材'], output: '动态镜头片段、特效素材', note: '动态素材让画面更有生命力。' },
@@ -438,7 +438,9 @@
           ]
         },
         {
-          title: '集中处理 PIPELINE',
+          title: '集中处理',
+          subtitle: 'PIPELINE',
+          short: '处理',
           color: '#6b8cce',
           nodes: [
             { title: '自动筛选', desc: '质量/匹配度评分', input: '批量生成素材', method: ['AI 图像质量评分', '与 prompt 语义匹配度排序', '人工二筛'], output: '候选素材集、淘汰素材', note: '筛选决定后期效率。' },
@@ -450,7 +452,9 @@
           ]
         },
         {
-          title: '剪辑合成 EDITING',
+          title: '剪辑合成',
+          subtitle: 'EDITING',
+          short: '剪辑',
           color: '#d06a8c',
           nodes: [
             { title: '智能粗剪', desc: '按分镜拼贴', input: '分镜脚本 + 素材库', method: ['按镜头编号自动对齐', '按时间线拼接', '生成初版时间线'], output: '粗剪版本 V1', note: '粗剪是结构的快速验证。' },
@@ -462,7 +466,9 @@
           ]
         },
         {
-          title: '输出迭代 OUTPUT',
+          title: '输出迭代',
+          subtitle: 'OUTPUT',
+          short: '输出',
           color: '#8a9a5a',
           nodes: [
             { title: '多平台裁剪', desc: '横/竖/方/封面', input: '精剪成片与平台规范', method: ['自动生成多比例版本', '调整构图安全区', '输出不同分辨率'], output: '9:16 / 16:9 / 1:1 等版本', note: '一源多用，适配各平台。' },
@@ -502,191 +508,199 @@
         return `rgba(${r},${g},${b},${alpha})`;
       }
 
+      function polar(cx, cy, r, deg) {
+        const rad = (deg - 90) * Math.PI / 180;
+        return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+      }
+
+      function midArcPoint(cx, cy, r, startDeg, endDeg) {
+        const mid = (startDeg + endDeg) / 2;
+        return polar(cx, cy, r, mid);
+      }
+
       function renderDiagram() {
         const svg = el('framework-svg');
         svg.innerHTML = '';
 
         const defs = createSVGElement('defs', {});
-        const grad = createSVGElement('linearGradient', { id: 'spineGrad', x1: '0', y1: '0', x2: '0', y2: '1' });
-        grad.appendChild(createSVGElement('stop', { offset: '0%', 'stop-color': 'rgba(94,196,255,0.1)' }));
-        grad.appendChild(createSVGElement('stop', { offset: '50%', 'stop-color': 'rgba(94,196,255,0.45)' }));
-        grad.appendChild(createSVGElement('stop', { offset: '100%', 'stop-color': 'rgba(94,196,255,0.1)' }));
+        const grad = createSVGElement('linearGradient', { id: 'circuitGrad', x1: '0', y1: '0', x2: '1', y2: '0' });
+        grad.appendChild(createSVGElement('stop', { offset: '0%', 'stop-color': 'rgba(78,195,255,0.15)' }));
+        grad.appendChild(createSVGElement('stop', { offset: '50%', 'stop-color': 'rgba(78,195,255,0.55)' }));
+        grad.appendChild(createSVGElement('stop', { offset: '100%', 'stop-color': 'rgba(78,195,255,0.15)' }));
         defs.appendChild(grad);
         svg.appendChild(defs);
 
-        const bg = createSVGElement('rect', { width: W, height: computeTotalHeight(), fill: '#080b10' });
-        svg.appendChild(bg);
-
-        const grid = createSVGElement('g', { opacity: '0.12' });
-        for (let x = 20; x < W; x += 40) {
-          grid.appendChild(createSVGElement('line', { x1: x, y1: 0, x2: x, y2: computeTotalHeight(), stroke: '#5ec4ff', 'stroke-width': 0.5 }));
-        }
-        svg.appendChild(grid);
-
-        const spineGroup = createSVGElement('g', {});
-        const spineH = computeTotalHeight();
-        spineGroup.appendChild(createSVGElement('line', { class: 'spine-line', x1: SPINE_X, y1: START_Y, x2: SPINE_X, y2: spineH - 30, stroke: 'url(#spineGrad)', 'stroke-width': 3 }));
-        svg.appendChild(spineGroup);
-
-        const connectorGroup = createSVGElement('g', { class: 'connectors', stroke: 'rgba(94,196,255,0.18)', 'stroke-width': 1, fill: 'none' });
-        const nodeGroup = createSVGElement('g', { class: 'nodes' });
-
-        let currentY = START_Y;
-        const phasePositions = [];
-
-        phases.forEach((phase, pi) => {
-          const phaseH = PHASE_TITLE_H + Math.ceil(phase.nodes.length / 2) * (NODE_H + NODE_GAP_Y) - NODE_GAP_Y + 12;
-
-          const bar = createSVGElement('rect', {
-            class: 'phase-bar',
-            x: MARGIN_LEFT,
-            y: currentY,
-            width: W - MARGIN_LEFT - MARGIN_RIGHT,
-            height: PHASE_TITLE_H,
-            rx: 8,
-            fill: hexToRgba(phase.color, 0.14),
-            stroke: phase.color,
-            'stroke-width': 1.2
-          });
-          nodeGroup.appendChild(bar);
-
-          const title = createSVGElement('text', {
-            class: 'phase-title',
-            x: SPINE_X,
-            y: currentY + 18,
-            'text-anchor': 'middle',
-            fill: phase.color
-          });
-          title.textContent = phase.title;
-          nodeGroup.appendChild(title);
-
-          const rows = Math.ceil(phase.nodes.length / 2);
-          phase.nodes.forEach((node, ni) => {
-            const row = Math.floor(ni / 2);
-            const col = ni % 2;
-            const nx = MARGIN_LEFT + col * (NODE_W + COL_GAP);
-            const ny = currentY + PHASE_TITLE_H + 8 + row * (NODE_H + NODE_GAP_Y);
-
-            const g = createSVGElement('g', { class: 'node-group', 'data-phase': pi, 'data-index': ni, transform: `translate(${nx},${ny})` });
-
-            const rect = createSVGElement('rect', {
-              class: 'node-rect',
-              x: 0,
-              y: 0,
-              width: NODE_W,
-              height: NODE_H,
-              rx: 10,
-              fill: hexToRgba(phase.color, 0.12),
-              stroke: phase.color,
-              'stroke-width': 1.1
-            });
-            g.appendChild(rect);
-
-            g.appendChild(createSVGElement('text', {
-              class: 'node-title',
-              x: NODE_W / 2,
-              y: 19,
-              'text-anchor': 'middle',
-              fill: '#fff'
-            })).textContent = node.title;
-
-            g.appendChild(createSVGElement('text', {
-              class: 'node-desc',
-              x: NODE_W / 2,
-              y: 35,
-              'text-anchor': 'middle',
-              fill: hexToRgba('#e8eef5', 0.75)
-            })).textContent = node.desc;
-
-            nodeGroup.appendChild(g);
-
-            const cx = nx + NODE_W / 2;
-            const cy = ny + NODE_H / 2;
-            const side = col === 0 ? 1 : -1;
-            connectorGroup.appendChild(createSVGElement('path', {
-              class: 'connector',
-              d: `M${cx + (NODE_W / 2 - 2) * side},${cy} Q${cx + (NODE_W / 2 + 14) * side},${cy} ${SPINE_X + (col === 0 ? -8 : 8)},${cy}`
-            }));
-          });
-
-          phasePositions.push({ y: currentY + phaseH / 2, color: phase.color });
-          currentY += phaseH + PHASE_GAP;
+        const bgRing = createSVGElement('circle', {
+          cx: CX, cy: CY, r: R,
+          fill: 'none', stroke: 'rgba(78,195,255,0.08)', 'stroke-width': 1.5
         });
+        svg.appendChild(bgRing);
 
-        svg.appendChild(connectorGroup);
-        svg.appendChild(nodeGroup);
+        const innerRing = createSVGElement('circle', {
+          cx: CX, cy: CY, r: R - 34,
+          fill: 'none', stroke: 'rgba(78,195,255,0.05)', 'stroke-width': 1,
+          'stroke-dasharray': '3 4'
+        });
+        svg.appendChild(innerRing);
+
+        const count = phases.length;
+        const step = 360 / count;
+
+        const lineGroup = createSVGElement('g', {});
+        for (let i = 0; i < count; i++) {
+          const a1 = i * step;
+          const a2 = ((i + 1) % count) * step;
+          const p1 = polar(CX, CY, R, a1);
+          const p2 = polar(CX, CY, R, a2);
+          const mid = polar(CX, CY, R + 28, (a1 + a2) / 2);
+          const d = `M${p1.x},${p1.y} Q${mid.x},${mid.y} ${p2.x},${p2.y}`;
+          lineGroup.appendChild(createSVGElement('path', {
+            class: 'circuit-line', d: d, stroke: 'url(#circuitGrad)', 'stroke-width': 2
+          }));
+        }
+
+        const feedbackP1 = polar(CX, CY, R, (count - 1) * step);
+        const feedbackP2 = polar(CX, CY, R, 0);
+        const feedbackMid = polar(CX, CY, R - 42, ((count - 1) * step + 0) / 2 - 8);
+        const feedbackD = `M${feedbackP1.x},${feedbackP1.y} Q${feedbackMid.x},${feedbackMid.y} ${feedbackP2.x},${feedbackP2.y}`;
+        lineGroup.appendChild(createSVGElement('path', {
+          class: 'feedback-line', d: feedbackD, stroke: '#8a9a5a', 'stroke-width': 1.5
+        }));
+
+        svg.appendChild(lineGroup);
 
         const flowGroup = createSVGElement('g', { id: 'flow-particles' });
         svg.appendChild(flowGroup);
 
-        svg.setAttribute('viewBox', `0 0 ${W} ${computeTotalHeight()}`);
-        svg.setAttribute('preserveAspectRatio', 'xMidYMin meet');
-
-        startFlowAnimation(phasePositions);
-      }
-
-      function computeTotalHeight() {
-        let h = START_Y;
-        phases.forEach(phase => {
-          const rows = Math.ceil(phase.nodes.length / 2);
-          const phaseH = PHASE_TITLE_H + rows * (NODE_H + NODE_GAP_Y) - NODE_GAP_Y + 12;
-          h += phaseH + PHASE_GAP;
+        const centerGroup = createSVGElement('g', {});
+        centerGroup.appendChild(createSVGElement('circle', {
+          class: 'center-ring', cx: CX, cy: CY, r: 42,
+          fill: 'rgba(78,195,255,0.08)', stroke: 'rgba(78,195,255,0.35)', 'stroke-width': 1.5
+        }));
+        centerGroup.appendChild(createSVGElement('circle', {
+          class: 'pulse-ring', cx: CX, cy: CY, r: 42,
+          fill: 'none', stroke: 'rgba(78,195,255,0.4)', 'stroke-width': 1.5
+        }));
+        const centerText1 = createSVGElement('text', {
+          x: CX, y: CY - 5, 'text-anchor': 'middle', fill: '#fff', 'font-size': 12, 'font-weight': 600
         });
-        return h + 40;
+        centerText1.textContent = 'AI 剧本制作';
+        centerGroup.appendChild(centerText1);
+        const centerText2 = createSVGElement('text', {
+          x: CX, y: CY + 12, 'text-anchor': 'middle', fill: 'var(--accent)', 'font-size': 10, 'letter-spacing': 0.08
+        });
+        centerText2.textContent = '主逻辑回路';
+        centerGroup.appendChild(centerText2);
+        svg.appendChild(centerGroup);
+
+        const nodeGroup = createSVGElement('g', {});
+        phases.forEach((phase, i) => {
+          const angle = i * step;
+          const pos = polar(CX, CY, R, angle);
+          const g = createSVGElement('g', {
+            class: 'node-group', 'data-index': i,
+            transform: `translate(${pos.x - NODE_W / 2},${pos.y - NODE_H / 2})`
+          });
+
+          const rect = createSVGElement('rect', {
+            class: 'node-rect',
+            x: 0, y: 0, width: NODE_W, height: NODE_H, rx: 10,
+            fill: hexToRgba(phase.color, 0.14),
+            stroke: phase.color, 'stroke-width': 1.3
+          });
+          g.appendChild(rect);
+
+          const badge = createSVGElement('rect', {
+            x: 6, y: 14, width: 18, height: 18, rx: 5,
+            fill: phase.color
+          });
+          g.appendChild(badge);
+          const badgeText = createSVGElement('text', {
+            class: 'node-badge', x: 15, y: 27, 'text-anchor': 'middle', fill: '#fff'
+          });
+          badgeText.textContent = i + 1;
+          g.appendChild(badgeText);
+
+          const title = createSVGElement('text', {
+            class: 'node-title', x: NODE_W / 2 + 8, y: 21,
+            'text-anchor': 'middle', fill: '#fff'
+          });
+          title.textContent = phase.short;
+          g.appendChild(title);
+
+          const sub = createSVGElement('text', {
+            class: 'node-sub', x: NODE_W / 2 + 8, y: 36,
+            'text-anchor': 'middle', fill: hexToRgba('#e8f0f8', 0.75)
+          });
+          sub.textContent = phase.subtitle;
+          g.appendChild(sub);
+
+          nodeGroup.appendChild(g);
+        });
+        svg.appendChild(nodeGroup);
+
+        startFlowAnimation();
       }
 
-      function startFlowAnimation(phasePositions) {
+      function startFlowAnimation() {
         const container = el('flow-particles');
         container.innerHTML = '';
-        for (let i = 0; i < phasePositions.length - 1; i++) {
-          const y1 = phasePositions[i].y;
-          const y2 = phasePositions[i + 1].y;
-          const c = createSVGElement('circle', {
-            cx: SPINE_X,
-            cy: y1,
-            r: 3.5,
-            fill: '#5ec4ff',
-            class: 'flow-particle'
-          });
-          container.appendChild(c);
+        const count = phases.length;
+        const step = 360 / count;
 
-          const anim = createSVGElement('animate', {
-            attributeName: 'cy',
-            values: `${y1};${y2};${y1}`,
-            dur: `${1.8 + i * 0.12}s`,
-            repeatCount: 'indefinite',
-            begin: `${i * 0.25}s`,
-            calcMode: 'spline',
-            keySplines: '0.45 0 0.55 1;0.45 0 0.55 1'
+        for (let i = 0; i < count; i++) {
+          const a1 = i * step;
+          const a2 = ((i + 1) % count) * step;
+          const p1 = polar(CX, CY, R, a1);
+          const p2 = polar(CX, CY, R, a2);
+          const mid = polar(CX, CY, R + 28, (a1 + a2) / 2);
+          const pathId = `flow-path-${i}`;
+
+          const path = createSVGElement('path', {
+            id: pathId,
+            d: `M${p1.x},${p1.y} Q${mid.x},${mid.y} ${p2.x},${p2.y}`,
+            fill: 'none', stroke: 'none'
           });
+          container.appendChild(path);
+
+          const c = createSVGElement('circle', {
+            r: 3.5, fill: '#4ec3ff', class: 'flow-particle'
+          });
+          const mpath = createSVGElement('mpath', { 'xlink:href': `#${pathId}` });
+          const anim = createSVGElement('animateMotion', {
+            dur: `${2.2 + i * 0.15}s`, repeatCount: 'indefinite', begin: `${i * 0.25}s`, calcMode: 'spline',
+            keySplines: '0.45 0 0.55 1'
+          });
+          anim.appendChild(mpath);
           c.appendChild(anim);
+          container.appendChild(c);
         }
       }
 
-      function renderDetail(phaseIndex, nodeIndex) {
-        const phase = phases[phaseIndex];
-        const node = phase.nodes[nodeIndex];
-        el('detail-title').textContent = node.title;
+      function renderDetail(index) {
+        const phase = phases[index];
+        el('detail-title').textContent = `${index + 1}. ${phase.title}`;
         el('detail-title').style.color = phase.color;
-        el('detail-subtitle').textContent = `${phase.title.split(' ')[0]} · ${node.desc}`;
-        el('detail-body').innerHTML = `
-          <div class="detail-row">
-            <div class="detail-label" style="color:${phase.color}">输入 Input</div>
-            <div class="detail-text">${node.input}</div>
-          </div>
-          <div class="detail-row">
-            <div class="detail-label" style="color:${phase.color}">AI 方法 Method</div>
-            <ul class="detail-list">${node.method.map(m => `<li style="--dot:${phase.color}"><span style="position:absolute;left:0;top:8px;width:5px;height:5px;border-radius:50%;background:${phase.color}"></span>${m}</li>`).join('')}</ul>
-          </div>
-          <div class="detail-row">
-            <div class="detail-label" style="color:${phase.color}">输出 Output</div>
-            <div class="detail-text">${node.output}</div>
-          </div>
-          <div class="detail-row">
-            <div class="detail-label" style="color:${phase.color}">关键提示 Key Point</div>
-            <div class="detail-text">${node.note}</div>
-          </div>
-        `;
+        el('detail-subtitle').textContent = phase.subtitle;
+
+        const body = el('detail-body');
+        body.innerHTML = '';
+
+        phase.nodes.forEach(node => {
+          const row = document.createElement('div');
+          row.className = 'detail-row';
+          row.style.borderLeft = `3px solid ${phase.color}`;
+          row.style.paddingLeft = '12px';
+          row.style.marginBottom = '16px';
+          row.innerHTML = `
+            <div class="sub-node-title" style="color:${phase.color}">${node.title} <span style="color:var(--text-sub);font-size:11px;font-weight:400">— ${node.desc}</span></div>
+            <div class="detail-text" style="margin-top:5px;font-size:12px;color:var(--text-sub)"><strong style="color:var(--text-main)">输入：</strong>${node.input}</div>
+            <div class="detail-text" style="margin-top:4px;font-size:12px;color:var(--text-sub)"><strong style="color:var(--text-main)">输出：</strong>${node.output}</div>
+            <div class="detail-text" style="margin-top:4px;font-size:12px;color:var(--text-sub)"><strong style="color:var(--text-main)">要点：</strong>${node.note}</div>
+          `;
+          body.appendChild(row);
+        });
+
         showScreen('screen-detail');
       }
 
@@ -706,9 +720,8 @@
 
           const group = target.closest('.node-group');
           if (group) {
-            const pi = parseInt(group.dataset.phase, 10);
-            const ni = parseInt(group.dataset.index, 10);
-            if (!isNaN(pi) && !isNaN(ni)) renderDetail(pi, ni);
+            const index = parseInt(group.dataset.index, 10);
+            if (!isNaN(index)) renderDetail(index);
           }
         });
 
@@ -728,7 +741,7 @@
         } catch (error) {
           console.error(error);
           const fallback = document.createElement('div');
-          fallback.style.cssText = 'position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#080b10;color:#e8eef5;font-size:18px;padding:24px;text-align:center;z-index:9999;';
+          fallback.style.cssText = 'position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#070a0e;color:#e8f0f8;font-size:18px;padding:24px;text-align:center;z-index:9999;';
           fallback.textContent = '哎呀，出错了，请重启试试吧~';
           document.body.innerHTML = '';
           document.body.appendChild(fallback);
