@@ -48,11 +48,7 @@
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
   }
 
-  /* scanline sweep */
-  .scan{position:fixed;left:0;right:0;height:2px;z-index:2;pointer-events:none;
-    background:linear-gradient(90deg,transparent,rgba(255,138,61,0.55),transparent);
-    filter:blur(1px);animation:sweep 9s linear infinite}
-  @keyframes sweep{0%{top:-2%}100%{top:102%}}
+  /* (scanline removed) */
 
   .frame{position:relative;z-index:3;max-width:1640px;margin:0 auto;padding:28px 40px 60px}
 
@@ -165,18 +161,73 @@
   .reveal.d4{animation-delay:.35s}.reveal.d5{animation-delay:.45s}.reveal.d6{animation-delay:.55s}.reveal.d7{animation-delay:.65s}
   @keyframes rise{to{opacity:1;transform:none}}
 
+  /* ===== addable logic ===== */
+  .extensible{margin-top:46px;position:relative;padding-top:30px;border-top:1px dashed var(--line-strong)}
+  .extensible-label{position:absolute;top:-9px;left:0;background:var(--bg);padding:0 12px 0 0;color:var(--muted);font-size:10.5px;letter-spacing:.28em;text-transform:uppercase}
+  .extensible-label::before{content:"＋ ";color:var(--cyan)}
+  .ext-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:22px;flex-wrap:wrap}
+  .ext-head h2{font-family:"Bricolage Grotesque",sans-serif;font-weight:600;font-size:34px;letter-spacing:-.025em;line-height:1}
+  .ext-head h2 .it{font-family:"Instrument Serif",serif;font-style:italic;color:var(--cyan);font-weight:400}
+  .ext-head p{color:var(--muted);font-size:12px;max-width:54ch;line-height:1.6}
+  .ext-head p b{color:var(--fg);font-weight:500}
+
+  .lib{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .module{
+    position:relative;border:1px solid var(--line);background:linear-gradient(180deg,rgba(110,231,211,.025),rgba(255,255,255,.004));
+    padding:16px 16px 18px;cursor:pointer;overflow:hidden;
+    transition:border-color .3s,transform .3s,background .3s}
+  .module::before{content:"";position:absolute;top:0;left:0;width:36px;height:1px;background:var(--cyan)}
+  .module::after{content:"";position:absolute;top:0;left:0;height:14px;width:1px;background:var(--cyan)}
+  .module:hover{border-color:rgba(110,231,211,.4);transform:translateY(-2px);
+    background:linear-gradient(180deg,rgba(110,231,211,.06),rgba(110,231,211,.005))}
+  .m-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .m-ico{width:28px;height:28px;color:var(--cyan)}
+  .m-ico svg{width:100%;height:100%}
+  .m-tag{font-size:9px;letter-spacing:.22em;color:var(--muted);text-transform:uppercase;border:1px solid var(--line);padding:2px 7px}
+  .module h3{font-family:"Bricolage Grotesque",sans-serif;font-weight:600;font-size:17px;letter-spacing:-.02em;line-height:1.1;margin-bottom:2px}
+  .module .cn{font-family:"Instrument Serif",serif;font-style:italic;color:var(--cyan);font-size:13px;margin-bottom:10px;display:block}
+  .module .desc{color:var(--fg);opacity:.72;font-size:11px;line-height:1.55}
+  .module .hook{margin-top:12px;padding-top:10px;border-top:1px dashed var(--line);display:flex;align-items:center;justify-content:space-between;font-size:10px;color:var(--muted);letter-spacing:.1em}
+  .module .hook .add{color:var(--cyan);font-weight:500;transition:transform .3s}
+  .module:hover .hook .add{transform:translateX(3px)}
+
+  /* add-new placeholder */
+  .add-new{
+    border:1px dashed var(--line-strong);background:transparent;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    min-height:200px;text-align:center;cursor:pointer;
+    transition:border-color .3s,background .3s;color:var(--muted)}
+  .add-new:hover{border-color:var(--cyan);background:rgba(110,231,211,.04);color:var(--cyan)}
+  .add-new .plus{width:42px;height:42px;border:1px solid currentColor;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:300;margin-bottom:12px;transition:transform .4s}
+  .add-new:hover .plus{transform:rotate(90deg) scale(1.08)}
+  .add-new .t{font-family:"Bricolage Grotesque",sans-serif;font-weight:500;font-size:15px;letter-spacing:-.01em;color:var(--fg)}
+  .add-new .s{font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin-top:4px}
+
+  /* active modules strip */
+  .active-strip{margin-top:22px;border:1px solid var(--line);background:rgba(255,255,255,.012);padding:14px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .active-strip .lab{font-size:10px;letter-spacing:.24em;color:var(--muted);text-transform:uppercase;flex:none}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;flex:1}
+  .chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line-strong);padding:5px 10px 5px 12px;font-size:11px;color:var(--fg);background:rgba(110,231,211,.04);transition:all .3s}
+  .chip .d{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+  .chip .x{color:var(--muted);cursor:pointer;margin-left:4px;padding:0 2px}
+  .chip .x:hover{color:var(--magenta)}
+  .chip.empty{border-style:dashed;color:var(--muted);background:transparent}
+  .chip.empty .d{background:var(--dim);box-shadow:none}
+  .strip-act{font-size:10px;letter-spacing:.16em;color:var(--cyan);text-transform:uppercase;cursor:pointer;flex:none}
+  .strip-act:hover{color:var(--accent)}
+
   @media(max-width:1180px){
     .rail{grid-template-columns:repeat(2,1fr);gap:24px 12px}
     .flowline,.connector{display:none}
     .hero{grid-template-columns:1fr;gap:18px}
     .metrics{grid-template-columns:repeat(2,1fr)}
     .metric{border-bottom:1px solid var(--line)}
+    .lib{grid-template-columns:repeat(2,1fr)}
   }
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div class="scan"></div>
 
 <div class="frame">
 
@@ -390,6 +441,113 @@
     </div>
   </section>
 
+  <!-- ===== Addable Logic / 可自主添加页面 ===== -->
+  <section class="extensible">
+    <span class="extensible-label">addable logic · 可自主扩展</span>
+
+    <div class="ext-head">
+      <h2>Addable <span class="it">Logic</span> Modules</h2>
+      <p>除了七阶段主流程，AVCF 还提供 <b>可插拔的能力模块</b>。每个模块都是独立的页面与逻辑单元，可按需挂载到任意阶段节点上 —— 从角色一致性到版权审计，按创作需求自由组合。</p>
+    </div>
+
+    <div class="lib" id="lib">
+
+      <div class="module" data-id="char" data-name="Character Lock">
+        <div class="m-top">
+          <div class="m-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/></svg></div>
+          <span class="m-tag">LORE · 01</span>
+        </div>
+        <h3>Character Lock</h3>
+        <span class="cn">角色一致性</span>
+        <p class="desc">跨镜头保持角色面部、服饰、比例一致，支持 LoRA 与参考图双轨锁定。</p>
+        <div class="hook"><span>HOOK → STAGE 02/04</span><span class="add">＋ ADD</span></div>
+      </div>
+
+      <div class="module" data-id="style" data-name="Style Transfer">
+        <div class="m-top">
+          <div class="m-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 18l5-9 4 6 3-4 6 7z"/><circle cx="17" cy="7" r="2"/></svg></div>
+          <span class="m-tag">LORE · 02</span>
+        </div>
+        <h3>Style Transfer</h3>
+        <span class="cn">风格迁移</span>
+        <p class="desc">将参考图像的视觉风格注入生成结果，控制强度与混合权重。</p>
+        <div class="hook"><span>HOOK → STAGE 03/04</span><span class="add">＋ ADD</span></div>
+      </div>
+
+      <div class="module" data-id="lip" data-name="Lip Sync">
+        <div class="m-top">
+          <div class="m-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12c2-3 5-4 8-4s6 1 8 4c-2 3-5 4-8 4s-6-1-8-4z"/><path d="M9 12h6"/></svg></div>
+          <span class="m-tag">LORE · 03</span>
+        </div>
+        <h3>Lip Sync</h3>
+        <span class="cn">口型同步</span>
+        <p class="desc">语音驱动口型与表情，支持多语种音素对齐，毫秒级时间码同步。</p>
+        <div class="hook"><span>HOOK → STAGE 05</span><span class="add">＋ ADD</span></div>
+      </div>
+
+      <div class="module" data-id="motion" data-name="Motion Brush">
+        <div class="m-top">
+          <div class="m-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 12h6l2-5 3 10 2-5h5"/><path d="M3 18h18"/></svg></div>
+          <span class="m-tag">LORE · 04</span>
+        </div>
+        <h3>Motion Brush</h3>
+        <span class="cn">运动笔刷</span>
+        <p class="desc">在画面区域涂抹运动方向与速度，精细控制局部动态与镜头运动。</p>
+        <div class="hook"><span>HOOK → STAGE 04</span><span class="add">＋ ADD</span></div>
+      </div>
+
+      <div class="module" data-id="multicam" data-name="Multi-Cam">
+        <div class="m-top">
+          <div class="m-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="6" width="11" height="9" rx="1"/><rect x="10" y="9" width="11" height="9" rx="1"/></svg></div>
+          <span class="m-tag">LORE · 05</span>
+        </div>
+        <h3>Multi-Cam</h3>
+        <span class="cn">多机位编排</span>
+        <p class="desc">同一场景多视角并行生成，自动切换与镜头节奏对齐。</p>
+        <div class="hook"><span>HOOK → STAGE 04/06</span><span class="add">＋ ADD</span></div>
+      </div>
+
+      <div class="module" data-id="qc" data-name="Auto QC">
+        <div class="m-top">
+          <div class="m-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12l4 4 12-12"/><circle cx="4" cy="12" r="1" fill="currentColor"/></svg></div>
+          <span class="m-tag">LORE · 06</span>
+        </div>
+        <h3>Auto QC</h3>
+        <span class="cn">自动质检</span>
+        <p class="desc">检测闪烁、伪影、肢体畸变、字幕错位，输出问题帧报告。</p>
+        <div class="hook"><span>HOOK → STAGE 06/07</span><span class="add">＋ ADD</span></div>
+      </div>
+
+      <div class="module" data-id="ip" data-name="IP & License">
+        <div class="m-top">
+          <div class="m-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M9 11V7a3 3 0 016 0v4"/><rect x="5" y="11" width="14" height="9" rx="1.5"/><circle cx="12" cy="15" r="1.2" fill="currentColor"/></svg></div>
+          <span class="m-tag">LORE · 07</span>
+        </div>
+        <h3>IP & License</h3>
+        <span class="cn">版权审计</span>
+        <p class="desc">素材溯源、训练数据授权核验、人脸肖像权风险标注。</p>
+        <div class="hook"><span>HOOK → STAGE 07</span><span class="add">＋ ADD</span></div>
+      </div>
+
+      <!-- add-new placeholder: 用户可在此自主添加页面/模块 -->
+      <div class="add-new" id="addNew">
+        <div class="plus">＋</div>
+        <div class="t">Add Custom Page</div>
+        <div class="s">自主添加逻辑模块</div>
+      </div>
+
+    </div>
+
+    <!-- 已添加模块的活跃挂载条 -->
+    <div class="active-strip">
+      <span class="lab">mounted · 已挂载</span>
+      <div class="chips" id="chips">
+        <span class="chip empty"><span class="d"></span>暂无挂载模块 · 点击上方 ＋ADD</span>
+      </div>
+      <span class="strip-act" id="clearAll">CLEAR ALL ↻</span>
+    </div>
+  </section>
+
 </div>
 
 <span class="annot bl">x:<span class="x">000</span> · y:000 · zoom 100%</span>
@@ -403,6 +561,57 @@
     const x=String(Math.round(e.clientX)).padStart(3,'0');
     const y=String(Math.round(e.clientY)).padStart(3,'0');
     bl.innerHTML=`x:<span class="x">${x}</span> · y:${y} · zoom 100%`;
+  });
+
+  // ===== 可添加逻辑：模块挂载交互 =====
+  const chipsEl=document.getElementById('chips');
+  const libEl=document.getElementById('lib');
+  const mounted=new Map(); // id -> {name, hook}
+
+  function renderChips(){
+    if(mounted.size===0){
+      chipsEl.innerHTML='<span class="chip empty"><span class="d"></span>暂无挂载模块 · 点击上方 ＋ADD</span>';
+      return;
+    }
+    chipsEl.innerHTML='';
+    mounted.forEach((v,id)=>{
+      const c=document.createElement('span');
+      c.className='chip';
+      c.innerHTML=`<span class="d"></span>${v.name}<span class="x" data-id="${id}">✕</span>`;
+      chipsEl.appendChild(c);
+    });
+  }
+
+  function addModule(m){
+    const id=m.dataset.id;
+    const name=m.dataset.name;
+    if(mounted.has(id)){
+      // 已挂载则取消（切换）
+      mounted.delete(id);
+    }else{
+      mounted.set(id,{name:name,hook:m.querySelector('.hook span').textContent});
+    }
+    renderChips();
+  }
+
+  libEl.addEventListener('click',e=>{
+    const m=e.target.closest('.module');
+    if(m) addModule(m);
+    if(e.target.id==='addNew'||e.target.closest('#addNew')){
+      const id='custom-'+Date.now().toString(36);
+      const name='Custom · '+id.slice(-4).toUpperCase();
+      mounted.set(id,{name:name,hook:'HOOK → USER DEFINED'});
+      renderChips();
+    }
+  });
+
+  chipsEl.addEventListener('click',e=>{
+    const x=e.target.closest('.x');
+    if(x){mounted.delete(x.dataset.id);renderChips();}
+  });
+
+  document.getElementById('clearAll').addEventListener('click',()=>{
+    mounted.clear();renderChips();
   });
 </script>
 </body>
