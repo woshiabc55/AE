@@ -216,6 +216,94 @@
   .strip-act{font-size:10px;letter-spacing:.16em;color:var(--cyan);text-transform:uppercase;cursor:pointer;flex:none}
   .strip-act:hover{color:var(--accent)}
 
+  /* ===== self-draw canvas / 自绘图像与设定 ===== */
+  .drawpad{margin-top:46px;position:relative;padding-top:30px;border-top:1px dashed var(--line-strong)}
+  .drawpad-label{position:absolute;top:-9px;left:0;background:var(--bg);padding:0 12px 0 0;color:var(--muted);font-size:10.5px;letter-spacing:.28em;text-transform:uppercase}
+  .drawpad-label::before{content:"✎ ";color:var(--magenta)}
+  .drawpad-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:22px;flex-wrap:wrap}
+  .drawpad-head h2{font-family:"Bricolage Grotesque",sans-serif;font-weight:600;font-size:34px;letter-spacing:-.025em;line-height:1}
+  .drawpad-head h2 .it{font-family:"Instrument Serif",serif;font-style:italic;color:var(--magenta);font-weight:400}
+  .drawpad-head p{color:var(--muted);font-size:12px;max-width:54ch;line-height:1.6}
+  .drawpad-head p b{color:var(--fg);font-weight:500}
+
+  .draw-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px}
+
+  /* canvas wrapper */
+  .canvas-wrap{
+    position:relative;border:1px solid var(--line-strong);background:#0e0d0a;
+    aspect-ratio:16/10;overflow:hidden;
+    background-image:
+      linear-gradient(rgba(255,92,138,0.04) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,92,138,0.04) 1px,transparent 1px);
+    background-size:24px 24px;
+    cursor:crosshair;
+    box-shadow:inset 0 0 60px rgba(0,0,0,0.6)}
+  .canvas-wrap canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .cv-corner{position:absolute;width:14px;height:14px;border:1px solid var(--magenta);pointer-events:none}
+  .cv-corner.tl{top:8px;left:8px;border-right:0;border-bottom:0}
+  .cv-corner.tr{top:8px;right:8px;border-left:0;border-bottom:0}
+  .cv-corner.bl{bottom:8px;left:8px;border-right:0;border-top:0}
+  .cv-corner.br{bottom:8px;right:8px;border-left:0;border-top:0}
+  .cv-hint{position:absolute;top:10px;left:50%;transform:translateX(-50%);font-size:9.5px;letter-spacing:.24em;color:var(--dim);text-transform:uppercase;pointer-events:none;transition:opacity .4s}
+  .canvas-wrap.dirty .cv-hint{opacity:0}
+  .cv-coords{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);font-size:9.5px;color:var(--muted);letter-spacing:.14em;pointer-events:none;font-family:"JetBrains Mono"}
+
+  /* settings panel */
+  .settings{border:1px solid var(--line);background:rgba(255,255,255,.012);padding:18px}
+  .set-title{font-family:"Bricolage Grotesque",sans-serif;font-weight:600;font-size:16px;letter-spacing:-.02em;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+  .set-title::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--magenta);box-shadow:0 0 10px var(--magenta)}
+  .set-group{margin-bottom:16px;padding-bottom:14px;border-bottom:1px dashed var(--line)}
+  .set-group:last-of-type{border-bottom:0;padding-bottom:0;margin-bottom:0}
+  .set-label{font-size:10px;letter-spacing:.24em;color:var(--muted);text-transform:uppercase;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+  .set-label .val{color:var(--magenta);font-family:"JetBrains Mono"}
+
+  /* color swatches */
+  .swatches{display:flex;gap:8px;flex-wrap:wrap}
+  .swatch{width:26px;height:26px;border:1px solid var(--line-strong);cursor:pointer;position:relative;transition:transform .2s}
+  .swatch:hover{transform:scale(1.1)}
+  .swatch.active{border-color:var(--fg);box-shadow:0 0 0 2px var(--bg),0 0 0 3px var(--magenta)}
+  .swatch.picker{position:relative;overflow:hidden}
+  .swatch.picker input{position:absolute;inset:0;opacity:0;cursor:pointer}
+  .swatch.picker::after{content:"＋";color:#fff;font-size:14px;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+
+  /* slider */
+  .slider{display:flex;align-items:center;gap:10px}
+  .slider input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:3px;background:rgba(255,255,255,.08);outline:none}
+  .slider input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;border-radius:50%;background:var(--magenta);cursor:pointer;box-shadow:0 0 8px var(--magenta)}
+  .slider input[type=range]::-moz-range-thumb{width:14px;height:14px;border:0;border-radius:50%;background:var(--magenta);cursor:pointer}
+  .slider .preview-dot{width:14px;height:14px;border-radius:50%;background:var(--magenta);flex:none;transition:all .2s}
+
+  /* tool buttons */
+  .tools{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+  .tool{border:1px solid var(--line);background:transparent;color:var(--muted);padding:8px 4px;font-family:"JetBrains Mono";font-size:10px;letter-spacing:.1em;cursor:pointer;transition:all .25s;text-transform:uppercase}
+  .tool:hover{border-color:var(--magenta);color:var(--fg)}
+  .tool.active{border-color:var(--magenta);color:var(--magenta);background:rgba(255,92,138,.08)}
+  .tool svg{display:block;width:14px;height:14px;margin:0 auto 4px;stroke:currentColor;fill:none;stroke-width:1.4}
+
+  /* style preset chips */
+  .presets{display:flex;gap:6px;flex-wrap:wrap}
+  .preset{border:1px solid var(--line);padding:5px 9px;font-size:10px;color:var(--muted);cursor:pointer;letter-spacing:.06em;transition:all .25s}
+  .preset:hover{border-color:var(--magenta);color:var(--fg)}
+  .preset.active{border-color:var(--magenta);color:var(--magenta);background:rgba(255,92,138,.08)}
+
+  /* action buttons */
+  .draw-actions{display:flex;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+  .btn{flex:1;padding:10px;font-family:"Bricolage Grotesque",sans-serif;font-weight:500;font-size:12px;letter-spacing:.04em;cursor:pointer;border:1px solid var(--line-strong);background:transparent;color:var(--fg);transition:all .25s}
+  .btn:hover{border-color:var(--fg)}
+  .btn.primary{background:var(--magenta);border-color:var(--magenta);color:#0c0b08;font-weight:600}
+  .btn.primary:hover{background:#ff7aa3;border-color:#ff7aa3}
+  .btn.ghost{color:var(--muted)}
+  .btn.ghost:hover{color:var(--magenta);border-color:var(--magenta)}
+
+  /* toast */
+  .toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:#1a1712;border:1px solid var(--magenta);color:var(--fg);
+    padding:10px 18px;font-size:11px;letter-spacing:.06em;
+    opacity:0;pointer-events:none;transition:all .4s;z-index:50;
+    box-shadow:0 8px 30px rgba(0,0,0,.5),0 0 20px rgba(255,92,138,.2)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast::before{content:"◆ ";color:var(--magenta)}
+
   @media(max-width:1180px){
     .rail{grid-template-columns:repeat(2,1fr);gap:24px 12px}
     .flowline,.connector{display:none}
@@ -223,6 +311,7 @@
     .metrics{grid-template-columns:repeat(2,1fr)}
     .metric{border-bottom:1px solid var(--line)}
     .lib{grid-template-columns:repeat(2,1fr)}
+    .draw-grid{grid-template-columns:1fr}
   }
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -548,7 +637,101 @@
     </div>
   </section>
 
+  <!-- ===== Self-Draw / 自绘图像与设定 ===== -->
+  <section class="drawpad">
+    <span class="drawpad-label">self-draw · 自绘图像与设定</span>
+
+    <div class="drawpad-head">
+      <h2>Self-<span class="it">Draw</span> Studio</h2>
+      <p>直接在画布上手绘参考图像，并通过右侧设定面板配置 <b>笔刷参数、风格预设与生成强度</b>，作为 STAGE 03/04 的输入条件注入主流程。</p>
+    </div>
+
+    <div class="draw-grid">
+      <!-- 画布 -->
+      <div class="canvas-wrap" id="cvWrap">
+        <canvas id="cv"></canvas>
+        <span class="cv-corner tl"></span>
+        <span class="cv-corner tr"></span>
+        <span class="cv-corner bl"></span>
+        <span class="cv-corner br"></span>
+        <span class="cv-hint">DRAW HERE · 在此绘制</span>
+        <span class="cv-coords" id="cvCoords">x:000 · y:000</span>
+      </div>
+
+      <!-- 设定面板 -->
+      <div class="settings">
+        <div class="set-title">参数设定 / Settings</div>
+
+        <!-- 工具 -->
+        <div class="set-group">
+          <div class="set-label"><span>tool · 工具</span><span class="val" id="toolVal">BRUSH</span></div>
+          <div class="tools" id="tools">
+            <button class="tool active" data-tool="brush"><svg viewBox="0 0 24 24"><path d="M3 21l4-1 11-11-3-3L4 17z"/><path d="M14 6l4 4"/></svg>笔刷</button>
+            <button class="tool" data-tool="line"><svg viewBox="0 0 24 24"><path d="M4 20L20 4"/></svg>直线</button>
+            <button class="tool" data-tool="rect"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12"/></svg>矩形</button>
+            <button class="tool" data-tool="eraser"><svg viewBox="0 0 24 24"><path d="M5 15l8-8 6 6-4 4H8z"/><path d="M5 19h14"/></svg>橡皮</button>
+          </div>
+        </div>
+
+        <!-- 颜色 -->
+        <div class="set-group">
+          <div class="set-label"><span>color · 颜色</span><span class="val" id="colorVal">#FF5C8A</span></div>
+          <div class="swatches" id="swatches">
+            <span class="swatch active" style="background:#ff5c8a" data-color="#ff5c8a"></span>
+            <span class="swatch" style="background:#ff8a3d" data-color="#ff8a3d"></span>
+            <span class="swatch" style="background:#6ee7d3" data-color="#6ee7d3"></span>
+            <span class="swatch" style="background:#ffd166" data-color="#ffd166"></span>
+            <span class="swatch" style="background:#a78bfa" data-color="#a78bfa"></span>
+            <span class="swatch" style="background:#f3efe4" data-color="#f3efe4"></span>
+            <span class="swatch" style="background:#4a463f" data-color="#4a463f"></span>
+            <label class="swatch picker"><input type="color" id="colorPicker" value="#ff5c8a"></label>
+          </div>
+        </div>
+
+        <!-- 笔刷大小 -->
+        <div class="set-group">
+          <div class="set-label"><span>brush size · 笔刷</span><span class="val" id="sizeVal">6px</span></div>
+          <div class="slider">
+            <input type="range" id="sizeRange" min="1" max="60" value="6">
+            <span class="preview-dot" id="sizeDot"></span>
+          </div>
+        </div>
+
+        <!-- 不透明度 -->
+        <div class="set-group">
+          <div class="set-label"><span>opacity · 不透明度</span><span class="val" id="opaVal">100%</span></div>
+          <div class="slider">
+            <input type="range" id="opaRange" min="5" max="100" value="100">
+            <span class="preview-dot" id="opaDot" style="opacity:1"></span>
+          </div>
+        </div>
+
+        <!-- 风格预设 -->
+        <div class="set-group">
+          <div class="set-label"><span>style preset · 风格预设</span><span class="val" id="presetVal">NONE</span></div>
+          <div class="presets" id="presets">
+            <span class="preset active" data-preset="none">无</span>
+            <span class="preset" data-preset="anime">动漫</span>
+            <span class="preset" data-preset="cinematic">电影感</span>
+            <span class="preset" data-preset="watercolor">水彩</span>
+            <span class="preset" data-preset="pixel">像素</span>
+            <span class="preset" data-preset="noir">黑白</span>
+          </div>
+        </div>
+
+        <!-- 操作 -->
+        <div class="draw-actions">
+          <button class="btn ghost" id="btnClear">清空</button>
+          <button class="btn ghost" id="btnUndo">撤销</button>
+          <button class="btn primary" id="btnInject">注入生成</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </div>
+
+<div class="toast" id="toast"></div>
 
 <span class="annot bl">x:<span class="x">000</span> · y:000 · zoom 100%</span>
 <span class="annot br">© AVCF · blueprint render · 2026</span>
@@ -613,6 +796,226 @@
   document.getElementById('clearAll').addEventListener('click',()=>{
     mounted.clear();renderChips();
   });
+
+  // ===== 自绘图像 + 设定 =====
+  const cv=document.getElementById('cv');
+  const cvWrap=document.getElementById('cvWrap');
+  const ctx=cv.getContext('2d');
+  const coordsEl=document.getElementById('cvCoords');
+
+  // 状态
+  const state={
+    tool:'brush', color:'#ff5c8a', size:6, opacity:1, preset:'none',
+    drawing:false, startX:0, startY:0, lastX:0, lastY:0,
+    snapshot:null, history:[], dirty:false
+  };
+
+  // 自适应分辨率
+  function resizeCanvas(){
+    const r=cvWrap.getBoundingClientRect();
+    const dpr=window.devicePixelRatio||1;
+    // 保存现有内容
+    const img=ctx.getImageData(0,0,cv.width||1,cv.height||1);
+    cv.width=r.width*dpr; cv.height=r.height*dpr;
+    ctx.scale(dpr,dpr);
+    ctx.lineCap='round'; ctx.lineJoin='round';
+    // 恢复内容（简单做法：清空，因为是初始）
+    if(state.dirty){ try{ctx.putImageData(img,0,0);}catch(e){} }
+  }
+  resizeCanvas();
+  window.addEventListener('resize',()=>{ resizeCanvas(); });
+
+  function showToast(msg){
+    const t=document.getElementById('toast');
+    t.textContent=msg;
+    t.classList.add('show');
+    clearTimeout(t._t);
+    t._t=setTimeout(()=>t.classList.remove('show'),2200);
+  }
+
+  function pushHistory(){
+    state.history.push(cv.toDataURL());
+    if(state.history.length>20) state.history.shift();
+  }
+
+  function getPos(e){
+    const r=cv.getBoundingClientRect();
+    const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left;
+    const y=(e.touches?e.touches[0].clientY:e.clientY)-r.top;
+    return{x,y};
+  }
+
+  function startDraw(e){
+    e.preventDefault();
+    pushHistory();
+    state.drawing=true;
+    const p=getPos(e);
+    state.startX=p.x; state.startY=p.y;
+    state.lastX=p.x; state.lastY=p.y;
+    state.dirty=true; cvWrap.classList.add('dirty');
+    // 形状工具保存快照用于预览
+    if(state.tool==='line'||state.tool==='rect'){
+      state.snapshot=ctx.getImageData(0,0,cv.width,cv.height);
+    }
+    if(state.tool==='brush'||state.tool==='eraser'){
+      ctx.beginPath();
+      ctx.moveTo(p.x,p.y);
+      // 点一下也能成点
+      ctx.lineTo(p.x+0.01,p.y+0.01);
+      ctx.strokeStyle=state.tool==='eraser'?'rgba(0,0,0,1)':state.color;
+      ctx.globalCompositeOperation=state.tool==='eraser'?'destination-out':'source-over';
+      ctx.globalAlpha=state.opacity;
+      ctx.lineWidth=state.size;
+      ctx.stroke();
+    }
+  }
+
+  function moveDraw(e){
+    const p=getPos(e);
+    coordsEl.textContent=`x:${String(Math.round(p.x)).padStart(3,'0')} · y:${String(Math.round(p.y)).padStart(3,'0')}`;
+    if(!state.drawing) return;
+    e.preventDefault();
+
+    if(state.tool==='brush'||state.tool==='eraser'){
+      ctx.globalCompositeOperation=state.tool==='eraser'?'destination-out':'source-over';
+      ctx.globalAlpha=state.opacity;
+      ctx.strokeStyle=state.color;
+      ctx.lineWidth=state.size;
+      ctx.beginPath();
+      ctx.moveTo(state.lastX,state.lastY);
+      ctx.lineTo(p.x,p.y);
+      ctx.stroke();
+    } else if(state.tool==='line'){
+      ctx.putImageData(state.snapshot,0,0);
+      ctx.globalCompositeOperation='source-over';
+      ctx.globalAlpha=state.opacity;
+      ctx.strokeStyle=state.color;
+      ctx.lineWidth=state.size;
+      ctx.beginPath();
+      ctx.moveTo(state.startX,state.startY);
+      ctx.lineTo(p.x,p.y);
+      ctx.stroke();
+    } else if(state.tool==='rect'){
+      ctx.putImageData(state.snapshot,0,0);
+      ctx.globalCompositeOperation='source-over';
+      ctx.globalAlpha=state.opacity;
+      ctx.strokeStyle=state.color;
+      ctx.lineWidth=state.size;
+      ctx.strokeRect(state.startX,state.startY,p.x-state.startX,p.y-state.startY);
+    }
+    state.lastX=p.x; state.lastY=p.y;
+  }
+
+  function endDraw(){ state.drawing=false; }
+
+  cv.addEventListener('mousedown',startDraw);
+  cv.addEventListener('mousemove',moveDraw);
+  cv.addEventListener('mouseup',endDraw);
+  cv.addEventListener('mouseleave',endDraw);
+  cv.addEventListener('touchstart',startDraw,{passive:false});
+  cv.addEventListener('touchmove',moveDraw,{passive:false});
+  cv.addEventListener('touchend',endDraw);
+
+  // 工具切换
+  document.getElementById('tools').addEventListener('click',e=>{
+    const t=e.target.closest('.tool');
+    if(!t) return;
+    document.querySelectorAll('.tool').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    state.tool=t.dataset.tool;
+    document.getElementById('toolVal').textContent=t.dataset.tool.toUpperCase();
+  });
+
+  // 颜色切换
+  function setColor(c){
+    state.color=c;
+    document.getElementById('colorVal').textContent=c.toUpperCase();
+    document.getElementById('colorPicker').value=c;
+    document.getElementById('sizeDot').style.background=c;
+    document.getElementById('opaDot').style.background=c;
+  }
+  document.getElementById('swatches').addEventListener('click',e=>{
+    const s=e.target.closest('.swatch');
+    if(!s||s.classList.contains('picker')) return;
+    document.querySelectorAll('.swatch').forEach(x=>x.classList.remove('active'));
+    s.classList.add('active');
+    setColor(s.dataset.color);
+  });
+  document.getElementById('colorPicker').addEventListener('input',e=>{
+    document.querySelectorAll('.swatch').forEach(x=>x.classList.remove('active'));
+    setColor(e.target.value);
+  });
+
+  // 笔刷大小
+  const sizeRange=document.getElementById('sizeRange');
+  const sizeDot=document.getElementById('sizeDot');
+  sizeRange.addEventListener('input',e=>{
+    state.size=+e.target.value;
+    document.getElementById('sizeVal').textContent=state.size+'px';
+    const d=Math.max(8,Math.min(28,state.size));
+    sizeDot.style.width=d+'px'; sizeDot.style.height=d+'px';
+  });
+
+  // 不透明度
+  const opaRange=document.getElementById('opaRange');
+  const opaDot=document.getElementById('opaDot');
+  opaRange.addEventListener('input',e=>{
+    state.opacity=+e.target.value/100;
+    document.getElementById('opaVal').textContent=e.target.value+'%';
+    opaDot.style.opacity=state.opacity;
+  });
+
+  // 风格预设
+  document.getElementById('presets').addEventListener('click',e=>{
+    const p=e.target.closest('.preset');
+    if(!p) return;
+    document.querySelectorAll('.preset').forEach(x=>x.classList.remove('active'));
+    p.classList.add('active');
+    state.preset=p.dataset.preset;
+    document.getElementById('presetVal').textContent=p.dataset.preset.toUpperCase();
+  });
+
+  // 清空 / 撤销 / 注入
+  document.getElementById('btnClear').addEventListener('click',()=>{
+    pushHistory();
+    ctx.clearRect(0,0,cv.width,cv.height);
+    state.dirty=false; cvWrap.classList.remove('dirty');
+    showToast('画布已清空');
+  });
+  document.getElementById('btnUndo').addEventListener('click',()=>{
+    if(state.history.length===0){ showToast('没有可撤销的操作'); return; }
+    const last=state.history.pop();
+    const img=new Image();
+    img.onload=()=>{ ctx.clearRect(0,0,cv.width,cv.height); ctx.drawImage(img,0,0,cv.width/(window.devicePixelRatio||1),cv.height/(window.devicePixelRatio||1)); };
+    img.src=last;
+    showToast('已撤销');
+  });
+  document.getElementById('btnInject').addEventListener('click',()=>{
+    if(!state.dirty){ showToast('画布为空，请先绘制'); return; }
+    // 把当前画布数据挂到模块条上
+    const id='ref-'+Date.now().toString(36);
+    const dataUrl=cv.toDataURL('image/png');
+    const name='SelfDraw·'+state.preset+'·'+id.slice(-4).toUpperCase();
+    mounted.set(id,{name:name,hook:'HOOK → STAGE 03/04 (ref image)',img:dataUrl});
+    renderChipsRef();
+    showToast('已作为参考图注入 STAGE 03/04');
+  });
+
+  // 支持带缩略图的 chip 渲染
+  function renderChipsRef(){
+    if(mounted.size===0){
+      chipsEl.innerHTML='<span class="chip empty"><span class="d"></span>暂无挂载模块 · 点击上方 ＋ADD</span>';
+      return;
+    }
+    chipsEl.innerHTML='';
+    mounted.forEach((v,id)=>{
+      const c=document.createElement('span');
+      c.className='chip';
+      const thumb=v.img?`<img src="${v.img}" style="width:18px;height:14px;object-fit:cover;border:1px solid var(--line)">`:'<span class="d"></span>';
+      c.innerHTML=`${thumb}${v.name}<span class="x" data-id="${id}">✕</span>`;
+      chipsEl.appendChild(c);
+    });
+  }
 </script>
 </body>
 </html>
