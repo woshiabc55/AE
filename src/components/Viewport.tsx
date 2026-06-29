@@ -306,6 +306,7 @@ function Viewport() {
   const [isDragOver, setIsDragOver] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [fps, setFps] = useState(0);
+  const [webglError, setWebglError] = useState<string | null>(null);
   const fpsFramesRef = useRef(0);
   const fpsTimeRef = useRef(performance.now());
 
@@ -468,6 +469,14 @@ function Viewport() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    // 检测 WebGL 支持
+    const testGl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+    if (!testGl) {
+      setWebglError('当前浏览器不支持 WebGL，无法启动 3D 渲染器。请使用支持 WebGL 的现代浏览器。');
+      return;
+    }
+
+    try {
     const app = new pc.Application(canvas, {
       mouse: new pc.Mouse(canvas),
       keyboard: new pc.Keyboard(window),
@@ -651,6 +660,10 @@ function Viewport() {
       appRef.current = null;
       setPcApp(null as any);
     };
+    } catch (err) {
+      console.error('PlayCanvas initialization failed:', err);
+      setWebglError('3D 渲染器初始化失败。请确认您的浏览器支持 WebGL 并已启用硬件加速。');
+    }
   }, []);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -698,6 +711,16 @@ function Viewport() {
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
+      {webglError ? (
+        <div className="flex h-full w-full items-center justify-center bg-[#1a1a2e] p-8">
+          <div className="max-w-md rounded-xl border border-red-500/30 bg-[#16213e]/80 p-6 text-center">
+            <div className="mb-3 text-3xl">⚠️</div>
+            <h3 className="mb-2 text-sm font-medium text-white/80">渲染器初始化失败</h3>
+            <p className="text-xs leading-relaxed text-white/50">{webglError}</p>
+          </div>
+        </div>
+      ) : (
+        <>
       <canvas ref={canvasRef} className="block h-full w-full" />
 
       {/* 拖拽覆盖层 */}
@@ -758,6 +781,8 @@ function Viewport() {
             <p className="mt-3 text-[10px] text-white/15">快捷键：Q 选择 · W 移动 · E 旋转 · R 缩放 · Delete 删除</p>
           </div>
         </div>
+      )}
+        </>
       )}
     </div>
   );

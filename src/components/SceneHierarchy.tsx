@@ -65,11 +65,23 @@ const SceneItem = memo(function SceneItem({
   );
 });
 
+interface ObjectInfo {
+  id: string;
+  name: string;
+  type: string;
+  visible: boolean;
+}
+
 function SceneHierarchy() {
-  const objectIds = useEditorStore((s) => s.objects.map((o) => ({
-    id: o.id, name: o.name, type: o.type, visible: o.visible,
-  })));
+  const objects = useEditorStore((s) => s.objects);
   const selectedObjectId = useEditorStore((s) => s.selectedObjectId);
+
+  const objectInfos: ObjectInfo[] = objects.map((o) => ({
+    id: o.id,
+    name: o.name,
+    type: o.type,
+    visible: o.visible,
+  }));
 
   return (
     <div className="flex h-full w-[260px] flex-shrink-0 flex-col border-r border-[#0f3460]/60 bg-[#16213e]/60 backdrop-blur-sm">
@@ -78,19 +90,19 @@ function SceneHierarchy() {
           场景层级
         </span>
         <span className="rounded bg-[#0a0a1a] px-1.5 py-0.5 text-[10px] text-white/30">
-          {objectIds.length}
+          {objectInfos.length}
         </span>
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        {objectIds.length === 0 ? (
+        {objectInfos.length === 0 ? (
           <div className="px-3 py-6 text-center text-xs text-white/20">
             场景为空
             <br />
             <span className="text-[10px]">导入模型以开始编辑</span>
           </div>
         ) : (
-          objectIds.map((obj) => (
+          objectInfos.map((obj) => (
             <SceneItem
               key={obj.id}
               id={obj.id}
