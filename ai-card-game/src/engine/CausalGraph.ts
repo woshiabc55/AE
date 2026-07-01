@@ -12,8 +12,12 @@ export function createCausalGraph(): CausalGraph {
   };
 }
 
-/** 添加事件节点并建立因果边 */
+/** 添加事件节点并建立因果边（含因果强度计算） */
 export function addEvent(graph: CausalGraph, event: GameEvent): void {
+  // 若未显式指定因果强度，按事件类型与影响范围估算
+  if (event.causalWeight === undefined) {
+    event.causalWeight = computeCausalWeight(event);
+  }
   graph.nodes.set(event.id, event);
   if (event.causedBy) {
     const children = graph.edges.get(event.causedBy) ?? [];
@@ -23,6 +27,41 @@ export function addEvent(graph: CausalGraph, event: GameEvent): void {
   if (!graph.edges.has(event.id)) {
     graph.edges.set(event.id, []);
   }
+}
+
+/** 计算因果强度：影响后续事件的潜在程度 0-1 */
+function computeCausalWeight(event: GameEvent): number {
+  // 大事件类型权重高（战争、变法、跃迁）
+  const typeWeights: Record<string, number> = {
+    ERA_TRANSITION: 1.0,
+    BATTLE_RESOLVED: 0.85,
+    REBELLION: 0.75,
+    RULE_INJECTED: 0.7,
+    TECH_BREAKTHROUGH: 0.6,
+    WAR_DECLARED: 0.55,
+    ALLIANCE_FORMED: 0.5,
+    CARD_PLAYED: 0.4,
+    DIALOGUE_RESOLVED: 0.35,
+    TURN_ADVANCE: 0.2,
+    NARRATIVE_SEED: 0.15,
+  };
+  let w = typeWeights[event.type] ?? 0.3;
+  // 影响实体越多，权重越高
+  const impactCount = event.entityDeltas.length;
+  w += Math.min(0.2, impactCount * 0.04);
+  // 悬念事件权重加成（埋伏笔的事件影响深远）
+  if (event.foreshadows?.length) w += 0.15;
+  return Math.min(1, w);
+}
+
+/** 获取因果边强度：从父事件到子事件的因果强度 */
+export function getEdgeWeight(
+  graph: CausalGraph,
+  fromId: EventId,
+  toId: EventId
+): number {
+  const child = graph.nodes.get(toId);
+  return child?.causalWeight ?? 0.3;
 }
 
 /** 获取事件的所有后续（enables） */
@@ -88,6 +127,47 @@ export function causalDepth(graph: CausalGraph): number {
     count++;
   }
   return count === 0 ? 0 : total / count;
+}
+
+/** 获取所有未揭示的悬念（悬疑叙事核心查询） */
+export function getUnresolvedSuspense(graph: CausalGraph): GameEvent[] {
+  const result: GameEvent[] = [];
+  for (const event of graph.nodes.values()) {
+    if (event.suspense && !event.suspense.revealed) {
+      result.push(event);
+    }
+  }
+  return result;
+}
+
+/** 获取已到揭示时机的悬念（应在当前回合揭示） */
+export function getDueSuspense(graph: CausalGraph, currentTurn: number): GameEvent[] {
+  return getUnresolvedSuspense(graph).filter((e) => {
+    const revealBy = e.suspense?.revealByTurn;
+    return revealBy !== undefined && currentTurn >= revealBy;
+  });
+}
+
+/** 标记某悬念已揭示，并建立揭示因果链 */
+export function markRevealed(graph: CausalGraph, suspenseEventId: EventId, revealEventId: EventId): void {
+  const event = graph.nodes.get(suspenseEventId);
+  if (event) {
+    if (event.suspense) {
+      event.suspense.revealed = true;
+    }
+    event.foreshadows = [...(event.foreshadows ?? []), revealEventId];
+  }
+  const revealEvent = graph.nodes.get(revealEventId);
+  if (revealEvent) {
+    revealEvent.reveals = [...(revealEvent.reveals ?? []), suspenseEventId];
+  }
+}
+
+/** 获取某事件的伏笔链：所有它埋下且已揭示的伏笔对 */
+export function getForeshadowChain(graph: CausalGraph, eventId: EventId): { seed: EventId; revealed: EventId }[] {
+  const event = graph.nodes.get(eventId);
+  if (!event?.foreshadows) return [];
+  return event.foreshadows.map((revealedId) => ({ seed: eventId, revealed: revealedId }));
 }
 
 /** 反事实推演：假设移除某事件，计算影响传播范围 */

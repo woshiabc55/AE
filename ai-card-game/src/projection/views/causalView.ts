@@ -1,5 +1,5 @@
 import type { GameContext as GCtx } from "@/game";
-import type { GameEvent, EventId } from "@/types";
+import type { GameEvent, EventId, NarrativeLayer, SuspenseMarker } from "@/types";
 import { getAncestors, getDescendants, counterfactualImpact } from "@/engine/CausalGraph";
 
 export interface CausalNodeView {
@@ -10,6 +10,12 @@ export interface CausalNodeView {
   source: string;
   parents: EventId[];
   children: EventId[];
+  /** 悬疑叙事字段（本质新增） */
+  narrativeLayer?: NarrativeLayer;
+  causalWeight?: number;
+  suspense?: SuspenseMarker;
+  foreshadows?: EventId[];
+  reveals?: EventId[];
 }
 
 export interface CausalView {
@@ -34,6 +40,11 @@ export function computeCausalView(ctx: GCtx): CausalView {
       source: event.source,
       parents,
       children: [...children],
+      narrativeLayer: event.narrativeLayer,
+      causalWeight: event.causalWeight,
+      suspense: event.suspense,
+      foreshadows: event.foreshadows,
+      reveals: event.reveals,
     });
     for (const child of children) {
       edges.push({ from: id, to: child });

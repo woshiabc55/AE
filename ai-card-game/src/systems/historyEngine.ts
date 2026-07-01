@@ -31,13 +31,16 @@ export async function advanceTurn(ctx: GameContext): Promise<GameEvent[]> {
   // 1. Director 下达剧本约束
   const directive = await director.direct({ turn: world.turn, rng });
 
-  // 2. 历史 AI 生成提议
-  const advance = await advanceHistory({ world, graph: ctx.graph, rng, directive });
+  // 1.5 悬疑叙事编排（本质新增）— Director 编排伏笔/揭示
+  const suspense = director.orchestrateSuspense(ctx.graph, world, rng);
+
+  // 2. 历史 AI 生成提议（集成悬疑指令）
+  const advance = await advanceHistory({ world, graph: ctx.graph, rng, directive, suspense });
 
   const producedEvents: GameEvent[] = [];
   const causedByRoot: EventId | undefined = undefined;
 
-  // 3. 回合推进事件
+  // 3. 回合推进事件（携带张力等级）
   const turnEvent = CommandBus.buildEvent({
     type: "TURN_ADVANCE",
     turn: world.turn,
@@ -46,11 +49,16 @@ export async function advanceTurn(ctx: GameContext): Promise<GameEvent[]> {
     causedBy: causedByRoot,
     entityDeltas: [],
     narrative: advance.narrativeSeed,
-    metadata: { directive: directive.theme, pacing: directive.pacing },
+    metadata: {
+      directive: directive.theme,
+      pacing: directive.pacing,
+      tensionLevel: suspense.tensionLevel,
+      activeArcs: suspense.activeArcs.map((a) => a.theme),
+    },
   });
   producedEvents.push(turnEvent);
 
-  // 4. 偶然事件按概率触发
+  // 4. 偶然事件按概率触发（携带悬疑叙事层）
   for (const con of advance.meso.contingencies) {
     if (!chance(rng, con.probability)) continue;
     const event = CommandBus.buildEvent({
@@ -61,6 +69,16 @@ export async function advanceTurn(ctx: GameContext): Promise<GameEvent[]> {
       causedBy: turnEvent.id,
       entityDeltas: con.deltas,
       narrative: con.description,
+      narrativeLayer: con.narrativeLayer,
+      foreshadows: con.revealsSeed ? [con.revealsSeed] : undefined,
+      suspense: con.suspenseQuestion
+        ? {
+            question: con.suspenseQuestion,
+            revealByTurn: world.turn + 3,
+            revealed: false,
+            involves: con.involvesNpc ? [con.involvesNpc] : undefined,
+          }
+        : undefined,
       aiTrace: {
         traceId: nanoid(8),
         tier: "fast",

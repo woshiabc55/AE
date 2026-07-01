@@ -188,6 +188,104 @@ export interface GameEvent {
   aiTrace?: AITrace;
   narrative?: string; // 人类可读的叙事描述
   metadata?: Record<string, unknown>;
+
+  // ===== 悬疑叙事层（本质新增）=====
+  /** 叙事层级：表层(可见)/暗层(动机)/隐藏层(真相) */
+  narrativeLayer?: NarrativeLayer;
+  /** 该事件埋下的伏笔（指向未来揭示事件 ID） */
+  foreshadows?: EventId[];
+  /** 该事件揭示的伏笔（指向过去埋伏笔事件 ID） */
+  reveals?: EventId[];
+  /** 因果强度 0-1：影响后续事件的程度（决定可视化边粗细） */
+  causalWeight?: number;
+  /** 悬念标记：未闭合的疑问点 */
+  suspense?: SuspenseMarker;
+}
+
+/** 叙事层级 — 悬疑故事的核心架构 */
+export type NarrativeLayer = "surface" | "hidden" | "deep";
+
+/** 悬念标记 — 未解之谜的元数据 */
+export interface SuspenseMarker {
+  /** 悬念问题（如"谁是内奸？""秦王为何犹豫？"） */
+  question: string;
+  /** 揭示时机：建议在第几回合揭示 */
+  revealByTurn?: number;
+  /** 是否已揭示 */
+  revealed: boolean;
+  /** 涉及的 NPC（信息不对称标记） */
+  involves?: string[];
+}
+
+/** 故事弧线 — 悬疑叙事的多层结构（Director 编排） */
+export interface StoryArc {
+  /** 弧线 ID */
+  id: string;
+  /** 弧线主题（如"远交近攻的暗流""商鞅之死""合纵破灭"） */
+  theme: string;
+  /** 三段式：伏笔—悬念—揭示 */
+  phases: {
+    /** 伏笔阶段：埋下线索的回合范围 */
+    foreshadow: { startTurn: number; endTurn: number };
+    /** 悬念阶段：制造疑问的回合范围 */
+    suspense: { startTurn: number; endTurn: number };
+    /** 揭示阶段：真相大白的回合范围 */
+    reveal: { startTurn: number; endTurn: number };
+  };
+  /** 涉及的 NPC（信息不对称方） */
+  involvedNpcs?: string[];
+  /** 涉及的势力 */
+  involvedFactions?: string[];
+  /** 当前阶段 */
+  currentPhase: "foreshadow" | "suspense" | "reveal" | "closed";
+  /** 弧线状态 */
+  status: "pending" | "active" | "resolved";
+  /** 隐藏真相（仅 Director 知晓，揭示时方显） */
+  hiddenTruth?: string;
+  /** 埋伏笔的事件 ID 列表 */
+  seedEvents?: EventId[];
+  /** 揭示事件 ID */
+  revealEvent?: EventId;
+}
+
+/** 悬疑叙事生成指令 — Director 下发给 historyAgent */
+export interface SuspenseDirective {
+  /** 本回合应激活的故事弧线 */
+  activeArcs: StoryArc[];
+  /** 本回合应埋下的伏笔 */
+  foreshadowsToPlant: ForeshadowSeed[];
+  /** 本回合应揭示的悬念 */
+  suspenseToReveal: SuspenseReveal[];
+  /** 张力等级 0-100 */
+  tensionLevel: number;
+  /** 信息不对称提示（玩家未知但 NPC 已知的情报） */
+  asymmetricHints: string[];
+}
+
+/** 伏笔种子 — 待埋入历史事件的伏笔 */
+export interface ForeshadowSeed {
+  /** 伏笔主题 */
+  theme: string;
+  /** 关联的弧线 ID */
+  arcId: string;
+  /** 伏笔文本（模糊暗示） */
+  hint: string;
+  /** 涉及的 NPC */
+  involvesNpc?: string;
+  /** 计划揭示回合 */
+  revealByTurn: number;
+}
+
+/** 悬念揭示 — 真相大白的事件 */
+export interface SuspenseReveal {
+  /** 关联的弧线 ID */
+  arcId: string;
+  /** 揭示文本（真相） */
+  truth: string;
+  /** 被揭示的伏笔事件 ID */
+  seedEventId: EventId;
+  /** 涉及的 NPC（信息状态变更） */
+  involvesNpc?: string;
 }
 
 // ============================================================================
@@ -417,6 +515,16 @@ export interface Contingency {
   type: EventType;
   deltas: ComponentDelta[];
   probability: number;
+  /** 悬疑叙事层（本质新增）*/
+  narrativeLayer?: NarrativeLayer;
+  /** 伏笔主题（埋伏笔时标记） */
+  foreshadowTheme?: string;
+  /** 揭示的伏笔事件 ID（揭示事件时标记） */
+  revealsSeed?: EventId;
+  /** 涉及的 NPC */
+  involvesNpc?: string;
+  /** 悬念问题（制造悬念时标记） */
+  suspenseQuestion?: string;
 }
 
 export interface HistoryAdvance {

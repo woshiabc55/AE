@@ -8,6 +8,7 @@ import type {
   ComponentDelta,
   EventType,
   AITier,
+  SuspenseDirective,
 } from "@/types";
 import { ERA_ORDER, ERA_LABELS } from "@/types";
 import { selectHistoricalEvents } from "@/game/events";
@@ -44,12 +45,13 @@ const GENERIC_EVENTS: {
   },
 ];
 
-/** 历史 AI 规则兜底 — 优先使用历史事件库，不足时回退通用事件 */
+/** 历史 AI 规则兜底 — 优先使用历史事件库，集成悬疑叙事 */
 export function historyFallback(opts: {
   world: World;
   rng: () => number;
+  suspense?: SuspenseDirective;
 }): HistoryAdvance {
-  const { world, rng } = opts;
+  const { world, rng, suspense } = opts;
   const { era, turn } = world;
   const entities = Array.from(world.entities.keys());
   const idx = ERA_ORDER.indexOf(era);
@@ -72,6 +74,51 @@ export function historyFallback(opts: {
     });
   }
 
+  // 悬疑叙事集成：将伏笔种子转化为额外的 contingencies
+  if (suspense?.foreshadowsToPlant.length) {
+    for (const seed of suspense.foreshadowsToPlant) {
+      contingencies.push({
+        id: `foreshadow_${turn}_${seed.arcId}`,
+        description: seed.hint,
+        type: "NARRATIVE_SEED",
+        deltas: [],
+        probability: 0.9,
+        narrativeLayer: "hidden",
+        foreshadowTheme: seed.theme,
+        involvesNpc: seed.involvesNpc,
+      });
+    }
+  }
+
+  // 悬疑揭示：将揭示事件加入 contingencies
+  if (suspense?.suspenseToReveal.length) {
+    for (const reveal of suspense.suspenseToReveal) {
+      contingencies.push({
+        id: `reveal_${turn}_${reveal.arcId}`,
+        description: reveal.truth,
+        type: "NARRATIVE_SEED",
+        deltas: [],
+        probability: 1.0,
+        narrativeLayer: "deep",
+        revealsSeed: reveal.seedEventId,
+        involvesNpc: reveal.involvesNpc,
+      });
+    }
+  }
+
+  // 悬疑化的叙事种子：根据张力等级选择不同语气
+  const tension = suspense?.tensionLevel ?? 20;
+  let narrativeSeed: string;
+  if (tension > 70) {
+    narrativeSeed = `第 ${turn + 1} 回合，${ERA_LABELS[era]}风云骤紧。暗流汹涌，变局在即。`;
+  } else if (tension > 40) {
+    narrativeSeed = `第 ${turn + 1} 回合，${ERA_LABELS[era]}的局势渐趋微妙，疑云暗生。`;
+  } else if (suspense?.asymmetricHints.length) {
+    narrativeSeed = `第 ${turn + 1} 回合，${ERA_LABELS[era]}看似平静，然细察之下，似有隐情。${suspense.asymmetricHints[0]}`;
+  } else {
+    narrativeSeed = `第 ${turn + 1} 回合，${ERA_LABELS[era]}的画卷徐徐展开。`;
+  }
+
   return {
     macro: {
       trend: [
@@ -85,7 +132,7 @@ export function historyFallback(opts: {
       nextEraCandidate: turn >= 8 && next ? next : undefined,
     },
     meso: { contingencies },
-    narrativeSeed: `第 ${turn + 1} 回合，${ERA_LABELS[era]}的画卷徐徐展开。`,
+    narrativeSeed,
     causalHooks: [],
   };
 }
