@@ -122,20 +122,42 @@ export function cardFallback(opts: {
   return candidates[Math.floor(rng() * candidates.length)];
 }
 
-/** 对话 AI 规则兜底 */
+/** 对话台词库 — 按 NPC archetype 分类，贴合各色人物口吻 */
+const DIALOGUE_LINES: Record<string, string[]> = {
+  谋士: [
+    "{name}目光如炬，声调低沉：「权柄之要，在于制人而非制于人。阁下以为然否？」",
+    "「天下之事，非黑即白者寡，灰色地带方是角力之所。」{name}捻须而言。",
+    "{name}展开一卷竹简，指尖轻叩地图：「远交近攻，此乃并吞天下之要略。」",
+    "「法、术、势，三者不可偏废。」{name}正色道，「阁下欲以何者先行？」",
+    "{name}微微前倾，压低嗓音：「庙堂之上，刀兵之外，方寸之间即是战场。」",
+  ],
+  国相: [
+    "{name}整衣正冠，神色端肃：「邦交之道，以信为本，以利为辅。」",
+    "「将相和，则国安；将相失，则国危。」{name}语重心长。",
+    "{name}轻抚长须：「兵者不祥之器，不得已而用之。阁下以为当下可避此祸？」",
+    "「完璧归赵、渑池之会，皆赖智勇。」{name}叹道，「然今日之势，更胜往昔。」",
+    "{name}拱手道：「君之视臣如手足，则臣视君如腹心。愿闻阁下之志。」",
+  ],
+  学士: [
+    "{name}手中拂尘轻摆，谈笑风生：「五德终始，天命流转，阁下可知今为何德？」",
+    "「学以致道，非以致用。」{name}摇头叹息，「然世人皆汲汲于功利，悲夫。」",
+    "{name}指天画地：「阴阳消长，气数使然。齐之盛衰，观星象可知。」",
+    "「稷下论道，百家争鸣。」{name}眉飞色舞，「今日得遇阁下，可愿一辩？」",
+    "{name}抚须含笑：「大道至简，然世人好径。阁下所求，为何道也？」",
+  ],
+};
+
+/** 对话 AI 规则兜底 — 按 archetype 取贴合口吻的台词 */
 export function dialogueFallback(opts: {
   npcName: string;
   npcTitle: string;
+  archetype: string;
   rng: () => number;
 }): DialogueTurn {
-  const { npcName, npcTitle, rng } = opts;
-  const lines = [
-    `${npcName}微微颔首，目光深邃："局势瞬息万变，阁下有何高见？"`,
-    `"天下熙熙，皆为利来。"${npcName}捻须而言，"阁下此来，所求为何？"`,
-    `${npcName}轻叩案几："兵者，国之大事。不可不察。"`,
-    `"礼崩乐坏久矣。"${npcName}叹道，"吾辈当何以自处？"`,
-  ];
-  const text = lines[Math.floor(rng() * lines.length)];
+  const { npcName, npcTitle, archetype, rng } = opts;
+  const pool = DIALOGUE_LINES[archetype] ?? DIALOGUE_LINES["谋士"];
+  const template = pool[Math.floor(rng() * pool.length)];
+  const text = template.replace(/\{name\}/g, npcName);
   return {
     id: `dia_${npcName}_${Math.floor(rng() * 1e6)}`,
     speaker: npcName,
@@ -143,7 +165,18 @@ export function dialogueFallback(opts: {
     options: [
       { id: "o1", text: "陈述己方立场，争取合作", consequences: "关系改善" },
       { id: "o2", text: "暗示对方弱点，施加压力", consequences: "信息暴露" },
-      { id: "o3", text: "保持沉默，观察其反应", consequences: "心智模型更新", asymmetricInfo: `${npcTitle}似有隐瞒` },
+      {
+        id: "o3",
+        text: "保持沉默，观察其反应",
+        consequences: "心智模型更新",
+        asymmetricInfo: `${npcTitle}似有隐瞒`,
+      },
+      {
+        id: "o4",
+        text: "以利相诱，许以城池财货",
+        consequences: "信任度变化",
+        asymmetricInfo: `${archetype}类人物对此反应难料`,
+      },
     ],
   };
 }

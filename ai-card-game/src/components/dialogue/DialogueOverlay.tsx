@@ -57,7 +57,7 @@ export function DialogueOverlay() {
             </div>
 
             {/* 选项分支 */}
-            <div className="flex flex-col gap-2">
+            <div className="scroll-vermillion flex max-h-[40vh] flex-col gap-2 overflow-y-auto pr-1">
               {currentDialogue.options?.map((option) => (
                 <button
                   key={option.id}

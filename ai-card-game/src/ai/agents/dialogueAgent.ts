@@ -22,6 +22,7 @@ export async function generateDialogue(input: DialogueAgentInput): Promise<Dialo
   const fallback = dialogueFallback({
     npcName: npc.persona.name,
     npcTitle: npc.persona.title,
+    archetype: npc.persona.archetype,
     rng,
   });
   const { data } = await aiService.request<DialogueTurn>({

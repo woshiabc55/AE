@@ -102,8 +102,14 @@ export default function Codex() {
 
       <div className="grid flex-1 grid-cols-1 gap-4 lg:grid-cols-[1fr_340px]">
         {/* 卡牌网格 */}
-        <section className="chronicle-frame p-4">
-          <div className="grid grid-cols-2 gap-3 overflow-y-auto md:grid-cols-3">
+        <section className="chronicle-frame scroll-cap flex max-h-[calc(100vh-220px)] flex-col p-4">
+          <div className="mb-3 flex items-center gap-2 border-b border-gold-500/20 pb-2">
+            <span className="gilt-title font-serif text-sm uppercase tracking-widest">卡牌卷</span>
+            <span className="ml-auto font-mono text-[9px] text-parchment-300/40">
+              {filtered.length} / {CARD_TEMPLATES.length}
+            </span>
+          </div>
+          <div className="scroll-gilt grid flex-1 grid-cols-2 gap-3 overflow-y-auto pr-2 md:grid-cols-3">
             {filtered.map((card) => (
               <div key={card.id} className="h-56">
                 <CardItem
@@ -117,12 +123,13 @@ export default function Codex() {
         </section>
 
         {/* 演化树 */}
-        <aside className="chronicle-frame p-4">
+        <aside className="chronicle-frame scroll-cap flex max-h-[calc(100vh-220px)] flex-col p-4">
           {selectedCard && chain.length > 0 ? (
             <motion.div
               key={selectedCard}
               initial={{ opacity: 0, x: 12 }}
               animate={{ opacity: 1, x: 0 }}
+              className="scroll-gilt flex-1 overflow-y-auto pr-2"
             >
               <div className="mb-3 flex items-center gap-2 border-b border-gold-500/20 pb-2">
                 <GitBranch size={14} className="text-gold-300" />
@@ -184,7 +191,7 @@ export default function Codex() {
               )}
             </motion.div>
           ) : (
-            <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
+            <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
               <GitBranch size={24} className="text-gold-500/40" />
               <p className="font-serif text-xs italic text-parchment-300/50">
                 点击卡牌

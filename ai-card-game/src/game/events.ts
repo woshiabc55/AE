@@ -249,6 +249,113 @@ export const HISTORICAL_EVENTS: HistoricalEvent[] = [
     probability: 0.25,
     broadcast: true,
   },
+  {
+    id: "jingke_assassination",
+    name: "荆轲刺秦",
+    description: "图穷匕见，荆轲献督亢之图。事败而秦王震怒，加速灭燕。",
+    historicalRef: "前227 荆轲刺秦王，'风萧萧兮易水寒'。事败，秦遂攻燕。",
+    type: "BATTLE_RESOLVED",
+    era: "classical",
+    condition: (world) => {
+      // 存在一家独大的霸主 → 弱者铤而走险行刺
+      const dominant = Array.from(world.entities.entries()).filter(([, comps]) => {
+        const m = comps.MilitaryC as MilitaryC | undefined;
+        return (m?.troops ?? 0) > 110;
+      });
+      return dominant.length >= 1 && world.turn >= 6;
+    },
+    deltas: (entity) => [
+      { entity, component: "MilitaryC", patch: { morale: -8 } },
+      { entity, component: "CulturalC", patch: { prestige: 8 } },
+    ],
+    probability: 0.3,
+    broadcast: true,
+  },
+  {
+    id: "chu_han_contention",
+    name: "楚汉相争",
+    description: "秦鹿已失，天下共逐。楚汉对峙，成王败寇在此一举。",
+    historicalRef: "秦亡后楚汉相争（前206-202），垓下一战，项羽自刎，汉立。",
+    type: "BATTLE_RESOLVED",
+    era: "medieval",
+    condition: (world) => {
+      // 帝国纪元初，两强并立 → 争霸
+      if (world.turn < 2) return false;
+      const strong = Array.from(world.entities.entries()).filter(([, comps]) => {
+        const m = comps.MilitaryC as MilitaryC | undefined;
+        return (m?.troops ?? 0) > 75;
+      });
+      return strong.length >= 2;
+    },
+    deltas: (entity) => [
+      { entity, component: "MilitaryC", patch: { troops: -20, morale: -10 } },
+      { entity, component: "EconomicC", patch: { food: -15 } },
+    ],
+    probability: 0.3,
+    broadcast: true,
+  },
+  {
+    id: "lushan_rebellion",
+    name: "安史之乱",
+    description: "渔阳鼙鼓动地来，惊破霓裳羽衣曲。盛唐由盛转衰。",
+    historicalRef: "唐天宝十四载（755）安禄山起兵，'渔阳鼙鼓动地来'，唐由盛转衰。",
+    type: "REBELLION",
+    era: "medieval",
+    condition: (world, entity) => {
+      const cultural = getComponent<CulturalC>(world, entity, "CulturalC");
+      // 威望极盛而内部腐化 → 边将拥兵叛乱
+      return (cultural?.prestige ?? 0) > 80;
+    },
+    deltas: (entity) => [
+      { entity, component: "MilitaryC", patch: { troops: -18, morale: -12 } },
+      { entity, component: "EconomicC", patch: { gold: -30, food: -20 } },
+      { entity, component: "CulturalC", patch: { prestige: -15 } },
+      { entity, component: "EntropyC", patch: { entropy: 10 } },
+    ],
+    probability: 0.25,
+    broadcast: true,
+  },
+  {
+    id: "jingkang_humiliation",
+    name: "靖康之耻",
+    description: "金兵南下，二帝北狩。中原衣冠南渡，半壁江山沦丧。",
+    historicalRef: "靖康二年（1127）金破汴京，徽钦二帝北狩，宋室南渡。",
+    type: "BATTLE_RESOLVED",
+    era: "modern",
+    condition: (world, entity) => {
+      const military = getComponent<MilitaryC>(world, entity, "MilitaryC");
+      const cultural = getComponent<CulturalC>(world, entity, "CulturalC");
+      // 武备松弛而文化鼎盛 → 外患骤至
+      return (military?.morale ?? 0) < 45 && (cultural?.prestige ?? 0) > 60;
+    },
+    deltas: (entity) => [
+      { entity, component: "MilitaryC", patch: { troops: -25, morale: -15 } },
+      { entity, component: "EconomicC", patch: { gold: -40, food: -25 } },
+      { entity, component: "CulturalC", patch: { prestige: -10 } },
+    ],
+    probability: 0.2,
+    broadcast: true,
+  },
+  {
+    id: "zheng_he_voyage",
+    name: "郑和下西洋",
+    description: "宝船九桅，远涉重洋，万国来朝而靡费巨万。",
+    historicalRef: "明永乐至宣德间（1405-1433）郑和七下西洋，耀兵异域，示中国富强。",
+    type: "TECH_BREAKTHROUGH",
+    era: "modern",
+    condition: (world, entity) => {
+      const economic = getComponent<EconomicC>(world, entity, "EconomicC");
+      const military = getComponent<MilitaryC>(world, entity, "MilitaryC");
+      // 国富兵强 → 远洋宣威
+      return (economic?.gold ?? 0) > 200 && (military?.techLevel ?? 0) >= 3;
+    },
+    deltas: (entity) => [
+      { entity, component: "CulturalC", patch: { prestige: 25 } },
+      { entity, component: "EconomicC", patch: { gold: -30 } },
+      { entity, component: "EntropyC", patch: { entropy: 6 } },
+    ],
+    probability: 0.25,
+  },
 ];
 
 /**

@@ -8,12 +8,12 @@ import { cn } from "@/lib/utils";
 export function FactionPanel() {
   const { factions } = useGameStore();
   return (
-    <section className="chronicle-frame flex h-full flex-col p-4">
+    <section className="chronicle-frame scroll-cap flex h-full flex-col p-4">
       <div className="mb-3 flex items-center gap-2 border-b border-gold-500/20 pb-2">
         <Crown size={14} className="text-gold-300" />
         <h2 className="gilt-title font-serif text-sm uppercase tracking-widest">列国</h2>
       </div>
-      <div className="flex flex-col gap-3 overflow-y-auto pr-1">
+      <div className="scroll-bronze flex flex-1 flex-col gap-3 overflow-y-auto pr-1">
         {factions.map((f) => (
           <FactionSeal key={f.entityId} faction={f} />
         ))}

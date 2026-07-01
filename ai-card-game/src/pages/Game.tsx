@@ -43,15 +43,15 @@ export default function Game() {
   if (!ctx) return null;
 
   return (
-    <div className="flex min-h-screen flex-col px-4 py-4">
+    <div className="flex h-screen flex-col overflow-hidden px-4 py-4">
       <EraBanner />
 
       {/* 主体：左右分栏 */}
-      <div className="grid flex-1 grid-cols-1 gap-4 lg:grid-cols-[280px_1fr_320px]">
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 lg:grid-cols-[280px_1fr_320px]">
         <FactionPanel />
 
         {/* 中央：状态 + 控制 */}
-        <main className="flex flex-col gap-4">
+        <main className="scroll-gilt flex min-h-0 flex-col gap-4 overflow-y-auto pr-1">
           <FeedbackIndicator />
 
           {/* 消息提示 */}

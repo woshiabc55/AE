@@ -190,6 +190,77 @@ export const NPC_TEMPLATES = [
       },
     ],
   },
+  {
+    id: "npc_lisi",
+    persona: {
+      name: "李斯",
+      title: "秦国廷尉",
+      description: "师从荀子，佐秦王并天下，主法术势，定郡县之制。",
+      archetype: "谋士",
+    },
+    faction: "qin",
+    goals: [
+      { id: "g1", description: "辅佐秦王统一六国，废分封而行郡县", priority: 5 },
+      { id: "g2", description: "推行书同文、车同轨，确立法家一统之制", priority: 4 },
+      { id: "g3", description: "铲除同门韩非，独占帝王之师", priority: 3 },
+    ],
+    secrets: [
+      {
+        id: "s1",
+        content: "李斯昔为楚之布衣，'诟莫大于卑贱，而悲莫甚于穷困'，故汲汲于功利。",
+        revealedTo: [],
+      },
+      {
+        id: "s2",
+        content: "韩非入秦，秦王极赏其才，李斯恐失宠，或下谮于狱。",
+        revealedTo: [],
+      },
+    ],
+  },
+  {
+    id: "npc_zhangliang",
+    persona: {
+      name: "张良",
+      title: "帝王之师",
+      description: "博浪沙椎秦未遂，后得黄石公传太公兵法，运筹帷幄。",
+      archetype: "国相",
+    },
+    faction: "zhao",
+    goals: [
+      { id: "g1", description: "为韩复仇，颠覆暴秦之政", priority: 5 },
+      { id: "g2", description: "辅佐明主成就帝业，复立韩国社稷", priority: 4 },
+      { id: "g3", description: "功成之后隐退从赤松子游", priority: 2 },
+    ],
+    secrets: [
+      {
+        id: "s1",
+        content: "张良家五世相韩，秦灭韩后散尽家财求刺客，博浪沙之椎即其所谋。",
+        revealedTo: [],
+      },
+    ],
+  },
+  {
+    id: "npc_zhugeliang",
+    persona: {
+      name: "诸葛亮",
+      title: "卧龙先生",
+      description: "躬耕南阳，自比管仲乐毅。三顾之恩，隆中定三分之计。",
+      archetype: "国相",
+    },
+    faction: "chu",
+    goals: [
+      { id: "g1", description: "佐明主成三分鼎足之势，以图兴复", priority: 5 },
+      { id: "g2", description: "南抚夷越，结好孙权，北拒曹魏", priority: 4 },
+      { id: "g3", description: "鞠躬尽瘁，死而后已", priority: 3 },
+    ],
+    secrets: [
+      {
+        id: "s1",
+        content: "隆中对已定天下三分之计，然'谋事在人，成事在天'，成败未可知。",
+        revealedTo: [],
+      },
+    ],
+  },
 ] as const;
 
 export type FactionTrait = FactionTemplate["trait"];

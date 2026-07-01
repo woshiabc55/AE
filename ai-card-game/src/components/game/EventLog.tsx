@@ -15,7 +15,7 @@ const SOURCE_META: Record<GameEvent["source"], { icon: typeof User; color: strin
 export function EventLog() {
   const { eventLog } = useGameStore();
   return (
-    <section className="chronicle-frame flex h-full flex-col p-4">
+    <section className="chronicle-frame scroll-cap flex h-full flex-col p-4">
       <div className="mb-3 flex items-center gap-2 border-b border-gold-500/20 pb-2">
         <GitBranch size={14} className="text-gold-300" />
         <h2 className="gilt-title font-serif text-sm uppercase tracking-widest">编年史</h2>
@@ -23,7 +23,7 @@ export function EventLog() {
           {eventLog.length} 条
         </span>
       </div>
-      <div className="flex flex-col gap-1.5 overflow-y-auto pr-1">
+      <div className="scroll-gilt flex flex-1 flex-col gap-1.5 overflow-y-auto pr-1">
         <AnimatePresence initial={false}>
           {eventLog.map((event) => (
             <EventEntry key={event.id} event={event} />

@@ -80,7 +80,7 @@ export default function Chronicle() {
 
       <div className="grid flex-1 grid-cols-1 gap-4 lg:grid-cols-[1fr_300px]">
         {/* 图谱 / 时间轴 */}
-        <section className="chronicle-frame relative overflow-hidden p-4">
+        <section className="chronicle-frame scroll-cap relative max-h-[calc(100vh-160px)] overflow-hidden p-4">
           {causal.nodes.length === 0 ? (
             <div className="flex h-full items-center justify-center">
               <p className="font-serif text-sm italic text-parchment-300/40">
@@ -101,7 +101,7 @@ export default function Chronicle() {
         </section>
 
         {/* 节点详情 / 反事实推演 */}
-        <aside className="chronicle-frame flex flex-col gap-3 p-4">
+        <aside className="chronicle-frame scroll-cap flex max-h-[calc(100vh-160px)] flex-col p-4">
           {selected ? (
             <NodeDetail
               ctx={ctx}
@@ -222,7 +222,7 @@ function TimelineView({
   onSelect: (id: EventId) => void;
 }) {
   return (
-    <div className="flex h-full flex-col gap-1 overflow-y-auto">
+    <div className="scroll-gilt flex h-full flex-col gap-1 overflow-y-auto pr-2">
       {nodes.map((n) => (
         <button
           key={n.id}
@@ -262,7 +262,7 @@ function NodeDetail({
       key={selected}
       initial={{ opacity: 0, x: 12 }}
       animate={{ opacity: 1, x: 0 }}
-      className="flex flex-col gap-3"
+      className="scroll-gilt flex flex-1 flex-col gap-3 overflow-y-auto pr-2"
     >
       <div className="border-b border-gold-500/20 pb-2">
         <span className="font-mono text-[10px] uppercase tracking-wider text-gold-500/60">

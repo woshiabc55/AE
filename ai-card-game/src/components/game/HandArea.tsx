@@ -26,7 +26,7 @@ export function HandArea() {
           <Plus size={12} /> 抽牌
         </SealButton>
       </div>
-      <div className="flex gap-3 overflow-x-auto pb-2">
+      <div className="scroll-hand flex gap-3 overflow-x-auto pb-2">
         {hand.cards.length === 0 ? (
           <p className="py-6 font-serif text-xs italic text-parchment-300/40">
             手中空空，点击"抽牌"获取历史命题。
