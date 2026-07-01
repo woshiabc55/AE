@@ -6,6 +6,7 @@ import type {
   EconomicC,
   CulturalC,
   EntropyC,
+  PopulationC,
 } from "@/types";
 
 export interface FactionView {
@@ -21,6 +22,8 @@ export interface FactionView {
   food: number;
   prestige: number;
   entropy: number;
+  population: number;
+  happiness: number;
 }
 
 /** Projection — 势力面板视图 */
@@ -34,6 +37,7 @@ export function computeFactionView(ctx: GCtx): FactionView[] {
     const economic = getComp<EconomicC>(ctx, entity, "EconomicC");
     const cultural = getComp<CulturalC>(ctx, entity, "CulturalC");
     const entropy = getComp<EntropyC>(ctx, entity, "EntropyC");
+    const population = getComp<PopulationC>(ctx, entity, "PopulationC");
     views.push({
       entityId: entity,
       name: faction.name,
@@ -47,6 +51,8 @@ export function computeFactionView(ctx: GCtx): FactionView[] {
       food: economic?.food ?? 0,
       prestige: cultural?.prestige ?? 0,
       entropy: entropy?.entropy ?? 0,
+      population: population?.population ?? 0,
+      happiness: population?.happiness ?? 50,
     });
   }
   return views;

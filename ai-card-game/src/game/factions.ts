@@ -5,6 +5,7 @@ import type {
   CulturalC,
   EntropyC,
   HandC,
+  PopulationC,
 } from "@/types";
 
 export interface FactionTemplate {
@@ -24,6 +25,7 @@ export interface FactionTemplate {
     CulturalC: CulturalC;
     EntropyC: EntropyC;
     HandC: HandC;
+    PopulationC: PopulationC;
   };
 }
 
@@ -58,6 +60,7 @@ export const FACTION_TEMPLATES: FactionTemplate[] = [
       CulturalC: { prestige: 15, ideas: ["商鞅变法", "军功爵制"] },
       EntropyC: { entropy: 28 },
       HandC: { cards: ["iron_sword", "shang_yang_reform"] },
+      PopulationC: { population: 60, growth: 1.5, happiness: 55 },
     },
   },
   {
@@ -76,6 +79,7 @@ export const FACTION_TEMPLATES: FactionTemplate[] = [
       CulturalC: { prestige: 35, ideas: ["胡服骑射", "北疆防线"] },
       EntropyC: { entropy: 24 },
       HandC: { cards: ["iron_sword", "clan_gathering"] },
+      PopulationC: { population: 45, growth: 1.0, happiness: 50 },
     },
   },
   {
@@ -94,6 +98,7 @@ export const FACTION_TEMPLATES: FactionTemplate[] = [
       CulturalC: { prestige: 65, ideas: ["稷下学宫", "管子轻重"] },
       EntropyC: { entropy: 26 },
       HandC: { cards: ["trade_caravan", "harvest_rite"] },
+      PopulationC: { population: 70, growth: 2.0, happiness: 70 },
     },
   },
   {
@@ -112,6 +117,7 @@ export const FACTION_TEMPLATES: FactionTemplate[] = [
       CulturalC: { prestige: 70, ideas: ["楚辞", "巫觋文化", "吴起变法"] },
       EntropyC: { entropy: 22 },
       HandC: { cards: ["harvest_rite", "bronze_rite_vessel"] },
+      PopulationC: { population: 90, growth: 2.5, happiness: 65 },
     },
   },
 ];

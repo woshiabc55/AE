@@ -1,7 +1,7 @@
 import { useGameStore } from "@/store/useGameStore";
 import type { FactionView } from "@/projection/views/factionView";
 import { StatBar } from "@/components/common/StatBar";
-import { Crown, Sword, Coins, Wheat, Sparkles } from "lucide-react";
+import { Crown, Sword, Coins, Wheat, Sparkles, Users, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /** 势力面板 — 左栏，每势力以印章+组件数值条呈现 */
@@ -49,6 +49,8 @@ function FactionSeal({ faction }: { faction: FactionView }) {
         <StatLine icon={<Sparkles size={9} />} label="士气" value={faction.morale} max={100} color="bg-gold-300" />
         <StatLine icon={<Coins size={9} />} label="黄金" value={faction.gold} max={300} color="bg-gold-400" />
         <StatLine icon={<Wheat size={9} />} label="粮草" value={faction.food} max={150} color="bg-bronze-400" />
+        <StatLine icon={<Users size={9} />} label="人口" value={faction.population} max={120} color="bg-green-700" />
+        <StatLine icon={<Heart size={9} />} label="民心" value={faction.happiness} max={100} color="bg-rose-500" />
       </div>
 
       <div className="mt-2 flex items-center justify-between border-t border-gold-500/10 pt-1">

@@ -110,16 +110,42 @@ export function directorFallback(opts: {
   };
 }
 
-/** 卡牌 AI 规则兜底 — 从演化树中取当前时代卡 */
+/** 卡牌 AI 规则兜底 — 加权抽取，按时代相关度与稀有度 */
 export function cardFallback(opts: {
   era: Era;
   pool: CardTemplate[];
   rng: () => number;
 }): CardTemplate {
   const { era, pool, rng } = opts;
-  const candidates = pool.filter((c) => c.era === era);
-  if (candidates.length === 0) return pool[0];
-  return candidates[Math.floor(rng() * candidates.length)];
+
+  // 计算每张卡的权重：
+  //   - 当前时代卡：权重 5（最易获得）
+  //   - 前一时代卡：权重 2（遗留技术仍可用）
+  //   - 后一时代卡：权重 0.3（超前技术罕见）
+  //   - 类型稀有度：事件卡 0.6（事件牌少出），其余 1.0
+  const eraIdx = (e: Era) => ERA_ORDER.indexOf(e);
+  const currentIdx = eraIdx(era);
+
+  const weighted = pool.map((card) => {
+    const cardIdx = eraIdx(card.era);
+    const diff = cardIdx - currentIdx;
+    let eraWeight: number;
+    if (diff === 0) eraWeight = 5;
+    else if (diff === -1) eraWeight = 2;
+    else if (diff > 0) eraWeight = 0.3;
+    else eraWeight = 0.8; // 更早的遗留
+    const rarityWeight = card.type === "event" ? 0.6 : 1.0;
+    return { card, weight: eraWeight * rarityWeight };
+  });
+
+  const total = weighted.reduce((s, w) => s + w.weight, 0);
+  if (total <= 0) return pool[0];
+  let r = rng() * total;
+  for (const w of weighted) {
+    r -= w.weight;
+    if (r <= 0) return w.card;
+  }
+  return pool[pool.length - 1];
 }
 
 /** 对话台词库 — 按 NPC archetype 分类，贴合各色人物口吻 */

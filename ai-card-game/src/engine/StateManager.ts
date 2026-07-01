@@ -78,6 +78,7 @@ function createWorldFresh(seed: number): World {
   return {
     turn: 0,
     era: "ancient",
+    season: "spring",
     entities: new Map(),
     seed,
   };

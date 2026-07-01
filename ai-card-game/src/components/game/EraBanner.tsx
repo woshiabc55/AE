@@ -1,13 +1,24 @@
 import { useGameStore } from "@/store/useGameStore";
-import { ERA_ORDER, ERA_LABELS } from "@/types";
+import { ERA_ORDER, ERA_LABELS, SEASON_LABELS, SEASON_ORDER } from "@/types";
 import { cn } from "@/lib/utils";
 
-/** 时代横幅 — 顶部鎏金卷轴显示当前时代/回合/文明熵 */
+/** 季节配色 */
+const SEASON_COLORS: Record<string, string> = {
+  spring: "text-green-400",
+  summer: "text-vermillion-400",
+  autumn: "text-gold-300",
+  winter: "text-blue-300",
+};
+
+/** 时代横幅 — 顶部鎏金卷轴显示当前时代/季节/回合/文明熵 */
 export function EraBanner() {
   const { era, eraLabel, turn, factions } = useGameStore();
+  const ctx = useGameStore((s) => s.ctx);
+  const season = ctx?.world.season ?? "spring";
   const player = factions.find((f) => f.isPlayer);
   const entropy = player?.entropy ?? 0;
   const eraIdx = ERA_ORDER.indexOf(era);
+  const seasonIdx = SEASON_ORDER.indexOf(season);
 
   return (
     <header className="chronicle-frame relative mb-4 px-6 py-3">
@@ -32,6 +43,20 @@ export function EraBanner() {
                 )}
               >
                 {ERA_LABELS[e]}
+              </span>
+            ))}
+          </div>
+          {/* 季节指示 */}
+          <div className="flex items-center gap-1.5 border-l border-gold-500/30 pl-6">
+            {SEASON_ORDER.map((s, i) => (
+              <span
+                key={s}
+                className={cn(
+                  "font-serif text-sm transition-colors",
+                  i === seasonIdx ? SEASON_COLORS[s] : "text-parchment-300/20"
+                )}
+              >
+                {SEASON_LABELS[s]}
               </span>
             ))}
           </div>

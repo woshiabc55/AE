@@ -5,7 +5,9 @@ import type {
   ComponentName,
   WorldSnapshot,
   Era,
+  Season,
 } from "@/types";
+import { SEASON_ORDER } from "@/types";
 import { createEntity } from "./Entity";
 import { applyPatch } from "./Component";
 
@@ -17,6 +19,7 @@ export function createWorld(seed = Date.now()): World {
   return {
     turn: 0,
     era: "ancient",
+    season: SEASON_ORDER[0],
     entities: new Map(),
     seed,
   };
@@ -97,6 +100,7 @@ export function snapshot(world: World): WorldSnapshot {
   return {
     turn: world.turn,
     era: world.era,
+    season: world.season,
     entities,
     causalGraphVersion: 0,
     ts: Date.now(),
@@ -108,6 +112,7 @@ export function restore(snapshot: WorldSnapshot, seed: number): World {
   const world = createWorld(seed);
   world.turn = snapshot.turn;
   world.era = snapshot.era as Era;
+  world.season = snapshot.season;
   for (const [id, comps] of Object.entries(snapshot.entities)) {
     const restored: Partial<Record<ComponentName, Component>> = {};
     for (const [name, comp] of Object.entries(comps)) {

@@ -4,13 +4,15 @@ import type { GameContext } from "@/game";
 import { applyDelta } from "@/ecs/World";
 import { getComponent } from "@/ecs/World";
 import type { EntropyC, Era, FactionC, CulturalC, MilitaryC } from "@/types";
-import { ERA_ORDER } from "@/types";
+import { ERA_ORDER, SEASON_LABELS } from "@/types";
 import { Director } from "@/ai/Director";
 import { advanceHistory, evaluateEraTransition } from "@/ai/agents/historyAgent";
 import { createRng, chance } from "@/lib/rng";
 import { CommandBus } from "@/engine/CommandBus";
 import { addEvent } from "@/engine/CausalGraph";
 import { computeProduction } from "@/game/economy";
+import { advanceSeason, computeLogisticsDeltas, computeRelationDecay } from "@/game/logistics";
+import { checkVictory } from "@/game/victory";
 
 const director = new Director();
 
@@ -115,6 +117,31 @@ export async function advanceTurn(ctx: GameContext): Promise<GameEvent[]> {
     producedEvents.push(prodEvent);
   }
 
+  // 6.5 季节推进（每回合轮转一次）
+  advanceSeason(world);
+
+  // 6.6 后勤消耗 + 人口动态 + 关系衰减
+  const logisticsDeltas = [...computeLogisticsDeltas(world), ...computeRelationDecay(world)];
+  if (logisticsDeltas.length > 0) {
+    const logisticsEvent = CommandBus.buildEvent({
+      type: "TURN_ADVANCE",
+      turn: world.turn,
+      era: world.era,
+      source: "system",
+      causedBy: turnEvent.id,
+      entityDeltas: logisticsDeltas,
+      narrative: `${SEASON_LABELS[world.season]}季：兵马未动，粮草先行；民心向背，时过境迁。`,
+      metadata: { kind: "logistics", season: world.season },
+    });
+    for (const delta of logisticsEvent.entityDeltas) {
+      applyDelta(world, delta);
+    }
+    addEvent(ctx.graph, logisticsEvent);
+    await ctx.eventStore.append(logisticsEvent);
+    ctx.eventBus.emit(logisticsEvent);
+    producedEvents.push(logisticsEvent);
+  }
+
   world.turn += 1;
 
   // 7. 文明熵差异化增长：文化/科技驱动而非纯随机
@@ -160,6 +187,28 @@ export async function advanceTurn(ctx: GameContext): Promise<GameEvent[]> {
       ctx.eventBus.emit(eraEvent);
       producedEvents.push(eraEvent);
     }
+  }
+
+  // 9. 胜利条件检查
+  const victory = checkVictory(world);
+  if (victory) {
+    world.victor = victory.entity;
+    world.victoryType = victory.type;
+    const victorFaction = getComponent<FactionC>(world, victory.entity, "FactionC");
+    const victoryEvent = CommandBus.buildEvent({
+      type: "NARRATIVE_SEED",
+      turn: world.turn,
+      era: world.era,
+      source: "system",
+      causedBy: turnEvent.id,
+      entityDeltas: [],
+      narrative: `【终局】${victorFaction?.name ?? "某势力"}达成${victory.type}胜利，历史由此定调。`,
+      metadata: { kind: "victory", victoryType: victory.type, victor: victory.entity },
+    });
+    addEvent(ctx.graph, victoryEvent);
+    await ctx.eventStore.append(victoryEvent);
+    ctx.eventBus.emit(victoryEvent);
+    producedEvents.push(victoryEvent);
   }
 
   ctx.stateManager.record(producedEvents);

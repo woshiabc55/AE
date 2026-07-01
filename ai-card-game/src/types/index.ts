@@ -15,10 +15,38 @@ export type Era = "ancient" | "classical" | "medieval" | "modern";
 export const ERA_ORDER: Era[] = ["ancient", "classical", "medieval", "modern"];
 
 export const ERA_LABELS: Record<Era, string> = {
-  ancient: "远古纪元",
-  classical: "古典纪元",
-  medieval: "中世纪",
-  modern: "近代纪元",
+  ancient: "封建纪元",
+  classical: "变法纪元",
+  medieval: "帝国纪元",
+  modern: "变革纪元",
+};
+
+/** 季节：每 4 回合一轮，影响粮食产出与军事行动 */
+export type Season = "spring" | "summer" | "autumn" | "winter";
+
+export const SEASON_ORDER: Season[] = ["spring", "summer", "autumn", "winter"];
+
+export const SEASON_LABELS: Record<Season, string> = {
+  spring: "春",
+  summer: "夏",
+  autumn: "秋",
+  winter: "冬",
+};
+
+/** 季节对粮食产出的乘数：春耕、秋收、冬藏 */
+export const SEASON_FOOD_MULT: Record<Season, number> = {
+  spring: 0.6, // 春耕：投入期，产出少
+  summer: 0.9, // 夏耘：略有产出
+  autumn: 1.6, // 秋收：丰收
+  winter: 0.3, // 冬藏：产出极少
+};
+
+/** 季节对军事行动的影响：冬征困难，秋高马肥宜战 */
+export const SEASON_WAR_MULT: Record<Season, number> = {
+  spring: 1.0,
+  summer: 1.0,
+  autumn: 1.15, // 秋高马肥，战力加成
+  winter: 0.6, // 冬征困难，战力衰减
 };
 
 /** 不确定性锥宽度：越接近现代，路径依赖越强，AI 自由度越低 */
@@ -81,6 +109,13 @@ export interface HandC {
   cards: CardId[]; // 当前持有的卡牌模板 ID
 }
 
+/** 人口组件：人口决定征兵上限与产出基数，随民生起伏 */
+export interface PopulationC {
+  population: number; // 人口数（万为单位）
+  growth: number; // 年增长率（每回合）
+  happiness: number; // 民心 0-100
+}
+
 /** 组件名 → 组件类型映射 */
 export type ComponentName =
   | "FactionC"
@@ -90,7 +125,8 @@ export type ComponentName =
   | "TerritoryC"
   | "MemoryC"
   | "EntropyC"
-  | "HandC";
+  | "HandC"
+  | "PopulationC";
 
 export type Component =
   | FactionC
@@ -100,7 +136,8 @@ export type Component =
   | TerritoryC
   | MemoryC
   | EntropyC
-  | HandC;
+  | HandC
+  | PopulationC;
 
 // ============================================================================
 // 事件溯源 + 因果
@@ -412,6 +449,7 @@ export interface ComplexityMetrics {
 export interface WorldSnapshot {
   turn: number;
   era: Era;
+  season: Season;
   entities: Record<EntityId, Partial<Record<ComponentName, Component>>>;
   causalGraphVersion: number;
   ts: number;
@@ -423,7 +461,29 @@ export interface WorldSnapshot {
 export interface World {
   turn: number;
   era: Era;
+  /** 当前季节：turn % 4 映射到春夏秋冬 */
+  season: Season;
   entities: Map<EntityId, Partial<Record<ComponentName, Component>>>;
   /** RNG 种子，保证纯规则路径完全可复现 */
   seed: number;
+  /** 已达成胜利条件的势力（若有） */
+  victor?: EntityId;
+  victoryType?: VictoryType;
+}
+
+// ============================================================================
+// 胜利条件 — 多路线胜利，贴合历史多样性
+// ============================================================================
+export type VictoryType =
+  | "military" // 军事征服：消灭所有敌对势力
+  | "economic" // 经济霸权：财富累积达阈值
+  | "cultural" // 文化鼎盛：威望达阈值
+  | "technological" // 科技领先：科技等级达阈值
+  | "entropy"; // 文明跃迁：熵达阈值并完成时代演进
+
+export interface VictoryCondition {
+  type: VictoryType;
+  label: string;
+  description: string;
+  check: (world: World, entity: EntityId) => boolean;
 }

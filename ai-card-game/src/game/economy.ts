@@ -1,6 +1,7 @@
 import type { World, Era, EntityId } from "@/types";
+import { SEASON_FOOD_MULT } from "@/types";
 import { getComponent } from "@/ecs/World";
-import type { MilitaryC, EconomicC, FactionC } from "@/types";
+import type { MilitaryC, EconomicC, FactionC, PopulationC } from "@/types";
 import { FACTION_TEMPLATES, type FactionTrait } from "@/game/factions";
 
 /**
@@ -53,6 +54,7 @@ export function computeProduction(world: World, entity: EntityId): Production {
   const faction = getComponent<FactionC>(world, entity, "FactionC");
   const military = getComponent<MilitaryC>(world, entity, "MilitaryC");
   const economic = getComponent<EconomicC>(world, entity, "EconomicC");
+  const population = getComponent<PopulationC>(world, entity, "PopulationC");
 
   if (!faction || !military || !economic) {
     return { gold: 0, food: 0, breakdown: "无有效经济实体" };
@@ -66,20 +68,26 @@ export function computeProduction(world: World, entity: EntityId): Production {
   const eraMult = ERA_MULTIPLIER[world.era];
 
   // 3. 士气效率因子：0.3 ~ 1.2
-  //    morale=0 → 30%（民不聊生）；morale=50 → 80%；morale=100 → 120%（上下同心）
   const moraleFactor = Math.max(0.3, Math.min(1.2, 0.3 + (military.morale / 100) * 0.9));
 
-  // 4. 科技加成：每级科技 +1 粮（冶铸/农具进步）
+  // 4. 科技加成：每级科技 +1 粮
   const techFoodBonus = military.techLevel;
 
   // 5. 商道加成：每条商道 +2 金
   const tradeGoldBonus = (economic.tradeRoutes?.length ?? 0) * 2;
 
-  const gold = Math.floor(base.gold * eraMult * moraleFactor + tradeGoldBonus);
-  const food = Math.floor(base.food * eraMult * moraleFactor + techFoodBonus);
+  // 6. 季节乘数（春耕、秋收、冬藏）
+  const seasonFoodMult = SEASON_FOOD_MULT[world.season];
+
+  // 7. 人口乘数：人口越多，产出基数越大（人口×0.02）
+  const popMult = population ? 1 + population.population * 0.005 : 1;
+
+  const gold = Math.floor(base.gold * eraMult * moraleFactor * popMult + tradeGoldBonus);
+  const food = Math.floor(base.food * eraMult * moraleFactor * popMult * seasonFoodMult + techFoodBonus);
 
   const breakdown =
     `基础(${trait}) 金${base.gold}/粮${base.food} × 时代${eraMult} × 士气${moraleFactor.toFixed(2)}` +
+    ` × 季节${seasonFoodMult} × 人口${popMult.toFixed(2)}` +
     ` + 商道${tradeGoldBonus}金 + 科技${techFoodBonus}粮 = 金${gold}/粮${food}`;
 
   return { gold, food, breakdown };

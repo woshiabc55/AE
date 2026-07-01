@@ -72,6 +72,7 @@ export function spawnFaction(ctx: GameContext, tpl: FactionTemplate): EntityId {
   setComponent(ctx.world, id, "CulturalC", { ...tpl.components.CulturalC });
   setComponent(ctx.world, id, "EntropyC", { ...tpl.components.EntropyC });
   setComponent(ctx.world, id, "HandC", { ...tpl.components.HandC });
+  setComponent(ctx.world, id, "PopulationC", { ...tpl.components.PopulationC });
   ctx.factions.push(id);
   return id;
 }
