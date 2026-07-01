@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: "JetBrains Mono", "Noto Sans Mono", monospace;
+  line-height: 1.6;
+  font-weight: 400;
+  color-scheme: dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: #0e0b08;
+  color: #e8dcc0;
+  background-image:
+    radial-gradient(circle at 18% 22%, rgba(201, 162, 75, 0.05) 0%, transparent 38%),
+    radial-gradient(circle at 82% 78%, rgba(139, 46, 31, 0.04) 0%, transparent 42%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.79 0 0 0 0 0.63 0 0 0 0 0.29 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-attachment: fixed;
+}
+
+@layer components {
+  /* 编年史卷轴容器：金边框 + 内阴影 */
+  .chronicle-frame {
+    @apply relative border border-gold-500/30 bg-ink-900/70 shadow-inset backdrop-blur-sm;
+  }
+  .chronicle-frame::before {
+    content: "";
+    @apply pointer-events-none absolute inset-0 bg-gold-sheen opacity-30;
+  }
+
+  /* 印章式按钮 */
+  .seal-btn {
+    @apply relative inline-flex items-center justify-center gap-2 border border-gold-300/50 bg-ink-800/80 px-5 py-2 font-mono text-sm uppercase tracking-widest text-parchment-200 transition-all duration-300 hover:border-gold-300 hover:bg-gold-500/10 hover:text-gold-200 hover:shadow-seal-hover active:scale-[0.97];
+  }
+  .seal-btn:active {
+    animation: seal-press 0.3s ease-out;
+  }
+
+  /* 鎏金标题 */
+  .gilt-title {
+    @apply font-serif font-semibold tracking-wide text-gold-200;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.8), 0 0 18px rgba(201, 162, 75, 0.25);
+  }
+
+  /* 朱砂批注 */
+  .vermillion-note {
+    @apply font-serif italic text-vermillion-400/90;
+  }
+
+  /* 编年史条目 */
+  .chronicle-entry {
+    @apply border-l-2 border-gold-500/40 bg-ink-900/50 px-4 py-2 font-mono text-xs leading-relaxed text-parchment-300/80;
+  }
+
+  /* 卡牌卷轴底 */
+  .card-scroll {
+    @apply relative overflow-hidden rounded-sm border border-gold-500/40 bg-gradient-to-br from-ink-800 to-ink-950 shadow-seal;
+  }
+
+  /* 数值条 */
+  .stat-bar {
+    @apply h-1.5 w-full overflow-hidden rounded-full bg-ink-700/80;
+  }
+  .stat-bar > span {
+    @apply block h-full rounded-full transition-all duration-500;
+  }
+}
+
+/* 滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #15110d;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(201, 162, 75, 0.3);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(201, 162, 75, 0.5);
+}
+
+/* 选中文字 */
+::selection {
+  background: rgba(201, 162, 75, 0.3);
+  color: #f5e9c8;
+}
