@@ -1,8 +1,7 @@
 // 顶部栏
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Save, FolderOpen, FilePlus2, Circle, Swords } from "lucide-react";
+import { Save, FolderOpen, FilePlus2, Circle } from "lucide-react";
 import { useArtworkStore } from "@/store/useArtworkStore";
 import { useUIStore } from "@/store/useUIStore";
 import { ModeSwitcher } from "@/components/Workspace/ModeSwitcher";
@@ -87,14 +86,6 @@ export function Header() {
 
       {/* 右：操作 */}
       <div className="flex items-center gap-2">
-        <Link to="/game" title="进入 AI 战略游戏">
-          <PixelButton variant="ghost" size="sm">
-            <span className="flex items-center gap-1.5">
-              <Swords size={14} />
-              <span className="hidden sm:inline">造史者</span>
-            </span>
-          </PixelButton>
-        </Link>
         <PixelButton
           variant="ghost"
           size="sm"
