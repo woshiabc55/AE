@@ -11,6 +11,7 @@ import { EventStore } from "@/db/eventStore";
 import { HARD_RULES, SOFT_RULES } from "./rules";
 import { FEEDBACK_LOOPS } from "./loops";
 import { FACTION_TEMPLATES, type FactionTemplate } from "./factions";
+import { RELATION_RULES, initRelations } from "./relations";
 import type { Component, ComponentName, EntityId } from "@/types";
 
 /**
@@ -44,6 +45,7 @@ export function createGameContext(seed = Date.now()): GameContext {
   // 注册规则
   for (const rule of HARD_RULES) ruleEngine.register(rule);
   for (const rule of SOFT_RULES) ruleEngine.register(rule);
+  for (const rule of RELATION_RULES) ruleEngine.register(rule);
   for (const loop of FEEDBACK_LOOPS) feedback.register(loop);
 
   return {
@@ -80,6 +82,9 @@ export function initGame(
   playerFactionId: string,
   opponentCount = 3
 ): { playerEntity: EntityId; factions: EntityId[] } {
+  // 模板 ID → 实体 ID 映射（用于初始化势力关系）
+  const factionIdMap = new Map<string, EntityId>();
+
   // 玩家势力
   const playerTpl =
     FACTION_TEMPLATES.find((f) => f.id === playerFactionId) ?? FACTION_TEMPLATES[0];
@@ -91,6 +96,7 @@ export function initGame(
     },
   });
   ctx.playerEntity = playerEntity;
+  factionIdMap.set(playerTpl.id, playerEntity);
 
   // 对手势力（不重复选玩家）
   const opponents = FACTION_TEMPLATES.filter((f) => f.id !== playerFactionId).slice(
@@ -98,8 +104,12 @@ export function initGame(
     opponentCount
   );
   for (const tpl of opponents) {
-    spawnFaction(ctx, tpl);
+    const entityId = spawnFaction(ctx, tpl);
+    factionIdMap.set(tpl.id, entityId);
   }
+
+  // 初始化势力间关系（基于战国合纵连横史）
+  initRelations(ctx, factionIdMap);
 
   return { playerEntity, factions: ctx.factions };
 }

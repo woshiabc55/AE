@@ -24,13 +24,10 @@ export interface HistoryAgentInput {
  */
 export async function advanceHistory(input: HistoryAgentInput): Promise<HistoryAdvance> {
   const { world, graph, rng, directive } = input;
-  const entities = Array.from(world.entities.keys());
   const hooks: CausalHook[] = getOpenHooks(graph, 3);
 
   const fallback = historyFallback({
-    era: world.era,
-    turn: world.turn,
-    entities,
+    world,
     rng,
   });
 

@@ -20,7 +20,7 @@ export function applyPatch<C extends Component>(
   }
   const result: Record<string, unknown> = { ...component };
   for (const [key, value] of Object.entries(patch)) {
-    const existing = (component as Record<string, unknown>)[key];
+    const existing = (component as unknown as Record<string, unknown>)[key];
     if (typeof existing === "number" && typeof value === "number") {
       result[key] = existing + value; // 数值增量
     } else {

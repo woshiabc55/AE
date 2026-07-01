@@ -3,13 +3,14 @@ import type { GameEvent, ComponentDelta, EventId } from "@/types";
 import type { GameContext } from "@/game";
 import { applyDelta } from "@/ecs/World";
 import { getComponent } from "@/ecs/World";
-import type { EntropyC, Era } from "@/types";
+import type { EntropyC, Era, FactionC, CulturalC, MilitaryC } from "@/types";
 import { ERA_ORDER } from "@/types";
 import { Director } from "@/ai/Director";
 import { advanceHistory, evaluateEraTransition } from "@/ai/agents/historyAgent";
 import { createRng, chance } from "@/lib/rng";
 import { CommandBus } from "@/engine/CommandBus";
 import { addEvent } from "@/engine/CausalGraph";
+import { computeProduction } from "@/game/economy";
 
 const director = new Director();
 
@@ -80,21 +81,62 @@ export async function advanceTurn(ctx: GameContext): Promise<GameEvent[]> {
     ctx.eventBus.emit(event);
   }
 
-  world.turn += 1;
-
-  // 6. 文明熵自然增长
-  for (const [entity] of world.entities) {
-    const entropy = getComponent<EntropyC>(world, entity, "EntropyC");
-    if (entropy) {
-      applyDelta(world, {
+  // 6. 经济基础产出（每回合 gold+food 产出，防止资源枯竭）
+  const prodDeltas: ComponentDelta[] = [];
+  for (const [entity, comps] of world.entities) {
+    const faction = comps.FactionC as FactionC | undefined;
+    if (!faction) continue;
+    const prod = computeProduction(world, entity);
+    if (prod.gold > 0 || prod.food > 0) {
+      prodDeltas.push({
         entity,
-        component: "EntropyC",
-        patch: { entropy: entropy.entropy + 1 + Math.floor(rng() * 3) },
+        component: "EconomicC",
+        patch: { gold: prod.gold, food: prod.food },
       });
     }
   }
+  if (prodDeltas.length > 0) {
+    const prodEvent = CommandBus.buildEvent({
+      type: "TURN_ADVANCE",
+      turn: world.turn,
+      era: world.era,
+      source: "system",
+      causedBy: turnEvent.id,
+      entityDeltas: prodDeltas,
+      narrative: "秋收冬藏，百业流转，各邦入账。",
+      metadata: { kind: "economic_production" },
+    });
+    for (const delta of prodEvent.entityDeltas) {
+      applyDelta(world, delta);
+    }
+    addEvent(ctx.graph, prodEvent);
+    await ctx.eventStore.append(prodEvent);
+    ctx.eventBus.emit(prodEvent);
+    producedEvents.push(prodEvent);
+  }
 
-  // 7. 时代跃迁
+  world.turn += 1;
+
+  // 7. 文明熵差异化增长：文化/科技驱动而非纯随机
+  //    基础 +1（时间流逝），文化繁荣 +1（prestige>50），科技每级 +0.5（向下取整）
+  //    文化/科技先进的势力熵增更快，更早触发时代跃迁——贴合"复杂文明先转型"的历史逻辑
+  for (const [entity] of world.entities) {
+    const entropy = getComponent<EntropyC>(world, entity, "EntropyC");
+    if (!entropy) continue;
+    const cultural = getComponent<CulturalC>(world, entity, "CulturalC");
+    const military = getComponent<MilitaryC>(world, entity, "MilitaryC");
+    let growth = 1; // 基础：时间流逝
+    if ((cultural?.prestige ?? 0) > 50) growth += 1; // 文化繁荣驱动
+    growth += Math.floor((military?.techLevel ?? 0) * 0.5); // 科技复杂度
+    if (rng() < 0.3) growth += 1; // 小幅随机扰动（非主导）
+    applyDelta(world, {
+      entity,
+      component: "EntropyC",
+      patch: { entropy: growth },
+    });
+  }
+
+  // 8. 时代跃迁
   const nextEra = evaluateEraTransition(world);
   if (nextEra) {
     const idx = ERA_ORDER.indexOf(world.era);

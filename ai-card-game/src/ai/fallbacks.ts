@@ -4,11 +4,13 @@ import type {
   CardTemplate,
   DialogueTurn,
   Era,
+  World,
   ComponentDelta,
   EventType,
   AITier,
 } from "@/types";
 import { ERA_ORDER, ERA_LABELS } from "@/types";
+import { selectHistoricalEvents } from "@/game/events";
 
 /**
  * 纯规则兜底（tier: rule）— 当 LLM 不可用或降级时使用。
@@ -16,8 +18,12 @@ import { ERA_ORDER, ERA_LABELS } from "@/types";
  * 所有兜底均为确定性，配合种子 RNG 可复现。
  */
 
-const ARMY_VERBS = ["集结", "征召", "整饬", "操练"];
-const EVENTS: { type: EventType; desc: string; deltas: (e: string) => ComponentDelta[] }[] = [
+/** 通用事件兜底（当无历史事件匹配时使用） */
+const GENERIC_EVENTS: {
+  type: EventType;
+  desc: string;
+  deltas: (e: string) => ComponentDelta[];
+}[] = [
   {
     type: "TECH_BREAKTHROUGH",
     desc: "工匠们在反复试验中改良了冶铁工艺。",
@@ -38,26 +44,33 @@ const EVENTS: { type: EventType; desc: string; deltas: (e: string) => ComponentD
   },
 ];
 
-/** 历史 AI 规则兜底 */
+/** 历史 AI 规则兜底 — 优先使用历史事件库，不足时回退通用事件 */
 export function historyFallback(opts: {
-  era: Era;
-  turn: number;
-  entities: string[];
+  world: World;
   rng: () => number;
 }): HistoryAdvance {
-  const { era, turn, entities, rng } = opts;
+  const { world, rng } = opts;
+  const { era, turn } = world;
+  const entities = Array.from(world.entities.keys());
   const idx = ERA_ORDER.indexOf(era);
   const next = ERA_ORDER[idx + 1];
-  const contingencies = entities.slice(0, 2).map((e) => {
-    const tpl = EVENTS[Math.floor(rng() * EVENTS.length)];
-    return {
-      id: `con_${turn}_${e}`,
-      description: tpl.desc,
-      type: tpl.type,
-      deltas: tpl.deltas(e),
-      probability: 0.3 + rng() * 0.4,
-    };
-  });
+
+  // 优先从历史事件库选取（带真实触发条件）
+  let contingencies = selectHistoricalEvents(world, rng, 2);
+
+  // 若无历史事件匹配，回退到通用事件（保证每回合有事件发生）
+  if (contingencies.length === 0 && entities.length > 0) {
+    contingencies = entities.slice(0, 2).map((e) => {
+      const tpl = GENERIC_EVENTS[Math.floor(rng() * GENERIC_EVENTS.length)];
+      return {
+        id: `con_${turn}_${e}`,
+        description: tpl.desc,
+        type: tpl.type,
+        deltas: tpl.deltas(e),
+        probability: 0.3 + rng() * 0.4,
+      };
+    });
+  }
 
   return {
     macro: {
