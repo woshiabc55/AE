@@ -508,6 +508,10 @@
       <div class="wrap">
         <div class="grid" id="grid"></div>
         <div class="empty" id="empty" style="display:none;">— 没有匹配的拼豆作品 —</div>
+        <div id="sentinel" style="height:1px;"></div>
+        <div style="text-align:center;padding:24px;">
+          <button class="btn" id="load-more" style="display:none;">加载更多</button>
+        </div>
       </div>
     </main>
 
@@ -1116,6 +1120,58 @@
     COLLECTION.push(item("苔藓洞窟","@苔藓罐头","scene",genScene('V','v','L','l','e','N'),"SR",["场景","氛围","洞窟","自然"],"荧绿苔藓照亮的湿润洞窟，钟乳石垂挂如豆串。","2026-03-18",1680,9400));
 
     /* ============================================================
+       批量扩充至 1000+（颜色组合池程序化生成）
+       ============================================================ */
+    const CX = CREATORS.concat(["@像素工房","@豆豆社","@8bit联盟","@复古实验室","@霓虹工坊","@苔藓小屋","@星海驿站","@焦糖作坊","@蜜糖信号","@锈铁仓库","@深海频率","@极光小组","@熔岩工作室","@星尘社","@晨曦画室","@暮光工坊"]);
+    // 胸像配色池
+    const SK=['f','q','t','s','w','z','a'];
+    const HA=['n','k','i','B','C','v','V','r','o','y','Y','P','p','L','l','g','d'];
+    const OU=['b','C','d','r','R','o','N','L','v','V','h','x','u','j','m','c'];
+    const AC=['y','o','m','c','w','s','Y','O','M','C','a','P','p','e','l','q'];
+    const EY=['k','B','r','o','y','C','v','m','g','c'];
+    const PRE=['炎','冰','雷','暗','光','风','地','毒','幻','星','月','日','夜','晨','暮','血','霜','焰','岚','渊'];
+    const SUF=['骑士','法师','战士','牧师','游侠','巫女','守卫','德鲁伊','炼金','刺客','武僧','弓手','剑士','枪兵','盾卫','召唤师','学者','舞者','斥候','工匠'];
+    // 卡片 [elem底, 名, frame, gem]
+    const CARD_D=[['R','烈焰'],['C','寒霜'],['h','雷霆'],['N','大地'],['a','圣光'],['V','暗影'],['b','风暴'],['L','毒蚀'],['x','虚空'],['j','虹光']];
+    const CARD_FR=['y','i','Y','v','a','u','o','m'];
+    const CARD_GM=['o','q','y','t','w','v','c','l','m','p','e','r'];
+    // 药水 [liquid, 名]
+    const POT_D=[['e','翠绿'],['b','蔚蓝'],['r','赤红'],['v','紫梦'],['y','金阳'],['C','幽冥'],['l','翡翠'],['m','薄荷'],['c','青潮'],['u','星屑'],['j','霓虹'],['o','熔岩']];
+    const POT_BB=['l','c','o','P','Y','i','w','e'];
+    // 宝石 [color, 名, dark, light]
+    const GEM_D=[['o','烈焰','R','O'],['q','寒冰','C','i'],['y','雷霆','h','Y'],['e','翡翠','L','l'],['v','紫晶','x','P'],['j','虹彩','x','p'],['r','赤血','R','p'],['b','蓝宝','B','c'],['m','薄荷','M','q'],['c','青晶','C','i'],['p','粉晶','P','w'],['a','琥珀','N','Y']];
+    // 灵珠 [color, 名, dark]
+    const ORB_D=[['o','火','R'],['c','水','C'],['m','风','M'],['t','土','N'],['y','雷','h'],['v','暗','x'],['j','虹','x'],['e','木','L'],['b','冰','B'],['r','血','R']];
+    // 场景 [skyTop, skyBot, 名, horizon, ground, accent, accentDark]
+    const SCN_D=[['B','i','雪原','w','q','w','C'],['C','c','海底','k','C','w','B'],['V','v','暮色','k','L','Y','x'],['x','j','赛博','h','d','m','c'],['u','P','星空','w','L','Y','y'],['R','o','熔岩','k','N','y','r'],['j','p','樱花','t','L','p','R'],['B','v','深渊','d','h','c','x'],['C','i','冰原','w','q','m','B'],['V','x','魔境','k','v','j','u']];
+
+    function dstr(i){ return `${2024+(i%3)}-${String((i%12)+1).padStart(2,'0')}-${String((i%28)+1).padStart(2,'0')}`; }
+    function rar(i){ return i%9===0?'SSR':(i%3===0?'SR':'R'); }
+    function lik(i){ return 300+(i*37%4200); }
+    let bi=0;
+    function mk(cat, spr, nameBase, tags, desc){
+      const i=bi++;
+      const name = `${nameBase}#${String(i).padStart(4,'0')}`;
+      const l=lik(i);
+      COLLECTION.push(item(name, CX[i%CX.length], cat, spr, rar(i), tags, desc, dstr(i), l, l*6));
+    }
+    // 卡片 100
+    for(let i=0;i<100;i++){ const d=CARD_D[i%CARD_D.length]; mk('card', genCardIcon(d[0],CARD_FR[(i*3)%CARD_FR.length],CARD_GM[(i*7)%CARD_GM.length]), `${d[1]}之卡`, ["卡片","元素","批量"], `${d[1]}元素卡牌·批量收录。`); }
+    // 药水 100
+    for(let i=0;i<100;i++){ const d=POT_D[i%POT_D.length]; mk('item', genPotion(d[0],POT_BB[(i*5)%POT_BB.length]), `${d[1]}药剂`, ["道具","药水","批量"], `${d[1]}药剂·批量收录。`); }
+    // 宝石 120
+    for(let i=0;i<120;i++){ const d=GEM_D[i%GEM_D.length]; mk('item', genGem(d[0],d[2],d[3]), `${d[1]}石`, ["道具","宝石","批量"], `${d[1]}宝石·批量收录。`); }
+    // 灵珠 80
+    for(let i=0;i<80;i++){ const d=ORB_D[i%ORB_D.length]; mk('item', genOrb(d[0],d[2]), `${d[1]}灵珠`, ["道具","灵珠","批量"], `${d[1]}灵珠·批量收录。`); }
+    // 胸像 350
+    for(let i=0;i<350;i++){ mk('fan', genBust(SK[i%SK.length],HA[(i*3)%HA.length],OU[(i*7)%OU.length],AC[(i*5)%AC.length],EY[(i*11)%EY.length]), `${PRE[(i*13)%PRE.length]}${SUF[(i*17)%SUF.length]}`, ["角色","半面镜像","批量"], `批量收录的二创角色。`); }
+    // 场景 350
+    for(let i=0;i<350;i++){ const d=SCN_D[i%SCN_D.length]; mk('scene', genScene(d[0],d[1],d[3],d[4],d[5],d[6]), `${d[2]}场景`, ["场景","氛围","批量"], `${d[2]}场景·批量收录。`); }
+
+    // 预计算拼豆数缓存（避免千次重复统计）
+    COLLECTION.forEach(it=>{ it._bc = beadStats(it.sprite).total; });
+
+    /* ============================================================
        渲染
        ============================================================ */
     function drawSprite(canvas, sprite, scale){
@@ -1188,45 +1244,61 @@
       list.sort((a,b)=>{
         if(s==='hot') return b.likes-a.likes;
         if(s==='new') return new Date(b.date)-new Date(a.date);
-        if(s==='bead') return beadStats(b.sprite).total - beadStats(a.sprite).total;
+        if(s==='bead') return (b._bc||0)-(a._bc||0);
         if(s==='name') return a.name.localeCompare(b.name,'zh');
         return 0;
       });
       return list;
     }
 
-    function renderGrid(){
+    // 分页增量渲染（避免千张 canvas 同时绘制卡顿）
+    const PAGE = 48;
+    let renderedIdx = 0;
+    let currentList = [];
+
+    function appendCard(it){
       const grid = document.getElementById('grid');
-      const list = filtered();
-      grid.innerHTML='';
-      if(!list.length){ document.getElementById('empty').style.display='block'; return; }
-      document.getElementById('empty').style.display='none';
-      for(const it of list){
-        const card = document.createElement('div');
-        card.className='card';
-        const beads = beadStats(it.sprite);
-        card.innerHTML = `
-          <div class="preview">
-            <span class="cat-tag ${CAT_CLASS[it.cat]}">${CAT_LABEL[it.cat]}</span>
-            <span class="rarity">${it.rarity}</span>
-            <canvas></canvas>
+      const card = document.createElement('div');
+      card.className='card';
+      card.innerHTML = `
+        <div class="preview">
+          <span class="cat-tag ${CAT_CLASS[it.cat]}">${CAT_LABEL[it.cat]}</span>
+          <span class="rarity">${it.rarity}</span>
+          <canvas></canvas>
+        </div>
+        <div class="meta">
+          <div class="name">${it.name}</div>
+          <div class="creator"><span class="av"></span>${it.creator}</div>
+          <div class="foot">
+            <span class="hot">♥ ${formatN(it.likes)}</span>
+            <span>◷ ${formatN(it.views)}</span>
+            <span class="bead">▦ ${it._bc||0}</span>
           </div>
-          <div class="meta">
-            <div class="name">${it.name}</div>
-            <div class="creator"><span class="av"></span>${it.creator}</div>
-            <div class="foot">
-              <span class="hot">♥ ${formatN(it.likes)}</span>
-              <span>◷ ${formatN(it.views)}</span>
-              <span class="bead">▦ ${beads.total}</span>
-            </div>
-          </div>`;
-        const canvas = card.querySelector('canvas');
-        drawSprite(canvas, it.sprite, 0); // 0 => CSS 控制
-        canvas.style.width=''; canvas.style.height='';
-        const avWrap = card.querySelector('.av');
-        avWrap.appendChild(avatarCanvas(it.creator));
-        card.addEventListener('click', ()=>openModal(it));
-        grid.appendChild(card);
+        </div>`;
+      const canvas = card.querySelector('canvas');
+      drawSprite(canvas, it.sprite, 0);
+      canvas.style.width=''; canvas.style.height='';
+      const avWrap = card.querySelector('.av');
+      avWrap.appendChild(avatarCanvas(it.creator));
+      card.addEventListener('click', ()=>openModal(it));
+      grid.appendChild(card);
+    }
+
+    function renderGrid(reset){
+      const grid = document.getElementById('grid');
+      if(reset){ renderedIdx = 0; grid.innerHTML=''; }
+      currentList = filtered();
+      const lm = document.getElementById('load-more');
+      if(!currentList.length){ document.getElementById('empty').style.display='block'; if(lm) lm.style.display='none'; return; }
+      document.getElementById('empty').style.display='none';
+      const end = Math.min(renderedIdx + PAGE, currentList.length);
+      for(let k=renderedIdx; k<end; k++){ appendCard(currentList[k]); }
+      renderedIdx = end;
+      if(lm){
+        if(renderedIdx < currentList.length){
+          lm.style.display='inline-flex';
+          lm.textContent = `加载更多 · ${renderedIdx} / ${currentList.length}`;
+        } else { lm.style.display='none'; }
       }
     }
 
@@ -1278,7 +1350,7 @@
     function renderStats(){
       const total = COLLECTION.length;
       const creators = new Set(COLLECTION.map(c=>c.creator)).size;
-      const beads = COLLECTION.reduce((s,c)=>s+beadStats(c.sprite).total,0);
+      const beads = COLLECTION.reduce((s,c)=>s+(c._bc||0),0);
       const likes = COLLECTION.reduce((s,c)=>s+c.likes,0);
       animateNum('st-total', total);
       animateNum('st-creator', creators);
@@ -1333,23 +1405,30 @@
       document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
       tab.classList.add('active');
       state.cat = tab.dataset.cat;
-      renderGrid();
+      renderGrid(true);
     });
     document.getElementById('search').addEventListener('input', e=>{
-      state.query = e.target.value.trim(); renderGrid();
+      state.query = e.target.value.trim(); renderGrid(true);
     });
     document.getElementById('sort').addEventListener('change', e=>{
-      state.sort = e.target.value; renderGrid();
+      state.sort = e.target.value; renderGrid(true);
     });
     document.getElementById('shuffle').addEventListener('click', ()=>{
-      COLLECTION.forEach(it=>it._r = Math.random());
+      // 用随机排序重排当前列表
+      const orig = state.sort;
+      state.sort = 'hot';
       const list = filtered();
-      list.sort((a,b)=> (a._r-b._r));
-      // 直接渲染乱序
-      const grid = document.getElementById('grid');
-      const nodes = Array.from(grid.children);
-      nodes.sort((a,b)=>Math.random()-0.5);
-      nodes.forEach(n=>grid.appendChild(n));
+      list.forEach(it=>it._r = Math.random());
+      list.sort((a,b)=>(a._r-b._r));
+      currentList = list;
+      renderedIdx = 0;
+      document.getElementById('grid').innerHTML='';
+      const end = Math.min(PAGE, currentList.length);
+      for(let k=0;k<end;k++){ appendCard(currentList[k]); }
+      renderedIdx = end;
+      const lm = document.getElementById('load-more');
+      if(lm){ lm.style.display = renderedIdx<currentList.length?'inline-flex':'none'; if(renderedIdx<currentList.length) lm.textContent=`加载更多 · ${renderedIdx} / ${currentList.length}`; }
+      state.sort = orig;
       toast('已随机洗牌作品顺序');
     });
     document.getElementById('crt').addEventListener('click', e=>{
@@ -1540,10 +1619,22 @@
     document.getElementById('dl-all').addEventListener('click', startDownloadAll);
     document.getElementById('dl-stop').addEventListener('click', stopDownload);
 
+    /* 分页：点击加载更多 + 滚动到底部自动加载 */
+    document.getElementById('load-more').addEventListener('click', ()=>renderGrid(false));
+    const sentinel = document.getElementById('sentinel');
+    if('IntersectionObserver' in window){
+      const io = new IntersectionObserver(entries=>{
+        if(entries[0].isIntersecting && renderedIdx < currentList.length){
+          renderGrid(false);
+        }
+      }, { rootMargin: '300px' });
+      io.observe(sentinel);
+    }
+
     /* 启动 */
     spawnParticles();
     renderStats();
-    renderGrid();
+    renderGrid(true);
     renderTrendGrid();
     logLine('info','[SYS]', '档案馆已就绪 · 流行图集等待采集指令');
     // 自动启动一次采集（模拟自动化浏览器开机即抓）
