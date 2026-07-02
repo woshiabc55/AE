@@ -80,6 +80,16 @@ export class FrostKnight extends Boss {
         this.actionCooldown = 1.5;
       }
     }
+    // 攻击动画进度（驱动突进斩 / 冰封领域）
+    if (this.pattern === "rushSlash") {
+      this.attackProgress = Math.min(1, this.patternTimer / 0.5);
+    } else if (this.pattern === "frozenField") {
+      this.attackProgress = 0.4 + Math.sin(this.patternTimer * 8) * 0.25;
+    } else if (this.pattern === "iceBarrage") {
+      this.attackProgress = Math.min(1, this.barrageCount / 3);
+    } else {
+      this.attackProgress = 0;
+    }
   }
 
   private choosePattern(playerX: number) {

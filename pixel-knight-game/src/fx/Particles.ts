@@ -1,9 +1,22 @@
-// 粒子系统：血、火花、尘、余烬
+// 粒子系统：血、火花、尘、余烬 + 伤害飘字
 
 import { PAL } from "@/config";
 import type { Particle } from "@/types";
 
 const MAX = 240;
+const MAX_TEXTS = 32;
+
+export interface FloatText {
+  x: number;
+  y: number;
+  vy: number;
+  vx: number;
+  life: number;
+  maxLife: number;
+  text: string;
+  color: string;
+  size: number;
+}
 
 export class Particles {
   list: Particle[] = [];
