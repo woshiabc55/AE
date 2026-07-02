@@ -10,32 +10,34 @@ export default {
     extend: {
       colors: {
         void: {
-          950: "#030407",
-          900: "#05060a",
-          800: "#0a0c14",
-          700: "#11141f",
-          600: "#1a1e2e",
+          950: "#070a08",
+          900: "#0a0f0c",
+          800: "#0d1410",
+          700: "#141c16",
+          600: "#1d2a1f",
         },
-        resonance: {
-          400: "#5fe0ff",
-          500: "#3ad7ff",
-          600: "#1bb8e6",
+        tac: {
+          400: "#7fe8d4",
+          500: "#4fd6c2",
+          600: "#2fae9c",
         },
-        echo: {
-          400: "#ffe48a",
-          500: "#ffd86b",
-          600: "#e6b73f",
+        alpha: {
+          400: "#5fa6ff",
+          500: "#3a8cff",
+          600: "#2a6ad6",
         },
-        shadow: {
-          400: "#9a63ff",
-          500: "#7a3bff",
-          600: "#5d22d6",
+        bravo: {
+          400: "#ff6a82",
+          500: "#ff3b5c",
+          600: "#d62a45",
         },
         warn: {
-          500: "#ff3b5c",
+          400: "#ffa55c",
+          500: "#ff8a3d",
         },
-        rift: {
-          500: "#ff5be3",
+        gold: {
+          400: "#ffe48a",
+          500: "#ffd86b",
         },
       },
       fontFamily: {
@@ -44,9 +46,11 @@ export default {
       },
       boxShadow: {
         pixel: "inset 0 -3px 0 rgba(0,0,0,0.55), inset 0 2px 0 rgba(255,255,255,0.18)",
-        glowReso: "0 0 18px rgba(58,215,255,0.45)",
-        glowEcho: "0 0 18px rgba(255,216,107,0.5)",
-        glowRift: "0 0 22px rgba(255,91,227,0.5)",
+        glowTac: "0 0 18px rgba(79,214,194,0.45)",
+        glowAlpha: "0 0 16px rgba(58,140,255,0.5)",
+        glowBravo: "0 0 16px rgba(255,59,92,0.5)",
+        glowGold: "0 0 18px rgba(255,216,107,0.5)",
+        glowWarn: "0 0 16px rgba(255,138,61,0.5)",
       },
       animation: {
         "pulse-slow": "pulse 3s cubic-bezier(0.4,0,0.6,1) infinite",

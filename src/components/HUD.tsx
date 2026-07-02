@@ -1,52 +1,52 @@
 import { useGameStore } from "@/store/useGameStore";
+import { Minimap } from "./Minimap";
+import { OPERATORS } from "@/game/operators";
 
-function formatTime(sec: number) {
-  const m = Math.floor(sec / 60);
-  const s = Math.floor(sec % 60);
-  return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
-}
+const OP_LABEL: Record<string, string> = {
+  assault: "突击",
+  recon: "侦察",
+  support: "支援",
+};
 
 export function HUD() {
-  const resonance = useGameStore((s) => s.stats.resonance);
-  const echoesCollected = useGameStore((s) => s.stats.echoesCollected);
-  const echoesTotal = useGameStore((s) => s.stats.echoesTotal);
-  const level = useGameStore((s) => s.stats.level);
-  const levelName = useGameStore((s) => s.stats.levelName);
-  const elapsed = useGameStore((s) => s.stats.elapsedSec);
-  const banner = useGameStore((s) => s.banner);
-  const fragment = useGameStore((s) => s.fragment);
+  const hp = useGameStore((s) => s.hp);
+  const maxHp = useGameStore((s) => s.maxHp);
+  const ammo = useGameStore((s) => s.ammo);
+  const magSize = useGameStore((s) => s.magSize);
+  const reserveAmmo = useGameStore((s) => s.reserveAmmo);
+  const reloading = useGameStore((s) => s.reloading);
+  const kills = useGameStore((s) => s.kills);
+  const deaths = useGameStore((s) => s.deaths);
+  const alive = useGameStore((s) => s.alive);
+  const respawnTimer = useGameStore((s) => s.respawnTimer);
+  const teammates = useGameStore((s) => s.teammates);
+  const match = useGameStore((s) => s.match);
   const damageFlash = useGameStore((s) => s.damageFlash);
-  const collectFlash = useGameStore((s) => s.collectFlash);
-  const heartbeat = useGameStore((s) => s.heartbeat);
-  const sprinting = useGameStore((s) => s.sprinting);
-  const levelCount = useGameStore((s) => s.levelCount);
-  const ammo = useGameStore((s) => s.stats.ammo);
-  const maxAmmo = useGameStore((s) => s.stats.maxAmmo);
-  const kills = useGameStore((s) => s.stats.kills);
   const hitMarker = useGameStore((s) => s.hitMarker);
+  const killMarker = useGameStore((s) => s.killMarker);
   const aimingAtEnemy = useGameStore((s) => s.aimingAtEnemy);
+  const banner = useGameStore((s) => s.banner);
+  const selectedOp = useGameStore((s) => s.selectedOp);
 
-  const low = resonance <= 30;
-  const segs = 10;
-  const filled = Math.round((resonance / 100) * segs);
+  const hpPct = Math.max(0, (hp / maxHp) * 100);
+  const hpLow = hpPct <= 30;
   const now = Date.now();
-  const showHit = now - hitMarker < 160;
-
-  // 准星颜色优先级：瞄准敌对 > 残响低 > 冲刺 > 默认
-  const crossColor = aimingAtEnemy
-    ? "bg-warn-500"
-    : low
-      ? "bg-warn-500"
-      : sprinting
-        ? "bg-echo-400"
-        : "bg-resonance-400/80";
-  const crossCenter = aimingAtEnemy || low ? "bg-warn-500" : sprinting ? "bg-echo-400" : "bg-resonance-400";
+  const showHit = now - hitMarker < 180;
+  const showKill = now - killMarker < 900;
+  // 占领进度归一到 0..1（中心为 0.5）
+  const capPct = (match.captureProgress + 100) / 200;
+  const capOwnerColor =
+    match.captureOwner === "alpha"
+      ? "bg-alpha-500"
+      : match.captureOwner === "bravo"
+        ? "bg-bravo-500"
+        : "bg-gold-500";
 
   return (
     <div className="pointer-events-none absolute inset-0 z-10 select-none">
-      {/* 受伤红屏（脉冲式暗角） */}
+      {/* 受伤红屏暗角 */}
       <div
-        className="absolute inset-0 transition-opacity"
+        className="absolute inset-0"
         style={{
           opacity: damageFlash,
           background:
@@ -54,161 +54,181 @@ export function HUD() {
         }}
       />
 
-      {/* 收集金光闪烁 */}
-      <div
-        className="absolute inset-0"
-        style={{
-          opacity: collectFlash * 0.35,
-          background:
-            "radial-gradient(ellipse at center, rgba(255,216,107,0.4) 0%, rgba(255,216,107,0) 60%)",
-        }}
-      />
-
-      {/* 心跳：暗影接近时的红色脉冲暗角 */}
-      {heartbeat > 0.05 && (
-        <div
-          className="absolute inset-0 animate-heartbeat"
-          style={{
-            opacity: heartbeat * 0.5,
-            background:
-              "radial-gradient(ellipse at center, rgba(255,59,92,0) 45%, rgba(120,10,30,0.6) 100%)",
-          }}
-        />
-      )}
-
-      {/* 左上：关卡 + 计时 + 进度 */}
-      <div className="absolute left-5 top-5">
-        <p className="font-pixel text-[10px] text-resonance-400/70">
-          LV {level.toString().padStart(2, "0")} / {levelCount.toString().padStart(2, "0")}
-        </p>
-        <p className="font-term text-2xl text-resonance-400 text-glow-reso leading-tight">
-          {levelName}
-        </p>
-        <p className="font-term text-xl text-resonance-400/60">{formatTime(elapsed)}</p>
-      </div>
-
-      {/* 右上：回响进度 */}
-      <div className="absolute right-5 top-5 text-right">
-        <p className="font-pixel text-[10px] text-echo-400/70 mb-1">ECHO</p>
-        <p className="font-term text-3xl text-echo-400 text-glow-echo leading-none">
-          {echoesCollected}
-          <span className="text-echo-400/50 text-2xl"> / {echoesTotal}</span>
-        </p>
-        <div className="mt-1 flex justify-end gap-[3px]">
-          {Array.from({ length: echoesTotal }).map((_, i) => (
-            <div
-              key={i}
-              className={`h-2 w-2 ${
-                i < echoesCollected ? "bg-echo-500 shadow-glowEcho" : "bg-echo-500/15"
-              }`}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* 中央十字准星 + 命中标记 */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-        <div className="relative h-5 w-5">
-          <div className={`absolute left-1/2 top-0 h-5 w-[2px] -translate-x-1/2 ${crossColor}`} />
-          <div className={`absolute top-1/2 left-0 h-[2px] w-5 -translate-y-1/2 ${crossColor}`} />
-          <div
-            className={`absolute left-1/2 top-1/2 h-[3px] w-[3px] -translate-x-1/2 -translate-y-1/2 ${crossCenter}`}
-          />
-          {/* 命中标记：四条斜线 X */}
-          {showHit && (
-            <>
-              <div className="absolute left-1/2 top-1/2 h-3 w-[2px] -translate-x-1/2 -translate-y-1/2 rotate-45 bg-echo-400 shadow-glowEcho" />
-              <div className="absolute left-1/2 top-1/2 h-3 w-[2px] -translate-x-1/2 -translate-y-1/2 -rotate-45 bg-echo-400 shadow-glowEcho" />
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* 左下：残响值条 + 冲刺指示 */}
-      <div className="absolute left-5 bottom-5 w-60">
-        <div className="flex items-center gap-2 mb-1">
-          <span
-            className={`font-pixel text-[10px] ${
-              low ? "text-warn-500 text-glow-warn animate-flicker" : "text-resonance-400"
-            }`}
-          >
-            RESONANCE
-          </span>
-          {sprinting && (
-            <span className="font-pixel text-[9px] text-echo-400 text-glow-echo ml-auto animate-flicker">
-              SPRINT
-            </span>
-          )}
-        </div>
-        <div className={`flex gap-[3px] ${low ? "animate-flicker" : ""}`}>
-          {Array.from({ length: segs }).map((_, i) => (
-            <div
-              key={i}
-              className={`h-3 flex-1 ${
-                i < filled
-                  ? low
-                    ? "bg-warn-500 shadow-glowEcho"
-                    : "bg-resonance-500"
-                  : "bg-void-700 border border-void-600"
-              }`}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* 右下：弹药计数 + 心跳预警 */}
-      <div className="absolute right-5 bottom-5 flex flex-col items-end gap-2">
-        {/* 弹药 */}
-        <div className="flex items-end gap-1">
-          <span
-            className={`font-pixel text-2xl leading-none ${
-              ammo === 0 ? "text-warn-500 text-glow-warn animate-flicker" : "text-resonance-400 text-glow-reso"
-            }`}
-          >
-            {ammo.toString().padStart(2, "0")}
-          </span>
-          <span className="font-term text-lg text-resonance-400/40 leading-none">
-            / {maxAmmo}
-          </span>
-        </div>
-        <div className="flex gap-[2px]">
-          {Array.from({ length: Math.min(maxAmmo, 12) }).map((_, i) => {
-            const idx = maxAmmo <= 12 ? i : Math.floor((i / 12) * maxAmmo);
-            return (
-              <div
-                key={i}
-                className={`h-3 w-[3px] ${idx < ammo ? "bg-resonance-500" : "bg-void-700 border border-void-600"}`}
-              />
-            );
-          })}
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="font-pixel text-[9px] text-shadow-400/80">KILLS {kills}</span>
-        </div>
-        {heartbeat > 0.15 && (
-          <div className="flex items-center gap-2 animate-flicker">
-            <span className="font-pixel text-[9px] text-warn-500 text-glow-warn">
-              {!low ? "NEAR" : "DANGER"}
-            </span>
-            <div className="relative h-4 w-4">
-              <div className="absolute inset-0 bg-warn-500 animate-heartbeat-pulse" />
+      {/* 顶部中央：据点占领 + 双方票数 + 回合分 */}
+      <div className="absolute left-1/2 top-4 -translate-x-1/2">
+        <div className="flex items-center gap-4">
+          {/* 友军票数 */}
+          <div className="text-right">
+            <div className="font-pixel text-[9px] text-alpha-400/70">ALPHA</div>
+            <div className="font-term text-2xl text-alpha-400 text-glow-alpha leading-none">
+              {match.ticketsAlpha}
             </div>
           </div>
+          {/* 回合分 */}
+          <div className="flex items-center gap-1">
+            {[0, 1, 2].map((i) => (
+              <div
+                key={i}
+                className={`h-3 w-3 border border-alpha-500 ${i < match.scoreAlpha ? "bg-alpha-500 shadow-glowAlpha" : "bg-void-800"}`}
+              />
+            ))}
+            <span className="font-pixel text-[10px] text-tac-400/60 mx-2">VS</span>
+            {[0, 1, 2].map((i) => (
+              <div
+                key={i}
+                className={`h-3 w-3 border border-bravo-500 ${i < match.scoreBravo ? "bg-bravo-500 shadow-glowBravo" : "bg-void-800"}`}
+              />
+            ))}
+          </div>
+          {/* 敌军票数 */}
+          <div className="text-left">
+            <div className="font-pixel text-[9px] text-bravo-400/70">BRAVO</div>
+            <div className="font-term text-2xl text-bravo-400 text-glow-bravo leading-none">
+              {match.ticketsBravo}
+            </div>
+          </div>
+        </div>
+        {/* 占领进度条 */}
+        <div className="mt-1 relative h-3 w-72 border border-void-600 bg-void-900">
+          {/* 中心刻度 */}
+          <div className="absolute left-1/2 top-0 h-full w-[2px] -translate-x-1/2 bg-void-600" />
+          <div
+            className={`absolute top-0 h-full ${capOwnerColor} transition-all`}
+            style={{
+              left: match.captureProgress >= 0 ? "50%" : `${capPct * 100}%`,
+              width: `${Math.abs(match.captureProgress) / 2}%`,
+            }}
+          />
+        </div>
+        <div className="mt-1 text-center font-pixel text-[8px] text-gold-400/70">
+          {match.phase === "prep"
+            ? `准备 ${Math.ceil(match.phaseTimer)}s`
+            : match.phase === "roundOver"
+              ? "回合结算"
+              : "据点争夺"}
+        </div>
+      </div>
+
+      {/* 左上：队友状态 */}
+      <div className="absolute left-4 top-4 flex flex-col gap-1">
+        <div className="font-pixel text-[8px] text-tac-400/70 mb-1">SQUAD</div>
+        {/* 玩家自身 */}
+        <div className="flex items-center gap-2">
+          <div className={`h-2 w-2 ${alive ? "bg-tac-400" : "bg-bravo-500"}`} />
+          <span className="font-term text-base text-tac-400">{OP_LABEL[selectedOp]}(你)</span>
+        </div>
+        {teammates.map((t) => (
+          <div key={t.id} className="flex items-center gap-2">
+            <div className={`h-2 w-2 ${t.alive ? "bg-alpha-400" : "bg-void-600"}`} />
+            <span className={`font-term text-base ${t.alive ? "text-alpha-400" : "text-void-600 line-through"}`}>
+              {OP_LABEL[t.op]}
+            </span>
+            {t.alive && (
+              <div className="h-1 w-12 bg-void-800">
+                <div
+                  className="h-full bg-alpha-500"
+                  style={{ width: `${(t.hp / t.maxHp) * 100}%` }}
+                />
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* 右上：K/D */}
+      <div className="absolute right-4 top-4 text-right">
+        <div className="font-pixel text-[8px] text-tac-400/70">K / D</div>
+        <div className="font-term text-xl text-gold-400 text-glow-gold leading-none">
+          {kills} <span className="text-void-600">/</span> {deaths}
+        </div>
+      </div>
+
+      {/* 中央准星 + 命中/击杀标记 */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        {alive ? (
+          <div className="relative h-6 w-6">
+            <div className={`absolute left-1/2 top-0 h-6 w-[2px] -translate-x-1/2 ${aimingAtEnemy ? "bg-bravo-500" : "bg-tac-400/80"}`} />
+            <div className={`absolute top-1/2 left-0 h-[2px] w-6 -translate-y-1/2 ${aimingAtEnemy ? "bg-bravo-500" : "bg-tac-400/80"}`} />
+            <div className={`absolute left-1/2 top-1/2 h-[3px] w-[3px] -translate-x-1/2 -translate-y-1/2 ${aimingAtEnemy ? "bg-bravo-500" : "bg-tac-400"}`} />
+            {/* 命中标记 */}
+            {showHit && !showKill && (
+              <>
+                <div className="absolute left-1/2 top-1/2 h-3 w-[2px] -translate-x-1/2 -translate-y-1/2 rotate-45 bg-gold-400 shadow-glowGold" />
+                <div className="absolute left-1/2 top-1/2 h-3 w-[2px] -translate-x-1/2 -translate-y-1/2 -rotate-45 bg-gold-400 shadow-glowGold" />
+              </>
+            )}
+          </div>
+        ) : (
+          <div className="font-pixel text-xs text-bravo-500 text-glow-bravo">已阵亡</div>
         )}
       </div>
 
-      {/* 底部横幅 */}
-      {banner && (
-        <div className="absolute left-1/2 bottom-16 -translate-x-1/2 text-center animate-fade-in">
-          <p className="font-pixel text-xs text-rift-500 text-glow-rift">{banner}</p>
+      {/* 击杀提示 */}
+      {showKill && (
+        <div className="absolute left-1/2 top-[58%] -translate-x-1/2 animate-fade-in">
+          <p className="font-pixel text-[10px] text-gold-400 text-glow-gold">击杀确认</p>
         </div>
       )}
 
-      {/* 记忆碎片文字（收集回响时） */}
-      {fragment && (
-        <div className="absolute left-1/2 top-[62%] -translate-x-1/2 max-w-[80vw] text-center animate-fade-in">
-          <p className="font-term text-xl text-echo-400 text-glow-echo italic leading-relaxed">
-            {fragment}
+      {/* 左下：血量 + 护甲 */}
+      <div className="absolute left-4 bottom-4 w-64">
+        <div className="flex items-center gap-2 mb-1">
+          <span className={`font-pixel text-[9px] ${hpLow ? "text-bravo-500 animate-flicker" : "text-tac-400"}`}>
+            HP
+          </span>
+          <span className="font-term text-base text-tac-400/70 ml-auto">{Math.round(hp)}/{maxHp}</span>
+        </div>
+        <div className={`h-3 w-full border border-void-600 bg-void-900 ${hpLow ? "animate-flicker" : ""}`}>
+          <div
+            className={`h-full ${hpLow ? "bg-bravo-500" : "bg-tac-500"}`}
+            style={{ width: `${hpPct}%` }}
+          />
+        </div>
+      </div>
+
+      {/* 右下：弹药 + 小地图 */}
+      <div className="absolute right-4 bottom-4 flex flex-col items-end gap-2">
+        <Minimap />
+        <div className="text-right">
+          {reloading ? (
+            <span className="font-pixel text-[10px] text-warn-500 text-glow-warn animate-flicker">
+              装弹中...
+            </span>
+          ) : (
+            <div className="flex items-end justify-end gap-1">
+              <span className={`font-term text-3xl leading-none ${ammo === 0 ? "text-bravo-500 animate-flicker" : "text-tac-400 text-glow-tac"}`}>
+                {ammo}
+              </span>
+              <span className="font-term text-lg text-tac-400/40 leading-none">
+                / {reserveAmmo}
+              </span>
+            </div>
+          )}
+          <div className="font-pixel text-[8px] text-tac-400/50 mt-1">{magSize} MAG · R 装弹</div>
+        </div>
+      </div>
+
+      {/* 横幅 */}
+      {banner && (
+        <div className="absolute left-1/2 bottom-24 -translate-x-1/2 text-center animate-fade-in">
+          <p className="font-pixel text-xs text-tac-400 text-glow-tac">{banner}</p>
+        </div>
+      )}
+
+      {/* 阵亡重生倒计时 */}
+      {!alive && (
+        <div className="absolute left-1/2 top-[62%] -translate-x-1/2 text-center">
+          <p className="font-term text-xl text-bravo-400 text-glow-bravo">
+            重生中 {Math.ceil(respawnTimer)}s
+          </p>
+        </div>
+      )}
+
+      {/* prep 阶段提示 */}
+      {match.phase === "prep" && (
+        <div className="absolute left-1/2 top-[42%] -translate-x-1/2 text-center">
+          <p className="font-pixel text-sm text-gold-400 text-glow-gold animate-flicker">
+            准备阶段
           </p>
         </div>
       )}

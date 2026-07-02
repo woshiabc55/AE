@@ -1,225 +1,174 @@
 import * as THREE from "three";
-import { CELL, WALL_H, type ParsedLevel, type LevelTheme } from "./levels";
-import { makeWallTexture, makeFloorTexture, makeCeilTexture, makeRuneTexture } from "./textures";
+import { CELL, WALL_H, parseMap, type ParsedMap } from "./maps";
+import { makeGroundTexture, makeWallTexture, makeCaptureBeacon, makeSkyTexture } from "./textures";
 
 export class World {
-  group: THREE.Group;
+  group = new THREE.Group();
   grid: number[][];
   cols: number;
   rows: number;
-  playerLight: THREE.PointLight;
-  ambient: THREE.AmbientLight;
-  hemi: THREE.HemisphereLight;
-  private wallMesh: THREE.InstancedMesh;
-  private runes: { sprite: THREE.Sprite; phase: number; mat: THREE.SpriteMaterial }[] = [];
-  theme: LevelTheme;
-  private baseLightIntensity: number;
-  private baseAmbient: number;
+  parsed: ParsedMap;
+  fog: THREE.FogExp2;
+  private captureBeacon: THREE.Sprite;
+  private captureMat: THREE.SpriteMaterial;
+  private wallTex: THREE.Texture;
 
-  constructor(level: ParsedLevel, fogDensity: number, theme: LevelTheme) {
-    this.group = new THREE.Group();
-    this.grid = level.grid.map((r) => [...r]);
-    this.cols = level.cols;
-    this.rows = level.rows;
-    this.theme = theme;
+  constructor(fogDensity: number) {
+    const parsed = parseMap();
+    this.parsed = parsed;
+    this.grid = parsed.grid;
+    this.cols = parsed.cols;
+    this.rows = parsed.rows;
 
-    const halfW = (level.cols * CELL) / 2;
-    const halfH = (level.rows * CELL) / 2;
+    // 雾：墨绿战场浓雾
+    this.fog = new THREE.FogExp2(0x0d1410, fogDensity);
 
-    // 雾：与背景同色，远景隐入虚空
-    const fog = new THREE.FogExp2(theme.fog, fogDensity);
-
-    // 地板
-    const floorTex = makeFloorTexture();
-    floorTex.repeat.set(level.cols, level.rows);
-    const floor = new THREE.Mesh(
-      new THREE.PlaneGeometry(level.cols * CELL, level.rows * CELL),
-      new THREE.MeshLambertMaterial({ map: floorTex }),
+    // 地面
+    const groundTex = makeGroundTexture();
+    const ground = new THREE.Mesh(
+      new THREE.PlaneGeometry(parsed.cols * CELL, parsed.rows * CELL),
+      new THREE.MeshLambertMaterial({ map: groundTex }),
     );
-    floor.rotation.x = -Math.PI / 2;
-    floor.position.set(0, 0, 0);
-    this.group.add(floor);
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.y = 0;
+    this.group.add(ground);
 
-    // 天花板
-    const ceilTex = makeCeilTexture();
-    ceilTex.repeat.set(level.cols, level.rows);
-    const ceil = new THREE.Mesh(
-      new THREE.PlaneGeometry(level.cols * CELL, level.rows * CELL),
-      new THREE.MeshLambertMaterial({ map: ceilTex }),
+    // 天空盒(大球内壁)
+    const sky = new THREE.Mesh(
+      new THREE.SphereGeometry(120, 16, 12),
+      new THREE.MeshBasicMaterial({ map: makeSkyTexture(), side: THREE.BackSide, fog: false }),
     );
-    ceil.rotation.x = Math.PI / 2;
-    ceil.position.set(0, WALL_H, 0);
-    this.group.add(ceil);
+    this.group.add(sky);
 
-    // 墙体：InstancedMesh，每个墙体格一个实例
-    const wallTex = makeWallTexture();
-    const wallMat = new THREE.MeshLambertMaterial({ map: wallTex });
-    const boxGeo = new THREE.BoxGeometry(CELL, WALL_H, CELL);
-    // 统计墙体数
-    let wallCount = 0;
-    for (let r = 0; r < level.rows; r++) {
-      for (let c = 0; c < level.cols; c++) {
-        if (level.grid[r][c] === 1) wallCount++;
-      }
-    }
-    this.wallMesh = new THREE.InstancedMesh(boxGeo, wallMat, wallCount);
-    const m = new THREE.Matrix4();
-    let i = 0;
-    for (let r = 0; r < level.rows; r++) {
-      for (let c = 0; c < level.cols; c++) {
-        if (level.grid[r][c] === 1) {
-          const { x, z } = this.cellToWorld(r, c);
-          m.makeTranslation(x, WALL_H / 2, z);
-          this.wallMesh.setMatrixAt(i, m);
-          i++;
+    // 墙/建筑：用 InstancedMesh 合并所有墙格
+    this.wallTex = makeWallTexture();
+    const wallGeo = new THREE.BoxGeometry(CELL, WALL_H, CELL);
+    const wallMat = new THREE.MeshLambertMaterial({ map: this.wallTex });
+    const wallCells: { x: number; z: number }[] = [];
+    for (let r = 0; r < parsed.rows; r++) {
+      for (let c = 0; c < parsed.cols; c++) {
+        if (parsed.grid[r][c] === 1) {
+          const w = this.cellToWorld(r, c);
+          wallCells.push(w);
         }
       }
     }
-    this.wallMesh.instanceMatrix.needsUpdate = true;
-    this.group.add(this.wallMesh);
+    const walls = new THREE.InstancedMesh(wallGeo, wallMat, wallCells.length);
+    const m = new THREE.Matrix4();
+    wallCells.forEach((w, i) => {
+      m.makeTranslation(w.x, WALL_H / 2, w.z);
+      walls.setMatrixAt(i, m);
+    });
+    walls.instanceMatrix.needsUpdate = true;
+    this.group.add(walls);
 
-    // 灯光：极弱环境光 + 玩家头顶点光（行者之光，主题色）
-    this.ambient = new THREE.AmbientLight(0x142236, 0.5);
-    this.group.add(this.ambient);
-    this.hemi = new THREE.HemisphereLight(theme.light, theme.fog, 0.3);
-    this.group.add(this.hemi);
-    this.playerLight = new THREE.PointLight(theme.light, 1.5, 28, 1.6);
-    this.playerLight.position.set(0, 3.4, 0);
-    this.group.add(this.playerLight);
-    this.baseLightIntensity = 1.5;
-    this.baseAmbient = 0.5;
-
-    // 墙边符文装饰：在部分墙格旁悬浮发光符文（主题色），增强每层视觉身份
-    this.buildRunes(level, theme);
-
-    // 暴露雾给场景（GameScene 读取）
-    this.fog = fog;
-    void halfW;
-    void halfH;
-  }
-
-  // 在墙格朝向走廊的一侧悬浮符文精灵
-  private buildRunes(level: ParsedLevel, theme: LevelTheme) {
-    const accentCss = "#" + theme.wallAccent.toString(16).padStart(6, "0");
-    const tex = makeRuneTexture(accentCss);
-    const mat = new THREE.SpriteMaterial({
-      map: tex,
+    // 中央据点光柱
+    this.captureMat = new THREE.SpriteMaterial({
+      map: makeCaptureBeacon(),
       transparent: true,
       blending: THREE.AdditiveBlending,
       fog: true,
       depthWrite: false,
     });
-    // 遍历墙格，找朝向地板的相邻方向，每隔若干墙放一个
-    let placed = 0;
-    const target = Math.min(7, Math.floor((level.cols * level.rows) / 30));
-    for (let r = 1; r < level.rows - 1 && placed < target; r++) {
-      for (let c = 1; c < level.cols - 1 && placed < target; c++) {
-        if (level.grid[r][c] !== 1) continue;
-        // 找一个相邻地板格
-        const dirs: [number, number][] = [[-1, 0], [1, 0], [0, -1], [0, 1]];
-        let placedHere = false;
-        for (const [dr, dc] of dirs) {
-          const nr = r + dr;
-          const nc = c + dc;
-          if (nr < 0 || nc < 0 || nr >= level.rows || nc >= level.cols) continue;
-          if (level.grid[nr][nc] === 0 || level.grid[nr][nc] === 2) {
-            // 在墙与地板之间放置符文
-            const wp = this.cellToWorld(r, c);
-            const fp = this.cellToWorld(nr, nc);
-            const sprite = new THREE.Sprite(mat);
-            sprite.scale.set(1.1, 1.1, 1);
-            sprite.position.set(
-              (wp.x + fp.x) / 2,
-              2.2,
-              (wp.z + fp.z) / 2,
-            );
-            const sm = mat.clone();
-            sprite.material = sm;
-            this.group.add(sprite);
-            this.runes.push({ sprite, phase: Math.random() * Math.PI * 2, mat: sm });
-            placedHere = true;
-            break;
-          }
-        }
-        if (placedHere) {
-          placed++;
-          // 跳过几格避免过密
-          c += 2;
-        }
-      }
-    }
+    this.captureBeacon = new THREE.Sprite(this.captureMat);
+    this.captureBeacon.scale.set(6, 10, 1);
+    this.captureBeacon.position.set(parsed.capture.x, 5, parsed.capture.z);
+    this.group.add(this.captureBeacon);
+
+    // 据点地面标记圆环(线框)
+    const ringGeo = new THREE.RingGeometry(parsed.capture.r - 0.3, parsed.capture.r, 24);
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: 0xffd86b,
+      transparent: true,
+      opacity: 0.5,
+      side: THREE.DoubleSide,
+      fog: true,
+    });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.set(parsed.capture.x, 0.05, parsed.capture.z);
+    this.group.add(ring);
+
+    // 灯光：冷环境光 + 天顶方向光(日光) + 玩家辅助光
+    const ambient = new THREE.AmbientLight(0x4a5a48, 0.7);
+    this.group.add(ambient);
+    const dir = new THREE.DirectionalLight(0xbfd8c8, 0.9);
+    dir.position.set(20, 40, 10);
+    this.group.add(dir);
+    const hemi = new THREE.HemisphereLight(0x88a090, 0x0d1410, 0.5);
+    this.group.add(hemi);
+    const playerLight = new THREE.PointLight(0x6fa0c8, 0.9, 22, 1.5);
+    playerLight.position.set(0, 3, 0);
+    this.group.add(playerLight);
+    this.playerLight = playerLight;
+
+    void this.cellToWorld; // keep ref
   }
 
-  fog: THREE.FogExp2;
+  playerLight: THREE.PointLight;
 
-  // 行者之光闪烁 + 心跳时增强 + 符文呼吸
-  updateFlicker(t: number, heartbeat: number) {
-    const flicker = 1 + Math.sin(t * 13) * 0.06 + Math.sin(t * 7.3) * 0.04;
-    const heartBoost = heartbeat * 0.6;
-    this.playerLight.intensity = this.baseLightIntensity * flicker + heartBoost;
-    this.ambient.intensity = this.baseAmbient + heartbeat * 0.15;
-    for (const r of this.runes) {
-      r.phase += 0.016;
-      const pulse = 0.45 + Math.sin(r.phase * 1.4) * 0.35;
-      r.mat.opacity = pulse;
-      r.sprite.material.rotation = Math.sin(r.phase * 0.5) * 0.3;
-    }
-  }
-
+  // 网格坐标 -> 世界坐标(居中)
   cellToWorld(r: number, c: number) {
     return {
-      x: (c - this.cols / 2) * CELL,
-      z: (r - this.rows / 2) * CELL,
+      x: (c - this.cols / 2 + 0.5) * CELL,
+      z: (r - this.rows / 2 + 0.5) * CELL,
     };
   }
 
-  worldToCell(x: number, z: number) {
+  // 圆形碰撞检测：检查 (x,z) 半径 r 是否撞墙
+  collides(x: number, z: number, r: number): boolean {
+    // 检查周围 3x3 格
     const c = Math.floor(x / CELL + this.cols / 2);
-    const r = Math.floor(z / CELL + this.rows / 2);
-    return { r, c };
-  }
-
-  isSolidCell(r: number, c: number): boolean {
-    if (r < 0 || c < 0 || r >= this.rows || c >= this.cols) return true;
-    return this.grid[r][c] === 1;
-  }
-
-  // 圆-网格碰撞：给定世界坐标与半径，返回是否撞墙
-  collides(x: number, z: number, radius: number): boolean {
-    const { r, c } = this.worldToCell(x, z);
+    const rr = Math.floor(z / CELL + this.rows / 2);
     for (let dr = -1; dr <= 1; dr++) {
       for (let dc = -1; dc <= 1; dc++) {
-        const rr = r + dr;
-        const cc = c + dc;
-        if (!this.isSolidCell(rr, cc)) continue;
-        // 该格的 AABB
-        const { x: cx, z: cz } = this.cellToWorld(rr, cc);
-        const minX = cx - CELL / 2;
-        const maxX = cx + CELL / 2;
-        const minZ = cz - CELL / 2;
-        const maxZ = cz + CELL / 2;
-        const closestX = Math.max(minX, Math.min(x, maxX));
-        const closestZ = Math.max(minZ, Math.min(z, maxZ));
-        const dx = x - closestX;
-        const dz = z - closestZ;
-        if (dx * dx + dz * dz < radius * radius) return true;
+        const nr = rr + dr;
+        const nc = c + dc;
+        if (nr < 0 || nc < 0 || nr >= this.rows || nc >= this.cols) continue;
+        if (this.grid[nr][nc] !== 1) continue;
+        // AABB 与圆碰撞
+        const wx = (nc - this.cols / 2 + 0.5) * CELL;
+        const wz = (nr - this.rows / 2 + 0.5) * CELL;
+        const dx = Math.max(Math.abs(x - wx) - CELL / 2, 0);
+        const dz = Math.max(Math.abs(z - wz) - CELL / 2, 0);
+        if (dx * dx + dz * dz < r * r) return true;
       }
     }
     return false;
   }
 
-  setFogDensity(d: number) {
-    this.fog.density = d;
+  // 射线 vs 墙格：返回最近命中距离(无墙返回 maxDist)
+  raycastWalls(origin: THREE.Vector3, dir: THREE.Vector3, maxDist: number): number {
+    // 用 DDA 风格步进
+    const step = 0.5;
+    for (let t = 0; t < maxDist; t += step) {
+      const x = origin.x + dir.x * t;
+      const z = origin.z + dir.z * t;
+      const c = Math.floor(x / CELL + this.cols / 2);
+      const r = Math.floor(z / CELL + this.rows / 2);
+      if (r < 0 || c < 0 || r >= this.rows || c >= this.cols) return t;
+      if (this.grid[r][c] === 1) return t;
+    }
+    return maxDist;
+  }
+
+  updateCaptureBeacon(t: number, owner: "alpha" | "bravo" | "neutral") {
+    const pulse = 0.6 + Math.sin(t * 2.5) * 0.3;
+    this.captureMat.opacity = pulse;
+    const color = owner === "alpha" ? 0x3a8cff : owner === "bravo" ? 0xff3b5c : 0xffd86b;
+    (this.captureBeacon.material as THREE.SpriteMaterial).color.setHex(color);
   }
 
   dispose() {
+    this.wallTex.dispose();
+    this.captureMat.map?.dispose();
+    this.captureMat.dispose();
     this.group.traverse((o) => {
-      if (o instanceof THREE.Mesh) {
-        o.geometry.dispose();
-        const mat = o.material;
-        if (Array.isArray(mat)) mat.forEach((m) => m.dispose());
-        else mat?.dispose();
-      }
+      const mesh = o as THREE.Mesh;
+      if (mesh.geometry) mesh.geometry.dispose();
+      const mat = mesh.material as THREE.Material | THREE.Material[] | undefined;
+      if (Array.isArray(mat)) mat.forEach((m) => m.dispose());
+      else if (mat) mat.dispose();
     });
   }
 }

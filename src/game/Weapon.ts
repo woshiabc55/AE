@@ -1,29 +1,35 @@
 import * as THREE from "three";
 import { makeWeaponSprite, makeMuzzleFlash } from "./textures";
+import type { OperatorDef } from "./operators";
 
-// 武器系统：第一人称 viewmodel（挂在相机下的 sprite）+ 射击节奏 + 后坐力 + 枪口火光
 export class Weapon {
   viewmodel: THREE.Sprite;
   muzzle: THREE.Sprite;
-  ammo: number;
-  maxAmmo: number;
+  ammo: number; // 弹匣内
+  magSize: number;
+  reserveAmmo: number; // 备弹
+  damage: number;
+  fireDelay: number;
   private vmMat: THREE.SpriteMaterial;
   private muzzleMat: THREE.SpriteMaterial;
   private cooldown = 0;
-  private fireDelay = 0.26; // 射击间隔
   private muzzleTimer = 0;
-  private recoilKick = 0; // viewmodel 后坐 0~1
+  private recoilKick = 0;
   private bobPhase = 0;
-  // viewmodel 在相机空间的基础位姿（右、下、前）
   private basePos = new THREE.Vector3(0.42, -0.34, -0.85);
   private muzzleBase = new THREE.Vector3(0.42, -0.08, -0.98);
   private baseScale = 0.6;
-  // 开火脉冲（供外部读取做镜头抖动等）
+  private reloading = false;
+  private reloadTimer = 0;
+  reloadTime = 1.8;
   firePulse = 0;
 
-  constructor(camera: THREE.Camera, maxAmmo: number) {
-    this.maxAmmo = maxAmmo;
-    this.ammo = maxAmmo;
+  constructor(camera: THREE.Camera, op: OperatorDef) {
+    this.magSize = op.magSize;
+    this.ammo = op.magSize;
+    this.reserveAmmo = op.reserveAmmo;
+    this.damage = op.damage;
+    this.fireDelay = op.fireDelay;
     this.vmMat = new THREE.SpriteMaterial({
       map: makeWeaponSprite(),
       transparent: true,
@@ -53,11 +59,23 @@ export class Weapon {
     camera.add(this.muzzle);
   }
 
-  canFire() {
-    return this.cooldown <= 0 && this.ammo > 0;
+  get reloadingNow() {
+    return this.reloading;
   }
 
-  // 尝试开火，成功返回 true
+  canFire() {
+    return this.cooldown <= 0 && this.ammo > 0 && !this.reloading;
+  }
+
+  startReload() {
+    if (this.reloading) return false;
+    if (this.ammo >= this.magSize) return false;
+    if (this.reserveAmmo <= 0) return false;
+    this.reloading = true;
+    this.reloadTimer = this.reloadTime;
+    return true;
+  }
+
   fire(): boolean {
     if (!this.canFire()) return false;
     this.ammo--;
@@ -69,12 +87,23 @@ export class Weapon {
     return true;
   }
 
-  reset(maxAmmo: number) {
-    this.maxAmmo = maxAmmo;
-    this.ammo = maxAmmo;
+  reset(op: OperatorDef) {
+    this.magSize = op.magSize;
+    this.ammo = op.magSize;
+    this.reserveAmmo = op.reserveAmmo;
+    this.damage = op.damage;
+    this.fireDelay = op.fireDelay;
     this.cooldown = 0;
     this.recoilKick = 0;
+    this.reloading = false;
     this.muzzle.visible = false;
+  }
+
+  // 补给备弹（回合开始重置）
+  refill(op: OperatorDef) {
+    this.ammo = op.magSize;
+    this.reserveAmmo = op.reserveAmmo;
+    this.reloading = false;
   }
 
   update(dt: number, moving: boolean, sprinting: boolean) {
@@ -84,24 +113,36 @@ export class Weapon {
     this.recoilKick = Math.max(0, this.recoilKick - dt * 6);
     this.firePulse = Math.max(0, this.firePulse - dt * 4);
 
-    // viewmodel bob
+    // 装弹进度
+    if (this.reloading) {
+      this.reloadTimer -= dt;
+      if (this.reloadTimer <= 0) {
+        const need = this.magSize - this.ammo;
+        const take = Math.min(need, this.reserveAmmo);
+        this.ammo += take;
+        this.reserveAmmo -= take;
+        this.reloading = false;
+      }
+    }
+
     const bobSpeed = sprinting ? 14 : 9;
     if (moving) this.bobPhase += dt * bobSpeed;
     const bobX = Math.sin(this.bobPhase) * 0.012;
     const bobY = Math.abs(Math.sin(this.bobPhase)) * 0.012;
     const kickY = this.recoilKick * 0.07;
     const kickZ = this.recoilKick * 0.1;
+    // 装弹时下沉
+    const reloadDrop = this.reloading ? Math.sin((1 - this.reloadTimer / this.reloadTime) * Math.PI) * 0.18 : 0;
     this.viewmodel.position.set(
       this.basePos.x + bobX,
-      this.basePos.y + bobY - kickY,
+      this.basePos.y + bobY - kickY - reloadDrop,
       this.basePos.z + kickZ,
     );
     this.muzzle.position.set(
       this.muzzleBase.x + bobX,
-      this.muzzleBase.y + bobY - kickY,
+      this.muzzleBase.y + bobY - kickY - reloadDrop,
       this.muzzleBase.z + kickZ,
     );
-    // 枪口火光抖动
     if (this.muzzle.visible) {
       this.muzzle.scale.setScalar(0.34 + Math.random() * 0.14);
       this.muzzle.material.rotation = Math.random() * Math.PI;

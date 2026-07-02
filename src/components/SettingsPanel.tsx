@@ -17,8 +17,8 @@ export function SettingsPanel({ onClose, inGame }: Props) {
   const setSettings = useGameStore((s) => s.setSettings);
 
   return (
-    <div className="w-[min(92vw,460px)] border-2 border-resonance-500/40 bg-void-800/95 shadow-pixel p-6 animate-fade-in">
-      <h2 className="font-pixel text-sm text-resonance-400 text-glow-reso mb-5">
+    <div className="w-[min(92vw,460px)] border-2 border-tac-500/40 bg-void-800/95 shadow-pixel p-6 animate-fade-in">
+      <h2 className="font-pixel text-sm text-tac-400 text-glow-tac mb-5">
         设置
       </h2>
 
@@ -26,8 +26,8 @@ export function SettingsPanel({ onClose, inGame }: Props) {
         {/* 像素分辨率 */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="font-term text-xl text-resonance-400/90">像素颗粒</label>
-            <span className="font-term text-lg text-echo-400">
+            <label className="font-term text-xl text-tac-400/90">像素颗粒</label>
+            <span className="font-term text-lg text-tac-400">
               {PIXEL_LABEL[settings.pixelScale] ?? settings.pixelScale}
             </span>
           </div>
@@ -40,7 +40,7 @@ export function SettingsPanel({ onClose, inGame }: Props) {
             onChange={(e) => setSettings({ pixelScale: Number(e.target.value) })}
             className="w-full"
           />
-          <div className="flex justify-between mt-1 font-term text-xs text-resonance-400/40">
+          <div className="flex justify-between mt-1 font-term text-xs text-tac-400/40">
             <span>细</span>
             <span>粗</span>
           </div>
@@ -49,8 +49,8 @@ export function SettingsPanel({ onClose, inGame }: Props) {
         {/* 鼠标灵敏度 */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="font-term text-xl text-resonance-400/90">鼠标灵敏度</label>
-            <span className="font-term text-lg text-echo-400">
+            <label className="font-term text-xl text-tac-400/90">鼠标灵敏度</label>
+            <span className="font-term text-lg text-tac-400">
               {settings.sensitivity.toFixed(2)}x
             </span>
           </div>
@@ -68,8 +68,8 @@ export function SettingsPanel({ onClose, inGame }: Props) {
         {/* 雾浓度 */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="font-term text-xl text-resonance-400/90">虚空浓雾</label>
-            <span className="font-term text-lg text-echo-400">
+            <label className="font-term text-xl text-tac-400/90">战场浓雾</label>
+            <span className="font-term text-lg text-tac-400">
               {settings.fogDensity.toFixed(2)}
             </span>
           </div>
@@ -86,13 +86,13 @@ export function SettingsPanel({ onClose, inGame }: Props) {
 
         {/* 音效（占位，无音频实现） */}
         <div className="flex items-center justify-between">
-          <label className="font-term text-xl text-resonance-400/90">音效</label>
+          <label className="font-term text-xl text-tac-400/90">音效</label>
           <button
             onClick={() => setSettings({ sound: !settings.sound })}
             className={`font-pixel text-[10px] px-3 py-2 border-2 transition-colors ${
               settings.sound
-                ? "border-resonance-500 text-resonance-400 bg-resonance-500/15"
-                : "border-void-600 text-resonance-400/40 bg-void-700"
+                ? "border-tac-500 text-tac-400 bg-tac-500/15"
+                : "border-void-600 text-tac-400/40 bg-void-700"
             }`}
           >
             {settings.sound ? "ON" : "OFF"}

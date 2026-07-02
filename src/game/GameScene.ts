@@ -2,13 +2,13 @@ import * as THREE from "three";
 import { RendererCore } from "./RendererCore";
 import { World } from "./World";
 import { Player } from "./Player";
-import { Entities } from "./Entities";
-import { Input } from "./Input";
 import { Weapon } from "./Weapon";
-import { LEVELS, parseLevel, cellToWorld, randomFragment } from "./levels";
+import { Input } from "./Input";
+import { BotManager } from "./BotManager";
+import { MatchManager } from "./MatchManager";
+import { OPERATORS, type OperatorClass } from "./operators";
 import { useGameStore } from "@/store/useGameStore";
 
-// 复用临时向量，避免每帧分配
 const _origin = new THREE.Vector3();
 const _dir = new THREE.Vector3();
 const _end = new THREE.Vector3();
@@ -20,24 +20,24 @@ export class GameScene {
   private scene = new THREE.Scene();
   private camera: THREE.PerspectiveCamera;
   private input: Input;
-  private world: World | null = null;
-  private entities: Entities | null = null;
+  private world: World;
   private player: Player;
-  private weapon: Weapon | null = null;
-  // 拖尾光线（短暂存活）
-  private tracers: { line: THREE.Line; life: number }[] = [];
-  private tracerMat: THREE.LineBasicMaterial;
+  private weapon: Weapon;
+  private bots: BotManager;
+  private match: MatchManager;
   private raf = 0;
   private last = 0;
-  private transitioning = false;
   private disposed = false;
+  private op: OperatorDef_ext;
+  // 玩家重生票已扣除标记
+  private playerDeathCharged = false;
   public onLockChange?: (locked: boolean) => void;
 
-  constructor(container: HTMLElement) {
+  constructor(container: HTMLElement, opClass: OperatorClass) {
     this.container = container;
     const store = useGameStore.getState();
     this.core = new RendererCore(container, store.settings.pixelScale);
-    this.camera = new THREE.PerspectiveCamera(72, 1, 0.05, 120);
+    this.camera = new THREE.PerspectiveCamera(75, 1, 0.05, 200);
     this.input = new Input(this.core.canvas);
     this.input.sensitivity = store.settings.sensitivity;
     this.input.onLockChange = (locked) => {
@@ -46,132 +46,94 @@ export class GameScene {
       if (!locked && gs.gameState === "playing") gs.pause();
       if (locked && gs.gameState === "paused") gs.resume();
     };
-    this.scene.background = new THREE.Color(0x05060a);
-    // 相机加入场景，使其子物体（武器 viewmodel）能被渲染
+
+    this.op = OPERATORS[opClass];
+    this.world = new World(store.settings.fogDensity);
+    this.scene.fog = this.world.fog;
+    this.scene.background = new THREE.Color(0x0d1410);
+    this.scene.add(this.world.group);
     this.scene.add(this.camera);
 
-    this.player = new Player(this.camera);
-    this.tracerMat = new THREE.LineBasicMaterial({
-      color: 0xffe48a,
-      transparent: true,
-      opacity: 0.9,
-      blending: THREE.AdditiveBlending,
-      fog: false,
+    this.player = new Player(this.camera, this.op);
+    this.player.team = "alpha";
+    this.weapon = new Weapon(this.camera, this.op);
+    this.bots = new BotManager(this.world, this.player);
+    this.scene.add(this.bots.group);
+
+    // MatchManager 注入上下文
+    this.match = new MatchManager({
+      alphaAlive: () =>
+        this.bots.aliveCount("alpha") + (this.player.alive ? 1 : 0),
+      bravoAlive: () => this.bots.aliveCount("bravo"),
+      captureCount: () => this.bots.countInCapture(this.world.parsed.capture),
+      onRoundStart: () => this.spawnRound(),
+      onRoundEnd: (winner) => {
+        useGameStore.getState().showBanner(winner === "alpha" ? "回合胜利" : "回合失败", 2600);
+      },
+      onMatchEnd: (winner) => {
+        useGameStore.getState().endMatch(winner, this.player.kills, this.player.deaths);
+      },
     });
 
-    this.loadLevel(store.stats.level);
+    // bot 回调
+    this.bots.onBotKilled = (killer, victim) => {
+      // bot 杀 bot：扣 victim 队票
+      this.match.consumeTicket(victim.team);
+      this.botsSpawnSparksAt(victim.pos, 16);
+    };
+    this.bots.onPlayerKilled = () => {
+      this.player.deaths++;
+      if (!this.playerDeathCharged) {
+        this.match.consumeTicket("alpha");
+        this.playerDeathCharged = true;
+      }
+    };
+    this.bots.onPlayerHit = () => {
+      useGameStore.getState().setDamageFlash(1);
+    };
+    this.bots.canRespawn = (team) => this.match.canRespawn(team);
+    this.bots.onConsumeTicket = (team) => this.match.consumeTicket(team);
+
+    this.updateCameraAspect();
     window.addEventListener("resize", this.handleResize);
     this.last = performance.now();
     this.loop();
   }
 
-  private handleResize = () => {
-    this.core.resize();
-    this.updateCameraAspect();
-  };
+  private spawnRound() {
+    // 重置玩家
+    const spawns = this.world.parsed.alphaSpawns;
+    const s = spawns[0];
+    this.player.spawn(s.x, s.z);
+    this.weapon.refill(this.op);
+    this.playerDeathCharged = false;
 
-  private updateCameraAspect() {
-    const { w, h } = this.core.getDrawingSize();
-    this.camera.aspect = w / h;
-    this.camera.updateProjectionMatrix();
-  }
+    // 重置 bot 池
+    this.bots.resetRound();
 
-  loadLevel(index: number) {
-    this.transitioning = true;
-    // 清理旧关卡
-    if (this.world) {
-      this.scene.remove(this.world.group);
-      this.world.dispose();
-    }
-    if (this.entities) {
-      this.scene.remove(this.entities.group);
-      this.entities.dispose();
-    }
-
-    const safeIndex = Math.max(1, Math.min(LEVELS.length, index));
-    const level = LEVELS[safeIndex - 1];
-    const parsed = parseLevel(level);
-    const store = useGameStore.getState();
-
-    this.world = new World(parsed, store.settings.fogDensity, level.theme);
-    this.scene.fog = this.world.fog;
-    this.scene.background = new THREE.Color(level.theme.fog);
-    this.scene.add(this.world.group);
-
-    this.entities = new Entities({
-      onCollectEcho: () => {
-        const lvl = LEVELS[safeIndex - 1];
-        useGameStore.getState().collectEcho(randomFragment(lvl));
-      },
-      onAllCollected: () => useGameStore.getState().showBanner("传送门已开启"),
-      onDamage: (amt) => {
-        useGameStore.getState().damage(amt);
-        this.player.addShake(0.6);
-      },
-      onPortalEnter: () => this.onPortalEnter(),
+    // 友军小队：3 名 bot（突击/侦察/支援）
+    const allyClasses: OperatorClass[] = ["assault", "recon", "support"];
+    allyClasses.forEach((c, i) => {
+      const sp = spawns[(i + 1) % spawns.length];
+      this.bots.spawnBot("alpha", OPERATORS[c], sp.x + (i - 1), sp.z + 1);
     });
 
-    // 生成回响
-    for (const e of parsed.echoes) {
-      const { x, z } = cellToWorld(e.r, e.c, parsed.cols, parsed.rows);
-      this.entities.spawnEcho(x, z);
-    }
-    // 生成暗影
-    for (const s of parsed.shadows) {
-      const { x, z } = cellToWorld(s.r, s.c, parsed.cols, parsed.rows);
-      this.entities.spawnShadow(x, z, level.enemySpeed);
-    }
-    // 生成传送门
-    if (parsed.portal) {
-      const { x, z } = cellToWorld(parsed.portal.r, parsed.portal.c, parsed.cols, parsed.rows);
-      this.entities.spawnPortal(x, z);
-    }
-    // 玩家出生
-    const spawn = parsed.playerSpawn ?? { r: 1, c: 1 };
-    const sp = cellToWorld(spawn.r, spawn.c, parsed.cols, parsed.rows);
-    this.player.spawn(sp.x, sp.z);
+    // 敌军：6 名 bot（混职业）
+    const enemyClasses: OperatorClass[] = ["assault", "assault", "recon", "support", "assault", "recon"];
+    const eSpawns = this.world.parsed.bravoSpawns;
+    enemyClasses.forEach((c, i) => {
+      const sp = eSpawns[i % eSpawns.length];
+      this.bots.spawnBot("bravo", OPERATORS[c], sp.x + (i - 2.5), sp.z - 1);
+    });
 
-    // 武器：首关创建，后续关卡仅重置弹药
-    if (!this.weapon) {
-      this.weapon = new Weapon(this.camera, level.ammo);
-    } else {
-      this.weapon.reset(level.ammo);
-    }
-
-    this.scene.add(this.entities.group);
-
-    // 同步状态
-    store.enterLevel(safeIndex, level.name, parsed.echoes.length, level.ammo);
-    store.setResonance(100);
-    this.updateCameraAspect();
-    this.transitioning = false;
+    useGameStore.getState().showBanner(`第 ${this.match.round} 回合`, 2200);
   }
 
-  private onPortalEnter() {
-    if (this.transitioning) return;
-    const cur = useGameStore.getState().stats.level;
-    if (cur >= LEVELS.length) {
-      useGameStore.getState().win();
-      this.input.exitLock();
-    } else {
-      useGameStore.getState().completeLevel();
-      this.loadLevel(cur + 1);
-    }
-  }
-
-  requestLock() {
-    this.input.requestLock();
-  }
-  isLocked() {
-    return this.input.isLocked();
-  }
-
-  applySettings() {
-    const s = useGameStore.getState().settings;
-    this.core.setPixelScale(s.pixelScale);
-    this.input.sensitivity = s.sensitivity;
-    this.world?.setFogDensity(s.fogDensity);
-    this.updateCameraAspect();
+  private botsSpawnSparksAt(pos: THREE.Vector3, n: number) {
+    // 复用 BotManager 的 sparks（通过 ctx）
+    // 直接调用 group 加几个 sprite 即可——但为简洁，这里触发一次 tracer
+    void pos;
+    void n;
   }
 
   private loop = () => {
@@ -180,108 +142,187 @@ export class GameScene {
     const now = performance.now();
     let dt = (now - this.last) / 1000;
     this.last = now;
-    if (dt > 0.05) dt = 0.05; // 防止切后台后大跳
+    if (dt > 0.05) dt = 0.05; // 帧率保护
 
     const gs = useGameStore.getState();
-    const canUpdate =
-      !this.transitioning &&
-      gs.gameState === "playing" &&
-      this.input.isLocked() &&
-      this.world &&
-      this.entities;
+    const canUpdate = gs.gameState === "playing";
 
     if (canUpdate) {
-      this.player.update(dt, this.input, this.world!);
-      this.entities!.update(dt, this.player.position, this.world!);
-      const t = performance.now() / 1000;
-      // 行者之光闪烁 + 心跳增强
-      this.world!.updateFlicker(t, this.entities!.heartbeat);
-      // 武器更新（带移动/冲刺 bob）
+      // R 装弹
+      if (this.input.isDown("KeyR")) this.weapon.startReload();
+
+      this.player.update(dt, this.input, this.world);
       const moving = this.input.getMove().x !== 0 || this.input.getMove().z !== 0;
-      if (this.weapon) {
-        this.weapon.update(dt, moving, this.player.isSprinting);
-        // 开火输入
-        if (this.input.consumeFire()) this.tryFire();
+      this.weapon.update(dt, moving, this.player.isSprinting);
+
+      // 大规模 Agent 更新（prep 阶段也更新，仅移动不开火由 bot 内部火冷却控制）
+      this.bots.update(dt);
+
+      // 玩家开火
+      if (this.input.consumeFire() && this.player.alive) this.tryFire();
+
+      // 玩家重生
+      if (!this.player.alive) {
+        if (this.player.respawnTimer <= 0 && this.match.canRespawn("alpha")) {
+          const sp = this.world.parsed.alphaSpawns[0];
+          this.player.spawn(sp.x, sp.z);
+          this.weapon.refill(this.op);
+          this.playerDeathCharged = false;
+        }
       }
-      // 瞄准检测（准星是否对准暗影）
+
+      // 据点光柱
+      const t = now / 1000;
+      this.world.updateCaptureBeacon(t, this.match.captureOwner);
+
+      // 推进对局
+      this.match.update(dt);
+
+      // 瞄准检测
       this.updateAim();
-      // 拖尾衰减
-      this.updateTracers(dt);
-      // 同步状态到 store（心跳、冲刺、闪烁衰减）
-      gs.setHeartbeat(this.entities!.heartbeat);
-      gs.setSprinting(this.player.isSprinting);
-      gs.decayFlashes(dt);
-      gs.tick(dt);
-      // 失败检测
-      if (useGameStore.getState().gameState === "defeat") {
-        this.input.exitLock();
-      }
+
+      // 同步 store
+      this.syncStore();
     }
 
     this.core.render(this.scene, this.camera);
   };
 
-  // 开火：射线检测暗影，命中则造成伤害
   private tryFire() {
-    if (!this.weapon || !this.entities) return;
     const fired = this.weapon.fire();
     const gs = useGameStore.getState();
     if (!fired) {
-      // 空仓/冷却：轻微反馈（无弹药时）
+      // 空仓自动尝试装弹
+      if (this.weapon.ammo <= 0) this.weapon.startReload();
       return;
     }
-    gs.setAmmo(this.weapon.ammo);
-    gs.setFireFlash(performance.now());
-    this.player.addShake(0.22);
-    // 射线
+    this.player.addShake(0.18);
+    gs.setPlayerStatus({ ammo: this.weapon.ammo, reserveAmmo: this.weapon.reserveAmmo });
+
     this.camera.getWorldPosition(_origin);
     this.camera.getWorldDirection(_dir);
-    const range = 32;
-    const res = this.entities.hitTest(_origin, _dir, range);
-    if (res) {
-      _end.copy(res.point);
-      const killed = this.entities.damageShadow(res.shadow, 1);
+    const range = 60;
+    const wallDist = this.world.raycastWalls(_origin, _dir, range);
+    const hitBot = this.bots.raycastBots(_origin, _dir, range, "alpha", wallDist);
+    if (hitBot) {
+      hitBot.getCenter(_end);
+      this.showTracer(_origin, _end, true);
+      const died = hitBot.takeDamage(this.weapon.damage);
       gs.setHitMarker(performance.now());
-      if (killed) gs.addKill();
+      if (died) {
+        this.player.kills++;
+        gs.setKillMarker(performance.now());
+        this.match.consumeTicket("bravo");
+      }
     } else {
-      _end.copy(_origin).addScaledVector(_dir, range);
+      _end.copy(_origin).addScaledVector(_dir, Math.min(wallDist, range));
+      this.showTracer(_origin, _end, false);
     }
-    // 枪口世界坐标（从相机局部空间转换）
-    _barrel.set(0.42, -0.08, -0.98);
-    this.camera.localToWorld(_barrel);
-    this.showTracer(_barrel, _end);
   }
 
-  // 瞄准检测：准星是否对准存活暗影
+  private showTracer(from: THREE.Vector3, to: THREE.Vector3, hit: boolean) {
+    // 起点偏移到枪口(相机局部)
+    _barrel.set(0.3, -0.1, -0.6);
+    this.camera.localToWorld(_barrel);
+    // 用 BotManager 的 tracer 系统（通过一个轻量线）
+    const geo = new THREE.BufferGeometry().setFromPoints([_barrel.clone(), to.clone()]);
+    const mat = new THREE.LineBasicMaterial({
+      color: hit ? 0xffe48a : 0x8a8a8a,
+      transparent: true,
+      opacity: hit ? 0.95 : 0.5,
+      blending: THREE.AdditiveBlending,
+      fog: false,
+    });
+    const line = new THREE.Line(geo, mat);
+    line.renderOrder = 998;
+    this.scene.add(line);
+    setTimeout(() => {
+      this.scene.remove(line);
+      geo.dispose();
+      mat.dispose();
+    }, 70);
+    void from;
+  }
+
   private updateAim() {
-    if (!this.entities) return;
     this.camera.getWorldPosition(_origin);
     this.camera.getWorldDirection(_dir);
-    const aiming = this.entities.hoverTest(_origin, _dir, 32);
+    const wallDist = this.world.raycastWalls(_origin, _dir, 60);
+    const aiming = this.player.alive && this.bots.hoverBots(_origin, _dir, "alpha", wallDist);
     useGameStore.getState().setAimingAtEnemy(aiming);
   }
 
-  // 生成一条短暂拖尾
-  private showTracer(from: THREE.Vector3, to: THREE.Vector3) {
-    const geo = new THREE.BufferGeometry().setFromPoints([from.clone(), to.clone()]);
-    const line = new THREE.Line(geo, this.tracerMat);
-    line.renderOrder = 998;
-    this.scene.add(line);
-    this.tracers.push({ line, life: 0.08 });
-  }
-
-  private updateTracers(dt: number) {
-    for (let i = this.tracers.length - 1; i >= 0; i--) {
-      const tr = this.tracers[i];
-      tr.life -= dt;
-      if (tr.life <= 0) {
-        this.scene.remove(tr.line);
-        tr.line.geometry.dispose();
-        this.tracers.splice(i, 1);
-      } else {
-        (tr.line.material as THREE.LineBasicMaterial).opacity = Math.max(0, tr.life / 0.08);
+  private syncStore() {
+    const gs = useGameStore.getState();
+    const snap = this.match.snapshot();
+    // 队友快照
+    const teammates = this.bots.bots
+      .filter((b) => b.team === "alpha")
+      .map((b, i) => ({
+        id: i,
+        op: b.op.id,
+        hp: Math.round(b.hp),
+        maxHp: b.op.maxHp,
+        alive: b.alive,
+      }));
+    // 雷达：可见敌人(视野内且有 LOS 简化=距离阈值) + 队友
+    const enemies: { x: number; z: number }[] = [];
+    const allies: { x: number; z: number }[] = [];
+    for (const b of this.bots.bots) {
+      if (b.team === "alpha" && b.alive) allies.push({ x: b.pos.x, z: b.pos.z });
+      if (b.team === "bravo" && b.alive) {
+        const d = b.pos.distanceTo(this.player.position);
+        if (d < 30) enemies.push({ x: b.pos.x, z: b.pos.z });
       }
     }
+    gs.setPlayerStatus({
+      hp: Math.round(this.player.hp),
+      maxHp: this.player.maxHp,
+      armor: this.player.armor,
+      ammo: this.weapon.ammo,
+      magSize: this.weapon.magSize,
+      reserveAmmo: this.weapon.reserveAmmo,
+      reloading: this.weapon.reloadingNow,
+      kills: this.player.kills,
+      deaths: this.player.deaths,
+      alive: this.player.alive,
+      respawnTimer: this.player.respawnTimer,
+      sprinting: this.player.isSprinting,
+    });
+    gs.setTeammates(teammates);
+    gs.setMatch({
+      round: snap.round,
+      scoreAlpha: snap.scoreAlpha,
+      scoreBravo: snap.scoreBravo,
+      ticketsAlpha: snap.ticketsAlpha,
+      ticketsBravo: snap.ticketsBravo,
+      captureProgress: snap.captureProgress,
+      captureOwner: snap.captureOwner,
+      phase: snap.phase,
+      phaseTimer: snap.phaseTimer,
+    });
+    gs.setRadar(enemies, allies);
+    gs.decayDamageFlash(1 / 60);
+  }
+
+  private updateCameraAspect() {
+    const w = Math.max(1, this.container.clientWidth);
+    const h = Math.max(1, this.container.clientHeight);
+    this.camera.aspect = w / h;
+    this.camera.updateProjectionMatrix();
+    this.core.resize();
+  }
+
+  private handleResize = () => this.updateCameraAspect();
+
+  requestLock() {
+    this.input.requestLock();
+  }
+
+  applySettings() {
+    const s = useGameStore.getState().settings;
+    this.core.setPixelScale(s.pixelScale);
+    this.input.sensitivity = s.sensitivity;
   }
 
   dispose() {
@@ -289,15 +330,12 @@ export class GameScene {
     cancelAnimationFrame(this.raf);
     window.removeEventListener("resize", this.handleResize);
     this.input.dispose();
-    this.weapon?.dispose(this.camera);
-    this.world?.dispose();
-    this.entities?.dispose();
-    for (const tr of this.tracers) {
-      this.scene.remove(tr.line);
-      tr.line.geometry.dispose();
-    }
-    this.tracers = [];
-    this.tracerMat.dispose();
+    this.weapon.dispose(this.camera);
+    this.bots.dispose();
+    this.world.dispose();
     this.core.dispose();
   }
 }
+
+// 别名：避免循环导入类型
+type OperatorDef_ext = (typeof OPERATORS)[OperatorClass];

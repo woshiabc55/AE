@@ -1,31 +1,36 @@
-// localStorage 存档封装：设置、进度、关卡进度
+// localStorage 存档封装：设置 + 生涯战绩（DELTA PROTOCOL）
 
 export interface GameSettings {
   pixelScale: number; // 1=高(细) 2=中 3=低(粗像素)
   sensitivity: number; // 0.5~2.0
-  fogDensity: number; // 0.06~0.18
+  fogDensity: number; // 0.04~0.14
   sound: boolean;
 }
 
-export interface SaveData {
-  levelReached: number;
-  updatedAt: number;
+export interface CareerStats {
+  totalKills: number;
+  totalDeaths: number;
+  matchesWon: number;
+  matchesPlayed: number;
+  bestRoundKills: number;
 }
 
-export interface ProgressData {
-  totalEchoes: number;
-  bestTimeSec: number | null;
-}
-
-const KEY_SAVE = "voidwalker_save";
-const KEY_SETTINGS = "voidwalker_settings";
-const KEY_PROGRESS = "voidwalker_progress";
+const KEY_SETTINGS = "delta_settings";
+const KEY_CAREER = "delta_career";
 
 export const DEFAULT_SETTINGS: GameSettings = {
   pixelScale: 3,
   sensitivity: 1.0,
-  fogDensity: 0.12,
+  fogDensity: 0.075,
   sound: true,
+};
+
+const DEFAULT_CAREER: CareerStats = {
+  totalKills: 0,
+  totalDeaths: 0,
+  matchesWon: 0,
+  matchesPlayed: 0,
+  bestRoundKills: 0,
 };
 
 function read<T>(key: string, fallback: T): T {
@@ -53,22 +58,10 @@ export const storage = {
   saveSettings(s: GameSettings) {
     write(KEY_SETTINGS, s);
   },
-  loadSave(): SaveData {
-    return read<SaveData>(KEY_SAVE, { levelReached: 1, updatedAt: 0 });
+  loadCareer(): CareerStats {
+    return read<CareerStats>(KEY_CAREER, DEFAULT_CAREER);
   },
-  saveSave(data: SaveData) {
-    write(KEY_SAVE, data);
-  },
-  hasSave(): boolean {
-    return localStorage.getItem(KEY_SAVE) !== null;
-  },
-  clearSave() {
-    localStorage.removeItem(KEY_SAVE);
-  },
-  loadProgress(): ProgressData {
-    return read<ProgressData>(KEY_PROGRESS, { totalEchoes: 0, bestTimeSec: null });
-  },
-  saveProgress(p: ProgressData) {
-    write(KEY_PROGRESS, p);
+  saveCareer(c: CareerStats) {
+    write(KEY_CAREER, c);
   },
 };

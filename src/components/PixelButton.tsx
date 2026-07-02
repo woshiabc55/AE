@@ -1,7 +1,7 @@
 import { type ButtonHTMLAttributes, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-type Variant = "primary" | "ghost" | "echo" | "rift" | "warn";
+type Variant = "primary" | "ghost" | "alpha" | "bravo" | "warn";
 
 interface PixelButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
@@ -10,15 +10,15 @@ interface PixelButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const VARIANTS: Record<Variant, string> = {
   primary:
-    "bg-resonance-500/15 border-resonance-500 text-resonance-400 hover:bg-resonance-500/30 hover:text-resonance-400 hover:shadow-glowReso",
+    "bg-tac-500/15 border-tac-500 text-tac-400 hover:bg-tac-500/30 hover:text-tac-400 hover:shadow-glowTac",
   ghost:
-    "bg-void-700/60 border-void-600 text-resonance-400/80 hover:bg-void-600 hover:text-resonance-400",
-  echo:
-    "bg-echo-500/15 border-echo-500 text-echo-400 hover:bg-echo-500/30 hover:shadow-glowEcho",
-  rift:
-    "bg-rift-500/15 border-rift-500 text-rift-500 hover:bg-rift-500/30 hover:shadow-glowRift",
+    "bg-void-700/60 border-void-600 text-tac-400/80 hover:bg-void-600 hover:text-tac-400",
+  alpha:
+    "bg-alpha-500/15 border-alpha-500 text-alpha-400 hover:bg-alpha-500/30 hover:shadow-glowAlpha",
+  bravo:
+    "bg-bravo-500/15 border-bravo-500 text-bravo-400 hover:bg-bravo-500/30 hover:shadow-glowBravo",
   warn:
-    "bg-warn-500/15 border-warn-500 text-warn-500 hover:bg-warn-500/30",
+    "bg-warn-500/15 border-warn-500 text-warn-500 hover:bg-warn-500/30 hover:shadow-glowWarn",
 };
 
 export function PixelButton({

@@ -3,194 +3,176 @@
 ```mermaid
 flowchart TD
     subgraph "表现层 (React)"
-        UI["页面/菜单组件"] --> HUD["HUD 叠层"]
+        UI["主菜单/干员选择"] --> HUD["战术 HUD"]
     end
     subgraph "游戏运行时 (Three.js)"
-        GS["GameScene 游戏场景"] --> RC["RendererCore 2渲3 渲染核心"]
-        GS --> WL["World 世界/关卡"]
-        GS --> PL["Player 玩家控制器"]
-        GS --> ENT["Entities 实体管理"]
-        GS --> IN["Input 输入管理"]
+        GS["GameScene 大规模 loop 编排"] --> RC["RendererCore 2渲3 渲染核心"]
+        GS --> WL["World 战场场景"]
+        GS --> PL["Player 干员控制器"]
+        GS --> WP["Weapon 武器"]
+        GS --> BM["BotManager Agent 池"]
+        GS --> MM["MatchManager 回合/据点/票数"]
+        GS --> IN["Input 输入"]
     end
     subgraph "状态与存档层"
         UI --> ST["GameStore (Zustand)"]
-        ST --> LS["localStorage 存档"]
+        ST --> LS["localStorage 战绩"]
         GS <--> ST
     end
-    RC --> OUT["低分辨率离屏 Canvas → 最近邻放大"]
+    BM --> B["Bot Agent x N"]
+    RC --> OUT["低分辨率离屏 → 最近邻放大 + CRT"]
 ```
 
 ## 2. 技术说明
 
-- **前端框架**：React@18 + TypeScript + Vite（沿用现有脚手架）
-- **3D 引擎**：Three.js（直接使用，不引入 R3F，保证渲染管线的低分辨率离屏渲染可控）
-- **2 渲 3 核心方案**：
-  - 主 `WebGLRenderer` 以低分辨率 `setSize(W/pixelScale, H/pixelScale)` 渲染，`setPixelRatio(1)`
-  - 渲染目标输出到离屏 canvas，再用 CSS `image-rendering: pixelated` 的 `<canvas>` 或 2D context `drawImage` 以 `imageSmoothingEnabled=false` 最近邻放大到全屏，形成粗像素
-  - 叠加 CSS 扫描线 / 噪点 / 暗角 overlay 增强 CRT 质感
-- **精灵系统**：billboard `Sprite` / `PlaneGeometry` + `MeshBasicMaterial`，纹理由 Canvas 程序化绘制像素图生成（`CanvasTexture`，`magFilter=NearestFilter`）
-- **状态管理**：Zustand（沿用，管理游戏状态、设置、存档进度）
-- **样式方案**：TailwindCSS@3 + CSS Variables（沿用）
-- **路由**：单页游戏，状态机驱动「菜单 / 游戏中 / 结算」而非多路由（无需 react-router，可移除）
-- **存档**：localStorage（关卡进度、设置），轻量无需 IndexedDB
-- **后端**：无（纯前端）
-- **初始化**：在现有 Vite + React 项目基础上重构 src，新增 `three` 依赖
+- **前端框架**：React@18 + TypeScript + Vite（沿用）
+- **3D 引擎**：Three.js（沿用，直接控制低分辨率离屏渲染）
+- **2 渲 3 核心方案**（沿用）：WebGL 以低分辨率渲染 → canvas `image-rendering: pixelated` 最近邻放大 → CSS 扫描线/噪点/暗角
+- **大规模 Agent loop**：
+  - `BotManager` 维护友军/敌军 Agent 池，每帧统一更新（状态机 + 移动 + 射击 + 碰撞）
+  - 每个 `Bot` 为面向相机的 billboard `Sprite`（像素士兵），共享材质降低 draw call
+  - 射线命中检测：玩家/bot 开火时对存活 Agent 做球-射线检测，O(N) 可承载 10+ Agent
+- **队伍系统**：`Team` = `"alpha"(友) | "bravo"(敌)`，Agent/玩家归属队伍，命中同队无伤害（避免 TK 友军伤害可选）
+- **回合/对局 loop**：`MatchManager` 驱动 `准备 → 交战 → 回合结算 → 下一回合 → 对局结算`；据点占领按区内人数差累积；重生票耗尽或据点满判回合胜负；先夺 3 回合赢对局
+- **重生系统**：死亡 Agent 进重生队列，倒计时后在己方基地重生，重生票 -1，票为 0 则该队该回合无法重生
+- **状态管理**：Zustand（沿用）
+- **样式**：TailwindCSS@3 + CSS Variables（沿用）
+- **路由**：单页状态机 `menu / operator / playing / paused / roundEnd / matchEnd`（沿用，无 react-router）
+- **存档**：localStorage 战绩（沿用）
+- **后端**：无（纯前端，AI bot 模拟「多人平台」战场）
 
-## 3. 路由定义
+## 3. 路由定义（状态机）
 
-本项目为单页游戏，使用状态机替代路由：
-
-| 游戏状态 (gameState) | 用途 |
+| gameState | 用途 |
 |------|------|
-| `menu` | 主菜单界面 |
-| `playing` | 游戏进行中（3D 视口 + HUD） |
-| `paused` | 暂停 / 设置面板 |
-| `victory` | 通关结算 |
-| `defeat` | 失败结算 |
+| `menu` | 主菜单 |
+| `operator` | 干员选择 |
+| `playing` | 回合进行中 |
+| `paused` | 暂停 |
+| `roundEnd` | 回合结算（短暂展示胜负） |
+| `matchEnd` | 对局结算 |
 
-## 4. API 定义
-
-无后端 API。所有逻辑为本地运行时。对外暴露的关键运行时接口（TypeScript）：
+## 4. API 定义（运行时接口）
 
 ```typescript
-// 游戏设置
-interface GameSettings {
-  pixelScale: number;      // 像素缩放档：1=高(细), 2=中, 3=低(粗像素)
-  sensitivity: number;     // 鼠标灵敏度 0.5~2.0
-  fogDensity: number;      // 雾密度 0.06~0.18
-  sound: boolean;          // 音效开关
+type Team = "alpha" | "bravo";
+type OperatorClass = "assault" | "recon" | "support";
+
+interface OperatorDef {
+  id: OperatorClass;
+  name: string;
+  maxHp: number;
+  speed: number;
+  magSize: number;
+  reserveAmmo: number;
+  fireDelay: number;
+  damage: number;
+  desc: string;
 }
 
-// 关卡定义
-interface LevelConfig {
-  index: number;            // 第几层
-  name: string;             // 关卡名「寂静回廊」
-  layout: Cell[][];         // 网格地图：0 空 / 1 墙 / 2 回响点 / 3 传送门 / 4 实体出生点 / 5 玩家出生点
-  echoCount: number;        // 需收集回响数
-  enemyCount: number;       // 暗影实体数
+interface BotState {
+  team: Team;
+  class: OperatorClass;
+  pos: Vector3;
+  yaw: number;
+  hp: number;
+  alive: boolean;
+  respawnTimer: number;
+  state: "patrol" | "engage" | "seekCover" | "dead";
+  target: Bot | Player | null;
+  fireCooldown: number;
 }
 
-// 运行时实体
-interface Echo { position: Vector3; collected: boolean; }
-interface ShadowEntity { position: Vector3; speed: number; }
-interface Portal { position: Vector3; active: boolean; }
-
-// 玩家状态
-interface PlayerState {
-  position: Vector3;
-  yaw: number; pitch: number;
-  resonance: number;       // 残响值 0~100
-  echoesCollected: number;
+interface MatchState {
+  round: number;
+  scoreAlpha: number;
+  scoreBravo: number;
+  ticketsAlpha: number;
+  ticketsBravo: number;
+  captureProgress: number; // -100~+100，正=友军占领
+  captureTarget: number;   // ±100 满
+  phase: "prep" | "combat" | "roundOver";
 }
 ```
 
 ## 5. 服务器架构图
 
-无后端服务，跳过。
+无后端，跳过。
 
 ## 6. 数据模型
-
-### 6.1 数据模型定义
 
 ```mermaid
 erDiagram
     SaveData ||--|| GameSettings : has
-    SaveData ||--|| Progress : has
-    LevelConfig ||--o{ Cell : contains
-    PlayerState ||--o{ Echo : collects
-    LevelConfig ||--o{ Echo : spawns
-    LevelConfig ||--o{ ShadowEntity : spawns
-    LevelConfig ||--|| Portal : has
+    SaveData ||--|| CareerStats : has
+    MatchState ||--o{ BotState : spawns
+    OperatorDef ||--o{ BotState : "is-a"
 
-    SaveData {
-        number levelReached
-        timestamp updatedAt
-    }
-    GameSettings {
-        number pixelScale
-        number sensitivity
-        number fogDensity
-        boolean sound
-    }
-    Progress {
-        number totalEchoes
-        number bestTimeSec
-    }
-    LevelConfig {
-        number index
-        string name
-        number echoCount
-        number enemyCount
-    }
-    PlayerState {
-        number resonance
-        number echoesCollected
-        number yaw
-        number pitch
-    }
+    SaveData { number bestRoundKills }
+    GameSettings { number pixelScale }
+    GameSettings { number sensitivity }
+    CareerStats { number totalKills }
+    CareerStats { number totalDeaths }
+    CareerStats { number matchesWon }
+    MatchState { number round }
+    MatchState { number scoreAlpha }
+    MatchState { number ticketsBravo }
+    MatchState { number captureProgress }
+    BotState { Team team }
+    BotState { number hp }
+    BotState { string state }
+    OperatorDef { OperatorClass id }
+    OperatorDef { number maxHp }
+    OperatorDef { number damage }
 ```
 
-### 6.2 数据定义语言（localStorage Schema）
-
+localStorage Schema：
 ```javascript
-// localStorage 键值结构
 {
-  "voidwalker_save": {          // SaveData
-    "levelReached": 1,
-    "updatedAt": 1782976559000
-  },
-  "voidwalker_settings": {      // GameSettings
-    "pixelScale": 2,
-    "sensitivity": 1.0,
-    "fogDensity": 0.12,
-    "sound": true
-  },
-  "voidwalker_progress": {      // Progress
-    "totalEchoes": 0,
-    "bestTimeSec": null
-  }
+  "delta_settings": { pixelScale, sensitivity, fogDensity, sound },
+  "delta_career": { totalKills, totalDeaths, matchesWon, bestRoundKills }
 }
 ```
 
 ## 7. 项目目录结构
 
 ```
-voidwalker/
-├── src/
-│   ├── game/                       # 游戏运行时核心（Three.js）
-│   │   ├── GameScene.ts            # 场景总控：初始化/更新/销毁
-│   │   ├── RendererCore.ts         # 2渲3 渲染核心：低分辨率 + 放大 + 后处理
-│   │   ├── World.ts                # 关卡世界：墙体/地面/雾/灯光构建
-│   │   ├── Player.ts               # 玩家：移动/视角/碰撞
-│   │   ├── Input.ts                # 键鼠输入 + 指针锁定
-│   │   ├── Entities.ts             # 回响/暗影实体/传送门实体逻辑
-│   │   ├── levels.ts               # 关卡布局数据
-│   │   └── textures.ts             # Canvas 程序化像素纹理生成
-│   ├── components/                 # React UI 层
-│   │   ├── MainMenu.tsx            # 主菜单
-│   │   ├── GameCanvas.tsx          # 3D 画布容器（挂载 GameScene）
-│   │   ├── HUD.tsx                 # 游戏内 HUD
-│   │   ├── SettingsPanel.tsx       # 设置面板
-│   │   ├── ResultScreen.tsx        # 结算界面
-│   │   └── PixelButton.tsx         # 像素风按钮
-│   ├── store/
-│   │   └── useGameStore.ts         # Zustand 全局状态
-│   ├── lib/
-│   │   └── storage.ts              # localStorage 封装
-│   ├── App.tsx                     # 状态机路由
-│   ├── main.tsx
-│   └── index.css
-├── index.html
-├── package.json
-├── vite.config.ts
-└── tailwind.config.js
+src/
+├── game/
+│   ├── GameScene.ts        # 大规模 loop 编排
+│   ├── RendererCore.ts     # 2渲3（沿用）
+│   ├── World.ts            # 战场：地形/建筑/掩体/天空/灯光
+│   ├── Player.ts           # 干员 FPS 控制（沿用+扩展血量/护甲）
+│   ├── Weapon.ts           # 武器 viewmodel+射击（沿用+扩展装弹/备弹）
+│   ├── Input.ts            # 输入（沿用+R 装弹）
+│   ├── Bot.ts              # 单个 AI Agent 状态机
+│   ├── BotManager.ts       # Agent 池 + 统一更新 + 命中检测
+│   ├── MatchManager.ts     # 回合/据点/票数/胜负
+│   ├── maps.ts             # 大地图布局数据
+│   ├── operators.ts        # 干员职业定义
+│   └── textures.ts         # 像素纹理（士兵/建筑/天空）
+├── components/
+│   ├── MainMenu.tsx        # 主菜单
+│   ├── OperatorSelect.tsx  # 干员选择
+│   ├── GameCanvas.tsx      # 战场画布
+│   ├── HUD.tsx             # 战术 HUD
+│   ├── Minimap.tsx         # 小地图
+│   ├── SettingsPanel.tsx   # 设置
+│   ├── ResultScreen.tsx    # 对局结算
+│   └── PixelButton.tsx     # 像素按钮（沿用）
+├── store/useGameStore.ts
+├── lib/storage.ts
+├── App.tsx
+├── main.tsx
+└── index.css
 ```
 
-## 8. 2 渲 3 实现要点
+## 8. 大规模 loop 实现要点
 
-1. **低分辨率渲染**：`renderer.setSize(w / pixelScale, h / pixelScale, false)`，画布 CSS 拉伸到全屏，`image-rendering: pixelated`
-2. **像素纹理**：所有材质纹理用 16×16 / 32×32 Canvas 绘制，`magFilter = NearestFilter`，避免线性插值模糊
-3. **billboard 精灵**：回响 / 暗影 / 传送门用 `Sprite` 或始终面向相机的 `Plane`，承载像素图，保留 2D 像素感同时存在于 3D 空间
-4. **雾效遮距**：`FogExp2` 颜色与背景一致，远墙隐入虚空，强化「像素 + 透视」的纵深感
-5. **CRT 后处理**：CSS overlay 叠加 repeating-linear-gradient 扫描线 + 噪点 + radial-gradient 暗角，不占用 WebGL 性能
-6. **性能**：墙体合并为单个 `BufferGeometry`；精灵共享材质；目标 60fps
+1. **统一 Agent 更新**：`BotManager.update(dt)` 遍历所有 bot，状态机驱动（巡逻→发现敌人→交战→寻掩体→死亡→重生），共享临时向量避免 GC
+2. **命中检测**：开火时 `raycastAgents(origin, dir, team)` 返回最近异队 Agent；bot 开火同理，对玩家用球距检测
+3. **碰撞**：bot 与建筑 AABB 碰撞（沿用 World.collides），分轴滑动
+4. **据点占领**：每帧统计据点区内双方存活人数，差值累积 captureProgress，达 ±100 判回合
+5. **重生队列**：死亡 bot 入队，倒计时归位后从基地 spawn，重生票 -1
+6. **性能**：bot sprite 共享材质、InstancedMesh 建筑、合并几何墙体；目标 60fps / 10+ Agent
+7. **回合编排**：MatchManager 状态机 prep(3s) → combat → roundOver(4s) → 下一回合 / matchEnd

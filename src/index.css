@@ -20,8 +20,8 @@ body,
 }
 
 body {
-  background-color: #05060a;
-  color: #cfe8ff;
+  background-color: #070a08;
+  color: #cfe8d4;
   overflow: hidden;
   user-select: none;
 }
@@ -82,21 +82,24 @@ body {
 }
 
 /* 像素文字光晕 */
-.text-glow-reso {
-  text-shadow: 0 0 10px rgba(58, 215, 255, 0.7);
+.text-glow-tac {
+  text-shadow: 0 0 10px rgba(79, 214, 194, 0.7);
 }
-.text-glow-echo {
+.text-glow-alpha {
+  text-shadow: 0 0 10px rgba(58, 140, 255, 0.7);
+}
+.text-glow-bravo {
+  text-shadow: 0 0 10px rgba(255, 59, 92, 0.8);
+}
+.text-glow-gold {
   text-shadow: 0 0 10px rgba(255, 216, 107, 0.7);
 }
-.text-glow-rift {
-  text-shadow: 0 0 12px rgba(255, 91, 227, 0.7);
-}
 .text-glow-warn {
-  text-shadow: 0 0 10px rgba(255, 59, 92, 0.8);
+  text-shadow: 0 0 10px rgba(255, 138, 61, 0.8);
 }
 
 ::selection {
-  background: rgba(58, 215, 255, 0.4);
+  background: rgba(79, 214, 194, 0.4);
   color: #fff;
 }
 
@@ -108,7 +111,7 @@ body {
   background: rgba(255, 255, 255, 0.02);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(58, 215, 255, 0.35);
+  background: rgba(79, 214, 194, 0.35);
 }
 
 /* 隐藏原生 range 滑块，统一像素风 */
@@ -125,15 +128,15 @@ input[type="range"]::-webkit-slider-thumb {
   appearance: none;
   width: 14px;
   height: 18px;
-  background: #3ad7ff;
-  border: 2px solid #05060a;
+  background: #4fd6c2;
+  border: 2px solid #070a08;
   cursor: pointer;
 }
 input[type="range"]::-moz-range-thumb {
   width: 14px;
   height: 18px;
-  background: #3ad7ff;
-  border: 2px solid #05060a;
+  background: #4fd6c2;
+  border: 2px solid #070a08;
   cursor: pointer;
   border-radius: 0;
 }
