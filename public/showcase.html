@@ -1013,6 +1013,125 @@
       return join(g);
     }
 
+    // 武器：长剑 16x16（blade, guard, grip, pommel）
+    function genSword(blade, edge, guard, grip, pommel){
+      const g = blank();
+      const set=(r,c,ch)=>{ g[r][c]=ch; };
+      // 剑尖
+      set(1,8,blade);
+      // 剑身（带边缘高光）
+      for(let r=2;r<10;r++){
+        set(r,7,edge); set(r,8,blade); set(r,9,edge);
+      }
+      // 剑身高光线
+      set(3,8,'w'); set(5,8,'w'); set(7,8,'w');
+      // 剑格
+      for(let c=5;c<=11;c++){ set(10,c,guard); set(11,c,guard); }
+      set(10,5,edge); set(10,11,edge);
+      // 剑柄
+      for(let r=12;r<15;r++){ set(r,7,grip); set(r,8,grip); }
+      set(12,7,edge); set(13,7,edge);
+      // 剑首
+      set(15,7,pommel); set(15,8,pommel);
+      set(14,7,pommel); set(14,8,pommel);
+      return join(g);
+    }
+
+    // 怪物：史莱姆 16x16
+    function genSlime(body, shine, eye, mouth){
+      const g = blank();
+      const cx=7.5, baseY=12;
+      // 主体半圆
+      for(let r=0;r<16;r++)for(let c=0;c<16;c++){
+        const d=Math.hypot(c-cx, Math.max(0, baseY-r));
+        if(r>=6 && r<=12 && d<=6.5) g[r][c]=body;
+      }
+      // 底部平直
+      for(let c=2;c<=13;c++){ g[12][c]=body; g[13][c]=body; }
+      g[13][1]=body; g[13][14]=body;
+      // 高光
+      g[7][5]=shine; g[7][6]=shine; g[8][5]=shine;
+      // 眼睛
+      g[9][6]=eye; g[9][9]=eye; g[10][6]=eye; g[10][9]=eye;
+      // 嘴
+      g[11][7]=mouth; g[11][8]=mouth;
+      // 阴影
+      g[14][3]='k'; g[14][4]='k'; g[14][11]='k'; g[14][12]='k';
+      return join(g);
+    }
+
+    // 食物：蛋糕 16x16
+    function genCake(cream, sponge, fruit, base){
+      const g = blank();
+      const set=(r,c,ch)=>{ g[r][c]=ch; };
+      // 顶部奶油层
+      for(let c=3;c<=12;c++){ set(2,c,cream); set(3,c,cream); }
+      // 奶油花边
+      set(3,2,cream); set(3,13,cream);
+      set(4,2,cream); set(4,13,cream);
+      // 水果
+      set(1,5,fruit); set(1,8,fruit); set(1,11,fruit);
+      set(2,5,'w'); set(2,8,'w'); set(2,11,'w');
+      // 蛋糕体
+      for(let r=4;r<=10;r++){
+        for(let c=3;c<=12;c++){ set(r,c,sponge); }
+        set(r,2,base); set(r,13,base);
+      }
+      // 夹层
+      for(let c=3;c<=12;c++){ set(6,c,cream); set(8,c,cream); }
+      // 底盘
+      for(let c=2;c<=13;c++){ set(11,c,base); set(12,c,base); }
+      set(13,3,base); set(13,12,base);
+      return join(g);
+    }
+
+    // 符文石 16x16（圆角石板 + 中心符号）
+    function genRune(stone, rune, glow, border){
+      const g = blank();
+      const cx=7.5, cy=7.5;
+      // 圆角矩形石板
+      for(let r=2;r<14;r++)for(let c=2;c<14;c++){
+        const edge = (r===2||r===13||c===2||c===13);
+        const corner = (r===2||r===13)&&(c===2||c===13);
+        if(corner) continue;
+        g[r][c] = edge ? border : stone;
+      }
+      // 中心符文（十字 + 圆点）
+      for(let r=5;r<11;r++) g[r][7]=rune, g[r][8]=rune;
+      for(let c=5;c<11;c++) g[7][c]=rune, g[8][c]=rune;
+      g[5][5]=glow; g[5][10]=glow; g[10][5]=glow; g[10][10]=glow;
+      // 中心高光
+      g[7][7]='w'; g[8][8]='w';
+      return join(g);
+    }
+
+    // 旗帜 16x16（旗杆 + 旗面 + 纹章）
+    function genBanner(pole, cloth, emblem, border){
+      const g = blank();
+      const set=(r,c,ch)=>{ g[r][c]=ch; };
+      // 旗杆
+      for(let r=1;r<16;r++) set(r,2,pole);
+      set(0,2,pole);
+      // 旗面（波浪状）
+      for(let c=3;c<=13;c++){
+        const wave = Math.sin((c-3)*0.7)*0+ (c>=11?1:0);
+        const top = 2 + wave, bot = 8 + wave;
+        for(let r=top;r<=bot;r++) set(r,c,cloth);
+      }
+      // 边框
+      for(let c=3;c<=13;c++){ set(2,c,border); set(8,c,border); }
+      set(3,3,border); set(7,3,border);
+      // 纹章（中心菱形）
+      const ex=8, ey=5;
+      for(let r=3;r<8;r++)for(let c=3;c<14;c++){
+        if(Math.abs(c-ex)+Math.abs(r-ey)<=2) g[r][c]=emblem;
+      }
+      g[5][8]='w';
+      // 旗杆顶饰
+      set(0,2,'y'); set(1,1,'y'); set(1,3,'y');
+      return join(g);
+    }
+
     /* ============================================================
        作品集元数据
        ============================================================ */
@@ -1167,6 +1286,33 @@
     for(let i=0;i<350;i++){ mk('fan', genBust(SK[i%SK.length],HA[(i*3)%HA.length],OU[(i*7)%OU.length],AC[(i*5)%AC.length],EY[(i*11)%EY.length]), `${PRE[(i*13)%PRE.length]}${SUF[(i*17)%SUF.length]}`, ["角色","半面镜像","批量"], `批量收录的二创角色。`); }
     // 场景 350
     for(let i=0;i<350;i++){ const d=SCN_D[i%SCN_D.length]; mk('scene', genScene(d[0],d[1],d[3],d[4],d[5],d[6]), `${d[2]}场景`, ["场景","氛围","批量"], `${d[2]}场景·批量收录。`); }
+
+    // —— 新类型批量扩充 ——
+    // 武器 [blade, edge, guard, grip, pommel, 名]
+    const SW_D=[['w','s','y','n','o','银焰'],['o','O','y','N','r','烈焰'],['c','C','i','d','b','寒霜'],['y','Y','o','n','h','雷霆'],['v','V','u','k','x','虚空'],['m','M','c','N','e','疾风'],['r','R','o','n','y','血色'],['e','l','L','N','a','翠绿']];
+    for(let i=0;i<150;i++){ const d=SW_D[i%SW_D.length]; mk('item', genSword(d[0],d[1],d[2],d[3],d[4]), `${d[5]}之剑`, ["道具","武器","批量"], `${d[5]}之剑·批量收录。`); }
+    // 怪物 [body, shine, eye, mouth, 名]
+    const SL_D=[['e','l','k','r','史莱姆'],['m','q','k','o','水母'],['L','l','k','r','苔怪'],['c','i','k','C','冰史莱姆'],['o','Y','k','r','熔岩怪'],['v','P','w','r','暗影怪'],['y','Y','k','o','雷史莱姆'],['p','w','k','P','糖果怪']];
+    for(let i=0;i<120;i++){ const d=SL_D[i%SL_D.length]; mk('fan', genSlime(d[0],d[1],d[2],d[3]), `${d[4]}怪`, ["角色","怪物","批量"], `${d[4]}·批量收录。`); }
+    // 食物 [cream, sponge, fruit, base, 名]
+    const CK_D=[['w','a','r','n','草莓蛋糕'],['w','a','p','n','蜜桃蛋糕'],['w','a','o','n','橙香蛋糕'],['w','a','e','n','抹茶蛋糕'],['w','a','v','n','蓝莓蛋糕'],['Y','z','r','n','焦糖蛋糕'],['w','f','j','n','彩虹蛋糕'],['q','f','c','n','冰雪蛋糕']];
+    for(let i=0;i<120;i++){ const d=CK_D[i%CK_D.length]; mk('item', genCake(d[0],d[1],d[2],d[3]), `${d[4]}`, ["道具","食物","批量"], `${d[4]}·批量收录。`); }
+    // 符文 [stone, rune, glow, border, 名]
+    const RU_D=[['d','o','y','s','烈焰符文'],['g','c','i','s','寒霜符文'],['d','y','O','s','雷霆符文'],['N','e','l','t','大地符文'],['V','w','Y','v','圣光符文'],['k','v','x','g','暗影符文'],['d','m','M','s','风暴符文'],['N','l','e','t','毒蚀符文']];
+    for(let i=0;i<120;i++){ const d=RU_D[i%RU_D.length]; mk('card', genRune(d[0],d[1],d[2],d[3]), `${d[4]}`, ["卡片","符文","批量"], `${d[4]}·批量收录。`); }
+    // 旗帜 [pole, cloth, emblem, border, 名]
+    const BN_D=[['n','r','y','o','赤焰旗'],['n','b','w','C','蔚蓝旗'],['n','L','Y','l','翠绿旗'],['n','v','w','x','暗影旗'],['n','y','o','Y','金阳旗'],['n','C','w','i','寒冰旗'],['n','j','w','p','霓虹旗'],['n','R','Y','r','血月旗']];
+    for(let i=0;i<120;i++){ const d=BN_D[i%BN_D.length]; mk('scene', genBanner(d[0],d[1],d[2],d[3]), `${d[4]}`, ["场景","旗帜","批量"], `${d[4]}·批量收录。`); }
+
+    // —— 补充加量，逼近 2100 ——
+    // 胸像加量 80（更多组合）
+    for(let i=0;i<80;i++){ mk('fan', genBust(SK[(i*2)%SK.length],HA[(i*5)%HA.length],OU[(i*11)%OU.length],AC[(i*13)%AC.length],EY[(i*7)%EY.length]), `${PRE[(i*7)%PRE.length]}${SUF[(i*3)%SUF.length]}`, ["角色","半面镜像","批量"], `批量收录的二创角色。`); }
+    // 场景加量 80
+    for(let i=0;i<80;i++){ const d=SCN_D[(i*3)%SCN_D.length]; mk('scene', genScene(d[0],d[1],d[3],d[4],d[5],d[6]), `${d[2]}之境`, ["场景","氛围","批量"], `${d[2]}之境·批量收录。`); }
+    // 宝石加量 60
+    for(let i=0;i<60;i++){ const d=GEM_D[(i*5)%GEM_D.length]; mk('item', genGem(d[0],d[2],d[3]), `${d[1]}晶`, ["道具","宝石","批量"], `${d[1]}晶·批量收录。`); }
+    // 武器加量 40（长柄变体名）
+    for(let i=0;i<40;i++){ const d=SW_D[(i*3)%SW_D.length]; mk('item', genSword(d[0],d[1],d[2],d[3],d[4]), `${d[5]}利刃`, ["道具","武器","批量"], `${d[5]}利刃·批量收录。`); }
 
     // 预计算拼豆数缓存（避免千次重复统计）
     COLLECTION.forEach(it=>{ it._bc = beadStats(it.sprite).total; });
