@@ -59,9 +59,9 @@ function drawKael(ctx: Ctx, b: Boss, time: number) {
   const ox = lean;
   const eye = phase2 ? PAL.blood : PAL.ghoulGlow;
 
-  // 攻击挥剑角度（由子类 attackProgress 驱动）
+  // 攻击挥剑角度（attackProgress 由引擎外部填，或用 stateTime 近似）
   let swordAngle = 95;
-  if (b.attackProgress > 0) {
+  if (b.state === "attack") {
     const p = easeOut(Math.min(1, b.attackProgress));
     swordAngle = 150 - p * 210;
   }
@@ -190,7 +190,7 @@ function drawBilefang(ctx: Ctx, b: Boss, time: number) {
   rect(ctx, 10 + ox, 10 + oy, 5, 2, skinDark);
 
   // 毒雾（攻击时口吐）
-  if (b.attackProgress > 0) {
+  if (b.state === "attack") {
     ctx.globalAlpha = 0.4;
     rect(ctx, 16 + ox, 7 + oy, 4, 3, PAL.ghoulGlow);
     rect(ctx, 18 + ox, 5 + oy, 3, 2, PAL.ghoulGlow);
@@ -221,7 +221,7 @@ function drawVeyra(ctx: Ctx, b: Boss, time: number) {
   const eye = phase2 ? PAL.visorGlow : "#9fe8ff";
 
   let swordAngle = 100;
-  if (b.attackProgress > 0) {
+  if (b.state === "attack") {
     const p = easeOut(Math.min(1, b.attackProgress));
     swordAngle = 140 - p * 200;
   }
@@ -283,7 +283,7 @@ function drawVeyra(ctx: Ctx, b: Boss, time: number) {
   thickLine(ctx, handX, handY, tx, ty, 2, ice);
   thickLine(ctx, handX, handY, tx, ty, 0.6, PAL.white);
   // 剑气（攻击残影）
-  if (b.attackProgress > 0) {
+  if (b.state === "attack") {
     const ghostP = Math.max(0, b.attackProgress - 0.18);
     const ga = 140 - easeOut(ghostP) * 200;
     const [gx, gy] = bladeTip(handX, handY, 16, ga);

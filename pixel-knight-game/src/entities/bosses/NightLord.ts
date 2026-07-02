@@ -108,16 +108,6 @@ export class NightLord extends Boss {
         this.actionCooldown = 1.5;
       }
     }
-    // 攻击动画进度（驱动暗影波 / 弹幕）
-    if (this.pattern === "shadowGiant") {
-      this.attackProgress = 0.45 + Math.sin(this.patternTimer * 9) * 0.3;
-    } else if (this.pattern === "barrage") {
-      this.attackProgress = Math.min(1, this.barrageAngle / (Math.PI * 2));
-    } else if (this.pattern === "laser" && this.laserActive) {
-      this.attackProgress = 0.6;
-    } else {
-      this.attackProgress = 0;
-    }
   }
 
   private choosePattern(playerX: number, _spawnEnemy?: (e: Enemy) => void) {

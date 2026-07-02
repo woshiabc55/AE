@@ -75,16 +75,6 @@ export class BoneGeneral extends Boss {
         this.actionCooldown = 1.6;
       }
     }
-    // 攻击动画进度（驱动精灵挥剑/旋风）
-    if (this.pattern === "tripleSlash") {
-      this.attackProgress = (this.patternTimer % 0.4) / 0.4;
-    } else if (this.pattern === "whirlwind") {
-      this.attackProgress = 0.5 + Math.sin(this.patternTimer * 14) * 0.3;
-    } else if (this.pattern === "charge") {
-      this.attackProgress = 0.15;
-    } else {
-      this.attackProgress = 0;
-    }
   }
 
   private choosePattern(playerX: number, _spawnEnemy?: (e: Enemy) => void) {

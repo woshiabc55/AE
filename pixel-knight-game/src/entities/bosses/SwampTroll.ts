@@ -77,18 +77,6 @@ export class SwampTroll extends Boss {
         this.actionCooldown = 1.5;
       }
     }
-    // 攻击动画进度（驱动砸地前摇 / 吐毒 / 狂暴）
-    if (this.pattern === "slam") {
-      this.attackProgress = Math.min(1, this.patternTimer / 0.6);
-    } else if (this.pattern === "poisonThrow") {
-      this.attackProgress = Math.min(1, this.patternTimer / 0.4);
-    } else if (this.pattern === "frenzy") {
-      this.attackProgress = 0.35 + Math.sin(this.patternTimer * 10) * 0.2;
-    } else if (this.pattern === "jump") {
-      this.attackProgress = this.jumped ? 0.7 : 0.2;
-    } else {
-      this.attackProgress = 0;
-    }
   }
 
   private choosePattern(playerX: number) {
