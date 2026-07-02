@@ -166,7 +166,7 @@ export function makeMuzzleFlash(): THREE.Texture {
 }
 
 // 武器 viewmodel：突击步枪(像素)
-export function makeWeaponSprite(): THREE.Texture {
+export function makeWeaponSprite(type: "ar" | "dmr" | "lmg"): THREE.Texture {
   const S = 32;
   const [cv, ctx] = makeCanvas(S);
   ctx.clearRect(0, 0, S, S);
@@ -174,28 +174,104 @@ export function makeWeaponSprite(): THREE.Texture {
     ctx.fillStyle = c;
     ctx.fillRect(x, y, w, h);
   };
-  // 枪管
-  rect(1, 15, 2, 4, "#0c0f12");
-  rect(3, 14, 14, 6, "#1c2228");
-  rect(3, 14, 14, 1, "#36404a");
-  rect(3, 19, 14, 1, "#080a0c");
-  // 机匣
-  rect(16, 13, 14, 11, "#1c2228");
-  rect(16, 13, 14, 1, "#36404a");
-  rect(16, 23, 14, 1, "#080a0c");
-  rect(17, 14, 1, 9, "#262e36");
-  // 弹匣(战术青)
-  rect(18, 16, 4, 6, "#0a2622");
-  rect(19, 17, 2, 4, "#4fd6c2");
-  rect(19, 17, 1, 1, "#bff7ee");
-  // 握把
-  rect(22, 23, 6, 7, "#1c2228");
-  rect(22, 23, 6, 1, "#36404a");
-  // 准星
-  rect(9, 13, 1, 1, "#4fd6c2");
-  // 散热槽
-  rect(25, 16, 1, 1, "#080a0c");
-  rect(27, 16, 1, 1, "#080a0c");
+  // 公共色板
+  const METAL_D = "#0c0f12";
+  const METAL = "#1c2228";
+  const METAL_H = "#36404a";
+  const METAL_L = "#262e36";
+  const SHADE = "#080a0c";
+
+  if (type === "ar") {
+    // VK-12 突击步枪 —— 紧凑、战术青弹匣
+    // 枪管
+    rect(1, 15, 3, 4, METAL_D);
+    rect(3, 14, 13, 6, METAL);
+    rect(3, 14, 13, 1, METAL_H);
+    rect(3, 19, 13, 1, SHADE);
+    // 机匣
+    rect(16, 13, 14, 11, METAL);
+    rect(16, 13, 14, 1, METAL_H);
+    rect(16, 23, 14, 1, SHADE);
+    rect(17, 14, 1, 9, METAL_L);
+    // 弹匣(战术青)
+    rect(18, 16, 4, 6, "#0a2622");
+    rect(19, 17, 2, 4, "#4fd6c2");
+    rect(19, 17, 1, 1, "#bff7ee");
+    // 握把
+    rect(22, 23, 6, 7, METAL);
+    rect(22, 23, 6, 1, METAL_H);
+    // 准星
+    rect(9, 13, 1, 1, "#4fd6c2");
+    // 散热槽
+    rect(25, 16, 1, 1, SHADE);
+    rect(27, 16, 1, 1, SHADE);
+  } else if (type === "dmr") {
+    // SR-7 战术步枪 —— 长枪管 + 顶部瞄准镜、蓝色调
+    // 长枪管
+    rect(0, 15, 2, 3, METAL_D);
+    rect(2, 14, 12, 5, METAL);
+    rect(2, 14, 12, 1, METAL_H);
+    rect(2, 18, 12, 1, SHADE);
+    // 枪口制退器
+    rect(0, 14, 1, 5, "#2a3340");
+    // 机匣(更长)
+    rect(14, 13, 17, 10, METAL);
+    rect(14, 13, 17, 1, METAL_H);
+    rect(14, 22, 17, 1, SHADE);
+    rect(15, 14, 1, 8, METAL_L);
+    // 顶部瞄准镜(蓝色镜片)
+    rect(20, 10, 7, 4, "#0a1626");
+    rect(21, 11, 5, 2, "#1a3358");
+    rect(22, 11, 3, 1, "#3a8cff");
+    rect(23, 11, 1, 1, "#9fc2ff");
+    // 镜架
+    rect(20, 13, 7, 1, METAL_H);
+    rect(20, 10, 1, 3, METAL_H);
+    rect(26, 10, 1, 3, METAL_H);
+    // 弹匣(窄、蓝)
+    rect(18, 17, 3, 5, "#0a1426");
+    rect(19, 18, 1, 3, "#3a8cff");
+    // 握把
+    rect(24, 22, 6, 8, METAL);
+    rect(24, 22, 6, 1, METAL_H);
+    // 扳机护圈
+    rect(22, 22, 2, 2, METAL_D);
+    // 准星
+    rect(6, 13, 1, 1, "#3a8cff");
+  } else {
+    // MG-X 轻机枪 —— 大弹鼓、粗壮、橙色调
+    // 粗枪管
+    rect(0, 14, 4, 5, METAL_D);
+    rect(4, 13, 12, 7, METAL);
+    rect(4, 13, 12, 1, METAL_H);
+    rect(4, 19, 12, 1, SHADE);
+    // 散热孔
+    rect(6, 16, 1, 1, SHADE);
+    rect(8, 16, 1, 1, SHADE);
+    rect(10, 16, 1, 1, SHADE);
+    rect(12, 16, 1, 1, SHADE);
+    // 机匣(厚重)
+    rect(16, 12, 15, 12, METAL);
+    rect(16, 12, 15, 1, METAL_H);
+    rect(16, 23, 15, 1, SHADE);
+    rect(17, 13, 1, 10, METAL_L);
+    // 大弹鼓(圆形、橙)
+    rect(20, 18, 8, 8, "#2a1408");
+    rect(21, 19, 6, 6, "#ff8a3d");
+    rect(22, 20, 4, 4, "#5a2a0a");
+    rect(23, 21, 2, 2, "#ffb87a");
+    // 握把
+    rect(25, 23, 5, 7, METAL);
+    rect(25, 23, 5, 1, METAL_H);
+    // 两脚架(收拢)
+    rect(2, 19, 1, 4, METAL_H);
+    rect(4, 19, 1, 4, METAL_H);
+    // 提把
+    rect(18, 10, 6, 2, METAL);
+    rect(18, 10, 6, 1, METAL_H);
+    // 准星
+    rect(2, 13, 1, 1, "#ff8a3d");
+  }
   const tex = new THREE.CanvasTexture(cv);
   tex.magFilter = THREE.NearestFilter;
   tex.minFilter = THREE.NearestFilter;

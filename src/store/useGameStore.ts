@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { storage, type GameSettings, type CareerStats } from "@/lib/storage";
-import type { OperatorClass, Team } from "@/game/operators";
+import { OPERATORS, type OperatorClass, type Team } from "@/game/operators";
 
 export type GameState = "menu" | "operator" | "playing" | "paused" | "matchEnd";
 
@@ -42,6 +42,8 @@ interface GameStore {
   alive: boolean;
   respawnTimer: number;
   sprinting: boolean;
+  ads: boolean; // 右键瞄准中
+  weaponName: string; // 当前武器名
   // 受伤/命中反馈
   damageFlash: number;
   hitMarker: number; // 时间戳
@@ -63,7 +65,7 @@ interface GameStore {
   selectOp: (op: OperatorClass) => void;
   goTo: (s: GameState) => void;
   startMatch: (op: OperatorClass) => void;
-  setPlayerStatus: (p: Partial<Pick<GameStore, "hp" | "maxHp" | "armor" | "ammo" | "magSize" | "reserveAmmo" | "reloading" | "kills" | "deaths" | "alive" | "respawnTimer" | "sprinting">>) => void;
+  setPlayerStatus: (p: Partial<Pick<GameStore, "hp" | "maxHp" | "armor" | "ammo" | "magSize" | "reserveAmmo" | "reloading" | "kills" | "deaths" | "alive" | "respawnTimer" | "sprinting" | "ads" | "weaponName">>) => void;
   setDamageFlash: (v: number) => void;
   setHitMarker: (t: number) => void;
   setKillMarker: (t: number) => void;
@@ -107,6 +109,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
   alive: true,
   respawnTimer: 0,
   sprinting: false,
+  ads: false,
+  weaponName: "VK-12 突击步枪",
   damageFlash: 0,
   hitMarker: 0,
   killMarker: 0,
@@ -137,6 +141,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       banner: null,
       damageFlash: 0,
       matchWinner: null,
+      weaponName: OPERATORS[op].weaponName,
     }),
 
   setPlayerStatus: (p) => set(p),

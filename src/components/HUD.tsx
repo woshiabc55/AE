@@ -27,6 +27,8 @@ export function HUD() {
   const aimingAtEnemy = useGameStore((s) => s.aimingAtEnemy);
   const banner = useGameStore((s) => s.banner);
   const selectedOp = useGameStore((s) => s.selectedOp);
+  const ads = useGameStore((s) => s.ads);
+  const weaponName = useGameStore((s) => s.weaponName);
 
   const hpPct = Math.max(0, (hp / maxHp) * 100);
   const hpLow = hpPct <= 30;
@@ -147,9 +149,14 @@ export function HUD() {
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         {alive ? (
           <div className="relative h-6 w-6">
-            <div className={`absolute left-1/2 top-0 h-6 w-[2px] -translate-x-1/2 ${aimingAtEnemy ? "bg-bravo-500" : "bg-tac-400/80"}`} />
-            <div className={`absolute top-1/2 left-0 h-[2px] w-6 -translate-y-1/2 ${aimingAtEnemy ? "bg-bravo-500" : "bg-tac-400/80"}`} />
-            <div className={`absolute left-1/2 top-1/2 h-[3px] w-[3px] -translate-x-1/2 -translate-y-1/2 ${aimingAtEnemy ? "bg-bravo-500" : "bg-tac-400"}`} />
+            {/* ADS 瞄准时收束为细点；否则展开十字 */}
+            {!ads && (
+              <>
+                <div className={`absolute left-1/2 top-0 h-6 w-[2px] -translate-x-1/2 ${aimingAtEnemy ? "bg-bravo-500" : "bg-tac-400/80"}`} />
+                <div className={`absolute top-1/2 left-0 h-[2px] w-6 -translate-y-1/2 ${aimingAtEnemy ? "bg-bravo-500" : "bg-tac-400/80"}`} />
+              </>
+            )}
+            <div className={`absolute left-1/2 top-1/2 h-[3px] w-[3px] -translate-x-1/2 -translate-y-1/2 ${aimingAtEnemy ? "bg-bravo-500" : "bg-tac-400"} ${ads ? "shadow-glowTac" : ""}`} />
             {/* 命中标记 */}
             {showHit && !showKill && (
               <>
@@ -190,6 +197,7 @@ export function HUD() {
       <div className="absolute right-4 bottom-4 flex flex-col items-end gap-2">
         <Minimap />
         <div className="text-right">
+          <div className="font-pixel text-[8px] text-tac-400/60 mb-0.5">{weaponName}</div>
           {reloading ? (
             <span className="font-pixel text-[10px] text-warn-500 text-glow-warn animate-flicker">
               装弹中...
@@ -204,7 +212,7 @@ export function HUD() {
               </span>
             </div>
           )}
-          <div className="font-pixel text-[8px] text-tac-400/50 mt-1">{magSize} MAG · R 装弹</div>
+          <div className="font-pixel text-[8px] text-tac-400/50 mt-1">{magSize} MAG · R 装弹 · 右键瞄准</div>
         </div>
       </div>
 

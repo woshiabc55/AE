@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { makeWeaponSprite, makeMuzzleFlash } from "./textures";
-import type { OperatorDef } from "./operators";
+import type { OperatorDef, WeaponType } from "./operators";
 
 export class Weapon {
   viewmodel: THREE.Sprite;
@@ -10,6 +10,10 @@ export class Weapon {
   reserveAmmo: number; // 备弹
   damage: number;
   fireDelay: number;
+  weaponType: WeaponType;
+  weaponName: string;
+  headMult: number;
+  range: number;
   private vmMat: THREE.SpriteMaterial;
   private muzzleMat: THREE.SpriteMaterial;
   private cooldown = 0;
@@ -24,14 +28,42 @@ export class Weapon {
   reloadTime = 1.8;
   firePulse = 0;
 
+  // —— 枪械设计：散布 / 后坐力 / 瞄准 ——
+  private baseSpread: number;
+  private bloomStep: number;
+  private bloomMax: number;
+  private bloomRecover: number;
+  private recoilStep: number;
+  private recoilRecover: number;
+  adsFov: number;
+  private adsSpreadMult: number;
+  private moveSpreadMult: number;
+  bloom = 0; // 当前累积散布(弧度)
+  recoilPitch = 0; // 当前累积后坐力上抬(弧度，作用于 pitch)
+  adsT = 0; // 瞄准插值 0..1
+
   constructor(camera: THREE.Camera, op: OperatorDef) {
     this.magSize = op.magSize;
     this.ammo = op.magSize;
     this.reserveAmmo = op.reserveAmmo;
     this.damage = op.damage;
     this.fireDelay = op.fireDelay;
+    this.weaponType = op.weaponType;
+    this.weaponName = op.weaponName;
+    this.headMult = op.headMult;
+    this.range = op.range;
+    this.baseSpread = op.baseSpread;
+    this.bloomStep = op.bloom;
+    this.bloomMax = op.bloomMax;
+    this.bloomRecover = op.bloomRecover;
+    this.recoilStep = op.recoil;
+    this.recoilRecover = op.recoilRecover;
+    this.adsFov = op.adsFov;
+    this.adsSpreadMult = op.adsSpreadMult;
+    this.moveSpreadMult = op.moveSpreadMult;
+
     this.vmMat = new THREE.SpriteMaterial({
-      map: makeWeaponSprite(),
+      map: makeWeaponSprite(op.weaponType),
       transparent: true,
       fog: false,
       depthTest: false,
@@ -63,6 +95,14 @@ export class Weapon {
     return this.reloading;
   }
 
+  // 当前实际散布(弧度)，考虑移动/瞄准/bloom
+  getSpread(moving: boolean, aiming: boolean): number {
+    let s = this.baseSpread + this.bloom;
+    if (moving) s *= this.moveSpreadMult;
+    if (aiming) s *= this.adsSpreadMult;
+    return s;
+  }
+
   canFire() {
     return this.cooldown <= 0 && this.ammo > 0 && !this.reloading;
   }
@@ -84,6 +124,9 @@ export class Weapon {
     this.muzzle.visible = true;
     this.recoilKick = 1;
     this.firePulse = 1;
+    // 累积散布与后坐力
+    this.bloom = Math.min(this.bloomMax, this.bloom + this.bloomStep);
+    this.recoilPitch += this.recoilStep;
     return true;
   }
 
@@ -97,6 +140,8 @@ export class Weapon {
     this.recoilKick = 0;
     this.reloading = false;
     this.muzzle.visible = false;
+    this.bloom = 0;
+    this.recoilPitch = 0;
   }
 
   // 补给备弹（回合开始重置）
@@ -104,14 +149,22 @@ export class Weapon {
     this.ammo = op.magSize;
     this.reserveAmmo = op.reserveAmmo;
     this.reloading = false;
+    this.bloom = 0;
+    this.recoilPitch = 0;
   }
 
-  update(dt: number, moving: boolean, sprinting: boolean) {
+  update(dt: number, moving: boolean, sprinting: boolean, aiming: boolean) {
     this.cooldown = Math.max(0, this.cooldown - dt);
     this.muzzleTimer -= dt;
     if (this.muzzleTimer <= 0) this.muzzle.visible = false;
     this.recoilKick = Math.max(0, this.recoilKick - dt * 6);
     this.firePulse = Math.max(0, this.firePulse - dt * 4);
+
+    // 散布恢复(瞄准时恢复更快)
+    const recoverMult = aiming ? 1.6 : 1.0;
+    this.bloom = Math.max(0, this.bloom - this.bloomRecover * recoverMult * dt);
+    // 后坐力上抬恢复
+    this.recoilPitch = Math.max(0, this.recoilPitch - this.recoilRecover * dt);
 
     // 装弹进度
     if (this.reloading) {
@@ -125,6 +178,10 @@ export class Weapon {
       }
     }
 
+    // 瞄准插值(ADS 时收枪至屏幕中、放大)
+    const adsTarget = aiming && !sprinting ? 1 : 0;
+    this.adsT += (adsTarget - this.adsT) * Math.min(1, dt * 10);
+
     const bobSpeed = sprinting ? 14 : 9;
     if (moving) this.bobPhase += dt * bobSpeed;
     const bobX = Math.sin(this.bobPhase) * 0.012;
@@ -133,14 +190,21 @@ export class Weapon {
     const kickZ = this.recoilKick * 0.1;
     // 装弹时下沉
     const reloadDrop = this.reloading ? Math.sin((1 - this.reloadTimer / this.reloadTime) * Math.PI) * 0.18 : 0;
+
+    // ADS：viewmodel 移向屏幕中心并放大
+    const adsX = this.adsT * -0.42; // 0.42 -> 0
+    const adsY = this.adsT * 0.30; // -0.34 -> -0.04
+    const adsScale = this.baseScale * (1 + this.adsT * 0.55);
+
     this.viewmodel.position.set(
-      this.basePos.x + bobX,
-      this.basePos.y + bobY - kickY - reloadDrop,
+      this.basePos.x + bobX + adsX,
+      this.basePos.y + bobY - kickY - reloadDrop + adsY,
       this.basePos.z + kickZ,
     );
+    this.viewmodel.scale.set(adsScale, adsScale, 1);
     this.muzzle.position.set(
-      this.muzzleBase.x + bobX,
-      this.muzzleBase.y + bobY - kickY - reloadDrop,
+      this.muzzleBase.x + bobX + adsX,
+      this.muzzleBase.y + bobY - kickY - reloadDrop + adsY,
       this.muzzleBase.z + kickZ,
     );
     if (this.muzzle.visible) {

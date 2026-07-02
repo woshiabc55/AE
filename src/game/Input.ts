@@ -9,6 +9,7 @@ export class Input {
   public sensitivity = 1.0;
   public onLockChange?: (locked: boolean) => void;
   private fireQueued = false;
+  private aimingDown = false; // 右键 ADS 按住状态
 
   constructor(el: HTMLElement) {
     this.el = el;
@@ -21,12 +22,29 @@ export class Input {
     document.addEventListener("pointerlockchange", this.handleLockChange);
     this.el.addEventListener("mousemove", this.handleMouseMove);
     this.el.addEventListener("mousedown", this.handleMouseDown);
+    this.el.addEventListener("mouseup", this.handleMouseUp);
+    this.el.addEventListener("contextmenu", this.handleContext);
   }
 
   private handleMouseDown = (e: MouseEvent) => {
     if (!this.locked) return;
     if (e.button === 0) this.fireQueued = true;
+    if (e.button === 2) this.aimingDown = true;
   };
+
+  private handleMouseUp = (e: MouseEvent) => {
+    if (e.button === 2) this.aimingDown = false;
+  };
+
+  // 阻止右键菜单
+  private handleContext = (e: MouseEvent) => {
+    e.preventDefault();
+  };
+
+  // 是否按住右键(瞄准)
+  isAiming(): boolean {
+    return this.aimingDown && this.locked;
+  }
 
   consumeFire(): boolean {
     const f = this.fireQueued;
@@ -106,5 +124,7 @@ export class Input {
     document.removeEventListener("pointerlockchange", this.handleLockChange);
     this.el.removeEventListener("mousemove", this.handleMouseMove);
     this.el.removeEventListener("mousedown", this.handleMouseDown);
+    this.el.removeEventListener("mouseup", this.handleMouseUp);
+    this.el.removeEventListener("contextmenu", this.handleContext);
   }
 }

@@ -13,6 +13,9 @@ const _origin = new THREE.Vector3();
 const _dir = new THREE.Vector3();
 const _end = new THREE.Vector3();
 const _barrel = new THREE.Vector3();
+const _spreadDir = new THREE.Vector3();
+const _orthoA = new THREE.Vector3();
+const _orthoB = new THREE.Vector3();
 
 export class GameScene {
   private container: HTMLElement;
@@ -154,9 +157,12 @@ export class GameScene {
       // R 装弹
       if (this.input.isDown("KeyR")) this.weapon.startReload();
 
-      this.player.update(dt, this.input, this.world);
+      const aiming = this.input.isAiming() && this.player.alive;
+      // 设定瞄准 FOV 目标(按干员)
+      this.player.setAdsFov(this.weapon.adsFov);
+      this.player.update(dt, this.input, this.world, aiming, this.weapon.recoilPitch);
       const moving = this.input.getMove().x !== 0 || this.input.getMove().z !== 0;
-      this.weapon.update(dt, moving, this.player.isSprinting);
+      this.weapon.update(dt, moving, this.player.isSprinting, aiming);
 
       // 大规模 Agent 更新（prep 阶段也更新，仅移动不开火由 bot 内部火冷却控制）
       this.bots.update(dt);
@@ -204,14 +210,47 @@ export class GameScene {
 
     this.camera.getWorldPosition(_origin);
     this.camera.getWorldDirection(_dir);
+    // —— 枪械散布：在散布角度内随机偏转射线方向 ——
+    const moving = this.input.getMove().x !== 0 || this.input.getMove().z !== 0;
+    const aiming = this.input.isAiming();
+    const spread = this.weapon.getSpread(moving, aiming);
+    if (spread > 0.0001) {
+      // 构造垂直于 dir 的两个正交基，做圆锥内随机偏转
+      _spreadDir.copy(_dir);
+      // 随机角度与半径
+      const ang = Math.random() * Math.PI * 2;
+      const r = spread * Math.sqrt(Math.random());
+      _orthoA.set(0, 1, 0).cross(_spreadDir);
+      if (_orthoA.lengthSq() < 1e-4) _orthoA.set(1, 0, 0);
+      _orthoA.normalize();
+      _orthoB.crossVectors(_spreadDir, _orthoA);
+      _spreadDir.addScaledVector(_orthoA, Math.cos(ang) * r)
+        .addScaledVector(_orthoB, Math.sin(ang) * r)
+        .normalize();
+      _dir.copy(_spreadDir);
+    }
+
     const range = 60;
     const wallDist = this.world.raycastWalls(_origin, _dir, range);
     const hitBot = this.bots.raycastBots(_origin, _dir, range, "alpha", wallDist);
     if (hitBot) {
-      hitBot.getCenter(_end);
+      // 命中点距离 t(球心在胸高 1.4)
+      const t =
+        (hitBot.pos.x - _origin.x) * _dir.x +
+        (1.4 - _origin.y) * _dir.y +
+        (hitBot.pos.z - _origin.z) * _dir.z;
+      const hitY = _origin.y + _dir.y * t;
+      // 爆头：命中点高于胸高 0.3 视为头部
+      const isHead = hitY > 1.4 + 0.3;
+      _end.set(_origin.x + _dir.x * t, hitY, _origin.z + _dir.z * t);
       this.showTracer(_origin, _end, true);
-      const died = hitBot.takeDamage(this.weapon.damage);
+      const dmg = isHead ? this.weapon.damage * this.weapon.headMult : this.weapon.damage;
+      const died = hitBot.takeDamage(dmg);
       gs.setHitMarker(performance.now());
+      if (isHead) {
+        // 爆头额外反馈：更亮的命中标记
+        gs.setKillMarker(performance.now());
+      }
       if (died) {
         this.player.kills++;
         gs.setKillMarker(performance.now());
@@ -291,6 +330,8 @@ export class GameScene {
       alive: this.player.alive,
       respawnTimer: this.player.respawnTimer,
       sprinting: this.player.isSprinting,
+      ads: this.input.isAiming(),
+      weaponName: this.weapon.weaponName,
     });
     gs.setTeammates(teammates);
     gs.setMatch({
