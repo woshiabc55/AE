@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { CELL, WALL_H, type ParsedLevel } from "./levels";
+import { CELL, WALL_H, type ParsedLevel, type LevelTheme } from "./levels";
 import { makeWallTexture, makeFloorTexture, makeCeilTexture } from "./textures";
 
 export class World {
@@ -8,19 +8,25 @@ export class World {
   cols: number;
   rows: number;
   playerLight: THREE.PointLight;
+  ambient: THREE.AmbientLight;
+  hemi: THREE.HemisphereLight;
   private wallMesh: THREE.InstancedMesh;
+  theme: LevelTheme;
+  private baseLightIntensity: number;
+  private baseAmbient: number;
 
-  constructor(level: ParsedLevel, fogDensity: number) {
+  constructor(level: ParsedLevel, fogDensity: number, theme: LevelTheme) {
     this.group = new THREE.Group();
     this.grid = level.grid.map((r) => [...r]);
     this.cols = level.cols;
     this.rows = level.rows;
+    this.theme = theme;
 
     const halfW = (level.cols * CELL) / 2;
     const halfH = (level.rows * CELL) / 2;
 
     // 雾：与背景同色，远景隐入虚空
-    const fog = new THREE.FogExp2(0x05060a, fogDensity);
+    const fog = new THREE.FogExp2(theme.fog, fogDensity);
 
     // 地板
     const floorTex = makeFloorTexture();
@@ -71,14 +77,16 @@ export class World {
     this.wallMesh.instanceMatrix.needsUpdate = true;
     this.group.add(this.wallMesh);
 
-    // 灯光：极弱环境光 + 玩家头顶点光（行者之光）
-    const ambient = new THREE.AmbientLight(0x142236, 0.55);
-    this.group.add(ambient);
-    const hemi = new THREE.HemisphereLight(0x1a3a5a, 0x05060a, 0.35);
-    this.group.add(hemi);
-    this.playerLight = new THREE.PointLight(0x6fe0ff, 1.4, 26, 1.6);
+    // 灯光：极弱环境光 + 玩家头顶点光（行者之光，主题色）
+    this.ambient = new THREE.AmbientLight(0x142236, 0.5);
+    this.group.add(this.ambient);
+    this.hemi = new THREE.HemisphereLight(theme.light, theme.fog, 0.3);
+    this.group.add(this.hemi);
+    this.playerLight = new THREE.PointLight(theme.light, 1.5, 28, 1.6);
     this.playerLight.position.set(0, 3.4, 0);
     this.group.add(this.playerLight);
+    this.baseLightIntensity = 1.5;
+    this.baseAmbient = 0.5;
 
     // 暴露雾给场景（GameScene 读取）
     this.fog = fog;
@@ -87,6 +95,14 @@ export class World {
   }
 
   fog: THREE.FogExp2;
+
+  // 行者之光闪烁 + 心跳时增强
+  updateFlicker(t: number, heartbeat: number) {
+    const flicker = 1 + Math.sin(t * 13) * 0.06 + Math.sin(t * 7.3) * 0.04;
+    const heartBoost = heartbeat * 0.6;
+    this.playerLight.intensity = this.baseLightIntensity * flicker + heartBoost;
+    this.ambient.intensity = this.baseAmbient + heartbeat * 0.15;
+  }
 
   cellToWorld(r: number, c: number) {
     return {

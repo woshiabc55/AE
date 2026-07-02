@@ -133,6 +133,7 @@ export function MainMenu() {
             </h2>
             <ul className="font-term text-xl text-resonance-400/90 space-y-2 leading-relaxed">
               <li><span className="text-resonance-400">W A S D</span> / 方向键　移动</li>
+              <li><span className="text-resonance-400">Shift</span>　冲刺（视野变广）</li>
               <li><span className="text-resonance-400">鼠标</span>　转向视角</li>
               <li><span className="text-resonance-400">点击画面</span>　锁定鼠标</li>
               <li><span className="text-resonance-400">ESC</span>　暂停 / 解锁</li>
@@ -140,6 +141,7 @@ export function MainMenu() {
             <div className="mt-4 border-t border-void-600 pt-3 font-term text-lg text-resonance-400/70 leading-relaxed">
               <p>· 收集本层所有 <span className="text-echo-400">记忆回响</span> 以开启传送门</p>
               <p>· 躲避 <span className="text-shadow-400">暗影实体</span>，接触会损耗残响值</p>
+              <p>· 暗影接近时屏幕边缘会泛起 <span className="text-warn-500">心跳红光</span></p>
               <p>· 残响值耗尽即失败，请善用地形阻挡暗影</p>
             </div>
             <div className="mt-5 flex justify-end">

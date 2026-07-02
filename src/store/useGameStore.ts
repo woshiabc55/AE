@@ -24,16 +24,33 @@ interface GameStore {
   stats: RunStats;
   // 关卡提示横幅
   banner: string | null;
+  // 记忆碎片（收集回响时显示）
+  fragment: string | null;
+  // 受伤红屏闪烁强度 0~1，每帧衰减
+  damageFlash: number;
+  // 收集金光闪烁强度 0~1，每帧衰减
+  collectFlash: number;
+  // 暗影接近心跳强度 0~1（最近暗影距离映射）
+  heartbeat: number;
+  // 是否冲刺中
+  sprinting: boolean;
+  // 关卡总数
+  levelCount: number;
 
   // actions
   setSettings: (s: Partial<GameSettings>) => void;
   startNewGame: () => void;
   continueGame: () => void;
   enterLevel: (index: number, name: string, echoTotal: number) => void;
-  collectEcho: () => void;
+  collectEcho: (fragment: string) => void;
   damage: (amount: number) => void;
   setResonance: (v: number) => void;
   tick: (dtSec: number) => void;
+  setDamageFlash: (v: number) => void;
+  setCollectFlash: (v: number) => void;
+  setHeartbeat: (v: number) => void;
+  setSprinting: (v: boolean) => void;
+  decayFlashes: (dtSec: number) => void;
   completeLevel: () => void; // 进入传送门
   win: () => void;
   fail: () => void;
@@ -63,6 +80,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
   totalEchoesAllTime: storage.loadProgress().totalEchoes,
   stats: freshStats(),
   banner: null,
+  fragment: null,
+  damageFlash: 0,
+  collectFlash: 0,
+  heartbeat: 0,
+  sprinting: false,
+  levelCount: 5,
 
   setSettings: (s) => {
     const next = { ...get().settings, ...s };
@@ -76,6 +99,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
       hasSave: false,
       stats: { ...freshStats(), startTime: Date.now() },
       gameState: "playing",
+      fragment: null,
+      damageFlash: 0,
+      collectFlash: 0,
+      heartbeat: 0,
     });
   },
 
@@ -84,6 +111,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set({
       stats: { ...freshStats(), level: save.levelReached, startTime: Date.now() },
       gameState: "playing",
+      fragment: null,
+      damageFlash: 0,
+      collectFlash: 0,
+      heartbeat: 0,
     });
   },
 
@@ -99,22 +130,29 @@ export const useGameStore = create<GameStore>((set, get) => ({
       },
       gameState: "playing",
       banner: `第 ${index} 层 · ${name}`,
+      fragment: null,
     });
-    // 横幅自动消失
     setTimeout(() => {
       if (get().banner?.startsWith(`第 ${index} 层`)) set({ banner: null });
     }, 2600);
   },
 
-  collectEcho: () => {
+  collectEcho: (fragment) => {
     const s = get().stats;
-    set({ stats: { ...s, echoesCollected: s.echoesCollected + 1, totalEchoes: s.totalEchoes + 1 } });
+    set({
+      stats: { ...s, echoesCollected: s.echoesCollected + 1, totalEchoes: s.totalEchoes + 1 },
+      collectFlash: 1,
+      fragment,
+    });
+    setTimeout(() => {
+      if (get().fragment === fragment) set({ fragment: null });
+    }, 3200);
   },
 
   damage: (amount) => {
     const s = get().stats;
     const r = Math.max(0, s.resonance - amount);
-    set({ stats: { ...s, resonance: r } });
+    set({ stats: { ...s, resonance: r }, damageFlash: 1 });
     if (r <= 0) get().fail();
   },
 
@@ -129,9 +167,22 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set({ stats: { ...s, elapsedSec: s.elapsedSec + dtSec } });
   },
 
+  setDamageFlash: (v) => set({ damageFlash: Math.max(0, Math.min(1, v)) }),
+  setCollectFlash: (v) => set({ collectFlash: Math.max(0, Math.min(1, v)) }),
+  setHeartbeat: (v) => set({ heartbeat: Math.max(0, Math.min(1, v)) }),
+  setSprinting: (v) => {
+    if (get().sprinting !== v) set({ sprinting: v });
+  },
+
+  decayFlashes: (dtSec) => {
+    const { damageFlash, collectFlash } = get();
+    // 约 0.6s 衰减归零
+    const k = Math.max(0, 1 - dtSec / 0.6);
+    set({ damageFlash: damageFlash * k, collectFlash: collectFlash * k });
+  },
+
   completeLevel: () => {
     const s = get().stats;
-    // 保存进度到当前层（已通过）
     storage.saveSave({ levelReached: s.level, updatedAt: Date.now() });
     set({ hasSave: true });
   },
@@ -163,7 +214,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   resume: () => {
     if (get().gameState === "paused") set({ gameState: "playing" });
   },
-  goToMenu: () => set({ gameState: "menu", banner: null }),
+  goToMenu: () => set({ gameState: "menu", banner: null, fragment: null }),
 
   showBanner: (text) => {
     set({ banner: text });

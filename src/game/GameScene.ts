@@ -4,7 +4,7 @@ import { World } from "./World";
 import { Player } from "./Player";
 import { Entities } from "./Entities";
 import { Input } from "./Input";
-import { LEVELS, parseLevel, cellToWorld } from "./levels";
+import { LEVELS, parseLevel, cellToWorld, randomFragment } from "./levels";
 import { useGameStore } from "@/store/useGameStore";
 
 export class GameScene {
@@ -73,14 +73,21 @@ export class GameScene {
     const parsed = parseLevel(level);
     const store = useGameStore.getState();
 
-    this.world = new World(parsed, store.settings.fogDensity);
+    this.world = new World(parsed, store.settings.fogDensity, level.theme);
     this.scene.fog = this.world.fog;
+    this.scene.background = new THREE.Color(level.theme.fog);
     this.scene.add(this.world.group);
 
     this.entities = new Entities({
-      onCollectEcho: () => useGameStore.getState().collectEcho(),
+      onCollectEcho: () => {
+        const lvl = LEVELS[safeIndex - 1];
+        useGameStore.getState().collectEcho(randomFragment(lvl));
+      },
       onAllCollected: () => useGameStore.getState().showBanner("传送门已开启"),
-      onDamage: (amt) => useGameStore.getState().damage(amt),
+      onDamage: (amt) => {
+        useGameStore.getState().damage(amt);
+        this.player.addShake(0.6);
+      },
       onPortalEnter: () => this.onPortalEnter(),
     });
 
@@ -159,6 +166,13 @@ export class GameScene {
     if (canUpdate) {
       this.player.update(dt, this.input, this.world!);
       this.entities!.update(dt, this.player.position, this.world!);
+      const t = performance.now() / 1000;
+      // 行者之光闪烁 + 心跳增强
+      this.world!.updateFlicker(t, this.entities!.heartbeat);
+      // 同步状态到 store（心跳、冲刺、闪烁衰减）
+      gs.setHeartbeat(this.entities!.heartbeat);
+      gs.setSprinting(this.player.isSprinting);
+      gs.decayFlashes(dt);
       gs.tick(dt);
       // 失败检测
       if (useGameStore.getState().gameState === "defeat") {

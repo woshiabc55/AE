@@ -259,3 +259,73 @@ export function makeParticleSprite(): THREE.Texture {
   tex.colorSpace = THREE.SRGBColorSpace;
   return tex;
 }
+
+// 回响辉光晕轮：径向渐变金色柔光（加性混合用）
+export function makeEchoHalo(): THREE.Texture {
+  const S = 64;
+  const [cv, ctx] = makeCanvas(S);
+  ctx.clearRect(0, 0, S, S);
+  const grad = ctx.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S / 2);
+  grad.addColorStop(0, "rgba(255,216,107,0.85)");
+  grad.addColorStop(0.3, "rgba(255,216,107,0.4)");
+  grad.addColorStop(1, "rgba(255,216,107,0)");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, S, S);
+  const tex = new THREE.CanvasTexture(cv);
+  tex.magFilter = THREE.NearestFilter;
+  tex.minFilter = THREE.LinearFilter;
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+// 传送门辉光晕轮：洋红径向
+export function makePortalHalo(): THREE.Texture {
+  const S = 64;
+  const [cv, ctx] = makeCanvas(S);
+  ctx.clearRect(0, 0, S, S);
+  const grad = ctx.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S / 2);
+  grad.addColorStop(0, "rgba(255,91,227,0.7)");
+  grad.addColorStop(0.4, "rgba(255,91,227,0.25)");
+  grad.addColorStop(1, "rgba(255,91,227,0)");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, S, S);
+  const tex = new THREE.CanvasTexture(cv);
+  tex.magFilter = THREE.NearestFilter;
+  tex.minFilter = THREE.LinearFilter;
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+// 收集粒子点：纯发光方块
+export function makeSpark(): THREE.Texture {
+  const S = 8;
+  const [cv, ctx] = makeCanvas(S);
+  ctx.clearRect(0, 0, S, S);
+  ctx.fillStyle = "#fff3c4";
+  ctx.fillRect(1, 1, 6, 6);
+  ctx.fillStyle = "#ffd86b";
+  ctx.fillRect(2, 2, 4, 4);
+  const tex = new THREE.CanvasTexture(cv);
+  tex.magFilter = THREE.NearestFilter;
+  tex.minFilter = THREE.NearestFilter;
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+// 暗影辉光晕轮：紫色径向
+export function makeShadowHalo(): THREE.Texture {
+  const S = 64;
+  const [cv, ctx] = makeCanvas(S);
+  ctx.clearRect(0, 0, S, S);
+  const grad = ctx.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S / 2);
+  grad.addColorStop(0, "rgba(122,59,255,0.6)");
+  grad.addColorStop(0.5, "rgba(122,59,255,0.2)");
+  grad.addColorStop(1, "rgba(122,59,255,0)");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, S, S);
+  const tex = new THREE.CanvasTexture(cv);
+  tex.magFilter = THREE.NearestFilter;
+  tex.minFilter = THREE.LinearFilter;
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}

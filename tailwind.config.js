@@ -53,6 +53,8 @@ export default {
         "fade-in": "fadeIn 0.5s ease-out",
         flicker: "flicker 2.4s linear infinite",
         "float-slow": "floatSlow 6s ease-in-out infinite",
+        heartbeat: "heartbeat 1s ease-in-out infinite",
+        "heartbeat-pulse": "heartbeatPulse 1s ease-in-out infinite",
       },
       keyframes: {
         fadeIn: {
@@ -66,6 +68,18 @@ export default {
         floatSlow: {
           "0%,100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-6px)" },
+        },
+        heartbeat: {
+          "0%,100%": { opacity: "0.4" },
+          "30%": { opacity: "1" },
+          "45%": { opacity: "0.5" },
+          "60%": { opacity: "0.95" },
+        },
+        heartbeatPulse: {
+          "0%,100%": { transform: "scale(0.7)", opacity: "0.6" },
+          "30%": { transform: "scale(1.15)", opacity: "1" },
+          "45%": { transform: "scale(0.85)", opacity: "0.7" },
+          "60%": { transform: "scale(1.1)", opacity: "1" },
         },
       },
     },
