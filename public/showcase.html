@@ -1,0 +1,1148 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>拼豆二创档案馆 · Bead Fanwork Archive</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink-900: #0f0a1a;
+        --ink-800: #1a1625;
+        --ink-700: #241d33;
+        --ink-600: #2f2640;
+        --ink-500: #3c3151;
+        --ink-400: #5a4d72;
+        --ink-300: #8a7da3;
+        --ink-200: #b8aed0;
+        --ink-100: #e6e0f5;
+        --ember: #ff6b35;
+        --ember-l: #ff8a5b;
+        --mint: #4ecdc4;
+        --mint-d: #3aa9a0;
+        --sun: #ffd23f;
+        --pink: #ff5d8f;
+        --violet: #7b2cbf;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; }
+      body {
+        font-family: "Noto Sans SC", "JetBrains Mono", sans-serif;
+        background: var(--ink-900);
+        color: var(--ink-100);
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+      }
+      .font-pixel { font-family: "Press Start 2P", monospace; }
+      .font-mono { font-family: "JetBrains Mono", monospace; }
+
+      /* ===== 背景层 ===== */
+      .bg-layer { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+      .bg-bead {
+        background-image:
+          linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+        background-size: 18px 18px;
+      }
+      .bg-orb {
+        background:
+          radial-gradient(600px 400px at 12% 8%, rgba(255,107,53,0.14), transparent 60%),
+          radial-gradient(700px 500px at 88% 92%, rgba(78,205,196,0.12), transparent 60%),
+          radial-gradient(500px 400px at 70% 18%, rgba(123,44,191,0.12), transparent 60%);
+      }
+      .bg-noise {
+        opacity: 0.05;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      }
+      .bg-scan {
+        background: repeating-linear-gradient(
+          to bottom,
+          rgba(0,0,0,0) 0px,
+          rgba(0,0,0,0) 2px,
+          rgba(0,0,0,0.18) 3px,
+          rgba(0,0,0,0) 4px
+        );
+        opacity: 0;
+        transition: opacity .4s;
+        z-index: 60;
+      }
+      body.crt .bg-scan { opacity: 1; }
+      .bg-vignette {
+        box-shadow: inset 0 0 240px 60px rgba(0,0,0,0.6);
+      }
+
+      /* ===== 浮动像素粒子 ===== */
+      .particle {
+        position: fixed; width: 4px; height: 4px; z-index: 1;
+        background: var(--ember); opacity: 0.5;
+        animation: floatUp linear infinite;
+        pointer-events: none;
+        box-shadow: 0 0 6px currentColor;
+      }
+      @keyframes floatUp {
+        0% { transform: translateY(110vh) translateX(0); opacity: 0; }
+        10% { opacity: 0.6; }
+        90% { opacity: 0.6; }
+        100% { transform: translateY(-10vh) translateX(40px); opacity: 0; }
+      }
+
+      /* ===== 布局 ===== */
+      .wrap { position: relative; z-index: 2; max-width: 1320px; margin: 0 auto; padding: 0 24px; }
+
+      /* ===== Hero ===== */
+      header.hero {
+        padding: 56px 0 36px;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        position: relative;
+      }
+      .badge {
+        display: inline-flex; align-items: center; gap: 8px;
+        font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.15em;
+        color: var(--mint); border: 1px solid rgba(78,205,196,0.4);
+        padding: 6px 12px; border-radius: 4px; background: rgba(78,205,196,0.06);
+        text-transform: uppercase;
+      }
+      .badge .dot { width: 7px; height: 7px; background: var(--mint); border-radius: 50%; box-shadow: 0 0 8px var(--mint); animation: blink 1.6s infinite; }
+      @keyframes blink { 50% { opacity: 0.3; } }
+      h1.title {
+        font-family: "Press Start 2P", monospace;
+        font-size: clamp(28px, 5vw, 56px);
+        line-height: 1.25; margin: 22px 0 0;
+        color: var(--ink-100);
+        text-shadow: 4px 4px 0 #000, 0 0 24px rgba(255,107,53,0.35);
+      }
+      h1.title .accent { color: var(--ember); }
+      h1.title .accent2 { color: var(--mint); }
+      .sub {
+        max-width: 640px; margin-top: 22px; color: var(--ink-300);
+        font-size: 15px; line-height: 1.75;
+      }
+      .stats { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 30px; }
+      .stat {
+        flex: 1 1 140px; background: rgba(26,22,37,0.6);
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 8px; padding: 14px 16px;
+        backdrop-filter: blur(4px);
+        position: relative; overflow: hidden;
+      }
+      .stat::before { content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background: var(--ember); }
+      .stat:nth-child(2)::before { background: var(--mint); }
+      .stat:nth-child(3)::before { background: var(--sun); }
+      .stat:nth-child(4)::before { background: var(--pink); }
+      .stat .num { font-family: "Press Start 2P", monospace; font-size: 22px; color: var(--ink-100); }
+      .stat .lbl { font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--ink-300); margin-top: 6px; letter-spacing: 0.08em; }
+
+      /* ===== 控制栏 ===== */
+      .controls {
+        position: sticky; top: 0; z-index: 30;
+        background: rgba(15,10,26,0.82); backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        padding: 14px 0;
+      }
+      .controls-inner { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+      .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+      .tab {
+        font-family: "JetBrains Mono", monospace; font-size: 12px;
+        padding: 8px 14px; border-radius: 4px; cursor: pointer;
+        background: rgba(47,38,64,0.6); border: 1px solid rgba(255,255,255,0.06);
+        color: var(--ink-200); transition: all .18s; user-select: none;
+        display: inline-flex; align-items: center; gap: 8px;
+      }
+      .tab:hover { color: var(--ink-100); border-color: rgba(255,107,53,0.4); }
+      .tab.active { background: var(--ember); color: #1a0f06; border-color: var(--ember); box-shadow: 0 0 16px rgba(255,107,53,0.4); }
+      .tab .cnt { font-size: 10px; opacity: 0.7; }
+      .spacer { flex: 1; }
+      .search {
+        position: relative;
+      }
+      .search input {
+        font-family: "JetBrains Mono", monospace; font-size: 13px;
+        background: rgba(15,10,26,0.8); color: var(--ink-100);
+        border: 1px solid rgba(255,255,255,0.1); border-radius: 4px;
+        padding: 9px 14px 9px 34px; width: 220px; outline: none; transition: border .2s;
+      }
+      .search input:focus { border-color: var(--mint); }
+      .search svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); opacity: 0.5; }
+      .sort-sel, .btn {
+        font-family: "JetBrains Mono", monospace; font-size: 12px;
+        background: rgba(47,38,64,0.6); color: var(--ink-200);
+        border: 1px solid rgba(255,255,255,0.08); border-radius: 4px;
+        padding: 9px 12px; cursor: pointer; transition: all .18s;
+        display: inline-flex; align-items: center; gap: 7px;
+      }
+      .sort-sel:hover, .btn:hover { color: var(--ink-100); border-color: rgba(78,205,196,0.5); }
+      .btn.toggled { color: var(--mint); border-color: var(--mint); background: rgba(78,205,196,0.1); }
+
+      /* ===== 画廊网格 ===== */
+      main.gallery { padding: 28px 0 80px; }
+      .grid {
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 18px;
+      }
+      .card {
+        background: linear-gradient(160deg, rgba(36,29,51,0.9), rgba(26,22,37,0.9));
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 10px; overflow: hidden;
+        cursor: pointer; transition: transform .25s, box-shadow .25s, border-color .25s;
+        position: relative; display: flex; flex-direction: column;
+      }
+      .card::after {
+        content:""; position:absolute; inset:0; border-radius:10px; pointer-events:none;
+        box-shadow: inset 0 0 0 0 rgba(255,107,53,0); transition: box-shadow .3s;
+      }
+      .card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(255,107,53,0.45);
+        box-shadow: 0 18px 40px -12px rgba(0,0,0,0.7), 0 0 28px -8px rgba(255,107,53,0.4);
+      }
+      .card:hover::after { box-shadow: inset 0 0 0 2px rgba(255,107,53,0.4); }
+      .card .preview {
+        position: relative; aspect-ratio: 1 / 1;
+        background:
+          radial-gradient(circle at 50% 40%, rgba(255,255,255,0.05), transparent 70%),
+          repeating-conic-gradient(rgba(255,255,255,0.025) 0% 25%, transparent 0% 50%) 50% / 14px 14px;
+        display: flex; align-items: center; justify-content: center;
+        overflow: hidden;
+      }
+      .card canvas { image-rendering: pixelated; width: 78%; height: 78%; object-fit: contain; filter: drop-shadow(0 6px 10px rgba(0,0,0,0.5)); transition: transform .3s; }
+      .card:hover canvas { transform: scale(1.06); }
+      .cat-tag {
+        position: absolute; top: 10px; left: 10px;
+        font-family: "Press Start 2P", monospace; font-size: 8px;
+        padding: 5px 7px; border-radius: 3px; letter-spacing: 0.05em;
+        backdrop-filter: blur(4px);
+      }
+      .cat-fan { background: rgba(255,107,53,0.85); color: #1a0f06; }
+      .cat-card { background: rgba(78,205,196,0.85); color: #06201e; }
+      .cat-scene { background: rgba(123,44,191,0.85); color: #fff; }
+      .cat-item { background: rgba(255,210,63,0.9); color: #2a1f00; }
+      .rarity {
+        position: absolute; top: 10px; right: 10px;
+        font-family: "JetBrains Mono", monospace; font-size: 10px;
+        color: var(--sun); background: rgba(0,0,0,0.4); padding: 3px 6px; border-radius: 3px;
+      }
+      .card .meta { padding: 12px 14px 14px; }
+      .card .name {
+        font-family: "Press Start 2P", monospace; font-size: 11px; color: var(--ink-100);
+        line-height: 1.5; margin-bottom: 8px;
+        overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      }
+      .card .creator { font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--ink-300); display:flex; align-items:center; gap:7px; }
+      .avatar { width: 18px; height: 18px; border-radius: 3px; image-rendering: pixelated; }
+      .card .foot { display:flex; justify-content: space-between; margin-top: 11px; font-family:"JetBrains Mono",monospace; font-size: 10px; color: var(--ink-400); }
+      .card .foot span { display:inline-flex; align-items:center; gap:4px; }
+      .card .foot .hot { color: var(--ember); }
+      .card .foot .bead { color: var(--mint); }
+
+      .empty { text-align:center; padding: 80px 0; color: var(--ink-400); font-family:"JetBrains Mono",monospace; font-size: 13px; }
+
+      /* ===== 弹窗 ===== */
+      .modal-bg {
+        position: fixed; inset: 0; z-index: 80; display: none;
+        background: rgba(8,5,15,0.82); backdrop-filter: blur(6px);
+        align-items: center; justify-content: center; padding: 24px;
+      }
+      .modal-bg.open { display: flex; animation: fadeIn .25s; }
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      .modal {
+        background: linear-gradient(160deg, var(--ink-700), var(--ink-800));
+        border: 1px solid rgba(255,107,53,0.3); border-radius: 14px;
+        max-width: 880px; width: 100%; max-height: 90vh; overflow: auto;
+        box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 60px -20px rgba(255,107,53,0.3);
+        display: grid; grid-template-columns: 1fr 1fr; animation: pop .3s;
+      }
+      @keyframes pop { from { transform: scale(0.94); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+      @media (max-width: 720px){ .modal { grid-template-columns: 1fr; } }
+      .modal-preview {
+        background:
+          radial-gradient(circle at 50% 40%, rgba(255,255,255,0.06), transparent 70%),
+          repeating-conic-gradient(rgba(255,255,255,0.03) 0% 25%, transparent 0% 50%) 50% / 18px 18px,
+          var(--ink-900);
+        display:flex; align-items:center; justify-content:center; padding: 30px; min-height: 320px;
+      }
+      .modal-preview canvas { image-rendering: pixelated; width: 86%; max-width: 340px; height: auto; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6)); }
+      .modal-info { padding: 28px 26px; }
+      .modal-info .mcat { font-family:"JetBrains Mono",monospace; font-size: 11px; letter-spacing:0.12em; color: var(--mint); text-transform: uppercase; }
+      .modal-info h2 { font-family:"Press Start 2P",monospace; font-size: 18px; margin: 10px 0 6px; color: var(--ink-100); line-height:1.5; }
+      .modal-info .mcreator { font-family:"JetBrains Mono",monospace; font-size: 12px; color: var(--ink-300); margin-bottom: 16px; display:flex; align-items:center; gap:8px; }
+      .modal-info .mdesc { font-size: 13.5px; line-height: 1.8; color: var(--ink-200); margin-bottom: 18px; }
+      .tag-row { display:flex; flex-wrap:wrap; gap:6px; margin-bottom: 18px; }
+      .chip { font-family:"JetBrains Mono",monospace; font-size: 11px; padding: 4px 9px; border-radius: 3px; background: rgba(78,205,196,0.1); color: var(--mint); border: 1px solid rgba(78,205,196,0.25); }
+      .mstats { display:grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 18px; }
+      .mstat { background: rgba(15,10,26,0.6); border:1px solid rgba(255,255,255,0.06); border-radius:6px; padding: 10px; text-align:center; }
+      .mstat .v { font-family:"Press Start 2P",monospace; font-size: 14px; color: var(--ember); }
+      .mstat:nth-child(2) .v { color: var(--mint); }
+      .mstat:nth-child(3) .v { color: var(--sun); }
+      .mstat .l { font-family:"JetBrains Mono",monospace; font-size: 10px; color: var(--ink-400); margin-top: 5px; }
+      .beadmap { margin-top: 4px; }
+      .beadmap .bt { font-family:"Press Start 2P",monospace; font-size: 9px; color: var(--ink-300); margin-bottom: 10px; letter-spacing:0.08em; }
+      .beadmap .rows { display:flex; flex-direction:column; gap: 6px; max-height: 140px; overflow:auto; padding-right:6px; }
+      .beadrow { display:flex; align-items:center; gap:8px; font-family:"JetBrains Mono",monospace; font-size: 11px; color: var(--ink-200); }
+      .beadrow .sw { width:14px; height:14px; border-radius:2px; border:1px solid rgba(0,0,0,0.4); }
+      .beadrow .bar { flex:1; height:8px; background: rgba(255,255,255,0.06); border-radius:2px; overflow:hidden; }
+      .beadrow .bar i { display:block; height:100%; background: var(--ember); }
+      .beadrow .n { width: 36px; text-align:right; color: var(--ink-300); }
+      .close-btn {
+        position:absolute; top: 14px; right: 16px; z-index: 5;
+        background: rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1);
+        color: var(--ink-100); width: 34px; height: 34px; border-radius: 6px;
+        font-size: 18px; cursor: pointer; display:flex; align-items:center; justify-content:center;
+      }
+      .close-btn:hover { color: var(--ember); border-color: var(--ember); }
+      .modal { position: relative; }
+
+      /* ===== footer ===== */
+      footer { border-top: 1px solid rgba(255,255,255,0.06); padding: 30px 0; text-align:center; color: var(--ink-400); font-family:"JetBrains Mono",monospace; font-size: 12px; }
+      footer .pixel-logo { font-family:"Press Start 2P",monospace; font-size: 12px; color: var(--ember); margin-bottom: 10px; }
+
+      /* toast */
+      .toast {
+        position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+        background: var(--ink-700); border:1px solid var(--mint); color: var(--ink-100);
+        font-family:"JetBrains Mono",monospace; font-size: 12px; padding: 10px 18px; border-radius:6px;
+        z-index: 100; opacity: 0; transition: all .3s; pointer-events:none;
+      }
+      .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+      /* scrollbar */
+      ::-webkit-scrollbar { width: 9px; height: 9px; }
+      ::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+      ::-webkit-scrollbar-thumb { background: rgba(255,107,53,0.35); border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(255,107,53,0.6); }
+      ::selection { background: rgba(255,107,53,0.4); color:#fff; }
+
+      @media (max-width: 640px){
+        .search input { width: 140px; }
+        .wrap { padding: 0 16px; }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 背景层 -->
+    <div class="bg-layer bg-bead"></div>
+    <div class="bg-layer bg-orb"></div>
+    <div class="bg-layer bg-noise"></div>
+    <div class="bg-layer bg-vignette"></div>
+    <div class="bg-layer bg-scan"></div>
+    <div id="particles"></div>
+
+    <!-- Hero -->
+    <header class="hero">
+      <div class="wrap">
+        <span class="badge"><span class="dot"></span>ARCHIVE · v2.6 · 持续收录中</span>
+        <h1 class="title">拼豆<span class="accent">二创</span>档案馆<br /><span class="accent2">Bead Fanwork</span> Archive</h1>
+        <p class="sub">
+          一座收纳半面镜像角色、元素卡牌、像素场景与道具设计的拼豆作品集。
+          所有图样均以网格拼豆呈现，可绑定骨架生成可拉动动画。这里聚合了社区创作者的
+          <b style="color:var(--ember)">大量二创</b>，每一颗豆都有它的位置。
+        </p>
+        <div class="stats">
+          <div class="stat"><div class="num" id="st-total">0</div><div class="lbl">收录作品 TOTAL</div></div>
+          <div class="stat"><div class="num" id="st-creator">0</div><div class="lbl">创作者 CREATORS</div></div>
+          <div class="stat"><div class="num" id="st-bead">0</div><div class="lbl">拼豆总数 BEADS</div></div>
+          <div class="stat"><div class="num" id="st-like">0</div><div class="lbl">总热度 LIKES</div></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 控制栏 -->
+    <div class="controls">
+      <div class="wrap controls-inner">
+        <div class="tabs" id="tabs">
+          <div class="tab active" data-cat="all">全部 <span class="cnt" id="c-all">0</span></div>
+          <div class="tab" data-cat="fan">二创作品 <span class="cnt" id="c-fan">0</span></div>
+          <div class="tab" data-cat="card">卡片 <span class="cnt" id="c-card">0</span></div>
+          <div class="tab" data-cat="scene">场景 <span class="cnt" id="c-scene">0</span></div>
+          <div class="tab" data-cat="item">物品设计 <span class="cnt" id="c-item">0</span></div>
+        </div>
+        <div class="spacer"></div>
+        <div class="search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input id="search" type="text" placeholder="搜索作品 / 创作者…" />
+        </div>
+        <select class="sort-sel" id="sort">
+          <option value="hot">按热度排序</option>
+          <option value="new">按最新收录</option>
+          <option value="bead">按拼豆数</option>
+          <option value="name">按名称</option>
+        </select>
+        <button class="btn" id="shuffle" title="随机洗牌">⤮ SHUFFLE</button>
+        <button class="btn" id="crt" title="CRT 扫描线">▥ CRT</button>
+      </div>
+    </div>
+
+    <!-- 画廊 -->
+    <main class="gallery">
+      <div class="wrap">
+        <div class="grid" id="grid"></div>
+        <div class="empty" id="empty" style="display:none;">— 没有匹配的拼豆作品 —</div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <div class="pixel-logo">PERLER BEAD STUDIO</div>
+        <div>© 2026 拼豆半面工坊 · 二创档案馆 · 所有图样仅供创作交流</div>
+      </div>
+    </footer>
+
+    <!-- 弹窗 -->
+    <div class="modal-bg" id="modal">
+      <div class="modal">
+        <button class="close-btn" id="close">×</button>
+        <div class="modal-preview"><canvas id="m-canvas"></canvas></div>
+        <div class="modal-info" id="m-info"></div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+    /* ============================================================
+       调色板：单字符 -> hex（'.' 透明）
+       ============================================================ */
+    const PAL = {
+      '.': null, 'k':'#0f0a1a','d':'#2f2640','g':'#5a4d72','s':'#b8aed0','w':'#e6e0f5',
+      'o':'#ff6b35','O':'#ff8a5b','y':'#ffd23f','Y':'#ffdf6b','m':'#4ecdc4','M':'#3aa9a0',
+      'r':'#e63946','R':'#c1121f','p':'#ff8fab','P':'#ff5d8f','b':'#4361ee','B':'#1d3557',
+      'c':'#00b4d8','C':'#0077b6','v':'#7b2cbf','V':'#3c096c','n':'#8b5a2b','N':'#4a2c10',
+      't':'#d4a373','l':'#52b788','L':'#2d6a4f','e':'#06d6a0','a':'#e9c46a','f':'#ffd6a5',
+      'q':'#caf0f8','i':'#90e0ef','u':'#7209b7','z':'#f4a261','h':'#264653','x':'#3a0ca3',
+      'j':'#f72585','q2':null
+    };
+
+    /* ============================================================
+       手绘像素图（每行严格 16 字符）
+       ============================================================ */
+    const SPR = {
+      // —— 二创角色 ——
+      ignis: [ // 炎骑士
+        ".......yy.......",
+        "......yYYy......",
+        ".....kOOOOk.....",
+        "....kOOOOOOk....",
+        "....kOwwwOOk....",
+        "....kOOOOOOk....",
+        "...kooorroook...",
+        "..kooooooooook..",
+        "..kooRRRRRRook..",
+        "..koRRkkkkRRok..",
+        "..kooooooooook..",
+        "..knnnnnnnnnnk..",
+        "...kkknnnnkkk...",
+        "...nn..nn..nn...",
+        "...NN..NN..NN...",
+        "................"
+      ],
+      moko: [ // 蘑菇精灵
+        "................",
+        ".....rrrrrr.....",
+        "...rrrrRRrrrr...",
+        "..rrRRrrwwrrRR..",
+        "..rRRwwrrrrRRR..",
+        "..RRrrrrRRrrRR..",
+        "...tttttttttt...",
+        "....tttttttt....",
+        "....twwttwwt....",
+        "....tttttttt....",
+        "...LLLLLLLLLL...",
+        "..LLlLLLlLLLLl..",
+        "..LLLLLLLLLLLL..",
+        "...LLLL..LLLL...",
+        "................",
+        "................"
+      ],
+      vael: [ // 暗影法师
+        ".......vv.......",
+        "......vVVv......",
+        ".....vVVVVv.....",
+        "....vVVVVVVv....",
+        "..vvVVVVVVVVvv..",
+        "...kkkkkkkkkk...",
+        "...kYYk..kYYk...",
+        "...kkkkkkkkkk...",
+        ".....vvvvvv.....",
+        "...vvvvvvvvvv...",
+        "..vvvvvvvvvvvv..",
+        "..vvvVvvvvVvvv..",
+        "..vvvvvvvvvvvv..",
+        "..vvv..vv..vvv..",
+        "..VVV..VV..VVV..",
+        "................"
+      ],
+      pyx: [ // 龙宝宝
+        "................",
+        "......LLLL......",
+        ".....LLLLLL.....",
+        "....LllllllL....",
+        "...LllllllllL...",
+        "...LlwlllwllL...",
+        "...LllllllllL...",
+        "...LllkkklllL...",
+        ".eLLLLLLLLLLLe..",
+        "..LllllllllllL..",
+        "..LllllllllllL..",
+        "..LlyyyyyyyylL..",
+        "..LlyyyyyyyylL..",
+        "...LLLL..LLLL...",
+        "...NNN....NNN...",
+        "................"
+      ],
+      // —— 物品 ——
+      flameSword: [
+        ".......yy.......",
+        "......yYYy......",
+        ".......oo.......",
+        "......oOOo......",
+        "......oOOo......",
+        "......oOOo......",
+        "......oOOo......",
+        "......oOOo......",
+        "......oOOo......",
+        "......oOOo......",
+        "......oOOo......",
+        ".....koOOok.....",
+        "....kkooookk....",
+        "......nnnn......",
+        "......nNNn......",
+        "................"
+      ],
+      healthPotion: [
+        ".......nn.......",
+        "......nnnn......",
+        "......nNNn......",
+        ".......gg.......",
+        ".......gg.......",
+        "...gggggggggg...",
+        "...gqqqqqqqqg...",
+        "...gqRqqqRqqg...",
+        "...gqqqqqqqqg...",
+        "...gqqRRRRqqg...",
+        "...gqqqqqqqqg...",
+        "...gqqqqqqqqg...",
+        "....gqqqqqqg....",
+        ".....gggggg.....",
+        "................",
+        "................"
+      ],
+      crown: [
+        "................",
+        "................",
+        "...y........y...",
+        "...yy......yy...",
+        "...yyy....yyy...",
+        "...yyyy..yyyy...",
+        "..yyyyyyyyyyyy..",
+        "..yYyyrryyYyyY..",
+        "..yyyyyyyyyyyy..",
+        "..nnnnnnnnnnnn..",
+        "..yyyyyyyyyyyy..",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................"
+      ],
+      shield: [
+        "................",
+        "....ssssssss....",
+        "...swwwwwwwws...",
+        "..swwmmmmmmwws..",
+        "..swmmmmmmmmws..",
+        "..swmmmMMMmmws..",
+        "..swmmmmmmmmws..",
+        "..swmmmmmmmmws..",
+        "...swmmmmmmws...",
+        "....swwwwwws....",
+        ".....ssssss.....",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................"
+      ],
+      scroll: [
+        "................",
+        "................",
+        "..nnnnnnnnnnnn..",
+        "..naanaanaanaa..",
+        "..nnnnnnnnnnnn..",
+        "...wwwwwwwwww...",
+        "...wvvvvvvvvw...",
+        "...wvvvvvvvvw...",
+        "...wvvvvvvvvw...",
+        "...wvvvvvvvvw...",
+        "...wvvvvvvvvw...",
+        "...wwwwwwwwww...",
+        "..nnnnnnnnnnnn..",
+        "..naanaanaanaa..",
+        "..nnnnnnnnnnnn..",
+        "................"
+      ],
+      bow: [
+        "................",
+        "....nnnn........",
+        "...n....n.......",
+        "..n......n......",
+        "..n......n..yy..",
+        "..n......n.yoOy.",
+        "..n......n..yy..",
+        "..n......n......",
+        "..n......n......",
+        "..n......n......",
+        "..n......n......",
+        "...n....n.......",
+        "....nnnn........",
+        "................",
+        "................",
+        "................"
+      ],
+      // —— 场景 ——
+      twilightForest: [
+        "BBBBBBBBBBBBBBBB",
+        "BBBBByyBBBBBBBBB",
+        "BBBBByyBBBBBBBBB",
+        "BBBByBBBBByBBBBB",
+        "vvvvvvvvvvvvvvvv",
+        "vvvvvvvvvvvvvvvv",
+        "LLLLLLLLLLLLLLLL",
+        "LLlLLlLLLlLLlLLL",
+        "LlllLlllLlllLlll",
+        "LLLLLLLLLLLLLLLL",
+        "LLLLLLLLLLLLLLLL",
+        "LLLLLLLLLLLLLLLL",
+        "LlLLLLLLLLLlLLLL",
+        "LLLLLLLLLLLLLLLL",
+        "LLLLLLLLLLLLLLLL",
+        "LLLLLLLLLLLLLLLL"
+      ],
+      starryDesert: [
+        "BBBBBBBBBBBBBBBB",
+        "BByBBBBByBBBBByB",
+        "BBBBByBBBBByBBBB",
+        "BBBBBBBBBBBBBBBB",
+        "vvvvvvvvvvvvvvvv",
+        "PPPPPPPPPPPPPPPP",
+        "zzzzzzzzzzzzzzzz",
+        "zzzNzzzzzzNzzzzz",
+        "zzzzzzzzzzzzzzzz",
+        "zNzzzzzzzzzzzNzz",
+        "zzzzzzzzzzzzzzzz",
+        "zzzzzzzzzzzzzzzz",
+        "zzzzzzzzzzzzzzzz",
+        "zzzNzzzzzzNzzzzz",
+        "zzzzzzzzzzzzzzzz",
+        "NNNNNNNNNNNNNNNN"
+      ],
+      coralSea: [
+        "CCCCCCCCCCCCCCCC",
+        "CcCcCcCcCcCcCcCc",
+        "cccccccccccccccc",
+        "cccccccccccccccc",
+        "cccccccccccccccc",
+        "cccccccccccccccc",
+        "cccccccccccccccc",
+        "...PP....pp.....",
+        "..PPPP..pppp....",
+        "..PnPP..pnpp....",
+        "..nnnn..nnnn....",
+        ".nnnnnnnnnnnnnn.",
+        "nnnnnnnnnnnnnnnn",
+        "NNNNNNNNNNNNNNNN",
+        "NNNNNNNNNNNNNNNN",
+        "NNNNNNNNNNNNNNNN"
+      ]
+    };
+
+    /* ============================================================
+       程序化生成器
+       ============================================================ */
+    function blank(h=16,w=16){ return Array.from({length:h},()=>new Array(w).fill('.')); }
+    function join(g){ return g.map(r=>r.join('')); }
+
+    // 元素卡牌图标 16x16：边框 + 元素底 + 中心菱形宝石
+    function genCardIcon(elem, frame, gem){
+      const g = blank();
+      for(let r=0;r<16;r++)for(let c=0;c<16;c++){
+        if(r===0||r===15||c===0||c===15) g[r][c]=frame;
+        else g[r][c]=elem;
+      }
+      // 内框
+      for(let c=2;c<14;c++){ g[2][c]=frame; g[13][c]=frame; }
+      for(let r=2;r<14;r++){ g[r][2]=frame; g[r][13]=frame; }
+      // 中心菱形宝石
+      const cx=7.5, cy=7.5;
+      for(let r=3;r<13;r++)for(let c=3;c<13;c++){
+        const d=Math.abs(c-cx)+Math.abs(r-cy);
+        if(d<=3) g[r][c]=gem;
+        if(d===3) g[r][c]=frame;
+      }
+      // 高光
+      g[5][6]='w'; g[6][5]='w';
+      return join(g);
+    }
+
+    // 药水 16x16
+    function genPotion(liquid, bubble){
+      const g = blank();
+      const set=(r,c,ch)=>{ if(r>=0&&r<16&&c>=0&&c<16) g[r][c]=ch; };
+      // cork
+      for(let c=7;c<=8;c++){ set(0,c,'n'); }
+      for(let c=6;c<=9;c++){ set(1,c,'n'); set(2,c,'n'); set(3,c,'N'); }
+      // neck
+      set(4,7,'g'); set(4,8,'g'); set(5,7,'g'); set(5,8,'g');
+      // body cols 3..12
+      for(let c=3;c<=12;c++){ set(6,c,'g'); set(12,c,'g'); }
+      for(let r=7;r<=11;r++){ set(r,3,'g'); set(r,12,'g'); }
+      // liquid fill
+      for(let r=7;r<=11;r++)for(let c=4;c<=11;c++) set(r,c,liquid);
+      set(12,4,'g');set(12,5,liquid);set(12,6,liquid);set(12,7,liquid);set(12,8,liquid);set(12,9,liquid);set(12,10,liquid);set(12,11,'g');
+      for(let c=5;c<=10;c++) set(13,c,liquid);
+      set(13,4,'g');set(13,11,'g');
+      for(let c=5;c<=10;c++) set(14,c,'g');
+      // bubbles
+      set(7,5,bubble); set(8,9,bubble); set(9,6,bubble); set(10,9,bubble);
+      // highlight
+      set(7,4,'w'); set(8,4,'w');
+      return join(g);
+    }
+
+    // 宝石 16x16 菱形
+    function genGem(color, dark, light){
+      const g = blank();
+      const cx=7.5, cy=8;
+      for(let r=0;r<16;r++)for(let c=0;c<16;c++){
+        const d=Math.abs(c-cx)+Math.abs(r-cy);
+        if(d<=6) g[r][c]=color;
+        if(d===5||d===6) g[r][c]=dark;
+      }
+      // 高光面
+      const hx=6, hy=6;
+      for(let r=0;r<16;r++)for(let c=0;c<16;c++){
+        const d=Math.abs(c-cx)+Math.abs(r-cy);
+        if(d<=4 && c<=cx && r<=cy) g[r][c]=light;
+      }
+      g[6][5]='w'; g[5][6]='w';
+      return join(g);
+    }
+
+    // 灵珠 16x16 发光球
+    function genOrb(color, dark){
+      const g = blank();
+      const cx=7.5, cy=7.5;
+      for(let r=0;r<16;r++)for(let c=0;c<16;c++){
+        const d=Math.hypot(c-cx,(r-cy)*1.0);
+        if(d<=6.2) g[r][c]=color;
+        else if(d<=7.4) g[r][c]=dark;
+      }
+      // 外辉光点
+      g[0][7]=color; g[0][8]=color; g[15][7]=color; g[15][8]=color; g[7][0]=color; g[8][0]=color; g[7][15]=color; g[8][15]=color;
+      // 高光
+      g[4][5]='w'; g[5][4]='w'; g[5][5]='w';
+      return join(g);
+    }
+
+    // 胸像角色 16x16
+    function genBust(skin, hair, outfit, accent, eye){
+      const g = blank();
+      const set=(r,c,ch)=>{ g[r][c]=ch; };
+      // hair top
+      for(let c=5;c<=10;c++){ set(1,c,hair); }
+      for(let c=4;c<=11;c++){ set(2,c,hair); }
+      // face frame
+      for(let c=3;c<=12;c++){ set(3,c,hair); }
+      // face
+      for(let r=4;r<=8;r++)for(let c=4;c<=11;c++) set(r,c,skin);
+      // hair sides
+      for(let r=4;r<=8;r++){ set(r,3,hair); set(r,12,hair); }
+      // eyes
+      set(5,6,eye); set(5,9,eye);
+      set(6,6,eye); set(6,9,eye);
+      // mouth
+      set(7,7,eye); set(7,8,eye);
+      // jaw
+      for(let c=4;c<=11;c++) set(8,c,hair);
+      // collar accent
+      for(let c=4;c<=11;c++) set(9,c,accent);
+      // outfit
+      for(let c=3;c<=12;c++) set(10,c,outfit);
+      for(let c=2;c<=13;c++){ set(11,c,outfit); set(12,c,outfit); set(13,c,outfit); set(14,c,outfit); }
+      // buttons
+      set(11,7,accent); set(12,7,accent); set(13,7,accent);
+      set(11,8,accent); set(12,8,accent); set(13,8,accent);
+      // shoulder accents
+      set(12,4,accent); set(12,11,accent);
+      return join(g);
+    }
+
+    // 场景 16x16
+    function genScene(skyTop, skyBot, horizon, ground, accent, accentDark){
+      const g = blank();
+      for(let r=0;r<16;r++)for(let c=0;c<16;c++){
+        if(r<4) g[r][c]=skyTop;
+        else if(r<6) g[r][c]=skyBot;
+        else if(r===6) g[r][c]=horizon;
+        else g[r][c]=ground;
+      }
+      // 天体
+      const cx=8, cy=3, rad=2.2;
+      for(let r=0;r<7;r++)for(let c=0;c<16;c++){
+        const d=Math.hypot(c-cx,(r-cy));
+        if(d<=rad) g[r][c]=accent;
+        else if(d<=rad+1) g[r][c]=accentDark;
+      }
+      // 星点
+      if(skyTop==='B'||skyTop==='B'){
+        g[1][2]='Y'; g[2][13]='Y'; g[0][9]='Y'; g[1][14]='i';
+      }
+      // 地面纹理
+      for(let r=9;r<16;r+=2){
+        for(let c=((r)%5); c<16; c+=6){ if(g[r][c]===ground) g[r][c]=horizon; }
+      }
+      // 前景剪影
+      g[14][2]=horizon; g[14][3]=horizon; g[15][2]=horizon; g[15][3]=horizon;
+      g[14][12]=horizon; g[14][13]=horizon; g[15][12]=horizon; g[15][13]=horizon;
+      return join(g);
+    }
+
+    /* ============================================================
+       作品集元数据
+       ============================================================ */
+    const CREATORS = ["@拼豆匠人","@像素狐狸","@8bit猫","@暮光工匠","@霓虹笔触","@豆阵","@芯核","@苔藓罐头","@锈铁公爵","@星屑工房","@糖霜骑士","@深海信号","@蜜瓜电路","@焦糖像素"];
+    function pick(arr, seed){ return arr[seed % arr.length]; }
+
+    let _id = 0;
+    function item(name, creator, cat, sprite, rarity, tags, desc, date, likes, views){
+      return { id: ++_id, name, creator, cat, sprite, rarity, tags, desc, date, likes, views };
+    }
+
+    const COLLECTION = [];
+
+    // —— 二创角色（手绘）——
+    COLLECTION.push(item("炎骑士 IGNIS","@锈铁公爵","fan",SPR.ignis,"SSR",["角色","半面镜像","火焰","骨架"],"身披赤焰重甲的见习骑士，盔顶燃着永不熄灭的引导之火。绑定肩-肘-腕三段骨架后，可拉动出挥剑姿势。","2026-06-28",2841,18900));
+    COLLECTION.push(item("蘑菇精灵 MOKO","@苔藓罐头","fan",SPR.moko,"SR",["角色","半面镜像","自然","萌系"],"林间游荡的红帽小精灵，菌盖上的白点是它收集的露水结晶。左右镜像对称，适合做待机呼吸动画。","2026-06-21",1977,12450));
+    COLLECTION.push(item("暗影法师 VAEL","@星屑工房","fan",SPR.vael,"SSR",["角色","半面镜像","暗影","法师"],"从虚空裂隙中走出的术士，兜帽下只余两簇幽黄眼火。法袍下摆建议绑三段骨架做飘动效果。","2026-06-15",3120,22300));
+    COLLECTION.push(item("龙宝宝 PYX","@糖霜骑士","fan",SPR.pyx,"SR",["角色","半面镜像","龙","萌系"],"还没长出翅膀的幼龙，肚皮软黄，鼻孔能喷出豆粒大的火星。尾巴可绑骨做摆动。","2026-06-09",2210,15120));
+
+    // —— 二创角色（生成胸像）——
+    COLLECTION.push(item("冰雪公主 LUMI","@霓虹笔触","fan",genBust('q','i','C','w','B'),"SSR",["角色","半面镜像","冰雪","王室"],"永冻之地的继承者，发丝如霜晶。瞳孔是深海蓝，皇冠由六颗冰豆镶成。","2026-05-30",2640,17800));
+    COLLECTION.push(item("机械守卫 UNIT-7","@芯核","fan",genBust('s','g','d','o','y'),"SR",["角色","半面镜像","机械","守卫"],"编号 7 号的自律守卫，胸口核心持续散发暖橙能量。金属外壳用银灰拼豆还原反光。","2026-05-22",1880,9900));
+    COLLECTION.push(item("雷霆战士 VOLT","@8bit猫","fan",genBust('f','y','Y','o','k'),"SR",["角色","半面镜像","雷电","战士"],"披黄雷披风的冲锋手，金发是导体。每次录制关键帧都会带一道电弧抖动。","2026-05-14",2050,13200));
+    COLLECTION.push(item("樱花巫女 SAKU","@蜜瓜电路","fan",genBust('f','P','p','m','r'),"SSR",["角色","半面镜像","樱花","巫女"],"春祭上献舞的巫女，粉樱缀满发间。袖口建议绑骨做挥袖动画。","2026-05-06",2780,19100));
+    COLLECTION.push(item("沙漠游侠 DUNE","@焦糖像素","fan",genBust('t','n','z','y','k'),"R",["角色","半面镜像","沙漠","游侠"],"裹着赭色头巾的浪人，腰间别着三粒水珠豆。镜像后形成一个完整的兜帽剪影。","2026-04-28",1340,7600));
+    COLLECTION.push(item("森林德鲁伊 GROVE","@苔藓罐头","fan",genBust('f','L','l','e','k'),"SR",["角色","半面镜像","自然","德鲁伊"],"与藤蔓共生的隐者，肩头会生出嫩叶。绿色层级丰富的拼豆还原森林层次。","2026-04-19",1690,10300));
+    COLLECTION.push(item("幽灵船长 WRAITH","@深海信号","fan",genBust('q','w','i','c','C'),"SSR",["角色","半面镜像","幽灵","海盗"],"沉船之主，半透明身体由冰蓝拼豆堆叠。建议降低不透明度做飘忽动画。","2026-04-11",2410,16500));
+    COLLECTION.push(item("见习剑士 CADE","@拼豆匠人","fan",genBust('f','n','b','s','k'),"R",["角色","半面镜像","新手","剑士"],"刚拿到第一把木剑的少年，蓝制服还崭新。最适合作为骨架动画入门练习素材。","2026-04-03",1180,6400));
+
+    // —— 卡片（生成）——
+    COLLECTION.push(item("烈焰之卡","@星屑工房","card",genCardIcon('R','y','o'),"SSR",["元素","卡牌","火焰","稀有"],"封印着爆炎之核的元素卡，卡面菱形宝石持续燃烧。集齐四元素卡可解锁隐藏图样。","2026-06-26",1890,11200));
+    COLLECTION.push(item("寒霜之卡","@霓虹笔触","card",genCardIcon('C','i','q'),"SSR",["元素","卡牌","冰雪","稀有"],"凝结万载寒霜的卡牌，触感冰凉。卡面宝石泛着极光蓝。","2026-06-18",1740,9800));
+    COLLECTION.push(item("雷霆之卡","@8bit猫","card",genCardIcon('h','Y','y'),"SSR",["元素","卡牌","雷电","稀有"],"封存雷暴之力的卡片，黄宝石中可见游走的电弧。","2026-06-12",1620,9100));
+    COLLECTION.push(item("大地之卡","@豆阵","card",genCardIcon('N','a','t'),"SR",["元素","卡牌","大地","稀有"],"铭刻山岳之力的厚实卡牌，棕褐宝石沉稳如磐。","2026-06-05",1280,7200));
+    COLLECTION.push(item("圣光之卡","@糖霜骑士","card",genCardIcon('a','Y','w'),"SSR",["元素","卡牌","圣光","稀有"],"散发柔光的圣卡，传说能驱散拼豆上的锈蚀。","2026-05-28",1950,12100));
+    COLLECTION.push(item("暗影之卡","@锈铁公爵","card",genCardIcon('V','v','u'),"SSR",["元素","卡牌","暗影","稀有"],"吞噬光线的幽紫卡牌，卡面宝石像一只能凝视的眼睛。","2026-05-20",2030,13400));
+    COLLECTION.push(item("风暴之卡","@芯核","card",genCardIcon('b','c','m'),"SR",["元素","卡牌","风暴","稀有"],"裹挟气旋的青蓝卡，宝石中似有微风盘旋。","2026-05-12",1410,8300));
+    COLLECTION.push(item("毒蚀之卡","@苔藓罐头","card",genCardIcon('L','e','l'),"SR",["元素","卡牌","毒","稀有"],"渗出荧绿汁液的卡牌，据说曾被炼金术士用作容器。","2026-05-03",1370,7900));
+
+    // —— 药水（生成）——
+    COLLECTION.push(item("翠绿灵药","@苔藓罐头","item",genPotion('e','l'),"R",["道具","消耗品","药水","恢复"],"森林德鲁伊常备的回复药剂，瓶身挂着苔藓气泡。","2026-06-24",980,5400));
+    COLLECTION.push(item("蔚蓝魔药","@星屑工房","item",genPotion('b','c'),"SR",["道具","消耗品","药水","法力"],"法师塔的魔力补给品，摇晃时可见蓝色涡流。","2026-06-16",1120,6700));
+    COLLECTION.push(item("赤红怒剂","@8bit猫","item",genPotion('r','o'),"SR",["道具","消耗品","药水","狂暴"],"狂战士的战前饮品，瓶中翻涌着怒火般的气泡。","2026-06-08",1240,7100));
+    COLLECTION.push(item("紫梦合剂","@霓虹笔触","item",genPotion('v','P'),"SSR",["道具","消耗品","药水","梦境"],"饮下后会坠入拼豆编织的梦境，紫色液面浮着星屑。","2026-05-25",1680,9800));
+    COLLECTION.push(item("金阳圣水","@糖霜骑士","item",genPotion('y','Y'),"SR",["道具","消耗品","药水","祝福"],"圣光教会的祝福之水，瓶中似封着一缕日光。","2026-05-17",1320,7600));
+    COLLECTION.push(item("幽冥汤剂","@深海信号","item",genPotion('C','i'),"SR",["道具","消耗品","药水","暗影"],"幽灵船长调配的暗色汤药，饮者可短暂穿透拼豆。","2026-05-09",1290,7300));
+
+    // —— 宝石（生成）——
+    COLLECTION.push(item("烈焰晶","@锈铁公爵","item",genGem('o','R','O'),"SR",["道具","饰品","宝石","火焰"],"从火山口采集的橙红晶石，切面跳动着内火。","2026-06-22",1150,6200));
+    COLLECTION.push(item("寒冰晶","@霓虹笔触","item",genGem('q','C','i'),"SR",["道具","饰品","宝石","冰雪"],"永冻不化的冰蓝晶石，握在掌心会凝霜。","2026-06-14",1180,6400));
+    COLLECTION.push(item("雷霆晶","@8bit猫","item",genGem('y','h','Y'),"SR",["道具","饰品","宝石","雷电"],"封存雷电的黄晶，内部偶尔闪过电弧。","2026-06-06",1220,6600));
+    COLLECTION.push(item("翡翠","@苔藓罐头","item",genGem('e','L','l'),"R",["道具","饰品","宝石","自然"],"通透的翠绿宝石，常见于德鲁伊的饰品。","2026-05-27",940,5100));
+    COLLECTION.push(item("紫晶","@星屑工房","item",genGem('v','x','P'),"SR",["道具","饰品","宝石","暗影"],"深邃的紫晶，暗光下会泛出幽紫辉光。","2026-05-19",1260,7000));
+    COLLECTION.push(item("金钻","@糖霜骑士","item",genGem('y','a','Y'),"SSR",["道具","饰品","宝石","稀有"],"罕见的金色钻石，切面折射出日光七色。","2026-05-10",1760,10400));
+
+    // —— 灵珠（生成）——
+    COLLECTION.push(item("火灵珠","@锈铁公爵","item",genOrb('o','R'),"SSR",["道具","饰品","灵珠","火焰"],"封印火元素灵体的宝珠，表面常有热气升腾。","2026-06-20",1540,8800));
+    COLLECTION.push(item("水灵珠","@深海信号","item",genOrb('c','C'),"SSR",["道具","饰品","灵珠","水"],"内含流动水脉的青蓝宝珠，摇晃可闻潮声。","2026-06-12",1490,8500));
+    COLLECTION.push(item("风灵珠","@芯核","item",genOrb('m','M'),"SR",["道具","饰品","灵珠","风"],"裹挟微风的薄荷色灵珠，悬浮时微微震颤。","2026-06-04",1310,7400));
+    COLLECTION.push(item("土灵珠","@豆阵","item",genOrb('t','N'),"SR",["道具","饰品","灵珠","大地"],"沉稳的赭色灵珠，握住会感到大地脉动。","2026-05-26",1270,7100));
+
+    // —— 手绘物品 ——
+    COLLECTION.push(item("烈焰之剑","@锈铁公爵","item",SPR.flameSword,"SSR",["道具","装备","武器","火焰"],"剑身永远灼热的传说之刃，剑格镶着两颗火豆。","2026-06-27",2080,13600));
+    COLLECTION.push(item("生命药水","@拼豆匠人","item",SPR.healthPotion,"R",["道具","消耗品","药水","恢复"],"最经典的红瓶药水，新手村必备补给。","2026-06-23",1060,5900));
+    COLLECTION.push(item("黄金王冠","@糖霜骑士","item",SPR.crown,"SSR",["道具","饰品","王室","稀有"],"镶三颗红宝石的黄金王冠，王者专属。","2026-06-17",1820,11200));
+    COLLECTION.push(item("守护盾牌","@8bit猫","item",SPR.shield,"SR",["道具","装备","防具","守护"],"蓝绿配色的圆盾，中央纹着薄荷色家族徽记。","2026-06-10",1370,7800));
+    COLLECTION.push(item("魔法卷轴","@星屑工房","item",SPR.scroll,"SR",["道具","消耗品","卷轴","法术"],"两端木轴卷起的羊皮卷，上面写满紫色符文。","2026-06-02",1290,7300));
+    COLLECTION.push(item("精灵之弓","@苔藓罐头","item",SPR.bow,"SR",["道具","装备","武器","风"],"精灵族的长弓，箭簇附着一簇不灭的火焰豆。","2026-05-24",1330,7500));
+
+    // —— 场景（手绘 + 生成）——
+    COLLECTION.push(item("暮色森林","@苔藓罐头","scene",SPR.twilightForest,"SR",["场景","氛围","森林","夜景"],"紫暮笼罩的针叶林，一轮圆月悬在树梢之上。适合做角色待机背景。","2026-06-25",1710,10100));
+    COLLECTION.push(item("星空沙漠","@焦糖像素","scene",SPR.starryDesert,"SR",["场景","氛围","沙漠","夜景"],"落日余晖染粉的沙海，星子开始点亮夜空。沙丘曲线用深浅豆粒堆叠。","2026-06-13",1620,9300));
+    COLLECTION.push(item("海底珊瑚","@深海信号","scene",SPR.coralSea,"SSR",["场景","氛围","海底","日间"],"深蓝水柱下的珊瑚丛，粉色珊瑚随波摇曳。适合水族主题角色。","2026-06-07",2230,14700));
+    COLLECTION.push(item("雪山小镇","@蜜瓜电路","scene",genScene('B','i','w','q','w','C'),"SR",["场景","氛围","雪景","小镇"],"雪山脚下的小镇，星空之上悬着一弯冷月。","2026-05-29",1580,9000));
+    COLLECTION.push(item("火山熔岩","@锈铁公爵","scene",genScene('R','o','k','N','y','r'),"SSR",["场景","氛围","火山","夜景"],"炽热熔岩切割焦黑岩地，地平线被烧成橙红。","2026-05-21",2090,12800));
+    COLLECTION.push(item("浮空岛屿","@星屑工房","scene",genScene('u','v','w','L','Y','y'),"SSR",["场景","氛围","奇幻","天空"],"悬浮于紫雾之上的绿岛，底部垂着岩石碎屑。","2026-05-13",1960,11900));
+    COLLECTION.push(item("樱花庭院","@糖霜骑士","scene",genScene('v','P','t','L','p','R'),"SR",["场景","氛围","樱花","日间"],"粉樱纷飞的庭院，地面铺满花瓣。春日主题首选。","2026-05-05",1840,10800));
+    COLLECTION.push(item("赛博都市","@霓虹笔触","scene",genScene('x','j','h','d','m','c'),"SSR",["场景","氛围","赛博","夜景"],"霓虹倒映的雨夜都市，紫粉天际线被电光切开。","2026-04-27",2310,15400));
+
+    /* ============================================================
+       渲染
+       ============================================================ */
+    function drawSprite(canvas, sprite, scale){
+      const h = sprite.length, w = sprite[0].length;
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0,0,w,h);
+      for(let y=0;y<h;y++){
+        for(let x=0;x<w;x++){
+          const col = PAL[sprite[y][x]];
+          if(col){ ctx.fillStyle = col; ctx.fillRect(x,y,1,1); }
+        }
+      }
+      canvas.style.width = (w*scale)+'px';
+      canvas.style.height = (h*scale)+'px';
+    }
+
+    function beadStats(sprite){
+      const counts = {};
+      let total = 0;
+      for(const row of sprite){
+        for(const ch of row){
+          if(PAL[ch]){ counts[ch] = (counts[ch]||0)+1; total++; }
+        }
+      }
+      const arr = Object.entries(counts).map(([ch,n])=>({ch,n,col:PAL[ch]})).sort((a,b)=>b.n-a.n);
+      return { total, arr };
+    }
+
+    function avatarColor(creator){
+      let h = 0; for(let i=0;i<creator.length;i++) h = (h*31 + creator.charCodeAt(i))>>>0;
+      const palette = ['#ff6b35','#4ecdc4','#ffd23f','#ff5d8f','#7b2cbf','#06d6a0','#00b4d8','#f4a261'];
+      return palette[h % palette.length];
+    }
+
+    function avatarCanvas(creator){
+      const c = document.createElement('canvas');
+      c.width=4; c.height=4; c.className='avatar';
+      const ctx=c.getContext('2d');
+      let h=0; for(let i=0;i<creator.length;i++) h=(h*31+creator.charCodeAt(i))>>>0;
+      const cols=['#ff6b35','#4ecdc4','#ffd23f','#ff5d8f','#7b2cbf','#06d6a0'];
+      const a=cols[h%cols.length], b=cols[(h>>3)%cols.length];
+      const pat=[
+        [a,b,b,a],
+        [b,a,a,b],
+        [b,a,a,b],
+        [a,b,b,a]
+      ];
+      for(let y=0;y<4;y++)for(let x=0;x<4;x++){ ctx.fillStyle=pat[y][x]; ctx.fillRect(x,y,1,1); }
+      c.style.background='transparent';
+      return c;
+    }
+
+    const CAT_LABEL = { fan:'二创', card:'卡片', scene:'场景', item:'物品' };
+    const CAT_CLASS = { fan:'cat-fan', card:'cat-card', scene:'cat-scene', item:'cat-item' };
+    const RARITY_ORDER = { 'SSR':3, 'SR':2, 'R':1 };
+
+    let state = { cat:'all', sort:'hot', query:'' };
+
+    function filtered(){
+      let list = COLLECTION.filter(it=>{
+        if(state.cat!=='all' && it.cat!==state.cat) return false;
+        if(state.query){
+          const q = state.query.toLowerCase();
+          if(!it.name.toLowerCase().includes(q) && !it.creator.toLowerCase().includes(q) && !it.tags.join(' ').toLowerCase().includes(q)) return false;
+        }
+        return true;
+      });
+      const s = state.sort;
+      list.sort((a,b)=>{
+        if(s==='hot') return b.likes-a.likes;
+        if(s==='new') return new Date(b.date)-new Date(a.date);
+        if(s==='bead') return beadStats(b.sprite).total - beadStats(a.sprite).total;
+        if(s==='name') return a.name.localeCompare(b.name,'zh');
+        return 0;
+      });
+      return list;
+    }
+
+    function renderGrid(){
+      const grid = document.getElementById('grid');
+      const list = filtered();
+      grid.innerHTML='';
+      if(!list.length){ document.getElementById('empty').style.display='block'; return; }
+      document.getElementById('empty').style.display='none';
+      for(const it of list){
+        const card = document.createElement('div');
+        card.className='card';
+        const beads = beadStats(it.sprite);
+        card.innerHTML = `
+          <div class="preview">
+            <span class="cat-tag ${CAT_CLASS[it.cat]}">${CAT_LABEL[it.cat]}</span>
+            <span class="rarity">${it.rarity}</span>
+            <canvas></canvas>
+          </div>
+          <div class="meta">
+            <div class="name">${it.name}</div>
+            <div class="creator"><span class="av"></span>${it.creator}</div>
+            <div class="foot">
+              <span class="hot">♥ ${formatN(it.likes)}</span>
+              <span>◷ ${formatN(it.views)}</span>
+              <span class="bead">▦ ${beads.total}</span>
+            </div>
+          </div>`;
+        const canvas = card.querySelector('canvas');
+        drawSprite(canvas, it.sprite, 0); // 0 => CSS 控制
+        canvas.style.width=''; canvas.style.height='';
+        const avWrap = card.querySelector('.av');
+        avWrap.appendChild(avatarCanvas(it.creator));
+        card.addEventListener('click', ()=>openModal(it));
+        grid.appendChild(card);
+      }
+    }
+
+    function formatN(n){
+      if(n>=10000) return (n/10000).toFixed(1)+'w';
+      if(n>=1000) return (n/1000).toFixed(1)+'k';
+      return n;
+    }
+
+    function openModal(it){
+      const modal = document.getElementById('modal');
+      const canvas = document.getElementById('m-canvas');
+      drawSprite(canvas, it.sprite, 0);
+      canvas.style.width=''; canvas.style.height='';
+      const beads = beadStats(it.sprite);
+      const maxBead = beads.arr.length? beads.arr[0].n : 1;
+      const beadRows = beads.arr.slice(0,10).map(b=>`
+        <div class="beadrow">
+          <span class="sw" style="background:${b.col}"></span>
+          <span class="bar"><i style="width:${(b.n/maxBead*100).toFixed(0)}%;background:${b.col}"></i></span>
+          <span class="n">×${b.n}</span>
+        </div>`).join('');
+      const info = document.getElementById('m-info');
+      info.innerHTML = `
+        <div class="mcat">${CAT_LABEL[it.cat]} · ${it.rarity}</div>
+        <h2>${it.name}</h2>
+        <div class="mcreator"><span class="av"></span>${it.creator} · ${it.date}</div>
+        <div class="mdesc">${it.desc}</div>
+        <div class="tag-row">${it.tags.map(t=>`<span class="chip">#${t}</span>`).join('')}</div>
+        <div class="mstats">
+          <div class="mstat"><div class="v">${formatN(it.likes)}</div><div class="l">热度 ♥</div></div>
+          <div class="mstat"><div class="v">${beads.total}</div><div class="l">拼豆 ▦</div></div>
+          <div class="mstat"><div class="v">${it.sprite[0].length}×${it.sprite.length}</div><div class="l">网格</div></div>
+        </div>
+        <div class="beadmap">
+          <div class="bt">BEAD MAP · 拼豆配色分布</div>
+          <div class="rows">${beadRows}</div>
+        </div>`;
+      info.querySelector('.av').appendChild(avatarCanvas(it.creator));
+      modal.classList.add('open');
+      document.body.style.overflow='hidden';
+    }
+    function closeModal(){
+      document.getElementById('modal').classList.remove('open');
+      document.body.style.overflow='';
+    }
+
+    /* 统计 */
+    function renderStats(){
+      const total = COLLECTION.length;
+      const creators = new Set(COLLECTION.map(c=>c.creator)).size;
+      const beads = COLLECTION.reduce((s,c)=>s+beadStats(c.sprite).total,0);
+      const likes = COLLECTION.reduce((s,c)=>s+c.likes,0);
+      animateNum('st-total', total);
+      animateNum('st-creator', creators);
+      animateNum('st-bead', beads);
+      animateNum('st-like', likes);
+      document.getElementById('c-all').textContent = total;
+      document.getElementById('c-fan').textContent = COLLECTION.filter(c=>c.cat==='fan').length;
+      document.getElementById('c-card').textContent = COLLECTION.filter(c=>c.cat==='card').length;
+      document.getElementById('c-scene').textContent = COLLECTION.filter(c=>c.cat==='scene').length;
+      document.getElementById('c-item').textContent = COLLECTION.filter(c=>c.cat==='item').length;
+    }
+    function animateNum(id, target){
+      const el = document.getElementById(id);
+      const dur = 900; const start = performance.now();
+      function tick(t){
+        const p = Math.min(1,(t-start)/dur);
+        const v = Math.floor(target * (1 - Math.pow(1-p,3)));
+        el.textContent = formatN(v);
+        if(p<1) requestAnimationFrame(tick); else el.textContent = formatN(target);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    /* 粒子 */
+    function spawnParticles(){
+      const wrap = document.getElementById('particles');
+      const colors = ['#ff6b35','#4ecdc4','#ffd23f','#ff5d8f','#7b2cbf'];
+      for(let i=0;i<22;i++){
+        const p = document.createElement('div');
+        p.className='particle';
+        p.style.left = Math.random()*100+'vw';
+        p.style.background = colors[i%colors.length];
+        p.style.color = colors[i%colors.length];
+        p.style.animationDuration = (10+Math.random()*14)+'s';
+        p.style.animationDelay = (-Math.random()*16)+'s';
+        p.style.width = p.style.height = (3+Math.random()*3)+'px';
+        wrap.appendChild(p);
+      }
+    }
+
+    /* toast */
+    let toastT;
+    function toast(msg){
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      clearTimeout(toastT); toastT = setTimeout(()=>t.classList.remove('show'),1800);
+    }
+
+    /* 事件 */
+    document.getElementById('tabs').addEventListener('click', e=>{
+      const tab = e.target.closest('.tab'); if(!tab) return;
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      state.cat = tab.dataset.cat;
+      renderGrid();
+    });
+    document.getElementById('search').addEventListener('input', e=>{
+      state.query = e.target.value.trim(); renderGrid();
+    });
+    document.getElementById('sort').addEventListener('change', e=>{
+      state.sort = e.target.value; renderGrid();
+    });
+    document.getElementById('shuffle').addEventListener('click', ()=>{
+      COLLECTION.forEach(it=>it._r = Math.random());
+      const list = filtered();
+      list.sort((a,b)=> (a._r-b._r));
+      // 直接渲染乱序
+      const grid = document.getElementById('grid');
+      const nodes = Array.from(grid.children);
+      nodes.sort((a,b)=>Math.random()-0.5);
+      nodes.forEach(n=>grid.appendChild(n));
+      toast('已随机洗牌作品顺序');
+    });
+    document.getElementById('crt').addEventListener('click', e=>{
+      document.body.classList.toggle('crt');
+      e.currentTarget.classList.toggle('toggled');
+      toast(document.body.classList.contains('crt')?'CRT 扫描线已开启':'CRT 扫描线已关闭');
+    });
+    document.getElementById('close').addEventListener('click', closeModal);
+    document.getElementById('modal').addEventListener('click', e=>{
+      if(e.target.id==='modal') closeModal();
+    });
+    document.addEventListener('keydown', e=>{
+      if(e.key==='Escape') closeModal();
+    });
+
+    /* 启动 */
+    spawnParticles();
+    renderStats();
+    renderGrid();
+    </script>
+  </body>
+</html>
