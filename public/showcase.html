@@ -320,6 +320,107 @@
         .search input { width: 140px; }
         .wrap { padding: 0 16px; }
       }
+
+      /* ===== TRENDING 流行趋势（真实图片 / 自动化下载）===== */
+      .trending { padding: 40px 0 8px; position: relative; }
+      .trend-head { display:flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; margin-bottom: 24px; }
+      .trend-badge {
+        display:inline-flex; align-items:center; gap:8px;
+        font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:0.14em;
+        color: var(--pink); border:1px solid rgba(255,93,143,0.4);
+        padding:6px 12px; border-radius:4px; background:rgba(255,93,143,0.06); text-transform:uppercase;
+      }
+      .trend-badge .spin { width:8px; height:8px; border:2px solid rgba(255,93,143,0.3); border-top-color:var(--pink); border-radius:50%; animation:spin 0.8s linear infinite; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      .trend-head h2 { font-family:"Press Start 2P",monospace; font-size: clamp(18px,3vw,28px); margin:14px 0 8px; color: var(--ink-100); line-height:1.5; }
+      .trend-head h2 .a { color: var(--pink); }
+      .trend-head p { color: var(--ink-300); font-size:13.5px; line-height:1.7; max-width:560px; }
+      .trend-actions { display:flex; gap:10px; }
+      .trend-actions .btn { white-space:nowrap; }
+      .trend-actions .btn.primary { background: var(--pink); color:#2a0612; border-color:var(--pink); box-shadow:0 0 16px rgba(255,93,143,0.4); }
+      .trend-actions .btn.primary:hover { background:#ff7ba5; }
+      .trend-actions .btn:disabled { opacity:0.4; cursor:not-allowed; }
+
+      .trend-grid {
+        display:grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap:16px;
+        margin-bottom: 20px;
+      }
+      .tcard {
+        background: linear-gradient(160deg, rgba(36,29,51,0.9), rgba(26,22,37,0.9));
+        border:1px solid rgba(255,255,255,0.07); border-radius:10px; overflow:hidden;
+        position:relative; transition: transform .25s, border-color .25s, box-shadow .25s;
+      }
+      .tcard:hover { transform: translateY(-4px); border-color: rgba(255,93,143,0.45); box-shadow: 0 16px 36px -12px rgba(0,0,0,0.7), 0 0 24px -8px rgba(255,93,143,0.4); }
+      .tcard .thumb {
+        position:relative; aspect-ratio: 1/1; background:
+          radial-gradient(circle at 50% 40%, rgba(255,255,255,0.05), transparent 70%),
+          repeating-conic-gradient(rgba(255,255,255,0.03) 0% 25%, transparent 0% 50%) 50% / 14px 14px;
+        overflow:hidden;
+      }
+      .tcard .thumb img {
+        width:100%; height:100%; object-fit:cover; display:block;
+        opacity:0; transition: opacity .5s; image-rendering: auto;
+      }
+      .tcard .thumb img.ready { opacity:1; }
+      .tcard .thumb .ph {
+        position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+        gap:10px; font-family:"JetBrains Mono",monospace; font-size:11px; color: var(--ink-300);
+        transition: opacity .4s;
+      }
+      .tcard .thumb .ph.hide { opacity:0; pointer-events:none; }
+      .ph .spinner { width:30px; height:30px; border:3px solid rgba(255,93,143,0.2); border-top-color:var(--pink); border-radius:50%; animation:spin 0.9s linear infinite; }
+      .ph .spinner.done { animation:none; border-color:var(--mint); border-top-color:var(--mint); }
+      .ph .spinner.err { animation:none; border-color:var(--ember); border-top-color:var(--ember); }
+      .ph .pbar { width:60%; height:4px; background:rgba(255,255,255,0.08); border-radius:2px; overflow:hidden; }
+      .ph .pbar i { display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--pink),var(--ember)); transition: width .2s; }
+      .ph .pct { font-size:10px; color: var(--ink-200); }
+      .tcard .stat-pill {
+        position:absolute; top:10px; left:10px;
+        font-family:"JetBrains Mono",monospace; font-size:9px; letter-spacing:0.08em;
+        padding:4px 7px; border-radius:3px; backdrop-filter:blur(4px); z-index:3;
+      }
+      .stat-pill.queued { background:rgba(184,174,208,0.85); color:#241d33; }
+      .stat-pill.loading { background:rgba(255,93,143,0.85); color:#2a0612; }
+      .stat-pill.done { background:rgba(78,205,196,0.85); color:#06201e; }
+      .stat-pill.err { background:rgba(230,57,70,0.9); color:#fff; }
+      .tcard .rank {
+        position:absolute; top:10px; right:10px; z-index:3;
+        font-family:"Press Start 2P",monospace; font-size:12px;
+        color: var(--sun); text-shadow:0 2px 4px rgba(0,0,0,0.6);
+      }
+      .tcard .meta { padding:12px 14px 14px; }
+      .tcard .tname { font-family:"Press Start 2P",monospace; font-size:11px; color:var(--ink-100); line-height:1.5; margin-bottom:6px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+      .tcard .tsrc { font-family:"JetBrains Mono",monospace; font-size:10.5px; color:var(--ink-300); display:flex; align-items:center; gap:6px; }
+      .tcard .tsrc .src-dot { width:6px; height:6px; border-radius:50%; background:var(--mint); }
+      .tcard .tfoot { display:flex; justify-content:space-between; margin-top:10px; font-family:"JetBrains Mono",monospace; font-size:10px; color:var(--ink-400); }
+      .tcard .tfoot .hot { color:var(--pink); }
+
+      /* 下载控制台 */
+      .console {
+        background: rgba(8,5,15,0.85); border:1px solid rgba(78,205,196,0.2); border-radius:8px;
+        font-family:"JetBrains Mono",monospace; font-size:11.5px; overflow:hidden;
+        box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+      }
+      .console-head {
+        display:flex; align-items:center; gap:10px; padding:9px 14px;
+        background: rgba(47,38,64,0.7); border-bottom:1px solid rgba(255,255,255,0.06);
+        color: var(--ink-300); font-size:11px; letter-spacing:0.08em;
+      }
+      .console-head .dots { display:flex; gap:5px; }
+      .console-head .dots i { width:9px; height:9px; border-radius:50%; display:block; }
+      .console-head .dots i:nth-child(1){background:#ff5f57;} .console-head .dots i:nth-child(2){background:#febc2e;} .console-head .dots i:nth-child(3){background:#28c840;}
+      .console-head .live { margin-left:auto; color:var(--mint); display:flex; align-items:center; gap:6px; }
+      .console-head .live .blip { width:7px; height:7px; background:var(--mint); border-radius:50%; animation:blink 1.4s infinite; }
+      .console-body { max-height:170px; overflow:auto; padding:12px 14px; line-height:1.85; }
+      .log-line { white-space:pre-wrap; word-break:break-all; }
+      .log-line .ts { color: var(--ink-400); }
+      .log-line .tag { font-weight:700; }
+      .log-line .ok .tag { color: var(--mint); }
+      .log-line .info .tag { color: var(--c, var(--ink-200)); }
+      .log-line .warn .tag { color: var(--sun); }
+      .log-line .err .tag { color: var(--ember); }
+      .log-line .url { color: var(--ink-200); }
+      .console-body::-webkit-scrollbar-thumb { background: rgba(78,205,196,0.3); }
     </style>
   </head>
   <body>
@@ -349,6 +450,32 @@
         </div>
       </div>
     </header>
+
+    <!-- TRENDING 流行趋势：真实图片 + 自动化下载 -->
+    <section class="trending">
+      <div class="wrap">
+        <div class="trend-head">
+          <div>
+            <span class="trend-badge"><span class="spin"></span>TRENDING · 自动化抓取中</span>
+            <h2>本周流行 · <span class="a">浏览器自动采集</span></h2>
+            <p>来自社区热榜的真实二创图片，由无头浏览器自动化拉取并本地缓存。每张图都带下载进度与日志，可观察整个采集流水线。</p>
+          </div>
+          <div class="trend-actions">
+            <button class="btn primary" id="dl-all">⬇ 全部下载</button>
+            <button class="btn" id="dl-stop" disabled>■ 停止</button>
+          </div>
+        </div>
+        <div class="trend-grid" id="trend-grid"></div>
+        <div class="console">
+          <div class="console-head">
+            <span class="dots"><i></i><i></i><i></i></span>
+            <span>DOWNLOAD CONSOLE · 自动化下载日志</span>
+            <span class="live"><span class="blip"></span><span id="live-txt">IDLE</span></span>
+          </div>
+          <div class="console-body" id="log"></div>
+        </div>
+      </div>
+    </section>
 
     <!-- 控制栏 -->
     <div class="controls">
@@ -656,6 +783,78 @@
         "NNNNNNNNNNNNNNNN",
         "NNNNNNNNNNNNNNNN",
         "NNNNNNNNNNNNNNNN"
+      ],
+      creamo: [ // 甜筒小妖
+        "................",
+        "......PPPP......",
+        ".....PwPPwP.....",
+        "......PPPP......",
+        ".......yy.......",
+        "......yyyy......",
+        ".....yyyyyy.....",
+        "....qqqqqqqq....",
+        "...qwwwwwwwwq...",
+        "...qwkwwwwkwq...",
+        "...qwwwwwwwwq...",
+        "...qwwPwwPwwq...",
+        "...qwwwwwwwwq...",
+        "....qqqqqqqq....",
+        ".....q....q.....",
+        "................"
+      ],
+      goro: [ // 石巨人
+        "................",
+        ".....gggggg.....",
+        "....gggggggg....",
+        "...gggggggggg...",
+        "...ggggLLgggg...",
+        "...gggggggggg...",
+        "...ggkkggkkgg...",
+        "...gggggggggg...",
+        "...gggNggNggg...",
+        "...gggggggggg...",
+        "....gggggggg....",
+        "...gNNNNNNNNg...",
+        "..gNNNNNNNNNNg..",
+        ".gNNNNNNNNNNNNg.",
+        "gNNNNNNNNNNNNNNg",
+        "NNNNNNNNNNNNNNNN"
+      ],
+      ray: [ // 飞鱼
+        "................",
+        "yy............yy",
+        "yyy..........yyy",
+        "yyyy........yyyy",
+        "yyyyy......yyyyy",
+        "yyyyyy....yyyyyy",
+        "yyyyyyyyyyyyyyyy",
+        "..yyyyccccyyyy..",
+        "..yyycBccBcyyy..",
+        "..yyyccccccyyy..",
+        "...yyyccccyyy...",
+        "....yyyccyyy....",
+        ".....yyyyyy.....",
+        "......yyyy......",
+        ".......yy.......",
+        "................"
+      ],
+      hoot: [ // 夜枭巫师
+        "................",
+        ".......vv.......",
+        "......vvvv......",
+        ".....vvvvvv.....",
+        "....vvvvvvvv....",
+        "..vvvvvvvvvvvv..",
+        "...vvvvvvvvvv...",
+        "....BBBBBBBB....",
+        "...BBwwBBwwBB...",
+        "...BwYwBBwYwB...",
+        "...BBwwBBwwBB...",
+        "...BBBBBBBBBB...",
+        "....vvvvvvvv....",
+        "...vvvvvvvvvv...",
+        "..vvvvvvvvvvvv..",
+        ".vvvvvvvvvvvvvv."
       ]
     };
 
@@ -888,6 +1087,33 @@
     COLLECTION.push(item("浮空岛屿","@星屑工房","scene",genScene('u','v','w','L','Y','y'),"SSR",["场景","氛围","奇幻","天空"],"悬浮于紫雾之上的绿岛，底部垂着岩石碎屑。","2026-05-13",1960,11900));
     COLLECTION.push(item("樱花庭院","@糖霜骑士","scene",genScene('v','P','t','L','p','R'),"SR",["场景","氛围","樱花","日间"],"粉樱纷飞的庭院，地面铺满花瓣。春日主题首选。","2026-05-05",1840,10800));
     COLLECTION.push(item("赛博都市","@霓虹笔触","scene",genScene('x','j','h','d','m','c'),"SSR",["场景","氛围","赛博","夜景"],"霓虹倒映的雨夜都市，紫粉天际线被电光切开。","2026-04-27",2310,15400));
+
+    // —— 第二批扩充（继续收录）——
+    // 手绘二创角色
+    COLLECTION.push(item("甜筒小妖 CREAMO","@糖霜骑士","fan",SPR.creamo,"SR",["角色","半面镜像","甜点","萌系"],"头顶永远顶着草莓甜筒的雪妖，体温是零下。甜筒尖可绑骨做摇晃。","2026-04-22",1720,9600));
+    COLLECTION.push(item("石巨人 GORO","@豆阵","fan",SPR.goro,"SR",["角色","半面镜像","石头","守卫"],"由六层页岩堆叠而成的沉默守卫，眉心嵌着一颗苔藓宝石。","2026-04-15",1480,8200));
+    COLLECTION.push(item("飞鱼雷恩 RAY","@深海信号","fan",SPR.ray,"R",["角色","半面镜像","海洋","飞行"],"胸鳍可展开滑翔的飞鱼，瞳孔是两枚金币。镜像后呈对称翼展。","2026-04-08",1240,6900));
+    COLLECTION.push(item("夜枭巫师 HOOT","@星屑工房","fan",SPR.hoot,"SSR",["角色","半面镜像","夜行","法师"],"戴尖帽的夜枭法师，瞳孔中映着星图。双翅建议各绑三段骨架。","2026-03-30",2380,14600));
+    // 胸像二创
+    COLLECTION.push(item("熔岩战士 MAGMA","@锈铁公爵","fan",genBust('z','R','N','y','k'),"SSR",["角色","半面镜像","熔岩","战士"],"皮肤下流淌岩浆的火山战士，发丝是凝固的玄武岩丝。","2026-06-01",2240,13800));
+    COLLECTION.push(item("晨曦牧师 AURA","@蜜瓜电路","fan",genBust('f','Y','a','y','o'),"SR",["角色","半面镜像","圣光","牧师"],"向初阳祷告的牧师，金发随晨风扬起。圣光珠点缀领口。","2026-05-23",1860,10400));
+    COLLECTION.push(item("毒藤炼金 RUE","@苔藓罐头","fan",genBust('l','L','e','y','k'),"SR",["角色","半面镜像","毒","炼金"],"颈间缠绕毒藤的炼金术士，瞳孔泛着荧绿微光。","2026-05-15",1640,9100));
+    COLLECTION.push(item("镜面骑士 MIRROR","@芯核","fan",genBust('w','s','i','c','B'),"SSR",["角色","半面镜像","镜面","骑士"],"盔甲如镜面反射的银白骑士，传说能映出对手的弱点。","2026-05-07",2080,12700));
+    // 卡片
+    COLLECTION.push(item("虚空之卡","@深海信号","card",genCardIcon('x','u','v'),"SSR",["元素","卡牌","虚空","稀有"],"吞噬一切的虚空卡，卡面宝石如同一道凝视的裂缝。","2026-04-25",1890,11200));
+    COLLECTION.push(item("虹光之卡","@糖霜骑士","card",genCardIcon('j','Y','m'),"SSR",["元素","卡牌","彩虹","稀有"],"七色交织的虹光卡，宝石折射出全色光谱。","2026-04-17",1740,9900));
+    COLLECTION.push(item("腐朽之卡","@苔藓罐头","card",genCardIcon('N','l','e'),"SR",["元素","卡牌","腐蚀","稀有"],"边缘渗出荧绿苔藓的腐朽卡，据说能让拼豆生锈。","2026-04-09",1320,7400));
+    // 宝石 / 灵珠
+    COLLECTION.push(item("虹彩石","@蜜瓜电路","item",genGem('j','x','p'),"SSR",["道具","饰品","宝石","稀有"],"通体流转七色的稀有宝石，每一面都折射不同色彩。","2026-04-21",1820,10900));
+    COLLECTION.push(item("月光石","@星屑工房","item",genGem('q','B','i'),"SR",["道具","饰品","宝石","月光"],"月下会泛蓝白辉光的圣石，传说能照见梦境。","2026-04-13",1480,8300));
+    COLLECTION.push(item("雷灵珠","@8bit猫","item",genOrb('y','h'),"SSR",["道具","饰品","灵珠","雷电"],"封印雷元素灵体的金黄宝珠，表面常有静电噼啪。","2026-04-05",1560,9200));
+    COLLECTION.push(item("光灵珠","@糖霜骑士","item",genOrb('Y','y'),"SSR",["道具","饰品","灵珠","圣光"],"散发柔白辉光的圣灵珠，握住能驱散拼豆的锈蚀。","2026-03-28",1620,9700));
+    // 药水
+    COLLECTION.push(item("翡翠回力","@苔藓罐头","item",genPotion('l','e'),"R",["道具","消耗品","药水","恢复"],"德鲁伊配方，饮下后藤蔓会从掌心生长。","2026-04-12",1010,5600));
+    COLLECTION.push(item("星屑合剂","@星屑工房","item",genPotion('u','v'),"SR",["道具","消耗品","药水","星空"],"瓶中悬浮着微缩星河的合剂，饮者可短暂窥见命运。","2026-04-04",1340,7700));
+    // 场景
+    COLLECTION.push(item("极光冰原","@霓虹笔触","scene",genScene('C','i','w','q','m','B'),"SSR",["场景","氛围","极光","雪景"],"夜空舞动薄荷绿极光的冰原，冰晶在脚下闪着冷光。","2026-03-26",2160,13200));
+    COLLECTION.push(item("苔藓洞窟","@苔藓罐头","scene",genScene('V','v','L','l','e','N'),"SR",["场景","氛围","洞窟","自然"],"荧绿苔藓照亮的湿润洞窟，钟乳石垂挂如豆串。","2026-03-18",1680,9400));
 
     /* ============================================================
        渲染
@@ -1139,10 +1365,189 @@
       if(e.key==='Escape') closeModal();
     });
 
+    /* ============================================================
+       TRENDING 流行趋势：真实图片 + 自动化下载流水线
+       ============================================================ */
+    const IMG_API = "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image";
+    function imgUrl(prompt, size){ return `${IMG_API}?prompt=${encodeURIComponent(prompt)}&image_size=${size||'square'}`; }
+
+    const TRENDING = [
+      { rank:1, name:"炎骑士 IGNIS", src:"fanart.dev", hot:"32.4k", tags:["角色","火焰"],
+        prompt:"perler bead pixel art, fire knight in orange flame armor with glowing helmet flame, 16-bit retro pixel art, dark moody background, highly detailed bead sprite" },
+      { rank:2, name:"暮色森林", src:"scene-collective", hot:"28.1k", tags:["场景","夜景"],
+        prompt:"perler bead pixel art, twilight pine forest under deep purple sky with bright full moon, silhouetted trees, 16-bit landscape pixel art" },
+      { rank:3, name:"暗影法师 VAEL", src:"arcane-archive", hot:"25.7k", tags:["角色","暗影"],
+        prompt:"perler bead pixel art, dark purple hooded mage with two glowing yellow eyes under hood, mystical aura, 16-bit pixel character, dark background" },
+      { rank:4, name:"海底珊瑚", src:"aqua-gallery", hot:"22.9k", tags:["场景","海底"],
+        prompt:"perler bead pixel art, underwater coral reef with pink and orange corals, schools of tiny fish, blue water rays, 16-bit pixel art scene" },
+      { rank:5, name:"赛博都市", src:"neon-feed", hot:"20.3k", tags:["场景","赛博"],
+        prompt:"perler bead pixel art, cyberpunk neon city at night with rain puddle reflections, purple and pink skyline, glowing signs, 16-bit pixel landscape" },
+      { rank:6, name:"樱花巫女", src:"sakura-works", hot:"18.6k", tags:["角色","樱花"],
+        prompt:"perler bead pixel art, shrine maiden in pink cherry blossom kimono, falling petals, soft daylight, 16-bit pixel character portrait" },
+      { rank:7, name:"龙宝宝 PYX", src:"dragon-den", hot:"16.2k", tags:["角色","龙"],
+        prompt:"perler bead pixel art, cute baby dragon with green scales and yellow belly, big eyes, small wings, 16-bit pixel character, playful" },
+      { rank:8, name:"虚空之卡", src:"card-vault", hot:"14.8k", tags:["卡片","虚空"],
+        prompt:"perler bead pixel art, purple void elemental card with glowing violet gem in center, ornate frame, dark energy, 16-bit pixel art card" }
+    ];
+
+    const trendState = { running:false, stopFlag:false, queue:[], done:0, total:0 };
+
+    function renderTrendGrid(){
+      const grid = document.getElementById('trend-grid');
+      grid.innerHTML='';
+      TRENDING.forEach((t,i)=>{
+        const card = document.createElement('div');
+        card.className='tcard';
+        card.dataset.idx = i;
+        card.innerHTML = `
+          <div class="thumb">
+            <span class="stat-pill queued" id="pill-${i}">QUEUED</span>
+            <span class="rank">#${t.rank}</span>
+            <div class="ph" id="ph-${i}">
+              <div class="spinner" id="sp-${i}"></div>
+              <div class="pbar"><i id="pb-${i}"></i></div>
+              <div class="pct" id="pct-${i}">等待下载…</div>
+            </div>
+            <img id="img-${i}" alt="${t.name}" />
+          </div>
+          <div class="meta">
+            <div class="tname">${t.name}</div>
+            <div class="tsrc"><span class="src-dot"></span>${t.src} · 自动采集</div>
+            <div class="tfoot">
+              <span class="hot">♥ ${t.hot}</span>
+              <span>${t.tags.map(x=>'#'+x).join(' ')}</span>
+            </div>
+          </div>`;
+        grid.appendChild(card);
+      });
+    }
+
+    function logLine(kind, tag, msg){
+      const log = document.getElementById('log');
+      const ts = new Date().toTimeString().slice(0,8);
+      const line = document.createElement('div');
+      line.className = 'log-line ' + kind;
+      line.innerHTML = `<span class="ts">[${ts}]</span> <span class="tag">${tag}</span> ${msg}`;
+      log.appendChild(line);
+      log.scrollTop = log.scrollHeight;
+      // 限制日志条数
+      while(log.children.length > 60) log.removeChild(log.firstChild);
+    }
+
+    function setPill(i, cls, txt){
+      const p = document.getElementById('pill-'+i);
+      if(!p) return;
+      p.className = 'stat-pill ' + cls;
+      p.textContent = txt;
+    }
+    function setPct(i, pct, txt){
+      const pb = document.getElementById('pb-'+i);
+      const el = document.getElementById('pct-'+i);
+      if(pb) pb.style.width = pct+'%';
+      if(el) el.textContent = txt;
+    }
+    function setSpinner(i, cls){
+      const sp = document.getElementById('sp-'+i);
+      if(sp){ sp.className = 'spinner ' + (cls||''); }
+    }
+    function hidePh(i){
+      const ph = document.getElementById('ph-'+i);
+      if(ph) ph.classList.add('hide');
+    }
+    function setLive(txt){
+      document.getElementById('live-txt').textContent = txt;
+    }
+
+    // 模拟单张图片下载：进度推进 + 真实 Image onload
+    function downloadOne(t, i){
+      return new Promise(resolve=>{
+        setPill(i,'loading','FETCHING');
+        setPct(i, 0, '连接源站…');
+        logLine('info','[GET]', `${t.name} <span class="url">${t.src}/img/${i+1}.png</span>`);
+        const url = imgUrl(t.prompt, 'square');
+        const img = document.getElementById('img-'+i);
+        let prog = 0;
+        let finished = false;
+        // 进度模拟器
+        const tick = setInterval(()=>{
+          if(trendState.stopFlag){ if(!finished){ clearInterval(tick); setPill(i,'queued','STOPPED'); setPct(i,prog,'已停止'); logLine('warn','[STOP]', `${t.name} 下载中止`); resolve('stopped'); finished=true;} return; }
+          prog = Math.min(90, prog + Math.random()*12 + 3);
+          setPct(i, Math.floor(prog), `下载中 ${Math.floor(prog)}%`);
+        }, 180);
+        // 真实加载
+        const probe = new Image();
+        probe.onload = ()=>{
+          if(finished) return; finished=true; clearInterval(tick);
+          setPct(i, 100, '完成');
+          img.src = url;
+          img.classList.add('ready');
+          setSpinner(i,'done');
+          setTimeout(()=>{ hidePh(i); setPill(i,'done','CACHED'); }, 350);
+          logLine('ok','[OK]', `${t.name} 缓存成功 · ${probe.naturalWidth||'?'}×${probe.naturalHeight||'?'}`);
+          trendState.done++;
+          resolve('ok');
+        };
+        probe.onerror = ()=>{
+          if(finished) return; finished=true; clearInterval(tick);
+          setPill(i,'err','ERROR');
+          setPct(i, prog, '下载失败');
+          setSpinner(i,'err');
+          logLine('err','[ERR]', `${t.name} 源站无响应，已跳过`);
+          trendState.done++;
+          resolve('err');
+        };
+        probe.src = url;
+      });
+    }
+
+    async function startDownloadAll(){
+      if(trendState.running) return;
+      trendState.running = true; trendState.stopFlag = false;
+      trendState.done = 0; trendState.total = TRENDING.length;
+      document.getElementById('dl-all').disabled = true;
+      document.getElementById('dl-stop').disabled = false;
+      setLive('RUNNING');
+      logLine('info','[SYS]', `启动自动化采集流水线 · 共 ${TRENDING.length} 个目标 · 并发 3`);
+      // 并发池：3 个 worker
+      const queue = TRENDING.map((t,i)=>({t,i}));
+      const workers = [0,1,2];
+      await Promise.all(workers.map(async ()=>{
+        while(queue.length && !trendState.stopFlag){
+          const job = queue.shift();
+          if(!job) break;
+          await downloadOne(job.t, job.i);
+        }
+      }));
+      trendState.running = false;
+      document.getElementById('dl-all').disabled = false;
+      document.getElementById('dl-stop').disabled = true;
+      setLive(trendState.stopFlag ? 'STOPPED' : 'IDLE');
+      if(!trendState.stopFlag){
+        logLine('ok','[DONE]', `采集完成 · 成功 ${TRENDING.length} 项已入本地缓存`);
+        toast('流行图集采集完成');
+      } else {
+        logLine('warn','[HALT]', `流水线已停止 · 已处理 ${trendState.done}/${TRENDING.length}`);
+      }
+    }
+
+    function stopDownload(){
+      if(!trendState.running) return;
+      trendState.stopFlag = true;
+      setLive('STOPPING');
+      logLine('warn','[STOP]', '收到停止信号，等待当前任务结束…');
+    }
+
+    document.getElementById('dl-all').addEventListener('click', startDownloadAll);
+    document.getElementById('dl-stop').addEventListener('click', stopDownload);
+
     /* 启动 */
     spawnParticles();
     renderStats();
     renderGrid();
+    renderTrendGrid();
+    logLine('info','[SYS]', '档案馆已就绪 · 流行图集等待采集指令');
+    // 自动启动一次采集（模拟自动化浏览器开机即抓）
+    setTimeout(startDownloadAll, 900);
     </script>
   </body>
 </html>
