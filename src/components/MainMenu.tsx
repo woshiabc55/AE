@@ -135,14 +135,16 @@ export function MainMenu() {
               <li><span className="text-resonance-400">W A S D</span> / 方向键　移动</li>
               <li><span className="text-resonance-400">Shift</span>　冲刺（视野变广）</li>
               <li><span className="text-resonance-400">鼠标</span>　转向视角</li>
+              <li><span className="text-resonance-400">左键</span>　开火（消耗残响弹）</li>
               <li><span className="text-resonance-400">点击画面</span>　锁定鼠标</li>
               <li><span className="text-resonance-400">ESC</span>　暂停 / 解锁</li>
             </ul>
             <div className="mt-4 border-t border-void-600 pt-3 font-term text-lg text-resonance-400/70 leading-relaxed">
               <p>· 收集本层所有 <span className="text-echo-400">记忆回响</span> 以开启传送门</p>
-              <p>· 躲避 <span className="text-shadow-400">暗影实体</span>，接触会损耗残响值</p>
-              <p>· 暗影接近时屏幕边缘会泛起 <span className="text-warn-500">心跳红光</span></p>
-              <p>· 残响值耗尽即失败，请善用地形阻挡暗影</p>
+              <p>· <span className="text-resonance-400">残响弹</span> 可击退暗影，两发击杀，11 秒后重生</p>
+              <p>· 准星对准暗影会变 <span className="text-warn-500">红</span>，命中显示金色 X</p>
+              <p>· 暗影接近时屏幕边缘泛起 <span className="text-warn-500">心跳红光</span></p>
+              <p>· 残响值耗尽即失败，请善用枪与地形</p>
             </div>
             <div className="mt-5 flex justify-end">
               <PixelButton variant="ghost" onClick={() => setShowHowto(false)}>

@@ -156,17 +156,46 @@ export function HUD() {
         </div>
       </div>
 
-      {/* 右下：心跳预警 */}
-      {heartbeat > 0.15 && (
-        <div className="absolute right-5 bottom-5 flex items-center gap-2 animate-flicker">
-          <span className="font-pixel text-[9px] text-warn-500 text-glow-warn">
-            {!low ? "NEAR" : "DANGER"}
+      {/* 右下：弹药计数 + 心跳预警 */}
+      <div className="absolute right-5 bottom-5 flex flex-col items-end gap-2">
+        {/* 弹药 */}
+        <div className="flex items-end gap-1">
+          <span
+            className={`font-pixel text-2xl leading-none ${
+              ammo === 0 ? "text-warn-500 text-glow-warn animate-flicker" : "text-resonance-400 text-glow-reso"
+            }`}
+          >
+            {ammo.toString().padStart(2, "0")}
           </span>
-          <div className="relative h-4 w-4">
-            <div className="absolute inset-0 bg-warn-500 animate-heartbeat-pulse" />
-          </div>
+          <span className="font-term text-lg text-resonance-400/40 leading-none">
+            / {maxAmmo}
+          </span>
         </div>
-      )}
+        <div className="flex gap-[2px]">
+          {Array.from({ length: Math.min(maxAmmo, 12) }).map((_, i) => {
+            const idx = maxAmmo <= 12 ? i : Math.floor((i / 12) * maxAmmo);
+            return (
+              <div
+                key={i}
+                className={`h-3 w-[3px] ${idx < ammo ? "bg-resonance-500" : "bg-void-700 border border-void-600"}`}
+              />
+            );
+          })}
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="font-pixel text-[9px] text-shadow-400/80">KILLS {kills}</span>
+        </div>
+        {heartbeat > 0.15 && (
+          <div className="flex items-center gap-2 animate-flicker">
+            <span className="font-pixel text-[9px] text-warn-500 text-glow-warn">
+              {!low ? "NEAR" : "DANGER"}
+            </span>
+            <div className="relative h-4 w-4">
+              <div className="absolute inset-0 bg-warn-500 animate-heartbeat-pulse" />
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* 底部横幅 */}
       {banner && (
