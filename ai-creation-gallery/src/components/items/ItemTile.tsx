@@ -1,6 +1,6 @@
 import { Flame } from "lucide-react";
 import type { Artwork } from "@/types";
-import { aiImage } from "@/lib/image";
+import { artworkImage } from "@/lib/image";
 import { formatHeat } from "@/lib/format";
 import { itemCategoryLabels } from "@/data/meta";
 import { useUIStore } from "@/store/useUIStore";
@@ -30,7 +30,8 @@ export default function ItemTile({ artwork }: { artwork: Artwork }) {
         />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_60%,rgba(255,255,255,0.06),transparent_60%)]" />
         <SmartImage
-          src={aiImage(artwork.prompt, artwork.aspect)}
+          src={artworkImage(artwork).src}
+          fallbackSrc={artworkImage(artwork).fallback}
           alt={artwork.title}
           className="absolute inset-0 h-full w-full p-4 transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-3"
           imgClassName="object-contain [mix-blend-mode:normal] drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]"

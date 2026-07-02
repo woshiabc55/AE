@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Flame, ArrowUpRight } from "lucide-react";
 import { featured } from "@/data/meta";
-import { aiImage } from "@/lib/image";
+import { artworkImage } from "@/lib/image";
 import { formatHeat } from "@/lib/format";
 import { useUIStore } from "@/store/useUIStore";
 import SmartImage from "@/components/common/SmartImage";
@@ -41,7 +41,8 @@ export default function FeaturedMarquee() {
             >
               <div className="relative aspect-[3/4] overflow-hidden">
                 <SmartImage
-                  src={aiImage(a.prompt, a.aspect)}
+                  src={artworkImage(a).src}
+                  fallbackSrc={artworkImage(a).fallback}
                   alt={a.title}
                   eager={i < 6}
                   className="absolute inset-0 h-full w-full transition-transform duration-700 group-hover/card:scale-110"

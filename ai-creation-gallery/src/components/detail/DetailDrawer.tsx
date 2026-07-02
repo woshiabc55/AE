@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useUIStore } from "@/store/useUIStore";
 import { artworksById } from "@/data/artworks";
 import { getRelated, kindLabels } from "@/data/meta";
-import { aiImage } from "@/lib/image";
+import { artworkImage } from "@/lib/image";
 import { formatHeat, formatDate } from "@/lib/format";
 import SmartImage from "@/components/common/SmartImage";
 import RarityBadge from "@/components/common/RarityBadge";
@@ -70,7 +70,8 @@ export default function DetailDrawer() {
             {/* hero image */}
             <div className="relative aspect-[4/3] w-full overflow-hidden">
               <SmartImage
-                src={aiImage(artwork.prompt, artwork.aspect)}
+                src={artworkImage(artwork).src}
+                fallbackSrc={artworkImage(artwork).fallback}
                 alt={artwork.title}
                 eager
                 className="absolute inset-0 h-full w-full"
@@ -86,11 +87,17 @@ export default function DetailDrawer() {
                 <X size={18} />
               </button>
 
-              <div className="absolute left-5 top-5 flex items-center gap-2">
+              <div className="absolute left-5 top-5 flex flex-wrap items-center gap-2">
                 <RarityBadge rarity={artwork.rarity} />
                 <span className="rounded-full border border-white/15 bg-ink-950/50 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-cyan-soft backdrop-blur">
                   {kindLabels[artwork.kind]}
                 </span>
+                {artwork.officialImage && (
+                  <span className="inline-flex items-center gap-1 rounded-full border border-magenta/50 bg-magenta/15 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-magenta backdrop-blur">
+                    <Sparkles size={10} />
+                    官方立绘
+                  </span>
+                )}
               </div>
 
               <div className="absolute bottom-5 left-5 right-5">
@@ -216,7 +223,8 @@ export default function DetailDrawer() {
                       >
                         <div className="relative aspect-[3/4] overflow-hidden rounded-xl border border-white/10">
                           <SmartImage
-                            src={aiImage(r.prompt, r.aspect)}
+                            src={artworkImage(r).src}
+                            fallbackSrc={artworkImage(r).fallback}
                             alt={r.title}
                             className="absolute inset-0 h-full w-full"
                           />

@@ -1,6 +1,6 @@
 import { Flame } from "lucide-react";
 import type { Artwork } from "@/types";
-import { aiImage } from "@/lib/image";
+import { artworkImage } from "@/lib/image";
 import { formatHeat } from "@/lib/format";
 import { kindLabels } from "@/data/meta";
 import { useUIStore } from "@/store/useUIStore";
@@ -24,7 +24,8 @@ export default function ResultCard({ artwork: a }: { artwork: Artwork }) {
     >
       <div className={`relative w-full ${ASPECT[a.aspect]}`}>
         <SmartImage
-          src={aiImage(a.prompt, a.aspect)}
+          src={artworkImage(a).src}
+          fallbackSrc={artworkImage(a).fallback}
           alt={a.title}
           className="absolute inset-0 h-full w-full transition-transform duration-700 group-hover:scale-105"
         />

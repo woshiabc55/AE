@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Layers, Mountain, Swords, ArrowUpRight } from "lucide-react";
 import { artworks } from "@/data/artworks";
-import { aiImage } from "@/lib/image";
+import { artworkImage } from "@/lib/image";
 import SmartImage from "@/components/common/SmartImage";
 
 const CATS = [
@@ -108,7 +108,8 @@ export default function CategoryCards() {
                     className="h-12 w-12 overflow-hidden rounded-lg border border-white/10"
                   >
                     <SmartImage
-                      src={aiImage(a.prompt, a.aspect)}
+                      src={artworkImage(a).src}
+                      fallbackSrc={artworkImage(a).fallback}
                       alt={a.title}
                       className="h-full w-full"
                     />

@@ -253,6 +253,8 @@ export const artworks: Artwork[] = [
     featured: true,
     faction: "稻妻幕府",
     backInscription: "永恒，即是一瞬之雷。",
+    officialImage:
+      "https://static.wikia.nocookie.net/gensin-impact/images/a/a3/Character_Raiden_Shogun_Full_Wish.png/revision/latest?cb=20220507154003",
   },
   {
     id: "c17",
@@ -269,6 +271,8 @@ export const artworks: Artwork[] = [
     featured: true,
     faction: "稻妻幕府",
     backInscription: "霜华如练，剑舞如歌。",
+    officialImage:
+      "https://static.wikia.nocookie.net/gensin-impact/images/d/d0/Character_Kamisato_Ayaka_Full_Wish.png/revision/latest?cb=20221014024207",
   },
   {
     id: "c18",
@@ -285,6 +289,8 @@ export const artworks: Artwork[] = [
     featured: true,
     faction: "璃月七阁",
     backInscription: "往生无门，蝶引幽途。",
+    officialImage:
+      "https://static.wikia.nocookie.net/gensin-impact/images/5/59/Character_Hu_Tao_Full_Wish.png/revision/latest?cb=20220507160922",
   },
   {
     id: "c19",
@@ -300,6 +306,8 @@ export const artworks: Artwork[] = [
     createdAt: "2026-06-21",
     faction: "璃月七阁",
     backInscription: "契约既定，岩心不渝。",
+    officialImage:
+      "https://static.wikia.nocookie.net/gensin-impact/images/c/c4/Character_Zhongli_Full_Wish.png/revision/latest?cb=20220507161902",
   },
   {
     id: "c20",
@@ -315,6 +323,8 @@ export const artworks: Artwork[] = [
     createdAt: "2026-06-19",
     faction: "璃月七阁",
     backInscription: "麒麟踏月，霜华自凝。",
+    officialImage:
+      "https://static.wikia.nocookie.net/gensin-impact/images/0/0e/Character_Ganyu_Full_Wish.png/revision/latest?cb=20220713045854",
   },
   {
     id: "c21",
@@ -331,6 +341,7 @@ export const artworks: Artwork[] = [
     featured: true,
     faction: "星核猎手",
     backInscription: "余烬未尽，我即归途。",
+    officialImage: "https://aka.doubaocdn.com/s/BMdD1whjI2",
   },
   {
     id: "c22",
@@ -346,6 +357,7 @@ export const artworks: Artwork[] = [
     createdAt: "2026-06-20",
     faction: "星核猎手",
     backInscription: "故事若不精彩，便由我改写。",
+    officialImage: "https://aka.doubaocdn.com/s/2SAc1whjI3",
   },
   {
     id: "c23",
@@ -361,6 +373,7 @@ export const artworks: Artwork[] = [
     createdAt: "2026-06-17",
     faction: "星核猎手",
     backInscription: "现实，不过是另一场游戏。",
+    officialImage: "https://aka.doubaocdn.com/s/PmcB1whjI3",
   },
   {
     id: "c24",
@@ -377,6 +390,8 @@ export const artworks: Artwork[] = [
     featured: true,
     faction: "罗德岛",
     backInscription: "博士，我们终会抵达黎明。",
+    officialImage:
+      "https://static.wikia.nocookie.net/mrfz/images/b/b9/Amiya_Elite_2.png/revision/latest?cb=20190619214434",
   },
   {
     id: "c25",
@@ -392,6 +407,8 @@ export const artworks: Artwork[] = [
     createdAt: "2026-06-18",
     faction: "龙门近卫局",
     backInscription: "龙血沸腾，剑斩不义。",
+    officialImage:
+      "https://static.wikia.nocookie.net/mrfz/images/e/ee/Ch%27en_Elite_2.png/revision/latest?cb=20190713060136",
   },
   {
     id: "c26",
@@ -407,6 +424,8 @@ export const artworks: Artwork[] = [
     createdAt: "2026-06-14",
     faction: "喀兰贸易",
     backInscription: "雪境之约，银灰为证。",
+    officialImage:
+      "https://static.wikia.nocookie.net/mrfz/images/6/6d/SilverAsh_Elite_2.png/revision/latest?cb=20190628063249",
   },
   {
     id: "c27",
@@ -423,6 +442,8 @@ export const artworks: Artwork[] = [
     featured: true,
     faction: "天命总部",
     backInscription: "为世界上所有美好而战。",
+    officialImage:
+      "https://static.wikia.nocookie.net/honkaiimpact3_gamepedia_en/images/9/9a/Herrscher_of_the_Void_%28Portrait%29.png/revision/latest?cb=20230503223757",
   },
   {
     id: "c28",
@@ -438,6 +459,8 @@ export const artworks: Artwork[] = [
     createdAt: "2026-06-12",
     faction: "天命总部",
     backInscription: "雷鸣为誓，护你至终。",
+    officialImage:
+      "https://static.wikia.nocookie.net/honkaiimpact3_gamepedia_en/images/3/3f/Herrscher_of_Thunder_%28Portrait%29.png/revision/latest?cb=20230503223815",
   },
   {
     id: "c29",
@@ -454,6 +477,8 @@ export const artworks: Artwork[] = [
     featured: true,
     faction: "残星会",
     backInscription: "残响之中，听见世界的回声。",
+    officialImage:
+      "https://static.wikia.nocookie.net/wutheringwaves/images/9/95/Sanhua.jpg/revision/latest?cb=20231221175009",
   },
   {
     id: "c30",
@@ -469,6 +494,8 @@ export const artworks: Artwork[] = [
     createdAt: "2026-06-19",
     faction: "黑海岸",
     backInscription: "童心不灭，火焰长燃。",
+    officialImage:
+      "https://static.wikia.nocookie.net/wutheringwaves/images/d/d8/Encore_Sheet.png/revision/latest?cb=20240511135648",
   },
   {
     id: "c31",
@@ -484,6 +511,8 @@ export const artworks: Artwork[] = [
     createdAt: "2026-06-21",
     faction: "狡兔屋",
     backInscription: "独家情报，给你一个镜头的时间。",
+    officialImage:
+      "https://static.wikia.nocookie.net/zenless-zone-zero/images/7/7a/Agent_Nicole_Demara_Portrait.png/revision/latest",
   },
   {
     id: "c32",
@@ -499,6 +528,8 @@ export const artworks: Artwork[] = [
     createdAt: "2026-06-24",
     faction: "维多利亚家政",
     backInscription: "11号，永远是最后一个收刀的人。",
+    officialImage:
+      "https://static.wikia.nocookie.net/zenless-zone-zero/images/3/36/Agent_Soldier_11_Portrait.png/revision/latest",
   },
   {
     id: "c33",
@@ -515,6 +546,8 @@ export const artworks: Artwork[] = [
     featured: true,
     faction: "迦勒底",
     backInscription: "剑，是为守护而挥。",
+    officialImage:
+      "https://static.wikia.nocookie.net/fategrandorder/images/4/43/Artoria_Pendragon_01.png/revision/latest?cb=20180323133914",
   },
   {
     id: "c34",
@@ -530,6 +563,8 @@ export const artworks: Artwork[] = [
     createdAt: "2026-06-20",
     faction: "阿拜多斯",
     backInscription: "老师，今天也请多关照。",
+    officialImage:
+      "https://static.wikia.nocookie.net/blue-archive/images/a/ad/Shiroko_Portrait.png/revision/latest?cb=20220420081547",
   },
   {
     id: "c35",
@@ -545,6 +580,8 @@ export const artworks: Artwork[] = [
     createdAt: "2026-06-15",
     faction: "灰鸦小队",
     backInscription: "即便化为构造体，仍守人道。",
+    officialImage:
+      "https://static.wikia.nocookie.net/punishing-gray-raven/images/d/da/Character-Rozen-Portrait.png/revision/latest?cb=20200728114540",
   },
 
   /* ───────────────── 二游二创·第二批 / 提瓦特诸国 / 仙舟六御 / 巴比伦塔 ───── */
@@ -563,6 +600,8 @@ export const artworks: Artwork[] = [
     featured: true,
     faction: "须弥教令院",
     backInscription: "梦境即真实，知识无终。",
+    officialImage:
+      "https://static.wikia.nocookie.net/gensin-impact/images/d/dd/Character_Nahida_Full_Wish.png/revision/latest?cb=20221102032214",
   },
   {
     id: "c37",
@@ -579,6 +618,8 @@ export const artworks: Artwork[] = [
     featured: true,
     faction: "枫丹廷",
     backInscription: "孤独的舞台，永不停幕。",
+    officialImage:
+      "https://static.wikia.nocookie.net/gensin-impact/images/9/94/Character_Furina_Full_Wish.png/revision/latest?cb=20231108064320",
   },
   {
     id: "c38",
@@ -595,6 +636,8 @@ export const artworks: Artwork[] = [
     featured: true,
     faction: "愚人众",
     backInscription: "家，是契约，也是枷锁。",
+    officialImage:
+      "https://static.wikia.nocookie.net/gensin-impact/images/f/f8/Character_Arlecchino_Full_Wish.png/revision/latest?cb=20240424142733",
   },
   {
     id: "c39",
@@ -610,6 +653,8 @@ export const artworks: Artwork[] = [
     createdAt: "2026-06-26",
     faction: "蒙德城",
     backInscription: "风是自由的，我也是。",
+    officialImage:
+      "https://static.wikia.nocookie.net/gensin-impact/images/2/2d/Character_Venti_Full_Wish.png/revision/latest?cb=20220507131746",
   },
   {
     id: "c40",
@@ -625,6 +670,8 @@ export const artworks: Artwork[] = [
     createdAt: "2026-06-25",
     faction: "蒙德城",
     backInscription: "轰！可莉又炸到啦！",
+    officialImage:
+      "https://static.wikia.nocookie.net/gensin-impact/images/8/88/Character_Klee_Full_Wish.png/revision/latest?cb=20220507125530",
   },
   {
     id: "c41",
@@ -640,6 +687,8 @@ export const artworks: Artwork[] = [
     createdAt: "2026-06-23",
     faction: "稻妻幕府",
     backInscription: "烟花即逝，记忆长存。",
+    officialImage:
+      "https://static.wikia.nocookie.net/gensin-impact/images/8/89/Character_Yoimiya_Full_Wish.png/revision/latest?cb=20220507125627",
   },
   {
     id: "c42",
@@ -656,6 +705,8 @@ export const artworks: Artwork[] = [
     featured: true,
     faction: "稻妻幕府",
     backInscription: "巫女之笑，藏半生诡计。",
+    officialImage:
+      "https://static.wikia.nocookie.net/gensin-impact/images/4/49/Character_Yae_Miko_Full_Wish.png/revision/latest?cb=20240525000642",
   },
   {
     id: "c43",
@@ -671,6 +722,8 @@ export const artworks: Artwork[] = [
     createdAt: "2026-06-24",
     faction: "璃月七阁",
     backInscription: "夜阑人静，我即是消息。",
+    officialImage:
+      "https://static.wikia.nocookie.net/gensin-impact/images/2/23/Character_Yelan_Full_Wish.png/revision/latest?cb=20220531085912",
   },
   {
     id: "c44",
@@ -686,6 +739,8 @@ export const artworks: Artwork[] = [
     createdAt: "2026-06-25",
     faction: "璃月七阁",
     backInscription: "古法非桎梏，未来我自造。",
+    officialImage:
+      "https://static.wikia.nocookie.net/gensin-impact/images/b/be/Character_Keqing_Full_Wish.png/revision/latest?cb=20240525000647",
   },
   {
     id: "c45",
@@ -702,6 +757,7 @@ export const artworks: Artwork[] = [
     featured: true,
     faction: "仙舟联盟",
     backInscription: "云霄之上，剑斩星河。",
+    officialImage: "https://aka.doubaocdn.com/s/Vrmw1whjI3",
   },
   {
     id: "c46",
@@ -717,6 +773,7 @@ export const artworks: Artwork[] = [
     createdAt: "2026-06-26",
     faction: "仙舟联盟",
     backInscription: "持明不老，只为救人。",
+    officialImage: "https://aka.doubaocdn.com/s/DTXX1whjJ2",
   },
   {
     id: "c47",
@@ -732,6 +789,7 @@ export const artworks: Artwork[] = [
     createdAt: "2026-06-26",
     faction: "星核猎手",
     backInscription: "刃之所向，皆为遗忘。",
+    officialImage: "https://aka.doubaocdn.com/s/u8Kd1whjID",
   },
   {
     id: "c48",
@@ -747,6 +805,7 @@ export const artworks: Artwork[] = [
     createdAt: "2026-06-23",
     faction: "贝洛伯格",
     backInscription: "存护，是责任的别名。",
+    officialImage: "https://aka.doubaocdn.com/s/OXDQ1whjID",
   },
   {
     id: "c49",
@@ -763,6 +822,8 @@ export const artworks: Artwork[] = [
     featured: true,
     faction: "罗德岛",
     backInscription: "烈焰燃尽，荣光不灭。",
+    officialImage:
+      "https://static.wikia.nocookie.net/mrfz/images/2/26/Surtr_Elite_2.png/revision/latest?cb=20200924031758",
   },
   {
     id: "c50",
@@ -778,6 +839,8 @@ export const artworks: Artwork[] = [
     createdAt: "2026-06-25",
     faction: "巴别塔",
     backInscription: "佣兵无国，只有价码。",
+    officialImage:
+      "https://static.wikia.nocookie.net/mrfz/images/6/64/W_Elite_2.png/revision/latest?cb=20200501132518",
   },
   {
     id: "c51",
@@ -794,6 +857,8 @@ export const artworks: Artwork[] = [
     featured: true,
     faction: "罗德岛",
     backInscription: "历史由幸存者书写。",
+    officialImage:
+      "https://static.wikia.nocookie.net/mrfz/images/1/1e/Kal%27tsit_Elite_2.png/revision/latest?cb=20210424140805",
   },
   {
     id: "c52",
@@ -809,6 +874,8 @@ export const artworks: Artwork[] = [
     createdAt: "2026-06-24",
     faction: "深海猎人",
     backInscription: "潮声之中，她仍守望。",
+    officialImage:
+      "https://static.wikia.nocookie.net/mrfz/images/5/56/Skadi_the_Corrupting_Heart_Elite_2.png/revision/latest?cb=20210501130300",
   },
   {
     id: "c53",
@@ -824,6 +891,8 @@ export const artworks: Artwork[] = [
     createdAt: "2026-06-23",
     faction: "天命总部",
     backInscription: "太虚一剑，承千年孤意。",
+    officialImage:
+      "https://static.wikia.nocookie.net/honkaiimpact3_gamepedia_en/images/1/1c/Phoenix_%28Portrait%29.png/revision/latest?cb=20230503222517",
   },
   {
     id: "c54",
@@ -839,6 +908,8 @@ export const artworks: Artwork[] = [
     createdAt: "2026-06-21",
     faction: "天命总部",
     backInscription: "学园长，亦是一柄出鞘之剑。",
+    officialImage:
+      "https://static.wikia.nocookie.net/honkaiimpact3_gamepedia_en/images/8/8b/Valkyrie_Pledge_%28Portrait%29.png/revision/latest?cb=20230503223142",
   },
   {
     id: "c55",
@@ -855,6 +926,8 @@ export const artworks: Artwork[] = [
     featured: true,
     faction: "阿拜多斯",
     backInscription: "老师，我们一起回家吧。",
+    officialImage:
+      "https://static.wikia.nocookie.net/blue-archive/images/a/ad/Shiroko_Portrait.png/revision/latest?cb=20220420081547",
   },
 
   /* ───────────────────────── 场景壁纸 · SCENES ───────────────────────── */

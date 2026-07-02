@@ -25,6 +25,8 @@ export interface Artwork {
   backInscription?: string;
   // scene
   mood?: string;
+  // 官方图（二游 IP 官方立绘/场景图 URL）；为空时回退到 AI 生成图
+  officialImage?: string;
 }
 
 export type SortKey = "heat" | "newest";

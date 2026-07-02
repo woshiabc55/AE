@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { X, ChevronLeft, ChevronRight, Expand, Flame } from "lucide-react";
 import type { Artwork } from "@/types";
-import { aiImage } from "@/lib/image";
+import { artworkImage } from "@/lib/image";
 import { formatHeat } from "@/lib/format";
 import { useUIStore } from "@/store/useUIStore";
 import SmartImage from "@/components/common/SmartImage";
@@ -51,7 +51,8 @@ export default function SceneMasonry({ items }: { items: Artwork[] }) {
           >
             <div className={`relative w-full ${ASPECTS[i % ASPECTS.length]}`}>
               <SmartImage
-                src={aiImage(a.prompt, a.aspect)}
+                src={artworkImage(a).src}
+                fallbackSrc={artworkImage(a).fallback}
                 alt={a.title}
                 eager={i < 4}
                 className="absolute inset-0 h-full w-full transition-transform duration-700 group-hover:scale-105"
@@ -146,7 +147,8 @@ export default function SceneMasonry({ items }: { items: Artwork[] }) {
 
             <div className="relative max-h-full max-w-6xl overflow-hidden rounded-2xl border border-white/10">
               <SmartImage
-                src={aiImage(items[viewerIndex].prompt, items[viewerIndex].aspect)}
+                src={artworkImage(items[viewerIndex]).src}
+                fallbackSrc={artworkImage(items[viewerIndex]).fallback}
                 alt={items[viewerIndex].title}
                 eager
                 className="max-h-[78vh] w-auto"

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Flame, RotateCw } from "lucide-react";
 import type { Artwork } from "@/types";
-import { aiImage } from "@/lib/image";
+import { artworkImage } from "@/lib/image";
 import { formatHeat } from "@/lib/format";
 import { useUIStore } from "@/store/useUIStore";
 import { useTilt } from "@/hooks/useTilt";
@@ -53,7 +53,8 @@ export default function CardTile({ artwork }: { artwork: Artwork }) {
           {/* FRONT */}
           <div className="backface-hidden absolute inset-0 overflow-hidden rounded-2xl">
             <SmartImage
-              src={aiImage(artwork.prompt, artwork.aspect)}
+              src={artworkImage(artwork).src}
+              fallbackSrc={artworkImage(artwork).fallback}
               alt={artwork.title}
               className="absolute inset-0 h-full w-full"
             />
