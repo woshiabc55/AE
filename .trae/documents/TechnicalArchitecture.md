@@ -2,206 +2,165 @@
 
 ```mermaid
 flowchart TD
-    subgraph "前端层 (React + Vite)"
-        "UI[页面组件]" --> "Store[Zustand 状态管理]"
-        "Store" --> "Engine[创作引擎核心]"
+    subgraph "React 应用层"
+        "App[路由 App.tsx]" --> "Pages[页面]"
     end
-    subgraph "创作引擎层"
-        "Engine" --> "Draw[半面绘制模块]"
-        "Engine" --> "Grid[拼豆网格模块]"
-        "Engine" --> "Rig[骨架绑定模块]"
-        "Engine" --> "Anim[动画插值模块]"
+    subgraph "游戏页面 GamePage"
+        "Pages --> GP[GamePage 容器]"
+        "GP --> "Canvas[Canvas 战斗画布]"
+        "GP --> "HUD[HUD 浮层组件]"
+        "GP --> "TitleUI[标题/结算界面]"
     end
-    subgraph "数据层"
-        "Store" --> "DB[IndexedDB 存储模块]"
-        "DB" --> "IDB[(IndexedDB)]"
+    subgraph "游戏引擎层 (game/engine)"
+        "Engine[GameLoop 主循环]" --> "World[World 世界状态]"
+        "World --> "Player[骑士实体]"
+        "World --> "Enemy[骷髅实体]"
+        "World --> "Particles[粒子系统]"
+        "World --> "Camera[摄像机 + 视差]"
+        "Engine --> "Renderer[渲染器]"
+        "Renderer --> "Sprite[像素精灵绘制]"
+        "Renderer --> "Light[光照/阴影层]"
+        "Renderer --> "PostFX[后处理 CRT/暗角]"
     end
-    subgraph "渲染层"
-        "Engine" --> "Canvas[Canvas 2D 渲染器]"
+    subgraph "输入层"
+        "Input[Input 键鼠/触控]" --> "Engine"
+    end
+    subgraph "状态层"
+        "GP --> "Store[Zustand 游戏状态]"
+        "Store --> "GameStore[血量/分数/波次/阶段]"
     end
 ```
 
 ## 2. 技术说明
-
-- **前端框架**：React@18 + TypeScript + Vite@5
-- **样式方案**：TailwindCSS@3 + CSS Variables（主题色管理）
-- **状态管理**：Zustand（轻量、无 boilerplate）
-- **渲染方案**：原生 Canvas 2D API（拼豆网格 + 骨架绘制 + 动画帧渲染）
-- **数据库**：IndexedDB（通过 `idb` 库封装，支持图案 + 骨架 + 关键帧持久化）
-- **初始化工具**：`npm create vite@latest` React + TS 模板
-- **后端**：无（纯前端应用，数据全部存浏览器）
+- **前端框架**：React@18 + TypeScript + Vite@5（复用现有项目）
+- **样式方案**：TailwindCSS@3 + CSS Variables（HUD / 界面层）
+- **状态管理**：Zustand（游戏元状态：阶段、分数、血量；引擎内部状态用纯对象，不入 React 避免重渲染）
+- **渲染方案**：原生 Canvas 2D API（多层离屏 Canvas 合成：场景层 → 实体层 → 光照层 → 后处理层）
+- **游戏循环**：`requestAnimationFrame` 固定步长更新 + 插值渲染
+- **资产方案**：程序化像素精灵（运行时 Canvas 绘制 + OffscreenCanvas 缓存），无外部图片
+- **初始化工具**：复用现有 Vite React TS 模板
+- **后端**：无（纯前端，分数仅本地内存）
 
 ## 3. 路由定义
-
 | 路由 | 用途 |
 |------|------|
-| `/` | 创作工作台（默认进入，含绘制/骨架/动画三模式切换） |
-| `/gallery` | 存档管理面板（作品列表、导入导出） |
+| `/` | 原拼豆工坊（保留） |
+| `/game` | 像素骑士砍杀游戏 |
 
-## 4. API 定义
-
-无后端 API。所有数据通过 IndexedDB 本地存取，封装为 `db` 模块：
-
+## 4. 游戏状态机
 ```typescript
-// 数据库接口定义
-interface ArtworkRecord {
-  id: string;              // UUID
-  name: string;            // 作品名称
-  thumbnail: string;       // Base64 缩略图
-  gridSize: number;        // 拼豆网格尺寸 (如 32 表示 32×32)
-  pixels: PixelCell[];     // 拼豆格子数据 [{x, y, color}]
-  skeleton: SkeletonData;  // 骨架数据
-  keyframes: Keyframe[];   // 关键帧数组
-  createdAt: number;
-  updatedAt: number;
-}
+type GamePhase = "title" | "playing" | "paused" | "victory" | "defeat";
+```
+- **title**：标题界面，点击开始 → playing
+- **playing**：主战斗循环，受击死亡 → defeat，清空全部波次 → victory
+- **victory/defeat**：结算界面，重新开始 → playing（或返回 → title）
 
-interface PixelCell {
-  x: number;
-  y: number;
-  color: string;  // hex 格式
-}
+## 5. 核心引擎模块设计
 
-interface SkeletonData {
-  joints: Joint[];      // 关节节点
-  bones: Bone[];        // 骨骼连接
-}
-
-interface Joint {
-  id: string;
-  x: number;            // 网格坐标
-  y: number;
-  name: string;
-  parentBoneId?: string;
-}
-
-interface Bone {
-  id: string;
-  fromJointId: string;
-  toJointId: string;
-  influencedCells: number[]; // 受影响格子索引
-}
-
-interface Keyframe {
-  id: string;
-  time: number;          // 0~1 归一化时间
-  jointPositions: Record<string, {x: number; y: number}>;
-}
+### 5.1 目录结构（新增）
+```
+src/
+├── game/                       # 游戏项目根
+│   ├── engine/                  # 引擎核心
+│   │   ├── GameLoop.ts          # 主循环（rAF + 固定步长）
+│   │   ├── Input.ts             # 输入管理（键鼠/触控）
+│   │   ├── Camera.ts            # 摄像机 + 视差滚动
+│   │   ├── Renderer.ts          # 多层渲染合成
+│   │   ├── Lighting.ts          # 光照/阴影/体积光
+│   │   └── PostFX.ts            # CRT/暗角/色调后处理
+│   ├── entities/                 # 实体
+│   │   ├── Player.ts             # 骑士（状态机 + 连斩）
+│   │   ├── Enemy.ts              # 骷髅战士（AI 状态机）
+│   │   └── Projectile.ts         # 飞行物/剑气（预留）
+│   ├── world/                    # 关卡
+│   │   ├── Level.ts              # 关卡数据 + 地形碰撞
+│   │   ├── Parallax.ts           # 多层视差背景绘制
+│   │   └── Spawner.ts            # 敌人波次刷新
+│   ├── fx/                       # 特效
+│   │   ├── Particles.ts          # 粒子系统（血/火花/尘）
+│   │   └── ScreenShake.ts        # 屏幕震动
+│   ├── sprites/                  # 程序化像素精灵
+│   │   ├── knight.ts             # 骑士各姿态像素图
+│   │   ├── skeleton.ts           # 骷髅像素图
+│   │   ├── tiles.ts              # 古堡瓦片
+│   │   └── pixelArt.ts           # 像素绘制工具（按调色板索引画格子）
+│   ├── store/
+│   │   └── useGameStore.ts       # Zustand 游戏元状态
+│   ├── config.ts                 # 常量（重力/速度/伤害/调色板）
+│   ├── types.ts                  # 游戏类型
+│   └── GameEngine.ts             # 引擎门面：组装上述模块
+├── pages/
+│   └── Game.tsx                  # 游戏页面（挂载 Canvas + HUD + 标题/结算）
+└── components/
+    └── game/
+        ├── HUD.tsx               # 血条/连击/分数/波次
+        ├── TitleScreen.tsx       # 标题界面
+        └── ResultScreen.tsx      # 结算界面
 ```
 
-## 5. 服务器架构图
+### 5.2 实体状态机
+```typescript
+// 骑士
+type PlayerState = "idle" | "run" | "jump" | "fall" | "attack1" | "attack2"
+  | "attack3" | "dash" | "hurt" | "block" | "dead";
 
-无后端服务，跳过。
+// 骷髅敌人
+type EnemyState = "idle" | "patrol" | "chase" | "attack" | "hurt" | "dead";
+```
+
+### 5.3 战斗判定
+- 攻击命中使用 AABB + 攻击判定盒（朝向偏移的矩形）与敌人碰撞盒相交
+- 命中后：敌人受击击退、扣血、生成血粒子、屏幕震动、连击 +1、连击计时器重置
+- 连击在 1.5s 内不攻击则归零；连击数影响分数倍率
 
 ## 6. 数据模型
 
-### 6.1 数据模型定义
-
-```mermaid
-erDiagram
-    Artwork ||--o{ PixelCell : contains
-    Artwork ||--|| SkeletonData : has
-    Artwork ||--o{ Keyframe : has
-    SkeletonData ||--o{ Joint : contains
-    SkeletonData ||--o{ Bone : contains
-    Bone }o--|| Joint : "from"
-    Bone }o--|| Joint : "to"
-    Keyframe ||--o{ JointPosition : stores
-
-    Artwork {
-        string id PK
-        string name
-        string thumbnail
-        number gridSize
-        number createdAt
-        number updatedAt
-    }
-    PixelCell {
-        number x
-        number y
-        string color
-    }
-    Joint {
-        string id PK
-        number x
-        number y
-        string name
-    }
-    Bone {
-        string id PK
-        string fromJointId FK
-        string toJointId FK
-    }
-    Keyframe {
-        string id PK
-        number time
-    }
-```
-
-### 6.2 数据定义语言（IndexedDB Schema）
-
-```javascript
-// IndexedDB 数据库结构
-db = {
-  name: "PerlerBeadStudio",
-  version: 1,
-  stores: {
-    artworks: {
-      keyPath: "id",
-      indexes: [
-        { name: "by_updatedAt", keyPath: "updatedAt" },
-        { name: "by_name", keyPath: "name" }
-      ]
-    }
-  }
+### 6.1 引擎内部状态（纯对象，非持久化）
+```typescript
+interface PlayerStateData {
+  x: number; y: number;          // 世界坐标
+  vx: number; vy: number;        // 速度
+  facing: 1 | -1;                // 朝向
+  hp: number; maxHp: number;
+  state: PlayerState;
+  attackIndex: number;            // 当前连斩段 0-2
+  attackTimer: number;
+  comboCount: number; comboTimer: number;
+  invincibleTimer: number;       // 无敌帧（冲刺/受击）
+  grounded: boolean;
+  jumpsLeft: number;
 }
 ```
 
-## 7. 项目目录结构（整理框架）
+### 6.2 React 元状态（Zustand，驱动 HUD）
+```typescript
+interface GameStoreState {
+  phase: GamePhase;
+  hp: number; maxHp: number;
+  combo: number; maxCombo: number;
+  score: number;
+  wave: number; totalWaves: number;
+  enemiesLeft: number;
+  // actions
+  setPhase(p: GamePhase): void;
+  syncFromEngine(s: EngineSnapshot): void;
+  reset(): void;
+}
+```
+引擎每帧通过 `syncFromEngine` 将快照推入 Zustand，HUD 订阅更新；高频实体坐标不进 React。
 
-```
-perler-bead-studio/
-├── src/
-│   ├── components/              # UI 组件层
-│   │   ├── Workspace/           # 创作工作台
-│   │   │   ├── CanvasPanel.tsx       # 画布主面板
-│   │   │   ├── Toolbar.tsx           # 工具栏
-│   │   │   ├── Palette.tsx           # 调色板
-│   │   │   └── ModeSwitcher.tsx      # 模式切换
-│   │   ├── Skeleton/            # 骨架绑定面板
-│   │   │   ├── JointEditor.tsx       # 关节编辑器
-│   │   │   └── BoneConnector.tsx     # 骨骼连接器
-│   │   ├── Animation/           # 动画面板
-│   │   │   ├── Timeline.tsx          # 时间轴
-│   │   │   └── PlaybackControls.tsx  # 播放控制
-│   │   ├── Gallery/             # 存档管理
-│   │   │   ├── ArtworkList.tsx       # 作品列表
-│   │   │   └── ArtworkCard.tsx       # 作品卡片
-│   │   └── common/              # 通用组件
-│   ├── engine/                  # 创作引擎核心层
-│   │   ├── DrawingEngine.ts     # 半面绘制 + 镜像
-│   │   ├── GridEngine.ts        # 拼豆网格化
-│   │   ├── SkeletonEngine.ts    # 骨架绑定与变形
-│   │   ├── AnimationEngine.ts   # 关键帧插值
-│   │   └── Renderer.ts          # Canvas 渲染器
-│   ├── store/                   # 状态管理层
-│   │   ├── useArtworkStore.ts   # 作品状态
-│   │   ├── useToolStore.ts      # 工具状态
-│   │   └── useUIStore.ts        # UI 状态
-│   ├── db/                      # 数据持久化层
-│   │   ├── database.ts          # IndexedDB 初始化
-│   │   └── artworkRepo.ts       # 作品 CRUD
-│   ├── types/                   # TypeScript 类型
-│   │   └── index.ts
-│   ├── utils/                   # 工具函数
-│   │   ├── colors.ts            # 拼豆色卡
-│   │   └── geometry.ts          # 几何计算
-│   ├── App.tsx
-│   ├── main.tsx
-│   └── index.css
-├── index.html
-├── package.json
-├── tsconfig.json
-├── vite.config.ts
-└── tailwind.config.js
-```
+## 7. 性能与工程约束
+- 引擎内部状态用普通 JS 对象 + requestAnimationFrame，避免 React 重渲染
+- 仅元状态（血量/分数/波次/阶段）通过 Zustand 同步，节流至每帧或变化时
+- 像素精灵使用 `imageSmoothingEnabled = false` 保持硬边像素
+- 离屏 Canvas 缓存静态层（远景天空 / 城堡剪影），仅摄像机移动时偏移
+- 同屏粒子上限 200，超出丢弃最旧
+- 逻辑分辨率固定 1280×720，CSS 缩放铺满容器，保持像素整数倍
+
+## 8. 2.5D（像素 2 渲 3）实现要点
+- **视差纵深**：4 层背景以不同系数（0.2 / 0.4 / 0.7 / 1.0）随摄像机横移滚动
+- **动态光照**：月光方向光 + 火把/剑光点光源，用径向渐变叠加 `lighter` 合成模式
+- **角色阴影**：脚下椭圆软阴影，随跳跃高度缩放透明度
+- **体积光**：火把光柱用半透明梯形 + 噪声扰动
+- **后处理**：离屏全屏画布叠加扫描线、暗角、色调曲线、轻微色差
+- **景深暗示**：远景层降低饱和度 + 轻微模糊 + 雾色叠加
