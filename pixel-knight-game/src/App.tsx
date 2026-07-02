@@ -21,7 +21,11 @@ export default function App() {
         <TitleScreen onStart={() => engineRef.current?.startGame()} />
       )}
 
-      {(phase === "playing" || phase === "paused") && (
+      {(phase === "playing" ||
+        phase === "paused" ||
+        phase === "bossIntro" ||
+        phase === "levelTransition" ||
+        phase === "bossDefeated") && (
         <HUD onPause={() => engineRef.current?.togglePause()} />
       )}
 

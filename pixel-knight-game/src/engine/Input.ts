@@ -1,11 +1,15 @@
-// 输入管理：键鼠状态 + 边沿触发
+// 输入管理：键鼠状态 + 边沿触发 + 技能键
 
-import type { InputState } from "@/types";
+import type { InputState, SkillId } from "@/types";
+import { SKILL_ORDER, SKILLS } from "@/config";
+
+export const SKILL_KEY_MAP: Record<SkillId, string> = Object.fromEntries(
+  SKILL_ORDER.map((id) => [id, SKILLS[id].key]),
+) as Record<SkillId, string>;
 
 export class Input {
   private keys = new Set<string>();
   private pressedThisFrame = new Set<string>();
-  private active = true;
 
   constructor() {
     window.addEventListener("keydown", this.onDown);
@@ -14,14 +18,9 @@ export class Input {
   }
 
   private onDown = (e: KeyboardEvent) => {
-    // 阻止方向键 / 空格滚动页面
     if (
       [
-        "ArrowLeft",
-        "ArrowRight",
-        "ArrowUp",
-        "ArrowDown",
-        "Space",
+        "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Space",
       ].includes(e.code)
     ) {
       e.preventDefault();
@@ -38,12 +37,23 @@ export class Input {
     this.keys.clear();
   };
 
-  /** 读取当前帧输入 */
   poll(): InputState {
     const k = this.keys;
     const p = this.pressedThisFrame;
     const has = (...codes: string[]) => codes.some((c) => k.has(c));
     const pressed = (...codes: string[]) => codes.some((c) => p.has(c));
+
+    const skillPressed = {} as Record<SkillId, boolean>;
+    for (const id of SKILL_ORDER) {
+      // 通过动态查表获取每个技能的按键
+      skillPressed[id] = false;
+    }
+    // 直接按下技能键
+    for (const id of SKILL_ORDER) {
+      const key = SKILL_KEY_MAP[id];
+      if (key && p.has(key)) skillPressed[id] = true;
+    }
+
     return {
       left: has("KeyA", "ArrowLeft"),
       right: has("KeyD", "ArrowRight"),
@@ -57,16 +67,15 @@ export class Input {
       attackPressed: pressed("KeyJ"),
       dashPressed: pressed("ShiftLeft", "ShiftRight", "KeyK"),
       blockPressed: pressed("KeyL"),
+      skillPressed,
     };
   }
 
-  /** 帧末清除边沿 */
   endFrame() {
     this.pressedThisFrame.clear();
   }
 
   setActive(v: boolean) {
-    this.active = v;
     if (!v) this.keys.clear();
   }
 

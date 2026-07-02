@@ -1,6 +1,17 @@
 // 像素骑士：暗影征伐 - 类型定义
 
-export type GamePhase = "title" | "playing" | "paused" | "victory" | "defeat";
+export type GamePhase =
+  | "title"
+  | "playing"
+  | "paused"
+  | "victory"
+  | "defeat"
+  | "levelTransition"
+  | "bossIntro"
+  | "bossDefeated";
+
+/** 关卡推进阶段 */
+export type ChapterStage = "waves" | "bossIntro" | "boss" | "cleared" | "finished";
 
 export type PlayerStateName =
   | "idle"
@@ -11,6 +22,7 @@ export type PlayerStateName =
   | "attack2"
   | "attack3"
   | "dash"
+  | "cast" // 释放技能
   | "hurt"
   | "dead";
 
@@ -20,7 +32,19 @@ export type EnemyStateName =
   | "chase"
   | "attack"
   | "hurt"
-  | "dead";
+  | "dead"
+  | "stun"; // 被盾击眩晕
+
+export type EnemyKind =
+  | "skeletonScout"
+  | "skeletonArcher"
+  | "slime"
+  | "fly"
+  | "frostWraith"
+  | "iceElemental"
+  | "shadowKnight"
+  | "wraith"
+  | "boss";
 
 /** 输入状态（持续按下 + 边沿触发） */
 export interface InputState {
@@ -32,18 +56,41 @@ export interface InputState {
   attackHeld: boolean;
   dashHeld: boolean;
   blockHeld: boolean;
-  // 边沿触发（本帧刚按下）
+  // 技能键（边沿触发）
   jumpPressed: boolean;
   attackPressed: boolean;
   dashPressed: boolean;
   blockPressed: boolean;
+  skillPressed: Record<SkillId, boolean>;
 }
+
+/** 主动技能 ID */
+export type SkillId =
+  | "whirlwind"
+  | "shieldBash"
+  | "dashSlash"
+  | "holyBolt"
+  | "meteor"
+  | "bloodlust"
+  | "thunder"
+  | "dawn";
+
+/** 被动技能 ID */
+export type PassiveId =
+  | "lifesteal"
+  | "critMaster"
+  | "swift"
+  | "ironWill"
+  | "comboFrenzy"
+  | "lightBlessing";
 
 /** 引擎每帧推入 Zustand 的快照 */
 export interface EngineSnapshot {
   phase: GamePhase;
   hp: number;
   maxHp: number;
+  focus: number;
+  maxFocus: number;
   combo: number;
   maxCombo: number;
   score: number;
@@ -51,7 +98,24 @@ export interface EngineSnapshot {
   totalWaves: number;
   enemiesLeft: number;
   waveLabel: string;
-  flashRed: number; // 受击红屏 0..1
+  flashRed: number;
+  // 技能冷却（剩余秒数，0 表示就绪）
+  cooldowns: Record<SkillId, number>;
+  // 解锁的被动
+  passives: PassiveId[];
+  // 关卡
+  chapter: number;
+  totalChapters: number;
+  chapterName: string;
+  stage: ChapterStage;
+  // Boss
+  bossActive: boolean;
+  bossName: string;
+  bossHp: number;
+  bossMaxHp: number;
+  bossPhase: number;
+  // 过渡文案
+  transitionText: string;
 }
 
 export interface Particle {
@@ -64,5 +128,6 @@ export interface Particle {
   size: number;
   color: string;
   gravity: number;
-  kind: "blood" | "spark" | "dust" | "ember";
+  kind: "blood" | "spark" | "dust" | "ember" | "holy" | "shadow" | "ice";
 }
+

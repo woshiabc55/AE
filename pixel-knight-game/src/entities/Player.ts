@@ -1,9 +1,9 @@
-// 骑士实体：状态机 + 物理 + 连斩
+// 骑士实体：状态机 + 物理 + 连斩 + 技能释放
 
 import {
-  PLAYER, GRAVITY, GROUND_Y, WORLD_LEFT, WORLD_RIGHT, COMBO_TIMEOUT,
+  PLAYER, GRAVITY, GROUND_Y, WORLD_LEFT, WORLD_RIGHT, COMBO_TIMEOUT, FOCUS,
 } from "@/config";
-import type { InputState, PlayerStateName } from "@/types";
+import type { InputState, PlayerStateName, PassiveId } from "@/types";
 import { drawKnight, type KnightDrawOpts } from "@/sprites/knight";
 
 const ATTACK_STATES: PlayerStateName[] = ["attack1", "attack2", "attack3"];
@@ -15,6 +15,7 @@ export interface HitBox {
   h: number;
   damage: number;
   knockback: number;
+  crit: boolean;
 }
 
 export class Player {
@@ -25,6 +26,10 @@ export class Player {
   facing: 1 | -1 = 1;
   hp: number = PLAYER.maxHp;
   maxHp: number = PLAYER.maxHp;
+
+  // 专注值（技能资源）
+  focus = 0;
+  maxFocus = FOCUS.max;
 
   state: PlayerStateName = "idle";
   stateTime = 0;
@@ -46,6 +51,18 @@ export class Player {
   flash = 0;
   dead = false;
 
+  // 技能释放
+  castTimer = 0;
+  castTotal = 0;
+  meteorPending = false; // 陨星斩待落地
+
+  // 被动
+  passives = new Set<PassiveId>();
+  reviveUsed = false;
+
+  // 临时 buff（由技能系统设置）
+  bloodlustActive = false;
+
   update(dt: number, input: InputState) {
     this.stateTime += dt;
     if (this.invincibleTimer > 0) this.invincibleTimer -= dt;
@@ -63,8 +80,20 @@ export class Player {
       return;
     }
 
-    // 攻击进行中
-    if (ATTACK_STATES.includes(this.state)) {
+    // 陨星斩落地触发
+    if (this.meteorPending && this.grounded) {
+      this.meteorPending = false;
+      this.meteorImpact();
+    }
+
+    // 释放技能中
+    if (this.state === "cast") {
+      this.castTimer -= dt;
+      this.vx *= 0.7;
+      if (this.castTimer <= 0) {
+        this.setState(this.grounded ? "idle" : "fall");
+      }
+    } else if (ATTACK_STATES.includes(this.state)) {
       this.updateAttack(dt, input);
     } else if (this.state === "dash") {
       this.updateDash(dt);
@@ -80,13 +109,20 @@ export class Player {
     this.clampWorld();
   }
 
+  /** 陨星斩落地伤害（由引擎查询后施加到敌人） */
+  private meteorImpact() {
+    // 仅标记，实际伤害由 SkillManager / GameEngine 在落地帧处理
+    this._meteorJustLanded = true;
+  }
+  _meteorJustLanded = false;
+
   private updateNormal(dt: number, input: InputState) {
     // 攻击
     if (input.attackPressed) {
       this.startAttack(0);
       return;
     }
-    // 冲刺
+    // 冲刺（迅捷之风被动减少冷却）
     if (input.dashPressed && this.dashCooldown <= 0) {
       this.startDash();
       return;
@@ -103,7 +139,8 @@ export class Player {
     const move = (input.right ? 1 : 0) - (input.left ? 1 : 0);
     if (move !== 0) {
       this.facing = move > 0 ? 1 : -1;
-      const target = move * PLAYER.speed;
+      const speedMul = this.passives.has("swift") ? 1.15 : 1;
+      const target = move * PLAYER.speed * speedMul;
       const accel = this.grounded ? 1 : PLAYER.airControl;
       this.vx += (target - this.vx) * Math.min(1, dt * 14 * accel);
       this.runPhase += dt * 14;
@@ -162,10 +199,10 @@ export class Player {
   private startDash() {
     this.setState("dash");
     this.invincibleTimer = PLAYER.invincibleDash;
-    this.dashCooldown = PLAYER.dashCooldown;
+    this.dashCooldown = this.passives.has("swift") ? PLAYER.dashCooldown * 0.7 : PLAYER.dashCooldown;
   }
 
-  private setState(s: PlayerStateName) {
+  setState(s: PlayerStateName) {
     if (this.state !== s) {
       this.state = s;
       this.stateTime = 0;
@@ -211,13 +248,20 @@ export class Player {
       return null;
     const reach = PLAYER.attackReach;
     const bx = this.facing === 1 ? this.x + 6 : this.x - 6 - reach;
+    // 暴击判定
+    const critChance = this.passives.has("critMaster") ? 0.25 : 0;
+    const crit = Math.random() < critChance;
+    let dmg: number = PLAYER.attackDamage[idx];
+    if (crit) dmg = Math.round(dmg * 1.8);
+    // 嗜血狂怒期间攻速不影响伤害
     return {
       x: bx,
       y: this.y - PLAYER.height * 0.85,
       w: reach,
       h: PLAYER.attackHeight,
-      damage: PLAYER.attackDamage[idx],
+      damage: dmg,
       knockback: 360 + idx * 80,
+      crit,
     };
   }
 
@@ -227,7 +271,9 @@ export class Player {
 
   takeHit(damage: number, fromX: number): boolean {
     if (this.isInvincible() || this.dead) return false;
-    this.hp = Math.max(0, this.hp - damage);
+    // 钢铁意志减伤
+    const dmg = this.passives.has("ironWill") ? Math.round(damage * 0.8) : damage;
+    this.hp = Math.max(0, this.hp - dmg);
     this.invincibleTimer = PLAYER.hurtInvincible;
     this.flash = 1;
     const dir = this.x < fromX ? -1 : 1;
@@ -235,19 +281,37 @@ export class Player {
     this.vy = -260;
     this.comboCount = 0;
     if (this.hp <= 0) {
-      this.dead = true;
-      this.setState("dead");
+      // 光之护佑：复活一次
+      if (this.passives.has("lightBlessing") && !this.reviveUsed) {
+        this.reviveUsed = true;
+        this.hp = Math.round(this.maxHp * 0.4);
+        this.invincibleTimer = 2;
+        this.flash = 0;
+        this.setState("idle");
+      } else {
+        this.dead = true;
+        this.setState("dead");
+      }
     } else {
       this.setState("hurt");
     }
     return true;
   }
 
-  /** 命中敌人时调用（连击 +1） */
-  registerHit() {
+  /** 命中敌人时调用（连击 +1，专注回复，吸血） */
+  registerHit(damageDealt: number) {
     this.comboCount++;
     this.comboTimer = COMBO_TIMEOUT;
     if (this.comboCount > this.maxCombo) this.maxCombo = this.comboCount;
+    this.focus = Math.min(this.maxFocus, this.focus + FOCUS.perHit);
+    // 吸血被动
+    if (this.passives.has("lifesteal")) {
+      this.hp = Math.min(this.maxHp, this.hp + Math.round(damageDealt * 0.05));
+    }
+    // 嗜血狂怒期间额外吸血
+    if (this.bloodlustActive) {
+      this.hp = Math.min(this.maxHp, this.hp + Math.round(damageDealt * 0.25));
+    }
   }
 
   getDrawOpts(): KnightDrawOpts {

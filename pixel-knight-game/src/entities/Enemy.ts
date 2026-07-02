@@ -1,9 +1,9 @@
-// 骷髅战士：AI 状态机（巡逻/追击/攻击/受击/死亡）
+// 骷髅战士：AI 状态机（巡逻/追击/攻击/受击/死亡/眩晕）
 
 import {
   ENEMY, GRAVITY, GROUND_Y, PLAYER as PCFG, WORLD_LEFT, WORLD_RIGHT,
 } from "@/config";
-import type { EnemyStateName } from "@/types";
+import type { EnemyStateName, EnemyKind } from "@/types";
 import { drawSkeleton, type SkeletonDrawOpts } from "@/sprites/skeleton";
 
 export interface EnemyHitBox {
@@ -22,6 +22,12 @@ export class Enemy {
   facing: 1 | -1 = -1;
   hp: number = ENEMY.hp;
   maxHp: number = ENEMY.hp;
+  kind: EnemyKind = "skeletonScout";
+  width = ENEMY.width;
+  height = ENEMY.height;
+  speed = ENEMY.chaseSpeed;
+  damage = ENEMY.damage;
+  scoreValue = ENEMY.scoreValue;
 
   state: EnemyStateName = "patrol";
   stateTime = 0;
@@ -31,17 +37,25 @@ export class Enemy {
   dead = false;
   deadTime = 0;
   removeMe = false;
+  isBoss = false;
 
   private patrolDir: 1 | -1;
   private spawnX: number;
-  private attackTimer = 0;
-  private attackCooldown = 0;
+  protected attackTimer = 0;
+  protected attackCooldown = 0;
+  private stunTimer = 0;
 
   constructor(x: number) {
     this.x = x;
     this.spawnX = x;
     this.patrolDir = x > 200 ? -1 : 1;
     this.facing = this.patrolDir;
+  }
+
+  /** 盾击眩晕 */
+  stun(duration: number) {
+    this.stunTimer = Math.max(this.stunTimer, duration);
+    this.setState("stun");
   }
 
   update(dt: number, playerX: number, playerY: number) {
@@ -55,6 +69,16 @@ export class Enemy {
       this.applyGravity(dt);
       this.integrate(dt);
       if (this.deadTime > 1.4) this.removeMe = true;
+      return;
+    }
+
+    // 眩晕状态
+    if (this.stunTimer > 0) {
+      this.stunTimer -= dt;
+      this.vx *= 0.8;
+      this.applyGravity(dt);
+      this.integrate(dt);
+      if (this.stunTimer <= 0) this.setState("chase");
       return;
     }
 
