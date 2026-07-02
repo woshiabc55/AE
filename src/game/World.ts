@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { CELL, WALL_H, type ParsedLevel, type LevelTheme } from "./levels";
-import { makeWallTexture, makeFloorTexture, makeCeilTexture } from "./textures";
+import { makeWallTexture, makeFloorTexture, makeCeilTexture, makeRuneTexture } from "./textures";
 
 export class World {
   group: THREE.Group;
@@ -11,6 +11,7 @@ export class World {
   ambient: THREE.AmbientLight;
   hemi: THREE.HemisphereLight;
   private wallMesh: THREE.InstancedMesh;
+  private runes: { sprite: THREE.Sprite; phase: number; mat: THREE.SpriteMaterial }[] = [];
   theme: LevelTheme;
   private baseLightIntensity: number;
   private baseAmbient: number;
@@ -88,20 +89,81 @@ export class World {
     this.baseLightIntensity = 1.5;
     this.baseAmbient = 0.5;
 
+    // 墙边符文装饰：在部分墙格旁悬浮发光符文（主题色），增强每层视觉身份
+    this.buildRunes(level, theme);
+
     // 暴露雾给场景（GameScene 读取）
     this.fog = fog;
     void halfW;
     void halfH;
   }
 
+  // 在墙格朝向走廊的一侧悬浮符文精灵
+  private buildRunes(level: ParsedLevel, theme: LevelTheme) {
+    const accentCss = "#" + theme.wallAccent.toString(16).padStart(6, "0");
+    const tex = makeRuneTexture(accentCss);
+    const mat = new THREE.SpriteMaterial({
+      map: tex,
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      fog: true,
+      depthWrite: false,
+    });
+    // 遍历墙格，找朝向地板的相邻方向，每隔若干墙放一个
+    let placed = 0;
+    const target = Math.min(7, Math.floor((level.cols * level.rows) / 30));
+    for (let r = 1; r < level.rows - 1 && placed < target; r++) {
+      for (let c = 1; c < level.cols - 1 && placed < target; c++) {
+        if (level.grid[r][c] !== 1) continue;
+        // 找一个相邻地板格
+        const dirs: [number, number][] = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+        let placedHere = false;
+        for (const [dr, dc] of dirs) {
+          const nr = r + dr;
+          const nc = c + dc;
+          if (nr < 0 || nc < 0 || nr >= level.rows || nc >= level.cols) continue;
+          if (level.grid[nr][nc] === 0 || level.grid[nr][nc] === 2) {
+            // 在墙与地板之间放置符文
+            const wp = this.cellToWorld(r, c);
+            const fp = this.cellToWorld(nr, nc);
+            const sprite = new THREE.Sprite(mat);
+            sprite.scale.set(1.1, 1.1, 1);
+            sprite.position.set(
+              (wp.x + fp.x) / 2,
+              2.2,
+              (wp.z + fp.z) / 2,
+            );
+            const sm = mat.clone();
+            sprite.material = sm;
+            this.group.add(sprite);
+            this.runes.push({ sprite, phase: Math.random() * Math.PI * 2, mat: sm });
+            placedHere = true;
+            break;
+          }
+        }
+        if (placedHere) {
+          placed++;
+          // 跳过几格避免过密
+          c += 2;
+        }
+      }
+    }
+  }
+
   fog: THREE.FogExp2;
 
-  // 行者之光闪烁 + 心跳时增强
+  // 行者之光闪烁 + 心跳时增强 + 符文呼吸
   updateFlicker(t: number, heartbeat: number) {
     const flicker = 1 + Math.sin(t * 13) * 0.06 + Math.sin(t * 7.3) * 0.04;
     const heartBoost = heartbeat * 0.6;
     this.playerLight.intensity = this.baseLightIntensity * flicker + heartBoost;
     this.ambient.intensity = this.baseAmbient + heartbeat * 0.15;
+    for (const r of this.runes) {
+      r.phase += 0.016;
+      const pulse = 0.45 + Math.sin(r.phase * 1.4) * 0.35;
+      r.mat.opacity = pulse;
+      r.sprite.material.rotation = Math.sin(r.phase * 0.5) * 0.3;
+    }
   }
 
   cellToWorld(r: number, c: number) {

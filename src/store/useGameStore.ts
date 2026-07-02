@@ -13,6 +13,9 @@ export interface RunStats {
   startTime: number; // ms
   elapsedSec: number;
   finalTimeSec: number;
+  ammo: number; // 本层剩余残响弹
+  maxAmmo: number; // 本层残响弹上限
+  kills: number; // 本层击杀暗影数
 }
 
 interface GameStore {
@@ -36,12 +39,18 @@ interface GameStore {
   sprinting: boolean;
   // 关卡总数
   levelCount: number;
+  // 命中标记时间戳（击中暗影时刷新，HUD 显示短暂 X）
+  hitMarker: number;
+  // 是否瞄准了暗影（准星变红）
+  aimingAtEnemy: boolean;
+  // 上次开火时间戳（用于空仓/开火反馈）
+  fireFlash: number;
 
   // actions
   setSettings: (s: Partial<GameSettings>) => void;
   startNewGame: () => void;
   continueGame: () => void;
-  enterLevel: (index: number, name: string, echoTotal: number) => void;
+  enterLevel: (index: number, name: string, echoTotal: number, ammo: number) => void;
   collectEcho: (fragment: string) => void;
   damage: (amount: number) => void;
   setResonance: (v: number) => void;
@@ -50,6 +59,11 @@ interface GameStore {
   setCollectFlash: (v: number) => void;
   setHeartbeat: (v: number) => void;
   setSprinting: (v: boolean) => void;
+  setAmmo: (n: number) => void;
+  addKill: () => void;
+  setHitMarker: (t: number) => void;
+  setAimingAtEnemy: (v: boolean) => void;
+  setFireFlash: (t: number) => void;
   decayFlashes: (dtSec: number) => void;
   completeLevel: () => void; // 进入传送门
   win: () => void;
@@ -70,6 +84,9 @@ const freshStats = (): RunStats => ({
   startTime: 0,
   elapsedSec: 0,
   finalTimeSec: 0,
+  ammo: 0,
+  maxAmmo: 0,
+  kills: 0,
 });
 
 export const useGameStore = create<GameStore>((set, get) => ({
@@ -86,6 +103,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
   heartbeat: 0,
   sprinting: false,
   levelCount: 5,
+  hitMarker: 0,
+  aimingAtEnemy: false,
+  fireFlash: 0,
 
   setSettings: (s) => {
     const next = { ...get().settings, ...s };
@@ -118,7 +138,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     });
   },
 
-  enterLevel: (index, name, echoTotal) => {
+  enterLevel: (index, name, echoTotal, ammo) => {
     const prev = get().stats;
     set({
       stats: {
@@ -127,10 +147,14 @@ export const useGameStore = create<GameStore>((set, get) => ({
         levelName: name,
         echoesCollected: 0,
         echoesTotal: echoTotal,
+        ammo,
+        maxAmmo: ammo,
+        kills: 0,
       },
       gameState: "playing",
       banner: `第 ${index} 层 · ${name}`,
       fragment: null,
+      aimingAtEnemy: false,
     });
     setTimeout(() => {
       if (get().banner?.startsWith(`第 ${index} 层`)) set({ banner: null });
@@ -173,6 +197,19 @@ export const useGameStore = create<GameStore>((set, get) => ({
   setSprinting: (v) => {
     if (get().sprinting !== v) set({ sprinting: v });
   },
+  setAmmo: (n) => {
+    const s = get().stats;
+    set({ stats: { ...s, ammo: Math.max(0, Math.min(s.maxAmmo, n)) } });
+  },
+  addKill: () => {
+    const s = get().stats;
+    set({ stats: { ...s, kills: s.kills + 1 } });
+  },
+  setHitMarker: (t) => set({ hitMarker: t }),
+  setAimingAtEnemy: (v) => {
+    if (get().aimingAtEnemy !== v) set({ aimingAtEnemy: v });
+  },
+  setFireFlash: (t) => set({ fireFlash: t }),
 
   decayFlashes: (dtSec) => {
     const { damageFlash, collectFlash } = get();

@@ -8,6 +8,7 @@ export class Input {
   public mouseDY = 0;
   public sensitivity = 1.0;
   public onLockChange?: (locked: boolean) => void;
+  private fireQueued = false;
 
   constructor(el: HTMLElement) {
     this.el = el;
@@ -19,6 +20,18 @@ export class Input {
     window.addEventListener("keyup", this.handleKeyUp);
     document.addEventListener("pointerlockchange", this.handleLockChange);
     this.el.addEventListener("mousemove", this.handleMouseMove);
+    this.el.addEventListener("mousedown", this.handleMouseDown);
+  }
+
+  private handleMouseDown = (e: MouseEvent) => {
+    if (!this.locked) return;
+    if (e.button === 0) this.fireQueued = true;
+  };
+
+  consumeFire(): boolean {
+    const f = this.fireQueued;
+    this.fireQueued = false;
+    return f;
   }
 
   private handleKeyDown = (e: KeyboardEvent) => {
@@ -92,5 +105,6 @@ export class Input {
     window.removeEventListener("keyup", this.handleKeyUp);
     document.removeEventListener("pointerlockchange", this.handleLockChange);
     this.el.removeEventListener("mousemove", this.handleMouseMove);
+    this.el.removeEventListener("mousedown", this.handleMouseDown);
   }
 }

@@ -20,10 +20,27 @@ export function HUD() {
   const heartbeat = useGameStore((s) => s.heartbeat);
   const sprinting = useGameStore((s) => s.sprinting);
   const levelCount = useGameStore((s) => s.levelCount);
+  const ammo = useGameStore((s) => s.stats.ammo);
+  const maxAmmo = useGameStore((s) => s.stats.maxAmmo);
+  const kills = useGameStore((s) => s.stats.kills);
+  const hitMarker = useGameStore((s) => s.hitMarker);
+  const aimingAtEnemy = useGameStore((s) => s.aimingAtEnemy);
 
   const low = resonance <= 30;
   const segs = 10;
   const filled = Math.round((resonance / 100) * segs);
+  const now = Date.now();
+  const showHit = now - hitMarker < 160;
+
+  // 准星颜色优先级：瞄准敌对 > 残响低 > 冲刺 > 默认
+  const crossColor = aimingAtEnemy
+    ? "bg-warn-500"
+    : low
+      ? "bg-warn-500"
+      : sprinting
+        ? "bg-echo-400"
+        : "bg-resonance-400/80";
+  const crossCenter = aimingAtEnemy || low ? "bg-warn-500" : sprinting ? "bg-echo-400" : "bg-resonance-400";
 
   return (
     <div className="pointer-events-none absolute inset-0 z-10 select-none">
@@ -89,24 +106,21 @@ export function HUD() {
         </div>
       </div>
 
-      {/* 中央十字准星 */}
+      {/* 中央十字准星 + 命中标记 */}
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         <div className="relative h-5 w-5">
+          <div className={`absolute left-1/2 top-0 h-5 w-[2px] -translate-x-1/2 ${crossColor}`} />
+          <div className={`absolute top-1/2 left-0 h-[2px] w-5 -translate-y-1/2 ${crossColor}`} />
           <div
-            className={`absolute left-1/2 top-0 h-5 w-[2px] -translate-x-1/2 ${
-              low ? "bg-warn-500" : sprinting ? "bg-echo-400" : "bg-resonance-400/80"
-            }`}
+            className={`absolute left-1/2 top-1/2 h-[3px] w-[3px] -translate-x-1/2 -translate-y-1/2 ${crossCenter}`}
           />
-          <div
-            className={`absolute top-1/2 left-0 h-[2px] w-5 -translate-y-1/2 ${
-              low ? "bg-warn-500" : sprinting ? "bg-echo-400" : "bg-resonance-400/80"
-            }`}
-          />
-          <div
-            className={`absolute left-1/2 top-1/2 h-[3px] w-[3px] -translate-x-1/2 -translate-y-1/2 ${
-              low ? "bg-warn-500" : sprinting ? "bg-echo-400" : "bg-resonance-400"
-            }`}
-          />
+          {/* 命中标记：四条斜线 X */}
+          {showHit && (
+            <>
+              <div className="absolute left-1/2 top-1/2 h-3 w-[2px] -translate-x-1/2 -translate-y-1/2 rotate-45 bg-echo-400 shadow-glowEcho" />
+              <div className="absolute left-1/2 top-1/2 h-3 w-[2px] -translate-x-1/2 -translate-y-1/2 -rotate-45 bg-echo-400 shadow-glowEcho" />
+            </>
+          )}
         </div>
       </div>
 

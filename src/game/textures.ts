@@ -329,3 +329,120 @@ export function makeShadowHalo(): THREE.Texture {
   tex.colorSpace = THREE.SRGBColorSpace;
   return tex;
 }
+
+// 武器 viewmodel：第一人称能量手枪，枪口朝左上（指向准星）
+export function makeWeaponSprite(): THREE.Texture {
+  const S = 32;
+  const [cv, ctx] = makeCanvas(S);
+  ctx.clearRect(0, 0, S, S);
+  const rect = (x: number, y: number, w: number, h: number, c: string) => {
+    ctx.fillStyle = c;
+    ctx.fillRect(x, y, w, h);
+  };
+  // 枪管（朝左）
+  rect(2, 15, 2, 4, "#0c1322"); // 枪口
+  rect(4, 14, 13, 6, "#1a2238"); // 枪管主体
+  rect(4, 14, 13, 1, "#3a4a6a"); // 枪管顶高光
+  rect(4, 19, 13, 1, "#0a0f1c"); // 枪管底暗边
+  // 机匣/主体
+  rect(16, 13, 13, 12, "#1a2238");
+  rect(16, 13, 13, 1, "#3a4a6a"); // 顶高光
+  rect(16, 24, 13, 1, "#0a0f1c"); // 底暗边
+  rect(17, 14, 1, 10, "#243150"); // 侧高光
+  // 握把
+  rect(21, 24, 6, 7, "#1a2238");
+  rect(21, 24, 6, 1, "#3a4a6a");
+  rect(26, 25, 1, 6, "#0a0f1c");
+  // 能量弹匣（青色发光）
+  rect(18, 16, 4, 5, "#0a2a3a");
+  rect(19, 17, 2, 3, "#3ad7ff");
+  rect(19, 17, 1, 1, "#bff6ff");
+  // 扳机护圈
+  rect(18, 24, 3, 1, "#0a0f1c");
+  rect(18, 25, 1, 2, "#243150");
+  // 准星/瞄具小点
+  rect(8, 13, 1, 1, "#3ad7ff");
+  // 散热槽
+  rect(24, 16, 1, 1, "#0a0f1c");
+  rect(26, 16, 1, 1, "#0a0f1c");
+  const tex = new THREE.CanvasTexture(cv);
+  tex.magFilter = THREE.NearestFilter;
+  tex.minFilter = THREE.NearestFilter;
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+// 枪口火光：明亮十字星
+export function makeMuzzleFlash(): THREE.Texture {
+  const S = 16;
+  const [cv, ctx] = makeCanvas(S);
+  ctx.clearRect(0, 0, S, S);
+  // 外辉光
+  const grad = ctx.createRadialGradient(8, 8, 0, 8, 8, 8);
+  grad.addColorStop(0, "rgba(255,243,196,0.9)");
+  grad.addColorStop(0.4, "rgba(255,216,107,0.5)");
+  grad.addColorStop(1, "rgba(255,216,107,0)");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, S, S);
+  // 十字星
+  ctx.fillStyle = "#fff7d6";
+  ctx.fillRect(7, 1, 2, 14);
+  ctx.fillRect(1, 7, 14, 2);
+  ctx.fillStyle = "#ffd86b";
+  ctx.fillRect(7, 3, 2, 10);
+  ctx.fillRect(3, 7, 10, 2);
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(7, 7, 2, 2);
+  const tex = new THREE.CanvasTexture(cv);
+  tex.magFilter = THREE.NearestFilter;
+  tex.minFilter = THREE.LinearFilter;
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+// 符文装饰：发光几何纹样（主题色）
+export function makeRuneTexture(color: string): THREE.Texture {
+  const S = 16;
+  const [cv, ctx] = makeCanvas(S);
+  ctx.clearRect(0, 0, S, S);
+  // 柔光底
+  const grad = ctx.createRadialGradient(8, 8, 0, 8, 8, 8);
+  grad.addColorStop(0, hexToRgba(color, 0.35));
+  grad.addColorStop(1, hexToRgba(color, 0));
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, S, S);
+  // 三角符文外框
+  ctx.fillStyle = color;
+  // 三角形（像素）
+  const tri = [
+    [8, 2],
+    [6, 4], [10, 4],
+    [4, 6], [8, 6], [12, 6],
+    [3, 8], [13, 8],
+    [4, 10], [12, 10],
+    [6, 12], [10, 12],
+    [8, 14],
+  ];
+  for (const [x, y] of tri) ctx.fillRect(x, y, 1, 1);
+  // 中心点
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(8, 8, 1, 1);
+  // 横线
+  ctx.fillStyle = hexToRgba(color, 0.6);
+  ctx.fillRect(2, 8, 2, 1);
+  ctx.fillRect(12, 8, 2, 1);
+  const tex = new THREE.CanvasTexture(cv);
+  tex.magFilter = THREE.NearestFilter;
+  tex.minFilter = THREE.NearestFilter;
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+// #rrggbb -> rgba()
+function hexToRgba(hex: string, a: number): string {
+  const h = hex.replace("#", "");
+  const r = parseInt(h.substring(0, 2), 16);
+  const g = parseInt(h.substring(2, 4), 16);
+  const b = parseInt(h.substring(4, 6), 16);
+  return `rgba(${r},${g},${b},${a})`;
+}

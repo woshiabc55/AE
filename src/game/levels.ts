@@ -30,6 +30,7 @@ export interface LevelConfig {
   rows: string[];
   enemySpeed: number; // 暗影移动速度
   enemyCount: number; // 期望暗影数（实际以布局 S 数量为准）
+  ammo: number; // 本层残响弹数量
 }
 
 export const LEVELS: LevelConfig[] = [
@@ -39,6 +40,7 @@ export const LEVELS: LevelConfig[] = [
     subtitle: "回响在此沉眠",
     enemySpeed: 2.4,
     enemyCount: 1,
+    ammo: 9,
     theme: {
       fog: 0x05060a,
       light: 0x6fe0ff,
@@ -74,6 +76,7 @@ export const LEVELS: LevelConfig[] = [
     subtitle: "影随步动",
     enemySpeed: 2.9,
     enemyCount: 2,
+    ammo: 12,
     theme: {
       fog: 0x080612,
       light: 0x9a7bff,
@@ -111,6 +114,7 @@ export const LEVELS: LevelConfig[] = [
     subtitle: "终焉之回响",
     enemySpeed: 3.4,
     enemyCount: 3,
+    ammo: 15,
     theme: {
       fog: 0x0a0512,
       light: 0xff8ae6,
@@ -151,6 +155,7 @@ export const LEVELS: LevelConfig[] = [
     subtitle: "潮声之下",
     enemySpeed: 3.7,
     enemyCount: 4,
+    ammo: 18,
     theme: {
       fog: 0x03100c,
       light: 0x5fffc4,
@@ -193,6 +198,7 @@ export const LEVELS: LevelConfig[] = [
     subtitle: "归寂",
     enemySpeed: 4.0,
     enemyCount: 5,
+    ammo: 21,
     theme: {
       fog: 0x100308,
       light: 0xff6a82,

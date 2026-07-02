@@ -21,8 +21,14 @@ interface Shadow {
   sprite: THREE.Sprite;
   halo: THREE.Sprite;
   pos: THREE.Vector3;
+  spawnPos: THREE.Vector3;
   speed: number;
   cooldown: number;
+  hp: number;
+  maxHp: number;
+  alive: boolean;
+  respawnTimer: number;
+  hitFlash: number; // 受击白闪 0~1
 }
 interface Portal {
   sprite: THREE.Sprite;
@@ -119,7 +125,19 @@ export class Entities {
     const pos = new THREE.Vector3(x, 1.7, z);
     sprite.position.copy(pos);
     halo.position.copy(pos);
-    this.shadows.push({ sprite, halo, pos, speed, cooldown: 0 });
+    this.shadows.push({
+      sprite,
+      halo,
+      pos,
+      spawnPos: pos.clone(),
+      speed,
+      cooldown: 0,
+      hp: 2,
+      maxHp: 2,
+      alive: true,
+      respawnTimer: 0,
+      hitFlash: 0,
+    });
     this.group.add(halo);
     this.group.add(sprite);
   }
@@ -181,6 +199,59 @@ export class Entities {
     }
   }
 
+  // 命中检测：从 origin 沿 dir 方向，找最近的存活暗影（点到射线距离 < radius）
+  hitTest(origin: THREE.Vector3, dir: THREE.Vector3, range: number): { shadow: Shadow; point: THREE.Vector3 } | null {
+    let best: Shadow | null = null;
+    let bestT = Infinity;
+    const hitRadius = 1.35;
+    for (const s of this.shadows) {
+      if (!s.alive) continue;
+      const sx = s.pos.x - origin.x;
+      const sy = 1.7 - origin.y;
+      const sz = s.pos.z - origin.z;
+      const t = sx * dir.x + sy * dir.y + sz * dir.z; // 沿射线投影
+      if (t < 0 || t > range) continue;
+      // 垂直距离
+      const px = origin.x + dir.x * t - s.pos.x;
+      const py = origin.y + dir.y * t - 1.7;
+      const pz = origin.z + dir.z * t - s.pos.z;
+      const perp = Math.hypot(px, py, pz);
+      if (perp < hitRadius && t < bestT) {
+        bestT = t;
+        best = s;
+      }
+    }
+    if (!best) return null;
+    const point = new THREE.Vector3(
+      origin.x + dir.x * bestT,
+      origin.y + dir.y * bestT,
+      origin.z + dir.z * bestT,
+    );
+    return { shadow: best, point };
+  }
+
+  hoverTest(origin: THREE.Vector3, dir: THREE.Vector3, range: number): boolean {
+    return this.hitTest(origin, dir, range) !== null;
+  }
+
+  // 对暗影造成伤害，返回是否击杀
+  damageShadow(shadow: Shadow, amount: number): boolean {
+    if (!shadow.alive) return false;
+    shadow.hp -= amount;
+    shadow.hitFlash = 1;
+    if (shadow.hp <= 0) {
+      shadow.alive = false;
+      shadow.respawnTimer = 11; // 11s 后在出生点重生
+      shadow.sprite.visible = false;
+      shadow.halo.visible = false;
+      this.spawnSparks(shadow.pos, 22);
+      return true;
+    }
+    // 受击粒子
+    this.spawnSparks(shadow.pos, 6);
+    return false;
+  }
+
   update(dt: number, playerPos: THREE.Vector3, world: World) {
     const t = performance.now() / 1000;
 
@@ -207,9 +278,22 @@ export class Entities {
       }
     }
 
-    // 暗影：朝玩家移动 + 辉光 + 接触扣残响 + 心跳
+    // 暗影：朝玩家移动 + 辉光 + 接触扣残响 + 心跳 + 受击/死亡/重生
     let minDist = Infinity;
     for (const s of this.shadows) {
+      if (!s.alive) {
+        // 重生倒计时
+        s.respawnTimer -= dt;
+        if (s.respawnTimer <= 0) {
+          s.alive = true;
+          s.hp = s.maxHp;
+          s.pos.copy(s.spawnPos);
+          s.sprite.visible = true;
+          s.halo.visible = true;
+          s.cooldown = 0;
+        }
+        continue;
+      }
       const dx = playerPos.x - s.pos.x;
       const dz = playerPos.z - s.pos.z;
       const dist = Math.hypot(dx, dz) || 0.0001;
@@ -225,6 +309,14 @@ export class Entities {
       s.halo.position.set(s.pos.x, y, s.pos.z);
       // 接近时辉光增强
       s.halo.material.opacity = Math.max(0.3, Math.min(1, 1.4 - dist / 8));
+      // 受击白闪衰减
+      s.hitFlash = Math.max(0, s.hitFlash - dt * 4);
+      // 受击时整体偏白
+      if (s.hitFlash > 0) {
+        (s.sprite.material as THREE.SpriteMaterial).color.setRGB(1, 1 - s.hitFlash * 0.4, 1 - s.hitFlash * 0.5);
+      } else {
+        (s.sprite.material as THREE.SpriteMaterial).color.setRGB(1, 1, 1);
+      }
       s.cooldown -= dt;
       if (dist < 1.5 && s.cooldown <= 0) {
         this.cb.onDamage(14);
