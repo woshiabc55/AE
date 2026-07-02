@@ -32,20 +32,20 @@ flowchart TD
 ```
 
 ## 2. 技术说明
-- **前端框架**：React@18 + TypeScript + Vite@5（复用现有项目）
+- **项目形态**：完全独立的游戏项目文件夹（独立 package.json / vite 配置 / index.html），与现有拼豆工坊项目分离
+- **前端框架**：React@18 + TypeScript + Vite@5
 - **样式方案**：TailwindCSS@3 + CSS Variables（HUD / 界面层）
 - **状态管理**：Zustand（游戏元状态：阶段、分数、血量；引擎内部状态用纯对象，不入 React 避免重渲染）
 - **渲染方案**：原生 Canvas 2D API（多层离屏 Canvas 合成：场景层 → 实体层 → 光照层 → 后处理层）
 - **游戏循环**：`requestAnimationFrame` 固定步长更新 + 插值渲染
 - **资产方案**：程序化像素精灵（运行时 Canvas 绘制 + OffscreenCanvas 缓存），无外部图片
-- **初始化工具**：复用现有 Vite React TS 模板
+- **初始化工具**：`npm create vite@latest` React + TS 模板（独立目录）
 - **后端**：无（纯前端，分数仅本地内存）
 
-## 3. 路由定义
+## 3. 页面路由（游戏内部）
 | 路由 | 用途 |
 |------|------|
-| `/` | 原拼豆工坊（保留） |
-| `/game` | 像素骑士砍杀游戏 |
+| `/` | 游戏入口（标题界面 → 游戏 → 结算，单页内状态机切换） |
 
 ## 4. 游戏状态机
 ```typescript
@@ -57,45 +57,51 @@ type GamePhase = "title" | "playing" | "paused" | "victory" | "defeat";
 
 ## 5. 核心引擎模块设计
 
-### 5.1 目录结构（新增）
+### 5.1 项目目录结构（独立项目）
 ```
-src/
-├── game/                       # 游戏项目根
-│   ├── engine/                  # 引擎核心
-│   │   ├── GameLoop.ts          # 主循环（rAF + 固定步长）
-│   │   ├── Input.ts             # 输入管理（键鼠/触控）
-│   │   ├── Camera.ts            # 摄像机 + 视差滚动
-│   │   ├── Renderer.ts          # 多层渲染合成
-│   │   ├── Lighting.ts          # 光照/阴影/体积光
-│   │   └── PostFX.ts            # CRT/暗角/色调后处理
-│   ├── entities/                 # 实体
+pixel-knight-game/                # 独立游戏项目根目录
+├── index.html
+├── package.json
+├── vite.config.ts
+├── tailwind.config.js
+├── postcss.config.js
+├── tsconfig.json
+├── src/
+│   ├── main.tsx                  # 入口
+│   ├── App.tsx                   # 根组件（状态机驱动标题/游戏/结算）
+│   ├── index.css                 # 全局样式 + 像素字体
+│   ├── engine/                   # 引擎核心
+│   │   ├── GameLoop.ts           # 主循环（rAF + 固定步长）
+│   │   ├── Input.ts              # 输入管理（键鼠/触控）
+│   │   ├── Camera.ts             # 摄像机 + 视差滚动
+│   │   ├── Renderer.ts           # 多层渲染合成
+│   │   ├── Lighting.ts           # 光照/阴影/体积光
+│   │   └── PostFX.ts             # CRT/暗角/色调后处理
+│   ├── entities/                  # 实体
 │   │   ├── Player.ts             # 骑士（状态机 + 连斩）
-│   │   ├── Enemy.ts              # 骷髅战士（AI 状态机）
-│   │   └── Projectile.ts         # 飞行物/剑气（预留）
-│   ├── world/                    # 关卡
+│   │   └── Enemy.ts              # 骷髅战士（AI 状态机）
+│   ├── world/                     # 关卡
 │   │   ├── Level.ts              # 关卡数据 + 地形碰撞
 │   │   ├── Parallax.ts           # 多层视差背景绘制
 │   │   └── Spawner.ts            # 敌人波次刷新
-│   ├── fx/                       # 特效
+│   ├── fx/                        # 特效
 │   │   ├── Particles.ts          # 粒子系统（血/火花/尘）
 │   │   └── ScreenShake.ts        # 屏幕震动
-│   ├── sprites/                  # 程序化像素精灵
+│   ├── sprites/                   # 程序化像素精灵
 │   │   ├── knight.ts             # 骑士各姿态像素图
 │   │   ├── skeleton.ts           # 骷髅像素图
 │   │   ├── tiles.ts              # 古堡瓦片
-│   │   └── pixelArt.ts           # 像素绘制工具（按调色板索引画格子）
+│   │   └── pixelArt.ts           # 像素绘制工具
+│   ├── components/                # UI 组件
+│   │   ├── GameCanvas.tsx        # Canvas 挂载 + 引擎生命周期
+│   │   ├── HUD.tsx               # 血条/连击/分数/波次
+│   │   ├── TitleScreen.tsx       # 标题界面
+│   │   └── ResultScreen.tsx      # 结算界面
 │   ├── store/
 │   │   └── useGameStore.ts       # Zustand 游戏元状态
 │   ├── config.ts                 # 常量（重力/速度/伤害/调色板）
 │   ├── types.ts                  # 游戏类型
-│   └── GameEngine.ts             # 引擎门面：组装上述模块
-├── pages/
-│   └── Game.tsx                  # 游戏页面（挂载 Canvas + HUD + 标题/结算）
-└── components/
-    └── game/
-        ├── HUD.tsx               # 血条/连击/分数/波次
-        ├── TitleScreen.tsx       # 标题界面
-        └── ResultScreen.tsx      # 结算界面
+│   └── GameEngine.ts             # 引擎门面
 ```
 
 ### 5.2 实体状态机
