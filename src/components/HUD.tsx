@@ -1,0 +1,106 @@
+import { useGameStore } from "@/store/useGameStore";
+
+function formatTime(sec: number) {
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60);
+  return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+}
+
+export function HUD() {
+  const resonance = useGameStore((s) => s.stats.resonance);
+  const echoesCollected = useGameStore((s) => s.stats.echoesCollected);
+  const echoesTotal = useGameStore((s) => s.stats.echoesTotal);
+  const level = useGameStore((s) => s.stats.level);
+  const levelName = useGameStore((s) => s.stats.levelName);
+  const elapsed = useGameStore((s) => s.stats.elapsedSec);
+  const banner = useGameStore((s) => s.banner);
+
+  const low = resonance <= 30;
+  const segs = 10;
+  const filled = Math.round((resonance / 100) * segs);
+
+  return (
+    <div className="pointer-events-none absolute inset-0 z-10 select-none">
+      {/* 左上：关卡 + 计时 */}
+      <div className="absolute left-5 top-5">
+        <p className="font-pixel text-[10px] text-resonance-400/70">
+          LV {level.toString().padStart(2, "0")}
+        </p>
+        <p className="font-term text-2xl text-resonance-400 text-glow-reso leading-tight">
+          {levelName}
+        </p>
+        <p className="font-term text-xl text-resonance-400/60">{formatTime(elapsed)}</p>
+      </div>
+
+      {/* 右上：回响进度 */}
+      <div className="absolute right-5 top-5 text-right">
+        <p className="font-pixel text-[10px] text-echo-400/70 mb-1">ECHO</p>
+        <p className="font-term text-3xl text-echo-400 text-glow-echo leading-none">
+          {echoesCollected}
+          <span className="text-echo-400/50 text-2xl"> / {echoesTotal}</span>
+        </p>
+        <div className="mt-1 flex justify-end gap-[3px]">
+          {Array.from({ length: echoesTotal }).map((_, i) => (
+            <div
+              key={i}
+              className={`h-2 w-2 ${
+                i < echoesCollected ? "bg-echo-500 shadow-glowEcho" : "bg-echo-500/15"
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* 中央十字准星 */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div className="relative h-5 w-5">
+          <div
+            className={`absolute left-1/2 top-0 h-5 w-[2px] -translate-x-1/2 ${
+              low ? "bg-warn-500" : "bg-resonance-400/80"
+            }`}
+          />
+          <div
+            className={`absolute top-1/2 left-0 h-[2px] w-5 -translate-y-1/2 ${
+              low ? "bg-warn-500" : "bg-resonance-400/80"
+            }`}
+          />
+          <div
+            className={`absolute left-1/2 top-1/2 h-[3px] w-[3px] -translate-x-1/2 -translate-y-1/2 ${
+              low ? "bg-warn-500" : "bg-resonance-400"
+            }`}
+          />
+        </div>
+      </div>
+
+      {/* 左下：残响值条 */}
+      <div className="absolute left-5 bottom-5 w-60">
+        <div className="flex items-center gap-2 mb-1">
+          <span className={`font-pixel text-[10px] ${low ? "text-warn-500 text-glow-warn animate-flicker" : "text-resonance-400"}`}>
+            RESONANCE
+          </span>
+        </div>
+        <div className={`flex gap-[3px] ${low ? "animate-flicker" : ""}`}>
+          {Array.from({ length: segs }).map((_, i) => (
+            <div
+              key={i}
+              className={`h-3 flex-1 ${
+                i < filled
+                  ? low
+                    ? "bg-warn-500 shadow-glowEcho"
+                    : "bg-resonance-500"
+                  : "bg-void-700 border border-void-600"
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* 底部横幅 */}
+      {banner && (
+        <div className="absolute left-1/2 bottom-16 -translate-x-1/2 text-center animate-fade-in">
+          <p className="font-pixel text-xs text-rift-500 text-glow-rift">{banner}</p>
+        </div>
+      )}
+    </div>
+  );
+}

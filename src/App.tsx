@@ -1,12 +1,16 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "@/pages/Home";
+import { useGameStore } from "@/store/useGameStore";
+import { MainMenu } from "@/components/MainMenu";
+import { GameCanvas } from "@/components/GameCanvas";
+import { ResultScreen } from "@/components/ResultScreen";
 
 export default function App() {
+  const gameState = useGameStore((s) => s.gameState);
+
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-      </Routes>
-    </Router>
+    <div className="h-full w-full">
+      {gameState === "menu" && <MainMenu />}
+      {(gameState === "playing" || gameState === "paused") && <GameCanvas />}
+      {(gameState === "victory" || gameState === "defeat") && <ResultScreen />}
+    </div>
   );
 }

@@ -3,15 +3,12 @@
 @tailwind utilities;
 
 :root {
-  font-family: "Noto Sans SC", "JetBrains Mono", -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  font-family: "VT323", "Press Start 2P", monospace;
+  line-height: 1.4;
   color-scheme: dark;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
+  -webkit-font-smoothing: none;
   -moz-osx-font-smoothing: grayscale;
 }
 
@@ -23,12 +20,86 @@ body,
 }
 
 body {
-  background-color: #0f0a1a;
-  color: #e6e0f5;
+  background-color: #05060a;
+  color: #cfe8ff;
   overflow: hidden;
+  user-select: none;
 }
 
-/* 全局滚动条 */
+/* 像素字体渲染 */
+.font-pixel {
+  font-family: "Press Start 2P", monospace;
+  letter-spacing: 0.02em;
+}
+.font-term {
+  font-family: "VT323", monospace;
+  letter-spacing: 0.04em;
+}
+
+/* 2 渲 3 画布：最近邻放大，形成粗像素 */
+.canvas-pixel {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* CRT 扫描线叠层 */
+.crt-scanlines {
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, 0.22) 3px,
+    rgba(0, 0, 0, 0.22) 4px
+  );
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+/* CRT 暗角 */
+.crt-vignette {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0) 45%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+  pointer-events: none;
+}
+
+/* 噪点纹理 */
+.bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+/* 虚空粒子背景网格 */
+.bg-void-grid {
+  background-image:
+    linear-gradient(rgba(58, 215, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(58, 215, 255, 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* 像素文字光晕 */
+.text-glow-reso {
+  text-shadow: 0 0 10px rgba(58, 215, 255, 0.7);
+}
+.text-glow-echo {
+  text-shadow: 0 0 10px rgba(255, 216, 107, 0.7);
+}
+.text-glow-rift {
+  text-shadow: 0 0 12px rgba(255, 91, 227, 0.7);
+}
+.text-glow-warn {
+  text-shadow: 0 0 10px rgba(255, 59, 92, 0.8);
+}
+
+::selection {
+  background: rgba(58, 215, 255, 0.4);
+  color: #fff;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -37,60 +108,32 @@ body {
   background: rgba(255, 255, 255, 0.02);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 107, 53, 0.35);
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 107, 53, 0.6);
+  background: rgba(58, 215, 255, 0.35);
 }
 
-/* 拼豆纹理背景 */
-.bg-bead-grid {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-  background-size: 16px 16px;
-}
-
-/* 噪点纹理 */
-.bg-noise {
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
-}
-
-/* 像素文字光晕 */
-.text-glow-ember {
-  text-shadow: 0 0 12px rgba(255, 107, 53, 0.55);
-}
-
-/* 选中态 */
-::selection {
-  background: rgba(255, 107, 53, 0.4);
-  color: #fff;
-}
-
-/* 隐藏数字输入框箭头 */
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-input[type="number"] {
-  -moz-appearance: textfield;
-}
-
-/* 颜色选择器原生样式重置 */
-input[type="color"] {
+/* 隐藏原生 range 滑块，统一像素风 */
+input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
-  border: none;
-  padding: 0;
-  background: transparent;
+  height: 8px;
+  background: #11141f;
+  border: 2px solid #1a1e2e;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 18px;
+  background: #3ad7ff;
+  border: 2px solid #05060a;
   cursor: pointer;
 }
-input[type="color"]::-webkit-color-swatch-wrapper {
-  padding: 0;
-}
-input[type="color"]::-webkit-color-swatch {
-  border: none;
-  border-radius: 6px;
+input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 18px;
+  background: #3ad7ff;
+  border: 2px solid #05060a;
+  cursor: pointer;
+  border-radius: 0;
 }
