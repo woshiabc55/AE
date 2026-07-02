@@ -48,7 +48,8 @@ export class MatchManager {
 
   constructor(ctx: MatchContext) {
     this.ctx = ctx;
-    this.startRound();
+    // 不在此自动 startRound——交由调用方在赋值完成后显式调用，
+    // 避免 onRoundStart 回调读取尚未赋值的字段。
   }
 
   // 开始一个新回合：重置票数/进度 + 通知 spawn

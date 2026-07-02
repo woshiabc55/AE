@@ -94,6 +94,9 @@ export class GameScene {
     this.bots.canRespawn = (team) => this.match.canRespawn(team);
     this.bots.onConsumeTicket = (team) => this.match.consumeTicket(team);
 
+    // 显式启动首回合（此时 this.match 已赋值，spawnRound 可安全读取）
+    this.match.startRound();
+
     this.updateCameraAspect();
     window.addEventListener("resize", this.handleResize);
     this.last = performance.now();
